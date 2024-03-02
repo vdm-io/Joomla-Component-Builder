@@ -42,7 +42,7 @@ abstract class BaseConfig extends JoomlaRegistry
 	 *
 	 * @since 3.2.0
 	 */
-	public function __set(string $key, $value)
+	public function __set($key, $value)
 	{
 		$this->set($key, $value);
 	}
@@ -50,12 +50,12 @@ abstract class BaseConfig extends JoomlaRegistry
 	/**
 	 * getting any valid value
 	 *
-	 * @param   string       $key     The value's key/path name
+	 * @param   string    $key   The value's key/path name
 	 *
 	 * @since 3.2.0
 	 * @throws  \InvalidArgumentException If $key is not a valid function name.
 	 */
-	public function __get(string $key)
+	public function __get($key)
 	{
 		// check if it has been set
 		if (($value = $this->get($key, '__N0T_S3T_Y3T_')) !== '__N0T_S3T_Y3T_')

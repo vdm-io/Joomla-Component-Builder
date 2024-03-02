@@ -12,7 +12,19 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Power Html View class
@@ -26,7 +38,7 @@ class ComponentbuilderViewPower extends HtmlView
 	public function display($tpl = null)
 	{
 		// set params
-		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
@@ -35,7 +47,7 @@ class ComponentbuilderViewPower extends HtmlView
 		// get action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('power', $this->item);
 		// get input
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
 		$this->refid = $jinput->get('refid', 0, 'int');
 		$return = $jinput->get('return', null, 'base64');
@@ -60,7 +72,7 @@ class ComponentbuilderViewPower extends HtmlView
 
 		// Set the toolbar
 		$this->addToolBar();
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -80,34 +92,34 @@ class ComponentbuilderViewPower extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
-		$user = JFactory::getUser();
+		Factory::getApplication()->input->set('hidemainmenu', true);
+		$user = Factory::getUser();
 		$userId	= $user->id;
 		$isNew = $this->item->id == 0;
 
-		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_POWER_NEW' : 'COM_COMPONENTBUILDER_POWER_EDIT'), 'pencil-2 article-add');
+		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_POWER_NEW' : 'COM_COMPONENTBUILDER_POWER_EDIT'), 'pencil-2 article-add');
 		// Built the actions for new and existing records.
-		if (ComponentbuilderHelper::checkString($this->referral))
+		if (StringHelper::check($this->referral))
 		{
 			if ($this->canDo->get('power.create') && $isNew)
 			{
 				// We can create the record.
-				JToolBarHelper::save('power.save', 'JTOOLBAR_SAVE');
+				ToolbarHelper::save('power.save', 'JTOOLBAR_SAVE');
 			}
 			elseif ($this->canDo->get('power.edit'))
 			{
 				// We can save the record.
-				JToolBarHelper::save('power.save', 'JTOOLBAR_SAVE');
+				ToolbarHelper::save('power.save', 'JTOOLBAR_SAVE');
 			}
 			if ($isNew)
 			{
 				// Do not creat but cancel.
-				JToolBarHelper::cancel('power.cancel', 'JTOOLBAR_CANCEL');
+				ToolbarHelper::cancel('power.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
 				// We can close it.
-				JToolBarHelper::cancel('power.cancel', 'JTOOLBAR_CLOSE');
+				ToolbarHelper::cancel('power.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
 		else
@@ -117,49 +129,49 @@ class ComponentbuilderViewPower extends HtmlView
 				// For new records, check the create permission.
 				if ($this->canDo->get('power.create'))
 				{
-					JToolBarHelper::apply('power.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('power.save', 'JTOOLBAR_SAVE');
-					JToolBarHelper::custom('power.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+					ToolbarHelper::apply('power.apply', 'JTOOLBAR_APPLY');
+					ToolbarHelper::save('power.save', 'JTOOLBAR_SAVE');
+					ToolbarHelper::custom('power.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 				};
-				JToolBarHelper::cancel('power.cancel', 'JTOOLBAR_CANCEL');
+				ToolbarHelper::cancel('power.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
 				if ($this->canDo->get('power.edit'))
 				{
 					// We can save the new record
-					JToolBarHelper::apply('power.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('power.save', 'JTOOLBAR_SAVE');
+					ToolbarHelper::apply('power.apply', 'JTOOLBAR_APPLY');
+					ToolbarHelper::save('power.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
 					if ($this->canDo->get('power.create'))
 					{
-						JToolBarHelper::custom('power.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+						ToolbarHelper::custom('power.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
 				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('power.version'));
 				if ($this->state->params->get('save_history', 1) && $this->canDo->get('power.edit') && $canVersion)
 				{
-					JToolbarHelper::versions('com_componentbuilder.power', $this->item->id);
+					ToolbarHelper::versions('com_componentbuilder.power', $this->item->id);
 				}
 				if ($this->canDo->get('power.create'))
 				{
-					JToolBarHelper::custom('power.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+					ToolbarHelper::custom('power.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
 				if ($this->canDo->get('power.reset'))
 				{
 					// add Reset button.
-					JToolBarHelper::custom('power.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+					ToolbarHelper::custom('power.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
 				}
-				JToolBarHelper::cancel('power.cancel', 'JTOOLBAR_CLOSE');
+				ToolbarHelper::cancel('power.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
-		JToolbarHelper::divider();
+		ToolbarHelper::divider();
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('power');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 
@@ -174,11 +186,11 @@ class ComponentbuilderViewPower extends HtmlView
 	{
 		if(strlen($var) > 30)
 		{
-    		// use the helper htmlEscape method instead and shorten the string
-			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true, 30);
+			// use the helper htmlEscape method instead and shorten the string
+			return StringHelper::html($var, $this->_charset, true, 30);
 		}
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
 	}
 
 	/**
@@ -189,42 +201,38 @@ class ComponentbuilderViewPower extends HtmlView
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		if (!isset($this->document))
-		{
-			$this->document = JFactory::getDocument();
-		}
-		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_POWER_NEW' : 'COM_COMPONENTBUILDER_POWER_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/power.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_POWER_NEW' : 'COM_COMPONENTBUILDER_POWER_EDIT'));
+		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/power.css", ['version' => 'auto']);
 		// Add Ajax Token
-		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';");
-		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/power/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+		$this->getDocument()->addScriptDeclaration("var token = '" . Session::getFormToken() . "';");
+		Html::_('script', $this->script, ['version' => 'auto']);
+		Html::_('script', "administrator/components/com_componentbuilder/views/power/submitbutton.js", ['version' => 'auto']);
 
 
 		// add the Uikit v2 style sheets
-		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css', ['version' => 'auto']);
 		// add Uikit v2 JavaScripts
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit.min.js', ['version' => 'auto']);
 
 		// add the Uikit v2 extra style sheets
-		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css', ['version' => 'auto']);
 		// add Uikit v2 extra JavaScripts
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
 		// Add the JavaScript for JStore
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/strtotime.js');
+		Html::_('script', 'media/com_componentbuilder/js/jquery.json.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/js/jstorage.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/js/strtotime.js', ['version' => 'auto']);
 		// add var key
 		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
 		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
 		// set some lang
-		JText::script('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER');
-		JText::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
-		JText::script('COM_COMPONENTBUILDER_NO_RESULTS_MATCH');
-		JText::script('COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
-		JText::script('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND');
+		Text::script('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER');
+		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
+		Text::script('COM_COMPONENTBUILDER_NO_RESULTS_MATCH');
+		Text::script('COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
+		Text::script('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND');
 		// check if we should use browser storage
 		$setBrowserStorage = $this->params->get('set_browser_storage', null);
 		if ($setBrowserStorage)
@@ -234,7 +242,7 @@ class ComponentbuilderViewPower extends HtmlView
 			if ('global' == $storageTimeToLive)
 			{
 				// use the global session time
-				$session = JFactory::getSession();
+				$session = Factory::getSession();
 				// must have itin milliseconds
 				$expire = ($session->getExpire()*60)* 1000;
 			}
@@ -257,6 +265,16 @@ class ComponentbuilderViewPower extends HtmlView
 		// Set the Time To Live To JavaScript
 		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		$this->document->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
-		JText::script('view not acceptable. Error');
+		Text::script('view not acceptable. Error');
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

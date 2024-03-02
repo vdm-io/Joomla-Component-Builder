@@ -12,6 +12,11 @@
 // No direct access to this file
 defined('JPATH_BASE') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+
 /**
  * Make thing clear
  *
@@ -30,8 +35,8 @@ defined('JPATH_BASE') or die('Restricted access');
 extract($displayData);
 
 // Add script
-JHtml::_('jquery.ui', array('core', 'sortable'));
-JHtml::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
+Html::_('jquery.ui', array('core', 'sortable'));
+Html::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
 
 $sublayout = 'sectionjcb';
 
@@ -49,7 +54,7 @@ $sublayout = 'sectionjcb';
 			<?php if (!empty($buttons['add'])) : ?>
 			<div class="btn-toolbar">
 				<div class="btn-group">
-					<a class="btn btn-mini button btn-success group-add group-add-<?php echo $unique_subform_id; ?>" aria-label="<?php echo JText::_('COM_COMPONENTBUILDER_ADD'); ?>">
+					<a class="btn btn-mini button btn-success group-add group-add-<?php echo $unique_subform_id; ?>" aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_ADD'); ?>">
 						<span class="icon-plus" aria-hidden="true"></span>
 					</a>
 				</div>
@@ -57,7 +62,7 @@ $sublayout = 'sectionjcb';
 			<?php endif; ?>
 		<?php
 		foreach ($forms as $k => $form) :
-			echo JLayoutHelper::render(
+			echo LayoutHelper::render(
 				$sublayout,
 				array(
 					'form' => $form,
@@ -76,7 +81,7 @@ $sublayout = 'sectionjcb';
 						array('<', '>'),
 						array('SUBFORMLT', 'SUBFORMGT'),
 						trim(
-							JLayoutHelper::render(
+							LayoutHelper::render(
 								$sublayout,
 								array(
 									'form' => $tmpl,

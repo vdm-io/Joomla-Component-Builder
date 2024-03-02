@@ -13,17 +13,16 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Field;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface as History;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Customcode as FieldCustomcode;
-use VDM\Joomla\Componentbuilder\Compiler\Field\Validation;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Rule;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 
 /**
@@ -42,95 +41,93 @@ class Data
 	protected array $fields;
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Event
+	 * The EventInterface Class.
 	 *
-	 * @var    EventInterface
+	 * @var   Event
 	 * @since 3.2.0
 	 */
-	protected EventInterface $event;
+	protected Event $event;
 
 	/**
-	 * Compiler History
+	 * The HistoryInterface Class.
 	 *
-	 * @var    HistoryInterface
+	 * @var   History
 	 * @since 3.2.0
 	 */
-	protected HistoryInterface $history;
+	protected History $history;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
 	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Field Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    FieldCustomcode
+	 * @var   FieldCustomcode
 	 * @since 3.2.0
 	 */
-	protected FieldCustomcode $fieldCustomcode;
+	protected FieldCustomcode $fieldcustomcode;
 
 	/**
-	 * Compiler Field Validation
+	 * The Rule Class.
 	 *
-	 * @var    Validation
+	 * @var   Rule
 	 * @since 3.2.0
 	 */
-	protected Validation $validation;
+	protected Rule $rule;
 
 	/**
-	 * Database object to query local DB
-	 *
-	 * @var    \JDatabaseDriver
-	 * @since 3.2.0
-	 **/
-	protected \JDatabaseDriver $db;
-
-	/**
-	 * Constructor
-	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param EventInterface|null       $event            The compiler event api object.
-	 * @param HistoryInterface|null     $history          The compiler history object.
-	 * @param Placeholder|null          $placeholder      The compiler placeholder object.
-	 * @param Customcode|null           $customcode       The compiler customcode object.
-	 * @param FieldCustomcode|null      $fieldCustomcode  The field customcode object.
-	 * @param Validation|null           $validation       The field validation rule object.
-	 * @param \JDatabaseDriver|null     $db               The database object.
+	 * The database class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?EventInterface $event = null, ?HistoryInterface $history = null,
-		?Placeholder $placeholder = null, ?Customcode $customcode = null, ?FieldCustomcode $fieldCustomcode = null,
-		?Validation $validation = null, ?\JDatabaseDriver $db = null)
+	protected $db;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Config                 $config            The Config Class.
+	 * @param Event                  $event             The EventInterface Class.
+	 * @param History                $history           The HistoryInterface Class.
+	 * @param Placeholder            $placeholder       The Placeholder Class.
+	 * @param Customcode             $customcode        The Customcode Class.
+	 * @param FieldCustomcode        $fieldcustomcode   The Customcode Class.
+	 * @param Rule                   $rule              The Rule Class.
+	 *
+	 * @since 3.2.0
+	 */
+	public function __construct(Config $config, Event $event, History $history,
+		Placeholder $placeholder, Customcode $customcode,
+		FieldCustomcode $fieldcustomcode, Rule $rule)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->event = $event ?: Compiler::_('Event');
-		$this->history = $history ?: Compiler::_('History');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->fieldCustomcode = $fieldCustomcode ?: Compiler::_('Field.Customcode');
-		$this->validation = $validation ?: Compiler::_('Field.Validation');
-		$this->db = $db ?: Factory::getDbo();
+		$this->config = $config;
+		$this->event = $event;
+		$this->history = $history;
+		$this->placeholder = $placeholder;
+		$this->customcode = $customcode;
+		$this->fieldcustomcode = $fieldcustomcode;
+		$this->rule = $rule;
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -169,13 +166,9 @@ class Data
 				$this->db->quoteName('a.id') . ' = ' . $this->db->quote($id)
 			);
 
-			// TODO we need to update the event signatures
-			$context = $this->config->component_context;
-
 			// Trigger Event: jcb_ce_onBeforeQueryFieldData
 			$this->event->trigger(
-				'jcb_ce_onBeforeQueryFieldData',
-				array(&$context, &$id, &$query, &$this->db)
+				'jcb_ce_onBeforeQueryFieldData', [&$id, &$query, &$this->db]
 			);
 
 			// Reset the query using our newly populated query object.
@@ -188,8 +181,7 @@ class Data
 
 				// Trigger Event: jcb_ce_onBeforeModelFieldData
 				$this->event->trigger(
-					'jcb_ce_onBeforeModelFieldData',
-					array(&$context, &$field)
+					'jcb_ce_onBeforeModelFieldData', [&$field]
 				);
 
 				// adding a fix for the changed name of type to fieldtype
@@ -199,7 +191,7 @@ class Data
 				$field->xml = $this->customcode->update(json_decode((string) $field->xml));
 
 				// check if we have validate (validation rule and set it if found)
-				$this->validation->set($id, $field->xml);
+				$this->rule->set($id, $field->xml);
 
 				// load the type values form type params
 				$field->properties = (isset($field->properties)
@@ -301,8 +293,7 @@ class Data
 
 				// Trigger Event: jcb_ce_onAfterModelFieldData
 				$this->event->trigger(
-					'jcb_ce_onAfterModelFieldData',
-					array(&$context, &$field)
+					'jcb_ce_onAfterModelFieldData', [&$field]
 				);
 
 				$this->fields[$id] = $field;
@@ -316,7 +307,7 @@ class Data
 		if ($id > 0 && isset($this->fields[$id]))
 		{
 			// update the customcode of the field
-			$this->fieldCustomcode->update($id, $this->fields[$id], $singleViewName, $listViewName);
+			$this->fieldcustomcode->update($id, $this->fields[$id], $singleViewName, $listViewName);
 
 			// return the field
 			return $this->fields[$id];
@@ -324,6 +315,5 @@ class Data
 
 		return null;
 	}
-
 }
 

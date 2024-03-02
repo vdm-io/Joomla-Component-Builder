@@ -12,6 +12,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,21 +30,21 @@ class JFormFieldAliasbuilder extends JFormFieldList
 	/**
 	 * The aliasbuilder field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'aliasbuilder';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
 		// load the db object
-		$db = JFactory::getDBO();		
+		$db = Factory::getDBO();		
 		// get the input from url
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		// get the id
 		$adminView = $jinput->getInt('id', 0);
 		// rest the fields ids
@@ -48,10 +54,10 @@ class JFormFieldAliasbuilder extends JFormFieldList
 			// get all the fields linked to the admin view
 			if ($addFields = ComponentbuilderHelper::getVar('admin_fields', (int) $adminView, 'admin_view', 'addfields'))
 			{
-				if (ComponentbuilderHelper::checkJson($addFields))
+				if (JsonHelper::check($addFields))
 				{
 					$addFields = json_decode($addFields, true);
-					if (ComponentbuilderHelper::checkArray($addFields))
+					if (ArrayHelper::check($addFields))
 					{
 						foreach($addFields as $addField)
 						{
@@ -65,7 +71,7 @@ class JFormFieldAliasbuilder extends JFormFieldList
 			}
 		}
 		// filter by fields linked
-		if (ComponentbuilderHelper::checkArray($fieldIds))
+		if (ArrayHelper::check($fieldIds))
 		{
 			// get list of field types that does not work in list views (note, spacer)
 			$spacers = ComponentbuilderHelper::getSpacerIds();
@@ -77,7 +83,7 @@ class JFormFieldAliasbuilder extends JFormFieldList
 			// only load these fields
 			$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $fieldIds) . ')');
 			// none of these field types
-			if (ComponentbuilderHelper::checkArray($spacers))
+			if (ArrayHelper::check($spacers))
 			{
 				$query->where($db->quoteName('a.fieldtype') . ' NOT IN (' . implode(',', $spacers) . ')');
 			}
@@ -89,11 +95,11 @@ class JFormFieldAliasbuilder extends JFormFieldList
 			{
 				foreach($items as $item)
 				{
-					$options[] = JHtml::_('select.option', $item->id, $item->name . ' [' . $item->type . ']');
+					$options[] = Html::_('select.option', $item->id, $item->name . ' [' . $item->type . ']');
 				}
 				return $options;
 			}
 		}
-		return array(JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_ADD_MORE_FIELDS_TO_THIS_ADMIN_VIEW')));
+		return array(Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_ADD_MORE_FIELDS_TO_THIS_ADMIN_VIEW')));
 	}
 }

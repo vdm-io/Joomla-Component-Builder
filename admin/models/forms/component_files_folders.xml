@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -337,7 +338,7 @@
 		<!-- Note_add_files Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_add_files" label="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NOTE_ADD_FILES_DESCRIPTION" heading="h4" class="alert alert-info note_add_files" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

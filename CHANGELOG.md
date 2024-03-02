@@ -1,3 +1,73 @@
+# v3.2.0-beta1
+
+- Move beta to main repo
+- Fix #1053 so that the right and left tabs display correctly in Joomla 4&5
+
+# v3.1.42-beta
+
+- Fix #1055 to add the style and scripts to all views.
+
+# v3.1.40-beta
+
+- Fix #1052 so that tabs last opened is remembered and opened again on save, refresh or reopening of an item.
+- Fix #1057 so that the datetime fields will be set correctly in mysql.
+
+# v3.1.39
+
+- Fix #1051 making sure the list view is lowercase.
+
+# v3.1.38
+
+- Fix #1046 so that the version restore function will work.
+
+# v3.1.37
+
+- Fix #1041 so that custom tabs are build correctly.
+- Fix #1043 so that delete function in Joomla 4 and 5 will work.
+- Fix #1045 so that plug-in Structure::setMainXmlFile method will except an object.
+- Fix #1042 so that it will remove line breaks and new lines from other languages as well.
+
+# v3.1.36
+
+- Move the defined or die below use statements.
+- Add the new router view
+
+# v3.1.35
+
+- Improve the Joomla 4 Templates.
+- Fix #1033 the response class issue for the gitea classes.
+- Remove the JRegistry class to resolve #1036, #1035
+
+# v3.1.34
+
+- Fix the AjaxController contructor class.
+- Improved the getModel calls from the AxajController class.
+
+# v3.1.33
+
+- Fix #1026 by adding the correct layout to the filter views.
+- Fix #1026 by adding the class to the filter views.
+- Fix #1026 by adding a hint to the filters that are having multiple selection.
+- Fix the directional bog where a field in the filters are also called direction.
+- Fix the getModel helper method fot J4+.
+
+# v3.1.32
+
+- Fix #1026 by removing chosen everywhere.
+- Resolve #1028 by adding in line helper toggle integration to all admin views.
+- Remove the import and export buttons until the area is fixed.
+- Add emptystate list template to all admin list views.
+
+# v3.1.31
+
+- Add joomla_version to custom code.
+- Add Joomla 4 and 5 correct build files.
+
+# v3.1.30
+
+- Add namspace prefix to both global, and component override level.
+- Add Joomla 4 and 5 build option
+
 # v3.1.28
 
 - Updates PHPSecLib.
@@ -23,7 +93,7 @@
 - Adds option to add additional templates to a module.
 - Resolves #1002 by adding STRING instead of WORD.
 - Ported the FOF encryption class into Powers. https://git.vdm.dev/joomla/fof
-- Changed all CSS and JS to use `JHtml::_(` instead of `$this->document->` in compiler code.
+- Changed all CSS and JS to use `Html::_(` instead of `$this->document->` in compiler code.
 - Adds option to turn jQuery off if UIKIT 3 is added.
 - Adds option to auto write injection boilerplate code in Powers area.
 - Adds option to auto write service provider boilerplate code in the Powers area.

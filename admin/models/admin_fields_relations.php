@@ -12,12 +12,22 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\UCM\UCMType;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder Admin_fields_relations Admin Model
@@ -62,16 +72,16 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A database object
+	 * @return  Table  A database object
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'admin_fields_relations', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'admin_fields_relations', $prefix = 'ComponentbuilderTable', $config = [])
 	{
 		// add table path for when model gets used from other component
 		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
 		// get instance of the table
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 
@@ -107,13 +117,12 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'admin_fields_relations__'.$id);
 				ComponentbuilderHelper::set('admin_fields_relations__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -122,7 +131,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		return $this->vastDevMod;
 	}
 
-    
+
 	/**
 	 * Method to get a single record.
 	 *
@@ -181,13 +190,12 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'admin_fields_relations__'.$id);
 				ComponentbuilderHelper::set('admin_fields_relations__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -208,7 +216,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
+	public function getForm($data = [], $loadData = true, $options = array('control' => 'jform'))
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
@@ -235,7 +243,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -248,7 +256,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			$id = $jinput->get('id', 0, 'INT');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
@@ -314,13 +322,13 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	/**
 	 * Method to get the script that have to be included on the form
 	 *
-	 * @return string	script files
+	 * @return string    script files
 	 */
 	public function getScript()
 	{
 		return 'media/com_componentbuilder/js/admin_fields_relations.js';
 	}
-    
+
 	/**
 	 * Method to test whether a record can be deleted.
 	 *
@@ -339,7 +347,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				return;
 			}
 
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// The record has been set. Check the record permissions.
 			return $user->authorise('admin_fields_relations.delete', 'com_componentbuilder.admin_fields_relations.' . (int) $record->id);
 		}
@@ -357,8 +365,8 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
-		$recordId = (!empty($record->id)) ? $record->id : 0;
+		$user = Factory::getUser();
+		$recordId = $record->id ??  0;
 
 		if ($recordId)
 		{
@@ -372,28 +380,28 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('admin_fields_relations.edit.state', 'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Method override to check if you can edit an existing record.
 	 *
-	 * @param	array	$data	An array of input data.
-	 * @param	string	$key	The name of the key for the primary key.
+	 * @param    array    $data   An array of input data.
+	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return	boolean
-	 * @since	2.5
+	 * @return    boolean
+	 * @since    2.5
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		return $user->authorise('admin_fields_relations.edit', 'com_componentbuilder.admin_fields_relations.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('admin_fields_relations.edit',  'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   JTable  $table  A JTable object.
+	 * @param   Table  $table  A Table object.
 	 *
 	 * @return  void
 	 *
@@ -401,19 +409,19 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
-		
+		$date = Factory::getDate();
+		$user = Factory::getUser();
+
 		if (isset($table->name))
 		{
 			$table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
 		}
-		
+
 		if (isset($table->alias) && empty($table->alias))
 		{
 			$table->generateAlias();
 		}
-		
+
 		if (empty($table->id))
 		{
 			$table->created = $date->toSql();
@@ -425,7 +433,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			// Set ordering to the last item if not set
 			if (empty($table->ordering))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_admin_fields_relations'));
@@ -440,7 +448,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			$table->modified = $date->toSql();
 			$table->modified_by = $user->id;
 		}
-        
+
 		if (!empty($table->id))
 		{
 			// Increment the items version number.
@@ -455,10 +463,10 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	protected function loadFormData() 
+	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.admin_fields_relations.data', array());
+		$data = Factory::getApplication()->getUserState('com_componentbuilder.edit.admin_fields_relations.data', []);
 
 		if (empty($data))
 		{
@@ -481,7 +489,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Method to delete one or more records.
 	 *
@@ -497,7 +505,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -517,10 +525,10 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
-        }
-    
+	}
+
 	/**
 	 * Method to perform batch operations on an item or a set of items.
 	 *
@@ -546,30 +554,30 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
 		$done = false;
 
 		// Set some needed variables.
-		$this->user			= JFactory::getUser();
-		$this->table			= $this->getTable();
-		$this->tableClassName		= get_class($this->table);
-		$this->contentType		= new JUcmType;
-		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('admin_fields_relations');
-		$this->batchSet			= true;
+		$this->user = Factory::getUser();
+		$this->table = $this->getTable();
+		$this->tableClassName = get_class($this->table);
+		$this->contentType = new UCMType;
+		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
+		$this->canDo = ComponentbuilderHelper::getActions('admin_fields_relations');
+		$this->batchSet = true;
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
-        
+
 		if ($this->type == false)
 		{
-			$type = new JUcmType;
+			$type = new UCMType;
 			$this->type = $type->getTypeByAlias($this->typeAlias);
 		}
 
@@ -606,8 +614,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -633,7 +640,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user 		= JFactory::getUser();
+			$this->user 		= Factory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_relations');
@@ -659,7 +666,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				$values['published'] = 0;
 		}
 
-		$newIds = array();
+		$newIds = [];
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -672,7 +679,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			if (!$this->user->authorise('admin_fields_relations.edit', $contexts[$pk]))
 			{
 				// Not fatal error
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 				continue;
 			}
 
@@ -688,19 +695,19 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->admin_view) && !is_numeric($this->table->admin_view))
+			if (UtilitiesStringHelper::check($this->table->admin_view) && !is_numeric($this->table->admin_view))
 			{
 				$this->table->admin_view = $this->generateUnique('admin_view',$this->table->admin_view);
 			}
 
 			// insert all set values
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -712,7 +719,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			}
 
 			// update all unique fields
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -776,7 +783,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user		= JFactory::getUser();
+			$this->user		= Factory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_relations');
@@ -784,7 +791,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 
 		if (!$this->canDo->get('admin_fields_relations.edit') && !$this->canDo->get('admin_fields_relations.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
@@ -801,7 +808,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		{
 			if (!$this->user->authorise('admin_fields_relations.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 				return false;
 			}
 
@@ -817,13 +824,13 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// insert all set values.
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -867,7 +874,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -879,15 +886,15 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input	= JFactory::getApplication()->input;
-		$filter	= JFilterInput::getInstance();
-        
+		$input    = Factory::getApplication()->input;
+		$filter   = InputFilter::getInstance();
+
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-            
-			$metadata = new JRegistry;
+
+			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
@@ -895,7 +902,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		// Set the addrelations items to data.
 		if (isset($data['addrelations']) && is_array($data['addrelations']))
 		{
-			$addrelations = new JRegistry;
+			$addrelations = new Registry;
 			$addrelations->loadArray($data['addrelations']);
 			$data['addrelations'] = (string) $addrelations;
 		}
@@ -904,11 +911,11 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 			// Set the empty addrelations to data
 			$data['addrelations'] = '';
 		}
-        
+
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new JRegistry;
+			$params = new Registry;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}
@@ -918,7 +925,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		{
 			// Automatic handling of other unique fields
 			$uniqueFields = $this->getUniqueFields();
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -926,14 +933,14 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 				}
 			}
 		}
-		
+
 		if (parent::save($data))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to generate a unique value.
 	 *
@@ -946,7 +953,6 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 	 */
 	protected function generateUnique($field,$value)
 	{
-
 		// set field value unique
 		$table = $this->getTable();
 
@@ -972,7 +978,7 @@ class ComponentbuilderModelAdmin_fields_relations extends AdminModel
 		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(['title' => $title]))
 		{
 			$title = StringHelper::increment($title);
 		}

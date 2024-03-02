@@ -12,12 +12,21 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\UCM\UCMType;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -53,6 +62,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			'above' => array(
 				'target',
 				'system_name',
+				'joomla_version',
 				'function_name'
 			),
 			'under' => array(
@@ -82,16 +92,16 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A database object
+	 * @return  Table  A database object
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'custom_code', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'custom_code', $prefix = 'ComponentbuilderTable', $config = [])
 	{
 		// add table path for when model gets used from other component
 		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
 		// get instance of the table
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 
@@ -127,13 +137,12 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'custom_code__'.$id);
 				ComponentbuilderHelper::set('custom_code__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -142,7 +151,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		return $this->vastDevMod;
 	}
 
-    
+
 	/**
 	 * Method to get a single record.
 	 *
@@ -199,13 +208,12 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'custom_code__'.$id);
 				ComponentbuilderHelper::set('custom_code__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -226,7 +234,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
+	public function getForm($data = [], $loadData = true, $options = array('control' => 'jform'))
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
@@ -253,7 +261,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -266,7 +274,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			$id = $jinput->get('id', 0, 'INT');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
@@ -325,7 +333,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		}
 
 		// update all editors to use this components global editor
-		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
@@ -346,13 +354,13 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	/**
 	 * Method to get the script that have to be included on the form
 	 *
-	 * @return string	script files
+	 * @return string    script files
 	 */
 	public function getScript()
 	{
 		return 'media/com_componentbuilder/js/custom_code.js';
 	}
-    
+
 	/**
 	 * Method to test whether a record can be deleted.
 	 *
@@ -371,7 +379,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				return;
 			}
 
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// The record has been set. Check the record permissions.
 			return $user->authorise('custom_code.delete', 'com_componentbuilder.custom_code.' . (int) $record->id);
 		}
@@ -389,8 +397,8 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
-		$recordId = (!empty($record->id)) ? $record->id : 0;
+		$user = Factory::getUser();
+		$recordId = $record->id ??  0;
 
 		if ($recordId)
 		{
@@ -404,28 +412,28 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('custom_code.edit.state', 'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Method override to check if you can edit an existing record.
 	 *
-	 * @param	array	$data	An array of input data.
-	 * @param	string	$key	The name of the key for the primary key.
+	 * @param    array    $data   An array of input data.
+	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return	boolean
-	 * @since	2.5
+	 * @return    boolean
+	 * @since    2.5
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		return $user->authorise('custom_code.edit', 'com_componentbuilder.custom_code.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('custom_code.edit',  'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   JTable  $table  A JTable object.
+	 * @param   Table  $table  A Table object.
 	 *
 	 * @return  void
 	 *
@@ -433,19 +441,19 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
-		
+		$date = Factory::getDate();
+		$user = Factory::getUser();
+
 		if (isset($table->name))
 		{
 			$table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
 		}
-		
+
 		if (isset($table->alias) && empty($table->alias))
 		{
 			$table->generateAlias();
 		}
-		
+
 		if (empty($table->id))
 		{
 			$table->created = $date->toSql();
@@ -457,7 +465,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			// Set ordering to the last item if not set
 			if (empty($table->ordering))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_custom_code'));
@@ -472,7 +480,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			$table->modified = $date->toSql();
 			$table->modified_by = $user->id;
 		}
-        
+
 		if (!empty($table->id))
 		{
 			// Increment the items version number.
@@ -487,10 +495,10 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	protected function loadFormData() 
+	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.custom_code.data', array());
+		$data = Factory::getApplication()->getUserState('com_componentbuilder.edit.custom_code.data', []);
 
 		if (empty($data))
 		{
@@ -518,7 +526,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	public function validate($form, $data, $group = null)
 	{
 		// check if the not_required field is set
-		if (isset($data['not_required']) && ComponentbuilderHelper::checkString($data['not_required']))
+		if (isset($data['not_required']) && UtilitiesStringHelper::check($data['not_required']))
 		{
 			$requiredFields = (array) explode(',',(string) $data['not_required']);
 			$requiredFields = array_unique($requiredFields);
@@ -526,7 +534,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			foreach ($requiredFields as $requiredField)
 			{
 				// make sure there is a string value
-				if (ComponentbuilderHelper::checkString($requiredField))
+				if (UtilitiesStringHelper::check($requiredField))
 				{
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
@@ -549,7 +557,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Method to delete one or more records.
 	 *
@@ -565,7 +573,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -585,10 +593,10 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
-        }
-    
+	}
+
 	/**
 	 * Method to perform batch operations on an item or a set of items.
 	 *
@@ -614,30 +622,30 @@ class ComponentbuilderModelCustom_code extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
 		$done = false;
 
 		// Set some needed variables.
-		$this->user			= JFactory::getUser();
-		$this->table			= $this->getTable();
-		$this->tableClassName		= get_class($this->table);
-		$this->contentType		= new JUcmType;
-		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('custom_code');
-		$this->batchSet			= true;
+		$this->user = Factory::getUser();
+		$this->table = $this->getTable();
+		$this->tableClassName = get_class($this->table);
+		$this->contentType = new UCMType;
+		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
+		$this->canDo = ComponentbuilderHelper::getActions('custom_code');
+		$this->batchSet = true;
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
-        
+
 		if ($this->type == false)
 		{
-			$type = new JUcmType;
+			$type = new UCMType;
 			$this->type = $type->getTypeByAlias($this->typeAlias);
 		}
 
@@ -674,8 +682,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -701,7 +708,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user 		= JFactory::getUser();
+			$this->user 		= Factory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('custom_code');
@@ -727,7 +734,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				$values['published'] = 0;
 		}
 
-		$newIds = array();
+		$newIds = [];
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -740,7 +747,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			if (!$this->user->authorise('custom_code.edit', $contexts[$pk]))
 			{
 				// Not fatal error
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 				continue;
 			}
 
@@ -756,19 +763,19 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->component) && !is_numeric($this->table->component))
+			if (UtilitiesStringHelper::check($this->table->component) && !is_numeric($this->table->component))
 			{
 				$this->table->component = $this->generateUnique('component',$this->table->component);
 			}
 
 			// insert all set values
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -780,7 +787,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 			}
 
 			// update all unique fields
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -844,7 +851,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user		= JFactory::getUser();
+			$this->user		= Factory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('custom_code');
@@ -852,7 +859,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 
 		if (!$this->canDo->get('custom_code.edit') && !$this->canDo->get('custom_code.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
@@ -869,7 +876,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		{
 			if (!$this->user->authorise('custom_code.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 				return false;
 			}
 
@@ -885,13 +892,13 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// insert all set values.
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -935,7 +942,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -947,15 +954,15 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input	= JFactory::getApplication()->input;
-		$filter	= JFilterInput::getInstance();
-        
+		$input    = Factory::getApplication()->input;
+		$filter   = InputFilter::getInstance();
+
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-            
-			$metadata = new JRegistry;
+
+			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
@@ -972,9 +979,9 @@ class ComponentbuilderModelCustom_code extends AdminModel
 					$data['code'] = str_replace('[CUSTOM' . 'CODE=' . $placeholder . ']', '', $data['code']);
 				}
 				// set title
-				$title = (count($placeholders) == 1) ? JText::_('COM_COMPONENTBUILDER_PLACEHOLDER_REMOVED') : JText::_('COM_COMPONENTBUILDER_PLACEHOLDERS_REMOVED');
+				$title = (count($placeholders) == 1) ? Text::_('COM_COMPONENTBUILDER_PLACEHOLDER_REMOVED') : Text::_('COM_COMPONENTBUILDER_PLACEHOLDERS_REMOVED');
 				// show message that we have had to remove the custom placeholders
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_COMPONENTBUILDER_HTHREESHTHREEPCUSTOM_CODE_CAN_ONLY_BE_USED_IN_OTHER_CUSTOM_CODE_IF_SET_AS_BJCB_MANUALB_YOU_CAN_NOT_ADD_THEM_TO_EMHASH_AUTOMATIONEM_CODE_AT_THIS_POINTP', $title), 'Warning');
+				Factory::getApplication()->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_HTHREESHTHREEPCUSTOM_CODE_CAN_ONLY_BE_USED_IN_OTHER_CUSTOM_CODE_IF_SET_AS_BJCB_MANUALB_YOU_CAN_NOT_ADD_THEM_TO_EMHASH_AUTOMATIONEM_CODE_AT_THIS_POINTP', $title), 'Warning');
 			}
 			// make sure that the same custom code is not added to itself
 			else
@@ -987,7 +994,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 					{
 						$data['code'] = str_replace('[CUSTOM' . 'CODE=' . $placeholder . ']', '', $data['code']);
 						// show message that we have had to remove the custom placeholders
-						JFactory::getApplication()->enqueueMessage(JText::_('COM_COMPONENTBUILDER_HTHREEPLACEHOLDER_REMOVEDHTHREEPBTHISB_CUSTOM_CODE_CAN_ONLY_BE_USED_IN_BOTHERB_CUSTOM_CODE_NOT_IN_IT_SELF_SINCE_THAT_WILL_CAUSE_A_INFINITE_LOOP_IN_THE_COMPILERP'), 'Warning');
+						Factory::getApplication()->enqueueMessage(Text::_('COM_COMPONENTBUILDER_HTHREEPLACEHOLDER_REMOVEDHTHREEPBTHISB_CUSTOM_CODE_CAN_ONLY_BE_USED_IN_BOTHERB_CUSTOM_CODE_NOT_IN_IT_SELF_SINCE_THAT_WILL_CAUSE_A_INFINITE_LOOP_IN_THE_COMPILERP'), 'Warning');
 						// stop the loop :)
 						break;
 					}
@@ -1000,11 +1007,11 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		{
 			$data['code'] = base64_encode($data['code']);
 		}
-        
+
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new JRegistry;
+			$params = new Registry;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}
@@ -1014,7 +1021,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		{
 			// Automatic handling of other unique fields
 			$uniqueFields = $this->getUniqueFields();
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -1022,14 +1029,14 @@ class ComponentbuilderModelCustom_code extends AdminModel
 				}
 			}
 		}
-		
+
 		if (parent::save($data))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to generate a unique value.
 	 *
@@ -1042,7 +1049,6 @@ class ComponentbuilderModelCustom_code extends AdminModel
 	 */
 	protected function generateUnique($field,$value)
 	{
-
 		// set field value unique
 		$table = $this->getTable();
 
@@ -1068,7 +1074,7 @@ class ComponentbuilderModelCustom_code extends AdminModel
 		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(['title' => $title]))
 		{
 			$title = StringHelper::increment($title);
 		}

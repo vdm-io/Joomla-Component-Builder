@@ -12,10 +12,20 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\UCM\UCMType;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder Joomla_plugin_files_folders_urls Admin Model
@@ -73,18 +83,18 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A database object
+	 * @return  Table  A database object
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'joomla_plugin_files_folders_urls', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'joomla_plugin_files_folders_urls', $prefix = 'ComponentbuilderTable', $config = [])
 	{
 		// add table path for when model gets used from other component
 		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
 		// get instance of the table
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
-    
+
 	/**
 	 * Method to get a single record.
 	 *
@@ -169,7 +179,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
+	public function getForm($data = [], $loadData = true, $options = array('control' => 'jform'))
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
@@ -196,7 +206,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -209,7 +219,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			$id = $jinput->get('id', 0, 'INT');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
@@ -272,13 +282,13 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	/**
 	 * Method to get the script that have to be included on the form
 	 *
-	 * @return string	script files
+	 * @return string    script files
 	 */
 	public function getScript()
 	{
 		return 'media/com_componentbuilder/js/joomla_plugin_files_folders_urls.js';
 	}
-    
+
 	/**
 	 * Method to test whether a record can be deleted.
 	 *
@@ -297,7 +307,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 				return;
 			}
 
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// The record has been set. Check the record permissions.
 			return $user->authorise('joomla_plugin_files_folders_urls.delete', 'com_componentbuilder.joomla_plugin_files_folders_urls.' . (int) $record->id);
 		}
@@ -315,8 +325,8 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
-		$recordId = (!empty($record->id)) ? $record->id : 0;
+		$user = Factory::getUser();
+		$recordId = $record->id ??  0;
 
 		if ($recordId)
 		{
@@ -330,28 +340,28 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('joomla_plugin_files_folders_urls.edit.state', 'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Method override to check if you can edit an existing record.
 	 *
-	 * @param	array	$data	An array of input data.
-	 * @param	string	$key	The name of the key for the primary key.
+	 * @param    array    $data   An array of input data.
+	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return	boolean
-	 * @since	2.5
+	 * @return    boolean
+	 * @since    2.5
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		return $user->authorise('joomla_plugin_files_folders_urls.edit', 'com_componentbuilder.joomla_plugin_files_folders_urls.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('joomla_plugin_files_folders_urls.edit',  'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   JTable  $table  A JTable object.
+	 * @param   Table  $table  A Table object.
 	 *
 	 * @return  void
 	 *
@@ -359,19 +369,19 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
-		
+		$date = Factory::getDate();
+		$user = Factory::getUser();
+
 		if (isset($table->name))
 		{
 			$table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
 		}
-		
+
 		if (isset($table->alias) && empty($table->alias))
 		{
 			$table->generateAlias();
 		}
-		
+
 		if (empty($table->id))
 		{
 			$table->created = $date->toSql();
@@ -383,7 +393,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			// Set ordering to the last item if not set
 			if (empty($table->ordering))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_joomla_plugin_files_folders_urls'));
@@ -398,7 +408,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			$table->modified = $date->toSql();
 			$table->modified_by = $user->id;
 		}
-        
+
 		if (!empty($table->id))
 		{
 			// Increment the items version number.
@@ -413,10 +423,10 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	protected function loadFormData() 
+	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.joomla_plugin_files_folders_urls.data', array());
+		$data = Factory::getApplication()->getUserState('com_componentbuilder.edit.joomla_plugin_files_folders_urls.data', []);
 
 		if (empty($data))
 		{
@@ -439,7 +449,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Method to delete one or more records.
 	 *
@@ -455,7 +465,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -475,10 +485,10 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
-        }
-    
+	}
+
 	/**
 	 * Method to perform batch operations on an item or a set of items.
 	 *
@@ -504,30 +514,30 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
 		$done = false;
 
 		// Set some needed variables.
-		$this->user			= JFactory::getUser();
-		$this->table			= $this->getTable();
-		$this->tableClassName		= get_class($this->table);
-		$this->contentType		= new JUcmType;
-		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('joomla_plugin_files_folders_urls');
-		$this->batchSet			= true;
+		$this->user = Factory::getUser();
+		$this->table = $this->getTable();
+		$this->tableClassName = get_class($this->table);
+		$this->contentType = new UCMType;
+		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
+		$this->canDo = ComponentbuilderHelper::getActions('joomla_plugin_files_folders_urls');
+		$this->batchSet = true;
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
-        
+
 		if ($this->type == false)
 		{
-			$type = new JUcmType;
+			$type = new UCMType;
 			$this->type = $type->getTypeByAlias($this->typeAlias);
 		}
 
@@ -564,8 +574,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -591,7 +600,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user 		= JFactory::getUser();
+			$this->user 		= Factory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_plugin_files_folders_urls');
@@ -617,7 +626,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 				$values['published'] = 0;
 		}
 
-		$newIds = array();
+		$newIds = [];
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -630,7 +639,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			if (!$this->user->authorise('joomla_plugin_files_folders_urls.edit', $contexts[$pk]))
 			{
 				// Not fatal error
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 				continue;
 			}
 
@@ -646,19 +655,19 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->joomla_plugin) && !is_numeric($this->table->joomla_plugin))
+			if (UtilitiesStringHelper::check($this->table->joomla_plugin) && !is_numeric($this->table->joomla_plugin))
 			{
 				$this->table->joomla_plugin = $this->generateUnique('joomla_plugin',$this->table->joomla_plugin);
 			}
 
 			// insert all set values
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -670,7 +679,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			}
 
 			// update all unique fields
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -734,7 +743,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user		= JFactory::getUser();
+			$this->user		= Factory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_plugin_files_folders_urls');
@@ -742,7 +751,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 
 		if (!$this->canDo->get('joomla_plugin_files_folders_urls.edit') && !$this->canDo->get('joomla_plugin_files_folders_urls.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
@@ -759,7 +768,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		{
 			if (!$this->user->authorise('joomla_plugin_files_folders_urls.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 				return false;
 			}
 
@@ -775,13 +784,13 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// insert all set values.
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -825,7 +834,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -837,15 +846,15 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input	= JFactory::getApplication()->input;
-		$filter	= JFilterInput::getInstance();
-        
+		$input    = Factory::getApplication()->input;
+		$filter   = InputFilter::getInstance();
+
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-            
-			$metadata = new JRegistry;
+
+			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
@@ -853,7 +862,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// Set the addfoldersfullpath items to data.
 		if (isset($data['addfoldersfullpath']) && is_array($data['addfoldersfullpath']))
 		{
-			$addfoldersfullpath = new JRegistry;
+			$addfoldersfullpath = new Registry;
 			$addfoldersfullpath->loadArray($data['addfoldersfullpath']);
 			$data['addfoldersfullpath'] = (string) $addfoldersfullpath;
 		}
@@ -866,7 +875,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// Set the addfilesfullpath items to data.
 		if (isset($data['addfilesfullpath']) && is_array($data['addfilesfullpath']))
 		{
-			$addfilesfullpath = new JRegistry;
+			$addfilesfullpath = new Registry;
 			$addfilesfullpath->loadArray($data['addfilesfullpath']);
 			$data['addfilesfullpath'] = (string) $addfilesfullpath;
 		}
@@ -879,7 +888,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// Set the addfolders items to data.
 		if (isset($data['addfolders']) && is_array($data['addfolders']))
 		{
-			$addfolders = new JRegistry;
+			$addfolders = new Registry;
 			$addfolders->loadArray($data['addfolders']);
 			$data['addfolders'] = (string) $addfolders;
 		}
@@ -892,7 +901,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// Set the addfiles items to data.
 		if (isset($data['addfiles']) && is_array($data['addfiles']))
 		{
-			$addfiles = new JRegistry;
+			$addfiles = new Registry;
 			$addfiles->loadArray($data['addfiles']);
 			$data['addfiles'] = (string) $addfiles;
 		}
@@ -905,7 +914,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// Set the addurls items to data.
 		if (isset($data['addurls']) && is_array($data['addurls']))
 		{
-			$addurls = new JRegistry;
+			$addurls = new Registry;
 			$addurls->loadArray($data['addurls']);
 			$data['addurls'] = (string) $addurls;
 		}
@@ -914,11 +923,11 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 			// Set the empty addurls to data
 			$data['addurls'] = '';
 		}
-        
+
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new JRegistry;
+			$params = new Registry;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}
@@ -928,7 +937,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		{
 			// Automatic handling of other unique fields
 			$uniqueFields = $this->getUniqueFields();
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -936,14 +945,14 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 				}
 			}
 		}
-		
+
 		if (parent::save($data))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to generate a unique value.
 	 *
@@ -956,7 +965,6 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 	 */
 	protected function generateUnique($field,$value)
 	{
-
 		// set field value unique
 		$table = $this->getTable();
 
@@ -982,7 +990,7 @@ class ComponentbuilderModelJoomla_plugin_files_folders_urls extends AdminModel
 		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(['title' => $title]))
 		{
 			$title = StringHelper::increment($title);
 		}

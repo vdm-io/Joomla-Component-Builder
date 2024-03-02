@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_SITE_VIEW_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_SITE_VIEW_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -1260,7 +1261,7 @@
 			validate="code"
 		/>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

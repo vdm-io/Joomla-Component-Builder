@@ -12,9 +12,11 @@
 namespace VDM\Joomla\Utilities\Component;
 
 
-use Joomla\Input\Input;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Input\Input;
 use Joomla\Registry\Registry;
+use VDM\Joomla\Utilities\String\NamespaceHelper;
 
 
 /**
@@ -27,10 +29,18 @@ abstract class Helper
 	/**
 	 * The current option
 	 *
-	 * @var    string
+	 * @var    string|null
 	 * @since   3.0.11
 	 */
-	public static string $option;
+	public static ?string $option = null;
+
+	/**
+	 * The component manifest list cache
+	 *
+	 * @var    array
+	 * @since   3.2.0
+	 */
+	public static array $manifest = [];
 
 	/**
 	 * The component params list cache
@@ -67,7 +77,20 @@ abstract class Helper
 	}
 
 	/**
-	 * Gets the component option
+	 * Set the component option
+	 *
+	 * @param   string     $option  The option
+	 *
+	 * @return  void
+	 * @since   3.2.0
+	 */
+	public static function setOption(string $option): void
+	{
+		self::$option = $option;
+	}
+
+	/**
+	 * Get the component option
 	 *
 	 * @param   string|null      $default  The default return value if none is found
 	 *
@@ -79,15 +102,27 @@ abstract class Helper
 		if (empty(self::$option))
 		{
 			// get the option from the url input
-			self::$option = (new Input)->getString('option', false);
+			self::$option = (new Input)->getString('option', null);
 		}
 
-		if (self::$option)
+		if (empty(self::$option))
 		{
-			 return self::$option;
+			$app = Factory::getApplication();
+
+			// Check if the getInput method exists in the application object
+			if (method_exists($app, 'getInput'))
+			{
+				// get the option from the application
+				self::$option = $app->getInput()->getCmd('option', $default);
+			}
+			else
+			{
+				// Use the default value if getInput method does not exist
+				self::$option = $default;
+			}
 		}
 
-		return $default;
+		return self::$option;
 	}
 
 	/**
@@ -129,18 +164,90 @@ abstract class Helper
 	{
 		// check that we have an option
 		// and get the code name from it
-		if (($code_name = self::getCode($option, false)) !== false)
+		if (($code_name = self::getCode($option, null)) !== null)
 		{
 			// we build the helper class name
 			$helper_name = '\\' . \ucfirst($code_name) . 'Helper';
+
 			// check if class exist
 			if (class_exists($helper_name))
 			{
 				return $helper_name;
 			}
+
+			// try loading namespace
+			if (($namespace = self::getNamespace($option)) !== null)
+			{
+				$name = \ucfirst($code_name) . 'Helper';
+				$namespace_helper =  '\\' . $namespace . '\Administrator\Helper\\' . NamespaceHelper::safeSegment($name); // TODO target site or admin locations not just admin...
+				if (class_exists($namespace_helper))
+				{
+					return $namespace_helper;
+				}
+			}
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Gets the component namespace if set
+	 *
+	 * @param   string|null    $option   The option for the component.
+	 * @param   string|null    $default  The default return value if none is found
+	 *
+	 * @return  string|null    A component namespace
+	 *
+	 * @since   3.0.11
+	 */
+	public static function getNamespace(?string $option = null): ?string
+	{
+		$manifest = self::getManifest($option);
+
+		return $manifest->namespace ?? null;
+	}
+
+	/**
+	 * Gets the component abstract helper class
+	 *
+	 * @param   string|null    $option   The option for the component.
+	 * @param   string|null    $default  The default return value if none is found
+	 *
+	 * @return  object|null    A component helper name
+	 *
+	 * @since   3.0.11
+	 */
+	public static function getManifest(?string $option = null): ?object
+	{
+		if ($option === null
+			&& ($option = self::getOption($option)) === null)
+		{
+			return null;
+		}
+
+		// get global manifest_cache values
+		if (!isset(self::$manifest[$option]))
+		{
+			$db = Factory::getDbo();
+			$query = $db->getQuery(true);
+
+			$query->select($db->quoteName('manifest_cache'))
+				  ->from($db->quoteName('#__extensions'))
+				  ->where($db->quoteName('type') . ' = ' . $db->quote('component'))
+				  ->where($db->quoteName('element') . ' LIKE ' . $db->quote($option));
+
+			$db->setQuery($query);
+
+			try {
+				$manifest = $db->loadResult();
+				self::$manifest[$option] = json_decode($manifest);
+			} catch (\Exception $e) {
+				// Handle the database error appropriately.
+				self::$manifest[$option] = null;
+			}
+		}
+
+		return self::$manifest[$option];
 	}
 
 	/**
@@ -156,7 +263,7 @@ abstract class Helper
 	public static function methodExists(string $method, string $option = null): bool
 	{
 		// get the helper class
-		return ($helper = self::get($option, false)) !== false &&
+		return ($helper = self::get($option, null)) !== null &&
 			method_exists($helper, $method);
 	}
 
@@ -173,7 +280,7 @@ abstract class Helper
 	public static function _(string $method, array $arguments = [], ?string $option = null)
 	{
 		// get the helper class
-		if (($helper = self::get($option, false)) !== false &&
+		if (($helper = self::get($option, null)) !== null &&
 			method_exists($helper, $method))
 		{
 			// we know this is not ideal...

@@ -12,8 +12,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 
 /**
  * Libraries Admin Controller
@@ -47,9 +51,9 @@ class ComponentbuilderControllerLibraries extends AdminController
 	public function getSnippets()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the import snippets custom admin view
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=get_snippets', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=get_snippets', false));
 		return;
 	}
 }

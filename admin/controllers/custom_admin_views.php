@@ -12,8 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 
 /**
  * Custom_admin_views Admin Controller
@@ -47,13 +53,13 @@ class ComponentbuilderControllerCustom_admin_views extends AdminController
 	public function exportData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('custom_admin_view.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
-			$input = JFactory::getApplication()->input;
+			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
 			$pks = ArrayHelper::toInteger($pks);
@@ -61,16 +67,16 @@ class ComponentbuilderControllerCustom_admin_views extends AdminController
 			$model = $this->getModel('Custom_admin_views');
 			// get the data to export
 			$data = $model->getExportData($pks);
-			if (ComponentbuilderHelper::checkArray($data))
+			if (UtilitiesArrayHelper::check($data))
 			{
 				// now set the data to the spreadsheet
-				$date = JFactory::getDate();
+				$date = Factory::getDate();
 				ComponentbuilderHelper::xls($data,'Custom_admin_views_'.$date->format('jS_F_Y'),'Custom admin views exported ('.$date->format('jS F, Y').')','custom admin views');
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_admin_views', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=custom_admin_views', false), $message, 'error');
 		return;
 	}
 
@@ -78,41 +84,41 @@ class ComponentbuilderControllerCustom_admin_views extends AdminController
 	public function importData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('custom_admin_view.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			// Get the import model
 			$model = $this->getModel('Custom_admin_views');
 			// get the headers to import
 			$headers = $model->getExImPortHeaders();
-			if (ComponentbuilderHelper::checkObject($headers))
+			if (ObjectHelper::check($headers))
 			{
 				// Load headers to session.
-				$session = JFactory::getSession();
+				$session = Factory::getSession();
 				$headers = json_encode($headers);
 				$session->set('custom_admin_view_VDM_IMPORTHEADERS', $headers);
 				$session->set('backto_VDM_IMPORT', 'custom_admin_views');
 				$session->set('dataType_VDM_IMPORTINTO', 'custom_admin_view');
 				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_CUSTOM_ADMIN_VIEWS');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
+				$message = Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_CUSTOM_ADMIN_VIEWS');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_admin_views', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=custom_admin_views', false), $message, 'error');
 		return;
 	}
 
 	public function getSnippets()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the import snippets custom admin view
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=get_snippets', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=get_snippets', false));
 		return;
 	}
 }

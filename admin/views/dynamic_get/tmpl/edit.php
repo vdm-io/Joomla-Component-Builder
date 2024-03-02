@@ -12,120 +12,119 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.formvalidator');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Router\Route;
+Html::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+Html::_('behavior.formvalidator');
+Html::_('formbehavior.chosen', 'select');
+Html::_('behavior.keepalive');
+
 $componentParams = $this->params; // will be removed just use $this->params instead
 ?>
 <script type="text/javascript">
 	// waiting spinner
-	var outerDiv = jQuery('body');
-	jQuery('<div id="loading"></div>')
-		.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
-		.css("top", outerDiv.position().top - jQuery(window).scrollTop())
-		.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
-		.css("width", outerDiv.width())
-		.css("height", outerDiv.height())
-		.css("position", "fixed")
-		.css("opacity", "0.80")
-		.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
-		.css("filter", "alpha(opacity = 80)")
-		.css("display", "none")
-		.appendTo(outerDiv);
-	jQuery('#loading').show();
+	var outerDiv = document.querySelector('body');
+	var loadingDiv = document.createElement('div');
+	loadingDiv.id = 'loading';
+	loadingDiv.style.cssText = "background: rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat; top: " + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + "px; left: " + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + "px; width: " + outerDiv.offsetWidth + "px; height: " + outerDiv.offsetHeight + "px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;";
+	outerDiv.appendChild(loadingDiv);
+	loadingDiv.style.display = 'block';
 	// when page is ready remove and show
-	jQuery(window).load(function() {
-		jQuery('#componentbuilder_loader').fadeIn('fast');
-		jQuery('#loading').hide();
+	window.addEventListener('load', function() {
+		var componentLoader = document.getElementById('componentbuilder_loader');
+		if (componentLoader) componentLoader.style.display = 'block';
+		loadingDiv.style.display = 'none';
 	});
 </script>
 <div id="componentbuilder_loader" style="display: none;">
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('dynamic_get.main_above', $this); ?>
+<?php echo LayoutHelper::render('dynamic_get.main_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'dynamic_getTab', array('active' => 'main')); ?>
+	<?php echo Html::_('bootstrap.startTabSet', 'dynamic_getTab', ['active' => 'main', 'recall' => true]); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'main', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'main', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('dynamic_get.main_left', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.main_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('dynamic_get.main_right', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.main_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('dynamic_get.main_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.main_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'tweak', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_TWEAK', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'tweak', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_TWEAK', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('dynamic_get.tweak_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.tweak_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'joint', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_JOINT', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'joint', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_JOINT', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('dynamic_get.joint_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.joint_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'custom_script', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_CUSTOM_SCRIPT', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'custom_script', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_CUSTOM_SCRIPT', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('dynamic_get.custom_script_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.custom_script_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'abacus', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_ABACUS', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'abacus', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_ABACUS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('dynamic_get.abacus_left', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.abacus_left', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('dynamic_get.abacus_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.abacus_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'dynamic_getTab'; ?>
-	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+	<?php echo LayoutHelper::render('joomla.edit.params', $this); ?>
 
 	<?php if ($this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.created') || $this->canDo->get('dynamic_get.edit.state') || ($this->canDo->get('dynamic_get.delete') && $this->canDo->get('dynamic_get.edit.state'))) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'publishing', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_PUBLISHING', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'publishing', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('dynamic_get.publishing', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.publishing', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('dynamic_get.publlshing', $this); ?>
+				<?php echo LayoutHelper::render('dynamic_get.publlshing', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
 	<?php if ($this->canDo->get('core.admin')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'dynamic_getTab', 'permissions', JText::_('COM_COMPONENTBUILDER_DYNAMIC_GET_PERMISSION', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'dynamic_getTab', 'permissions', Text::_('COM_COMPONENTBUILDER_DYNAMIC_GET_PERMISSION', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<fieldset class="adminform">
@@ -140,19 +139,19 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 				</fieldset>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
-	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+	<?php echo Html::_('bootstrap.endTabSet'); ?>
 
 	<div>
 		<input type="hidden" name="task" value="dynamic_get.edit" />
-		<?php echo JHtml::_('form.token'); ?>
+		<?php echo Html::_('form.token'); ?>
 	</div>
 </div>
 
 <div class="clearfix"></div>
-<?php echo JLayoutHelper::render('dynamic_get.main_under', $this); ?>
+<?php echo LayoutHelper::render('dynamic_get.main_under', $this); ?>
 </form>
 </div>
 
@@ -683,13 +682,13 @@ jQuery('#adminForm').on('change', '#jform_select_all',function (e)
 });
 
 <?php
-	$app = JFactory::getApplication();
+	$app = Factory::getApplication();
 ?>
 function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'.JURI::root().'";';
+		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
 	}
 	else
 	{
@@ -699,16 +698,18 @@ function JRouter(link) {
 	return url+link;
 }
 
-// nice little dot trick :)
-jQuery(document).ready( function($) {
-  var x=0;
-  setInterval(function() {
-	var dots = "";
-	x++;
-	for (var y=0; y < x%8; y++) {
-		dots+=".";
-	}
-	$(".loading-dots").text(dots);
-  } , 500);
+document.addEventListener("DOMContentLoaded", function() {
+	document.querySelectorAll(".loading-dots").forEach(function(loading_dots) {
+		let x = 0;
+		let intervalId = setInterval(function() {
+			if (!loading_dots.classList.contains("loading-dots")) {
+				clearInterval(intervalId);
+				return;
+			}
+			let dots = ".".repeat(x % 8);
+			loading_dots.textContent = dots;
+			x++;
+		}, 500);
+	});
 }); 
 </script>

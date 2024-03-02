@@ -12,6 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,22 +28,22 @@ class JFormFieldPluginsclassmethods extends JFormFieldList
 	/**
 	 * The pluginsclassmethods field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'pluginsclassmethods';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
 		
 // Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Get the databse object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.name','a.visibility'),array('id','method_name','visibility')));
 		$query->from($db->quoteName('#__componentbuilder_class_method', 'a'));
@@ -61,7 +65,7 @@ class JFormFieldPluginsclassmethods extends JFormFieldList
 		$options = array();
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select a method');
+			$options[] = Html::_('select.option', '', 'Select a method');
 			foreach($items as $item)
 			{
 				// we are using this code in more then one field JCB custom_code
@@ -73,7 +77,7 @@ class JFormFieldPluginsclassmethods extends JFormFieldList
 				{
 					$select = $item->visibility  . ' $' . $item->method_name;
 				}
-				$options[] = JHtml::_('select.option', $item->id, $select);
+				$options[] = Html::_('select.option', $item->id, $select);
 			}
 		}
 		return $options;

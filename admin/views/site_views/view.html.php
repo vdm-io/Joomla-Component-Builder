@@ -12,7 +12,20 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Html View class for the Site_views
@@ -35,7 +48,7 @@ class ComponentbuilderViewSite_views extends HtmlView
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		// Load the filter form from xml.
 		$this->filterForm = $this->get('FilterForm');
 		// Load the active filters.
@@ -45,7 +58,7 @@ class ComponentbuilderViewSite_views extends HtmlView
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
-		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
+		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('site_view');
 		$this->canEdit = $this->canDo->get('core.edit');
@@ -65,7 +78,7 @@ class ComponentbuilderViewSite_views extends HtmlView
 				$this->batchDisplay = JHtmlBatch_::render();
 			}
 		}
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -84,32 +97,32 @@ class ComponentbuilderViewSite_views extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_SITE_VIEWS'), 'palette');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=site_views');
-		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_SITE_VIEWS'), 'palette');
+		FormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
 		{
-			JToolBarHelper::addNew('site_view.add');
+			ToolbarHelper::addNew('site_view.add');
 		}
 
 		// Only load if there are items
-		if (ComponentbuilderHelper::checkArray($this->items))
+		if (ArrayHelper::check($this->items))
 		{
 			if ($this->canEdit)
 			{
-				JToolBarHelper::editList('site_view.edit');
+				ToolbarHelper::editList('site_view.edit');
 			}
 
 			if ($this->canState)
 			{
-				JToolBarHelper::publishList('site_views.publish');
-				JToolBarHelper::unpublishList('site_views.unpublish');
-				JToolBarHelper::archiveList('site_views.archive');
+				ToolbarHelper::publishList('site_views.publish');
+				ToolbarHelper::unpublishList('site_views.unpublish');
+				ToolbarHelper::archiveList('site_views.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					JToolBarHelper::checkin('site_views.checkin');
+					ToolbarHelper::checkin('site_views.checkin');
 				}
 			}
 
@@ -117,11 +130,11 @@ class ComponentbuilderViewSite_views extends HtmlView
 			if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
 			{
 				// Get the toolbar object instance
-				$bar = JToolBar::getInstance('toolbar');
+				$bar = Toolbar::getInstance('toolbar');
 				// set the batch button name
-				$title = JText::_('JTOOLBAR_BATCH');
+				$title = Text::_('JTOOLBAR_BATCH');
 				// Instantiate a new JLayoutFile instance and render the batch button
-				$layout = new JLayoutFile('joomla.toolbar.batch');
+				$layout = new FileLayout('joomla.toolbar.batch');
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
@@ -129,49 +142,49 @@ class ComponentbuilderViewSite_views extends HtmlView
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
-				JToolbarHelper::deleteList('', 'site_views.delete', 'JTOOLBAR_EMPTY_TRASH');
+				ToolbarHelper::deleteList('', 'site_views.delete', 'JTOOLBAR_EMPTY_TRASH');
 			}
 			elseif ($this->canState && $this->canDelete)
 			{
-				JToolbarHelper::trash('site_views.trash');
+				ToolbarHelper::trash('site_views.trash');
 			}
 
 			if ($this->canDo->get('core.export') && $this->canDo->get('site_view.export'))
 			{
-				JToolBarHelper::custom('site_views.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
+				ToolbarHelper::custom('site_views.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
 		if ($this->user->authorise('site_view.get_snippets', 'com_componentbuilder'))
 		{
 			// add Get Snippets button.
-			JToolBarHelper::custom('site_views.getSnippets', 'search custom-button-getsnippets', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
+			ToolbarHelper::custom('site_views.getSnippets', 'search custom-button-getsnippets', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('site_view.import'))
 		{
-			JToolBarHelper::custom('site_views.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
+			ToolbarHelper::custom('site_views.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('site_views');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
 				'batch[published]',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+				Html::_('select.options', Html::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
 			);
 		}
 
@@ -179,9 +192,9 @@ class ComponentbuilderViewSite_views extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
 				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+				Html::_('select.options', Html::_('access.assetgroups'), 'value', 'text')
 			);
 		}
 
@@ -189,19 +202,19 @@ class ComponentbuilderViewSite_views extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Main Get Name Selection
-			$this->main_getNameOptions = JFormHelper::loadFieldType('Maingets')->options;
+			$this->main_getNameOptions = FormHelper::loadFieldType('Maingets')->options;
 			// We do some sanitation for Main Get Name filter
-			if (ComponentbuilderHelper::checkArray($this->main_getNameOptions) &&
+			if (ArrayHelper::check($this->main_getNameOptions) &&
 				isset($this->main_getNameOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->main_getNameOptions[0]->value))
+				!StringHelper::check($this->main_getNameOptions[0]->value))
 			{
 				unset($this->main_getNameOptions[0]);
 			}
 			// Main Get Name Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL').' -',
 				'batch[main_get]',
-				JHtml::_('select.options', $this->main_getNameOptions, 'value', 'text')
+				Html::_('select.options', $this->main_getNameOptions, 'value', 'text')
 			);
 		}
 
@@ -209,19 +222,19 @@ class ComponentbuilderViewSite_views extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Add Php Ajax Selection
-			$this->add_php_ajaxOptions = JFormHelper::loadFieldType('siteviewsfilteraddphpajax')->options;
+			$this->add_php_ajaxOptions = FormHelper::loadFieldType('siteviewsfilteraddphpajax')->options;
 			// We do some sanitation for Add Php Ajax filter
-			if (ComponentbuilderHelper::checkArray($this->add_php_ajaxOptions) &&
+			if (ArrayHelper::check($this->add_php_ajaxOptions) &&
 				isset($this->add_php_ajaxOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->add_php_ajaxOptions[0]->value))
+				!StringHelper::check($this->add_php_ajaxOptions[0]->value))
 			{
 				unset($this->add_php_ajaxOptions[0]);
 			}
 			// Add Php Ajax Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_AJAX_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_AJAX_LABEL').' -',
 				'batch[add_php_ajax]',
-				JHtml::_('select.options', $this->add_php_ajaxOptions, 'value', 'text')
+				Html::_('select.options', $this->add_php_ajaxOptions, 'value', 'text')
 			);
 		}
 
@@ -229,19 +242,19 @@ class ComponentbuilderViewSite_views extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Add Custom Button Selection
-			$this->add_custom_buttonOptions = JFormHelper::loadFieldType('siteviewsfilteraddcustombutton')->options;
+			$this->add_custom_buttonOptions = FormHelper::loadFieldType('siteviewsfilteraddcustombutton')->options;
 			// We do some sanitation for Add Custom Button filter
-			if (ComponentbuilderHelper::checkArray($this->add_custom_buttonOptions) &&
+			if (ArrayHelper::check($this->add_custom_buttonOptions) &&
 				isset($this->add_custom_buttonOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->add_custom_buttonOptions[0]->value))
+				!StringHelper::check($this->add_custom_buttonOptions[0]->value))
 			{
 				unset($this->add_custom_buttonOptions[0]);
 			}
 			// Add Custom Button Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_SITE_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_SITE_VIEW_ADD_CUSTOM_BUTTON_LABEL').' -',
 				'batch[add_custom_button]',
-				JHtml::_('select.options', $this->add_custom_buttonOptions, 'value', 'text')
+				Html::_('select.options', $this->add_custom_buttonOptions, 'value', 'text')
 			);
 		}
 	}
@@ -255,10 +268,10 @@ class ComponentbuilderViewSite_views extends HtmlView
 	{
 		if (!isset($this->document))
 		{
-			$this->document = JFactory::getDocument();
+			$this->document = Factory::getDocument();
 		}
-		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_SITE_VIEWS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/site_views.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->setTitle(Text::_('COM_COMPONENTBUILDER_SITE_VIEWS'));
+		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/site_views.css", ['version' => 'auto']);
 	}
 
 	/**
@@ -273,28 +286,38 @@ class ComponentbuilderViewSite_views extends HtmlView
 		if(strlen($var) > 50)
 		{
 			// use the helper htmlEscape method instead and shorten the string
-			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true);
+			return StringHelper::html($var, $this->_charset, true);
 		}
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
 	}
 
 	/**
 	 * Returns an array of fields the table can be sorted by
 	 *
-	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 * @return  array   Array containing the field name to sort by as the key and display text as value
 	 */
 	protected function getSortFields()
 	{
 		return array(
-			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
-			'a.published' => JText::_('JSTATUS'),
-			'a.system_name' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_SYSTEM_NAME_LABEL'),
-			'a.name' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_NAME_LABEL'),
-			'a.description' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_DESCRIPTION_LABEL'),
-			'g.name' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL'),
-			'a.context' => JText::_('COM_COMPONENTBUILDER_SITE_VIEW_CONTEXT_LABEL'),
-			'a.id' => JText::_('JGRID_HEADING_ID')
+			'a.ordering' => Text::_('JGRID_HEADING_ORDERING'),
+			'a.published' => Text::_('JSTATUS'),
+			'a.system_name' => Text::_('COM_COMPONENTBUILDER_SITE_VIEW_SYSTEM_NAME_LABEL'),
+			'a.name' => Text::_('COM_COMPONENTBUILDER_SITE_VIEW_NAME_LABEL'),
+			'a.description' => Text::_('COM_COMPONENTBUILDER_SITE_VIEW_DESCRIPTION_LABEL'),
+			'g.name' => Text::_('COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_LABEL'),
+			'a.context' => Text::_('COM_COMPONENTBUILDER_SITE_VIEW_CONTEXT_LABEL'),
+			'a.id' => Text::_('JGRID_HEADING_ID')
 		);
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

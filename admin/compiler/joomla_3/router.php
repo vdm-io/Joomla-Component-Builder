@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,13 +17,16 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+
 /**
  * Routing class from com_###component###
  *
  * @since  3.3
  */
 class ###Component###Router extends JComponentRouterBase
-{	
+{
 	/**
 	 * Build the route for the com_###component### component
 	 *
@@ -35,11 +38,11 @@ class ###Component###Router extends JComponentRouterBase
 	 */
 	public function build(&$query)
 	{
-		$segments = array();
+		$segments = [];
 
 		// Get a menu item based on Itemid or currently active
-		$params = JComponentHelper::getParams('com_###component###');
-		
+		$params = ComponentHelper::getParams('com_###component###');
+
 		if (empty($query['Itemid']))
 		{
 			$menuItem = $this->menu->getActive();
@@ -63,7 +66,7 @@ class ###Component###Router extends JComponentRouterBase
 
 			unset($query['view']);
 		}
-		
+
 		// Are we dealing with a item that is attached to a menu item?
 		if (isset($view) && ($mView == $view) and (isset($query['id'])) and ($mId == (int) $query['id']))
 		{
@@ -93,7 +96,7 @@ class ###Component###Router extends JComponentRouterBase
 			}
 			unset($query['id']);
 		}
-		
+
 		$total = count($segments);
 
 		for ($i = 0; $i < $total; $i++)
@@ -101,8 +104,8 @@ class ###Component###Router extends JComponentRouterBase
 			$segments[$i] = str_replace(':', '-', $segments[$i]);
 		}
 
-		return $segments; 
-		
+		return $segments;
+
 	}
 
 	/**
@@ -115,17 +118,17 @@ class ###Component###Router extends JComponentRouterBase
 	 * @since   3.3
 	 */
 	public function parse(&$segments)
-	{		
+	{
 		$count = count($segments);
-		$vars = array();
-		
+		$vars = [];
+
 		// Handle View and Identifier
 		switch($segments[0])
 		{###ROUTER_PARSE_SWITCH###
 		}
 
 		return $vars;
-	} 
+	}
 
 	protected function getVar($table, $where = null, $whereString = null, $what = null, $category = false, $operator = '=', $main = '###component###')
 	{
@@ -134,7 +137,7 @@ class ###Component###Router extends JComponentRouterBase
 			return false;
 		}
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
 
@@ -150,7 +153,7 @@ class ###Component###Router extends JComponentRouterBase
 		{
 			// we must check if the table exist (TODO not ideal)
 			$tables = $db->getTableList();
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			$prefix = $app->get('dbprefix');
 			$check = $prefix.$main.'_'.$table;
 			if (in_array($check, $tables))
@@ -192,7 +195,7 @@ class ###Component###Router extends JComponentRouterBase
 		}
 		return false;
 	}
-	
+
 	protected function checkString($string)
 	{
 		if (isset($string) && is_string($string) && strlen($string) > 0)
@@ -206,7 +209,7 @@ class ###Component###Router extends JComponentRouterBase
 function ###Component###BuildRoute(&$query)
 {
 	$router = new ###Component###Router;
-	
+
 	return $router->build($query);
 }
 

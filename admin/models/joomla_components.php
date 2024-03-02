@@ -12,16 +12,21 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 use VDM\Joomla\Utilities\FileHelper;
-use VDM\Joomla\Utilities\ArrayHelper as JCBArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\Base64Helper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 
 /**
@@ -29,10 +34,10 @@ use VDM\Joomla\FOF\Encrypt\AES;
  */
 class ComponentbuilderModelJoomla_components extends ListModel
 {
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (empty($config['filter_fields']))
-        {
+		{
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
@@ -149,7 +154,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// set custom folder path
 			$this->customPath = $this->params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 			// set the backup paths
-			$comConfig = JFactory::getConfig();
+			$comConfig = Factory::getConfig();
 			$this->backupPath = $comConfig->get('tmp_path');
 			// check what type of export or backup this is
 			if ('backup' === $this->activeType || 'manualBackup' === $this->activeType)
@@ -164,7 +169,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					$this->backupServer = $this->params->get('cronjob_backup_server', null);
 				}
 				// set the date array
-				$date = JFactory::getDate();
+				$date = Factory::getDate();
 				$placeholderDate = array();
 				$placeholderDate['[YEAR]'] = $date->format('Y');
 				$placeholderDate['[MONTH]'] = $date->format('m');
@@ -446,12 +451,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// Get the user object.
 			if (!ObjectHelper::check($this->user))
 			{
-				$this->user = JFactory::getUser();
+				$this->user = Factory::getUser();
 			}
 			// Create a new query object.
 			if (!ObjectHelper::check($this->_db))
 			{
-				$this->_db = JFactory::getDBO();
+				$this->_db = Factory::getDBO();
 			}
 			$query = $this->_db->getQuery(true);
 
@@ -485,7 +490,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					// set params
 					if (!ObjectHelper::check($this->params))
 					{
-						$this->params = JComponentHelper::getParams('com_componentbuilder');
+						$this->params = ComponentHelper::getParams('com_componentbuilder');
 					}
 					return $items;
 				}
@@ -1204,11 +1209,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// set some postfix
 			$model->postfix = ' ('.StringHelper::random(2).')';
 			// get App
-			$model->app = JFactory::getApplication();
+			$model->app = Factory::getApplication();
 			// set user
 			$model->user = $this->user;
 			// set today's date
-			$model->today = JFactory::getDate()->toSql();
+			$model->today = Factory::getDate()->toSql();
 			// load the data
 			$model->data = $this->smartBox;
 			// remove smart box to safe on memory
@@ -1601,7 +1606,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	{
 		if (!isset($this->fieldTypes[$id]))
 		{
-			$properties = ComponentbuilderHelper::getVar('fieldtype', $id, 'id', 'properties');
+			$properties = GetHelper::var('fieldtype', $id, 'id', 'properties');
 			if (JsonHelper::check($properties))
 			{
 				$properties = json_decode($properties, true);
@@ -1618,7 +1623,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 			}
 			// if not found
-			if (!isset($this->fieldTypes[$id]) && $name = ComponentbuilderHelper::getVar('fieldtype', $id, 'id', 'name'))
+			if (!isset($this->fieldTypes[$id]) && $name = GetHelper::var('fieldtype', $id, 'id', 'name'))
 			{
 				$this->fieldTypes[$id] = StringHelper::safe($name);
 			}
@@ -1684,8 +1689,8 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 		}
 		// set  the layout data
-		$lay1 = GetHelper::allBetween($default, "JLayoutHelper::render('","',");
-		$lay2 = GetHelper::allBetween($default, 'JLayoutHelper::render("','",');
+		$lay1 = GetHelper::allBetween($default, "LayoutHelper::render('","',");
+		$lay2 = GetHelper::allBetween($default, 'LayoutHelper::render("','",');
 		if (JCBArrayHelper::check($lay1) && JCBArrayHelper::check($lay2))
 		{
 			$layouts = array_merge($lay1,$lay2);
@@ -1843,7 +1848,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 								}
 								elseif (StringHelper::check($func))
 								{
-									if (($funcID = ComponentbuilderHelper::getVar($type, $func, 'function_name', 'id')) !== false && is_numeric($funcID))
+									if (($funcID = GetHelper::var($type, $func, 'function_name', 'id')) !== false && is_numeric($funcID))
 									{
 										$this->setSmartIDs($funcID, $type);
 									}
@@ -1875,7 +1880,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 								$this->placeholderM[$placeholder] = $placeholder;
 								unset($this->placeholderS[$remove]);
 								// get the ID
-								if (($placeholderID = ComponentbuilderHelper::getVar($type, $placeholder, 'target', 'id')) !== false && is_numeric($placeholderID))
+								if (($placeholderID = GetHelper::var($type, $placeholder, 'target', 'id')) !== false && is_numeric($placeholderID))
 								{
 									$this->setSmartIDs($placeholderID, $type);
 								}
@@ -2037,7 +2042,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// get all values
 			$allBetween = GetHelper::allBetween($value, $target['start'], $target['_start']);
 			// just again make sure we found some
-			if (JCBArrayHelper::check($allBetween))
+			if (UtilitiesArrayHelper::check($allBetween))
 			{
 				if (count((array) $allBetween) > 1)
 				{
@@ -2068,7 +2073,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$starts[] = $target['start'];
 		}
 		// has any been found
-		if (JCBArrayHelper::check($starts))
+		if (UtilitiesArrayHelper::check($starts))
 		{
 			foreach ($starts as $_start)
 			{
@@ -2325,7 +2330,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -2407,7 +2412,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}
-	
+
 	/**
 	 * Method to get an array of data items.
 	 *
@@ -2422,12 +2427,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		$items = parent::getItems();
 
 		// Set values to display correctly.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			foreach ($items as $nr => &$item)
 			{
@@ -2441,22 +2446,22 @@ class ComponentbuilderModelJoomla_components extends ListModel
 
 			}
 		}
-        
+
 		// return items
 		return $items;
 	}
-	
+
 	/**
 	 * Method to build an SQL query to load the list data.
 	 *
-	 * @return	string	An SQL query
+	 * @return    string    An SQL query
 	 */
 	protected function getListQuery()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Create a new query object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 
 		// Select some fields
@@ -2485,7 +2490,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		{
 			$query->where('a.access = ' . (int) $_access);
 		}
-		elseif (ComponentbuilderHelper::checkArray($_access))
+		elseif (UtilitiesArrayHelper::check($_access))
 		{
 			// Secure the array for the query
 			$_access = ArrayHelper::toInteger($_access);
@@ -2526,11 +2531,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$query->where('a.companyname = ' . (int) $_companyname);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_companyname))
+		elseif (StringHelper::check($_companyname))
 		{
 			$query->where('a.companyname = ' . $db->quote($db->escape($_companyname)));
 		}
-		elseif (ComponentbuilderHelper::checkArray($_companyname))
+		elseif (UtilitiesArrayHelper::check($_companyname))
 		{
 			// Secure the array for the query
 			$_companyname = array_map( function ($val) use(&$db) {
@@ -2545,7 +2550,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						return (int) $val;
 					}
 				}
-				elseif (ComponentbuilderHelper::checkString($val))
+				elseif (StringHelper::check($val))
 				{
 					return $db->quote($db->escape($val));
 				}
@@ -2566,11 +2571,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$query->where('a.author = ' . (int) $_author);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_author))
+		elseif (StringHelper::check($_author))
 		{
 			$query->where('a.author = ' . $db->quote($db->escape($_author)));
 		}
-		elseif (ComponentbuilderHelper::checkArray($_author))
+		elseif (UtilitiesArrayHelper::check($_author))
 		{
 			// Secure the array for the query
 			$_author = array_map( function ($val) use(&$db) {
@@ -2585,7 +2590,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						return (int) $val;
 					}
 				}
-				elseif (ComponentbuilderHelper::checkString($val))
+				elseif (StringHelper::check($val))
 				{
 					return $db->quote($db->escape($val));
 				}
@@ -2595,10 +2600,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'desc');
+		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{
+			// Check that the order direction is valid encase we have a field called direction as part of filers.
+			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'desc';
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 
@@ -2616,17 +2623,17 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	public function getExportData($pks, $user = null)
 	{
 		// setup the query
-		if (($pks_size = ComponentbuilderHelper::checkArray($pks)) !== false || 'bulk' === $pks)
+		if (($pks_size = UtilitiesArrayHelper::check($pks)) !== false || 'bulk' === $pks)
 		{
 			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			// Create a new query object.
-			$db = JFactory::getDBO();
+			$db = Factory::getDBO();
 			$query = $db->getQuery(true);
 
 			// Select some fields
@@ -2675,7 +2682,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$basic = new AES($basickey);
 
 				// Set values to display correctly.
-				if (ComponentbuilderHelper::checkArray($items))
+				if (UtilitiesArrayHelper::check($items))
 				{
 					foreach ($items as $nr => &$item)
 					{
@@ -2687,27 +2694,29 @@ class ComponentbuilderModelJoomla_components extends ListModel
 							continue;
 						}
 
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_site_event
 						$item->php_site_event = base64_decode($item->php_site_event);
+						// decode buildcompsql
+						$item->buildcompsql = base64_decode($item->buildcompsql);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
 						if ($basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
 						{
 							// decrypt crowdin_username
 							$item->crowdin_username = $basic->decryptString($item->crowdin_username);
 						}
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode buildcompsql
-						$item->buildcompsql = base64_decode($item->buildcompsql);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
 						// decode php_helper_admin
 						$item->php_helper_admin = base64_decode($item->php_helper_admin);
 						// decode php_helper_site
@@ -2744,8 +2753,6 @@ class ComponentbuilderModelJoomla_components extends ListModel
 							// decrypt crowdin_account_api_key
 							$item->crowdin_account_api_key = $basic->decryptString($item->crowdin_account_api_key);
 						}
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);
@@ -2754,7 +2761,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 				// Add headers to items array.
 				$headers = $this->getExImPortHeaders();
-				if (ComponentbuilderHelper::checkObject($headers))
+				if (ObjectHelper::check($headers))
 				{
 					array_unshift($items,$headers);
 				}
@@ -2772,16 +2779,16 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	public function getExImPortHeaders()
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// get the columns
 		$columns = $db->getTableColumns("#__componentbuilder_joomla_component");
-		if (JCBArrayHelper::check($columns))
+		if (UtilitiesArrayHelper::check($columns))
 		{
 			// remove the headers you don't import/export.
 			unset($columns['asset_id']);
 			unset($columns['checked_out']);
 			unset($columns['checked_out_time']);
-			$headers = new stdClass();
+			$headers = new \stdClass();
 			foreach ($columns as $column => $type)
 			{
 				$headers->{$column} = $column;
@@ -2790,7 +2797,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -2805,13 +2812,13 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		$id .= ':' . $this->getState('filter.published');
 		// Check if the value is an array
 		$_access = $this->getState('filter.access');
-		if (ComponentbuilderHelper::checkArray($_access))
+		if (UtilitiesArrayHelper::check($_access))
 		{
 			$id .= ':' . implode(':', $_access);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_access)
-		 || ComponentbuilderHelper::checkString($_access))
+		 || StringHelper::check($_access))
 		{
 			$id .= ':' . $_access;
 		}
@@ -2820,25 +2827,25 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		$id .= ':' . $this->getState('filter.modified_by');
 		// Check if the value is an array
 		$_companyname = $this->getState('filter.companyname');
-		if (ComponentbuilderHelper::checkArray($_companyname))
+		if (UtilitiesArrayHelper::check($_companyname))
 		{
 			$id .= ':' . implode(':', $_companyname);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_companyname)
-		 || ComponentbuilderHelper::checkString($_companyname))
+		 || StringHelper::check($_companyname))
 		{
 			$id .= ':' . $_companyname;
 		}
 		// Check if the value is an array
 		$_author = $this->getState('filter.author');
-		if (ComponentbuilderHelper::checkArray($_author))
+		if (UtilitiesArrayHelper::check($_author))
 		{
 			$id .= ':' . implode(':', $_author);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_author)
-		 || ComponentbuilderHelper::checkString($_author))
+		 || StringHelper::check($_author))
 		{
 			$id .= ':' . $_author;
 		}
@@ -2854,19 +2861,18 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	/**
 	 * Build an SQL query to checkin all items left checked out longer then a set time.
 	 *
-	 * @return  a bool
-	 *
+	 * @return bool
+	 * @since 3.2.0
 	 */
-	protected function checkInNow()
+	protected function checkInNow(): bool
 	{
 		// Get set check in time
-		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
+		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
 
 		if ($time)
 		{
-
 			// Get a db connection.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			// Reset query.
 			$query = $db->getQuery(true);
 			$query->select('*');
@@ -2878,7 +2884,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			if ($db->getNumRows())
 			{
 				// Get Yesterdays date.
-				$date = JFactory::getDate()->modify($time)->toSql();
+				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
@@ -2899,7 +2905,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 
 				$db->setQuery($query);
 
-				$db->execute();
+				return $db->execute();
 			}
 		}
 

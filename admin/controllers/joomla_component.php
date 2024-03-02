@@ -12,8 +12,15 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Joomla_component Form Controller
@@ -36,7 +43,7 @@ class ComponentbuilderControllerJoomla_component extends FormController
 	 *
 	 * @since   1.6
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		$this->view_list = 'Joomla_components'; // safeguard for setting the return view listing to the main view.
 		parent::__construct($config);
@@ -45,29 +52,29 @@ class ComponentbuilderControllerJoomla_component extends FormController
 	public function refresh()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('joomla_component.import_jcb_packages', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
-			$session = JFactory::getSession();
+			$session = Factory::getSession();
 			$session->set('backto_VDM_IMPORT', 'joomla_components');
 			$session->set('dataType_VDM_IMPORTINTO', 'smart_package');
 			// clear the session
 			ComponentbuilderHelper::set('vdmGithubPackages', null);
 			ComponentbuilderHelper::set('communityGithubPackages', null);
 			// Redirect to import view.
-			$message = JText::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
-			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
+			$message = Text::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
+			$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
 			return;
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
 
-        /**
+	/**
 	 * Method override to check if you can add a new record.
 	 *
 	 * @param   array  $data  An array of input data.
@@ -76,10 +83,10 @@ class ComponentbuilderControllerJoomla_component extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowAdd($data = array())
+	protected function allowAdd($data = [])
 	{
 		// Get user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Access check.
 		$access = $user->authorise('joomla_component.access', 'com_componentbuilder');
 		if (!$access)
@@ -101,10 +108,10 @@ class ComponentbuilderControllerJoomla_component extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// get user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// get record id.
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 
@@ -175,12 +182,12 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 		// set the referral options
 		if ($refid && $ref)
-                {
-			$append = '&ref=' . (string)$ref . '&refid='. (int)$refid . $append;
+		{
+			$append = '&ref=' . (string) $ref . '&refid='. (int) $refid . $append;
 		}
 		elseif ($ref)
 		{
-			$append = '&ref='. (string)$ref . $append;
+			$append = '&ref='. (string) $ref . $append;
 		}
 
 		return $append;
@@ -197,13 +204,13 @@ class ComponentbuilderControllerJoomla_component extends FormController
 	 */
 	public function batch($model = null)
 	{
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('Joomla_component', '', array());
+		$model = $this->getModel('Joomla_component', '', []);
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}
@@ -228,13 +235,13 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 		$cancel = parent::cancel($key);
 
-		if (!is_null($return) && JUri::isInternal(base64_decode($return)))
+		if (!is_null($return) && Uri::isInternal(base64_decode($return)))
 		{
 			$redirect = base64_decode($return);
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
@@ -245,7 +252,7 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -256,7 +263,7 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -282,7 +289,7 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 		// Check if there is a return value
 		$return = $this->input->get('return', null, 'base64');
-		$canReturn = (!is_null($return) && JUri::isInternal(base64_decode($return)));
+		$canReturn = (!is_null($return) && Uri::isInternal(base64_decode($return)));
 
 		if ($this->ref || $this->refid || $canReturn)
 		{
@@ -300,29 +307,29 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
 		}
 		elseif ($this->refid && $this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+			$redirect = '&view=' . (string) $this->ref . '&layout=edit&id=' . (int) $this->refid;
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
 		}
 		elseif ($this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref;
+			$redirect = '&view=' . (string) $this->ref;
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -334,14 +341,14 @@ class ComponentbuilderControllerJoomla_component extends FormController
 	 * Function that allows child controller access to model data
 	 * after the data has been saved.
 	 *
-	 * @param   JModel  &$model     The data model object.
-	 * @param   array   $validData  The validated data.
+	 * @param   BaseDatabaseModel  &$model     The data model object.
+	 * @param   array              $validData  The validated data.
 	 *
 	 * @return  void
 	 *
 	 * @since   11.1
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
 		// get the state object (Joomla\CMS\Object\CMSObject)
 		$state = $model->get('state');
@@ -369,7 +376,7 @@ class ComponentbuilderControllerJoomla_component extends FormController
 			foreach($_tablesArray as $_updateTable => $_key)
 			{
 				// get the linked ID
-				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, $_key, 'id'))
+				if ($_value = GetHelper::var($_updateTable, $oldID, $_key, 'id'))
 				{
 					// copy fields to new linked table
 					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array($_key => $newID));
@@ -379,5 +386,4 @@ class ComponentbuilderControllerJoomla_component extends FormController
 
 		return;
 	}
-
 }

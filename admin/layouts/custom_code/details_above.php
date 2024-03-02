@@ -28,10 +28,11 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 $fields = $displayData->get($fields_tab_layout) ?: array(
 	'target',
 	'system_name',
+	'joomla_version',
 	'function_name'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+$hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>

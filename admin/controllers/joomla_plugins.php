@@ -12,8 +12,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use VDM\Joomla\Utilities\StringHelper;
 
 /**
@@ -54,18 +58,18 @@ class ComponentbuilderControllerJoomla_plugins extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_plugins', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('joomla_plugins.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
@@ -76,7 +80,7 @@ class ComponentbuilderControllerJoomla_plugins extends AdminController
 			}
 			elseif (is_numeric($result) && 1 == $result)
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -94,24 +98,24 @@ class ComponentbuilderControllerJoomla_plugins extends AdminController
 	public function getBoilerplate()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_plugins', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_GET_BOILERPLATE_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_GET_BOILERPLATE_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('joomla_plugin.get_boilerplate', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_GETTING_JOOMLA_PLUGIN_BOILERPLATE_FAILED_IF_THE_ISSUE_CONTINUES_INFORM_YOUR_SYSTEM_ADMINISTRATOR');
+			$message = Text::_('COM_COMPONENTBUILDER_GETTING_JOOMLA_PLUGIN_BOILERPLATE_FAILED_IF_THE_ISSUE_CONTINUES_INFORM_YOUR_SYSTEM_ADMINISTRATOR');
 			// Get the model
 			$model = $this->getModel('joomla_plugins');
 			// check if there is any selections
 			if (!$model->getBoilerplate())
 			{
-				$message = '<b>' . JText::_('COM_COMPONENTBUILDER_GETTING_JOOMLA_PLUGIN_BOILERPLATE_WAS_SUCCESSFULLY') . '</b>';
+				$message = '<b>' . Text::_('COM_COMPONENTBUILDER_GETTING_JOOMLA_PLUGIN_BOILERPLATE_WAS_SUCCESSFULLY') . '</b>';
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -123,18 +127,18 @@ class ComponentbuilderControllerJoomla_plugins extends AdminController
 	public function openClassMethods()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the libraries
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=class_methods', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=class_methods', false));
 		return;
 	}
 
 	public function openClassProperties()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the libraries
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=class_properties', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=class_properties', false));
 		return;
 	}
 }

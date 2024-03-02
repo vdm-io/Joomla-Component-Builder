@@ -12,18 +12,26 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Joomla_modules_files_folders_urls List Model
  */
 class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 {
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (empty($config['filter_fields']))
-        {
+		{
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
@@ -50,7 +58,7 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -86,7 +94,7 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}
-	
+
 	/**
 	 * Method to get an array of data items.
 	 *
@@ -101,12 +109,12 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 		$items = parent::getItems();
 
 		// Set values to display correctly.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			foreach ($items as $nr => &$item)
 			{
@@ -120,22 +128,22 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 
 			}
 		}
-        
+
 		// return items
 		return $items;
 	}
-	
+
 	/**
 	 * Method to build an SQL query to load the list data.
 	 *
-	 * @return	string	An SQL query
+	 * @return    string    An SQL query
 	 */
 	protected function getListQuery()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Create a new query object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 
 		// Select some fields
@@ -168,7 +176,7 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 		{
 			$query->where('a.access = ' . (int) $_access);
 		}
-		elseif (ComponentbuilderHelper::checkArray($_access))
+		elseif (UtilitiesArrayHelper::check($_access))
 		{
 			// Secure the array for the query
 			$_access = ArrayHelper::toInteger($_access);
@@ -183,16 +191,18 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'desc');
+		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{
+			// Check that the order direction is valid encase we have a field called direction as part of filers.
+			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'desc';
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 
 		return $query;
 	}
-	
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -207,13 +217,13 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 		$id .= ':' . $this->getState('filter.published');
 		// Check if the value is an array
 		$_access = $this->getState('filter.access');
-		if (ComponentbuilderHelper::checkArray($_access))
+		if (UtilitiesArrayHelper::check($_access))
 		{
 			$id .= ':' . implode(':', $_access);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_access)
-		 || ComponentbuilderHelper::checkString($_access))
+		 || StringHelper::check($_access))
 		{
 			$id .= ':' . $_access;
 		}
@@ -227,19 +237,18 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 	/**
 	 * Build an SQL query to checkin all items left checked out longer then a set time.
 	 *
-	 * @return  a bool
-	 *
+	 * @return bool
+	 * @since 3.2.0
 	 */
-	protected function checkInNow()
+	protected function checkInNow(): bool
 	{
 		// Get set check in time
-		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
+		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
 
 		if ($time)
 		{
-
 			// Get a db connection.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			// Reset query.
 			$query = $db->getQuery(true);
 			$query->select('*');
@@ -251,7 +260,7 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 			if ($db->getNumRows())
 			{
 				// Get Yesterdays date.
-				$date = JFactory::getDate()->modify($time)->toSql();
+				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
@@ -272,7 +281,7 @@ class ComponentbuilderModelJoomla_modules_files_folders_urls extends ListModel
 
 				$db->setQuery($query);
 
-				$db->execute();
+				return $db->execute();
 			}
 		}
 

@@ -71,7 +71,7 @@ class Event implements EventInterface
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function trigger(string $event, $data)
+	public function trigger(string $event, $data = null)
 	{
 		// only execute if plugins were loaded (active)
 		if ($this->activePlugins)

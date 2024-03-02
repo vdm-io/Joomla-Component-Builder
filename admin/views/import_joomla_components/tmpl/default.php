@@ -11,12 +11,17 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
-use VDM\Joomla\Utilities\ArrayHelper;
 
-JHtml::_('jquery.framework');
-JHtml::_('bootstrap.tooltip');
-JHtml::_('script', 'system/core.js', false, true);
-JHtml::_('behavior.keepalive');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use VDM\Joomla\Utilities\ArrayHelper;
+Html::_('jquery.framework');
+Html::_('bootstrap.tooltip');
+Html::_('script', 'system/core.js', false, true);
+Html::_('behavior.keepalive');
+
 ?>
 <script type="text/javascript">
 <?php if (isset($this->hasPackage) && $this->hasPackage && $this->dataType === 'smart_package'): ?>
@@ -50,7 +55,7 @@ JHtml::_('behavior.keepalive');
 			// do field validation
 			if (form.import_package.value == "")
 			{
-				alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>");
+				alert("<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_A_FILE', true); ?>");
 			}
 			else
 			{
@@ -65,7 +70,7 @@ JHtml::_('behavior.keepalive');
 		var form = document.getElementById('adminForm');
 		// do field validation
 		if (form.import_directory.value == ""){
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', true); ?>");
+			alert("<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_SELECT_A_DIRECTORY', true); ?>");
 		}
 		else
 		{
@@ -80,7 +85,7 @@ JHtml::_('behavior.keepalive');
 		// do field validation
 		if (form.import_url.value == "" || form.import_url.value == "http://")
 		{
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_ENTER_A_URL', true); ?>");
+			alert("<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_ENTER_A_URL', true); ?>");
 		}
 		else
 		{
@@ -95,7 +100,7 @@ JHtml::_('behavior.keepalive');
 		// do field validation
 		if (form.vdm_package.value == "" || form.vdm_package.value == "http://")
 		{
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_YOUR_WOULD_LIKE_TO_IMPORT', true); ?>");
+			alert("<?php echo Text::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_YOUR_WOULD_LIKE_TO_IMPORT', true); ?>");
 		}
 		else
 		{
@@ -115,7 +120,7 @@ JHtml::_('behavior.keepalive');
 		// do field validation
 		if (form.jcb_package.value == "" || form.jcb_package.value == "http://")
 		{
-			alert("<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_YOUR_WOULD_LIKE_TO_IMPORT', true); ?>");
+			alert("<?php echo Text::_('COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_YOUR_WOULD_LIKE_TO_IMPORT', true); ?>");
 		}
 		else
 		{
@@ -135,26 +140,33 @@ JHtml::_('behavior.keepalive');
 // Add spindle-wheel for importations:
 jQuery(document).ready(function($) {
 
-// waiting spinner
-var outerDiv = jQuery('body');
-jQuery('<div id="loading"></div>')
-	.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
-	.css("top", outerDiv.position().top - jQuery(window).scrollTop())
-	.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
-	.css("width", outerDiv.width())
-	.css("height", outerDiv.height())
-	.css("position", "fixed")
-	.css("opacity", "0.80")
-	.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
-	.css("filter", "alpha(opacity = 80)")
-	.css("display", "none")
-	.appendTo(outerDiv);
+	// get page body
+	var outerBodyDiv = document.querySelector('body');
+
+	// start loading spinner
+	var loadingDiv = document.createElement('div');
+	loadingDiv.id = 'loading';
+
+	// Set CSS properties individually
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat";
+	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
+	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
+	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
+	loadingDiv.style.height = outerBodyDiv.offsetHeight + "px";
+	loadingDiv.style.position = 'fixed';
+	loadingDiv.style.opacity = '0.80';
+	loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	loadingDiv.style.filter = "alpha(opacity=80)";
+	loadingDiv.style.display = 'none';
+
+	// add to page body
+	outerBodyDiv.appendChild(loadingDiv);
 });
 </script>
 
 <?php $formats = ($this->dataType === 'smart_package') ? '.zip' : 'none'; ?>
 <div class="clearfix">
-<form enctype="multipart/form-data" action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components');?>" method="post" name="adminForm" id="adminForm" class="form-horizontal form-validate">
+<form enctype="multipart/form-data" action="<?php echo Route::_('index.php?option=com_componentbuilder&view=import_joomla_components');?>" method="post" name="adminForm" id="adminForm" class="form-horizontal form-validate">
 
 	<?php if (!empty( $this->sidebar)) : ?>
 		<div id="j-sidebar-container" class="span2">
@@ -165,8 +177,8 @@ jQuery('<div id="loading"></div>')
 		<div id="j-main-container">
 	<?php endif;?>
 	<div id="noticeboard" class="well well-small" style="display: none;">
-		<h2 class="module-title nav-header"><?php echo JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo JText::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
-		<div class="noticeboard-md"><small><?php echo JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
+		<h2 class="module-title nav-header"><?php echo Text::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD'); ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?php echo Text::_('COM_COMPONENTBUILDER_NEW_NOTICE'); ?>)</span></h2>
+		<div class="noticeboard-md"><small><?php echo Text::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING'); ?><span class="loading-dots">.</span></small></div>
 		<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
 	</div>
 	<div id="installer-import">
@@ -185,14 +197,14 @@ jQuery('<div id="loading"></div>')
 			$hasOwner = (isset($this->packageInfo['getKeyFrom']) && ArrayHelper::check($this->packageInfo['getKeyFrom'])) ? true:false;
 			$class1 = ($hasOwner) ? 'span6' : 'span12';
 		?>
-		<h3 style="color: #1F73BA;"><?php echo JText::_('COM_COMPONENTBUILDER_CONFIRMATION_STEP_BEFORE_IMPORTING'); ?></h3>
-		<p style="color: #1F73BA;"><?php echo JText::_('COM_COMPONENTBUILDER_YOU_SHOULD_ONLY_CONTINUE_THIS_IMPORT_IF_YOU_HAVE_BACKUP_YOUR_COMPONENTS_AND_INSURED_THAT_THE_PACKAGE_OWNER_IS_REPUTABLE'); ?></p>
-		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'advanced')); ?>
+		<h3 style="color: #1F73BA;"><?php echo Text::_('COM_COMPONENTBUILDER_CONFIRMATION_STEP_BEFORE_IMPORTING'); ?></h3>
+		<p style="color: #1F73BA;"><?php echo Text::_('COM_COMPONENTBUILDER_YOU_SHOULD_ONLY_CONTINUE_THIS_IMPORT_IF_YOU_HAVE_BACKUP_YOUR_COMPONENTS_AND_INSURED_THAT_THE_PACKAGE_OWNER_IS_REPUTABLE'); ?></p>
+		<?php echo Html::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'advanced')); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'advanced', JText::sprintf('COM_COMPONENTBUILDER_IMPORT_S', $comP)); ?>
+		<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'advanced', Text::sprintf('COM_COMPONENTBUILDER_IMPORT_S', $comP)); ?>
 		<div class="<?php echo $class1; ?>">
 		<fieldset class="uploadform">
-			<legend><?php echo JText::_('COM_COMPONENTBUILDER_SMART_PACKAGE_OPTIONS'); ?></legend>
+			<legend><?php echo Text::_('COM_COMPONENTBUILDER_SMART_PACKAGE_OPTIONS'); ?></legend>
 				<?php if ($this->formPackage): ?>
 					<?php foreach ($this->formPackage as $field): ?>
 					<div class="control-group">
@@ -203,13 +215,13 @@ jQuery('<div id="loading"></div>')
 				<?php endif; ?>
 			<div class="form-actions">
 				<div class="btn-group">
-					<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_CONTINUE'); ?>" onclick="Joomla.continueExtImport()" />
-					<input class="btn" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_CANCEL'); ?>" onclick="Joomla.cancelImport()" />
+					<input class="btn btn-primary" type="button" value="<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_CONTINUE'); ?>" onclick="Joomla.continueExtImport()" />
+					<input class="btn" type="button" value="<?php echo Text::_('COM_COMPONENTBUILDER_CANCEL'); ?>" onclick="Joomla.cancelImport()" />
 				</div>
 			</div>
 		</fieldset>
 		<?php if (!$hasOwner): ?>
-			<p style="color: #922924;"><?php echo JText::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE'); ?></p>
+			<p style="color: #922924;"><?php echo Text::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE'); ?></p>
 		<?php endif; ?>
 		</div>
 		<?php if ($hasOwner): ?>
@@ -217,78 +229,78 @@ jQuery('<div id="loading"></div>')
 			<?php echo \VDM\Joomla\Componentbuilder\Package\Factory::_('Display.Details')->owner($this->packageInfo); ?>
 		</div>
 		<?php endif; ?>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo Html::_('bootstrap.endTab'); ?>
 
 		<?php if (isset($this->packageInfo['name']) && ArrayHelper::check($this->packageInfo['name'])) : ?>
-		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'info', JText::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
+		<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'info', Text::sprintf('COM_COMPONENTBUILDER_S_BEING_IMPORTED', $comP)); ?>
 			<?php echo \VDM\Joomla\Componentbuilder\Package\Factory::_('Display.Details')->components($this->packageInfo); ?>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo Html::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
-		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+		<?php echo Html::_('bootstrap.endTabSet'); ?>
 		<input type="hidden" name="gettype" value="continue" />
 	<?php else: ?>
 		<?php if ($this->dataType === 'smart_package'): ?>
-			<h1 style="color: #922924;"><?php echo JText::_('COM_COMPONENTBUILDER_BACKUP_LOCAL_DATA_FIRST'); ?></h1>
-			<p style="color: #922924;"><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALWAYS_INSURE_THAT_YOU_HAVE_YOUR_LOCAL_COMPONENTS_BACKED_UP_BY_MAKING_AN_EXPORT_OF_ALL_YOUR_LOCAL_COMPONENTS_BEFORE_IMPORTING_ANY_NEW_COMPONENTS_SMALLMAKE_BSUREB_TO_MOVE_THIS_ZIPPED_BACKUP_PACKAGE_OUT_OF_THE_TMP_FOLDER_BEFORE_DOING_AN_IMPORTSMALLBR_IF_YOU_ARE_IMPORTING_A_PACKAGE_OF_A_THREERD_PARTY_JCB_PACKAGE_DEVELOPER_BMAKE_SURE_IT_IS_A_REPUTABLE_JCB_PACKAGE_DEVELOPERSB_A_SFIND_OUT_WHYA', 'href="https://vdm.bz/jcb-package-import-safety" target="_blank" title="Watch tutorial"'); ?></p>
+			<h1 style="color: #922924;"><?php echo Text::_('COM_COMPONENTBUILDER_BACKUP_LOCAL_DATA_FIRST'); ?></h1>
+			<p style="color: #922924;"><?php echo Text::sprintf('COM_COMPONENTBUILDER_ALWAYS_INSURE_THAT_YOU_HAVE_YOUR_LOCAL_COMPONENTS_BACKED_UP_BY_MAKING_AN_EXPORT_OF_ALL_YOUR_LOCAL_COMPONENTS_BEFORE_IMPORTING_ANY_NEW_COMPONENTS_SMALLMAKE_BSUREB_TO_MOVE_THIS_ZIPPED_BACKUP_PACKAGE_OUT_OF_THE_TMP_FOLDER_BEFORE_DOING_AN_IMPORTSMALLBR_IF_YOU_ARE_IMPORTING_A_PACKAGE_OF_A_THREERD_PARTY_JCB_PACKAGE_DEVELOPER_BMAKE_SURE_IT_IS_A_REPUTABLE_JCB_PACKAGE_DEVELOPERSB_A_SFIND_OUT_WHYA', 'href="https://vdm.bz/jcb-package-import-safety" target="_blank" title="Watch tutorial"'); ?></p>
 		<?php endif; ?>
-		<?php echo JHtml::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'upload')); ?>
+		<?php echo Html::_('bootstrap.startTabSet', 'jcbImportTab', array('active' => 'upload')); ?>
 		
-		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'upload', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_UPLOAD', true)); ?>
+		<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'upload', Text::_('COM_COMPONENTBUILDER_IMPORT_FROM_UPLOAD', true)); ?>
 			<fieldset class="uploadform">
-				<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
+				<legend><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
 				<div class="control-group">
-					<label for="import_package" class="control-label"><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE'); ?></label>
+					<label for="import_package" class="control-label"><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE'); ?></label>
 					<div class="controls">
 						<input class="input_box" id="import_package" name="import_package" type="file" size="57" />
 					</div>
 				</div>
 				<div class="form-actions">
-					<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPLOAD_BOTTON'); ?>" onclick="Joomla.submitbutton()" />&nbsp;&nbsp;&nbsp;<small><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_FORMATS_ACCEPTED'); ?> (<?php echo $formats; ?>)</small>
+					<input class="btn btn-primary" type="button" value="<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_UPLOAD_BOTTON'); ?>" onclick="Joomla.submitbutton()" />&nbsp;&nbsp;&nbsp;<small><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_FORMATS_ACCEPTED'); ?> (<?php echo $formats; ?>)</small>
 				</div>
 			</fieldset>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo Html::_('bootstrap.endTab'); ?>
 		
-		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'directory', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_DIRECTORY', true)); ?>
+		<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'directory', Text::_('COM_COMPONENTBUILDER_IMPORT_FROM_DIRECTORY', true)); ?>
 			<fieldset class="uploadform">
-				<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
+				<legend><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
 				<div class="control-group">
-					<label for="import_directory" class="control-label"><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_DIRECTORY'); ?></label>
+					<label for="import_directory" class="control-label"><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_DIRECTORY'); ?></label>
 					<div class="controls">
 						<input type="text" id="import_directory" name="import_directory" class="span5 input_box" size="70" value="<?php echo $this->state->get('import.directory'); ?>" />
 					</div>
 				</div>
 				<div class="form-actions">
-					<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_GET_BOTTON'); ?>" onclick="Joomla.submitbuttonDir()" />&nbsp;&nbsp;&nbsp;<small><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_FORMATS_ACCEPTED'); ?> (<?php echo $formats; ?>)</small>
+					<input type="button" class="btn btn-primary" value="<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_GET_BOTTON'); ?>" onclick="Joomla.submitbuttonDir()" />&nbsp;&nbsp;&nbsp;<small><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_FORMATS_ACCEPTED'); ?> (<?php echo $formats; ?>)</small>
 				</div>
 				</fieldset>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo Html::_('bootstrap.endTab'); ?>
 
-		<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url', JText::_('COM_COMPONENTBUILDER_IMPORT_FROM_URL', true)); ?>
+		<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'url', Text::_('COM_COMPONENTBUILDER_IMPORT_FROM_URL', true)); ?>
 			<fieldset class="uploadform">
-				<legend><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
+				<legend><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_UPDATE_DATA'); ?></legend>
 				<div class="control-group">
-					<label for="import_url" class="control-label"><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_URL'); ?></label>
+					<label for="import_url" class="control-label"><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_URL'); ?></label>
 					<div class="controls">
 						<input type="text" id="import_url" name="import_url" class="span5 input_box" size="70" value="http://" />
 					</div>
 				</div>
 				<div class="form-actions">
-					<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_GET_BOTTON'); ?>" onclick="Joomla.submitbuttonUrl()" />&nbsp;&nbsp;&nbsp;<small><?php echo JText::_('COM_COMPONENTBUILDER_IMPORT_FORMATS_ACCEPTED'); ?> (<?php echo $formats; ?>)</small>
+					<input type="button" class="btn btn-primary" value="<?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_GET_BOTTON'); ?>" onclick="Joomla.submitbuttonUrl()" />&nbsp;&nbsp;&nbsp;<small><?php echo Text::_('COM_COMPONENTBUILDER_IMPORT_FORMATS_ACCEPTED'); ?> (<?php echo $formats; ?>)</small>
 				</div>
 			</fieldset>
-		<?php echo JHtml::_('bootstrap.endTab'); ?>
+		<?php echo Html::_('bootstrap.endTab'); ?>
 
 		<?php if (isset($this->vdmPackages) && ArrayHelper::check($this->vdmPackages)): ?>
-			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', JText::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
+			<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'url_vdm', Text::_('COM_COMPONENTBUILDER_VDM_PACKAGES', true)); ?>
 				<div class="span12" id="vdm_packages_installer">
 					<div class="alert alert-success">
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_BGET_PACKAGEB_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_HOW_TO_GET_A_S_FREE_KEYSA_FROM_VDM', 'href="https://vdm.bz/how-to-get-free-vdm-package-keys" target="_blank" title="see how easy it is to get access keys from VDM"'); ?></p>
+						<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
+						<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_BGET_PACKAGEB_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE_A_S_GET_A_KEY_TODAYA', 'href="https://github.com/vdm-io/JCB-Packages" target="_blank" title="gitHub Reposetory"', 'href="http://vdm.bz/jcb-packages" target="_blank" title="get a key to import the paid packages."'); ?></p>
+						<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_HOW_TO_GET_A_S_FREE_KEYSA_FROM_VDM', 'href="https://vdm.bz/how-to-get-free-vdm-package-keys" target="_blank" title="see how easy it is to get access keys from VDM"'); ?></p>
 					</div>
 					<fieldset class="uploadform">
-						<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_VAST_DEVELOPMENT_METHOD"); ?></legend>
+						<legend><?php echo Text::_("COM_COMPONENTBUILDER_PACKAGES_FROM_VAST_DEVELOPMENT_METHOD"); ?></legend>
 						<?php foreach ($this->vdmPackages as $field): ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label;?></div>
@@ -296,9 +308,9 @@ jQuery('<div id="loading"></div>')
 						</div>
 						<?php endforeach; ?>
 						<div class="form-actions">
-							<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonVDM()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_OFFICIAL_VDM_PACKAGES'); ?></small>
+							<input type="button" class="btn btn-primary" value="<?php echo Text::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonVDM()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo Text::_('COM_COMPONENTBUILDER_OFFICIAL_VDM_PACKAGES'); ?></small>
 						</div>
-						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+						<div class="control-group"><small><?php echo Text::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
 					</fieldset>
 				</div>
 				<div id="vdm_packages_display">
@@ -307,19 +319,19 @@ jQuery('<div id="loading"></div>')
 					<div id="vdm_package_owner_details">
 					</div>
 				</div>
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php echo Html::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
 		<?php if (isset($this->jcbPackages) && ArrayHelper::check($this->jcbPackages)) : ?>
-			<?php echo JHtml::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', JText::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
+			<?php echo Html::_('bootstrap.addTab', 'jcbImportTab', 'url_jcb', Text::_('COM_COMPONENTBUILDER_JCB_COMMUNITY_PACKAGES', true)); ?>
 				<div class="span12" id="jcb_packages_installer">
 					<div class="alert alert-success">
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_BGET_PACKAGEB_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
-						<p><?php echo JText::sprintf('COM_COMPONENTBUILDER_ADD_YOUR_OWN_JCB_PACKAGES_TO_THE_COMMUNITY_A_S_GITHUBA_REPOSITORYBR_WATCH_THIS_A_S_TUTORIALA_TO_SEE_HOW', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"',  'href="https://vdm.bz/add-jcb-community-package" target="_blank" title="watch the quick tutorial on how to add your own packages to this list of community packages"'); ?></p>
+						<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_ALL_OF_THESE_PACKAGES_ARE_A_FULLY_DEVELOPEDMAPPED_COMPONENTS_FOR_JCB_THEY_CAN_BE_SEEN_AS_DEMO_CONTENT_OR_BASE_IMAGES_FROM_WHICH_TO_START_YOUR_PROJECTBR_ALWAYS_MAKE_SURE_YOU_ARE_ON_THE_LATEST_VERSION_OF_JCB_BEFORE_IMPORTING_ANY_OF_THESE_PACKAGES_SHOULD_ANY_OF_THEM_FAIL_TO_IMPORT_A_S_PLEASE_LET_US_KNOWA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know, some need a key of course."'); ?></p>
+						<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_THESE_ARE_THE_SAME_PACKAGES_FOUND_ON_A_S_GITHUBA_AND_CAN_BE_IMPORTED_BY_SIMPLY_MAKING_A_SELECTION_AND_THEN_CLICKING_THE_BGET_PACKAGEB_BUTTONBR_SOME_OF_THESE_PACKAGES_WOULD_REQUIRE_A_KEY_SINCE_THEY_ARE_NOT_FREE', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"'); ?></p>
+						<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_ADD_YOUR_OWN_JCB_PACKAGES_TO_THE_COMMUNITY_A_S_GITHUBA_REPOSITORYBR_WATCH_THIS_A_S_TUTORIALA_TO_SEE_HOW', 'href="https://github.com/vdm-io/JCB-Community-Packages" target="_blank" title="gitHub Reposetory"',  'href="https://vdm.bz/add-jcb-community-package" target="_blank" title="watch the quick tutorial on how to add your own packages to this list of community packages"'); ?></p>
 					</div>
 					<fieldset class="uploadform">
-						<legend><?php echo JText::_("COM_COMPONENTBUILDER_PACKAGES_FROM_JCB_COMMUNITY"); ?></legend>
+						<legend><?php echo Text::_("COM_COMPONENTBUILDER_PACKAGES_FROM_JCB_COMMUNITY"); ?></legend>
 						<?php foreach ($this->jcbPackages as $field): ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label;?></div>
@@ -327,9 +339,9 @@ jQuery('<div id="loading"></div>')
 						</div>
 						<?php endforeach; ?>
 						<div class="form-actions">
-							<input type="button" class="btn btn-primary" value="<?php echo JText::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonJCB()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo JText::_('COM_COMPONENTBUILDER_COMMUNITY_PACKAGES'); ?></small>
+							<input type="button" class="btn btn-primary" value="<?php echo Text::_('COM_COMPONENTBUILDER_GET_PACKAGE'); ?>" onclick="Joomla.submitbuttonJCB()" />&nbsp;&nbsp;&nbsp;<small><span class="icon-shield"> </span><?php echo Text::_('COM_COMPONENTBUILDER_COMMUNITY_PACKAGES'); ?></small>
 						</div>
-						<div class="control-group"><small><?php echo JText::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
+						<div class="control-group"><small><?php echo Text::sprintf('COM_COMPONENTBUILDER_A_S_SPAN_CLASSICONFLAG_SPANREPORT_BROKEN_PACKAGEA', 'href="https://www.joomlacomponentbuilder.com/package-support" target="_blank" title="Should any of these packages fail to import please let us know"'); ?></small></div>
 					</fieldset>
 				</div>
 				<div id="jcb_packages_display">
@@ -338,15 +350,15 @@ jQuery('<div id="loading"></div>')
 					<div id="jcb_package_owner_details">
 					</div>
 				</div>
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php echo Html::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
-		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+		<?php echo Html::_('bootstrap.endTabSet'); ?>
 		<input type="hidden" name="gettype" value="upload" />
 		<input type="hidden" name="checksum" value="0" />
 	<?php endif; ?>
 	<input type="hidden" name="task" value="import_joomla_components.import" />
-	<?php echo JHtml::_('form.token'); ?>
+	<?php echo Html::_('form.token'); ?>
 	</div>
 </form>
 </div>
@@ -518,27 +530,29 @@ jQuery('#adminForm').on('change', '#haskey',function (e)
 	}
 });
 
-// nice little dot trick :)
-jQuery(document).ready( function($) {
-  var x=0;
-  setInterval(function() {
-	var dots = "";
-	x++;
-	for (var y=0; y < x%8; y++) {
-		dots+=".";
-	}
-	$(".loading-dots").text(dots);
-  } , 500);
+document.addEventListener("DOMContentLoaded", function() {
+	document.querySelectorAll(".loading-dots").forEach(function(loading_dots) {
+		let x = 0;
+		let intervalId = setInterval(function() {
+			if (!loading_dots.classList.contains("loading-dots")) {
+				clearInterval(intervalId);
+				return;
+			}
+			let dots = ".".repeat(x % 8);
+			loading_dots.textContent = dots;
+			x++;
+		}, 500);
+	});
 });
 
 <?php
-	$app = JFactory::getApplication();
+	$app = Factory::getApplication();
 ?>
 function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'.JURI::root().'";';
+		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
 	}
 	else
 	{

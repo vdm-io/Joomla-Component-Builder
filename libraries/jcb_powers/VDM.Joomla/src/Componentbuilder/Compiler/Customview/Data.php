@@ -155,10 +155,9 @@ class Data
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -176,7 +175,6 @@ class Data
 	 * @param Phpcustomview|null            $php              The modelling php admin view object.
 	 * @param Ajaxcustomview|null           $ajax             The modelling ajax object.
 	 * @param Custombuttons|null            $custombuttons    The modelling custombuttons object.
-	 * @param \JDatabaseDriver|null         $db               The database object.
 	 *
 	 * @since 3.2.0
 	 */
@@ -184,7 +182,7 @@ class Data
 		?Customcode $customcode = null, ?Gui $gui = null, ?Libraries $libraries = null,
 		?Templatelayout $templateLayout = null, ?Dynamicget $dynamic = null, ?Loader $loader = null,
 		?Javascriptcustomview $javascript = null, ?Csscustomview $css = null, ?Phpcustomview $php = null,
-		?Ajaxcustomview $ajax = null, ?Custombuttons $custombuttons = null, ?\JDatabaseDriver $db = null)
+		?Ajaxcustomview $ajax = null, ?Custombuttons $custombuttons = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->event = $event ?: Compiler::_('Event');
@@ -199,7 +197,7 @@ class Data
 		$this->php = $php ?: Compiler::_('Model.Phpcustomview');
 		$this->ajax = $ajax ?: Compiler::_('Model.Ajaxcustomview');
 		$this->custombuttons = $custombuttons ?: Compiler::_('Model.Custombuttons');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -222,13 +220,9 @@ class Data
 			$query->from('#__componentbuilder_' . $table . ' AS a');
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
-			// for plugin event TODO change event api signatures
-			$component_context = $this->config->component_context;
-
 			// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
 			$this->event->trigger(
-				'jcb_ce_onBeforeQueryCustomViewData',
-				array(&$component_context, &$id, &$table, &$query, &$this->db)
+				'jcb_ce_onBeforeQueryCustomViewData', [&$id, &$table, &$query, &$this->db]
 			);
 
 			// Reset the query using our newly populated query object.
@@ -246,8 +240,7 @@ class Data
 
 			// Trigger Event: jcb_ce_onBeforeModelCustomViewData
 			$this->event->trigger(
-				'jcb_ce_onBeforeModelCustomViewData',
-				array(&$component_context, &$item, &$id, &$table)
+				'jcb_ce_onBeforeModelCustomViewData', [&$item, &$id, &$table]
 			);
 
 			// set GUI mapper
@@ -325,8 +318,7 @@ class Data
 
 			// Trigger Event: jcb_ce_onAfterModelCustomViewData
 			$this->event->trigger(
-				'jcb_ce_onAfterModelCustomViewData',
-				array(&$component_context, &$item)
+				'jcb_ce_onAfterModelCustomViewData', [&$item]
 			);
 
 			// set the found data

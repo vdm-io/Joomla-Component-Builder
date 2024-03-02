@@ -19,8 +19,8 @@ if (file_exists($composer_autoloader))
 	require_once $composer_autoloader;
 }
 
-// register this component namespace
-spl_autoload_register(function ($class) {
+// register additional namespace
+\spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
 		'libraries/jcb_powers/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
@@ -67,18 +67,21 @@ spl_autoload_register(function ($class) {
 	}
 });
 
-
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Access\Exception\NotAllowed;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_componentbuilder'))
+if (!Factory::getUser()->authorise('core.manage', 'com_componentbuilder'))
 {
-	throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
-};
+	throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+}
 
 // Add CSS file for all pages
-$document = JFactory::getDocument();
-$document->addStyleSheet('components/com_componentbuilder/assets/css/admin.css');
-$document->addScript('components/com_componentbuilder/assets/js/admin.js');
+Html::_('stylesheet', 'components/com_componentbuilder/assets/css/admin.css', ['version' => 'auto']);
+Html::_('script', 'components/com_componentbuilder/assets/js/admin.js', ['version' => 'auto']);
 
 // require helper files
 JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php');
@@ -86,13 +89,13 @@ JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/hel
 JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php');
 
 // Trigger the Global Admin Event
-ComponentbuilderHelper::globalEvent($document);
+ComponentbuilderHelper::globalEvent(Factory::getDocument());
 
 // Get an instance of the controller prefixed by Componentbuilder
-$controller = JControllerLegacy::getInstance('Componentbuilder');
+$controller = BaseController::getInstance('Componentbuilder');
 
 // Perform the Request task
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->execute(Factory::getApplication()->input->get('task'));
 
 // Redirect if set by the controller
 $controller->redirect();

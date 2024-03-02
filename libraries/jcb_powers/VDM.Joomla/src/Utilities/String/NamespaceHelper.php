@@ -38,30 +38,41 @@ abstract class NamespaceHelper
 		// Split the string into namespace segments
 		$segments = explode('\\', $string);
 
-		foreach ($segments as &$segment)
-		{
-			// Check if segment starts with a number
-			if (preg_match("/^\d/", $segment))
-			{
-				// Extract the starting number(s)
-				preg_match("/^\d+/", $segment, $matches);
-
-				if (isset($matches[0]))
-				{
-					$numberWord = StringHelper::numbers($matches[0]);
-					$segment = str_replace($matches[0], $numberWord, $segment);
-				}
-			}
-
-			// Transliterate string TODO: look again as this makes it lowercase
-			// $segment = StringHelper::transliterate($segment);
-
-			// Make sure segment only contains valid characters
-			$segment = preg_replace("/[^A-Za-z0-9]/", '', $segment);
-		}
+		// make each segment safe
+		$segments = array_map([self::class, 'safeSegment'], $segments);
 
 		// Join the namespace segments back together
 		return implode('\\', $segments);
+	}
+
+	/**
+	 * Making one namespace segment safe
+	 *
+	 * @param  string   $string    The namespace segment string you would like to make safe
+	 *
+	 * @return string on success
+	 * @since  3.0.9
+	 */
+	public static function safeSegment(string $string): string
+	{
+		// Check if segment starts with a number
+		if (preg_match("/^\d/", $string))
+		{
+			// Extract the starting number(s)
+			preg_match("/^\d+/", $string, $matches);
+
+			if (isset($matches[0]))
+			{
+				$numberWord = StringHelper::numbers($matches[0]);
+				$string = str_replace($matches[0], $numberWord, $string);
+			}
+		}
+
+		// Transliterate string TODO: look again as this makes it lowercase
+		// $segment = StringHelper::transliterate($segment);
+
+		// Make sure segment only contains valid characters
+		return preg_replace("/[^A-Za-z0-9]/", '', $string);
 	}
 }
 

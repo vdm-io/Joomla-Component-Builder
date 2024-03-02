@@ -12,8 +12,16 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 
 /**
@@ -21,10 +29,10 @@ use VDM\Joomla\FOF\Encrypt\AES;
  */
 class ComponentbuilderModelServers extends ListModel
 {
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (empty($config['filter_fields']))
-        {
+		{
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
@@ -53,7 +61,7 @@ class ComponentbuilderModelServers extends ListModel
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -103,7 +111,7 @@ class ComponentbuilderModelServers extends ListModel
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}
-	
+
 	/**
 	 * Method to get an array of data items.
 	 *
@@ -118,12 +126,12 @@ class ComponentbuilderModelServers extends ListModel
 		$items = parent::getItems();
 
 		// Set values to display correctly.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			foreach ($items as $nr => &$item)
 			{
@@ -139,7 +147,7 @@ class ComponentbuilderModelServers extends ListModel
 		}
 
 		// set selection value to a translatable value
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			foreach ($items as $nr => &$item)
 			{
@@ -148,7 +156,7 @@ class ComponentbuilderModelServers extends ListModel
 			}
 		}
 
-        
+
 		// return items
 		return $items;
 	}
@@ -156,7 +164,7 @@ class ComponentbuilderModelServers extends ListModel
 	/**
 	 * Method to convert selection values to translatable string.
 	 *
-	 * @return translatable string
+	 * @return  string   The translatable string.
 	 */
 	public function selectionTranslation($value,$name)
 	{
@@ -169,25 +177,25 @@ class ComponentbuilderModelServers extends ListModel
 				2 => 'COM_COMPONENTBUILDER_SERVER_SFTP'
 			);
 			// Now check if value is found in this array
-			if (isset($protocolArray[$value]) && ComponentbuilderHelper::checkString($protocolArray[$value]))
+			if (isset($protocolArray[$value]) && StringHelper::check($protocolArray[$value]))
 			{
 				return $protocolArray[$value];
 			}
 		}
 		return $value;
 	}
-	
+
 	/**
 	 * Method to build an SQL query to load the list data.
 	 *
-	 * @return	string	An SQL query
+	 * @return    string    An SQL query
 	 */
 	protected function getListQuery()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Create a new query object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 
 		// Select some fields
@@ -216,7 +224,7 @@ class ComponentbuilderModelServers extends ListModel
 		{
 			$query->where('a.access = ' . (int) $_access);
 		}
-		elseif (ComponentbuilderHelper::checkArray($_access))
+		elseif (UtilitiesArrayHelper::check($_access))
 		{
 			// Secure the array for the query
 			$_access = ArrayHelper::toInteger($_access);
@@ -257,7 +265,7 @@ class ComponentbuilderModelServers extends ListModel
 				$query->where('a.name = ' . (int) $_name);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_name))
+		elseif (StringHelper::check($_name))
 		{
 			$query->where('a.name = ' . $db->quote($db->escape($_name)));
 		}
@@ -274,16 +282,18 @@ class ComponentbuilderModelServers extends ListModel
 				$query->where('a.protocol = ' . (int) $_protocol);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_protocol))
+		elseif (StringHelper::check($_protocol))
 		{
 			$query->where('a.protocol = ' . $db->quote($db->escape($_protocol)));
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'desc');
+		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{
+			// Check that the order direction is valid encase we have a field called direction as part of filers.
+			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'desc';
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 
@@ -301,17 +311,17 @@ class ComponentbuilderModelServers extends ListModel
 	public function getExportData($pks, $user = null)
 	{
 		// setup the query
-		if (($pks_size = ComponentbuilderHelper::checkArray($pks)) !== false || 'bulk' === $pks)
+		if (($pks_size = UtilitiesArrayHelper::check($pks)) !== false || 'bulk' === $pks)
 		{
 			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			// Create a new query object.
-			$db = JFactory::getDBO();
+			$db = Factory::getDBO();
 			$query = $db->getQuery(true);
 
 			// Select some fields
@@ -360,7 +370,7 @@ class ComponentbuilderModelServers extends ListModel
 				$basic = new AES($basickey);
 
 				// Set values to display correctly.
-				if (ComponentbuilderHelper::checkArray($items))
+				if (UtilitiesArrayHelper::check($items))
 				{
 					foreach ($items as $nr => &$item)
 					{
@@ -425,7 +435,7 @@ class ComponentbuilderModelServers extends ListModel
 				}
 				// Add headers to items array.
 				$headers = $this->getExImPortHeaders();
-				if (ComponentbuilderHelper::checkObject($headers))
+				if (ObjectHelper::check($headers))
 				{
 					array_unshift($items,$headers);
 				}
@@ -443,16 +453,16 @@ class ComponentbuilderModelServers extends ListModel
 	public function getExImPortHeaders()
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// get the columns
 		$columns = $db->getTableColumns("#__componentbuilder_server");
-		if (ComponentbuilderHelper::checkArray($columns))
+		if (UtilitiesArrayHelper::check($columns))
 		{
 			// remove the headers you don't import/export.
 			unset($columns['asset_id']);
 			unset($columns['checked_out']);
 			unset($columns['checked_out_time']);
-			$headers = new stdClass();
+			$headers = new \stdClass();
 			foreach ($columns as $column => $type)
 			{
 				$headers->{$column} = $column;
@@ -461,7 +471,7 @@ class ComponentbuilderModelServers extends ListModel
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -476,13 +486,13 @@ class ComponentbuilderModelServers extends ListModel
 		$id .= ':' . $this->getState('filter.published');
 		// Check if the value is an array
 		$_access = $this->getState('filter.access');
-		if (ComponentbuilderHelper::checkArray($_access))
+		if (UtilitiesArrayHelper::check($_access))
 		{
 			$id .= ':' . implode(':', $_access);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_access)
-		 || ComponentbuilderHelper::checkString($_access))
+		 || StringHelper::check($_access))
 		{
 			$id .= ':' . $_access;
 		}
@@ -498,19 +508,18 @@ class ComponentbuilderModelServers extends ListModel
 	/**
 	 * Build an SQL query to checkin all items left checked out longer then a set time.
 	 *
-	 * @return  a bool
-	 *
+	 * @return bool
+	 * @since 3.2.0
 	 */
-	protected function checkInNow()
+	protected function checkInNow(): bool
 	{
 		// Get set check in time
-		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
+		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
 
 		if ($time)
 		{
-
 			// Get a db connection.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			// Reset query.
 			$query = $db->getQuery(true);
 			$query->select('*');
@@ -522,7 +531,7 @@ class ComponentbuilderModelServers extends ListModel
 			if ($db->getNumRows())
 			{
 				// Get Yesterdays date.
-				$date = JFactory::getDate()->modify($time)->toSql();
+				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
@@ -543,7 +552,7 @@ class ComponentbuilderModelServers extends ListModel
 
 				$db->setQuery($query);
 
-				$db->execute();
+				return $db->execute();
 			}
 		}
 

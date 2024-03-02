@@ -12,13 +12,17 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 
 ?>
 <?php foreach ($this->items as $i => $item): ?>
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
-		$userChkOut = JFactory::getUser($item->checked_out);
+		$userChkOut = Factory::getUser($item->checked_out);
 		$canDo = ComponentbuilderHelper::getActions('field',$item,'fields');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -28,7 +32,7 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 				$iconClass = '';
 				if (!$this->saveOrder)
 				{
-					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+					$iconClass = ' inactive tip-top" hasTooltip" title="' . Html::tooltipText('JORDERINGDISABLED');
 				}
 			?>
 			<span class="sortable-handler<?php echo $iconClass; ?>">
@@ -46,12 +50,12 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<?php if ($canDo->get('field.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+						<?php echo Html::_('grid.id', $i, $item->id); ?>
 					<?php else: ?>
 						&#9633;
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					<?php echo Html::_('grid.id', $i, $item->id); ?>
 				<?php endif; ?>
 		<?php else: ?>
 			&#9633;
@@ -62,7 +66,7 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 				<?php if ($canDo->get('field.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
+						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php echo $this->escape($item->name); ?>
@@ -79,16 +83,16 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::_($item->datatype); ?>
+			<?php echo Text::_($item->datatype); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::_($item->indexes); ?>
+			<?php echo Text::_($item->indexes); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::_($item->null_switch); ?>
+			<?php echo Text::_($item->null_switch); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::_($item->store); ?>
+			<?php echo Text::_($item->store); ?>
 		</td>
 		<td class="nowrap">
 			<div class="name">
@@ -103,15 +107,15 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<?php if ($canDo->get('field.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'fields.', true, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'fields.', true, 'cb'); ?>
 					<?php else: ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'fields.', false, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'fields.', false, 'cb'); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'fields.', true, 'cb'); ?>
+					<?php echo Html::_('jgrid.published', $item->published, $i, 'fields.', true, 'cb'); ?>
 				<?php endif; ?>
 		<?php else: ?>
-			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'fields.', false, 'cb'); ?>
+			<?php echo Html::_('jgrid.published', $item->published, $i, 'fields.', false, 'cb'); ?>
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center hidden-phone">

@@ -12,10 +12,16 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
 /**
@@ -32,7 +38,7 @@ class ComponentbuilderControllerApi extends FormController
 	 */
 	protected $task;
 
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		$this->view_list = ''; // safeguard for setting the return view listing to the default site view.
 		parent::__construct($config);
@@ -60,7 +66,7 @@ class ComponentbuilderControllerApi extends FormController
 	public function translator()
 	{
 		// get params first
-		if (!isset($this->params) || !ComponentbuilderHelper::checkObject($this->params))
+		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
 			$this->params = JComponentHelper::getParams('com_componentbuilder');
 		}
@@ -120,11 +126,11 @@ class ComponentbuilderControllerApi extends FormController
 				echo 1;
 			}
 			// clear session
-			JFactory::getApplication()->getSession()->destroy();
+			Factory::getApplication()->getSession()->destroy();
 			jexit();
 		}
 		// clear session
-		JFactory::getApplication()->getSession()->destroy();
+		Factory::getApplication()->getSession()->destroy();
 		// return bool
 		echo 0;
 		jexit();
@@ -212,20 +218,20 @@ class ComponentbuilderControllerApi extends FormController
 						echo 1;
 					}
 					// clear session
-					JFactory::getApplication()->getSession()->destroy();
+					Factory::getApplication()->getSession()->destroy();
 					jexit();
 				}
 				// check if message is to be returned
 				if (1== $returnOptionsBuild)
 				{
 					// clear session
-					JFactory::getApplication()->getSession()->destroy();
+					Factory::getApplication()->getSession()->destroy();
 					jexit('Access Denied!');
 				}
 			}
 		}
 		// clear session
-		JFactory::getApplication()->getSession()->destroy();
+		Factory::getApplication()->getSession()->destroy();
 		// check if message is to be returned
 		if (1== $returnOptionsBuild)
 		{
@@ -244,7 +250,7 @@ class ComponentbuilderControllerApi extends FormController
 	protected function getApiUser()
 	{
 		// return user object
-		return JFactory::getUser($this->params->get('api', 0, 'INT'));
+		return Factory::getUser($this->params->get('api', 0, 'INT'));
 	}
 
 	/**
@@ -263,7 +269,7 @@ class ComponentbuilderControllerApi extends FormController
 		// get params first
 		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
-			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			$this->params = ComponentHelper::getParams('com_componentbuilder');
 		}
 		// Get the model
 		$model = componentbuilderHelper::getModel('joomla_components', JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
@@ -279,83 +285,83 @@ class ComponentbuilderControllerApi extends FormController
 			// set auto loader
 			ComponentbuilderHelper::autoLoader('smart');
 			// manual backup message
-			$backupNotice = array();
+			$backupNotice = [];
 			// get the data to export
 			if (UtilitiesArrayHelper::check($pks) && $model->getSmartExport($pks))
 			{
-				$backupNotice[] = JText::_('COM_COMPONENTBUILDER_BACKUP_WAS_DONE_SUCCESSFULLY');
+				$backupNotice[] = Text::_('COM_COMPONENTBUILDER_BACKUP_WAS_DONE_SUCCESSFULLY');
 				$backupNoticeStatus = 'Success';
 				// set the key string
 				if (StringHelper::check($model->key) && strlen($model->key) == 32)
 				{
 					$textNotice = array();
-					$keyNotice = '<h1>' . JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_CODESCODE', $model->key) . '</h1>';
-					$keyNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOUR_DATA_IS_ENCRYPTED_WITH_A_AES_TWO_HUNDRED_AND_FIFTY_SIX_BIT_ENCRYPTION_USING_THE_ABOVE_THIRTY_TWO_CHARACTER_KEY') . '</p>';
-					$textNotice[] = JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_S', $model->key);
+					$keyNotice = '<h1>' . Text::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_CODESCODE', $model->key) . '</h1>';
+					$keyNotice .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOUR_DATA_IS_ENCRYPTED_WITH_A_AES_TWO_HUNDRED_AND_FIFTY_SIX_BIT_ENCRYPTION_USING_THE_ABOVE_THIRTY_TWO_CHARACTER_KEY') . '</p>';
+					$textNotice[] = Text::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_S', $model->key);
 					// set the package owner info
 					if ((isset($model->info['getKeyFrom']['company']) && StringHelper::check($model->info['getKeyFrom']['company'])) || (isset($model->info['getKeyFrom']['owner']) && StringHelper::check($model->info['getKeyFrom']['owner'])))
 					{
-						$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
-						$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
+						$ownerDetails = '<h2>' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
+						$textNotice[] = '# ' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
 						$ownerDetails .= '<ul>';
 						if (isset($model->info['getKeyFrom']['company']) && StringHelper::check($model->info['getKeyFrom']['company']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $model->info['getKeyFrom']['company']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_COMPANY_S', $model->info['getKeyFrom']['company']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $model->info['getKeyFrom']['company']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_COMPANY_S', $model->info['getKeyFrom']['company']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['owner']) && StringHelper::check($model->info['getKeyFrom']['owner']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $model->info['getKeyFrom']['owner']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_OWNER_S', $model->info['getKeyFrom']['owner']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $model->info['getKeyFrom']['owner']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_OWNER_S', $model->info['getKeyFrom']['owner']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['website']) && StringHelper::check($model->info['getKeyFrom']['website']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $model->info['getKeyFrom']['website']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_WEBSITE_S', $model->info['getKeyFrom']['website']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $model->info['getKeyFrom']['website']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_WEBSITE_S', $model->info['getKeyFrom']['website']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['email']) && StringHelper::check($model->info['getKeyFrom']['email']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $model->info['getKeyFrom']['email']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $model->info['getKeyFrom']['email']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $model->info['getKeyFrom']['email']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $model->info['getKeyFrom']['email']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['license']) && StringHelper::check($model->info['getKeyFrom']['license']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $model->info['getKeyFrom']['license']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_LICENSE_S', $model->info['getKeyFrom']['license']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $model->info['getKeyFrom']['license']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_LICENSE_S', $model->info['getKeyFrom']['license']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['copyright']) && StringHelper::check($model->info['getKeyFrom']['copyright']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $model->info['getKeyFrom']['copyright']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_COPYRIGHT_S', $model->info['getKeyFrom']['copyright']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $model->info['getKeyFrom']['copyright']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_COPYRIGHT_S', $model->info['getKeyFrom']['copyright']);
 						}							
 						$ownerDetails .= '</ul>';
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_OWNER_DETAILS_WAS_SET');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_OWNER_DETAILS_WAS_SET');
 					}
 					else
 					{
-						$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_NOT_SET') . '</h2>';
-						$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
-						$ownerDetails .= JText::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_BJCB_GLOBAL_OPTIONSB_GO_TO_THE_BCOMPANYB_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE') . '<br />';
-						$textNotice[] = JText::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
-						$ownerDetails .= '<h3>' . JText::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS') . '</h3>';
-						$textNotice[] = '## ' .  JText::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS');
-						$ownerDetails .= JText::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_BIMPORT_PROCESSB_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_BDOES_NOTB_HAVE_THE_KEY_THEY_CAN_SEE_BWHERE_TO_GET_ITB') . '<br />';
-						$textNotice[] = JText::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_IMPORT_PROCESS_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_DOES_NOT_HAVE_THE_KEY_THEY_CAN_SEE_WHERE_TO_GET_IT');
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_CHECK_YOUR_OWNER_DETAILS_IT_HAS_NOT_BEEN_SET_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
+						$ownerDetails = '<h2>' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_NOT_SET') . '</h2>';
+						$textNotice[] = '# ' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
+						$ownerDetails .= Text::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_BJCB_GLOBAL_OPTIONSB_GO_TO_THE_BCOMPANYB_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE') . '<br />';
+						$textNotice[] = Text::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
+						$ownerDetails .= '<h3>' . Text::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS') . '</h3>';
+						$textNotice[] = '## ' .  Text::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS');
+						$ownerDetails .= Text::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_BIMPORT_PROCESSB_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_BDOES_NOTB_HAVE_THE_KEY_THEY_CAN_SEE_BWHERE_TO_GET_ITB') . '<br />';
+						$textNotice[] = Text::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_IMPORT_PROCESS_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_DOES_NOT_HAVE_THE_KEY_THEY_CAN_SEE_WHERE_TO_GET_IT');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_CHECK_YOUR_OWNER_DETAILS_IT_HAS_NOT_BEEN_SET_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
 					}
 				}
 				else
 				{
-					$keyNotice = '<h1>' . JText::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY') . '</h1>';
-					$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY');
-					$ownerDetails = JText::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_BSETTINGSB_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_BEXPORT_KEYB') . '<br />';
-					$textNotice[] = JText::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
-					$backupNotice[] = JText::_('COM_COMPONENTBUILDER_NO_KEYS_WERE_FOUND_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
+					$keyNotice = '<h1>' . Text::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY') . '</h1>';
+					$textNotice[] = '# ' . Text::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY');
+					$ownerDetails = Text::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_BSETTINGSB_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_BEXPORT_KEYB') . '<br />';
+					$textNotice[] = Text::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
+					$backupNotice[] = Text::_('COM_COMPONENTBUILDER_NO_KEYS_WERE_FOUND_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
 				}
 				// get email
 				if ($email = $this->params->get('backup_email', null))
@@ -369,20 +375,20 @@ class ComponentbuilderControllerApi extends FormController
 						// Build final massage.
 						$message = $keyNotice . $ownerDetails . '<br /><small>HASH: ' . $hashTracker . '</small>';
 						// set the subject
-						$subject = JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDER_BACKUP_KEY');
+						$subject = Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDER_BACKUP_KEY');
 						// email the message
 						componentbuilderEmail::send($email, $subject, componentbuilderEmail::setTableBody($message, $subject), $plainText, 1);
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_EMAIL_WITH_THE_NEW_KEY_WAS_SENT');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_EMAIL_WITH_THE_NEW_KEY_WAS_SENT');
 					}
 					else
 					{
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_KEY_HAS_NOT_CHANGED');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_KEY_HAS_NOT_CHANGED');
 					}
 				}
 			}
 			else
 			{
-				$backupNotice[] = JText::_('COM_COMPONENTBUILDER_BACKUP_FAILED_PLEASE_TRY_AGAIN_IF_THE_ERROR_CONTINUE_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR');
+				$backupNotice[] = Text::_('COM_COMPONENTBUILDER_BACKUP_FAILED_PLEASE_TRY_AGAIN_IF_THE_ERROR_CONTINUE_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR');
 				$backupNoticeStatus = 'Error';
 				if (StringHelper::check($model->packagePath))
 				{
@@ -392,7 +398,7 @@ class ComponentbuilderControllerApi extends FormController
 				if (StringHelper::check($model->zipPath))
 				{
 					// clear all if not successful
-					JFile::delete($model->zipPath);
+					File::delete($model->zipPath);
 				}				
 			}
 			// quite only if auto backup (adding this script from custom code :)
@@ -400,21 +406,21 @@ class ComponentbuilderControllerApi extends FormController
 			{
 				echo "# " . $backupNoticeStatus . "\n" .implode("\n", $backupNotice);
 				// clear session
-				JFactory::getApplication()->getSession()->destroy();
+				Factory::getApplication()->getSession()->destroy();
 				jexit();
 			}
-			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode("<br />", $backupNotice), $backupNoticeStatus);
+			$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode("<br />", $backupNotice), $backupNoticeStatus);
 			return;
 		}
 		// quite only if auto backup (adding this script from custom code :)
 		if ('backup' === $model->activeType)
 		{
-			echo "# Error\n" . JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
+			echo "# Error\n" . Text::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
 			// clear session
-			JFactory::getApplication()->getSession()->destroy();
+			Factory::getApplication()->getSession()->destroy();
 			jexit();
 		}
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED'), 'Error');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), Text::_('COM_COMPONENTBUILDER_ACCESS_DENIED'), 'Error');
 		return;
 	}
 
@@ -427,7 +433,7 @@ class ComponentbuilderControllerApi extends FormController
 	public function worker()
 	{
 		// get input values
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		// get DATA
 		$DATA = $input->post->get('VDM_DATA', null, 'STRING');
 		// get TASK
@@ -465,14 +471,14 @@ class ComponentbuilderControllerApi extends FormController
 						// return locked values
 						echo ComponentbuilderHelper::lock($model->messages);
 						// clear session
-						JFactory::getApplication()->getSession()->destroy();
+						Factory::getApplication()->getSession()->destroy();
 						jexit();
 					}
 					elseif ($result)
 					{
 						echo 1;
 						// clear session
-						JFactory::getApplication()->getSession()->destroy();
+						Factory::getApplication()->getSession()->destroy();
 						jexit();
 					}
 				}
@@ -481,7 +487,7 @@ class ComponentbuilderControllerApi extends FormController
 		// not success
 		echo 0;
 		// clear session
-		JFactory::getApplication()->getSession()->destroy();
+		Factory::getApplication()->getSession()->destroy();
 		jexit();
 	}
 
@@ -498,13 +504,13 @@ class ComponentbuilderControllerApi extends FormController
 	 *
 	 * @since   12.2
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// to insure no other tampering
 		return false;
 	}
 
-        /**
+	/**
 	 * Method override to check if you can add a new record.
 	 *
 	 * @param   array  $data  An array of input data.
@@ -513,7 +519,7 @@ class ComponentbuilderControllerApi extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowAdd($data = array())
+	protected function allowAdd($data = [])
 	{
 		// to insure no other tampering
 		return false;
@@ -548,7 +554,7 @@ class ComponentbuilderControllerApi extends FormController
 	 *
 	 * @since   12.2
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook(JModelLegacy $model, $validData = [])
 	{
 	}
 }

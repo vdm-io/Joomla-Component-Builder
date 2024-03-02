@@ -11,6 +11,10 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -21,7 +25,7 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 <?php foreach ($this->items as $i => $item): ?>
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
-		$userChkOut = JFactory::getUser($item->checked_out);
+		$userChkOut = Factory::getUser($item->checked_out);
 		$canDo = ComponentbuilderHelper::getActions('language_translation',$item,'language_translations');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -31,7 +35,7 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 				$iconClass = '';
 				if (!$this->saveOrder)
 				{
-					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+					$iconClass = ' inactive tip-top" hasTooltip" title="' . Html::tooltipText('JORDERINGDISABLED');
 				}
 			?>
 			<span class="sortable-handler<?php echo $iconClass; ?>">
@@ -49,12 +53,12 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 		<?php if ($canDo->get('language_translation.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+						<?php echo Html::_('grid.id', $i, $item->id); ?>
 					<?php else: ?>
 						&#9633;
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					<?php echo Html::_('grid.id', $i, $item->id); ?>
 				<?php endif; ?>
 		<?php else: ?>
 			&#9633;
@@ -65,7 +69,7 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			<?php if ($canDo->get('language_translation.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $item->source; ?></a>
 				<?php if ($item->checked_out): ?>
-					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
+					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'language_translations.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php echo $item->source; ?>
@@ -98,11 +102,11 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			{
 				if ($number == 1)
 				{
-					$counterUsedin[] = $number . ' ' . JText::_('COM_COMPONENTBUILDER_COMPONENT');
+					$counterUsedin[] = $number . ' ' . Text::_('COM_COMPONENTBUILDER_COMPONENT');
 				}
 				else
 				{
-					$counterUsedin[] = $number . ' ' . JText::_('COM_COMPONENTBUILDER_COMPONENTS');
+					$counterUsedin[] = $number . ' ' . Text::_('COM_COMPONENTBUILDER_COMPONENTS');
 				}
 			}
 			// set how many modules use this string
@@ -114,11 +118,11 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			{
 				if ($number == 1)
 				{
-					$counterUsedin[] = $number . ' ' . JText::_('COM_COMPONENTBUILDER_MODULE');
+					$counterUsedin[] = $number . ' ' . Text::_('COM_COMPONENTBUILDER_MODULE');
 				}
 				else
 				{
-					$counterUsedin[] = $number . ' ' . JText::_('COM_COMPONENTBUILDER_MODULES');
+					$counterUsedin[] = $number . ' ' . Text::_('COM_COMPONENTBUILDER_MODULES');
 				}
 			}
 			// set how many plugins use this string
@@ -130,27 +134,27 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 			{
 				if ($number == 1)
 				{
-					$counterUsedin[] = $number . ' ' . JText::_('COM_COMPONENTBUILDER_PLUGIN');
+					$counterUsedin[] = $number . ' ' . Text::_('COM_COMPONENTBUILDER_PLUGIN');
 				}
 				else
 				{
-					$counterUsedin[] = $number . ' ' . JText::_('COM_COMPONENTBUILDER_PLUGINS');
+					$counterUsedin[] = $number . ' ' . Text::_('COM_COMPONENTBUILDER_PLUGINS');
 				}
 			}
 			// build the numbers
 			$numbersUsedin = '';
 			if (ArrayHelper::check($counterUsedin))
 			{
-				$numbersUsedin = '<br />' . JText::_('COM_COMPONENTBUILDER_USED_IN') . ' ' . implode('<br />', $counterUsedin);
+				$numbersUsedin = '<br />' . Text::_('COM_COMPONENTBUILDER_USED_IN') . ' ' . implode('<br />', $counterUsedin);
 			}
 			// load the languages to the string
 			if (ArrayHelper::check($langBucket))
 			{
-				echo '<br /><small>' . JText::_('COM_COMPONENTBUILDER_ALREADY_TRANSLATED_INTO') . ' <em>(' . implode(', ', $langBucket) . ')</em>' . $numbersUsedin . '</small>';
+				echo '<br /><small>' . Text::_('COM_COMPONENTBUILDER_ALREADY_TRANSLATED_INTO') . ' <em>(' . implode(', ', $langBucket) . ')</em>' . $numbersUsedin . '</small>';
 			}
 			else
 			{
-				echo '<br /><small><em>(' . JText::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em>' . $numbersUsedin . '</small>';
+				echo '<br /><small><em>(' . Text::_('COM_COMPONENTBUILDER_NOTRANSLATION') . ')</em>' . $numbersUsedin . '</small>';
 			}
 			?>
 			</div>
@@ -159,15 +163,15 @@ $edit = "index.php?option=com_componentbuilder&view=language_translations&task=l
 		<?php if ($canDo->get('language_translation.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', true, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'language_translations.', true, 'cb'); ?>
 					<?php else: ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', false, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'language_translations.', false, 'cb'); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', true, 'cb'); ?>
+					<?php echo Html::_('jgrid.published', $item->published, $i, 'language_translations.', true, 'cb'); ?>
 				<?php endif; ?>
 		<?php else: ?>
-			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'language_translations.', false, 'cb'); ?>
+			<?php echo Html::_('jgrid.published', $item->published, $i, 'language_translations.', false, 'cb'); ?>
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center hidden-phone">

@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -646,7 +647,7 @@
 		<!-- Note_on_custom_admin_views Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_custom_admin_views" label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_NOTE_ON_CUSTOM_ADMIN_VIEWS_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_NOTE_ON_CUSTOM_ADMIN_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_custom_admin_views" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

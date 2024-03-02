@@ -12,7 +12,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -28,21 +32,21 @@ class ComponentbuilderControllerImport_language_translations extends BaseControl
 	public function import()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('Import_language_translations');
 		if ($model->import())
 		{
-			$cache = JFactory::getCache('mod_menu');
+			$cache = Factory::getCache('mod_menu');
 			$cache->clean();
 			// TODO: Reset the users acl here as well to kill off any missing bits
 		}
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$redirect_url = $app->getUserState('com_componentbuilder.redirect_url');
 		if (empty($redirect_url))
 		{
-			$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=import_language_translations', false);
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=import_language_translations', false);
 		}
 		else
 		{

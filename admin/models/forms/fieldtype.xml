@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_FIELDTYPE_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -467,7 +468,7 @@
 			class="inputbox"
 		/>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

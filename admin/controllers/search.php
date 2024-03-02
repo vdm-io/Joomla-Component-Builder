@@ -12,7 +12,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -27,16 +31,16 @@ class ComponentbuilderControllerSearch extends BaseController
 
 	public function dashboard()
 	{
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder', false));
 		return;
 	}
 
 	public function openCompiler()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the libraries
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=compiler', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=compiler', false));
 		return;
 	}
 }

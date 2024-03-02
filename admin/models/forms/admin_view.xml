@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -2474,10 +2475,12 @@
 					rows="22"
 					cols="30"
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_DESCRIPTION"
+					message="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_MESSAGE"
 					class="text_area span4"
 					filter="HTML"
 					hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCEMAP_HINT"
-					required="true"
+					required="false"
+					validate="sourcemapchecker"
 				/>
 			</form>
 		</field>
@@ -2782,7 +2785,7 @@
 				COM_COMPONENTBUILDER_ADMIN_VIEW_NO</option>
 		</field>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

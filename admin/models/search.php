@@ -12,9 +12,17 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ItemModel;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder Search Item Model
@@ -28,7 +36,7 @@ class ComponentbuilderModelSearch extends ItemModel
 	 */
 	protected $_context = 'com_componentbuilder.search';
 
-        /**
+	/**
 	 * Model user data.
 	 *
 	 * @var        strings
@@ -58,7 +66,7 @@ class ComponentbuilderModelSearch extends ItemModel
 	 */
 	protected function populateState()
 	{
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		$this->input = $this->app->input;
 		// Get the item main id
 		$id = $this->input->getInt('id', null);
@@ -77,12 +85,12 @@ class ComponentbuilderModelSearch extends ItemModel
 	 */
 	public function getItem($pk = null)
 	{
-		$this->user	= JFactory::getUser();
+		$this->user    = Factory::getUser();
 		// check if this user has permission to access item
 		if (!$this->user->authorise('search.access', 'com_componentbuilder'))
 		{
-			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
+			$app = Factory::getApplication();
+			$app->enqueueMessage(Text::_('Not authorised!'), 'error');
 			// redirect away if not a correct to cPanel/default view
 			$app->redirect('index.php?option=com_componentbuilder');
 			return false;
@@ -97,10 +105,10 @@ class ComponentbuilderModelSearch extends ItemModel
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('search.id');
 
 		$pk = $this->userId;
-		
+
 		if ($this->_item === null)
 		{
-			$this->_item = array();
+			$this->_item = [];
 		}
 
 		if (!isset($this->_item[$pk]))
@@ -108,7 +116,7 @@ class ComponentbuilderModelSearch extends ItemModel
 			try
 			{
 				// Get a db connection.
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 
 				// Create a new query object.
 				$query = $db->getQuery(true);
@@ -120,9 +128,9 @@ class ComponentbuilderModelSearch extends ItemModel
 
 				if (empty($data))
 				{
-					$app = JFactory::getApplication();
+					$app = Factory::getApplication();
 					// If no data is found redirect to default page and show warning.
-					$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_NOT_FOUND_OR_ACCESS_DENIED'), 'warning');
+					$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_NOT_FOUND_OR_ACCESS_DENIED'), 'warning');
 					$app->redirect('index.php?option=com_componentbuilder');
 					return false;
 				}
@@ -135,7 +143,7 @@ class ComponentbuilderModelSearch extends ItemModel
 				if ($e->getCode() == 404)
 				{
 					// Need to go thru the error handler to allow Redirect to work.
-					JError::raiseWarning(404, $e->getMessage());
+					JError::raiseError(404, $e->getMessage());
 				}
 				else
 				{
@@ -159,7 +167,7 @@ class ComponentbuilderModelSearch extends ItemModel
 
 		if (!isset($this->initSet) || !$this->initSet)
 		{
-			$this->user = JFactory::getUser();
+			$this->user = Factory::getUser();
 			$this->userId = $this->user->get('id');
 			$this->guest = $this->user->get('guest');
 			$this->groups = $this->user->get('groups');
@@ -168,7 +176,7 @@ class ComponentbuilderModelSearch extends ItemModel
 			$this->initSet = true;
 		}
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -201,7 +209,7 @@ class ComponentbuilderModelSearch extends ItemModel
 	 */
 	public function getUikitComp()
 	{
-		if (isset($this->uikitComp) && ComponentbuilderHelper::checkArray($this->uikitComp))
+		if (isset($this->uikitComp) && UtilitiesArrayHelper::check($this->uikitComp))
 		{
 			return $this->uikitComp;
 		}

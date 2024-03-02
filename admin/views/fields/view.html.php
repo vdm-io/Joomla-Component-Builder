@@ -12,7 +12,20 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Html View class for the Fields
@@ -35,7 +48,7 @@ class ComponentbuilderViewFields extends HtmlView
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		// Load the filter form from xml.
 		$this->filterForm = $this->get('FilterForm');
 		// Load the active filters.
@@ -45,7 +58,7 @@ class ComponentbuilderViewFields extends HtmlView
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
-		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
+		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('field');
 		$this->canEdit = $this->canDo->get('field.edit');
@@ -65,7 +78,7 @@ class ComponentbuilderViewFields extends HtmlView
 				$this->batchDisplay = JHtmlBatch_::render();
 			}
 		}
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -84,32 +97,32 @@ class ComponentbuilderViewFields extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_FIELDS'), 'lamp');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=fields');
-		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_FIELDS'), 'lamp');
+		FormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
 		{
-			JToolBarHelper::addNew('field.add');
+			ToolbarHelper::addNew('field.add');
 		}
 
 		// Only load if there are items
-		if (ComponentbuilderHelper::checkArray($this->items))
+		if (ArrayHelper::check($this->items))
 		{
 			if ($this->canEdit)
 			{
-				JToolBarHelper::editList('field.edit');
+				ToolbarHelper::editList('field.edit');
 			}
 
 			if ($this->canState)
 			{
-				JToolBarHelper::publishList('fields.publish');
-				JToolBarHelper::unpublishList('fields.unpublish');
-				JToolBarHelper::archiveList('fields.archive');
+				ToolbarHelper::publishList('fields.publish');
+				ToolbarHelper::unpublishList('fields.unpublish');
+				ToolbarHelper::archiveList('fields.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					JToolBarHelper::checkin('fields.checkin');
+					ToolbarHelper::checkin('fields.checkin');
 				}
 			}
 
@@ -117,11 +130,11 @@ class ComponentbuilderViewFields extends HtmlView
 			if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
 			{
 				// Get the toolbar object instance
-				$bar = JToolBar::getInstance('toolbar');
+				$bar = Toolbar::getInstance('toolbar');
 				// set the batch button name
-				$title = JText::_('JTOOLBAR_BATCH');
+				$title = Text::_('JTOOLBAR_BATCH');
 				// Instantiate a new JLayoutFile instance and render the batch button
-				$layout = new JLayoutFile('joomla.toolbar.batch');
+				$layout = new FileLayout('joomla.toolbar.batch');
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
@@ -129,49 +142,49 @@ class ComponentbuilderViewFields extends HtmlView
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
-				JToolbarHelper::deleteList('', 'fields.delete', 'JTOOLBAR_EMPTY_TRASH');
+				ToolbarHelper::deleteList('', 'fields.delete', 'JTOOLBAR_EMPTY_TRASH');
 			}
 			elseif ($this->canState && $this->canDelete)
 			{
-				JToolbarHelper::trash('fields.trash');
+				ToolbarHelper::trash('fields.trash');
 			}
 
 			if ($this->canDo->get('core.export') && $this->canDo->get('field.export'))
 			{
-				JToolBarHelper::custom('fields.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
+				ToolbarHelper::custom('fields.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
 		if ($this->user->authorise('field.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('fields.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			ToolbarHelper::custom('fields.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('field.import'))
 		{
-			JToolBarHelper::custom('fields.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
+			ToolbarHelper::custom('fields.importData', 'upload', '', 'COM_COMPONENTBUILDER_IMPORT_DATA', false);
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('fields');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
 				'batch[published]',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+				Html::_('select.options', Html::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
 			);
 		}
 
@@ -179,9 +192,9 @@ class ComponentbuilderViewFields extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
 				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+				Html::_('select.options', Html::_('access.assetgroups'), 'value', 'text')
 			);
 		}
 
@@ -189,9 +202,9 @@ class ComponentbuilderViewFields extends HtmlView
 		{
 			// Category Batch selection.
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_CATEGORY'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_CATEGORY'),
 				'batch[category]',
-				JHtml::_('select.options', JHtml::_('category.options', 'com_componentbuilder.field'), 'value', 'text')
+				Html::_('select.options', Html::_('category.options', 'com_componentbuilder.field'), 'value', 'text')
 			);
 		}
 
@@ -199,19 +212,19 @@ class ComponentbuilderViewFields extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Fieldtype Name Selection
-			$this->fieldtypeNameOptions = JFormHelper::loadFieldType('Fieldtypes')->options;
+			$this->fieldtypeNameOptions = FormHelper::loadFieldType('Fieldtypes')->options;
 			// We do some sanitation for Fieldtype Name filter
-			if (ComponentbuilderHelper::checkArray($this->fieldtypeNameOptions) &&
+			if (ArrayHelper::check($this->fieldtypeNameOptions) &&
 				isset($this->fieldtypeNameOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->fieldtypeNameOptions[0]->value))
+				!StringHelper::check($this->fieldtypeNameOptions[0]->value))
 			{
 				unset($this->fieldtypeNameOptions[0]);
 			}
 			// Fieldtype Name Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL').' -',
 				'batch[fieldtype]',
-				JHtml::_('select.options', $this->fieldtypeNameOptions, 'value', 'text')
+				Html::_('select.options', $this->fieldtypeNameOptions, 'value', 'text')
 			);
 		}
 
@@ -219,19 +232,19 @@ class ComponentbuilderViewFields extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Datatype Selection
-			$this->datatypeOptions = JFormHelper::loadFieldType('fieldsfilterdatatype')->options;
+			$this->datatypeOptions = FormHelper::loadFieldType('fieldsfilterdatatype')->options;
 			// We do some sanitation for Datatype filter
-			if (ComponentbuilderHelper::checkArray($this->datatypeOptions) &&
+			if (ArrayHelper::check($this->datatypeOptions) &&
 				isset($this->datatypeOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->datatypeOptions[0]->value))
+				!StringHelper::check($this->datatypeOptions[0]->value))
 			{
 				unset($this->datatypeOptions[0]);
 			}
 			// Datatype Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL').' -',
 				'batch[datatype]',
-				JHtml::_('select.options', $this->datatypeOptions, 'value', 'text')
+				Html::_('select.options', $this->datatypeOptions, 'value', 'text')
 			);
 		}
 
@@ -239,19 +252,19 @@ class ComponentbuilderViewFields extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Indexes Selection
-			$this->indexesOptions = JFormHelper::loadFieldType('fieldsfilterindexes')->options;
+			$this->indexesOptions = FormHelper::loadFieldType('fieldsfilterindexes')->options;
 			// We do some sanitation for Indexes filter
-			if (ComponentbuilderHelper::checkArray($this->indexesOptions) &&
+			if (ArrayHelper::check($this->indexesOptions) &&
 				isset($this->indexesOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->indexesOptions[0]->value))
+				!StringHelper::check($this->indexesOptions[0]->value))
 			{
 				unset($this->indexesOptions[0]);
 			}
 			// Indexes Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL').' -',
 				'batch[indexes]',
-				JHtml::_('select.options', $this->indexesOptions, 'value', 'text')
+				Html::_('select.options', $this->indexesOptions, 'value', 'text')
 			);
 		}
 
@@ -259,19 +272,19 @@ class ComponentbuilderViewFields extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Null Switch Selection
-			$this->null_switchOptions = JFormHelper::loadFieldType('fieldsfilternullswitch')->options;
+			$this->null_switchOptions = FormHelper::loadFieldType('fieldsfilternullswitch')->options;
 			// We do some sanitation for Null Switch filter
-			if (ComponentbuilderHelper::checkArray($this->null_switchOptions) &&
+			if (ArrayHelper::check($this->null_switchOptions) &&
 				isset($this->null_switchOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->null_switchOptions[0]->value))
+				!StringHelper::check($this->null_switchOptions[0]->value))
 			{
 				unset($this->null_switchOptions[0]);
 			}
 			// Null Switch Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL').' -',
 				'batch[null_switch]',
-				JHtml::_('select.options', $this->null_switchOptions, 'value', 'text')
+				Html::_('select.options', $this->null_switchOptions, 'value', 'text')
 			);
 		}
 
@@ -279,19 +292,19 @@ class ComponentbuilderViewFields extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Store Selection
-			$this->storeOptions = JFormHelper::loadFieldType('fieldsfilterstore')->options;
+			$this->storeOptions = FormHelper::loadFieldType('fieldsfilterstore')->options;
 			// We do some sanitation for Store filter
-			if (ComponentbuilderHelper::checkArray($this->storeOptions) &&
+			if (ArrayHelper::check($this->storeOptions) &&
 				isset($this->storeOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->storeOptions[0]->value))
+				!StringHelper::check($this->storeOptions[0]->value))
 			{
 				unset($this->storeOptions[0]);
 			}
 			// Store Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL').' -',
 				'batch[store]',
-				JHtml::_('select.options', $this->storeOptions, 'value', 'text')
+				Html::_('select.options', $this->storeOptions, 'value', 'text')
 			);
 		}
 	}
@@ -305,10 +318,10 @@ class ComponentbuilderViewFields extends HtmlView
 	{
 		if (!isset($this->document))
 		{
-			$this->document = JFactory::getDocument();
+			$this->document = Factory::getDocument();
 		}
-		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_FIELDS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/fields.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->setTitle(Text::_('COM_COMPONENTBUILDER_FIELDS'));
+		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/fields.css", ['version' => 'auto']);
 	}
 
 	/**
@@ -323,30 +336,40 @@ class ComponentbuilderViewFields extends HtmlView
 		if(strlen($var) > 50)
 		{
 			// use the helper htmlEscape method instead and shorten the string
-			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true);
+			return StringHelper::html($var, $this->_charset, true);
 		}
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
 	}
 
 	/**
 	 * Returns an array of fields the table can be sorted by
 	 *
-	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 * @return  array   Array containing the field name to sort by as the key and display text as value
 	 */
 	protected function getSortFields()
 	{
 		return array(
-			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
-			'a.published' => JText::_('JSTATUS'),
-			'a.name' => JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'),
-			'g.name' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'),
-			'a.datatype' => JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'),
-			'a.indexes' => JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'),
-			'a.null_switch' => JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'),
-			'a.store' => JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'),
-			'category_title' => JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'),
-			'a.id' => JText::_('JGRID_HEADING_ID')
+			'a.ordering' => Text::_('JGRID_HEADING_ORDERING'),
+			'a.published' => Text::_('JSTATUS'),
+			'a.name' => Text::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'),
+			'g.name' => Text::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'),
+			'a.datatype' => Text::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'),
+			'a.indexes' => Text::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'),
+			'a.null_switch' => Text::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'),
+			'a.store' => Text::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'),
+			'category_title' => Text::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'),
+			'a.id' => Text::_('JGRID_HEADING_ID')
 		);
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

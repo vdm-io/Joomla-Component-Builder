@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -372,7 +373,7 @@
 		<!-- Note_add_urls Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_add_urls" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_URLS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_FILES_FOLDERS_URLS_NOTE_ADD_URLS_DESCRIPTION" heading="h4" class="alert alert-info note_add_urls" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

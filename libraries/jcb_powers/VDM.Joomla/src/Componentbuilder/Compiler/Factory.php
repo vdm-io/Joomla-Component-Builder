@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Service\Database;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Model;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Event;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Header;
 use VDM\Joomla\Componentbuilder\Compiler\Service\History;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder;
@@ -34,8 +35,11 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlamodule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlaplugin;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Utilities;
-use VDM\Joomla\Componentbuilder\Compiler\Service\Builder;
+use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderAJ;
+use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderLZ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
 use VDM\Joomla\Gitea\Service\Settings as GiteaSettings;
@@ -146,6 +150,7 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Model())
 			->registerServiceProvider(new Compiler())
 			->registerServiceProvider(new Event())
+			->registerServiceProvider(new Header())
 			->registerServiceProvider(new History())
 			->registerServiceProvider(new Language())
 			->registerServiceProvider(new Placeholder())
@@ -161,8 +166,11 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Joomlamodule())
 			->registerServiceProvider(new Joomlaplugin())
 			->registerServiceProvider(new Utilities())
-			->registerServiceProvider(new Builder())
+			->registerServiceProvider(new BuilderAJ())
+			->registerServiceProvider(new BuilderLZ())
 			->registerServiceProvider(new Creator())
+			->registerServiceProvider(new ArchitectureController())
+			->registerServiceProvider(new ArchitectureModel())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaUtilities())
 			->registerServiceProvider(new GiteaSettings())

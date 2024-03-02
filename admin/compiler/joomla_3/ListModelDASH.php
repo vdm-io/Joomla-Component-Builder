@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -27,9 +27,9 @@ class ###Component###Model###Component### extends ListModel
 	public function getIcons()
 	{
 		// load user for access menus
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// reset icon array
-		$icons  = array();
+		$icons  = [];
 		// view groups array
 		$viewGroups = array(
 			'main' => array(###DASHBOARDICONS###)
@@ -38,7 +38,7 @@ class ###Component###Model###Component### extends ListModel
 		foreach($viewGroups as $group => $views)
 		{
 			$i = 0;
-			if (###Component###Helper::checkArray($views))
+			if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($views))
 			{
 				foreach($views as $view)
 				{
@@ -50,11 +50,11 @@ class ###Component###Model###Component### extends ListModel
 						if (count($dwd) == 3)
 						{
 							list($type, $name, $url) = $dwd;
-							$viewName 	= $name;
-							$alt 		= $name;
-							$url 		= $url;
-							$image 		= $name . '.' . $type;
-							$name 		= 'COM_###COMPONENT###_DASHBOARD_' . ###Component###Helper::safeString($name,'U');
+							$viewName = $name;
+							$alt      = $name;
+							$url      = $url;
+							$image    = $name . '.' . $type;
+							$name     = 'COM_###COMPONENT###_DASHBOARD_' . Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($name,'U');
 						}
 					}
 					// internal views
@@ -76,11 +76,11 @@ class ###Component###Model###Component### extends ListModel
 							switch($action)
 							{
 								case 'add':
-									$url	= 'index.php?option=com_###component###&view=' . $name . '&layout=edit';
-									$image	= $name . '_' . $action.  '.' . $type;
-									$alt	= $name . '&nbsp;' . $action;
-									$name	= 'COM_###COMPONENT###_DASHBOARD_'.###Component###Helper::safeString($name,'U').'_ADD';
-									$add	= true;
+									$url   = 'index.php?option=com_###component###&view=' . $name . '&layout=edit';
+									$image = $name . '_' . $action.  '.' . $type;
+									$alt   = $name . '&nbsp;' . $action;
+									$name  = 'COM_###COMPONENT###_DASHBOARD_'.Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($name,'U').'_ADD';
+									$add   = true;
 								break;
 								default:
 									// check for new convention (more stable)
@@ -93,34 +93,34 @@ class ###Component###Model###Component### extends ListModel
 									{
 										$extension = 'com_###component###.' . $name;
 									}
-									$url	= 'index.php?option=com_categories&view=categories&extension=' . $extension;
-									$image	= $name . '_' . $action . '.' . $type;
-									$alt	= $viewName . '&nbsp;' . $action;
-									$name	= 'COM_###COMPONENT###_DASHBOARD_' . ###Component###Helper::safeString($name,'U') . '_' . ###Component###Helper::safeString($action,'U');
+									$url   = 'index.php?option=com_categories&view=categories&extension=' . $extension;
+									$image = $name . '_' . $action . '.' . $type;
+									$alt   = $viewName . '&nbsp;' . $action;
+									$name  = 'COM_###COMPONENT###_DASHBOARD_' . Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($name,'U') . '_' . Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($action,'U');
 								break;
 							}
 						}
 						else
 						{
-							$viewName 	= $name;
-							$alt 		= $name;
-							$url 		= 'index.php?option=com_###component###&view=' . $name;
-							$image 		= $name . '.' . $type;
-							$name 		= 'COM_###COMPONENT###_DASHBOARD_' . ###Component###Helper::safeString($name,'U');
-							$hover		= false;
+							$viewName = $name;
+							$alt      = $name;
+							$url      = 'index.php?option=com_###component###&view=' . $name;
+							$image    = $name . '.' . $type;
+							$name     = 'COM_###COMPONENT###_DASHBOARD_' . Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($name,'U');
+							$hover    = false;
 						}
 					}
 					else
 					{
-						$viewName 	= $view;
-						$alt 		= $view;
-						$url 		= 'index.php?option=com_###component###&view=' . $view;
-						$image 		= $view . '.png';
-						$name 		= ucwords($view).'<br /><br />';
-						$hover		= false;
+						$viewName = $view;
+						$alt      = $view;
+						$url      = 'index.php?option=com_###component###&view=' . $view;
+						$image    = $view . '.png';
+						$name     = ucwords($view).'<br /><br />';
+						$hover    = false;
 					}
 					// first make sure the view access is set
-					if (###Component###Helper::checkArray($viewAccess))
+					if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($viewAccess))
 					{
 						// setup some defaults
 						$dashboard_add = false;
@@ -128,11 +128,11 @@ class ###Component###Model###Component### extends ListModel
 						$accessTo = '';
 						$accessAdd = '';
 						// access checking start
-						$accessCreate = (isset($viewAccess[$viewName.'.create'])) ? ###Component###Helper::checkString($viewAccess[$viewName.'.create']):false;
-						$accessAccess = (isset($viewAccess[$viewName.'.access'])) ? ###Component###Helper::checkString($viewAccess[$viewName.'.access']):false;
+						$accessCreate = (isset($viewAccess[$viewName.'.create'])) ? Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($viewAccess[$viewName.'.create']):false;
+						$accessAccess = (isset($viewAccess[$viewName.'.access'])) ? Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($viewAccess[$viewName.'.access']):false;
 						// set main controllers
-						$accessDashboard_add = (isset($viewAccess[$viewName.'.dashboard_add'])) ? ###Component###Helper::checkString($viewAccess[$viewName.'.dashboard_add']):false;
-						$accessDashboard_list = (isset($viewAccess[$viewName.'.dashboard_list'])) ? ###Component###Helper::checkString($viewAccess[$viewName.'.dashboard_list']):false;
+						$accessDashboard_add = (isset($viewAccess[$viewName.'.dashboard_add'])) ? Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($viewAccess[$viewName.'.dashboard_add']):false;
+						$accessDashboard_list = (isset($viewAccess[$viewName.'.dashboard_list'])) ? Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($viewAccess[$viewName.'.dashboard_list']):false;
 						// check for adding access
 						if ($add && $accessCreate)
 						{
@@ -150,64 +150,64 @@ class ###Component###Model###Component### extends ListModel
 						// set main access controllers
 						if ($accessDashboard_add)
 						{
-							$dashboard_add	= $user->authorise($viewAccess[$viewName.'.dashboard_add'], 'com_###component###');
+							$dashboard_add    = $user->authorise($viewAccess[$viewName.'.dashboard_add'], 'com_###component###');
 						}
 						if ($accessDashboard_list)
 						{
 							$dashboard_list = $user->authorise($viewAccess[$viewName.'.dashboard_list'], 'com_###component###');
 						}
-						if (###Component###Helper::checkString($accessAdd) && ###Component###Helper::checkString($accessTo))
+						if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($accessAdd) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($accessTo))
 						{
 							// check access
 							if($user->authorise($accessAdd, 'com_###component###') && $user->authorise($accessTo, 'com_###component###') && $dashboard_add)
 							{
-								$icons[$group][$i]			= new StdClass;
-								$icons[$group][$i]->url 	= $url;
-								$icons[$group][$i]->name 	= $name;
-								$icons[$group][$i]->image 	= $image;
-								$icons[$group][$i]->alt 	= $alt;
+								$icons[$group][$i]        = new StdClass;
+								$icons[$group][$i]->url   = $url;
+								$icons[$group][$i]->name  = $name;
+								$icons[$group][$i]->image = $image;
+								$icons[$group][$i]->alt   = $alt;
 							}
 						}
-						elseif (###Component###Helper::checkString($accessTo))
+						elseif (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($accessTo))
 						{
 							// check access
 							if($user->authorise($accessTo, 'com_###component###') && $dashboard_list)
 							{
-								$icons[$group][$i]			= new StdClass;
-								$icons[$group][$i]->url 	= $url;
-								$icons[$group][$i]->name 	= $name;
-								$icons[$group][$i]->image 	= $image;
-								$icons[$group][$i]->alt 	= $alt;
+								$icons[$group][$i]        = new StdClass;
+								$icons[$group][$i]->url   = $url;
+								$icons[$group][$i]->name  = $name;
+								$icons[$group][$i]->image = $image;
+								$icons[$group][$i]->alt   = $alt;
 							}
 						}
-						elseif (###Component###Helper::checkString($accessAdd))
+						elseif (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($accessAdd))
 						{
 							// check access
 							if($user->authorise($accessAdd, 'com_###component###') && $dashboard_add)
 							{
-								$icons[$group][$i]			= new StdClass;
-								$icons[$group][$i]->url 	= $url;
-								$icons[$group][$i]->name 	= $name;
-								$icons[$group][$i]->image 	= $image;
-								$icons[$group][$i]->alt 	= $alt;
+								$icons[$group][$i]        = new StdClass;
+								$icons[$group][$i]->url   = $url;
+								$icons[$group][$i]->name  = $name;
+								$icons[$group][$i]->image = $image;
+								$icons[$group][$i]->alt   = $alt;
 							}
 						}
 						else
 						{
-							$icons[$group][$i]			= new StdClass;
-							$icons[$group][$i]->url 	= $url;
-							$icons[$group][$i]->name 	= $name;
-							$icons[$group][$i]->image 	= $image;
-							$icons[$group][$i]->alt 	= $alt;
+							$icons[$group][$i]        = new StdClass;
+							$icons[$group][$i]->url   = $url;
+							$icons[$group][$i]->name  = $name;
+							$icons[$group][$i]->image = $image;
+							$icons[$group][$i]->alt   = $alt;
 						}
 					}
 					else
 					{
-						$icons[$group][$i]			= new StdClass;
-						$icons[$group][$i]->url 	= $url;
-						$icons[$group][$i]->name 	= $name;
-						$icons[$group][$i]->image 	= $image;
-						$icons[$group][$i]->alt 	= $alt;
+						$icons[$group][$i]        = new StdClass;
+						$icons[$group][$i]->url   = $url;
+						$icons[$group][$i]->name  = $name;
+						$icons[$group][$i]->image = $image;
+						$icons[$group][$i]->alt   = $alt;
 					}
 					$i++;
 				}

@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -61,7 +61,7 @@ class ###Component###Model###SView### extends ItemModel
 	 */
 	protected function populateState()
 	{
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		$this->input = $this->app->input;
 		// Get the itme main id
 		$id = $this->input->getInt('id', null);
@@ -82,7 +82,7 @@ class ###Component###Model###SView### extends ItemModel
 	 */
 	public function getItem($pk = null)
 	{
-		$this->user = JFactory::getUser();###USER_PERMISSION_CHECK_ACCESS###
+		$this->user = Factory::getUser();###USER_PERMISSION_CHECK_ACCESS###
 		$this->userId = $this->user->get('id');
 		$this->guest = $this->user->get('guest');
 		$this->groups = $this->user->get('groups');
@@ -91,10 +91,10 @@ class ###Component###Model###SView### extends ItemModel
 		$this->initSet = true;
 
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('###sview###.id');###SITE_BEFORE_GET_ITEM###
-		
+
 		if ($this->_item === null)
 		{
-			$this->_item = array();
+			$this->_item = [];
 		}###LICENSE_LOCKED_CHECK###
 
 		if (!isset($this->_item[$pk]))
@@ -107,7 +107,7 @@ class ###Component###Model###SView### extends ItemModel
 				if ($e->getCode() == 404)
 				{
 					// Need to go thru the error handler to allow Redirect to work.
-					JError::raiseWarning(404, $e->getMessage());
+					JError::raiseError(404, $e->getMessage());
 				}
 				else
 				{

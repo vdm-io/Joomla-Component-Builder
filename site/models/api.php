@@ -12,9 +12,18 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ItemModel;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Componentbuilder Api Item Model
@@ -58,7 +67,7 @@ class ComponentbuilderModelApi extends ItemModel
 	 */
 	protected function populateState()
 	{
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		$this->input = $this->app->input;
 		// Get the itme main id
 		$id = $this->input->getInt('id', null);
@@ -79,7 +88,7 @@ class ComponentbuilderModelApi extends ItemModel
 	 */
 	public function getItem($pk = null)
 	{
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		$this->userId = $this->user->get('id');
 		$this->guest = $this->user->get('guest');
 		$this->groups = $this->user->get('groups');
@@ -88,10 +97,10 @@ class ComponentbuilderModelApi extends ItemModel
 		$this->initSet = true;
 
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('api.id');
-		
+
 		if ($this->_item === null)
 		{
-			$this->_item = array();
+			$this->_item = [];
 		}
 
 		if (!isset($this->_item[$pk]))
@@ -99,7 +108,7 @@ class ComponentbuilderModelApi extends ItemModel
 			try
 			{
 				// Get a db connection.
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 
 				// Create a new query object.
 				$query = $db->getQuery(true);
@@ -117,10 +126,10 @@ class ComponentbuilderModelApi extends ItemModel
 
 				if (empty($data))
 				{
-					$app = JFactory::getApplication();
+					$app = Factory::getApplication();
 					// If no data is found redirect to default page and show warning.
-					$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_NOT_FOUND_OR_ACCESS_DENIED'), 'warning');
-					$app->redirect(JURI::root());
+					$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_NOT_FOUND_OR_ACCESS_DENIED'), 'warning');
+					$app->redirect(Uri::root());
 					return false;
 				}
 
@@ -132,7 +141,7 @@ class ComponentbuilderModelApi extends ItemModel
 				if ($e->getCode() == 404)
 				{
 					// Need to go thru the error handler to allow Redirect to work.
-					JError::raiseWarning(404, $e->getMessage());
+					JError::raiseError(404, $e->getMessage());
 				}
 				else
 				{
@@ -153,7 +162,7 @@ class ComponentbuilderModelApi extends ItemModel
 	 */
 	public function getUikitComp()
 	{
-		if (isset($this->uikitComp) && ComponentbuilderHelper::checkArray($this->uikitComp))
+		if (isset($this->uikitComp) && UtilitiesArrayHelper::check($this->uikitComp))
 		{
 			return $this->uikitComp;
 		}
@@ -168,7 +177,7 @@ class ComponentbuilderModelApi extends ItemModel
 	public function getTranslationLinkedComponents()
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		// for now we only have crowdin
@@ -187,7 +196,7 @@ class ComponentbuilderModelApi extends ItemModel
 
 	public function translate($component)
 	{
-		$this->messages[] = JText::_('COM_COMPONENTBUILDER_TRANSLATOR_MODULE_NOT_READYBR_THIS_AREA_IS_STILL_UNDER_PRODUCTION_HOPEFULLY_WITH_NEXT_UPDATE');
+		$this->messages[] = Text::_('COM_COMPONENTBUILDER_TRANSLATOR_MODULE_NOT_READYBR_THIS_AREA_IS_STILL_UNDER_PRODUCTION_HOPEFULLY_WITH_NEXT_UPDATE');
 		return false;
 	}
 
@@ -215,9 +224,9 @@ class ComponentbuilderModelApi extends ItemModel
 		if (isset($values['component_id']) && $values['component_id'] > 1)
 		{
 			// make sure the component is published
-			$published = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component_id'], 'id', 'published');
+			$published = GetHelper::var('joomla_component', (int) $values['component_id'], 'id', 'published');
 			// make sure the component is checked in
-			$checked_out = ComponentbuilderHelper::getVar('joomla_component', (int) $values['component_id'], 'id', 'checked_out');
+			$checked_out = GetHelper::var('joomla_component', (int) $values['component_id'], 'id', 'checked_out');
 			if (1 == $published && $checked_out == 0)
 			{
 				// load the config values
@@ -227,50 +236,50 @@ class ComponentbuilderModelApi extends ItemModel
 				if($this->compiler)
 				{
 					// component was compiled
-					$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_COMPILED', $this->compiler->componentFolderName);
+					$this->messages[] = Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_COMPILED', $this->compiler->componentFolderName);
 					// get compiler model to run the installer
 					$model = ComponentbuilderHelper::getModel('compiler', JPATH_COMPONENT_ADMINISTRATOR);
 					// now install components
 					if (1 == CFactory::_('Config')->install && $model->install($this->compiler->componentFolderName.'.zip'))
 					{
 						// component was installed
-						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_INSTALLED_AND_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+						$this->messages[] = Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_INSTALLED_AND_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
 					}
 					elseif (1 != CFactory::_('Config')->install)
 					{
 						jimport('joomla.filesystem.file');
-						$config = JFactory::getConfig();
+						$config = Factory::getConfig();
 						$package = $config->get('tmp_path') . '/' . $this->compiler->componentFolderName.'.zip';
 						// just remove from temp
 						if (JFile::delete($package) && !is_file($package))
 						{
 							// component was installed
-							$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_ALSO_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
+							$this->messages[] = Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_ALSO_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);
 						}
 						else
 						{
 							// component was not installed
-							$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
+							$this->messages[] = Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
 						}
 					}
 					else
 					{
 						// component was not installed
-						$this->messages[] = JText::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
+						$this->messages[] = Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_AND_IS_STILL_IN_THE_TEMP_FOLDER', $this->compiler->componentFolderName);
 					}
 					// get all the messages from application (TODO)
 					return true;
 				}
 				// set that the component was not found
-				$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_DID_NOT_COMPILE');
+				$this->messages[] = Text::_('COM_COMPONENTBUILDER_COMPONENT_DID_NOT_COMPILE');
 				return false;
 			}
 			// set that the component was not found
-			$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_IS_NOT_PUBLISHED_OR_IS_CHECKED_OUT');
+			$this->messages[] = Text::_('COM_COMPONENTBUILDER_COMPONENT_IS_NOT_PUBLISHED_OR_IS_CHECKED_OUT');
 			return false;
 		}
 		// set that the component was not found
-		$this->messages[] = JText::_('COM_COMPONENTBUILDER_COMPONENT_WAS_NOT_FOUND');
+		$this->messages[] = Text::_('COM_COMPONENTBUILDER_COMPONENT_WAS_NOT_FOUND');
 		return false;
 	}
 }

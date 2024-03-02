@@ -12,7 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 ?>
 
-<p><?php echo JText::_('COM_COMPONENTBUILDER_COMPONENTS_CONFIG_BATCH_TIP'); ?></p>
+<p><?php echo Text::_('COM_COMPONENTBUILDER_COMPONENTS_CONFIG_BATCH_TIP'); ?></p>
 <?php echo $this->batchDisplay; ?>

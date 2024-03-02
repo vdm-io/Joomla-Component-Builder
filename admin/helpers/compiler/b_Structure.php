@@ -14,6 +14,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Language\Text;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
@@ -264,7 +265,7 @@ class Structure extends Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Content.One')->allActive()
 	 */
-	public $fileContentStatic = array();
+	public $fileContentStatic = [];
 
 	/**
 	 * Extention Custom Fields
@@ -272,14 +273,14 @@ class Structure extends Get
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Extension.Custom.Fields')->get($key)
 	 */
-	public $extentionCustomfields = array();
+	public $extentionCustomfields = [];
 
 	/**
 	 * Extention Tracking Files Moved
 	 *
 	 * @var    array
 	 */
-	public $extentionTrackingFilesMoved = array();
+	public $extentionTrackingFilesMoved = [];
 
 	/**
 	 * The standard folders
@@ -304,7 +305,7 @@ class Structure extends Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Content.Multi')->allActive()
 	 */
-	public $fileContentDynamic = array();
+	public $fileContentDynamic = [];
 
 	/**
 	 * The Component Sales name
@@ -344,7 +345,7 @@ class Structure extends Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Registry')->get('dynamic_paths');
 	 */
-	public $dynamicPaths = array();
+	public $dynamicPaths = [];
 
 	/**
 	 * The not new static items
@@ -352,7 +353,7 @@ class Structure extends Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Registry')->get('files.not.new', []);
 	 */
-	public $notNew = array();
+	public $notNew = [];
 
 	/**
 	 * Update the file content
@@ -360,7 +361,7 @@ class Structure extends Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Registry')->get('update.file.content');
 	 */
-	public $updateFileContent = array();
+	public $updateFileContent = [];
 
 	/**
 	 * The new files
@@ -368,7 +369,7 @@ class Structure extends Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Utilities.Files');
 	 */
-	public $newFiles = array();
+	public $newFiles = [];
 
 	/**
 	 * The Checkin Switch
@@ -390,7 +391,7 @@ class Structure extends Get
 	 * @var     array
 	 * @deprecated 3.3
 	 */
-	protected $lastModifiedDate = array();
+	protected $lastModifiedDate = [];
 
 	/**
 	 * The default view switch
@@ -474,10 +475,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -493,10 +494,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -512,10 +513,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -531,10 +532,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -550,10 +551,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -569,10 +570,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -599,10 +600,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -618,10 +619,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -637,10 +638,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -673,7 +674,8 @@ class Structure extends Get
 			{
 				$check = md5($path . 'type' . $field['type_name']);
 				// lets check if we already moved this
-				if (!isset($this->extentionTrackingFilesMoved[$check]))
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3 &&
+					!isset($this->extentionTrackingFilesMoved[$check]))
 				{
 					// check files exist
 					if (File::exists(
@@ -700,7 +702,8 @@ class Structure extends Get
 					. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
 				);
 				// lets check if we already moved this
-				if (!isset($this->extentionTrackingFilesMoved[$check]))
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3 &&
+					!isset($this->extentionTrackingFilesMoved[$check]))
 				{
 					// check files exist
 					if (File::exists(
@@ -751,7 +754,7 @@ class Structure extends Get
 			foreach ($ids as $id)
 			{
 				// setup the field
-				$field          = array();
+				$field          = [];
 				$field['field'] = $id;
 				CFactory::_('Field')->set($field);
 				// move field and rules if needed
@@ -812,10 +815,10 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -833,13 +836,21 @@ class Structure extends Get
 			CFactory::_('Registry')->set('set_move_folders_install_script', true);
 			// set message that this was done (will still add a tutorial link later)
 			$this->app->enqueueMessage(
-				JText::_(
+				Text::_(
 					'<hr /><h3>Dynamic folder(s) were detected.</h3>'
 				), 'Notice'
 			);
+			$_function = 'setDynamicF0ld3rs';
+			$_script = 'script.php';
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$_function = 'moveFolders';
+				$_script = 'ComponentnameInstallerScript.php';
+			}
 			$this->app->enqueueMessage(
-				JText::sprintf(
-					'A method (setDynamicF0ld3rs) was added to the install <b>script.php</b> of this package to insure that the folder(s) are copied into the correct place when this component is installed!'
+				Text::sprintf(
+					'A method (%s) was added to the install <b>%s</b> of this package to insure that the folder(s) are copied into the correct place when this component is installed!',
+					$_function, $_script
 				), 'Notice'
 			);
 		}

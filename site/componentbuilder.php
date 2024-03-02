@@ -19,8 +19,8 @@ if (file_exists($composer_autoloader))
 	require_once $composer_autoloader;
 }
 
-// register this component namespace
-spl_autoload_register(function ($class) {
+// register additional namespace
+\spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
 		'libraries/jcb_powers/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
@@ -67,26 +67,28 @@ spl_autoload_register(function ($class) {
 	}
 });
 
-
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 // Set the component css/js
-$document = JFactory::getDocument();
-$document->addStyleSheet('components/com_componentbuilder/assets/css/site.css');
-$document->addScript('components/com_componentbuilder/assets/js/site.js');
+Html::_('stylesheet', 'components/com_componentbuilder/assets/css/site.css', ['version' => 'auto']);
+Html::_('script', 'components/com_componentbuilder/assets/js/site.js', ['version' => 'auto']);
 
 // Require helper files
 JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php');
 JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
 JLoader::register('ComponentbuilderHelperRoute', __DIR__ . '/helpers/route.php');
 
-// Trigger the Global Site Event
-ComponentbuilderHelper::globalEvent($document);
+//Trigger the Global Site Event
+ComponentbuilderHelper::globalEvent(Factory::getDocument());
 
 // Get an instance of the controller prefixed by Componentbuilder
-$controller = JControllerLegacy::getInstance('Componentbuilder');
+$controller = BaseController::getInstance('Componentbuilder');
 
 // Perform the request task
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->execute(Factory::getApplication()->input->get('task'));
 
 // Redirect if set by the controller
 $controller->redirect();

@@ -12,20 +12,26 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Installer\InstallerHelper;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
-use VDM\Joomla\Utilities\ArrayHelper as JCBArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
-use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\GuidHelper;
-use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder Import_joomla_components Base Database Model
@@ -35,8 +41,8 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	// set uploading values
 	protected $use_streams = false;
 	protected $allow_unsafe = false;
-	protected $safeFileOptions = array();
-	
+	protected $safeFileOptions = [];
+
 	/**
 	 * @var object JTable object
 	 */
@@ -53,13 +59,13 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 * @var        string
 	 */
 	protected $_context = 'com_componentbuilder.import_joomla_components';
-	
+
 	/**
 	 * Import Settings
 	 */
 	protected $getType = NULL;
 	protected $dataType = NULL;
-	
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -70,7 +76,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	protected function populateState()
 	{
-		$app = JFactory::getApplication('administrator');
+		$app = Factory::getApplication('administrator');
 
 		$this->setState('message', $app->getUserState('com_componentbuilder.message'));
 		$app->setUserState('com_componentbuilder.message', '');
@@ -117,9 +123,9 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// set the state to import
 		$this->setState('action', 'import');
 		// get App
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		// get session
-		$session = JFactory::getSession();
+		$session = Factory::getSession();
 		// some defaults
 		$package = null;
 		$continue = false;
@@ -151,10 +157,10 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					break;
 
 				case 'url':
-					$url = JFactory::getApplication()->input->getString('import_url');
+					$url = Factory::getApplication()->input->getString('import_url');
 					if ($url === base64_encode(base64_decode($url, true)))
 					{
-						JFactory::getApplication()->input->set('import_url', base64_decode($url));
+						Factory::getApplication()->input->set('import_url', base64_decode($url));
 					}
 					$package = $this->_getPackageFromUrl();
 					break;
@@ -273,7 +279,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		else
 		{
 			// Package imported sucessfully
-			$msg = JText::sprintf('COM_COMPONENTBUILDER_IMPORT_SUCCESS', $package['packagename']);
+			$msg = Text::sprintf('COM_COMPONENTBUILDER_IMPORT_SUCCESS', $package['packagename']);
 			$msgType = 'success';
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
@@ -308,7 +314,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				$checksumStatus = 'warning'; 
 				$checksumMessage = Text::_('COM_COMPONENTBUILDER_PLEASE_NOTE_THAT_THIS_PACKAGE_BHAS_NOB_CHECKSUM_VALIDATION');
 				// do hash validation here for git repos
-				if (StringHelper::check($this->checksum) && isset($this->checksumURLs[$this->checksum]))
+				if (UtilitiesStringHelper::check($this->checksum) && isset($this->checksumURLs[$this->checksum]))
 				{
 					// get packages checksums
 					$checksums = FileHelper::getContent($this->checksumURLs[$this->checksum].'checksum.json');
@@ -325,7 +331,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							if ($checksums[$packageName] === sha1_file($package['dir']))
 							{
 								$validator = $this->checksumURLs[$this->checksum].str_replace('.zip', '.sha', $packageName);
-								$checksumMessage =  JText::sprintf('COM_COMPONENTBUILDER_THIS_PACKAGE_BPASSEDB_THE_CHECKSUM_VALIDATIONBR_BR_SMALLMANUALLY_ALSO_VALIDATE_THAT_THE_CORRECT_CHECKSUM_WAS_USEDSMALLBR_THIS_CHECKSUM_BSB_MUST_BE_THE_SAME_AS_THE_ONE_FOUND_A_S_SA', $checksums[$packageName], 'href="'.$validator.'" target="_blank" title="verify checksum">', $validator);
+								$checksumMessage =  Text::sprintf('COM_COMPONENTBUILDER_THIS_PACKAGE_BPASSEDB_THE_CHECKSUM_VALIDATIONBR_BR_SMALLMANUALLY_ALSO_VALIDATE_THAT_THE_CORRECT_CHECKSUM_WAS_USEDSMALLBR_THIS_CHECKSUM_BSB_MUST_BE_THE_SAME_AS_THE_ONE_FOUND_A_S_SA', $checksums[$packageName], 'href="'.$validator.'" target="_blank" title="verify checksum">', $validator);
 								$checksumStatus = 'Success';
 								$checksum = true;
 							}
@@ -376,7 +382,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			}
 		}
 		return false;
-	} 
+	}
 
 	/**
 	 * Works out an importation spreadsheet from a HTTP upload
@@ -384,37 +390,37 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 * @return spreadsheet definition or false on failure
 	 */
 	protected function _getPackageFromUpload()
-	{		
+	{
 		// Get the uploaded file information
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
 		$userfile = $input->files->get('import_package', null, 'raw');
-		
+
 		// Make sure that file uploads are enabled in php
 		if (!(bool) ini_get('file_uploads'))
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
 			return false;
 		}
 
 		// If there is no uploaded file, we have a problem...
 		if (!is_array($userfile))
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
 			return false;
 		}
 
 		// Check if there was a problem uploading the file.
 		if ($userfile['error'] || $userfile['size'] < 1)
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
 			return false;
 		}
 
 		// Build the appropriate paths
-		$config = JFactory::getConfig();
+		$config = Factory::getConfig();
 		$tmp_dest = $config->get('tmp_path') . '/' . $userfile['name'];
 		$tmp_src = $userfile['tmp_name'];
 
@@ -424,7 +430,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			$session = JFactory::getSession();
+			$session = Factory::getSession();
 			$session->clear('package');
 			$session->clear('dataType');
 			$session->clear('hasPackage');
@@ -446,16 +452,16 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	protected function _getPackageFromFolder()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 
 		// Get the path to the package to import
 		$p_dir = $input->getString('import_directory');
-		$p_dir = JPath::clean($p_dir);
+		$p_dir = Path::clean($p_dir);
 		// Did you give us a valid path?
 		if (!file_exists($p_dir))
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
 			return false;
 		}
 
@@ -465,17 +471,17 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// Did you give us a valid package?
 		if (!$type)
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
 		}
-		
+
 		// check the extention
 		if(!$this->checkExtension($p_dir))
 		{
 			// set error message
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
 		}
-		
+
 		$package['packagename'] = null;
 		$package['dir'] = $p_dir;
 		$package['type'] = $type;
@@ -491,7 +497,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	protected function _getPackageFromUrl()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 
 		// Get the URL of the package to import
@@ -500,17 +506,17 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// Did you give us a URL?
 		if (!$url)
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_ENTER_A_URL'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_ENTER_A_URL'), 'warning');
 			return false;
 		}
 
 		// Download the package at the URL given
-		$p_file = JInstallerHelper::downloadPackage($url);
+		$p_file = InstallerHelper::downloadPackage($url);
 
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_INVALID_URL'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_INVALID_URL'), 'warning');
 			return false;
 		}
 
@@ -519,7 +525,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 
 		return $package;
 	}
-	
+
 	/**
 	 * Check a file and verifies it as a spreadsheet file
 	 * Supports .csv .xlsx .xls and .ods
@@ -531,29 +537,29 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	protected function check($archivename)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		// Clean the name
-		$archivename = JPath::clean($archivename);
-		
+		$archivename = Path::clean($archivename);
+
 		// check the extention
 		if(!$this->checkExtension($archivename))
 		{
 			// Cleanup the import files
 			$this->remove($archivename);
-			$app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
 		}
-		
-		$config = JFactory::getConfig();
+
+		$config = Factory::getConfig();
 		// set Package Name
 		$check['packagename'] = $archivename;
-		
+
 		// set directory
 		$check['dir'] = $config->get('tmp_path'). '/' .$archivename;
-		
+
 		// set type
 		$check['type'] = $this->getType;
-		
+
 		return $check;
 	}
 	
@@ -590,9 +596,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	protected function remove($package)
 	{
-		jimport('joomla.filesystem.file');
-		
-		$config = JFactory::getConfig();
+		$config = Factory::getConfig();
 		$package = $config->get('tmp_path'). '/' .$package;
 
 		// Is the package file a valid file?
@@ -600,10 +604,10 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		{
 			File::delete($package);
 		}
-		elseif (is_file(JPath::clean($package)))
+		elseif (is_file(Path::clean($package)))
 		{
 			// It might also be just a base filename
-			File::delete(JPath::clean($package));
+			File::delete(Path::clean($package));
 		}
 	}
 	
@@ -617,7 +621,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	**/
 	protected function setData($package)
 	{
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		// set the data based on the type of import being done
 		if ('continue-ext' === $this->getType)
 		{
@@ -649,7 +653,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							// prep the data
 							if ($this->extractData($data))
 							{
-								if (isset($this->data['joomla_component']) && JCBArrayHelper::check($this->data['joomla_component']))
+								if (isset($this->data['joomla_component']) && UtilitiesArrayHelper::check($this->data['joomla_component']))
 								{
 									// save the smart data
 									if ($this->saveSmartComponents())
@@ -683,7 +687,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		{
 			// final check if we have success
 			$data = @unserialize($data);
-			if (JCBArrayHelper::check($data))
+			if (UtilitiesArrayHelper::check($data))
 			{
 				// set the data global
 				$this->data = $data;
@@ -705,14 +709,14 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	protected function saveSmartComponents()
 	{
 		// get user object
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		// set some defaults
-		$this->today = JFactory::getDate()->toSql();
+		$this->today = Factory::getDate()->toSql();
 		// if we can't merge add postfix to name
 		if (!$this->canmerge)
 		{
 			// set some postfix
-			$this->postfix = ' ('.StringHelper::random(2).')';
+			$this->postfix = ' ('.UtilitiesStringHelper::random(2).')';
 		}
 		// the array of tables to store
 		$tables = array(
@@ -776,7 +780,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	**/
 	public function saveSmartItems($table)
 	{
-		if (isset($this->data[$table]) && JCBArrayHelper::check($this->data[$table]))
+		if (isset($this->data[$table]) && UtilitiesArrayHelper::check($this->data[$table]))
 		{
 			// add pre import event
 			$this->preImportEvent($table);
@@ -881,7 +885,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// remove all custom code linked to these components
 		// since some code may have been removed and changed
 		// best unpublish all and let the import publish those still active
-		if ('custom_code' === $table && isset($this->newID['joomla_component']) && JCBArrayHelper::check($this->newID['joomla_component']))
+		if ('custom_code' === $table && isset($this->newID['joomla_component']) && UtilitiesArrayHelper::check($this->newID['joomla_component']))
 		{
 			$query = $this->_db->getQuery(true);
 			// Field to update.
@@ -927,7 +931,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// make sure to first unlock files
 		$this->unLockFiles();
 		// set params
-		$params = JComponentHelper::getParams('com_componentbuilder');
+		$params = ComponentHelper::getParams('com_componentbuilder');
 		// set custom folder path
 		$customPath = str_replace('//', '/', $params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'));
 		$imagesPath = str_replace('//', '/', JPATH_SITE . '/images');
@@ -939,7 +943,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// great we have some custom stuff lets move it
 			if (!JFolder::copy($customDir, $customPath,'',true))
 			{
-				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
+				$this->app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
 			}
 			// display more import info
@@ -955,7 +959,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// great we have some images lets move them
 			if (!JFolder::copy($imageDir, $imagesPath,'',true))
 			{
-				$this->app->enqueueMessage(JText::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
+				$this->app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
 			}
 			// display more import info
@@ -971,7 +975,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// get a list of folders
 			$folders = JFolder::folders($dynamicDir);
 			// check if we have files
-			if(JCBArrayHelper::check($folders))
+			if(UtilitiesArrayHelper::check($folders))
 			{
 				foreach ($folders as $folder)
 				{
@@ -992,7 +996,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// get a list of files
 			$files = JFolder::files($dynamicDir);
 			// check if we have files
-			if(JCBArrayHelper::check($files))
+			if(UtilitiesArrayHelper::check($files))
 			{
 				foreach ($files as $file)
 				{
@@ -1022,7 +1026,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	protected function unLockFiles()
 	{
 		// lock the data if set
-		if(StringHelper::check($this->sleutle) && strlen($this->sleutle) == 32)
+		if(UtilitiesStringHelper::check($this->sleutle) && strlen($this->sleutle) == 32)
 		{
 			// we must first store the current working directory
 			$joomla = getcwd();
@@ -1064,7 +1068,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				if (!FileHelper::write($file, $data))
 				{
 					// in case file could not be unlocked
-					$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_FILE_BSB_COULD_NOT_BE_UNLOCKED', $file), 'error');
+					$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_FILE_BSB_COULD_NOT_BE_STORED', $file), 'error');
 				}
 				// display more import info
 				elseif ($this->moreInfo)
@@ -1166,7 +1170,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	private function isValidPassword(string $password): bool
 	{
-		return StringHelper::check($password) && strlen($password) == 32;
+		return UtilitiesStringHelper::check($password) && strlen($password) == 32;
 	}
 
 	/**
@@ -1252,7 +1256,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	public function updateAfterAll()
 	{
 		// update the fields
-		if (isset($this->updateAfter['field']) && JCBArrayHelper::check($this->updateAfter['field']))
+		if (isset($this->updateAfter['field']) && UtilitiesArrayHelper::check($this->updateAfter['field']))
 		{
 			// update repeatable
 			foreach ($this->updateAfter['field'] as $field => $action)
@@ -1281,7 +1285,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							$fieldsSets[] = (int) $fields;
 						}
 						// update the fields
-						if (JCBArrayHelper::check($fieldsSets))
+						if (UtilitiesArrayHelper::check($fieldsSets))
 						{
 							$bucket = array();
 							foreach ($fieldsSets as $id)
@@ -1295,7 +1299,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 									$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BMULTIPLE_FIELD_REPEATABLE_MODEB_IDS_MISMATCH_IN_BFIELDSB_AND_WAS_EMREMOVEDEM_FROM_THE_FIELD', $id, $field), 'warning');
 								}
 							}
-							if (JCBArrayHelper::check($bucket))
+							if (UtilitiesArrayHelper::check($bucket))
 							{
 								$string = implode(',', $bucket);
 								$xml = json_encode(str_replace('fields="' . $fields . '"', 'fields="' . $string . '"', $xml));
@@ -1304,7 +1308,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							{
 								$xml = '';
 							}
-							$object = new stdClass;
+							$object = new \stdClass;
 							$object->id = $field;
 							$object->xml = $xml;
 							// update the field
@@ -1315,7 +1319,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			}
 		}
 		// do a after all run on admin views that need it
-		if (isset($this->updateAfter['adminview']) && JCBArrayHelper::check($this->updateAfter['adminview']))
+		if (isset($this->updateAfter['adminview']) && UtilitiesArrayHelper::check($this->updateAfter['adminview']))
 		{
 			// update the addlinked_views
 			foreach ($this->updateAfter['adminview'] as $adminview => $action)
@@ -1332,18 +1336,18 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					{
 						$addlinked_views = json_decode($addlinked_views, true);
 						// convert Repeatable Fields
-						if (JCBArrayHelper::check($addlinked_views) && isset($addlinked_views['adminview']))
+						if (UtilitiesArrayHelper::check($addlinked_views) && isset($addlinked_views['adminview']))
 						{
 							$addlinked_views = ComponentbuilderHelper::convertRepeatable($addlinked_views, 'addlinked_views');
 						}
 						// update the view IDs
-						if (JCBArrayHelper::check($addlinked_views))
+						if (UtilitiesArrayHelper::check($addlinked_views))
 						{
 							// only update the view IDs
 							$addlinked_views = $this->updateIDs($addlinked_views, 'admin_view', array('adminview' => 'admin_view'));
 						}
 						// update the fields
-						$object = new stdClass;
+						$object = new \stdClass;
 						$object->id = $adminview;
 						$object->addlinked_views = json_encode($addlinked_views, JSON_FORCE_OBJECT);
 						// update the admin view
@@ -1353,7 +1357,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			}
 		}
 		// update the joomla_component dashboard
-		if (isset($this->updateAfter['joomla_component']) && JCBArrayHelper::check($this->updateAfter['joomla_component']))
+		if (isset($this->updateAfter['joomla_component']) && UtilitiesArrayHelper::check($this->updateAfter['joomla_component']))
 		{
 			// update dashboard of the components
 			foreach ($this->updateAfter['joomla_component'] as $component => $action)
@@ -1366,7 +1370,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				// get the dashboard from db
 				if ($dashboard = GetHelper::var('joomla_component', $component, 'id', 'dashboard'))
 				{
-					if (StringHelper::check($dashboard))
+					if (UtilitiesStringHelper::check($dashboard))
 					{
 						// get id
 						$id = (int) preg_replace("/[^0-9]/", "", $dashboard);
@@ -1392,7 +1396,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						if ($update)
 						{
 							// now update the joomla_component dashboard value
-							$object = new stdClass;
+							$object = new \stdClass;
 							$object->id = (int) $component;
 							$object->dashboard = $dashboard;
 							// update the admin view
@@ -1403,7 +1407,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			}
 		}
 		// update the admin_fields_relations
-		if (isset($this->updateAfter['relations']) && JCBArrayHelper::check($this->updateAfter['relations']))
+		if (isset($this->updateAfter['relations']) && UtilitiesArrayHelper::check($this->updateAfter['relations']))
 		{
 			// update repeatable
 			foreach ($this->updateAfter['relations'] as $relation => $action)
@@ -1421,7 +1425,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					if (JsonHelper::check($addrelations))
 					{
 						$addrelations = json_decode($addrelations, true);
-						if (JCBArrayHelper::check($addrelations))
+						if (UtilitiesArrayHelper::check($addrelations))
 						{
 							foreach ($addrelations as $nr => &$value)
 							{
@@ -1430,24 +1434,24 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 								// get fields
 								$found = GetHelper::allBetween($value['set'], '[field=', ']');
 								// if found
-								if (JCBArrayHelper::check($found))
+								if (UtilitiesArrayHelper::check($found))
 								{
 									$bucket[] = $found;
 								}
 								// get fields
 								$found = GetHelper::allBetween($value['set'], '$item->{', '}');
 								// if found
-								if (JCBArrayHelper::check($found))
+								if (UtilitiesArrayHelper::check($found))
 								{
 									$bucket[] = $found;
 								}
 								// check if we have values
-								if (JCBArrayHelper::check($bucket))
+								if (UtilitiesArrayHelper::check($bucket))
 								{
-									$fields = JCBArrayHelper::merge($bucket);
+									$fields = UtilitiesArrayHelper::merge($bucket);
 									// reset the buckets
 									$bucket = array();
-									if (JCBArrayHelper::check($fields))
+									if (UtilitiesArrayHelper::check($fields))
 									{
 										foreach ($fields as $field)
 										{
@@ -1462,7 +1466,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 											}
 										}
 										// check if we have a bucket of values to update
-										if (JCBArrayHelper::check($bucket))
+										if (UtilitiesArrayHelper::check($bucket))
 										{
 											$value['set'] = str_replace(array_keys($bucket), array_values($bucket), $value['set']);
 											$update = true;
@@ -1473,7 +1477,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							// update only if needed
 							if ($update)
 							{
-								$object = new stdClass;
+								$object = new \stdClass;
 								$object->id = $relation;
 								$object->addrelations = json_encode($addrelations, JSON_FORCE_OBJECT);
 								// update the field
@@ -1485,7 +1489,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			}
 		}
 		// update the verious power linked to these powers
-		if (isset($this->updateAfter['power']) && JCBArrayHelper::check($this->updateAfter['power']))
+		if (isset($this->updateAfter['power']) && UtilitiesArrayHelper::check($this->updateAfter['power']))
 		{
 			// update repeatable
 			foreach ($this->updateAfter['power'] as $power => $action)
@@ -1532,7 +1536,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	public function moveDivergedData()
 	{
 		// check if there is data to move
-		if (JCBArrayHelper::check($this->divergedDataMover))
+		if (UtilitiesArrayHelper::check($this->divergedDataMover))
 		{
 			foreach($this->divergedDataMover as $table => $values)
 			{
@@ -1564,7 +1568,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		if (isset($item->params) && JsonHelper::check($item->params))
 		{
 			$paramsArray = json_decode($item->params, true);
-			if (JCBArrayHelper::check($paramsArray))
+			if (UtilitiesArrayHelper::check($paramsArray))
 			{
 				foreach ($targets as  $field => $targetArray)
 				{
@@ -1587,7 +1591,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							}
 						}
 						// check if we had some subforms
-						if (JCBArrayHelper::check($target_array))
+						if (UtilitiesArrayHelper::check($target_array))
 						{
 							$paramsArray[$field] = $this->updateIDs($paramsArray[$field], $table, $target_array);
 						}
@@ -1616,7 +1620,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			if (isset($item->{$field}) && JsonHelper::check($item->{$field}))
 			{
 				$updateArray = json_decode($item->{$field}, true);
-				if (JCBArrayHelper::check($updateArray))
+				if (UtilitiesArrayHelper::check($updateArray))
 				{
 					// load it back
 					$item->{$field} = json_encode($this->updateIDs($updateArray, $table, $targetArray), JSON_FORCE_OBJECT);
@@ -1643,7 +1647,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			$isJson = true;
 		}
 		// now update the fields
-		if (JCBArrayHelper::check($values))
+		if (UtilitiesArrayHelper::check($values))
 		{
 			foreach ($values as $nr => &$value)
 			{
@@ -1682,7 +1686,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			$item = json_decode($item, true);
 			$isJson = true;
 		}
-		if (JCBArrayHelper::check($item) && isset($item[$target]))
+		if (UtilitiesArrayHelper::check($item) && isset($item[$target]))
 		{
 			// set item ID
 			$itemId = (isset($item['id'])) ? $item['id'] :  'id_unknow';
@@ -1694,7 +1698,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				$isJsonTarget = true;
 			}
 			// update the target
-			if (StringHelper::check($item[$target]) || is_numeric($item[$target]))
+			if (UtilitiesStringHelper::check($item[$target]) || is_numeric($item[$target]))
 			{
 				if ($item[$target] <= 0)
 				{
@@ -1713,7 +1717,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					$item[$target] = '';
 				}
 			}
-			elseif (JCBArrayHelper::check($item[$target]))
+			elseif (UtilitiesArrayHelper::check($item[$target]))
 			{
 				// the bucket to load the items back
 				$bucket = array();
@@ -1728,7 +1732,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						// we add negative numbers back
 						$bucket[] = $id;
 					}
-					elseif ((StringHelper::check($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
+					elseif ((UtilitiesStringHelper::check($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
 					{
 						$bucket[] = $this->newID[$type][(int) $id];
 					}
@@ -1738,7 +1742,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					}
 				}
 				// set ids back
-				if (JCBArrayHelper::check($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					$item[$target] = $bucket;
 				}
@@ -1761,7 +1765,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				$isJsonTarget = true;
 			}
 			// update the target
-			if (StringHelper::check($item->{$target}) || is_numeric($item->{$target}))
+			if (UtilitiesStringHelper::check($item->{$target}) || is_numeric($item->{$target}))
 			{
 				if ($item->{$target} <= 0)
 				{
@@ -1780,7 +1784,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					$item->{$target} = '';
 				}
 			}
-			elseif (JCBArrayHelper::check($item->{$target}))
+			elseif (UtilitiesArrayHelper::check($item->{$target}))
 			{
 				// the bucket to load the items back
 				$bucket = array();
@@ -1795,7 +1799,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						// we add negative numbers back
 						$bucket[] = $id;
 					}
-					elseif ((StringHelper::check($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
+					elseif ((UtilitiesStringHelper::check($id) || is_numeric($id)) && isset($this->newID[$type][(int) $id]))
 					{
 						$bucket[] = $this->newID[$type][(int) $id];
 					}
@@ -1806,7 +1810,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					}
 				}
 				// set ids back
-				if (JCBArrayHelper::check($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					$item->{$target} = $bucket;
 				}
@@ -1839,7 +1843,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	 */
 	private function enqueueIdMismatchMessage($id, $itemId, $target, $type, $table)
 	{
-		$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BSBS_IN_BSB_HAS_ID_MISMATCH_SO_THE_BSB_WAS_REMOVED', StringHelper::safe($type, 'Ww'), StringHelper::safe($target, 'Ww') , StringHelper::safe($table, 'w').':'.$itemId, $type . ':' . $id), 'warning');
+		$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BSBS_IN_BSB_HAS_ID_MISMATCH_SO_THE_BSB_WAS_REMOVED', UtilitiesStringHelper::safe($type, 'Ww'), UtilitiesStringHelper::safe($target, 'Ww') , UtilitiesStringHelper::safe($table, 'w').':'.$itemId, $type . ':' . $id), 'warning');
 	}
 
 	/**
@@ -1919,12 +1923,12 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				}
 				elseif (!is_numeric($item->fieldtype) || $item->fieldtype == 0)
 				{
-					$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BFIELD_TYPEB_NOT_SET_FOR_BSB', StringHelper::safe($type, 'w').':'.$item->id), 'warning');
+					$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BFIELD_TYPEB_NOT_SET_FOR_BSB', UtilitiesStringHelper::safe($type, 'w').':'.$item->id), 'warning');
 					unset($item->fieldtype);
 				}
 				else
 				{
-					$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BFIELD_TYPEB_IDS_MISMATCH_IN_BSB', $item->fieldtype, StringHelper::safe($type, 'w').':'.$item->id), 'error');
+					$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_BFIELD_TYPEB_IDS_MISMATCH_IN_BSB', $item->fieldtype, UtilitiesStringHelper::safe($type, 'w').':'.$item->id), 'error');
 					return false;
 				}
 				// if we can't merge add postfix to name
@@ -2174,7 +2178,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				// remove from this dataset
 				unset($item->add_css);
 				// update the css
-				if (isset($item->css) && StringHelper::check($item->css))
+				if (isset($item->css) && UtilitiesStringHelper::check($item->css))
 				{
 					$item->css_admin = $item->css;
 				}
@@ -2549,7 +2553,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						unset($item->{$lang['local']});
 					}
 					// load it back
-					if (isset($targets) && JCBArrayHelper::check($targets))
+					if (isset($targets) && UtilitiesArrayHelper::check($targets))
 					{
 						// load it back
 						$item->{$lang['target']} = json_encode(array_values($targets), JSON_FORCE_OBJECT);
@@ -2585,7 +2589,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						}
 					}
 					// okay this is the new format lets merge on that basis
-					elseif (JCBArrayHelper::check($newTranslations))
+					elseif (UtilitiesArrayHelper::check($newTranslations))
 					{
 						$translations = $newTranslations;
 						$pointer = count($translations);
@@ -2608,12 +2612,12 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						}
 					}
 					// okay seem to only have local translations
-					elseif (JCBArrayHelper::check($localTranslations))
+					elseif (UtilitiesArrayHelper::check($localTranslations))
 					{
 						$translations = $localTranslations;
 					}
 					// only update if we have translations
-					if (JCBArrayHelper::check($translations))
+					if (UtilitiesArrayHelper::check($translations))
 					{
 						$item->translation = json_encode($translations, JSON_FORCE_OBJECT);
 					}
@@ -2690,12 +2694,12 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				}
 
 				// update the repeatable fields
-				if (isset($updaterR) && JCBArrayHelper::check($updaterR))
+				if (isset($updaterR) && UtilitiesArrayHelper::check($updaterR))
 				{
 					$item = ComponentbuilderHelper::convertRepeatableFields($item, $updaterR);
 				}
 				// update the subform ids
-				if (isset($updaterT) && JCBArrayHelper::check($updaterT))
+				if (isset($updaterT) && UtilitiesArrayHelper::check($updaterT))
 				{
 					$this->updateSubformsIDs($item, $type, $updaterT);
 				}
@@ -2746,7 +2750,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	{
 		// get the columns
 		$columns = $this->getTableColumns("#__componentbuilder_" . $type);
-		if (JCBArrayHelper::check($columns))
+		if (UtilitiesArrayHelper::check($columns))
 		{
 			foreach ($item as $name => $value)
 			{
@@ -2797,7 +2801,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	private function setDivergedDataMover($values, $table, $type, $getters)
 	{
 		// we need to move this to the new $table based on anchors
-		if (JCBArrayHelper::check($getters))
+		if (UtilitiesArrayHelper::check($getters))
 		{
 			if (!isset($this->divergedDataMover[$table]))
 			{
@@ -2807,7 +2811,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			$uniqueKey = md5(serialize($getters));
 			if (!isset($this->divergedDataMover[$table][$uniqueKey]))
 			{
-				$this->divergedDataMover[$table][$uniqueKey] = new stdClass;
+				$this->divergedDataMover[$table][$uniqueKey] = new \stdClass;
 				foreach ($getters as $name => $value)
 				{
 					$this->divergedDataMover[$table][$uniqueKey]->{$name} = $value;
@@ -2818,12 +2822,12 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// display more import info
 			if ($this->moreInfo)
 			{
-				$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_WE_SUCCESSFULLY_MOVED_BSB', StringHelper::safe($type, 'Ww') . ' to ('.StringHelper::safe($table, 'w').')'), 'success');
+				$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_WE_SUCCESSFULLY_MOVED_BSB', UtilitiesStringHelper::safe($type, 'Ww') . ' to ('.UtilitiesStringHelper::safe($table, 'w').')'), 'success');
 			}
 			// success
 			return true;
 		}
-		$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_WE_FAILED_TO_MOVE_BSB', StringHelper::safe($type, 'Ww') . ' to ('.StringHelper::safe($table, 'w').')'), 'warning');
+		$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_WE_FAILED_TO_MOVE_BSB', UtilitiesStringHelper::safe($type, 'Ww') . ' to ('.UtilitiesStringHelper::safe($table, 'w').')'), 'warning');
 		// failure
 		return false;
 	}
@@ -2883,7 +2887,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				{
 					if ('type' === $property['name'])
 					{
-						if (isset($property['example'])  && StringHelper::check($property['example']))
+						if (isset($property['example'])  && UtilitiesStringHelper::check($property['example']))
 						{
 							$this->fieldTypes[$id] = $property['example'];
 							break;
@@ -2894,7 +2898,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// if not found
 			if (!isset($this->fieldTypes[$id]) && $name = GetHelper::var('fieldtype', $id, 'id', 'name'))
 			{
-				$this->fieldTypes[$id] = StringHelper::safe($name);
+				$this->fieldTypes[$id] = UtilitiesStringHelper::safe($name);
 			}
 		}
 		// return the type
@@ -3018,7 +3022,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// set to run query
 			$runQuery = true;
 		}
-		elseif (JCBArrayHelper::check($get))
+		elseif (UtilitiesArrayHelper::check($get))
 		{
 			foreach ($get as $field)
 			{
@@ -3029,7 +3033,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					// set the value
 					$value = $item->{$field};
 					// check if we have special value
-					if ($this->specialValue && JCBArrayHelper::check($this->specialValue) && isset($this->specialValue[$field]))
+					if ($this->specialValue && UtilitiesArrayHelper::check($this->specialValue) && isset($this->specialValue[$field]))
 					{
 						$value = $this->specialValue[$field];
 					}
@@ -3042,7 +3046,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 					{
 						$query->where($this->_db->quoteName('a.' . $field) . ' = '. (float) $value);
 					}
-					elseif(StringHelper::check($value)) // do not allow empty strings (since it could be major mis match)
+					elseif(UtilitiesStringHelper::check($value)) // do not allow empty strings (since it could be major mis match)
 					{
 						$query->where($this->_db->quoteName('a.' . $field) . ' = '. $this->_db->quote($value));
 					}
@@ -3066,7 +3070,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// set the value
 			$value = $item->{$get};
 			// check if we have special value
-			if ($this->specialValue && JCBArrayHelper::check($this->specialValue) && isset($this->specialValue[$get]))
+			if ($this->specialValue && UtilitiesArrayHelper::check($this->specialValue) && isset($this->specialValue[$get]))
 			{
 				$value = $this->specialValue[$get];
 			}
@@ -3079,7 +3083,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			{
 				$query->where($this->_db->quoteName('a.' . $get) . ' = '. (float) $value);
 			}
-			elseif(StringHelper::check($value)) // do not allow empty strings (since it could be major mis match)
+			elseif(UtilitiesStringHelper::check($value)) // do not allow empty strings (since it could be major mis match)
 			{
 				$query->where($this->_db->quoteName('a.' . $get) . ' = '. $this->_db->quote($value));
 			}
@@ -3243,20 +3247,20 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						// get by name ...
 						$getter = array('name', 'gettype', 'main_source'); // risky will look at this again
 						// add some more advanced search
-						if (isset($item->main_source) && $item->main_source == 1 && isset($item->view_selection) && StringHelper::check($item->view_selection))
+						if (isset($item->main_source) && $item->main_source == 1 && isset($item->view_selection) && UtilitiesStringHelper::check($item->view_selection))
 						{
 							$getter[] = 'view_selection';
 						}
-						elseif (isset($item->main_source) && $item->main_source == 2 && isset($item->db_selection) && StringHelper::check($item->db_selection))
+						elseif (isset($item->main_source) && $item->main_source == 2 && isset($item->db_selection) && UtilitiesStringHelper::check($item->db_selection))
 						{
 							$getter[] = 'db_selection';
 						}
-						elseif (isset($item->main_source) && $item->main_source == 3 && isset($item->php_custom_get) && StringHelper::check($item->php_custom_get))
+						elseif (isset($item->main_source) && $item->main_source == 3 && isset($item->php_custom_get) && UtilitiesStringHelper::check($item->php_custom_get))
 						{
 							$getter[] = 'php_custom_get';
 						}
 						// add some extra
-						if (isset($item->getcustom) && StringHelper::check($item->getcustom))
+						if (isset($item->getcustom) && UtilitiesStringHelper::check($item->getcustom))
 						{
 							$getter[] = 'getcustom';
 						}
@@ -3526,13 +3530,13 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias
-		if (JFactory::getConfig()->get('unicodeslugs') == 1)
+		if (Factory::getConfig()->get('unicodeslugs') == 1)
 		{
-			$alias = JFilterOutput::stringURLUnicodeSlug($name);
+			$alias = OutputFilter::stringURLUnicodeSlug($name);
 		}
 		else
 		{
-			$alias = JFilterOutput::stringURLSafe($name);
+			$alias = OutputFilter::stringURLSafe($name);
 		}
 		// must be a uniqe alias
 		if ($type)
@@ -3541,7 +3545,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		}
 		return $alias;
 	}
-	
+
 	/**
 	 * Method to generate a uniqe value.
 	 *
@@ -3556,16 +3560,16 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// insure the filed is always uniqe
 		while (isset($this->uniqeValueArray[$type][$field][$value]))
 		{
-			$value = JString::increment($value, 'dash');
+			$value = StringHelper::increment($value, 'dash');
 		}
 		$this->uniqeValueArray[$type][$field][$value] = $value;
 		return $value;
 	}
-	
+
 	protected function getAliasesUsed($table)
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// first we check if there is a alias column
 		$columns = $db->getTableColumns('#__componentbuilder_'.$table);
 		if(isset($columns['alias'])){

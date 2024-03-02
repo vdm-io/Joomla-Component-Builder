@@ -12,7 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Import_language_translations Html View
@@ -33,7 +40,7 @@ class ComponentbuilderViewImport_language_translations extends HtmlView
 			ComponentbuilderHelper::addSubmenu('import');
 		}
 
-		$paths = new stdClass;
+		$paths = new \stdClass;
 		$paths->first = '';
 		$state = $this->get('state');
 
@@ -50,7 +57,7 @@ class ComponentbuilderViewImport_language_translations extends HtmlView
 		}
 
 		// get the session object
-		$session = JFactory::getSession();
+		$session = Factory::getSession();
 		// check if it has package
 		$this->hasPackage 	= $session->get('hasPackage', false);
 		$this->dataType 	= $session->get('dataType', false);
@@ -76,19 +83,19 @@ class ComponentbuilderViewImport_language_translations extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_IMPORT_TITLE'), 'upload');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_IMPORT_TITLE'), 'upload');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=import_language_translations');
 
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('import_language_translations');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-			   JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 }

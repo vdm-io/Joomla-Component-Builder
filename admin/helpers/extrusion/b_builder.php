@@ -26,6 +26,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -67,9 +68,9 @@ class Builder extends Mapping
 			$data['buildcomp'] = 0;
 			$data['buildcompsql'] = '';
 			// set some globals
-			$this->db = JFactory::getDbo();
-			$this->user = JFactory::getUser();
-			$this->today = JFactory::getDate()->toSql();
+			$this->db = Factory::getDbo();
+			$this->user = Factory::getUser();
+			$this->today = Factory::getDate()->toSql();
 
 			// no start the building of the views and fields
 			if ($this->setBuild())

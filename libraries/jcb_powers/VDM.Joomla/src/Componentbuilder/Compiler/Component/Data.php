@@ -34,6 +34,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Customadminviews;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Updateserver;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Joomlamodules;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Joomlaplugins;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Router;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -208,12 +209,19 @@ final class Data
 	protected Joomlaplugins $plugins;
 
 	/**
+	 * The modelling Joomla Site Router
+	 *
+	 * @var    Router
+	 * @since 3.2.0
+	 */
+	protected Router $router;
+
+	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -238,7 +246,7 @@ final class Data
 	 * @param Updateserver|null         $updateserver          The modelling update server object.
 	 * @param Joomlamodules|null        $modules               The modelling modules object.
 	 * @param Joomlaplugins|null        $plugins               The modelling plugins object.
-	 * @param \JDatabaseDriver|null     $db                    The database object.
+	 * @param Router|null              $router                 The modelling router object.
 	 *
 	 * @since 3.2.0
 	 */
@@ -249,7 +257,7 @@ final class Data
 		?Filesfolders $filesFolders = null, ?Historycomponent $history = null, ?Whmcs $whmcs = null,
 		?Sqltweaking $sqltweaking = null, ?Adminviews $adminviews = null, ?Siteviews $siteviews = null,
 		?Customadminviews $customadminviews = null, ?Updateserver $updateserver = null,
-		?Joomlamodules $modules = null, ?Joomlaplugins $plugins = null, ?\JDatabaseDriver $db = null)
+		?Joomlamodules $modules = null, ?Joomlaplugins $plugins = null, ?Router $router = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->event = $event ?: Compiler::_('Event');
@@ -271,7 +279,8 @@ final class Data
 		$this->updateserver = $updateserver ?: Compiler::_('Model.Updateserver');
 		$this->modules = $modules ?: Compiler::_('Model.Joomlamodules');
 		$this->plugins = $plugins ?: Compiler::_('Model.Joomlaplugins');
-		$this->db = $db ?: Factory::getDbo();
+		$this->router = $router ?: Compiler::_('Model.Router');
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -286,27 +295,34 @@ final class Data
 		$query = $this->db->getQuery(true);
 
 		// selection
-		$selection = array(
-			'b.addadmin_views'        => 'addadmin_views',
-			'b.id'                    => 'addadmin_views_id',
-			'h.addconfig'             => 'addconfig',
-			'd.addcustom_admin_views' => 'addcustom_admin_views',
-			'g.addcustommenus'        => 'addcustommenus',
-			'j.addfiles'              => 'addfiles',
-			'j.addfolders'            => 'addfolders',
-			'j.addfilesfullpath'      => 'addfilesfullpath',
-			'j.addfoldersfullpath'    => 'addfoldersfullpath',
-			'c.addsite_views'         => 'addsite_views',
-			'l.addjoomla_plugins'     => 'addjoomla_plugins',
-			'k.addjoomla_modules'     => 'addjoomla_modules',
-			'i.dashboard_tab'         => 'dashboard_tab',
-			'i.php_dashboard_methods' => 'php_dashboard_methods',
-			'i.params'                => 'dashboard_params',
-			'i.id'                    => 'component_dashboard_id',
-			'f.sql_tweak'             => 'sql_tweak',
-			'e.version_update'        => 'version_update',
-			'e.id'                    => 'version_update_id'
-		);
+		$selection = [
+			'b.addadmin_views'                    => 'addadmin_views',
+			'b.id'                                => 'addadmin_views_id',
+			'h.addconfig'                         => 'addconfig',
+			'd.addcustom_admin_views'             => 'addcustom_admin_views',
+			'g.addcustommenus'                    => 'addcustommenus',
+			'j.addfiles'                          => 'addfiles',
+			'j.addfolders'                        => 'addfolders',
+			'j.addfilesfullpath'                  => 'addfilesfullpath',
+			'j.addfoldersfullpath'                => 'addfoldersfullpath',
+			'c.addsite_views'                     => 'addsite_views',
+			'l.addjoomla_plugins'                 => 'addjoomla_plugins',
+			'k.addjoomla_modules'                 => 'addjoomla_modules',
+			'i.dashboard_tab'                     => 'dashboard_tab',
+			'i.php_dashboard_methods'             => 'php_dashboard_methods',
+			'i.params'                            => 'dashboard_params',
+			'i.id'                                => 'component_dashboard_id',
+			'f.sql_tweak'                         => 'sql_tweak',
+			'e.version_update'                    => 'version_update',
+			'e.id'                                => 'version_update_id',
+			'm.mode_constructor_before_parent'    => 'router_mode_constructor_before_parent',
+			'm.mode_constructor_after_parent'     => 'router_mode_constructor_after_parent',
+			'm.mode_methods'                      => 'router_mode_methods',
+			'm.constructor_before_parent_code'    => 'router_constructor_before_parent_code',
+			'm.constructor_before_parent_manual'  => 'router_constructor_before_parent_manual',
+			'm.constructor_after_parent_code'     => 'router_constructor_after_parent_code',
+			'm.methods_code'                      => 'router_methods_code'
+		];
 		$query->select('a.*');
 		$query->select(
 			$this->db->quoteName(
@@ -318,7 +334,7 @@ final class Data
 		$query->from('#__componentbuilder_joomla_component AS a');
 
 		// jointer-map
-		$joiners = array(
+		$joiners = [
 			'b' => 'component_admin_views',
 			'c' => 'component_site_views',
 			'd' => 'component_custom_admin_views',
@@ -328,9 +344,10 @@ final class Data
 			'h' => 'component_config',
 			'i' => 'component_dashboard',
 			'j' => 'component_files_folders',
+			'k' => 'component_modules',
 			'l' => 'component_plugins',
-			'k' => 'component_modules'
-		);
+			'm' => 'component_router'
+		];
 
 		// load the joins
 		foreach ($joiners as $as => $join)
@@ -346,15 +363,9 @@ final class Data
 			$this->db->quoteName('a.id') . ' = ' . (int) $this->config->component_id
 		);
 
-		// for plugin event TODO change event api signatures
-		$component_context = $this->config->component_context;
-		$component_id = $this->config->component_id;
-
 		// Trigger Event: jcb_ce_onBeforeQueryComponentData
 		$this->event->trigger(
-			'jcb_ce_onBeforeQueryComponentData',
-			array(&$component_context, &$component_id, &$query,
-				&$this->db)
+			'jcb_ce_onBeforeQueryComponentData', [&$query, &$this->db]
 		);
 
 		// Reset the query using our newly populated query object.
@@ -371,8 +382,7 @@ final class Data
 
 		// Trigger Event: jcb_ce_onBeforeModelComponentData
 		$this->event->trigger(
-			'jcb_ce_onBeforeModelComponentData',
-			array(&$component_context, &$component)
+			'jcb_ce_onBeforeModelComponentData', [&$component]
 		);
 
 		// load the global placeholders
@@ -863,15 +873,17 @@ final class Data
 		// set all plugins
 		$this->plugins->set($component);
 
+		// set the site router
+		$this->router->set($component);
+
 		// Trigger Event: jcb_ce_onAfterModelComponentData
 		$this->event->trigger(
 			'jcb_ce_onAfterModelComponentData',
-			array(&$component_context, &$component)
+			[&$component]
 		);
 
 		// return found component data
 		return $component;
 	}
-
 }
 

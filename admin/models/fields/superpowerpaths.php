@@ -12,8 +12,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// Import the checkboxes field type classes needed
-
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+jimport('joomla.form.helper');
+JFormHelper::loadFieldClass('checkboxes');
 JFormHelper::loadFieldClass('checkboxes');
 use VDM\Joomla\Utilities\Component\Helper;
 
@@ -25,12 +28,11 @@ class JFormFieldSuperpowerpaths extends JFormFieldCheckboxes
 	/**
 	 * The superpowerpaths field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'superpowerpaths';
 
 	// A DynamicCheckboxes@ Field
-
 	/**
 	 * Method to get the data to be passed to the layout for rendering.
 	 *

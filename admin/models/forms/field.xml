@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_FIELD_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -546,7 +547,7 @@
 		<!-- Note_select_field_type Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_select_field_type" label="COM_COMPONENTBUILDER_FIELD_NOTE_SELECT_FIELD_TYPE_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_SELECT_FIELD_TYPE_DESCRIPTION" heading="h4" class="alert alert-info note_select_field_type" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

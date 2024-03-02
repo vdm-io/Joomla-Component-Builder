@@ -294,6 +294,42 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get add namespace prefix
+	 *
+	 * @return  bool  The add namespace prefix switch
+	 * @since 3.2.0
+	 */
+	protected function getAddnamespaceprefix(): bool
+	{
+		// get components override switch
+		$value = GetHelper::var(
+			'joomla_component', $this->component_id, 'id', 'add_namespace_prefix'
+		);
+
+		return $value == 1 ?  true : false;
+	}
+
+	/**
+	 * get namespace prefix
+	 *
+	 * @return  string  The namespace prefix
+	 * @since 3.2.0
+	 */
+	protected function getNamespaceprefix(): string
+	{
+		// load based on component settings
+		$prefix = null;
+		if ($this->add_namespace_prefix)
+		{
+			$prefix = GetHelper::var(
+				'joomla_component', $this->component_id, 'id', 'namespace_prefix'
+			);
+		}
+
+		return $prefix ?? $this->params->get('namespace_prefix', 'JCB');
+	}
+
+	/**
 	 * get posted Joomla version
 	 *
 	 * @return  int  Joomla version code
@@ -301,7 +337,7 @@ class Config extends BaseConfig
 	 */
 	protected function getJoomlaversion(): int
 	{
-		return 3; // $this->input->post->get('joomla_version', 3, 'INT');
+		return $this->input->post->get('joomla_version', 3, 'INT');
 	}
 
 	/**
@@ -313,8 +349,8 @@ class Config extends BaseConfig
 	protected function getJoomlaversions(): array
 	{
 		return [
-			3    => ['folder_key' => 3, 'xml_version' => 3.9], // only joomla 3
-			3.10 => ['folder_key' => 3, 'xml_version' => 4.0] // legacy joomla 4
+			3 => ['folder_key' => 3, 'xml_version' => '3.10'],
+			4 => ['folder_key' => 4, 'xml_version' => '4.0']
 		];
 	}
 
@@ -525,6 +561,18 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get percentage when a language should be added
+	 *
+	 * @return  int  The percentage value
+	 * @since 3.2.0
+	 */
+	protected function getPercentagelanguageadd(): int
+	{
+		// get the global language
+		return $this->params->get('percentagelanguageadd', 50);
+	}
+
+	/**
 	 * get language tag
 	 *
 	 * @return  string  The active language tag
@@ -586,7 +634,7 @@ class Config extends BaseConfig
 		// these strings are used to search for language strings in all content
 		return [
 			'jjt' => 'Joomla' . '.JText._(',
-			'js' => 'JText:' . ':script(',
+			'js' => 'Text:' . ':script(',
 			't' => 'Text:' . ':_(',        // namespace and J version will be found
 			'ts' => 'Text:' . ':sprintf(',  // namespace and J version will be found
 			'jt' => 'JustTEXT:' . ':_('
@@ -657,6 +705,18 @@ class Config extends BaseConfig
 	{
 		// get jcb powers path
 		return $this->params->get('jcb_powers_path', 'libraries/jcb_powers');
+	}
+
+	/**
+	 * get jcb powers path
+	 *
+	 * @return  string  The jcb powers path
+	 * @since 3.2.0
+	 */
+	protected function getPowerlibraryfolder(): string
+	{
+		// get power library folder path
+		return trim(str_replace('libraries/', '', $this->jcb_powers_path), '/');
 	}
 
 	/**
@@ -1005,6 +1065,28 @@ class Config extends BaseConfig
 	protected function getFootableversion(): int
 	{
 		return 2; // default is version 2
+	}
+
+	/**
+	 * The Permission Strict Per Field Switch
+	 *
+	 * @return  bool  Switch to control the Strict Permission Per/Field
+	 * @since 3.2.0
+	 */
+	protected function getPermissionstrictperfield(): bool
+	{
+		return false;
+	}
+
+	/**
+	 * The Export Text Only Switch
+	 *
+	 * @return  int  Switch to control the export text only
+	 * @since 3.2.0
+	 */
+	protected function getExporttextonly(): int
+	{
+		return 0;
 	}
 }
 

@@ -970,6 +970,24 @@
 		/>
 		<!-- Spacer_hr_7 Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_7" hr="true" class="spacer_hr_7" />
+		<!-- Namespace_prefix Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="namespace_prefix"
+			label="COM_COMPONENTBUILDER_CONFIG_NAMESPACE_PREFIX_LABEL"
+			size="250"
+			maxlength="250"
+			default="JCB"
+			description="COM_COMPONENTBUILDER_CONFIG_NAMESPACE_PREFIX_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="WORD"
+			message="COM_COMPONENTBUILDER_CONFIG_NAMESPACE_PREFIX_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CONFIG_NAMESPACE_PREFIX_HINT"
+			autocomplete="on"
+		/>
+		<!-- Spacer_hr_8 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_8" hr="true" class="spacer_hr_8" />
 		<!-- Minify Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -984,8 +1002,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
-		<!-- Spacer_hr_8 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_8" hr="true" class="spacer_hr_8" />
+		<!-- Spacer_hr_9 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_9" hr="true" class="spacer_hr_9" />
 		<!-- Note_language_global Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_language_global" label="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_LANGUAGE_GLOBAL_DESCRIPTION" heading="h4" class="alert alert-info note_language_global" />
 		<!-- Language Field. Type: Lang. (custom) -->
@@ -1012,8 +1030,8 @@
 			max="100"
 			step="10"
 		/>
-		<!-- Spacer_hr_9 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_9" hr="true" class="spacer_hr_9" />
+		<!-- Spacer_hr_10 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_10" hr="true" class="spacer_hr_10" />
 		<!-- Assets_table_fix Field. Type: List. (joomla) -->
 		<field
 			type="list"

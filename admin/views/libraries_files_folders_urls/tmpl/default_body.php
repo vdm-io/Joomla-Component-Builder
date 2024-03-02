@@ -12,13 +12,17 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls&task=library_files_folders_urls.edit";
 
 ?>
 <?php foreach ($this->items as $i => $item): ?>
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
-		$userChkOut = JFactory::getUser($item->checked_out);
+		$userChkOut = Factory::getUser($item->checked_out);
 		$canDo = ComponentbuilderHelper::getActions('library_files_folders_urls',$item,'libraries_files_folders_urls');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -28,7 +32,7 @@ $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls
 				$iconClass = '';
 				if (!$this->saveOrder)
 				{
-					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+					$iconClass = ' inactive tip-top" hasTooltip" title="' . Html::tooltipText('JORDERINGDISABLED');
 				}
 			?>
 			<span class="sortable-handler<?php echo $iconClass; ?>">
@@ -46,12 +50,12 @@ $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls
 		<?php if ($canDo->get('library_files_folders_urls.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+						<?php echo Html::_('grid.id', $i, $item->id); ?>
 					<?php else: ?>
 						&#9633;
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					<?php echo Html::_('grid.id', $i, $item->id); ?>
 				<?php endif; ?>
 		<?php else: ?>
 			&#9633;
@@ -62,7 +66,7 @@ $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls
 				<?php if ($canDo->get('library_files_folders_urls.edit')): ?>
 					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->library_name); ?></a>
 					<?php if ($item->checked_out): ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'libraries_files_folders_urls.', $canCheckin); ?>
+						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'libraries_files_folders_urls.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php echo $this->escape($item->library_name); ?>
@@ -73,15 +77,15 @@ $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls
 		<?php if ($canDo->get('library_files_folders_urls.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', true, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', true, 'cb'); ?>
 					<?php else: ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', false, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', false, 'cb'); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', true, 'cb'); ?>
+					<?php echo Html::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', true, 'cb'); ?>
 				<?php endif; ?>
 		<?php else: ?>
-			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', false, 'cb'); ?>
+			<?php echo Html::_('jgrid.published', $item->published, $i, 'libraries_files_folders_urls.', false, 'cb'); ?>
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center hidden-phone">

@@ -12,9 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use Joomla\CMS\Version;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
@@ -33,9 +38,9 @@ class ComponentbuilderControllerCompiler extends AdminController
 
 	/**
 	 * Proxy for getModel.
-	 * @since	2.5
+	 * @since    2.5
 	 */
-	public function getModel($name = 'Compiler', $prefix = 'ComponentbuilderModel', $config = array())
+	public function getModel($name = 'Compiler', $prefix = 'ComponentbuilderModel', $config = [])
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
@@ -44,7 +49,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 
 	public function dashboard()
 	{
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder', false));
 		return;
 	}
 
@@ -56,12 +61,12 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function getDynamicContent()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_DOWNLOAD_THE_COMPILER_ANIMATIONS');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_DOWNLOAD_THE_COMPILER_ANIMATIONS');
 		// currently only those with permissions can get these images
 		if($user->authorise('compiler.compiler_animations', 'com_componentbuilder'))
 		{
@@ -69,7 +74,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$model = $this->getModel('compiler');
 			if ($model->getDynamicContent($message))
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BALL_THE_COMPILER_ANIMATIONS_WERE_SUCCESSFULLY_DOWNLOADED_TO_THIS_JOOMLA_INSTALLB');
+				$message = Text::_('COM_COMPONENTBUILDER_BALL_THE_COMPILER_ANIMATIONS_WERE_SUCCESSFULLY_DOWNLOADED_TO_THIS_JOOMLA_INSTALLB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -86,9 +91,9 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function compiler()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// currently only those with admin access can compile a component
 		if($user->authorise('core.manage', 'com_componentbuilder'))
 		{
@@ -97,7 +102,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$model = $this->getModel('compiler');
 			if ($model->builder())
 			{
-				$cache = JFactory::getCache('mod_menu');
+				$cache = Factory::getCache('mod_menu');
 				$cache->clean();
 				// TODO: Reset the users acl here as well to kill off any missing bits
 			}
@@ -111,7 +116,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$add_plugin_install = false;
 			$add_module_install = false;
 			// get application
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			// set redirection URL
 			$redirect_url = $app->getUserState('com_componentbuilder.redirect_url');
 			// get system messages
@@ -121,7 +126,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 				// start new message
 				$message = array();
 				// update the redirection URL
-				$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
+				$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
 				if (($pos = strpos($model->compiler->filepath['component'], "/tmp/")) !== FALSE)
 				{
 				    $url = JURI::root() . substr($model->compiler->filepath['component'], $pos + 1);
@@ -144,32 +149,36 @@ class ComponentbuilderControllerCompiler extends AdminController
 					// Message of successful build
 					$message[] = '<h1>The (' . $model->compiler->filepath['component-folder'] . ') was Successfully Compiled!</h1>';
 				}
-				$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledComponent\')">';
-				$message[] = 'Install ' . $model->compiler->filepath['component-folder'] . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (component)</button></p>';
-				// check if we have modules
-				if ($add_module_install)
+
+				if (CFactory::_('Config')->joomla_version == Version::MAJOR_VERSION)
 				{
-					foreach ($model->compiler->filepath['modules-folder'] as $module_id => $module_folder)
+					$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledComponent\')">';
+					$message[] = 'Install ' . $model->compiler->filepath['component-folder'] . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (component)</button></p>';
+					// check if we have modules
+					if ($add_module_install)
 					{
-						$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledModule\', ' . (int) $module_id . ')">';
-						$message[] = 'Install ' . $module_folder . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (module)</button></p>';
+						foreach ($model->compiler->filepath['modules-folder'] as $module_id => $module_folder)
+						{
+							$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledModule\', ' . (int) $module_id . ')">';
+							$message[] = 'Install ' . $module_folder . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (module)</button></p>';
+						}
 					}
-				}
-				// check if we have plugins
-				if ($add_plugin_install)
-				{
-					foreach ($model->compiler->filepath['plugins-folder'] as $plugin_id => $plugin_folder)
+					// check if we have plugins
+					if ($add_plugin_install)
 					{
-						$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledPlugin\', ' . (int) $plugin_id . ')">';
-						$message[] = 'Install ' . $plugin_folder . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (plugin)</button></p>';
+						foreach ($model->compiler->filepath['plugins-folder'] as $plugin_id => $plugin_folder)
+						{
+							$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledPlugin\', ' . (int) $plugin_id . ')">';
+							$message[] = 'Install ' . $plugin_folder . ' on this <span class="icon-joomla icon-white"></span>Joomla website. (plugin)</button></p>';
+						}
 					}
-				}
-				// set multi install button
-				if ($add_multi_install)
-				{
-					$message[] = '<h4>You can install all compiled extensions!</h4>';
-					$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledExtensions\')">';
-					$message[] = 'Install all above extensions on this <span class="icon-joomla icon-white"></span>Joomla! website.</button></p>';
+					// set multi install button
+					if ($add_multi_install)
+					{
+						$message[] = '<h4>You can install all compiled extensions!</h4>';
+						$message[] = '<p><button class="btn btn-small btn-success" onclick="Joomla.submitbutton(\'compiler.installCompiledExtensions\')">';
+						$message[] = 'Install all above extensions on this <span class="icon-joomla icon-white"></span>Joomla! website.</button></p>';
+					}
 				}
 				$message[] = '<h2>Total time saved</h2>';
 				$message[] = '<ul>';
@@ -304,18 +313,18 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function installCompiledExtensions()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THESE_EXTENSIONS');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THESE_EXTENSIONS');
 		// currently only those with admin access can install a component via JCB
 		if($user->authorise('core.manage'))
 		{
-			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_EXTENSIONS');
+			$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_EXTENSIONS');
 			$_message = array('success' => array(), 'error' => array());
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			// start file name array
 			$fileNames = array();
 			$fileNames[] = $app->getUserState('com_componentbuilder.component_folder_name', null);
@@ -335,11 +344,11 @@ class ComponentbuilderControllerCompiler extends AdminController
 			{
 				if ($this->installExtension($fileName))
 				{
-					$_message['success'][] = JText::sprintf('COM_COMPONENTBUILDER_SZIP_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
+					$_message['success'][] = Text::sprintf('COM_COMPONENTBUILDER_SZIP_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
 				}
 				else
 				{
-					$_message['error'][] = JText::sprintf('COM_COMPONENTBUILDER_SZIP_COULD_NOT_BE_INSTALLED', $fileName);
+					$_message['error'][] = Text::sprintf('COM_COMPONENTBUILDER_SZIP_COULD_NOT_BE_INSTALLED', $fileName);
 				}
 			}
 			// catch errors
@@ -366,17 +375,17 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function installCompiledComponent()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_COMPONENT');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_COMPONENT');
 		// currently only those with admin access can install a component via JCB
 		if($user->authorise('core.manage'))
 		{
-			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_COMPONENT');
-			$app = JFactory::getApplication();
+			$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_COMPONENT');
+			$app = Factory::getApplication();
 			$fileName = $app->getUserState('com_componentbuilder.component_folder_name');
 
 			// wipe out the user c-m-p since we are done with them all
@@ -387,7 +396,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 
 			if ($this->installExtension($fileName))
 			{
-				$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
+				$message = Text::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileName);
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -404,17 +413,17 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function installCompiledModule()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_MODULE');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_MODULE');
 		// currently only those with admin access can install a molule via JCB
 		if($user->authorise('core.manage'))
 		{
-			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_MODULE');
-			$app = JFactory::getApplication();
+			$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_MODULE');
+			$app = Factory::getApplication();
 			$fileNames = $app->getUserState('com_componentbuilder.modules_folder_name');
 
 			// wipe out the user c-m-p since we are done with them all
@@ -423,13 +432,13 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
 			$app->setUserState('com_componentbuilder.success_message', '');
 
-			if (ComponentbuilderHelper::checkArray($fileNames))
+			if (UtilitiesArrayHelper::check($fileNames))
 			{
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$moduleId = $jinput->post->get('install_item_id', 0, 'INT');
 				if ($moduleId > 0 && isset($fileNames[$moduleId]) && $this->installExtension($fileNames[$moduleId]))
 				{
-					$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileNames[$moduleId]);
+					$message = Text::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileNames[$moduleId]);
 					$this->setRedirect($redirect_url, $message, 'message');
 					return true;
 				}
@@ -447,17 +456,17 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function installCompiledPlugin()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_PLUGIN');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INSTALL_THE_PLUGIN');
 		// currently only those with admin access can install a plugin via JCB
 		if($user->authorise('core.manage'))
 		{
-			$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_PLUGIN');
-			$app = JFactory::getApplication();
+			$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_INSTALL_PLUGIN');
+			$app = Factory::getApplication();
 			$fileNames = $app->getUserState('com_componentbuilder.plugins_folder_name');
 
 			// wipe out the user c-m-p since we are done with them all
@@ -466,13 +475,13 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$app->setUserState('com_componentbuilder.plugins_folder_name', '');
 			$app->setUserState('com_componentbuilder.success_message', '');
 
-			if (ComponentbuilderHelper::checkArray($fileNames))
+			if (UtilitiesArrayHelper::check($fileNames))
 			{
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$pluginId = $jinput->post->get('install_item_id', 0, 'INT');
 				if ($pluginId > 0 && isset($fileNames[$pluginId]) && $this->installExtension($fileNames[$pluginId]))
 				{
-					$message = JText::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileNames[$pluginId]);
+					$message = Text::sprintf('COM_COMPONENTBUILDER_ONLY_SZIP_FILE_WAS_REMOVED_THE_FROM_TMP_FOLDER_DURING_INSTALLATION', $fileNames[$pluginId]);
 					$this->setRedirect($redirect_url, $message, 'message');
 					return true;
 				}
@@ -498,7 +507,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 		// set the language if not set
 		if (!isset($this->_installer_lang))
 		{
-			$this->_installer_lang = JFactory::getLanguage();
+			$this->_installer_lang = Factory::getLanguage();
 			$extension = 'com_installer';
 			$base_dir = JPATH_ADMINISTRATOR;
 			$language_tag = 'en-GB';
@@ -506,7 +515,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$this->_installer_lang->load($extension, $base_dir, $language_tag, $reload);
 		}
 		// make sure we have a string
-		if (ComponentbuilderHelper::checkString($fileName))
+		if (StringHelper::check($fileName))
 		{
 			return $this->_compiler_model->install($fileName.'.zip');
 		}
@@ -521,18 +530,18 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('compiler.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
@@ -543,7 +552,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			}
 			elseif (is_numeric($result) && 1 == $result)
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -561,25 +570,25 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function clearTmp()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
-		$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
 		if($user->authorise('compiler.clear_tmp', 'com_componentbuilder') && $user->authorise('core.manage', 'com_componentbuilder'))
 		{
 			// get the model
 			$model = $this->getModel('compiler');
 			// get tmp folder
-			$comConfig = JFactory::getConfig();
+			$comConfig = Factory::getConfig();
 			$tmp = $comConfig->get('tmp_path');
 			if ($model->emptyFolder($tmp))
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				// get application
-				$app = JFactory::getApplication();
+				$app = Factory::getApplication();
 				// wipe out the user c-m-p since we are done with them all
 				$app->setUserState('com_componentbuilder.component_folder_name', '');
 				$app->setUserState('com_componentbuilder.modules_folder_name', '');
@@ -602,20 +611,20 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function runTranslator()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=compiler', false);
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_TRANSLATOR_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_TRANSLATOR_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('compiler.run_translator', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_TRANSLATION_FAILED_SINCE_THERE_ARE_NO_COMPONENTS_LINKED_WITH_TRANSLATION_TOOLS');
+			$message = Text::_('COM_COMPONENTBUILDER_TRANSLATION_FAILED_SINCE_THERE_ARE_NO_COMPONENTS_LINKED_WITH_TRANSLATION_TOOLS');
 			// run translator via API
-			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.translator');
+			$result = ComponentbuilderHelper::getFileContents(Uri::root() . 'index.php?option=com_componentbuilder&task=api.translator');
 			// is there a message returned
 			if (!is_numeric($result) && StringHelper::check($result))
 			{

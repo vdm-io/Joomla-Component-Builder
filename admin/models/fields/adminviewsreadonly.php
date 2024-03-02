@@ -12,6 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,18 +28,18 @@ class JFormFieldAdminviewsreadonly extends JFormFieldList
 	/**
 	 * The adminviewsreadonly field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'adminviewsreadonly';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 $query = $db->getQuery(true);
 $query->select($db->quoteName(array('a.id','a.system_name'),array('id','admin_view_system_name')));
 $query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
@@ -45,10 +49,10 @@ $items = $db->loadObjectList();
 $options = array();
 if ($items)
 {
-	$options[] = JHtml::_('select.option', '', 'Select an option');
+	$options[] = Html::_('select.option', '', 'Select an option');
 	foreach($items as $item)
 	{
-		$options[] = JHtml::_('select.option', $item->id, $item->admin_view_system_name);
+		$options[] = Html::_('select.option', $item->id, $item->admin_view_system_name);
 	}
 }
 

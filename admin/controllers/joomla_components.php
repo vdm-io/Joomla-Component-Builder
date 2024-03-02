@@ -12,13 +12,16 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
-use VDM\Joomla\Utilities\ArrayHelper as JCBArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Language\Text;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Joomla_components Admin Controller
@@ -52,13 +55,13 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 	public function exportData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('joomla_component.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
-			$input = JFactory::getApplication()->input;
+			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
 			$pks = ArrayHelper::toInteger($pks);
@@ -66,16 +69,16 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			$model = $this->getModel('Joomla_components');
 			// get the data to export
 			$data = $model->getExportData($pks);
-			if (ComponentbuilderHelper::checkArray($data))
+			if (UtilitiesArrayHelper::check($data))
 			{
 				// now set the data to the spreadsheet
-				$date = JFactory::getDate();
+				$date = Factory::getDate();
 				ComponentbuilderHelper::xls($data,'Joomla_components_'.$date->format('jS_F_Y'),'Joomla components exported ('.$date->format('jS F, Y').')','joomla components');
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
 
@@ -83,32 +86,32 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 	public function importData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('joomla_component.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			// Get the import model
 			$model = $this->getModel('Joomla_components');
 			// get the headers to import
 			$headers = $model->getExImPortHeaders();
-			if (ComponentbuilderHelper::checkObject($headers))
+			if (ObjectHelper::check($headers))
 			{
 				// Load headers to session.
-				$session = JFactory::getSession();
+				$session = Factory::getSession();
 				$headers = json_encode($headers);
 				$session->set('joomla_component_VDM_IMPORTHEADERS', $headers);
 				$session->set('backto_VDM_IMPORT', 'joomla_components');
 				$session->set('dataType_VDM_IMPORTINTO', 'joomla_component');
 				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_JOOMLA_COMPONENTS');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components', false), $message);
+				$message = Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_JOOMLA_COMPONENTS');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import_joomla_components', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
 
@@ -121,18 +124,18 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('joomla_components.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
@@ -143,7 +146,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			}
 			elseif (is_numeric($result) && 1 == $result)
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -161,25 +164,25 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 	public function clearTmp()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false);
-		$message = JText::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_components', false);
+		$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
 		if($user->authorise('joomla_components.clear_tmp', 'com_componentbuilder') && $user->authorise('core.manage', 'com_componentbuilder'))
 		{
 			// get the model
 			$model = $this->getModel('compiler');
 			// get tmp folder
-			$comConfig = JFactory::getConfig();
+			$comConfig = Factory::getConfig();
 			$tmp = $comConfig->get('tmp_path');
 			if ($model->emptyFolder($tmp))
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				// get application
-				$app = JFactory::getApplication();
+				$app = Factory::getApplication();
 				// wipe out the user c-m-p since we are done with them all
 				$app->setUserState('com_componentbuilder.component_folder_name', '');
 				$app->setUserState('com_componentbuilder.modules_folder_name', '');
@@ -196,44 +199,44 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 	public function smartImport()
 	{
 		// check if import is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('joomla_component.import_jcb_packages', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
-			$session = JFactory::getSession();
+			$session = Factory::getSession();
 			$session->set('backto_VDM_IMPORT', 'joomla_components');
 			$session->set('dataType_VDM_IMPORTINTO', 'smart_package');
 			// Redirect to import view.
 			$message = Text::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
-			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
+			$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
 			return;
 		}
 		// Redirect to the list screen with error.
 		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
 
 	public function smartExport()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// Get the model
 		$model = $this->getModel('Joomla_components');
 		// check if export is allowed for this user.
-		$model->user = JFactory::getUser();
+		$model->user = Factory::getUser();
 		if ($model->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder') && $model->user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
-			$input = JFactory::getApplication()->input;
+			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
-			JArrayHelper::toInteger($pks);
+			ArrayHelper::toInteger($pks);
 			// check if there is any selections
 			if (!JCBArrayHelper::check($pks))
 			{
 				// Redirect to the list screen with error.
 				$message = Text::_('COM_COMPONENTBUILDER_NO_COMPONENTS_WERE_SELECTED_PLEASE_MAKE_A_SELECTION_AND_TRY_AGAIN');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 				return;
 			}
 			// set auto loader
@@ -268,8 +271,8 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 				// Redirect to the list screen with success.
 				$message = array();
 				$message[] = '<h1>' . Text::_('COM_COMPONENTBUILDER_EXPORT_COMPLETED') . '</h1>';
-				$message[] = '<p>' . JText::sprintf('COM_COMPONENTBUILDER_PATH_TO_THE_ZIPPED_PACKAGE_IS_CODESCODE_BR_S_S', $model->zipPath, $keyNotice, $ownerDetails) . '</p>';
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode('', $message), 'Success');
+				$message[] = '<p>' . Text::sprintf('COM_COMPONENTBUILDER_PATH_TO_THE_ZIPPED_PACKAGE_IS_CODESCODE_BR_S_S', $model->zipPath, $keyNotice, $ownerDetails) . '</p>';
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode('', $message), 'Success');
 				return;
 			}
 			else
@@ -282,13 +285,13 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 				if (StringHelper::check($model->zipPath))
 				{
 					// clear all if not successful
-					JFile::delete($model->zipPath);
+					File::delete($model->zipPath);
 				}				
 			}
 		}
 		// Redirect to the list screen with error.
 		$message = Text::_('COM_COMPONENTBUILDER_EXPORT_FAILED_PLEASE_TRY_AGAIN_LATTER');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
 
@@ -297,7 +300,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 		// get params first
 		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
-			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			$this->params = ComponentHelper::getParams('com_componentbuilder');
 		}
 		// Get the model
 		$model = componentbuilderHelper::getModel('joomla_components', JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
@@ -313,83 +316,83 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			// set auto loader
 			ComponentbuilderHelper::autoLoader('smart');
 			// manual backup message
-			$backupNotice = array();
+			$backupNotice = [];
 			// get the data to export
-			if (JCBArrayHelper::check($pks) && $model->getSmartExport($pks))
+			if (UtilitiesArrayHelper::check($pks) && $model->getSmartExport($pks))
 			{
-				$backupNotice[] = JText::_('COM_COMPONENTBUILDER_BACKUP_WAS_DONE_SUCCESSFULLY');
+				$backupNotice[] = Text::_('COM_COMPONENTBUILDER_BACKUP_WAS_DONE_SUCCESSFULLY');
 				$backupNoticeStatus = 'Success';
 				// set the key string
 				if (StringHelper::check($model->key) && strlen($model->key) == 32)
 				{
 					$textNotice = array();
-					$keyNotice = '<h1>' . JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_CODESCODE', $model->key) . '</h1>';
-					$keyNotice .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOUR_DATA_IS_ENCRYPTED_WITH_A_AES_TWO_HUNDRED_AND_FIFTY_SIX_BIT_ENCRYPTION_USING_THE_ABOVE_THIRTY_TWO_CHARACTER_KEY') . '</p>';
-					$textNotice[] = JText::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_S', $model->key);
+					$keyNotice = '<h1>' . Text::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_CODESCODE', $model->key) . '</h1>';
+					$keyNotice .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOUR_DATA_IS_ENCRYPTED_WITH_A_AES_TWO_HUNDRED_AND_FIFTY_SIX_BIT_ENCRYPTION_USING_THE_ABOVE_THIRTY_TWO_CHARACTER_KEY') . '</p>';
+					$textNotice[] = Text::sprintf('COM_COMPONENTBUILDER_THE_PACKAGE_KEY_IS_S', $model->key);
 					// set the package owner info
 					if ((isset($model->info['getKeyFrom']['company']) && StringHelper::check($model->info['getKeyFrom']['company'])) || (isset($model->info['getKeyFrom']['owner']) && StringHelper::check($model->info['getKeyFrom']['owner'])))
 					{
-						$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
-						$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
+						$ownerDetails = '<h2>' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
+						$textNotice[] = '# ' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
 						$ownerDetails .= '<ul>';
 						if (isset($model->info['getKeyFrom']['company']) && StringHelper::check($model->info['getKeyFrom']['company']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $model->info['getKeyFrom']['company']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_COMPANY_S', $model->info['getKeyFrom']['company']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMCOMPANYEM_BSB', $model->info['getKeyFrom']['company']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_COMPANY_S', $model->info['getKeyFrom']['company']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['owner']) && StringHelper::check($model->info['getKeyFrom']['owner']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $model->info['getKeyFrom']['owner']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_OWNER_S', $model->info['getKeyFrom']['owner']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMOWNEREM_BSB', $model->info['getKeyFrom']['owner']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_OWNER_S', $model->info['getKeyFrom']['owner']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['website']) && StringHelper::check($model->info['getKeyFrom']['website']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $model->info['getKeyFrom']['website']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_WEBSITE_S', $model->info['getKeyFrom']['website']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMWEBSITEEM_BSB', $model->info['getKeyFrom']['website']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_WEBSITE_S', $model->info['getKeyFrom']['website']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['email']) && StringHelper::check($model->info['getKeyFrom']['email']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $model->info['getKeyFrom']['email']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $model->info['getKeyFrom']['email']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMEMAILEM_BSB', $model->info['getKeyFrom']['email']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $model->info['getKeyFrom']['email']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['license']) && StringHelper::check($model->info['getKeyFrom']['license']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $model->info['getKeyFrom']['license']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_LICENSE_S', $model->info['getKeyFrom']['license']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMLICENSEEM_BSB', $model->info['getKeyFrom']['license']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_LICENSE_S', $model->info['getKeyFrom']['license']);
 						}
 						// add value only if set
 						if (isset($model->info['getKeyFrom']['copyright']) && StringHelper::check($model->info['getKeyFrom']['copyright']))
 						{
-							$ownerDetails .= '<li>' . JText::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $model->info['getKeyFrom']['copyright']) . '</li>';
-							$textNotice[] = '- ' . JText::sprintf('COM_COMPONENTBUILDER_COPYRIGHT_S', $model->info['getKeyFrom']['copyright']);
+							$ownerDetails .= '<li>' . Text::sprintf('COM_COMPONENTBUILDER_EMCOPYRIGHTEM_BSB', $model->info['getKeyFrom']['copyright']) . '</li>';
+							$textNotice[] = '- ' . Text::sprintf('COM_COMPONENTBUILDER_COPYRIGHT_S', $model->info['getKeyFrom']['copyright']);
 						}							
 						$ownerDetails .= '</ul>';
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_OWNER_DETAILS_WAS_SET');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_OWNER_DETAILS_WAS_SET');
 					}
 					else
 					{
-						$ownerDetails = '<h2>' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_NOT_SET') . '</h2>';
-						$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
-						$ownerDetails .= JText::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_BJCB_GLOBAL_OPTIONSB_GO_TO_THE_BCOMPANYB_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE') . '<br />';
-						$textNotice[] = JText::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
-						$ownerDetails .= '<h3>' . JText::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS') . '</h3>';
-						$textNotice[] = '## ' .  JText::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS');
-						$ownerDetails .= JText::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_BIMPORT_PROCESSB_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_BDOES_NOTB_HAVE_THE_KEY_THEY_CAN_SEE_BWHERE_TO_GET_ITB') . '<br />';
-						$textNotice[] = JText::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_IMPORT_PROCESS_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_DOES_NOT_HAVE_THE_KEY_THEY_CAN_SEE_WHERE_TO_GET_IT');
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_CHECK_YOUR_OWNER_DETAILS_IT_HAS_NOT_BEEN_SET_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
+						$ownerDetails = '<h2>' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_NOT_SET') . '</h2>';
+						$textNotice[] = '# ' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS');
+						$ownerDetails .= Text::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_BJCB_GLOBAL_OPTIONSB_GO_TO_THE_BCOMPANYB_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE') . '<br />';
+						$textNotice[] = Text::_('COM_COMPONENTBUILDER_TO_CHANGE_THE_PACKAGE_OWNER_DEFAULTS_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
+						$ownerDetails .= '<h3>' . Text::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS') . '</h3>';
+						$textNotice[] = '## ' .  Text::_('COM_COMPONENTBUILDER_YOU_SHOULD_ADD_THE_CORRECT_OWNER_DETAILS');
+						$ownerDetails .= Text::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_BIMPORT_PROCESSB_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_BDOES_NOTB_HAVE_THE_KEY_THEY_CAN_SEE_BWHERE_TO_GET_ITB') . '<br />';
+						$textNotice[] = Text::_('COM_COMPONENTBUILDER_SINCE_THE_OWNER_DETAILS_ARE_DISPLAYED_DURING_IMPORT_PROCESS_BEFORE_ADDING_THE_KEY_THIS_WAY_IF_THE_USERDEV_DOES_NOT_HAVE_THE_KEY_THEY_CAN_SEE_WHERE_TO_GET_IT');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_CHECK_YOUR_OWNER_DETAILS_IT_HAS_NOT_BEEN_SET_OPEN_THE_JCB_GLOBAL_OPTIONS_GO_TO_THE_COMPANY_TAB_AND_ADD_THE_CORRECT_COMPANY_DETAILS_THERE');
 					}
 				}
 				else
 				{
-					$keyNotice = '<h1>' . JText::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY') . '</h1>';
-					$textNotice[] = '# ' . JText::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY');
-					$ownerDetails = JText::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_BSETTINGSB_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_BEXPORT_KEYB') . '<br />';
-					$textNotice[] = JText::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
-					$backupNotice[] = JText::_('COM_COMPONENTBUILDER_NO_KEYS_WERE_FOUND_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
+					$keyNotice = '<h1>' . Text::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY') . '</h1>';
+					$textNotice[] = '# ' . Text::_('COM_COMPONENTBUILDER_THIS_PACKAGE_HAS_NO_KEY');
+					$ownerDetails = Text::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_BSETTINGSB_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_BEXPORT_KEYB') . '<br />';
+					$textNotice[] = Text::_('COM_COMPONENTBUILDER_THAT_MEANS_ANYONE_WHO_HAS_THIS_PACKAGE_CAN_INSTALL_IT_INTO_JCB_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
+					$backupNotice[] = Text::_('COM_COMPONENTBUILDER_NO_KEYS_WERE_FOUND_TO_ADD_AN_EXPORT_KEY_SIMPLY_OPEN_THE_COMPONENT_GO_TO_THE_TAB_CALLED_SETTINGS_BOTTOM_RIGHT_THERE_IS_A_FIELD_CALLED_EXPORT_KEY');
 				}
 				// get email
 				if ($email = $this->params->get('backup_email', null))
@@ -403,20 +406,20 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 						// Build final massage.
 						$message = $keyNotice . $ownerDetails . '<br /><small>HASH: ' . $hashTracker . '</small>';
 						// set the subject
-						$subject = JText::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDER_BACKUP_KEY');
+						$subject = Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDER_BACKUP_KEY');
 						// email the message
 						componentbuilderEmail::send($email, $subject, componentbuilderEmail::setTableBody($message, $subject), $plainText, 1);
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_EMAIL_WITH_THE_NEW_KEY_WAS_SENT');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_EMAIL_WITH_THE_NEW_KEY_WAS_SENT');
 					}
 					else
 					{
-						$backupNotice[] = JText::_('COM_COMPONENTBUILDER_KEY_HAS_NOT_CHANGED');
+						$backupNotice[] = Text::_('COM_COMPONENTBUILDER_KEY_HAS_NOT_CHANGED');
 					}
 				}
 			}
 			else
 			{
-				$backupNotice[] = JText::_('COM_COMPONENTBUILDER_BACKUP_FAILED_PLEASE_TRY_AGAIN_IF_THE_ERROR_CONTINUE_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR');
+				$backupNotice[] = Text::_('COM_COMPONENTBUILDER_BACKUP_FAILED_PLEASE_TRY_AGAIN_IF_THE_ERROR_CONTINUE_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR');
 				$backupNoticeStatus = 'Error';
 				if (StringHelper::check($model->packagePath))
 				{
@@ -426,7 +429,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 				if (StringHelper::check($model->zipPath))
 				{
 					// clear all if not successful
-					JFile::delete($model->zipPath);
+					File::delete($model->zipPath);
 				}				
 			}
 			// quite only if auto backup (adding this script from custom code :)
@@ -434,45 +437,45 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			{
 				echo "# " . $backupNoticeStatus . "\n" .implode("\n", $backupNotice);
 				// clear session
-				JFactory::getApplication()->getSession()->destroy();
+				Factory::getApplication()->getSession()->destroy();
 				jexit();
 			}
-			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode("<br />", $backupNotice), $backupNoticeStatus);
+			$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), implode("<br />", $backupNotice), $backupNoticeStatus);
 			return;
 		}
 		// quite only if auto backup (adding this script from custom code :)
 		if ('backup' === $model->activeType)
 		{
-			echo "# Error\n" . JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
+			echo "# Error\n" . Text::_('COM_COMPONENTBUILDER_ACCESS_DENIED');
 			// clear session
-			JFactory::getApplication()->getSession()->destroy();
+			Factory::getApplication()->getSession()->destroy();
 			jexit();
 		}
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), JText::_('COM_COMPONENTBUILDER_ACCESS_DENIED'), 'Error');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), Text::_('COM_COMPONENTBUILDER_ACCESS_DENIED'), 'Error');
 		return;
 	}
 
 	public function cloner()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// Get the model
 		$model = $this->getModel('Joomla_components');
 		// check if export is allowed for this user.
-		$model->user = JFactory::getUser();
+		$model->user = Factory::getUser();
 		if ($model->user->authorise('joomla_component.clone', 'com_componentbuilder') && $model->user->authorise('core.copy', 'com_componentbuilder'))
 		{
 			// Get the input
-			$input = JFactory::getApplication()->input;
+			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
-			JArrayHelper::toInteger($pks);
+			ArrayHelper::toInteger($pks);
 			// check if there is any selections
 			if (!JCBArrayHelper::check($pks))
 			{
 				// Redirect to the list screen with error.
 				$message = Text::_('COM_COMPONENTBUILDER_NO_COMPONENT_WAS_SELECTED_PLEASE_MAKE_A_SELECTION_OF_ONE_COMPONENT_AND_TRY_AGAIN');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 				return;
 			}
 			// only one component allowed at this time
@@ -480,7 +483,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			{
 				// Redirect to the list screen with error.
 				$message = Text::_('COM_COMPONENTBUILDER_ONLY_ONE_COMPONENT_CAN_BE_CLONED_AT_A_TIME_PLEASE_SELECT_ONE_AND_TRY_AGAIN');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 				return;
 			}
 			// set the active type
@@ -490,24 +493,24 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			{
 				// clone was successful
 				$message = Text::_('COM_COMPONENTBUILDER_THE_COMPONENT_WITH_ALL_LINKED_ADMIN_VIEWS_FIELDS_LINKED_TO_ADMIN_VIEWS_CUSTOM_ADMIN_VIEWS_SITE_VIEWS_TEMPLATES_AND_LAYOUTS_WERE_CLONED_SUCCESSFUL');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message);
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message);
 				return;
 			}
 			// Redirect to the list screen with error.
 			$message = Text::_('COM_COMPONENTBUILDER_CLONE_FAILED');
-			$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+			$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 			return;
 		}
 		// Redirect to the list screen with error.
 		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_CLONE_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
 		return;
 	}
 
 	protected function getApiUser()
 	{
 		// admin area does not have API user, only front-end (so we fallback on login user)
-		return JFactory::getUser();
+		return Factory::getUser();
 	}
 
 }

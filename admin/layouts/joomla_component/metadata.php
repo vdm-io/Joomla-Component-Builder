@@ -12,6 +12,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Language\Text;
+
 $form = $displayData->getForm();
 
 // JLayout for standard handling of metadata fields in the administrator content edit screens.
@@ -20,7 +22,7 @@ $fieldSets = $form->getFieldsets('metadata');
 
 <?php foreach ($fieldSets as $name => $fieldSet) : ?>
 	<?php if (isset($fieldSet->description) && trim($fieldSet->description)) : ?>
-		<p class="alert alert-info"><?php echo $this->escape(JText::_($fieldSet->description)); ?></p>
+		<p class="alert alert-info"><?php echo $this->escape(Text::_($fieldSet->description)); ?></p>
 	<?php endif; ?>
 
 	<?php

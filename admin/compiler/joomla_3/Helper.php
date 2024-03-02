@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -29,7 +29,7 @@ abstract class ###Component###Helper
 	 *
 	 * @var      array
 	 */
-	protected static $composer = array();
+	protected static $composer = [];
 
 	/**
 	 * The Main Active Language
@@ -80,7 +80,7 @@ abstract class ###Component###Helper
 		// check if set
 		if (!Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(self::$JVersion))
 		{
-			self::$JVersion = new JVersion();
+			self::$JVersion = new Version();
 		}
 		return self::$JVersion;
 	}
@@ -91,18 +91,18 @@ abstract class ###Component###Helper
 	public static function getContributors()
 	{
 		// get params
-		$params	= JComponentHelper::getParams('com_###component###');
+		$params    = ComponentHelper::getParams('com_###component###');
 		// start contributors array
-		$contributors = array();
+		$contributors = [];
 		// get all Contributors (max 20)
 		$searchArray = range('0','20');
 		foreach($searchArray as $nr)
- 		{
+		{
 			if ((NULL !== $params->get("showContributor".$nr)) && ($params->get("showContributor".$nr) == 1 || $params->get("showContributor".$nr) == 3))
 			{
 				// set link based of selected option
 				if($params->get("useContributor".$nr) == 1)
-         		{
+				{
 					$link_front = '<a href="mailto:'.$params->get("emailContributor".$nr).'" target="_blank">';
 					$link_back = '</a>';
 				}
@@ -116,8 +116,8 @@ abstract class ###Component###Helper
 					$link_front = '';
 					$link_back = '';
 				}
-				$contributors[$nr]['title']	= Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($params->get("titleContributor".$nr));
-				$contributors[$nr]['name']	= $link_front.Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($params->get("nameContributor".$nr)).$link_back;
+				$contributors[$nr]['title']   = Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($params->get("titleContributor".$nr));
+				$contributors[$nr]['name']    = $link_front.Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($params->get("nameContributor".$nr)).$link_back;
 			}
 		}
 		return $contributors;
@@ -129,7 +129,7 @@ abstract class ###Component###Helper
 	public static function addSubmenu($submenu)
 	{
 		// load user for access menus
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// load the submenus to sidebar
 		###SUBMENU###
 	}###HELPER_CREATEUSER######HELPER_UIKIT######HELPER_EXEL###
@@ -211,7 +211,7 @@ abstract class ###Component###Helper
 		{
 			$type = 'item';
 		}
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select(array('a.published'));
 		$query->from('#__###component###_'.$type.' AS a');
@@ -229,7 +229,7 @@ abstract class ###Component###Helper
 
 	public static function getGroupName($id)
 	{
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select(array('a.title'));
 		$query->from('#__usergroups AS a');
@@ -238,7 +238,7 @@ abstract class ###Component###Helper
 		$db->execute();
 		$found = $db->getNumRows();
 		if($found)
-  		{
+		  {
 			return $db->loadResult();
 		}
 		return $id;
@@ -254,7 +254,7 @@ abstract class ###Component###Helper
 	 * @param  string   $component   The target component
 	 * @param  object   $user        The user whose permissions we are loading
 	 *
-	 * @return  object   The JObject of permission/authorised actions
+	 * @return  object   The CMSObject of permission/authorised actions
 	 *
 	 */
 	public static function getActions($view, &$record = null, $views = null, $target = null, $component = '###component###', $user = 'null')
@@ -263,22 +263,22 @@ abstract class ###Component###Helper
 		if (!Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check($user))
 		{
 			// get the user object
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 		}
-		// load the JObject
-		$result = new JObject;
+		// load the CMSObject
+		$result = new CMSObject;
 		// make view name safe (just incase)
 		$view = Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($view);
 		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($views))
 		{
 			$views = Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($views);
- 		}
+		 }
 		// get all actions from component
-		$actions = JAccess::getActionsFromFile(
+		$actions = Access::getActionsFromFile(
 			JPATH_ADMINISTRATOR . '/components/com_' . $component . '/access.xml',
 			"/access/section[@name='component']/"
 		);
-		// if non found then return empty JObject
+		// if non found then return empty CMSObject
 		if (empty($actions))
 		{
 			return $result;
@@ -445,14 +445,14 @@ abstract class ###Component###Helper
 	/**
 	 * Get any component's model
 	 */
-	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $Component = '###Component###', $config = array())
+	public static function getModel($name, $path = JPATH_COMPONENT_ADMINISTRATOR, $Component = '###Component###', $config = [])
 	{
 		// fix the name
 		$name = Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe($name);
 		// full path to models
 		$fullPathModels = $path . '/models';
 		// load the model file
-		JModelLegacy::addIncludePath($fullPathModels, $Component . 'Model');
+		BaseDatabaseModel::addIncludePath($fullPathModels, $Component . 'Model');
 		// make sure the table path is loaded
 		if (!isset($config['table_path']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($config['table_path']))
 		{
@@ -460,7 +460,7 @@ abstract class ###Component###Helper
 			$config['table_path'] = JPATH_ADMINISTRATOR . '/components/com_' . strtolower($Component) . '/tables';
 		}
 		// get instance
-		$model = JModelLegacy::getInstance($name, $Component . 'Model', $config);
+		$model = BaseDatabaseModel::getInstance($name, $Component . 'Model', $config);
 		// if model not found (strange)
 		if ($model == false)
 		{
@@ -495,14 +495,14 @@ abstract class ###Component###Helper
 	 */
 	public static function setAsset($id, $table, $inherit = true)
 	{
-		$parent = JTable::getInstance('Asset');
+		$parent = Table::getInstance('Asset');
 		$parent->loadByName('com_###component###');
 
 		$parentId = $parent->id;
 		$name     = 'com_###component###.'.$table.'.'.$id;
 		$title    = '';
 
-		$asset = JTable::getInstance('Asset');
+		$asset = Table::getInstance('Asset');
 		$asset->loadByName($name);
 
 		// Check for an error.
@@ -526,14 +526,14 @@ abstract class ###Component###Helper
 			$asset->title     = $title;
 			// get the default asset rules
 			$rules = self::getDefaultAssetRules('com_###component###', $table, $inherit);
-			if ($rules instanceof JAccessRules)
+			if ($rules instanceof AccessRules)
 			{
 				$asset->rules = (string) $rules;
 			}
 
 			if (!$asset->check() || !$asset->store())
 			{
-				JFactory::getApplication()->enqueueMessage($asset->getError(), 'warning');
+				Factory::getApplication()->enqueueMessage($asset->getError(), 'warning');
 				return false;
 			}
 			else
@@ -546,7 +546,7 @@ abstract class ###Component###Helper
 				$object->asset_id = (int) $asset->id;
 
 				// Update their asset_id to link to the asset table.
-				return JFactory::getDbo()->updateObject('#__###component###_'.$table, $object, 'id');
+				return Factory::getDbo()->updateObject('#__###component###_'.$table, $object, 'id');
 			}
 		}
 		return false;
@@ -563,7 +563,7 @@ abstract class ###Component###Helper
 		if (!$inherit)
 		{
 			// Need to find the asset id by the name of the component.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName('id'))
 				->from($db->quoteName('#__assets'))
@@ -578,8 +578,8 @@ abstract class ###Component###Helper
 			}
 		}
 		// get asset rules
-		$result =  JAccess::getAssetRules($assetId);
-		if ($result instanceof JAccessRules)
+		$result =  Access::getAssetRules($assetId);
+		if ($result instanceof AccessRules)
 		{
 			$_result = (string) $result;
 			$_result = json_decode($_result);
@@ -594,7 +594,7 @@ abstract class ###Component###Helper
 				elseif ($inherit)
 				{
 					// clear the value since we inherit
-					$rule = array();
+					$rule = [];
 				}
 			}
 			// check if there are any view values remaining
@@ -602,8 +602,8 @@ abstract class ###Component###Helper
 			{
 				$_result = json_encode($_result);
 				$_result = array($_result);
-				// Instantiate and return the JAccessRules object for the asset rules.
-				$rules = new JAccessRules($_result);
+				// Instantiate and return the AccessRules object for the asset rules.
+				$rules = new AccessRules($_result);
 				// return filtered rules
 				return $rules;
 			}
@@ -648,7 +648,7 @@ abstract class ###Component###Helper
 	 * @return  null
 	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::attributes($xml, $attributes);
 	 */
-	public static function xmlAddAttributes(&$xml, $attributes = array())
+	public static function xmlAddAttributes(&$xml, $attributes = [])
 	{
 		Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::attributes($xml, $attributes);
 	}
@@ -662,7 +662,7 @@ abstract class ###Component###Helper
 	 * @return  void
 	 * @deprecated 3.3 Use Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::options($xml, $options);
 	 */
-	public static function xmlAddOptions(&$xml, $options = array())
+	public static function xmlAddOptions(&$xml, $options = [])
 	{
 		Super___1198aecf_84c6_45d2_aea8_d531aa4afdfa___Power::options($xml, $options);
 	}
@@ -733,7 +733,7 @@ abstract class ###Component###Helper
 	/**
 	 * Check if have an json string
 	 *
-	 * @input	string   The json string to check
+	 * @input    string   The json string to check
 	 *
 	 * @returns bool true on success
 	 * @deprecated 3.3 Use Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check($string);
@@ -746,7 +746,7 @@ abstract class ###Component###Helper
 	/**
 	 * Check if have an object with a length
 	 *
-	 * @input	object   The object to check
+	 * @input    object   The object to check
 	 *
 	 * @returns bool true on success
 	 * @deprecated 3.3 Use Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check($object);
@@ -759,7 +759,7 @@ abstract class ###Component###Helper
 	/**
 	 * Check if have an array with a length
 	 *
-	 * @input	array   The array to check
+	 * @input    array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
 	 * @deprecated 3.3 Use Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($array, $removeEmptyString);
@@ -772,7 +772,7 @@ abstract class ###Component###Helper
 	/**
 	 * Check if have a string with a length
 	 *
-	 * @input	string   The string to check
+	 * @input    string   The string to check
 	 *
 	 * @returns bool true on success
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($string);
@@ -792,7 +792,7 @@ abstract class ###Component###Helper
 	{
 		// If example.com is down, then probably the whole internet is down, since IANA maintains the domain. Right?
 		$connected = @fsockopen("www.example.com", 80);
-                // website, port  (try 80 or 443)
+		// website, port  (try 80 or 443)
 		if ($connected)
 		{
 			//action when connected
@@ -810,7 +810,7 @@ abstract class ###Component###Helper
 	/**
 	 * Merge an array of array's
 	 *
-	 * @input	array   The arrays you would like to merge
+	 * @input    array   The arrays you would like to merge
 	 *
 	 * @returns array on success
 	 * @deprecated 3.3 Use Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::merge($arrays);
@@ -829,7 +829,7 @@ abstract class ###Component###Helper
 	/**
 	 * Shorten a string
 	 *
-	 * @input	string   The you would like to shorten
+	 * @input    string   The you would like to shorten
 	 *
 	 * @returns string on success
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::shorten(...);
@@ -842,7 +842,7 @@ abstract class ###Component###Helper
 	/**
 	 * Making strings safe (various ways)
 	 *
-	 * @input	string   The you would like to make safe
+	 * @input    string   The you would like to make safe
 	 *
 	 * @returns string on success
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::safe(...);
@@ -861,7 +861,7 @@ abstract class ###Component###Helper
 	/**
 	 * Convert none English strings to code usable string
 	 *
-	 * @input	an string
+	 * @input    an string
 	 *
 	 * @returns a string
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::transliterate($string);
@@ -874,7 +874,7 @@ abstract class ###Component###Helper
 	/**
 	 * make sure a string is HTML save
 	 *
-	 * @input	an html string
+	 * @input    an html string
 	 *
 	 * @returns a string
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html(...);
@@ -892,7 +892,7 @@ abstract class ###Component###Helper
 	/**
 	 * Convert all int in a string to an English word string
 	 *
-	 * @input	an string with numbers
+	 * @input    an string with numbers
 	 *
 	 * @returns a string
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::numbers($string);
@@ -906,7 +906,7 @@ abstract class ###Component###Helper
 	 * Convert an integer into an English word string
 	 * Thanks to Tom Nicholson <http://php.net/manual/en/function.strval.php#41988>
 	 *
-	 * @input	an int
+	 * @input    an int
 	 * @returns a string
 	 * @deprecated 3.3 Use Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::number($x);
 	 */

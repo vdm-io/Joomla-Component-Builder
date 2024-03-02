@@ -12,6 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,18 +28,19 @@ class JFormFieldSiteviews extends JFormFieldList
 	/**
 	 * The siteviews field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'siteviews';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDBO();
+		// Get the database object.
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','siteview_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_site_view', 'a'));
@@ -43,13 +48,16 @@ class JFormFieldSiteviews extends JFormFieldList
 		$query->order('a.system_name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->siteview_system_name);
+				$options[] = Html::_('select.option', $item->id, $item->siteview_system_name);
 			}
 		}
 		return $options;

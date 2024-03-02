@@ -12,7 +12,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Gitea\Factory as GiteaFactory;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
@@ -20,7 +24,6 @@ use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\Registry\Registry;
-use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -33,13 +36,13 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 class ComponentbuilderModelAjax extends ListModel
 {
 	protected $app_params;
-	
-	public function __construct() 
-	{		
-		parent::__construct();		
+
+	public function __construct()
+	{
+		parent::__construct();
 		// get params
-		$this->app_params	= JComponentHelper::getParams('com_componentbuilder');
-		
+		$this->app_params = ComponentHelper::getParams('com_componentbuilder');
+
 	}
 
 	// Used in joomla_component
@@ -101,7 +104,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function getComponentDetails($id)
 	{
 		// Need to find the asset id by the name of the component.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true)
 			->select($db->quoteName(array(
 				'id','companyname','component_version','copyright','debug_linenr',
@@ -197,7 +200,7 @@ class ComponentbuilderModelAjax extends ListModel
 		$result = array('error' => '<span style="color: red;">' . Text::_('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_SINCE_INCORRECT_TYPE_REQUESTED') . '</span>');
 		if ('backup' === $type)
 		{
-			$result['error'] = '<span style="color: red;">' . JText::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
+			$result['error'] = '<span style="color: red;">' . Text::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
 			if ($this->hasCurl())
 			{
 				$path = '*/5 * * * * curl -s "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
@@ -210,7 +213,7 @@ class ComponentbuilderModelAjax extends ListModel
 		}
 		elseif ('expand' === $type)
 		{
-			$result['error'] = '<span style="color: red;">' . JText::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
+			$result['error'] = '<span style="color: red;">' . Text::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
 			if ($this->hasCurl())
 			{
 				$path = '* * * * * curl -s "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
@@ -240,7 +243,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function isNew(?string $notice): bool
 	{
 		// first get the file path
-		$path_filename = FileHelper::getPath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
+		$path_filename = FileHelper::getPath('path', 'usernotice', 'md', Factory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
 
 		// check if the file is set
 		if (($content = FileHelper::getContent($path_filename, FALSE)) !== FALSE)
@@ -264,7 +267,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function isRead(?string $notice): bool
 	{
 		// first get the file path
-		$path_filename = FileHelper::getPath('path', 'usernotice', 'md', JFactory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
+		$path_filename = FileHelper::getPath('path', 'usernotice', 'md', Factory::getUser()->username, JPATH_COMPONENT_ADMINISTRATOR);
 
 		// set as read if not already set
 		if (($content = FileHelper::getContent($path_filename, FALSE)) !== FALSE)
@@ -288,64 +291,54 @@ class ComponentbuilderModelAjax extends ListModel
 	 */
 	public function getVersion($version = null)
 	{
-		// get the token if set
-		$token = $this->app_params->get('gitea_token');
-
-		// only add if token is set
-		if ($token)
+		try
 		{
-			try
-			{
-				// load the API details
-				GiteaFactory::_('Gitea.Repository.Tags')->load_('https://git.vdm.dev', $token);
+			// get the repository tags
+			$tags = GiteaFactory::_('Gitea.Repository.Tags')->list('joomla', 'Component-Builder');
+		}
+		catch (DomainException $e)
+		{
+			return $this->getTokenForVersion($e->getMessage());
+		}
+		catch (InvalidArgumentException $e)
+		{
+			return $this->getTokenForVersion($e->getMessage());
+		}
+		catch (Exception $e)
+		{
+			return $this->getTokenForVersion($e->getMessage());
+		}
+		// do we have tags returned
+		if (isset($tags[0]) && isset($tags[0]->name))
+		{
+			// get the version
+			$manifest = ComponentbuilderHelper::manifest();
+			$local_version = (string) $manifest->version;
+			$current_version = trim($tags[0]->name, 'vV');
 
-				// get the repository tags
-				$tags = GiteaFactory::_('Gitea.Repository.Tags')->list('joomla', 'Component-Builder');
-			}
-			catch (DomainException $e)
+			// now check if this version is out dated
+			if ($current_version === $local_version)
 			{
-				return $this->getTokenForVersion($e->getMessage());
+				return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>' . Text::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
 			}
-			catch (InvalidArgumentException $e)
+			else
 			{
-				return $this->getTokenForVersion($e->getMessage());
-			}
-			catch (Exception $e)
-			{
-				return $this->getTokenForVersion($e->getMessage());
-			}
-			// do we have tags returned
-			if (isset($tags[0]) && isset($tags[0]->name))
-			{
-				// get the version
-				$manifest = ComponentbuilderHelper::manifest();
-				$local_version = (string) $manifest->version;
-				$current_version = trim($tags[0]->name, 'vV');
-
-				// now check if this version is out dated
-				if ($current_version === $local_version)
+				// check if this is beta version
+				$current_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $current_version));
+				$local_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $local_version));
+				if (($local_array[0] > $current_array[0]) || 
+					($local_array[0] == $current_array[0] && $local_array[1] > $current_array[1]) || 
+					($local_array[0] == $current_array[0] && $local_array[1] == $current_array[1] && $local_array[2] > $current_array[2]))
 				{
-					return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>' . Text::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
+					return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>' . Text::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>'];
 				}
 				else
 				{
-					// check if this is beta version
-					$current_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $current_version));
-					$local_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $local_version));
-					if (($local_array[0] > $current_array[0]) || 
-						($local_array[0] == $current_array[0] && $local_array[1] > $current_array[1]) || 
-						($local_array[0] == $current_array[0] && $local_array[1] == $current_array[1] && $local_array[2] > $current_array[2]))
-					{
-						return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>' . Text::_('COM_COMPONENTBUILDER_BETA_RELEASE') . '</span></small>'];
-					}
-					else
-					{
-						// download link of the latest version
-						$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
+					// download link of the latest version
+					$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip?access_token=" . $token;
 
-						return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>' . Text::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
-							$download . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
-					}
+					return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>' . Text::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
+						$download . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
 				}
 			}
 		}
@@ -391,27 +384,21 @@ class ComponentbuilderModelAjax extends ListModel
 	{
 		try
 		{
-			// get the token if set
-			$token = $this->app_params->get('gitea_token');
-
-			// load the API details
-			GiteaFactory::_('Gitea.Repository.Wiki')->load_('https://git.vdm.dev', $token);
-
 			// get the gitea wiki page im markdown
 			$wiki = GiteaFactory::_('Gitea.Repository.Wiki')->get('joomla', 'Component-Builder', $name);
 
 			// now render the page in HTML
-			$page = GiteaFactory::_('Gitea.Miscellaneous.Markdown')->render($wiki->content, true);
+			$page = $wiki->content ?? null;
 		}
-		catch (DomainException $e)
+		catch (\DomainException $e)
 		{
 			return $this->getTokenForWiki($e->getMessage());
 		}
-		catch (InvalidArgumentException $e)
+		catch (\InvalidArgumentException $e)
 		{
 			return $this->getTokenForWiki($e->getMessage());
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			return $this->getTokenForWiki($e->getMessage());
 		}
@@ -532,7 +519,7 @@ class ComponentbuilderModelAjax extends ListModel
 
 	public function getClassHeaderCode($id, $type)
 	{
-		if ('extends' === $type && ($head = ComponentbuilderHelper::getVar('class_' . $type, $id, 'id', 'head')) !== false && StringHelper::check($head))
+		if ('extends' === $type && ($head = GetHelper::var('class_' . $type, $id, 'id', 'head')) !== false && StringHelper::check($head))
 		{
 			return base64_decode($head);
 		}
@@ -574,7 +561,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
 		{
 			// get the fields
-			if ($fields = ComponentbuilderHelper::getVar('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
+			if ($fields = GetHelper::var('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
 			{
 				// open the fields
 				if (JsonHelper::check($fields))
@@ -603,7 +590,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
 		{
 			// get the fields
-			if ($fields = ComponentbuilderHelper::getVar('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
+			if ($fields = GetHelper::var('admin_fields', $values['a_id'], 'admin_view', 'addfields'))
 			{
 				// open the fields
 				if (JsonHelper::check($fields))
@@ -687,55 +674,55 @@ class ComponentbuilderModelAjax extends ListModel
 	{
 		$language = array(
 			// Library (folder file url)
-			'rename' => JText::_('COM_COMPONENTBUILDER_RENAME'),
-			'path' => JText::_('COM_COMPONENTBUILDER_TARGET_PATH'),
-			'update' => JText::_('COM_COMPONENTBUILDER_UPDATE'),
+			'rename' => Text::_('COM_COMPONENTBUILDER_RENAME'),
+			'path' => Text::_('COM_COMPONENTBUILDER_TARGET_PATH'),
+			'update' => Text::_('COM_COMPONENTBUILDER_UPDATE'),
 			// Admin View (fields)
-			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
-			'listfield' =>  JText::_('COM_COMPONENTBUILDER_LIST_FIELD'),
-			'joinfields' =>  JText::_('COM_COMPONENTBUILDER_JOIN_FIELDS'),
-			'set' =>  JText::_('COM_COMPONENTBUILDER_GLUECODE'),
-			'join_type' =>  JText::_('COM_COMPONENTBUILDER_JOIN_TYPE'),
-			'list' => JText::_('COM_COMPONENTBUILDER_ADMIN_BEHAVIOUR'),
-			'order_list' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_LIST_VIEWS'),
-			'title' => JText::_('COM_COMPONENTBUILDER_TITLE'),
-			'alias' => JText::_('COM_COMPONENTBUILDER_ALIAS'),
-			'sort' => JText::_('COM_COMPONENTBUILDER_SORTABLE'),
-			'search' => JText::_('COM_COMPONENTBUILDER_SEARCHABLE'),
-			'filter' => JText::_('COM_COMPONENTBUILDER_FILTER'),
-			'link' => JText::_('COM_COMPONENTBUILDER_LINK'),
-			'permission' => JText::_('COM_COMPONENTBUILDER_PERMISSIONS'),
-			'tab' => JText::_('COM_COMPONENTBUILDER_TAB'),
-			'alignment' => JText::_('COM_COMPONENTBUILDER_ALIGNMENT'),
-			'order_edit' => JText::_('COM_COMPONENTBUILDER_ORDER_IN_EDIT'),
+			'field' => Text::_('COM_COMPONENTBUILDER_FIELD'),
+			'listfield' =>  Text::_('COM_COMPONENTBUILDER_LIST_FIELD'),
+			'joinfields' =>  Text::_('COM_COMPONENTBUILDER_JOIN_FIELDS'),
+			'set' =>  Text::_('COM_COMPONENTBUILDER_GLUECODE'),
+			'join_type' =>  Text::_('COM_COMPONENTBUILDER_JOIN_TYPE'),
+			'list' => Text::_('COM_COMPONENTBUILDER_ADMIN_BEHAVIOUR'),
+			'order_list' => Text::_('COM_COMPONENTBUILDER_ORDER_IN_LIST_VIEWS'),
+			'title' => Text::_('COM_COMPONENTBUILDER_TITLE'),
+			'alias' => Text::_('COM_COMPONENTBUILDER_ALIAS'),
+			'sort' => Text::_('COM_COMPONENTBUILDER_SORTABLE'),
+			'search' => Text::_('COM_COMPONENTBUILDER_SEARCHABLE'),
+			'filter' => Text::_('COM_COMPONENTBUILDER_FILTER'),
+			'link' => Text::_('COM_COMPONENTBUILDER_LINK'),
+			'permission' => Text::_('COM_COMPONENTBUILDER_PERMISSIONS'),
+			'tab' => Text::_('COM_COMPONENTBUILDER_TAB'),
+			'alignment' => Text::_('COM_COMPONENTBUILDER_ALIGNMENT'),
+			'order_edit' => Text::_('COM_COMPONENTBUILDER_ORDER_IN_EDIT'),
 			// Admin View (conditions)
-			'target_field' => JText::_('COM_COMPONENTBUILDER_TARGET_FIELDS'),
-			'target_behavior' => JText::_('COM_COMPONENTBUILDER_TARGET_BEHAVIOUR'),
-			'target_relation' => JText::_('COM_COMPONENTBUILDER_TARGET_RELATION'),
-			'match_field' => JText::_('COM_COMPONENTBUILDER_MATCH_FIELD'),
-			'match_behavior' => JText::_('COM_COMPONENTBUILDER_MATCH_BEHAVIOUR'),
-			'match_options' => JText::_('COM_COMPONENTBUILDER_MATCH_OPTIONS'),
+			'target_field' => Text::_('COM_COMPONENTBUILDER_TARGET_FIELDS'),
+			'target_behavior' => Text::_('COM_COMPONENTBUILDER_TARGET_BEHAVIOUR'),
+			'target_relation' => Text::_('COM_COMPONENTBUILDER_TARGET_RELATION'),
+			'match_field' => Text::_('COM_COMPONENTBUILDER_MATCH_FIELD'),
+			'match_behavior' => Text::_('COM_COMPONENTBUILDER_MATCH_BEHAVIOUR'),
+			'match_options' => Text::_('COM_COMPONENTBUILDER_MATCH_OPTIONS'),
 			// Joomla Component
-			'menu' => JText::_('COM_COMPONENTBUILDER_ADD_MENU'),
-			'metadata' => JText::_('COM_COMPONENTBUILDER_HAS_METADATA'),
-			'default_view' => JText::_('COM_COMPONENTBUILDER_DEFAULT_VIEW'),
-			'access' => JText::_('COM_COMPONENTBUILDER_ADD_ACCESS'),
-			'public_access' => JText::_('COM_COMPONENTBUILDER_PUBLIC_ACCESS'),
-			'mainmenu' => JText::_('COM_COMPONENTBUILDER_MAIN_MENU'),
-			'dashboard_list' => JText::_('COM_COMPONENTBUILDER_DASHBOARD_LIST_OF_RECORDS'),
-			'dashboard_add' => JText::_('COM_COMPONENTBUILDER_DASHBOARD_ADD_RECORD'),
-			'submenu' => JText::_('COM_COMPONENTBUILDER_SUBMENU'),
-			'checkin' => JText::_('COM_COMPONENTBUILDER_AUTO_CHECKIN'),
-			'history' => JText::_('COM_COMPONENTBUILDER_KEEP_HISTORY'),
-			'joomla_fields' => JText::_('COM_COMPONENTBUILDER_JOOMLA_FIELDS'),
-			'port' => JText::_('COM_COMPONENTBUILDER_EXPORTIMPORT_DATA'),
-			'edit_create_site_view' => JText::_('COM_COMPONENTBUILDER_EDITCREATE_SITE_VIEW'),
-			'icomoon' => JText::_('COM_COMPONENTBUILDER_ICON'),
-			'customadminview' => JText::_('COM_COMPONENTBUILDER_VIEW'),
-			'adminviews' => JText::_('COM_COMPONENTBUILDER_VIEWS'),
-			'adminview' => JText::_('COM_COMPONENTBUILDER_VIEW'),
-			'siteview' => JText::_('COM_COMPONENTBUILDER_VIEW'),
-			'before' => JText::_('COM_COMPONENTBUILDER_ORDER_BEFORE')
+			'menu' => Text::_('COM_COMPONENTBUILDER_ADD_MENU'),
+			'metadata' => Text::_('COM_COMPONENTBUILDER_HAS_METADATA'),
+			'default_view' => Text::_('COM_COMPONENTBUILDER_DEFAULT_VIEW'),
+			'access' => Text::_('COM_COMPONENTBUILDER_ADD_ACCESS'),
+			'public_access' => Text::_('COM_COMPONENTBUILDER_PUBLIC_ACCESS'),
+			'mainmenu' => Text::_('COM_COMPONENTBUILDER_MAIN_MENU'),
+			'dashboard_list' => Text::_('COM_COMPONENTBUILDER_DASHBOARD_LIST_OF_RECORDS'),
+			'dashboard_add' => Text::_('COM_COMPONENTBUILDER_DASHBOARD_ADD_RECORD'),
+			'submenu' => Text::_('COM_COMPONENTBUILDER_SUBMENU'),
+			'checkin' => Text::_('COM_COMPONENTBUILDER_AUTO_CHECKIN'),
+			'history' => Text::_('COM_COMPONENTBUILDER_KEEP_HISTORY'),
+			'joomla_fields' => Text::_('COM_COMPONENTBUILDER_JOOMLA_FIELDS'),
+			'port' => Text::_('COM_COMPONENTBUILDER_EXPORTIMPORT_DATA'),
+			'edit_create_site_view' => Text::_('COM_COMPONENTBUILDER_EDITCREATE_SITE_VIEW'),
+			'icomoon' => Text::_('COM_COMPONENTBUILDER_ICON'),
+			'customadminview' => Text::_('COM_COMPONENTBUILDER_VIEW'),
+			'adminviews' => Text::_('COM_COMPONENTBUILDER_VIEWS'),
+			'adminview' => Text::_('COM_COMPONENTBUILDER_VIEW'),
+			'siteview' => Text::_('COM_COMPONENTBUILDER_VIEW'),
+			'before' => Text::_('COM_COMPONENTBUILDER_ORDER_BEFORE')
 		);
 		// check if a unique value is available
 		if (isset($language[$key]))
@@ -821,10 +808,10 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 				$fieldsData = json_encode($bucket);
 				// update the fields
-				$objectUpdate = new stdClass();
+				$objectUpdate = new \stdClass();
 				$objectUpdate->{$linked_id_name} = (int) $id;
 				$objectUpdate->{$fieldsArrayType} = $fieldsData;
-				JFactory::getDbo()->updateObject('#__componentbuilder_' . $type, $objectUpdate, 'admin_view');
+				Factory::getDbo()->updateObject('#__componentbuilder_' . $type, $objectUpdate, 'admin_view');
 			}
 		}
 	}
@@ -856,13 +843,13 @@ class ComponentbuilderModelAjax extends ListModel
 				switch ($value)
 				{
 					case 1:
-						$bucket[] = JText::_('COM_COMPONENTBUILDER_EDITING');
+						$bucket[] = Text::_('COM_COMPONENTBUILDER_EDITING');
 					break;
 					case 2:
-						$bucket[] = JText::_('COM_COMPONENTBUILDER_ACCESS');
+						$bucket[] = Text::_('COM_COMPONENTBUILDER_ACCESS');
 					break;
 					case 3:
-						$bucket[] = JText::_('COM_COMPONENTBUILDER_VIEW');
+						$bucket[] = Text::_('COM_COMPONENTBUILDER_VIEW');
 					break;
 				}
 			}
@@ -872,7 +859,7 @@ class ComponentbuilderModelAjax extends ListModel
 				return implode(', ', $bucket);
 			}
 		}
-		return JText::_('COM_COMPONENTBUILDER_NONE');
+		return Text::_('COM_COMPONENTBUILDER_NONE');
 	}
 
 	protected function setJoinType($header, $value)
@@ -880,13 +867,13 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_CONCATENATE');
+				return Text::_('COM_COMPONENTBUILDER_CONCATENATE');
 			break;
 			case 2:
-				return JText::_('COM_COMPONENTBUILDER_CUSTOM_CODE');
+				return Text::_('COM_COMPONENTBUILDER_CUSTOM_CODE');
 			break;
 		}
-		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
+		return Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setURLType($header, $value)
@@ -894,16 +881,16 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_DEFAULT_LINK');
+				return Text::_('COM_COMPONENTBUILDER_DEFAULT_LINK');
 			break;
 			case 2:
-				return JText::_('COM_COMPONENTBUILDER_LOCAL_GET');
+				return Text::_('COM_COMPONENTBUILDER_LOCAL_GET');
 			break;
 			case 3:
-				return JText::_('COM_COMPONENTBUILDER_LINK_LOCAL_DYNAMIC');
+				return Text::_('COM_COMPONENTBUILDER_LINK_LOCAL_DYNAMIC');
 			break;
 		}
-		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
+		return Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setIcoMoon($header, $value)
@@ -920,28 +907,28 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_LEFT_IN_TAB');
+				return Text::_('COM_COMPONENTBUILDER_LEFT_IN_TAB');
 			break;
 			case 2:
-				return JText::_('COM_COMPONENTBUILDER_RIGHT_IN_TAB');
+				return Text::_('COM_COMPONENTBUILDER_RIGHT_IN_TAB');
 			break;
 			case 3:
-				return JText::_('COM_COMPONENTBUILDER_FULL_WIDTH_IN_TAB');
+				return Text::_('COM_COMPONENTBUILDER_FULL_WIDTH_IN_TAB');
 			break;
 			case 4:
-				return JText::_('COM_COMPONENTBUILDER_ABOVE_TABS');
+				return Text::_('COM_COMPONENTBUILDER_ABOVE_TABS');
 			break;
 			case 5:
-				return JText::_('COM_COMPONENTBUILDER_UNDERNEATH_TABS');
+				return Text::_('COM_COMPONENTBUILDER_UNDERNEATH_TABS');
 			break;
 			case 6:
-				return JText::_('COM_COMPONENTBUILDER_LEFT_OF_TABS');
+				return Text::_('COM_COMPONENTBUILDER_LEFT_OF_TABS');
 			break;
 			case 7:
-				return JText::_('COM_COMPONENTBUILDER_RIGHT_OF_TABS');
+				return Text::_('COM_COMPONENTBUILDER_RIGHT_OF_TABS');
 			break;
 		}
-		return JText::_('COM_COMPONENTBUILDER_NOT_SET');
+		return Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setAdminBehaviour($header, $value)
@@ -949,19 +936,19 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_SHOW_IN_ALL_LIST_VIEWS');
+				return Text::_('COM_COMPONENTBUILDER_SHOW_IN_ALL_LIST_VIEWS');
 			break;
 			case 2:
-				return JText::_('COM_COMPONENTBUILDER_NONE_DB');
+				return Text::_('COM_COMPONENTBUILDER_NONE_DB');
 			break;
 			case 3:
-				return JText::_('COM_COMPONENTBUILDER_ONLY_IN_ADMIN_LIST_VIEW');
+				return Text::_('COM_COMPONENTBUILDER_ONLY_IN_ADMIN_LIST_VIEW');
 			break;
 			case 4:
-				return JText::_('COM_COMPONENTBUILDER_ONLY_IN_LINKED_LIST_VIEWS');
+				return Text::_('COM_COMPONENTBUILDER_ONLY_IN_LINKED_LIST_VIEWS');
 			break;
 			default:
-				return JText::_('COM_COMPONENTBUILDER_DEFAULT');
+				return Text::_('COM_COMPONENTBUILDER_DEFAULT');
 			break;
 		}
 	}
@@ -973,7 +960,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// return published if set to 15 (since this is the default number for it)
 		if (15 == $value)
 		{
-			return JText::_('COM_COMPONENTBUILDER_PUBLISHING');
+			return Text::_('COM_COMPONENTBUILDER_PUBLISHING');
 		}
 		if (!UtilitiesArrayHelper::check($this->tabNames))
 		{
@@ -981,7 +968,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$values = $this->getViewID();
 			if (!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && $values['a_view'] === 'admin_view')
 			{
-				if ($tabs = ComponentbuilderHelper::getVar('admin_view', $values['a_id'], 'id', 'addtabs'))
+				if ($tabs = GetHelper::var('admin_view', $values['a_id'], 'id', 'addtabs'))
 				{
 					$tabs = json_decode($tabs, true);
 					if (UtilitiesArrayHelper::check($tabs))
@@ -1004,7 +991,7 @@ class ComponentbuilderModelAjax extends ListModel
 		{
 			return $this->tabNames[$value];
 		}
-		return JText::_('COM_COMPONENTBUILDER_DETAILS');
+		return Text::_('COM_COMPONENTBUILDER_DETAILS');
 	}
 
 	protected function setAreaName($header, $value)
@@ -1012,16 +999,16 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_MODEL_BEFORE_MODELLING');
+				return Text::_('COM_COMPONENTBUILDER_MODEL_BEFORE_MODELLING');
 			break;
 			case 2:
-				return JText::_('COM_COMPONENTBUILDER_VIEW');
+				return Text::_('COM_COMPONENTBUILDER_VIEW');
 			break;
 			case 3:
-				return JText::_('COM_COMPONENTBUILDER_MODEL_AFTER_MODELLING');
+				return Text::_('COM_COMPONENTBUILDER_MODEL_AFTER_MODELLING');
 			break;
 		}
-		return  JText::_('COM_COMPONENTBUILDER_NOT_SET');
+		return  Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setCode($header, $value)
@@ -1042,17 +1029,17 @@ class ComponentbuilderModelAjax extends ListModel
 	{
 		if (1 == $value)
 		{
-			return JText::_('COM_COMPONENTBUILDER_SHOW_TOGGLE');
+			return Text::_('COM_COMPONENTBUILDER_SHOW_TOGGLE');
 		}
 		elseif (3 == $value)
 		{
-			return JText::_('COM_COMPONENTBUILDER_SHOW_ONLY');
+			return Text::_('COM_COMPONENTBUILDER_SHOW_ONLY');
 		}
 		elseif (4 == $value)
 		{
-			return JText::_('COM_COMPONENTBUILDER_HIDE_ONLY');
+			return Text::_('COM_COMPONENTBUILDER_HIDE_ONLY');
 		}
-		return JText::_('COM_COMPONENTBUILDER_HIDE_TOGGLE');
+		return Text::_('COM_COMPONENTBUILDER_HIDE_TOGGLE');
 	}
 
 	protected function setTargetRelation($header, $value)
@@ -1060,13 +1047,13 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 0:
-				return JText::_('COM_COMPONENTBUILDER_ISOLATE');
+				return Text::_('COM_COMPONENTBUILDER_ISOLATE');
 			break;
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_CHAIN');
+				return Text::_('COM_COMPONENTBUILDER_CHAIN');
 			break;
 		}
-		return  JText::_('COM_COMPONENTBUILDER_NOT_SET');
+		return  Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setMatchBehavior($header, $value)
@@ -1074,43 +1061,43 @@ class ComponentbuilderModelAjax extends ListModel
 		switch ($value)
 		{
 			case 1:
-				return JText::_('COM_COMPONENTBUILDER_IS_ONLY_FOUR_LISTRADIOCHECKBOXES');
+				return Text::_('COM_COMPONENTBUILDER_IS_ONLY_FOUR_LISTRADIOCHECKBOXES');
 			break;
 			case 2:
-				return JText::_('COM_COMPONENTBUILDER_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES');
+				return Text::_('COM_COMPONENTBUILDER_IS_NOT_ONLY_FOUR_LISTRADIOCHECKBOXES');
 			break;
 			case 3:
-				return JText::_('COM_COMPONENTBUILDER_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST');
+				return Text::_('COM_COMPONENTBUILDER_ANY_SELECTION_ONLY_FOUR_LISTRADIOCHECKBOXESDYNAMIC_LIST');
 			break;
 			case 4:
-				return JText::_('COM_COMPONENTBUILDER_ACTIVE_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_ACTIVE_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 5:
-				return JText::_('COM_COMPONENTBUILDER_UNACTIVE_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_UNACTIVE_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 6:
-				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_KEY_WORD_ALL_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 7:
-				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_KEY_WORD_ANY_CASESENSITIVE_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 8:
-				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_KEY_WORD_ALL_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 9:
-				return JText::_('COM_COMPONENTBUILDER_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_KEY_WORD_ANY_CASEINSENSITIVE_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 10:
-				return JText::_('COM_COMPONENTBUILDER_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_MIN_LENGTH_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 11:
-				return JText::_('COM_COMPONENTBUILDER_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_MAX_LENGTH_ONLY_FOUR_TEXT_FIELD');
 			break;
 			case 12:
-				return JText::_('COM_COMPONENTBUILDER_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD');
+				return Text::_('COM_COMPONENTBUILDER_EXACT_LENGTH_ONLY_FOUR_TEXT_FIELD');
 			break;
 		}
-		return  JText::_('COM_COMPONENTBUILDER_NOT_SET');
+		return  Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	protected function setMatchOptions($header, $value)
@@ -1297,8 +1284,8 @@ class ComponentbuilderModelAjax extends ListModel
 				{
 					// just return it for now a table
 					$table =  '<div class="control-group"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-					$table .=  '<caption>'.JText::sprintf('COM_COMPONENTBUILDER_PLACES_ACROSS_JCB_WHERE_THIS_S_IS_LINKED', StringHelper::safe($values['a_view'], 'w')).'</caption>';
-					$table .=  '<thead><tr><th>'.JText::_('COM_COMPONENTBUILDER_TYPE_NAME').'</th></tr></thead>';
+					$table .=  '<caption>'.Text::sprintf('COM_COMPONENTBUILDER_PLACES_ACROSS_JCB_WHERE_THIS_S_IS_LINKED', StringHelper::safe($values['a_view'], 'w')).'</caption>';
+					$table .=  '<thead><tr><th>'.Text::_('COM_COMPONENTBUILDER_TYPE_NAME').'</th></tr></thead>';
 					$table .=  '<tbody><tr><td>' .implode('</td></tr><tr><td>', $linked) . '</td></tr></tbody></table></div>';
 					return $table;
 				}
@@ -1307,10 +1294,10 @@ class ComponentbuilderModelAjax extends ListModel
 		// if not found but has session view name
 		if (strlen($values['a_view']))
 		{
-			return '<div class="control-group"><div class="alert alert-info"><h4>' . JText::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', StringHelper::safe($values['a_view'], 'Ww')) . '</h4><p>' . JText::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_OTHER_AREAS_OF_JCB_AT_THIS_TIME', $values['a_view']) . '</p></div></div>';
+			return '<div class="control-group"><div class="alert alert-info"><h4>' . Text::sprintf('COM_COMPONENTBUILDER_S_NOT_LINKED', StringHelper::safe($values['a_view'], 'Ww')) . '</h4><p>' . Text::sprintf('COM_COMPONENTBUILDER_THIS_BSB_IS_NOT_LINKED_TO_ANY_OTHER_AREAS_OF_JCB_AT_THIS_TIME', $values['a_view']) . '</p></div></div>';
 		}
 		// no view or id found in session, or view not allowed to access area
-		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_WAS_A_PROBLEM_BNO_VIEW_OR_ID_FOUND_IN_SESSION_OR_VIEW_NOT_ALLOWED_TO_ACCESS_AREAB_WE_COULD_NOT_LOAD_ANY_LINKED_TO_VALUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR') . '</p></div></div>';
+		return '<div class="control-group"><div class="alert alert-error"><h4>' . Text::_('COM_COMPONENTBUILDER_ERROR') . '</h4><p>' . Text::_('COM_COMPONENTBUILDER_THERE_WAS_A_PROBLEM_BNO_VIEW_OR_ID_FOUND_IN_SESSION_OR_VIEW_NOT_ALLOWED_TO_ACCESS_AREAB_WE_COULD_NOT_LOAD_ANY_LINKED_TO_VALUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR') . '</p></div></div>';
 	}
 
 	/**
@@ -1436,7 +1423,7 @@ class ComponentbuilderModelAjax extends ListModel
 										{
 											$_target = (array) explode(':', $target);
 											// check that we have an array and get the size
-											if (($_size = ComponentbuilderHelper::checkArray($_target)) == 2)
+											if (($_size = UtilitiesArrayHelper::check($_target)) == 2)
 											{
 												foreach ($item->{$key} as $field_name => $row)
 												{
@@ -1453,7 +1440,7 @@ class ComponentbuilderModelAjax extends ListModel
 												}
 											}
 											// check that we have an array and get the size
-											if (($_size = ComponentbuilderHelper::checkArray($_target)) == 3)
+											if (($_size = UtilitiesArrayHelper::check($_target)) == 3)
 											{
 												foreach ($item->{$key} as $field_name => $row)
 												{
@@ -1522,16 +1509,16 @@ class ComponentbuilderModelAjax extends ListModel
 						$edit = true;
 						if (is_numeric($linked_name) && isset($search['linked_name']))
 						{
-							if (!$linked_name =  ComponentbuilderHelper::getVar($linked_nameTable, (int) $linked_name, 'id', $search['linked_name']))
+							if (!$linked_name =  GetHelper::var($linked_nameTable, (int) $linked_name, 'id', $search['linked_name']))
 							{
-								$linked_name = JText::_('COM_COMPONENTBUILDER_NO_FOUND');
+								$linked_name = Text::_('COM_COMPONENTBUILDER_NO_FOUND');
 								$edit = false;
 							}
 						}
 						// build the local type
 						if (is_numeric($type_name) && isset($search['type_name']))
 						{
-							if (!$type_name =  ComponentbuilderHelper::getVar($type_nameTable, (int) $type_name, 'id', $search['type_name']))
+							if (!$type_name =  GetHelper::var($type_nameTable, (int) $type_name, 'id', $search['type_name']))
 							{
 								$type_name = '';
 							}
@@ -1547,7 +1534,7 @@ class ComponentbuilderModelAjax extends ListModel
 						// set edit link
 						$link = ($edit) ? ComponentbuilderHelper::getEditButton($item->id, $search['table'], $search['tables'], $this->ref) : '';
 						// build the linked
-						$linked[] = JText::_($search['linked']) . $type_name . ' - ' . $linked_name . ' ' . $link;
+						$linked[] = Text::_($search['linked']) . $type_name . ' - ' . $linked_name . ' ' . $link;
 					}
 				}
 			}
@@ -1607,7 +1594,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if (!isset($this->viewid[$call]))
 		{
 			// get the vdm key
-			$jinput = JFactory::getApplication()->input;
+			$jinput = Factory::getApplication()->input;
 			$vdm = $jinput->get('vdm', null, 'WORD');
 			if ($vdm)
 			{
@@ -1654,7 +1641,7 @@ class ComponentbuilderModelAjax extends ListModel
 	{
 		if (isset($this->buttonArray[$type]))
 		{
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// only add if user allowed to create
 			if ($user->authorise($type.'.create', 'com_componentbuilder'))
 			{
@@ -1674,7 +1661,7 @@ class ComponentbuilderModelAjax extends ListModel
 					$ref = '&amp;ref=' . $values['a_view'] . '&amp;refid=' . $values['a_id'] . '&amp;return=' . urlencode(base64_encode($return_url));
 				}
 				// build url (A tag)
-				$startAtag = 'onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.JText::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', StringHelper::safe($type, 'W')).'">';
+				$startAtag = 'onclick="UIkit2.modal.confirm(\''.Text::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.Text::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', StringHelper::safe($type, 'W')).'">';
 				// build the smallest button
 				if (3 == $size)
 				{
@@ -1683,7 +1670,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// build the smaller button
 				elseif (2 == $size)
 				{
-					$button = '<a class="btn btn-success vdm-button-new" ' . $startAtag . '<span class="icon-new icon-white"></span> ' . JText::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
+					$button = '<a class="btn btn-success vdm-button-new" ' . $startAtag . '<span class="icon-new icon-white"></span> ' . Text::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
 				}
 				else
 				// build the big button
@@ -1694,7 +1681,7 @@ class ComponentbuilderModelAjax extends ListModel
 								</div>
 								<div class="controls"><a class="btn btn-success vdm-button-new" ' . $startAtag . '
 									<span class="icon-new icon-white"></span> 
-										' . JText::_('COM_COMPONENTBUILDER_NEW') . '
+										' . Text::_('COM_COMPONENTBUILDER_NEW') . '
 									</a>
 								</div>
 							</div>';
@@ -1711,7 +1698,7 @@ class ComponentbuilderModelAjax extends ListModel
 	{
 		if (isset($this->buttonArray[$type]))
 		{
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// only add if user allowed to create
 			if ($user->authorise($type.'.create', 'com_componentbuilder'))
 			{
@@ -1740,17 +1727,17 @@ class ComponentbuilderModelAjax extends ListModel
 					//	$key_get_value = $values['a_guid'];
 					//}
 					// get item id
-					if (($id = ComponentbuilderHelper::getVar($type, $key_get_value, $values['a_view'], 'id')) !== false && $id > 0)
+					if (($id = GetHelper::var($type, $key_get_value, $values['a_view'], 'id')) !== false && $id > 0)
 					{
-						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
-						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_EDIT');
+						$buttonText = Text::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
+						$buttonTextSmall = Text::_('COM_COMPONENTBUILDER_EDIT');
 						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
 						$icon = 'icon-apply';
 					}
 					else
 					{
-						$buttonText = JText::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
-						$buttonTextSmall = JText::_('COM_COMPONENTBUILDER_CREATE');
+						$buttonText = Text::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
+						$buttonTextSmall = Text::_('COM_COMPONENTBUILDER_CREATE');
 						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
 						$icon = 'icon-new';
 					}
@@ -1764,7 +1751,7 @@ class ComponentbuilderModelAjax extends ListModel
 						$button[] = '</div>';
 						$button[] = '<div class="controls">';
 					}
-					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.JText::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
+					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.Text::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
 					if (1 == $size)
 					{
 						$button[] = '<span class="'.$icon.' icon-white"></span>';
@@ -1785,7 +1772,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// only return notice if big button
 				if (1 == $size)
 				{
-					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w')) . '</div></div>';
+					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . Text::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w')) . '</div></div>';
 				}
 			}
 		}
@@ -1933,9 +1920,9 @@ class ComponentbuilderModelAjax extends ListModel
 					return '<div>' . implode('</div><div>', $result) . '</div>';
 				}
 			}
-			return '<div class="control-group"><div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
+			return '<div class="control-group"><div class="alert alert-info">' . Text::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
 		}
-		return '<div class="control-group"><div class="alert alert-error"><h4>' . JText::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
+		return '<div class="control-group"><div class="alert alert-error"><h4>' . Text::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
 	}
 
 
@@ -1963,9 +1950,9 @@ class ComponentbuilderModelAjax extends ListModel
 					$edit = true;
 					if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$item]))
 					{
-						if (($this->itemNames[$this->itemKeys[$header]['table']][$item] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name'])) === false)
+						if (($this->itemNames[$this->itemKeys[$header]['table']][$item] =  GetHelper::var($this->itemKeys[$header]['table'], $item, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name'])) === false)
 						{
-							$this->itemNames[$this->itemKeys[$header]['table']][$item] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+							$this->itemNames[$this->itemKeys[$header]['table']][$item] = Text::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 							$edit = false;
 						}
 						// check if we should load some get
@@ -1995,9 +1982,9 @@ class ComponentbuilderModelAjax extends ListModel
 				$edit = true;
 				if (!isset($this->itemNames[$this->itemKeys[$header]['table']][$value]))
 				{
-					if (($this->itemNames[$this->itemKeys[$header]['table']][$value] =  ComponentbuilderHelper::getVar($this->itemKeys[$header]['table'], $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name'])) === false)
+					if (($this->itemNames[$this->itemKeys[$header]['table']][$value] =  GetHelper::var($this->itemKeys[$header]['table'], $value, $this->itemKeys[$header]['id'], $this->itemKeys[$header]['name'])) === false)
 					{
-						$this->itemNames[$this->itemKeys[$header]['table']][$value] = JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+						$this->itemNames[$this->itemKeys[$header]['table']][$value] = Text::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 						$edit = false;
 					}
 					// check if we should load some get
@@ -2026,16 +2013,16 @@ class ComponentbuilderModelAjax extends ListModel
 			{
 				return implode('<br />', $bucket);
 			}
-			return JText::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
+			return Text::sprintf('COM_COMPONENTBUILDER_NO_S_FOUND', $this->itemKeys[$header]['text']);
 		}
-		return JText::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
+		return Text::_('COM_COMPONENTBUILDER_NO_ITEM_FOUND');
 	}
 
 
 	protected function getFieldTable($type, $id, $idName, $fieldName, $typeName)
 	{
 		// get the field data
-		if (($fieldsData = ComponentbuilderHelper::getVar($type, $id, $idName, $fieldName)) !== false)
+		if (($fieldsData = GetHelper::var($type, $id, $idName, $fieldName)) !== false)
 		{
 			// check repeatable conversion
 			if (method_exists(__CLASS__, 'checkRepeatableConversion'))
@@ -2050,11 +2037,11 @@ class ComponentbuilderModelAjax extends ListModel
 			$notice = '';
 			if ($number && isset($this->rowNumber) && $this->rowNumber > $number)
 			{
-				$notice = '<div class="alert alert-warning">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $number, $typeName, $typeName, $typeName) . '</div>';
+				$notice = '<div class="alert alert-warning">' . Text::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE_YOUR_S_PAGE_LOAD_IN_JCB_WILL_SLOWDOWN_YOU_SHOULD_CONSIDER_DECOUPLING_SOME_OF_THESE_S', $this->rowNumber, $typeName, $number, $typeName, $typeName, $typeName) . '</div>';
 			}
 			elseif ($number && isset($this->rowNumber))
 			{
-				$notice = '<div class="alert alert-info">' . JText::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $number, $typeName) . '</div>';
+				$notice = '<div class="alert alert-info">' . Text::sprintf('COM_COMPONENTBUILDER_YOU_HAVE_S_S_ADDING_MORE_THEN_S_S_IS_CONSIDERED_BAD_PRACTICE', $this->rowNumber, $typeName, $number, $typeName) . '</div>';
 			}
 			// return table
 			return $notice . $table;
@@ -2069,7 +2056,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// set table
 		$table = false;
 		// Get a db connection.
-		$db = JFactory::getDbo();	
+		$db = Factory::getDbo();	
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id', 'a.alias', 'a.template', 'b.name', 'a.dynamic_get')));
@@ -2104,13 +2091,13 @@ class ComponentbuilderModelAjax extends ListModel
 			{
 				$edit = (($button = ComponentbuilderHelper::getEditButton($result->id, 'template', 'templates', $ref)) !== false) ? $button : '';
 				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && ($button = ComponentbuilderHelper::getEditButton($result->dynamic_get, 'dynamic_get', 'dynamic_gets', $ref)) !== false) ? $button : '';
-				$result->name = (StringHelper::check($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
+				$result->name = (StringHelper::check($result->name)) ? $result->name : Text::_('COM_COMPONENTBUILDER_NONE_SELECTED');
 				$templateString[] = "<td><b>".$result->name."</b> ".$editget."</td><td><code>&lt;?php echo \$this->loadTemplate('".StringHelper::safe($result->alias)."'); ?&gt;</code> ".$edit."</td>";
 			}
 			// build the table
-			$table = '<h2>' . JText::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-			$table .= '<caption>' . JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE') . '</caption>';
-			$table .= '<thead><tr><th>' . JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_SNIPPET') . '</th></thead>';
+			$table = '<h2>' . Text::_('COM_COMPONENTBUILDER_TEMPLATE_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .= '<caption>' . Text::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE') . '</caption>';
+			$table .= '<thead><tr><th>' . Text::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET') . '</th><th>' . Text::_('COM_COMPONENTBUILDER_SNIPPET') . '</th></thead>';
 			$table .= '<tbody><tr>' . implode("</tr><tr>", $templateString) . "</tr></tbody></table></div>";
 		}
 		return $table;
@@ -2122,7 +2109,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// set table
 		$table = false;
 		// Get a db connection.
-		$db = JFactory::getDbo();	
+		$db = Factory::getDbo();	
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.alias','a.layout','b.getcustom','b.gettype','b.name','a.dynamic_get')));
@@ -2156,17 +2143,17 @@ class ComponentbuilderModelAjax extends ListModel
 			{
 				$edit = (($button = ComponentbuilderHelper::getEditButton($result->id, 'layout', 'layouts', $ref)) !== false) ? $button : '';
 				$editget = (isset($result->dynamic_get) && $result->dynamic_get > 0 && ($button = ComponentbuilderHelper::getEditButton($result->dynamic_get, 'dynamic_get', 'dynamic_gets', $ref)) !== false) ? $button : '';
-				$result->name = (StringHelper::check($result->name)) ? $result->name : JText::_('COM_COMPONENTBUILDER_NONE_SELECTED');
+				$result->name = (StringHelper::check($result->name)) ? $result->name : Text::_('COM_COMPONENTBUILDER_NONE_SELECTED');
 
 				switch ($result->gettype)
 				{
 					case 1:
 						// single
-						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->item); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo LayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->item); ?&gt;</code> " . $edit . "</td>";
 					break;
 					case 2:
 						// list
-						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->items); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo LayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->items); ?&gt;</code> " . $edit . "</td>";
 					break;
 					case 3:
 					case 4:
@@ -2180,18 +2167,18 @@ class ComponentbuilderModelAjax extends ListModel
 						{
 							$varName = $result->getcustom;
 						}
-						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->" . $varName . "); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td><b>" . $result->name . "</b> " . $editget . "</td><td><code>&lt;?php echo LayoutHelper::render('" . StringHelper::safe($result->alias) . "', \$this->" . $varName . "); ?&gt;</code> " . $edit . "</td>";
 					break;
 					default:
 						// no get
-						$layoutString[] = "<td>" . JText::_('COM_COMPONENTBUILDER_NONE_SELECTED') . "</td><td><code>&lt;?php echo JLayoutHelper::render('" . StringHelper::safe($result->alias) . "', [?]); ?&gt;</code> " . $edit . "</td>";
+						$layoutString[] = "<td>" . Text::_('COM_COMPONENTBUILDER_NONE_SELECTED') . "</td><td><code>&lt;?php echo LayoutHelper::render('" . StringHelper::safe($result->alias) . "', [?]); ?&gt;</code> " . $edit . "</td>";
 					break;
 				}
 			}
 			// build the table
-			$table = '<h2>' . JText::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-			$table .= '<caption>' . JText::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE') . '</caption>';
-			$table .= '<thead><tr><th>' . JText::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET') . '</th><th>' . JText::_('COM_COMPONENTBUILDER_SNIPPET') . '</th></thead>';
+			$table = '<h2>' . Text::_('COM_COMPONENTBUILDER_LAYOUT_CODE_SNIPPETS') . '</h2><div class="uk-scrollable-box"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
+			$table .= '<caption>' . Text::_('COM_COMPONENTBUILDER_TO_ADD_SIMPLY_COPY_AND_PAST_THE_SNIPPET_INTO_YOUR_CODE') . '</caption>';
+			$table .= '<thead><tr><th>' . Text::_('COM_COMPONENTBUILDER_NAME_OF_DYNAMICGET') . '</th><th>' . Text::_('COM_COMPONENTBUILDER_SNIPPET') . '</th></thead>';
 			$table .= '<tbody><tr>' . implode("</tr><tr>",$layoutString) . "</tr></tbody></table></div>";
 		}
 		return $table;
@@ -2211,7 +2198,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function getDynamicValues($id, $view)
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -2475,7 +2462,7 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function getViewName($id)
 	{
 		// Get the view name
-		if ($name = ComponentbuilderHelper::getVar('admin_view', (int) $id, 'id', 'name_single'))
+		if ($name = GetHelper::var('admin_view', (int) $id, 'id', 'name_single'))
 		{
 			return $name;
 		}
@@ -2494,7 +2481,7 @@ class ComponentbuilderModelAjax extends ListModel
 			// some helper for some fields (I am sorry)
 			$helper = array('xml' => 'note_filter_information');
 			// get input
-			$jinput = JFactory::getApplication()->input;
+			$jinput = Factory::getApplication()->input;
 			$return_here = $jinput->get('return_here', null, 'base64');
 			// set the return here value if not found
 			if (StringHelper::check($return_here))
@@ -2506,7 +2493,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$return_here =  '&ref=' . $view['a_view'] . '&refid=' . (int) $id;
 			}
 			// start db query
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName($target['select']))
 				->from($db->quoteName('#__componentbuilder_' . $target['table'], 'a'))
@@ -2573,7 +2560,7 @@ class ComponentbuilderModelAjax extends ListModel
 							// get the customcode name
 							$key = (array) explode('+', $customcode);
 							// see if we can get the button
-							if (!isset($buttons[$field][$key[0]]) && ($_id = ComponentbuilderHelper::getVar('custom_code', $key[0], 'function_name')) !== false
+							if (!isset($buttons[$field][$key[0]]) && ($_id = GetHelper::var('custom_code', $key[0], 'function_name')) !== false
 								&& ($button = ComponentbuilderHelper::getEditTextButton($edit_icon . $key[0], $_id, 'custom_code', 'custom_codes', $return_here, 'com_componentbuilder', false, 'btn btn-small button-edit" style="margin: 0 0 5px 0;')) 
 								&& StringHelper::check($button))
 							{
@@ -2596,18 +2583,18 @@ class ComponentbuilderModelAjax extends ListModel
 	{
 		$nameArray = (array) $this->splitAtUpperCase($name);
 		$name = StringHelper::safe(implode(' ', $nameArray), 'cA');
-		if ($found = ComponentbuilderHelper::getVar('custom_code', $name, 'function_name', 'id'))
+		if ($found = GetHelper::var('custom_code', $name, 'function_name', 'id'))
 		{
 			if ((int) $id !== (int) $found)
 			{
 				return array (
-					'message' => JText::_('COM_COMPONENTBUILDER_SORRY_THIS_FUNCTION_NAME_IS_ALREADY_IN_USE'),
+					'message' => Text::_('COM_COMPONENTBUILDER_SORRY_THIS_FUNCTION_NAME_IS_ALREADY_IN_USE'),
 					'status' => 'danger');
 			}
 		}
 		return array (
 			'name' => $name,
-			'message' => JText::_('COM_COMPONENTBUILDER_GREAT_THIS_FUNCTION_NAME_WILL_WORK'),
+			'message' => Text::_('COM_COMPONENTBUILDER_GREAT_THIS_FUNCTION_NAME_WILL_WORK'),
 			'status' => 'success');
 	}
 
@@ -2621,7 +2608,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// get the table being targeted
 		if ($target = $this->getCodeSearchKeys($targeting, 'query'))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName($target['select']))
 				->from($db->quoteName('#__componentbuilder_' . $target['table'], 'a'));
@@ -2710,7 +2697,7 @@ class ComponentbuilderModelAjax extends ListModel
 				if (UtilitiesArrayHelper::check($bucket))
 				{
 					// get input
-					$jinput = JFactory::getApplication()->input;
+					$jinput = Factory::getApplication()->input;
 					$return_here = $jinput->get('return_here', null, 'base64');
 					// set the return here value if not found
 					if (StringHelper::check($return_here))
@@ -3043,7 +3030,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// get the table being targeted
 		if ($target = $this->getCodeSearchKeys($targeting, 'query'))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName($target['select']))
 				->from($db->quoteName('#__componentbuilder_' . $target['table'], 'a'));
@@ -3132,7 +3119,7 @@ class ComponentbuilderModelAjax extends ListModel
 				if (UtilitiesArrayHelper::check($bucket))
 				{
 					// get input
-					$jinput = JFactory::getApplication()->input;
+					$jinput = Factory::getApplication()->input;
 					$return_here = $jinput->get('return_here', null, 'base64');
 					// set the return here value if not found
 					if (StringHelper::check($return_here))
@@ -3168,7 +3155,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if ($names = ComponentbuilderHelper::getExistingValidationRuleNames())
 		{
 			// check that this is a valid rule file
-			if (ComponentbuilderHelper::checkArray($names) && in_array($name, $names))
+			if (UtilitiesArrayHelper::check($names) && in_array($name, $names))
 			{
 				// get the full path to rule file
 				$path = JPATH_LIBRARIES . '/src/Form/Rule/'.$name.'Rule.php';
@@ -3190,12 +3177,12 @@ class ComponentbuilderModelAjax extends ListModel
 	public function checkRuleName($name, $id)
 	{
 		$name = StringHelper::safe($name);
-		if ($found = ComponentbuilderHelper::getVar('validation_rule', $name, 'name', 'id'))
+		if ($found = GetHelper::var('validation_rule', $name, 'name', 'id'))
 		{
 			if ((int) $id !== (int) $found)
 			{
 				return array (
-					'message' => JText::sprintf('COM_COMPONENTBUILDER_SORRY_THIS_VALIDATION_RULE_NAME_S_ALREADY_EXIST_IN_YOUR_SYSTEM', $name),
+					'message' => Text::sprintf('COM_COMPONENTBUILDER_SORRY_THIS_VALIDATION_RULE_NAME_S_ALREADY_EXIST_IN_YOUR_SYSTEM', $name),
 					'status' => 'danger',
 					'timeout' => 6000);
 			}
@@ -3206,14 +3193,14 @@ class ComponentbuilderModelAjax extends ListModel
 			if (in_array($name, $names))
 			{
 				return array (
-					'message' => JText::sprintf('COM_COMPONENTBUILDER_SORRY_THIS_VALIDATION_RULE_NAME_S_ALREADY_EXIST_AS_PART_OF_THE_JOOMLA_CORE_NO_NEED_TO_CREATE_IT_IF_YOU_ARE_ADAPTING_IT_GIVE_IT_YOUR_OWN_UNIQUE_NAME', $name),
+					'message' => Text::sprintf('COM_COMPONENTBUILDER_SORRY_THIS_VALIDATION_RULE_NAME_S_ALREADY_EXIST_AS_PART_OF_THE_JOOMLA_CORE_NO_NEED_TO_CREATE_IT_IF_YOU_ARE_ADAPTING_IT_GIVE_IT_YOUR_OWN_UNIQUE_NAME', $name),
 					'status' => 'danger',
 					'timeout' => 10000);
 			}
 		}
 		return array (
 			'name' => $name,
-			'message' => JText::sprintf('COM_COMPONENTBUILDER_GREAT_THIS_VALIDATION_RULE_NAME_S_WILL_WORK', $name),
+			'message' => Text::sprintf('COM_COMPONENTBUILDER_GREAT_THIS_VALIDATION_RULE_NAME_S_WILL_WORK', $name),
 			'status' => 'success',
 			'timeout' => 5000);
 	}
@@ -3225,13 +3212,13 @@ class ComponentbuilderModelAjax extends ListModel
 		{
 			// build table
 			$table =  '<div class="control-group"><table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">';
-			$table .=  '<caption>'.JText::sprintf('COM_COMPONENTBUILDER_THE_AVAILABLE_VALIDATION_RULES_FOR_THE_VALIDATE_ATTRIBUTE_ARE').'</caption>';
-			$table .=  '<thead><tr><th class="uk-text-right">'.JText::_('COM_COMPONENTBUILDER_VALIDATE').'</th><th>'.JText::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></tr></thead>';
+			$table .=  '<caption>'.Text::sprintf('COM_COMPONENTBUILDER_THE_AVAILABLE_VALIDATION_RULES_FOR_THE_VALIDATE_ATTRIBUTE_ARE').'</caption>';
+			$table .=  '<thead><tr><th class="uk-text-right">'.Text::_('COM_COMPONENTBUILDER_VALIDATE').'</th><th>'.Text::_('COM_COMPONENTBUILDER_DESCRIPTION').'</th></tr></thead>';
 			$table .=  '<tbody>';
 			foreach ($rules as $name => $decs)
 			{
 				// just load the values
-				$decs = (ComponentbuilderHelper::checkString($decs) && !is_numeric($decs)) ? $decs : '';
+				$decs = (StringHelper::check($decs) && !is_numeric($decs)) ? $decs : '';
 				$table .=  '<tr><td class="uk-text-right"><code>'.$name.'</code></td><td>'. $decs. '</td></tr>';
 			}
 			return $table.'</tbody></table></div>';
@@ -3252,16 +3239,16 @@ class ComponentbuilderModelAjax extends ListModel
 		// convert names to keys
 		$exitingNames = array_flip($exitingNames);
 		// load the descriptions (taken from https://docs.joomla.org/Server-side_form_validation)
-		$exitingNames["boolean"] = JText::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_THE_VALUES_ZERO_ONE_TRUE_OR_FALSE_CASEINSENSITIVE");
-		$exitingNames["color"] = JText::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_EMPTY_VALUES_CONVERTED_TO_ZERO_AND_STRINGS_IN_THE_FORM_RGB_OR_RRGGBB_WHERE_R_G_AND_B_ARE_HEX_VALUES");
-		$exitingNames["email"] =  JText::_("COM_COMPONENTBUILDER_ACCEPTS_AN_EMAIL_ADDRESS_SATISFIES_A_BASIC_SYNTAX_CHECK_IN_THE_PATTERN_OF_QUOTXYZZQUOT_WITH_NO_INVALID_CHARACTERS");
-		$exitingNames["equals"] = JText::sprintf("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_THE_SAME_AS_THAT_HELD_IN_THE_FIELD_NAMED_QUOTFIELDQUOT_EGS", '<br /><code>&lt;input<br />&nbsp;&nbsp;type="text"<br />&nbsp;&nbsp;name="email_check"<br />&nbsp;&nbsp;validate="equals"<br />&nbsp;&nbsp;field="email"<br />/&gt;</code>');
-		$exitingNames["options"] = JText::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_ENTERED_BE_ONE_OF_THE_OPTIONS_IN_AN_ELEMENT_OF_TYPEQUOTLISTQUOT_THAT_IS_THAT_THE_ELEMENT_IS_A_SELECT_LIST");
-		$exitingNames["tel"] = JText::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_A_TELEPHONE_NUMBER_COMPLYING_WITH_THE_STANDARDS_OF_NANPA_ITUT_TRECEONE_HUNDRED_AND_SIXTY_FOUR_OR_IETF_RFCFOUR_THOUSAND_NINE_HUNDRED_AND_THIRTY_THREE");
-		$exitingNames["url"] = JText::sprintf("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_IS_A_URL_WITH_A_VALID_SCHEME_WHICH_CAN_BE_RESTRICTED_BY_THE_OPTIONAL_COMMASEPARATED_FIELD_SCHEME_AND_PASSES_A_BASIC_SYNTAX_CHECK_EGS", '<br /><code>&lt;input<br />&nbsp;&nbsp;type="text"<br />&nbsp;&nbsp;name="link"<br />&nbsp;&nbsp;validate="url"<br />&nbsp;&nbsp;scheme="http,https,mailto"<br />/&gt;</code>');
-		$exitingNames["username"] = JText::_("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_DOES_NOT_APPEAR_AS_A_USERNAME_ON_THE_SYSTEM_THAT_IS_THAT_IT_IS_A_VALID_NEW_USERNAME_DOES_NOT_SYNTAX_CHECK_IT_AS_A_VALID_NAME");
+		$exitingNames["boolean"] = Text::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_THE_VALUES_ZERO_ONE_TRUE_OR_FALSE_CASEINSENSITIVE");
+		$exitingNames["color"] = Text::_("COM_COMPONENTBUILDER_ACCEPTS_ONLY_EMPTY_VALUES_CONVERTED_TO_ZERO_AND_STRINGS_IN_THE_FORM_RGB_OR_RRGGBB_WHERE_R_G_AND_B_ARE_HEX_VALUES");
+		$exitingNames["email"] =  Text::_("COM_COMPONENTBUILDER_ACCEPTS_AN_EMAIL_ADDRESS_SATISFIES_A_BASIC_SYNTAX_CHECK_IN_THE_PATTERN_OF_QUOTXYZZQUOT_WITH_NO_INVALID_CHARACTERS");
+		$exitingNames["equals"] = Text::sprintf("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_THE_SAME_AS_THAT_HELD_IN_THE_FIELD_NAMED_QUOTFIELDQUOT_EGS", '<br /><code>&lt;input<br />&nbsp;&nbsp;type="text"<br />&nbsp;&nbsp;name="email_check"<br />&nbsp;&nbsp;validate="equals"<br />&nbsp;&nbsp;field="email"<br />/&gt;</code>');
+		$exitingNames["options"] = Text::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_ENTERED_BE_ONE_OF_THE_OPTIONS_IN_AN_ELEMENT_OF_TYPEQUOTLISTQUOT_THAT_IS_THAT_THE_ELEMENT_IS_A_SELECT_LIST");
+		$exitingNames["tel"] = Text::_("COM_COMPONENTBUILDER_REQUIRES_THE_VALUE_TO_BE_A_TELEPHONE_NUMBER_COMPLYING_WITH_THE_STANDARDS_OF_NANPA_ITUT_TRECEONE_HUNDRED_AND_SIXTY_FOUR_OR_IETF_RFCFOUR_THOUSAND_NINE_HUNDRED_AND_THIRTY_THREE");
+		$exitingNames["url"] = Text::sprintf("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_IS_A_URL_WITH_A_VALID_SCHEME_WHICH_CAN_BE_RESTRICTED_BY_THE_OPTIONAL_COMMASEPARATED_FIELD_SCHEME_AND_PASSES_A_BASIC_SYNTAX_CHECK_EGS", '<br /><code>&lt;input<br />&nbsp;&nbsp;type="text"<br />&nbsp;&nbsp;name="link"<br />&nbsp;&nbsp;validate="url"<br />&nbsp;&nbsp;scheme="http,https,mailto"<br />/&gt;</code>');
+		$exitingNames["username"] = Text::_("COM_COMPONENTBUILDER_VALIDATES_THAT_THE_VALUE_DOES_NOT_APPEAR_AS_A_USERNAME_ON_THE_SYSTEM_THAT_IS_THAT_IT_IS_A_VALID_NEW_USERNAME_DOES_NOT_SYNTAX_CHECK_IT_AS_A_VALID_NAME");
 		// now get the custom created rules
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.name','a.short_description')));
@@ -3344,7 +3331,7 @@ class ComponentbuilderModelAjax extends ListModel
 				$value =  FieldHelper::getValue($xml, $extra, $confirmation);
 				if ($confirmation !== $value)
 				{
-					$values['extraproperties' . $nr] = array('name' => $extra, 'value' => $value, 'desc' => JText::_($desc));
+					$values['extraproperties' . $nr] = array('name' => $extra, 'value' => $value, 'desc' => Text::_($desc));
 					$nr++;
 				}
 			}
@@ -3489,7 +3476,7 @@ class ComponentbuilderModelAjax extends ListModel
 		if (is_numeric($fieldtype))
 		{
 			// Get a db connection.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 
 			// Create a new query object.
 			$query = $db->getQuery(true);
@@ -3532,7 +3519,7 @@ class ComponentbuilderModelAjax extends ListModel
 		}
 		elseif (isset($this->extraFieldProperties[$_property]))
 		{
-			return array('value' => '', 'desc' => JText::_($this->extraFieldProperties[$_property]));
+			return array('value' => '', 'desc' => Text::_($this->extraFieldProperties[$_property]));
 		}
 		return false;
 	}
@@ -3547,8 +3534,8 @@ class ComponentbuilderModelAjax extends ListModel
 		if (!is_null($global['a_id']) && $global['a_id'] > 0 && isset($global['a_view']) && 'field' === $global['a_view'])
 		{
 			// first check field type
-			$_fieldType = ComponentbuilderHelper::getVar('field', $global['a_id'], 'id', 'fieldtype');
-			$xmlDB = ComponentbuilderHelper::getVar('field', $global['a_id'], 'id', 'xml');
+			$_fieldType = GetHelper::var('field', $global['a_id'], 'id', 'fieldtype');
+			$xmlDB = GetHelper::var('field', $global['a_id'], 'id', 'xml');
 			// check if it is a string
 			if (StringHelper::check($xmlDB))
 			{
@@ -3605,7 +3592,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 			// get field names
 			$names = array_map( function ($id) {
-				return '[' . $id . ']=> ' . ComponentbuilderHelper::getVar('field', $id, 'id', 'name');
+				return '[' . $id . ']=> ' . GetHelper::var('field', $id, 'id', 'name');
 			}, $fields);
 			// MODEL
 			if ($area == 1 || $area == 3)
@@ -3660,7 +3647,7 @@ class ComponentbuilderModelAjax extends ListModel
 				if (($items = SearchFactory::_('Agent')->table($tableName)) !== null)
 				{
 					return [
-						'success' => JText::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName),
+						'success' => Text::sprintf('COM_COMPONENTBUILDER_WE_FOUND_SOME_INSTANCES_IN_S', $tableName),
 						'items' => $items,
 						'fields_count' => SearchFactory::_('Config')->field_counter,
 						'line_count' => SearchFactory::_('Config')->line_counter
@@ -3668,7 +3655,7 @@ class ComponentbuilderModelAjax extends ListModel
 				}
 
 				return [
-					'not_found' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName),
+					'not_found' => Text::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName),
 					'fields_count' => SearchFactory::_('Config')->field_counter,
 					'line_count' => SearchFactory::_('Config')->line_counter
 				];
@@ -3679,7 +3666,7 @@ class ComponentbuilderModelAjax extends ListModel
 			}
 		}
 
-		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
 
 	/**
@@ -3715,16 +3702,16 @@ class ComponentbuilderModelAjax extends ListModel
 
 				if (($number = SearchFactory::_('Agent')->replace()) !== 0)
 				{
-					return ['success' => JText::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
+					return ['success' => Text::sprintf('COM_COMPONENTBUILDER_ALL_FOUND_INSTANCES_IN_S_WHERE_REPLACED', $tableName)];
 				}
-				return ['not_found' => JText::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName)];
+				return ['not_found' => Text::sprintf('COM_COMPONENTBUILDER_NO_INSTANCES_WHERE_FOUND_IN_S', $tableName)];
 			}
 			catch(Exception $error)
 			{
 				return ['error' => $error->getMessage()];
 			}
 		}
-		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
 
 	/**
@@ -3770,7 +3757,7 @@ class ComponentbuilderModelAjax extends ListModel
 				return ['error' => $error->getMessage()];
 			}
 		}
-		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
 
 	/**
@@ -3817,7 +3804,7 @@ class ComponentbuilderModelAjax extends ListModel
 				return ['error' => $error->getMessage()];
 			}
 		}
-		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
 
 	/**
@@ -3837,11 +3824,11 @@ class ComponentbuilderModelAjax extends ListModel
 		if ($rowId > 0 && SearchFactory::_('Table')->exist($tableName, $fieldName) &&
 			SearchFactory::_('Agent')->setValue($value, $rowId, $fieldName, $tableName))
 		{
-			return ['success' => JText::sprintf(
+			return ['success' => Text::sprintf(
 					'<b>%s</b> (%s:%s) was successfully updated!',
 					$tableName, $rowId, $fieldName)];
 		}
-		return ['error' => JText::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
 
 
@@ -3860,7 +3847,7 @@ class ComponentbuilderModelAjax extends ListModel
 			if ($libraries = $this->checkLibraries($libraries))
 			{
 				// Get a db connection.
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				// Create a new query object.
 				$query = $db->getQuery(true);
 				$query->select($db->quoteName( array('a.id') ));
@@ -3884,8 +3871,8 @@ class ComponentbuilderModelAjax extends ListModel
 		$bucket = array();
 		$libraries = array_map( function($id) use (&$bucket) { 
 			// now get bundled libraries
-			$type = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'type');
-			if (2 == $type && $bundled = ComponentbuilderHelper::getVar('library', (int) $id, 'id', 'libraries'))
+			$type = GetHelper::var('library', (int) $id, 'id', 'type');
+			if (2 == $type && $bundled = GetHelper::var('library', (int) $id, 'id', 'libraries'))
 			{
 				// make sure we have an array if it was json
 				if (JsonHelper::check($bundled))
@@ -3933,7 +3920,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function getSnippetDetails($id)
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -3962,7 +3949,7 @@ class ComponentbuilderModelAjax extends ListModel
 	public function setSnippetGithub($path, $status)
 	{
 		// get user
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$access = $user->authorise('snippet.access', 'com_componentbuilder');
 		if ($access)
 		{
@@ -3980,21 +3967,21 @@ class ComponentbuilderModelAjax extends ListModel
 			// see if we have any errors from github
 			if (UtilitiesArrayHelper::check(ComponentbuilderHelper::$githubRepoDataErrors))
 			{
-				return array('message' => JText::sprintf('COM_COMPONENTBUILDER_ERROR_BR_S', implode('<br />', ComponentbuilderHelper::$githubRepoDataErrors)), 'status' => 'danger');
+				return array('message' => Text::sprintf('COM_COMPONENTBUILDER_ERROR_BR_S', implode('<br />', ComponentbuilderHelper::$githubRepoDataErrors)), 'status' => 'danger');
 			}
-			return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_THE_PATH_HAS_A_MISMATCH_AND_COULD_THEREFORE_NOT_RETRIEVE_THE_SNIPPET_FROM_GITHUB'), 'status' => 'danger');
+			return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_THE_PATH_HAS_A_MISMATCH_AND_COULD_THEREFORE_NOT_RETRIEVE_THE_SNIPPET_FROM_GITHUB'), 'status' => 'danger');
 		}
-		return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_ACCESS_TO_THE_SNIPPETS'), 'status' => 'danger');
+		return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_ACCESS_TO_THE_SNIPPETS'), 'status' => 'danger');
 	}
 
 	protected function saveSnippet($item, $status, $user)
 	{
 		// set some defaults
-		$todayDate = JFactory::getDate()->toSql();
+		$todayDate = Factory::getDate()->toSql();
 		// get the type id
-		$item['type'] = ($id = ComponentbuilderHelper::getVar('snippet_type', $item['type'], 'name', 'id')) ? $id : $this->createNew($item['type'], 'snippet_type', $user, $todayDate);
+		$item['type'] = ($id = GetHelper::var('snippet_type', $item['type'], 'name', 'id')) ? $id : $this->createNew($item['type'], 'snippet_type', $user, $todayDate);
 		// get the library id
-		$item['library'] = ($id = ComponentbuilderHelper::getVar('library', $item['library'], 'name', 'id')) ? $id : $this->createNew($item['library'], 'library', $user, $todayDate);
+		$item['library'] = ($id = GetHelper::var('library', $item['library'], 'name', 'id')) ? $id : $this->createNew($item['library'], 'library', $user, $todayDate);
 		// remove type if zero
 		if ($item['type'] == 0)
 		{
@@ -4012,7 +3999,7 @@ class ComponentbuilderModelAjax extends ListModel
 			$canCreate = $user->authorise('snippet.create', 'com_componentbuilder');
 			if ('new' === $status && !$canCreate)
 			{
-				return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_PERMISSION_TO_CREATE_THE_SNIPPET'), 'status' => 'danger');
+				return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_PERMISSION_TO_CREATE_THE_SNIPPET'), 'status' => 'danger');
 			}
 		}
 		// get the snippet model
@@ -4029,29 +4016,29 @@ class ComponentbuilderModelAjax extends ListModel
 			// we have to force modified date since the model does not allow you
 			if ($this->forchDateFix($item))
 			{
-				return array('message' => JText::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED'), 'status' => 'success');
+				return array('message' => Text::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED'), 'status' => 'success');
 			}
 			// return error
-			return array('message' => JText::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED_BUT_THE_MODIFIED_DATE_COULD_NOT_BE_ADJUSTED_BR_BR_BTHIS_MEANS_THE_SNIPPETS_WILL_CONTINUE_TO_APPEAR_OUT_OF_DATEB'), 'status' => 'warning');
+			return array('message' => Text::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED_BUT_THE_MODIFIED_DATE_COULD_NOT_BE_ADJUSTED_BR_BR_BTHIS_MEANS_THE_SNIPPETS_WILL_CONTINUE_TO_APPEAR_OUT_OF_DATEB'), 'status' => 'warning');
 		}
 		// return error
-		return array('message' => JText::_('COM_COMPONENTBUILDER_ERROR_THE_SNIPPET_IS_FAULTY_AND_COULD_NOT_BE_SAVED'), 'status' => 'danger');
+		return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_THE_SNIPPET_IS_FAULTY_AND_COULD_NOT_BE_SAVED'), 'status' => 'danger');
 	}
 
 	protected function forchDateFix($item)
 	{
-		$object = new stdClass();
+		$object = new \stdClass();
 		$object->id = (int) $item['id'];
 		$object->created = $item['created'];
 		$object->modified = $item['modified'];
 		// force update
-		return JFactory::getDbo()->updateObject('#__componentbuilder_snippet', $object, 'id');
+		return Factory::getDbo()->updateObject('#__componentbuilder_snippet', $object, 'id');
 	}
 
 	protected function getSnippetId($item)
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		 
 		// Create a new query object.
 		$query = $db->getQuery(true);

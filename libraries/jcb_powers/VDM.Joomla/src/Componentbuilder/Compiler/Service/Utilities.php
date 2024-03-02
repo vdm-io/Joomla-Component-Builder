@@ -17,6 +17,7 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\FileInjector;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
@@ -49,6 +50,9 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(File::class, 'Utilities.File')
 			->share('Utilities.File', [$this, 'getFile'], true);
+
+		$container->alias(FileInjector::class, 'Utilities.FileInjector')
+			->share('Utilities.FileInjector', [$this, 'getFileInjector'], true);
 
 		$container->alias(Counter::class, 'Utilities.Counter')
 			->share('Utilities.Counter', [$this, 'getCounter'], true);
@@ -103,6 +107,21 @@ class Utilities implements ServiceProviderInterface
 	{
 		return new File(
 			$container->get('Utilities.Counter')
+		);
+	}
+
+	/**
+	 * Get The FileInjector Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  FileInjector
+	 * @since 3.2.0
+	 */
+	public function getFileInjector(Container $container): FileInjector
+	{
+		return new FileInjector(
+			$container->get('Power.Injector')
 		);
 	}
 
@@ -203,6 +222,7 @@ class Utilities implements ServiceProviderInterface
 	public function getStructure(Container $container): Structure
 	{
 		return new Structure(
+			$container->get('Placeholder'),
 			$container->get('Component.Settings'),
 			$container->get('Utilities.Paths'),
 			$container->get('Utilities.Counter'),

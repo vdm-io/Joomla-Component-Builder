@@ -12,8 +12,13 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder List Model for Get_snippets
@@ -42,19 +47,19 @@ class ComponentbuilderModelGet_snippets extends ListModel
 	protected function getListQuery()
 	{
 		// Get the current user for authorisation checks
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		$this->userId = $this->user->get('id');
 		$this->guest = $this->user->get('guest');
 		$this->groups = $this->user->get('groups');
-		$this->authorisedGroups	= $this->user->getAuthorisedGroups();
+		$this->authorisedGroups    = $this->user->getAuthorisedGroups();
 		$this->levels = $this->user->getAuthorisedViewLevels();
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		$this->input = $this->app->input;
-		$this->initSet = true; 
+		$this->initSet = true;
 		// Make sure all records load, since no pagination allowed.
 		$this->setState('list.limit', 0);
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -88,12 +93,12 @@ class ComponentbuilderModelGet_snippets extends ListModel
 	 */
 	public function getItems()
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// check if this user has permission to access items
 		if (!$user->authorise('get_snippets.access', 'com_componentbuilder'))
 		{
-			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
+			$app = Factory::getApplication();
+			$app->enqueueMessage(Text::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_componentbuilder');
 			return false;
@@ -102,15 +107,15 @@ class ComponentbuilderModelGet_snippets extends ListModel
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = JComponentHelper::getParams('com_componentbuilder', true);
+		$globalParams = ComponentHelper::getParams('com_componentbuilder', true);
 
 		// Insure all item fields are adapted where needed.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's
-				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
+				$item->slug = ($item->id ?? '0') . (isset($item->alias) ? ':' . $item->alias : '');
 			}
 		}
 
@@ -126,7 +131,7 @@ class ComponentbuilderModelGet_snippets extends ListModel
 	 */
 	public function getUikitComp()
 	{
-		if (isset($this->uikitComp) && ComponentbuilderHelper::checkArray($this->uikitComp))
+		if (isset($this->uikitComp) && UtilitiesArrayHelper::check($this->uikitComp))
 		{
 			return $this->uikitComp;
 		}

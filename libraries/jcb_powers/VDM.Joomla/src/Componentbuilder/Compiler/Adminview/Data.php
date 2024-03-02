@@ -17,7 +17,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Customtabs;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Model\CustomtabsInterface as Customtabs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Tabs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Fields;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Historyadminview as History;
@@ -226,10 +226,9 @@ class Data
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor.
@@ -256,14 +255,13 @@ class Data
 	 * @param Sql                   $sql                   The Sql Class.
 	 * @param Mysqlsettings         $mysqlsettings         The Mysqlsettings Class.
 	 * @param SiteEditView          $siteeditview          The SiteEditView Class.
-	 * @param \JDatabaseDriver|null $db                    The Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Event $event, Placeholder $placeholder, Dispenser $dispenser, Customtabs $customtabs, Tabs $tabs, Fields $fields,
 		History $history, Permissions $permissions, Conditions $conditions, Relations $relations, Linkedviews $linkedviews, Javascript $javascript,
 		Css $css, Php $php, Custombuttons $custombuttons, Customimportscripts $customimportscripts, Ajax $ajax, Customalias $customalias, Sql $sql,
-		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, ?\JDatabaseDriver $db = null)
+		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -287,7 +285,7 @@ class Data
 		$this->sql = $sql;
 		$this->mysqlsettings = $mysqlsettings;
 		$this->siteeditview = $siteeditview;
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -357,12 +355,9 @@ class Data
 
 			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
 
-			// for plugin event TODO change event api signatures
-			$component_context = $this->config->component_context;
 			// Trigger Event: jcb_ce_onBeforeQueryViewData
 			$this->event->trigger(
-				'jcb_ce_onBeforeQueryViewData',
-				array(&$component_context, &$id, &$query, &$this->db)
+				'jcb_ce_onBeforeQueryViewData', [&$id, &$query, &$this->db]
 			);
 
 			// Reset the query using our newly populated query object.
@@ -423,16 +418,10 @@ class Data
 				$view->name_list, 'U'
 			));
 
-			// for plugin event TODO change event api signatures
-			$placeholders = $this->placeholder->active;
-			$component_context = $this->config->component_context;
-
 			// Trigger Event: jcb_ce_onBeforeModelViewData
 			$this->event->trigger(
-				'jcb_ce_onBeforeModelViewData',
-				array(&$component_context, &$view, &$placeholders)
+				'jcb_ce_onBeforeModelViewData', [&$view]
 			);
-			unset($placeholders);
 
 			// add the tables
 			$view->addtables = (isset($view->addtables)
@@ -502,13 +491,9 @@ class Data
 			// set mySql Table Settings
 			$this->mysqlsettings->set($view);
 
-			// for plugin event TODO change event api signatures
-			$placeholders = $this->placeholder->active;
-
 			// Trigger Event: jcb_ce_onAfterModelViewData
 			$this->event->trigger(
-				'jcb_ce_onAfterModelViewData',
-				array(&$component_context, &$view, &$placeholders)
+				'jcb_ce_onAfterModelViewData', [&$view]
 			);
 
 			// clear placeholders

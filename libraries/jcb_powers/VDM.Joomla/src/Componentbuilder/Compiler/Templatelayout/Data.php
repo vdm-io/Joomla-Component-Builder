@@ -160,10 +160,10 @@ class Data
 		{
 			// set the Layout data
 			$lay1 = GetHelper::allBetween(
-				$content, "JLayoutHelper::render('", "',"
+				$content, "LayoutHelper::render('", "',"
 			);
 			$lay2 = GetHelper::allBetween(
-				$content, 'JLayoutHelper::render("', '",'
+				$content, 'LayoutHelper::render("', '",'
 			);
 			if (ArrayHelper::check($lay1)
 				&& ArrayHelper::check($lay2))

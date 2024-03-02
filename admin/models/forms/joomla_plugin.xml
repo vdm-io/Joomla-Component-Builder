@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -865,7 +866,7 @@
 			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NAME_HINT"
 		/>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

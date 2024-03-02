@@ -12,9 +12,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper as Html;
 ?>
 
 <div class="uk-alert uk-alert-danger" data-uk-alert>
-    <h2><?php echo JText::_('COM_COMPONENTBUILDER_ERROR'); ?></h2>
+    <h2><?php echo Text::_('COM_COMPONENTBUILDER_ERROR'); ?></h2>
 </div>

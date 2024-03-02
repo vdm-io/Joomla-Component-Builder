@@ -13,6 +13,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -105,7 +108,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Component.Placeholder')->get();
 	 */
-	public $globalPlaceholders = array();
+	public $globalPlaceholders = [];
 
 	/**
 	 * The placeholders
@@ -113,7 +116,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Placeholder')->active[];
 	 */
-	public $placeholders = array();
+	public $placeholders = [];
 
 	/**
 	 * The Compiler Path
@@ -208,7 +211,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Power')->active;
 	 */
-	public $powers = array();
+	public $powers = [];
 
 	/**
 	 * The state of all Powers
@@ -216,14 +219,14 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	public $statePowers = array();
+	public $statePowers = [];
 
 	/**
 	 * The linked Powers
 	 *
 	 * @var      array
 	 */
-	public $linkedPowers = array();
+	public $linkedPowers = [];
 
 	/**
 	 * The Plugins data
@@ -231,7 +234,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Joomlaplugin.Data')->get();
 	 */
-	public $joomlaPlugins = array();
+	public $joomlaPlugins = [];
 
 	/**
 	 * The Modules data
@@ -239,7 +242,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Joomlamodule.Data')->get();
 	 */
-	public $joomlaModules = array();
+	public $joomlaModules = [];
 
 	/**
 	 *    The custom script placeholders - we use the (xxx) to avoid detection it should be (***)
@@ -297,7 +300,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	protected $customCodeData = array();
+	protected $customCodeData = [];
 
 	/**
 	 * The function name memory ids
@@ -305,7 +308,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Customcode')->functionNameMemory
 	 */
-	public $functionNameMemory = array();
+	public $functionNameMemory = [];
 
 	/**
 	 * The custom code for local memory
@@ -313,7 +316,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Customcode')->memory
 	 */
-	public $customCodeMemory = array();
+	public $customCodeMemory = [];
 
 	/**
 	 * The custom code in local files that already exist in system
@@ -321,7 +324,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	protected $existingCustomCode = array();
+	protected $existingCustomCode = [];
 
 	/**
 	 * The custom code in local files this are new
@@ -329,7 +332,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	protected $newCustomCode = array();
+	protected $newCustomCode = [];
 
 	/**
 	 * The index of code already loaded
@@ -337,7 +340,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	protected $codeAreadyDone = array();
+	protected $codeAreadyDone = [];
 
 	/**
 	 * The external code/string to be added
@@ -345,7 +348,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	protected $externalCodeString = array();
+	protected $externalCodeString = [];
 
 	/**
 	 * The external code/string cutter
@@ -353,7 +356,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	protected $externalCodeCutter = array();
+	protected $externalCodeCutter = [];
 
 	/*
 	 * The line numbers Switch
@@ -366,7 +369,8 @@ class Get
 	/*
 	 * The percentage when a language should be added
 	 *
-	 * @var      boolean
+	 * @var      int
+	 * @deprecated 3.3 Use CFactory::_('Config')->percentage_language_add
 	 */
 	public $percentageLanguageAdd = 0;
 
@@ -384,7 +388,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3
 	 */
-	public $langContent = array();
+	public $langContent = [];
 
 	/**
 	 * The Languages bucket
@@ -408,21 +412,21 @@ class Get
 	 *
 	 * @var      array
 	 */
-	public $multiLangString = array();
+	public $multiLangString = [];
 
 	/**
 	 * The new lang to add
 	 *
 	 * @var      array
 	 */
-	protected $newLangStrings = array();
+	protected $newLangStrings = [];
 
 	/**
 	 * The existing lang to update
 	 *
 	 * @var      array
 	 */
-	protected $existingLangStrings = array();
+	protected $existingLangStrings = [];
 
 	/**
 	 * The Language JS matching check
@@ -430,7 +434,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->langMismatch;
 	 */
-	public $langMismatch = array();
+	public $langMismatch = [];
 
 	/**
 	 * The Language SC matching check
@@ -438,7 +442,7 @@ class Get
 	 * @var      array
 	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->langMatch;
 	 */
-	public $langMatch = array();
+	public $langMatch = [];
 
 	/**
 	 * The Language string targets
@@ -523,7 +527,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Uikit.Comp')->get($key);
 	 */
-	public $uikitComp = array();
+	public $uikitComp = [];
 
 	/**
 	 * The FOOTABLE Switch
@@ -570,14 +574,14 @@ class Get
 	 *
 	 * @var      array
 	 */
-	public $eximportView = array();
+	public $eximportView = [];
 
 	/**
 	 * The Import & Export Custom Script
 	 *
 	 * @var      array
 	 */
-	public $importCustomScripts = array();
+	public $importCustomScripts = [];
 
 	/**
 	 * The Tag & History Switch
@@ -609,7 +613,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($key);
 	 */
-	public $adminFilterType = array();
+	public $adminFilterType = [];
 
 	/**
 	 * The Language target
@@ -625,7 +629,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Language.Extractor')->langKeys;
 	 */
-	public $langKeys = array();
+	public $langKeys = [];
 
 	/**
 	 * The Build target Switch
@@ -641,7 +645,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3
 	 */
-	public $uniquecodes = array();
+	public $uniquecodes = [];
 
 	/**
 	 * The unique keys
@@ -649,7 +653,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3
 	 */
-	public $uniquekeys = array();
+	public $uniquekeys = [];
 
 	/**
 	 * The Add contributors Switch
@@ -665,7 +669,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Customcode.Dispenser')->hub;
 	 */
-	public $customScriptBuilder = array();
+	public $customScriptBuilder = [];
 
 	/**
 	 * The Footable Script Builder
@@ -697,7 +701,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Registry')->get('validation.rules');
 	 */
-	public $validationRules = array();
+	public $validationRules = [];
 
 	/**
 	 * The validation linked to fields
@@ -705,7 +709,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Registry')->get('validation.linked');
 	 */
-	public $validationLinkedFields = array();
+	public $validationLinkedFields = [];
 
 	/**
 	 * The admin views data array
@@ -713,7 +717,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3
 	 */
-	private $_adminViewData = array();
+	private $_adminViewData = [];
 
 	/**
 	 * The field data array
@@ -721,7 +725,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3
 	 */
-	private $_fieldData = array();
+	private $_fieldData = [];
 
 	/**
 	 * The custom alias builder
@@ -748,7 +752,7 @@ class Get
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Registry')->get('unique.names');
 	 */
-	public $uniqueNames = array();
+	public $uniqueNames = [];
 
 	/**
 	 * Set unique Names
@@ -756,7 +760,7 @@ class Get
 	 * @var    array
 	 * @deprecated
 	 */
-	protected $uniqueFieldNames = array();
+	protected $uniqueFieldNames = [];
 
 	/**
 	 * Category other name bucket
@@ -764,7 +768,7 @@ class Get
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Category.Other.Name')->get($key);
 	 */
-	public $catOtherName = array();
+	public $catOtherName = [];
 
 	/**
 	 * The field relations values
@@ -772,14 +776,15 @@ class Get
 	 * @var     array
 	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Field.Relations')->get($key);
 	 */
-	public $fieldRelations = array();
+	public $fieldRelations = [];
 
 	/**
 	 * The views default ordering
 	 *
 	 * @var     array
+	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Views.Default.Ordering')->get($key);
 	 */
-	public $viewsDefaultOrdering = array();
+	public $viewsDefaultOrdering = [];
 
 	/**
 	 * Default Fields
@@ -797,7 +802,7 @@ class Get
 	 * @var     array
 	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.List.Join')->get($key);
 	 */
-	public $listJoinBuilder = array();
+	public $listJoinBuilder = [];
 
 	/**
 	 * The list head over ride
@@ -805,7 +810,7 @@ class Get
 	 * @var     array
 	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.List.Head.Override')->get($key);
 	 */
-	public $listHeadOverRide = array();
+	public $listHeadOverRide = [];
 
 	/**
 	 * The linked admin view tabs
@@ -813,7 +818,7 @@ class Get
 	 * @var     array
 	 * @deprecate 3.3 Use CFactory::_('Registry')->get('builder.linked_admin_views');
 	 */
-	public $linkedAdminViews = array();
+	public $linkedAdminViews = [];
 
 	/**
 	 * The custom admin view tabs
@@ -821,7 +826,7 @@ class Get
 	 * @var     array
 	 * @deprecate 3.3 Use CFactory::_('Compiler.Builder.Custom.Tabs')->get($key);
 	 */
-	public $customTabs = array();
+	public $customTabs = [];
 
 	/**
 	 * The Add Ajax Switch
@@ -901,7 +906,7 @@ class Get
 	 * @var    array
 	 * @deprecated 3.3
 	 */
-	public $customFieldScript = array();
+	public $customFieldScript = [];
 
 	/**
 	 * The site main get
@@ -1030,9 +1035,9 @@ class Get
 		$config['remove_line_breaks']
 			= 2; // 2 is global (use the components value)
 		// load application
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		// Set the params
-		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// Trigger Event: jcb_ce_onBeforeGet
 		CFactory::_('Event')->trigger('jcb_ce_onBeforeGet', array(&$config, &$this));
 		// set the Joomla version @deprecated
@@ -1044,7 +1049,7 @@ class Get
 		// also set the helper class langTag (for safeStrings)
 		ComponentbuilderHelper::$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// setup the main language array
-		$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = array();
+		$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
 		// check if we have Tidy enabled @deprecated
 		$this->tidy = CFactory::_('Config')->get('tidy', false);
 		// set the field type builder @deprecated
@@ -1056,10 +1061,10 @@ class Get
 			$this->fieldBuilderType = 1;
 			// load the sugestion to use string manipulation
 			$this->app->enqueueMessage(
-				JText::_('<hr /><h3>Field Notice</h3>'), 'Notice'
+				Text::_('<hr /><h3>Field Notice</h3>'), 'Notice'
 			);
 			$this->app->enqueueMessage(
-				JText::_(
+				Text::_(
 					'Since you do not have <b>Tidy</b> extentsion setup on your system, we could not use the SimpleXMLElement class. We instead used <b>string manipulation</b> to build all your fields, this is a faster method, you must inspect the xml files in your component package to see if you are satisfied with the result.<br />You can make this method your default by opening the global options of JCB and under the <b>Global</b> tab set the <b>Field Builder Type</b> to string manipulation.'
 				), 'Notice'
 			);
@@ -1079,8 +1084,6 @@ class Get
 		$this->componentContext = CFactory::_('Config')->component_context;
 		// set the component name length @deprecated
 		$this->componentCodeNameLength = CFactory::_('Config')->component_code_name_length;
-		// add assets table fix @deprecated
-		$this->addAssetsTableFix = CFactory::_('Config')->add_assets_table_fix;
 		// set if language strings line breaks should be removed @deprecated
 		$this->removeLineBreaks = CFactory::_('Config')->remove_line_breaks;
 		// set if placeholders should be added to customcode @deprecated
@@ -1090,21 +1093,18 @@ class Get
 		// set if powers should be added to component (default is true) @deprecated
 		$this->addPower = CFactory::_('Config')->get('add_power', true);
 		// set the current user
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		// Get a db connection.
-		$this->db = JFactory::getDbo();
+		$this->db = Factory::getDbo();
 		// get global placeholders @deprecated
 		$this->globalPlaceholders = CFactory::_('Component.Placeholder')->get();
 
 		// get the custom code from installed files
 		CFactory::_('Customcode.Extractor')->run();
 
-		// for plugin event TODO change event api signatures
-		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeGetComponentData
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeGetComponentData',
-			array(&$component_context, &$this)
+			'jcb_ce_onBeforeGetComponentData'
 		);
 
 		// get the component data @deprecated
@@ -1112,8 +1112,7 @@ class Get
 
 		// Trigger Event: jcb_ce_onAfterGetComponentData
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onAfterGetComponentData',
-			array(&$component_context, &$this)
+			'jcb_ce_onAfterGetComponentData'
 		);
 
 		// make sure we have a version
@@ -1162,19 +1161,12 @@ class Get
 
 		// load powers *+*+*+*+*+*+*+*
 		CFactory::_('Power')->load($this->linkedPowers);
-		// load any other super powers that was found
-		if (($super_powers = CFactory::_('Power.Extractor')->get_()) !== null)
-		{
-			CFactory::_('Power')->load($super_powers);
-		}
 		// set the percentage when a language can be added
-		$this->percentageLanguageAdd = (int) $this->params->get(
-			'percentagelanguageadd', 50
-		);
+		$this->percentageLanguageAdd = (int) CFactory::_('Config')->get('percentage_language_add', 50);
 
 		// Trigger Event: jcb_ce_onBeforeGet
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onAfterGet', array(&$component_context, &$this)
+			'jcb_ce_onAfterGet'
 		);
 
 		return true;
@@ -1203,7 +1195,7 @@ class Get
 	 * @return  void
 	 * @deprecated 3.3 Use CFactory::_('Event')->trigger($event, $data);
 	 */
-	public function triggerEvent($event, $data)
+	public function triggerEvent($event, $data = null)
 	{
 		return CFactory::_('Event')->trigger($event, $data);
 	}
@@ -1332,14 +1324,11 @@ class Get
 	 */
 	public function getListViewDefaultOrdering(&$nameListCode)
 	{
-		if (isset($this->viewsDefaultOrdering[$nameListCode])
-			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
-			== 1)
+		if (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+			get("$nameListCode.add_admin_ordering", 0) == 1)
 		{
-			foreach (
-				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
-				as $order_field
-			)
+			foreach (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+				get("$nameListCode.admin_ordering_fields", []) as $order_field)
 			{
 				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
@@ -1431,10 +1420,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1520,10 +1509,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1611,10 +1600,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1666,10 +1655,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1786,10 +1775,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1920,10 +1909,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1943,10 +1932,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -1981,10 +1970,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2005,10 +1994,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2111,7 +2100,7 @@ class Get
 	{
 		$counterInsert = 0;
 		$counterUpdate = 0;
-		$today         = JFactory::getDate()->toSql();
+		$today         = Factory::getDate()->toSql();
 		foreach (
 			$this->languages[$target][CFactory::_('Config')->get('lang_tag', 'en-GB')] as $area => $placeholders
 		)
@@ -2154,15 +2143,15 @@ class Get
 								if (!isset($this->languages[$target][$translations['language']]))
 								{
 									$this->languages[$target][$translations['language']]
-										= array();
+										= [];
 								}
 								if (!isset($this->languages[$target][$translations['language']][$area]))
 								{
 									$this->languages[$target][$translations['language']][$area]
-										= array();
+										= [];
 								}
 								$this->languages[$target][$translations['language']][$area][$placeholder]
-									= $translations['translation'];
+									= CFactory::_('Language')->fix($translations['translation']);
 							}
 						}
 					}
@@ -2226,10 +2215,10 @@ class Get
 						// add the new lang placeholder to the db
 						if (!isset($this->newLangStrings[$target]))
 						{
-							$this->newLangStrings[$target] = array();
+							$this->newLangStrings[$target] = [];
 						}
 						$this->newLangStrings[$target][$counterInsert]
-							= array();
+							= [];
 						$this->newLangStrings[$target][$counterInsert][]
 							= $this->db->quote(
 							json_encode(array($target_id))
@@ -2314,7 +2303,7 @@ class Get
 				}
 			}
 			// clear the values array
-			$this->newLangStrings[$target] = array();
+			$this->newLangStrings[$target] = [];
 			if (!$continue)
 			{
 				return false; // insure we dont continue if no values were loaded
@@ -2352,7 +2341,7 @@ class Get
 				$this->db->execute();
 			}
 			// clear the values array
-			$this->existingLangStrings = array();
+			$this->existingLangStrings = [];
 		}
 	}
 
@@ -2432,7 +2421,7 @@ class Get
 			{
 				$counterUpdate = 0;
 				$otherStrings  = $this->db->loadAssocList();
-				$today         = JFactory::getDate()->toSql();
+				$today         = Factory::getDate()->toSql();
 				foreach ($otherStrings as $item)
 				{
 					if (JsonHelper::check($item[$target]))
@@ -2539,14 +2528,14 @@ class Get
 	)
 	{
 		// start the bucket for this lang
-		$this->existingLangStrings[$counterUpdate]               = array();
+		$this->existingLangStrings[$counterUpdate]               = [];
 		$this->existingLangStrings[$counterUpdate]['id']         = (int) $id;
-		$this->existingLangStrings[$counterUpdate]['conditions'] = array();
+		$this->existingLangStrings[$counterUpdate]['conditions'] = [];
 		$this->existingLangStrings[$counterUpdate]['conditions'][]
 		                                                         = $this->db->quoteName(
 				'id'
 			) . ' = ' . $this->db->quote($id);
-		$this->existingLangStrings[$counterUpdate]['fields']     = array();
+		$this->existingLangStrings[$counterUpdate]['fields']     = [];
 		$this->existingLangStrings[$counterUpdate]['fields'][]
 		                                                         = $this->db->quoteName(
 				$target
@@ -2590,10 +2579,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2631,10 +2620,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2652,10 +2641,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2673,10 +2662,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2705,10 +2694,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2724,10 +2713,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2743,10 +2732,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2764,10 +2753,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2828,10 +2817,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2849,10 +2838,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2891,10 +2880,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2955,10 +2944,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -2997,10 +2986,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -3023,10 +3012,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -3049,10 +3038,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -3097,10 +3086,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -3153,10 +3142,10 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);

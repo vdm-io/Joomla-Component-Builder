@@ -12,14 +12,22 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\UCM\UCMType;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
-use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -69,16 +77,16 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A database object
+	 * @return  Table  A database object
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'class_property', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'class_property', $prefix = 'ComponentbuilderTable', $config = [])
 	{
 		// add table path for when model gets used from other component
 		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
 		// get instance of the table
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 
@@ -114,13 +122,12 @@ class ComponentbuilderModelClass_property extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'class_property__'.$id);
 				ComponentbuilderHelper::set('class_property__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -129,7 +136,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		return $this->vastDevMod;
 	}
 
-    
+
 	/**
 	 * Method to get a single record.
 	 *
@@ -192,13 +199,12 @@ class ComponentbuilderModelClass_property extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'class_property__'.$id);
 				ComponentbuilderHelper::set('class_property__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -219,7 +225,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
+	public function getForm($data = [], $loadData = true, $options = array('control' => 'jform'))
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
@@ -246,7 +252,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -259,7 +265,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			$id = $jinput->get('id', 0, 'INT');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
@@ -318,7 +324,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		}
 
 		// update all editors to use this components global editor
-		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
@@ -346,13 +352,13 @@ class ComponentbuilderModelClass_property extends AdminModel
 	/**
 	 * Method to get the script that have to be included on the form
 	 *
-	 * @return string	script files
+	 * @return string    script files
 	 */
 	public function getScript()
 	{
 		return 'media/com_componentbuilder/js/class_property.js';
 	}
-    
+
 	/**
 	 * Method to test whether a record can be deleted.
 	 *
@@ -371,7 +377,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 				return;
 			}
 
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// The record has been set. Check the record permissions.
 			return $user->authorise('class_property.delete', 'com_componentbuilder.class_property.' . (int) $record->id);
 		}
@@ -389,8 +395,8 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
-		$recordId = (!empty($record->id)) ? $record->id : 0;
+		$user = Factory::getUser();
+		$recordId = $record->id ??  0;
 
 		if ($recordId)
 		{
@@ -404,28 +410,28 @@ class ComponentbuilderModelClass_property extends AdminModel
 		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('class_property.edit.state', 'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Method override to check if you can edit an existing record.
 	 *
-	 * @param	array	$data	An array of input data.
-	 * @param	string	$key	The name of the key for the primary key.
+	 * @param    array    $data   An array of input data.
+	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return	boolean
-	 * @since	2.5
+	 * @return    boolean
+	 * @since    2.5
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		return $user->authorise('class_property.edit', 'com_componentbuilder.class_property.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('class_property.edit',  'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   JTable  $table  A JTable object.
+	 * @param   Table  $table  A Table object.
 	 *
 	 * @return  void
 	 *
@@ -433,19 +439,19 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
-		
+		$date = Factory::getDate();
+		$user = Factory::getUser();
+
 		if (isset($table->name))
 		{
 			$table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
 		}
-		
+
 		if (isset($table->alias) && empty($table->alias))
 		{
 			$table->generateAlias();
 		}
-		
+
 		if (empty($table->id))
 		{
 			$table->created = $date->toSql();
@@ -457,7 +463,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			// Set ordering to the last item if not set
 			if (empty($table->ordering))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_class_property'));
@@ -472,7 +478,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			$table->modified = $date->toSql();
 			$table->modified_by = $user->id;
 		}
-        
+
 		if (!empty($table->id))
 		{
 			// Increment the items version number.
@@ -487,10 +493,10 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	protected function loadFormData() 
+	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.class_property.data', array());
+		$data = Factory::getApplication()->getUserState('com_componentbuilder.edit.class_property.data', []);
 
 		if (empty($data))
 		{
@@ -518,7 +524,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 	public function validate($form, $data, $group = null)
 	{
 		// check if the not_required field is set
-		if (isset($data['not_required']) && ComponentbuilderHelper::checkString($data['not_required']))
+		if (isset($data['not_required']) && UtilitiesStringHelper::check($data['not_required']))
 		{
 			$requiredFields = (array) explode(',',(string) $data['not_required']);
 			$requiredFields = array_unique($requiredFields);
@@ -526,7 +532,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			foreach ($requiredFields as $requiredField)
 			{
 				// make sure there is a string value
-				if (ComponentbuilderHelper::checkString($requiredField))
+				if (UtilitiesStringHelper::check($requiredField))
 				{
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
@@ -549,7 +555,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 	{
 		return array('guid');
 	}
-	
+
 	/**
 	 * Method to delete one or more records.
 	 *
@@ -565,7 +571,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -585,10 +591,10 @@ class ComponentbuilderModelClass_property extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
-        }
-    
+	}
+
 	/**
 	 * Method to perform batch operations on an item or a set of items.
 	 *
@@ -614,30 +620,30 @@ class ComponentbuilderModelClass_property extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
 		$done = false;
 
 		// Set some needed variables.
-		$this->user			= JFactory::getUser();
-		$this->table			= $this->getTable();
-		$this->tableClassName		= get_class($this->table);
-		$this->contentType		= new JUcmType;
-		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('class_property');
-		$this->batchSet			= true;
+		$this->user = Factory::getUser();
+		$this->table = $this->getTable();
+		$this->tableClassName = get_class($this->table);
+		$this->contentType = new UCMType;
+		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
+		$this->canDo = ComponentbuilderHelper::getActions('class_property');
+		$this->batchSet = true;
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
-        
+
 		if ($this->type == false)
 		{
-			$type = new JUcmType;
+			$type = new UCMType;
 			$this->type = $type->getTypeByAlias($this->typeAlias);
 		}
 
@@ -674,8 +680,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -701,7 +706,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user 		= JFactory::getUser();
+			$this->user 		= Factory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('class_property');
@@ -727,7 +732,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 				$values['published'] = 0;
 		}
 
-		$newIds = array();
+		$newIds = [];
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -740,7 +745,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			if (!$this->user->authorise('class_property.edit', $contexts[$pk]))
 			{
 				// Not fatal error
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 				continue;
 			}
 
@@ -756,19 +761,19 @@ class ComponentbuilderModelClass_property extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			if (UtilitiesStringHelper::check($this->table->name) && !is_numeric($this->table->name))
 			{
 				$this->table->name = $this->generateUnique('name',$this->table->name);
 			}
 
 			// insert all set values
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -780,7 +785,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 			}
 
 			// update all unique fields
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -844,7 +849,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user		= JFactory::getUser();
+			$this->user		= Factory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('class_property');
@@ -852,7 +857,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 
 		if (!$this->canDo->get('class_property.edit') && !$this->canDo->get('class_property.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
@@ -869,7 +874,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		{
 			if (!$this->user->authorise('class_property.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 				return false;
 			}
 
@@ -885,13 +890,13 @@ class ComponentbuilderModelClass_property extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// insert all set values.
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -935,7 +940,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -947,15 +952,15 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input	= JFactory::getApplication()->input;
-		$filter	= JFilterInput::getInstance();
-        
+		$input    = Factory::getApplication()->input;
+		$filter   = InputFilter::getInstance();
+
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-            
-			$metadata = new JRegistry;
+
+			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
@@ -988,11 +993,11 @@ class ComponentbuilderModelClass_property extends AdminModel
 		{
 			$data['default'] = base64_encode($data['default']);
 		}
-        
+
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new JRegistry;
+			$params = new Registry;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}
@@ -1002,7 +1007,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		{
 			// Automatic handling of other unique fields
 			$uniqueFields = $this->getUniqueFields();
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -1010,14 +1015,14 @@ class ComponentbuilderModelClass_property extends AdminModel
 				}
 			}
 		}
-		
+
 		if (parent::save($data))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to generate a unique value.
 	 *
@@ -1030,7 +1035,6 @@ class ComponentbuilderModelClass_property extends AdminModel
 	 */
 	protected function generateUnique($field,$value)
 	{
-
 		// set field value unique
 		$table = $this->getTable();
 
@@ -1056,7 +1060,7 @@ class ComponentbuilderModelClass_property extends AdminModel
 		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(['title' => $title]))
 		{
 			$title = StringHelper::increment($title);
 		}

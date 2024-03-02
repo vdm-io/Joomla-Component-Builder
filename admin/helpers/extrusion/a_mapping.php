@@ -26,6 +26,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -105,7 +106,7 @@ class Mapping
 	public function __construct($data = false)
 	{
 		// set the app to insure messages can be set
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		// check that we have data
 		if (ArrayHelper::check($data))
 		{

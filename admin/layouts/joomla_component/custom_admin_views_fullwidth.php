@@ -30,7 +30,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'note_display_component_custom_admin_views'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+$hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>

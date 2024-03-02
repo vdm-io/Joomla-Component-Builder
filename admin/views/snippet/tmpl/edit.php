@@ -12,66 +12,72 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.formvalidator');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Router\Route;
+Html::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+Html::_('behavior.formvalidator');
+Html::_('formbehavior.chosen', 'select');
+Html::_('behavior.keepalive');
+
 $componentParams = $this->params; // will be removed just use $this->params instead
 ?>
 <div id="componentbuilder_loader">
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
-	<?php echo JLayoutHelper::render('snippet.details_above', $this); ?>
+<?php echo LayoutHelper::render('snippet.details_above', $this); ?>
 <div class="form-horizontal">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'snippetTab', array('active' => 'details')); ?>
+	<?php echo Html::_('bootstrap.startTabSet', 'snippetTab', ['active' => 'details', 'recall' => true]); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'snippetTab', 'details', JText::_('COM_COMPONENTBUILDER_SNIPPET_DETAILS', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'snippetTab', 'details', Text::_('COM_COMPONENTBUILDER_SNIPPET_DETAILS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('snippet.details_left', $this); ?>
+				<?php echo LayoutHelper::render('snippet.details_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('snippet.details_right', $this); ?>
+				<?php echo LayoutHelper::render('snippet.details_right', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'snippetTab', 'contributor', JText::_('COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'snippetTab', 'contributor', Text::_('COM_COMPONENTBUILDER_SNIPPET_CONTRIBUTOR', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('snippet.contributor_left', $this); ?>
+				<?php echo LayoutHelper::render('snippet.contributor_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('snippet.contributor_right', $this); ?>
+				<?php echo LayoutHelper::render('snippet.contributor_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('snippet.contributor_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('snippet.contributor_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'snippetTab'; ?>
-	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+	<?php echo LayoutHelper::render('joomla.edit.params', $this); ?>
 
 	<?php if ($this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.created') || $this->canDo->get('core.edit.state') || ($this->canDo->get('core.delete') && $this->canDo->get('core.edit.state'))) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'snippetTab', 'publishing', JText::_('COM_COMPONENTBUILDER_SNIPPET_PUBLISHING', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'snippetTab', 'publishing', Text::_('COM_COMPONENTBUILDER_SNIPPET_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('snippet.publishing', $this); ?>
+				<?php echo LayoutHelper::render('snippet.publishing', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('snippet.publlshing', $this); ?>
+				<?php echo LayoutHelper::render('snippet.publlshing', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
 	<?php if ($this->canDo->get('core.admin')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'snippetTab', 'permissions', JText::_('COM_COMPONENTBUILDER_SNIPPET_PERMISSION', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'snippetTab', 'permissions', Text::_('COM_COMPONENTBUILDER_SNIPPET_PERMISSION', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<fieldset class="adminform">
@@ -86,14 +92,14 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 				</fieldset>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
-	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+	<?php echo Html::_('bootstrap.endTabSet'); ?>
 
 	<div>
 		<input type="hidden" name="task" value="snippet.edit" />
-		<?php echo JHtml::_('form.token'); ?>
+		<?php echo Html::_('form.token'); ?>
 	</div>
 </div>
 </form>

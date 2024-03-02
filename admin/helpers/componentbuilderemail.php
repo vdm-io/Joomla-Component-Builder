@@ -12,6 +12,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Mail\Mail;
+use Joomla\Registry\Registry;
+use VDM\Joomla\Utilities\ArrayHelper;
+
 /**
  * Componentbuilder component email helper
  */
@@ -22,28 +28,28 @@ abstract class ComponentbuilderEmail
 	 *
 	 * @var    activeRecipient (array)
 	 */
-	public static $active = array();
+	public static $active = [];
 
 	/**
 	 * Configuraiton object
 	 *
-	 * @var    JConfig
+	 * @var    Registry
 	 */
-	public static $config = null;
+	public static ?Registry $config = null;
 
 	/**
 	 * Mailer object
 	 *
-	 * @var    JMail
+	 * @var    Mail
 	 */
-	public static $mailer = null;
+	public static ?Mail $mailer = null;
 
 	/**
 	 * Custom Headers
 	 *
 	 * @var    array
 	 */
-	protected static $header = array();
+	protected static array $header = [];
 
 	/**
 	 * Get a configuration object
@@ -53,7 +59,7 @@ abstract class ComponentbuilderEmail
 	{
 		if (!self::$config)
 		{
-			self::$config = JComponentHelper::getParams('com_componentbuilder');
+			self::$config = ComponentHelper::getParams('com_componentbuilder');
 		}
 
 		return self::$config;
@@ -92,7 +98,7 @@ abstract class ComponentbuilderEmail
 	 * @static
 	 * @access public
 	 */
-	public static function validateAddress($address, $patternselect = null)
+	public static function validateAddress($address, $patternselect = null): bool
 	{
 		return self::getMailerInstance()->validateAddress($address, $patternselect);
 	}
@@ -100,13 +106,13 @@ abstract class ComponentbuilderEmail
 	/**
 	 * Get a mailer object.
 	 *
-	 * Returns the global {@link JMail} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link Mail} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  JMail object
+	 * @return  Mail object
 	 *
-	 * @see     JMail
+	 * @see     Mail
 	 */
-	public static function getMailer()
+	public static function getMailer(): Mail
 	{
 		if (!self::$mailer)
 		{
@@ -121,58 +127,58 @@ abstract class ComponentbuilderEmail
 	/**
 	 * Create a mailer object
 	 *
-	 * @return  JMail object
+	 * @return  Mail object
 	 *
-	 * @see     JMail
+	 * @see     Mail
 	 */
-	protected static function createMailer() 
+	protected static function createMailer(): Mail
 	{
 		// set component params
 		$conf = self::getConfig();
-		
+
 		// now load the mailer
 		$mailer = $conf->get('mailer', 'global');
-		
-		// Create a JMail object
-		$mail = JMail::getInstance();
+
+		// Create a Mail object
+		$mail = Mail::getInstance();
 
 		// check if set to global
 		if ('global' == $mailer)
 		{
 			// get the global details
-			$globalConf	= JFactory::getConfig();
-			
-			$mailer		= $globalConf->get('mailer');
-			$smtpauth	= ($globalConf->get('smtpauth') == 0) ? null : 1;
-			$smtpuser	= $globalConf->get('smtpuser');
-			$smtppass	= $globalConf->get('smtppass');
-			$smtphost	= $globalConf->get('smtphost');
-			$smtpsecure	= $globalConf->get('smtpsecure');
-			$smtpport	= $globalConf->get('smtpport');
-			$sendmail	= $globalConf->get('sendmail');
-			$mailfrom	= $globalConf->get('mailfrom');
-			$fromname	= $globalConf->get('fromname');
-			$replyto	= $globalConf->get('replyto');
-			$replytoname	= $globalConf->get('replytoname');
+			$globalConf  = Factory::getConfig();
+
+			$mailer      = $globalConf->get('mailer');
+			$smtpauth    = ($globalConf->get('smtpauth') == 0) ? null : 1;
+			$smtpuser    = $globalConf->get('smtpuser');
+			$smtppass    = $globalConf->get('smtppass');
+			$smtphost    = $globalConf->get('smtphost');
+			$smtpsecure  = $globalConf->get('smtpsecure');
+			$smtpport    = $globalConf->get('smtpport');
+			$sendmail    = $globalConf->get('sendmail');
+			$mailfrom    = $globalConf->get('mailfrom');
+			$fromname    = $globalConf->get('fromname');
+			$replyto     = $globalConf->get('replyto');
+			$replytoname = $globalConf->get('replytoname');
 		}
 		else
 		{
-			$smtpauth 	= ($conf->get('smtpauth') == 0) ? null : 1;
-			$smtpuser 	= $conf->get('smtpuser');
-			$smtppass 	= $conf->get('smtppass');
-			$smtphost 	= $conf->get('smtphost');
-			$smtpsecure	= $conf->get('smtpsecure');
-			$smtpport 	= $conf->get('smtpport');
-			$sendmail	= $conf->get('sendmail');
-			$mailfrom	= $conf->get('emailfrom');
-			$fromname	= $conf->get('fromname');
-			$replyto	= $conf->get('replyto');
-			$replytoname	= $conf->get('replytoname');
+			$smtpauth    = ($conf->get('smtpauth') == 0) ? null : 1;
+			$smtpuser    = $conf->get('smtpuser');
+			$smtppass    = $conf->get('smtppass');
+			$smtphost    = $conf->get('smtphost');
+			$smtpsecure  = $conf->get('smtpsecure');
+			$smtpport    = $conf->get('smtpport');
+			$sendmail    = $conf->get('sendmail');
+			$mailfrom    = $conf->get('emailfrom');
+			$fromname    = $conf->get('fromname');
+			$replyto     = $conf->get('replyto');
+			$replytoname = $conf->get('replytoname');
 		}
 
 		// Set global sender
 		$mail->setSender(array($mailfrom, $fromname));
-			
+
 		// set the global reply-to if found
 		if ($replyto && $replytoname)
 		{
@@ -221,25 +227,25 @@ abstract class ComponentbuilderEmail
 	 */
 	public static function send($recipient, $subject, $body, $textonly, $mode = 0, $bounce_email = null, $idsession = null, $mailreply = null, $replyname = null , $mailfrom = null, $fromname = null, $cc = null, $bcc = null, $attachment = null, $embeded = null , $embeds = null)
 	{
-	 	// Get a JMail instance
+		 // Get a Mail instance
 		$mail = self::getMailer();
-		
+
 		// set component params
 		$conf = self::getConfig();
-		
+
 		// set if we have override
 		if ($mailfrom && $fromname)
 		{
 			$mail->setSender(array($mailfrom, $fromname));
 		}
-		
+
 		// load the bounce email as sender if set
 		if (!is_null($bounce_email))
-		{		
+		{
 			$mail->Sender = $bounce_email;
 		}
-		
-		// Add tag to email to identify it 
+
+		// Add tag to email to identify it
 		if (!is_null($idsession))
 		{
 			$mail->addCustomHeader('X-VDMmethodID:'.$idsession);
@@ -257,7 +263,7 @@ abstract class ComponentbuilderEmail
 		// set the subject & Body
 		$mail->setSubject($subject);
 		$mail->setBody($body);
-		
+
 		// Are we sending the email as HTML?
 		if ($mode)
 		{
@@ -268,7 +274,7 @@ abstract class ComponentbuilderEmail
 		//embed images
 		if ($embeded)
 		{
-			if(ComponentbuilderHelper::checkArray($embeds))
+			if(ArrayHelper::check($embeds))
 			{
 				foreach($embeds as $embed)
 				{
@@ -303,21 +309,21 @@ abstract class ComponentbuilderEmail
 		{
 			if (!empty($conf->get('dkim_domain')) && !empty($conf->get('dkim_selector')) && !empty($conf->get('dkim_private')) && !empty($conf->get('dkim_public')))
 			{
-				$mail->DKIM_domain	= $conf->get('dkim_domain');
-				$mail->DKIM_selector	= $conf->get('dkim_selector');
-				$mail->DKIM_identity	= $conf->get('dkim_identity');
-				$mail->DKIM_passphrase	= $conf->get('dkim_passphrase');
-				
-				$tmp			= tempnam(sys_get_temp_dir(), 'VDM');
-				$h			= fopen($tmp, 'w');
+				$mail->DKIM_domain      = $conf->get('dkim_domain');
+				$mail->DKIM_selector    = $conf->get('dkim_selector');
+				$mail->DKIM_identity    = $conf->get('dkim_identity');
+				$mail->DKIM_passphrase  = $conf->get('dkim_passphrase');
+
+				$tmp = tempnam(sys_get_temp_dir(), 'VDM');
+				$h   = fopen($tmp, 'w');
 				fwrite($h, $conf->get('dkim_private'));
 				fclose($h);
-				$mail->DKIM_private	= $tmp;
+				$mail->DKIM_private    = $tmp;
 			}
 		}
 
 		$sendmail = $mail->Send();
-		
+
 		if ($conf->get('enable_dkim') && !empty($conf->get('dkim_domain')) && !empty($conf->get('dkim_selector')) && !empty($conf->get('dkim_private')) && !empty($conf->get('dkim_public')))
 		{
 			@unlink($tmp);
@@ -346,7 +352,7 @@ abstract class ComponentbuilderEmail
 	/**
 	 * Set html text (in a row) and subject (as title) to a email table.
 	 *      do not use <p> instead use <br />
-	 *	in your html that you pass to this method
+	 *    in your html that you pass to this method
 	 *      since it is a table row it does not
 	 *      work well with paragraphs
 	 *
@@ -355,7 +361,7 @@ abstract class ComponentbuilderEmail
 	 */
 	public static function setBasicBody($html, $subject)
 	{
-		$body = array();
+		$body = [];
 		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
 		$body[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
 		$body[] = "<head>";
@@ -392,7 +398,7 @@ abstract class ComponentbuilderEmail
 	/**
 	 * Set html text (in a row) and subject (as title) to a email table.
 	 *      do not use <p> instead use <br />
-	 *	in your html that you pass to this method
+	 *    in your html that you pass to this method
 	 *      since it is a table row it does not
 	 *      work well with paragraphs
 	 *
@@ -401,7 +407,7 @@ abstract class ComponentbuilderEmail
 	 */
 	public static function setTableBody($html, $subject)
 	{
-		$body = array();
+		$body = [];
 		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
 		$body[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
 		$body[] = "<head>";

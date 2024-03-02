@@ -12,8 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
 /**
@@ -48,13 +54,13 @@ class ComponentbuilderControllerCustom_codes extends AdminController
 	public function exportData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('custom_code.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
-			$input = JFactory::getApplication()->input;
+			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
 			$pks = ArrayHelper::toInteger($pks);
@@ -62,16 +68,16 @@ class ComponentbuilderControllerCustom_codes extends AdminController
 			$model = $this->getModel('Custom_codes');
 			// get the data to export
 			$data = $model->getExportData($pks);
-			if (ComponentbuilderHelper::checkArray($data))
+			if (UtilitiesArrayHelper::check($data))
 			{
 				// now set the data to the spreadsheet
-				$date = JFactory::getDate();
+				$date = Factory::getDate();
 				ComponentbuilderHelper::xls($data,'Custom_codes_'.$date->format('jS_F_Y'),'Custom codes exported ('.$date->format('jS F, Y').')','custom codes');
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_codes', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=custom_codes', false), $message, 'error');
 		return;
 	}
 
@@ -79,32 +85,32 @@ class ComponentbuilderControllerCustom_codes extends AdminController
 	public function importData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('custom_code.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			// Get the import model
 			$model = $this->getModel('Custom_codes');
 			// get the headers to import
 			$headers = $model->getExImPortHeaders();
-			if (ComponentbuilderHelper::checkObject($headers))
+			if (ObjectHelper::check($headers))
 			{
 				// Load headers to session.
-				$session = JFactory::getSession();
+				$session = Factory::getSession();
 				$headers = json_encode($headers);
 				$session->set('custom_code_VDM_IMPORTHEADERS', $headers);
 				$session->set('backto_VDM_IMPORT', 'custom_codes');
 				$session->set('dataType_VDM_IMPORTINTO', 'custom_code');
 				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_CUSTOM_CODES');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
+				$message = Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_CUSTOM_CODES');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_codes', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=custom_codes', false), $message, 'error');
 		return;
 	}
 
@@ -117,18 +123,18 @@ class ComponentbuilderControllerCustom_codes extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=custom_codes', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('custom_codes.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
@@ -139,7 +145,7 @@ class ComponentbuilderControllerCustom_codes extends AdminController
 			}
 			elseif (is_numeric($result) && 1 == $result)
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}

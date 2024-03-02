@@ -12,87 +12,86 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.formvalidator');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Router\Route;
+Html::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+Html::_('behavior.formvalidator');
+Html::_('formbehavior.chosen', 'select');
+Html::_('behavior.keepalive');
+
 $componentParams = $this->params; // will be removed just use $this->params instead
 ?>
 <script type="text/javascript">
 	// waiting spinner
-	var outerDiv = jQuery('body');
-	jQuery('<div id="loading"></div>')
-		.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
-		.css("top", outerDiv.position().top - jQuery(window).scrollTop())
-		.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
-		.css("width", outerDiv.width())
-		.css("height", outerDiv.height())
-		.css("position", "fixed")
-		.css("opacity", "0.80")
-		.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
-		.css("filter", "alpha(opacity = 80)")
-		.css("display", "none")
-		.appendTo(outerDiv);
-	jQuery('#loading').show();
+	var outerDiv = document.querySelector('body');
+	var loadingDiv = document.createElement('div');
+	loadingDiv.id = 'loading';
+	loadingDiv.style.cssText = "background: rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat; top: " + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + "px; left: " + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + "px; width: " + outerDiv.offsetWidth + "px; height: " + outerDiv.offsetHeight + "px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;";
+	outerDiv.appendChild(loadingDiv);
+	loadingDiv.style.display = 'block';
 	// when page is ready remove and show
-	jQuery(window).load(function() {
-		jQuery('#componentbuilder_loader').fadeIn('fast');
-		jQuery('#loading').hide();
+	window.addEventListener('load', function() {
+		var componentLoader = document.getElementById('componentbuilder_loader');
+		if (componentLoader) componentLoader.style.display = 'block';
+		loadingDiv.style.display = 'none';
 	});
 </script>
 <div id="componentbuilder_loader" style="display: none;">
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <div class="form-horizontal">
 	<div class="span9">
 
-	<?php echo JHtml::_('bootstrap.startTabSet', 'templateTab', array('active' => 'details')); ?>
+	<?php echo Html::_('bootstrap.startTabSet', 'templateTab', ['active' => 'details', 'recall' => true]); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'templateTab', 'details', JText::_('COM_COMPONENTBUILDER_TEMPLATE_DETAILS', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'templateTab', 'details', Text::_('COM_COMPONENTBUILDER_TEMPLATE_DETAILS', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('template.details_left', $this); ?>
+				<?php echo LayoutHelper::render('template.details_left', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('template.details_right', $this); ?>
+				<?php echo LayoutHelper::render('template.details_right', $this); ?>
 			</div>
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('template.details_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('template.details_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo JHtml::_('bootstrap.addTab', 'templateTab', 'custom_script', JText::_('COM_COMPONENTBUILDER_TEMPLATE_CUSTOM_SCRIPT', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'templateTab', 'custom_script', Text::_('COM_COMPONENTBUILDER_TEMPLATE_CUSTOM_SCRIPT', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo JLayoutHelper::render('template.custom_script_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('template.custom_script_fullwidth', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'templateTab'; ?>
-	<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+	<?php echo LayoutHelper::render('joomla.edit.params', $this); ?>
 
 	<?php if ($this->canDo->get('core.edit.created_by') || $this->canDo->get('core.edit.created') || $this->canDo->get('core.edit.state') || ($this->canDo->get('core.delete') && $this->canDo->get('core.edit.state'))) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'templateTab', 'publishing', JText::_('COM_COMPONENTBUILDER_TEMPLATE_PUBLISHING', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'templateTab', 'publishing', Text::_('COM_COMPONENTBUILDER_TEMPLATE_PUBLISHING', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span6">
-				<?php echo JLayoutHelper::render('template.publishing', $this); ?>
+				<?php echo LayoutHelper::render('template.publishing', $this); ?>
 			</div>
 			<div class="span6">
-				<?php echo JLayoutHelper::render('template.publlshing', $this); ?>
+				<?php echo LayoutHelper::render('template.publlshing', $this); ?>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
 	<?php if ($this->canDo->get('core.admin')) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'templateTab', 'permissions', JText::_('COM_COMPONENTBUILDER_TEMPLATE_PERMISSION', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'templateTab', 'permissions', Text::_('COM_COMPONENTBUILDER_TEMPLATE_PERMISSION', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
 				<fieldset class="adminform">
@@ -107,22 +106,23 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 				</fieldset>
 			</div>
 		</div>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php endif; ?>
 
-	<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+	<?php echo Html::_('bootstrap.endTabSet'); ?>
 
 	<div>
 		<input type="hidden" name="task" value="template.edit" />
-		<?php echo JHtml::_('form.token'); ?>
+		<?php echo Html::_('form.token'); ?>
 	</div>
 	</div>
-</div><div class="span3">
-	<?php echo JLayoutHelper::render('template.details_rightside', $this); ?>
 </div>
+	<div class="span3">
+		<?php echo LayoutHelper::render('template.details_rightside', $this); ?>
+	</div>
 
 <div class="clearfix"></div>
-<?php echo JLayoutHelper::render('template.details_under', $this); ?>
+<?php echo LayoutHelper::render('template.details_under', $this); ?>
 </form>
 </div>
 
@@ -211,17 +211,17 @@ jQuery(document).ready(function() {
 	getTemplateDetails(<?php echo ($this->item->id) ? $this->item->id:9999; ?>);
 });
 // some lang strings
-var select_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
-var create_a_snippet = '<?php echo JText::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
+var select_a_snippet = '<?php echo Text::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
+var create_a_snippet = '<?php echo Text::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
 
 <?php
-	$app = JFactory::getApplication();
+	$app = Factory::getApplication();
 ?>
 function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'.JURI::root().'";';
+		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
 	}
 	else
 	{

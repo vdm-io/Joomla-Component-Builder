@@ -38,10 +38,9 @@ class Sqldump
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -51,10 +50,10 @@ class Sqldump
 	 
 	 * @since 3.2.0
 	 */
-	public function __construct(?Registry $registry = null, ?\JDatabaseDriver $db = null)
+	public function __construct(?Registry $registry = null)
 	{
 		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**

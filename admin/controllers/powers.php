@@ -12,10 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Componentbuilder\Power\Factory;
+use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
 
 /**
  * Powers Admin Controller
@@ -55,18 +59,18 @@ class ComponentbuilderControllerPowers extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// set page redirect
 		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
 		// set massage
-		$message = JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
 		if($user->authorise('powers.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
-			$message = JText::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
@@ -77,7 +81,7 @@ class ComponentbuilderControllerPowers extends AdminController
 			}
 			elseif (is_numeric($result) && 1 == $result)
 			{
-				$message = JText::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				return true;
 			}
@@ -89,37 +93,37 @@ class ComponentbuilderControllerPowers extends AdminController
 	public function initPowers()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// set default error message
-		$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
-		$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INITIALIZE_POWERS') . '</p>';
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_INITIALIZE_POWERS') . '</p>';
 		$status = 'error';
 		$success = false;
 
 		if($user->authorise('power.init', 'com_componentbuilder'))
 		{
-			if (Factory::_('Superpower')->init())
+			if (PowerFactory::_('Superpower')->init())
 			{
 				// set success message
-				$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_POWERS') . '</h1>';
-				$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_THE_LOCAL_DATABASE_POWERS_HAS_SUCCESSFULLY_BEEN_SYNCED_WITH_THE_REMOTE_REPOSITORIES') . '</p>';
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_POWERS') . '</h1>';
+				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_LOCAL_DATABASE_POWERS_HAS_SUCCESSFULLY_BEEN_SYNCED_WITH_THE_REMOTE_REPOSITORIES') . '</p>';
 
 				$status = 'success';
 				$success = true;
 			}
 			else
 			{
-				$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_INITIALIZATION_FAILED') . '</h1>';
-				$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_THE_INITIALIZATION_OF_THIS_POWERS_HAS_FAILED') . '</p>';
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_INITIALIZATION_FAILED') . '</h1>';
+				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_INITIALIZATION_OF_THIS_POWERS_HAS_FAILED') . '</p>';
 			}
 		}
 
 		// set redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', $success);
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', $success);
 		$this->setRedirect($redirect_url, $message, $status);
 
 		return $success;
@@ -128,40 +132,40 @@ class ComponentbuilderControllerPowers extends AdminController
 	public function resetPowers()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 
 		// get IDS of the selected powers
 		$pks = $this->input->post->get('cid', [], 'array');
 
 		// Sanitize the input
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 
 		// check if there is any selections
 		if ($pks == [])
 		{
 			// set error message
-			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED').'</h1>';
-			$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_PLEASE_FIRST_MAKE_A_SELECTION_FROM_THE_LIST').'</p>';
+			$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED').'</h1>';
+			$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_PLEASE_FIRST_MAKE_A_SELECTION_FROM_THE_LIST').'</p>';
 			// set redirect
-			$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', false);
 			$this->setRedirect($redirect_url, $message, 'error');
 			return false;
 		}
 
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if($user->authorise('power.reset', 'com_componentbuilder'))
 		{
 			// set success message
-			$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_THIS_RESET_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
-			$message .= '<p>'.JText::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
+			$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_THIS_RESET_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
+			$message .= '<p>'.Text::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
 			// set redirect
-			$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', false);
 			$this->setRedirect($redirect_url, $message);
 			return true;
 		}
 		// set redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=powers', false);
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', false);
 		$this->setRedirect($redirect_url);
 		return false;
 	}

@@ -12,18 +12,26 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Libraries List Model
  */
 class ComponentbuilderModelLibraries extends ListModel
 {
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (empty($config['filter_fields']))
-        {
+		{
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
@@ -55,7 +63,7 @@ class ComponentbuilderModelLibraries extends ListModel
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -126,7 +134,7 @@ class ComponentbuilderModelLibraries extends ListModel
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}
-	
+
 	/**
 	 * Method to get an array of data items.
 	 *
@@ -141,12 +149,12 @@ class ComponentbuilderModelLibraries extends ListModel
 		$items = parent::getItems();
 
 		// Set values to display correctly.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			foreach ($items as $nr => &$item)
 			{
@@ -166,7 +174,7 @@ class ComponentbuilderModelLibraries extends ListModel
 		}
 
 		// set selection value to a translatable value
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			foreach ($items as $nr => &$item)
 			{
@@ -177,7 +185,7 @@ class ComponentbuilderModelLibraries extends ListModel
 			}
 		}
 
-        
+
 		// return items
 		return $items;
 	}
@@ -185,7 +193,7 @@ class ComponentbuilderModelLibraries extends ListModel
 	/**
 	 * Method to convert selection values to translatable string.
 	 *
-	 * @return translatable string
+	 * @return  string   The translatable string.
 	 */
 	public function selectionTranslation($value,$name)
 	{
@@ -197,7 +205,7 @@ class ComponentbuilderModelLibraries extends ListModel
 				2 => 'COM_COMPONENTBUILDER_LIBRARY_LIBRARIES'
 			);
 			// Now check if value is found in this array
-			if (isset($targetArray[$value]) && ComponentbuilderHelper::checkString($targetArray[$value]))
+			if (isset($targetArray[$value]) && StringHelper::check($targetArray[$value]))
 			{
 				return $targetArray[$value];
 			}
@@ -210,7 +218,7 @@ class ComponentbuilderModelLibraries extends ListModel
 				2 => 'COM_COMPONENTBUILDER_LIBRARY_BUNDLE'
 			);
 			// Now check if value is found in this array
-			if (isset($typeArray[$value]) && ComponentbuilderHelper::checkString($typeArray[$value]))
+			if (isset($typeArray[$value]) && StringHelper::check($typeArray[$value]))
 			{
 				return $typeArray[$value];
 			}
@@ -227,26 +235,26 @@ class ComponentbuilderModelLibraries extends ListModel
 				0 => 'COM_COMPONENTBUILDER_DO_NOT_ADD'
 			);
 			// Now check if value is found in this array
-			if (isset($howArray[$value]) && ComponentbuilderHelper::checkString($howArray[$value]))
+			if (isset($howArray[$value]) && StringHelper::check($howArray[$value]))
 			{
-				return JText::_($howArray[$value]);
+				return Text::_($howArray[$value]);
 			}
 		}
 
 		return $value;
 	}
-	
+
 	/**
 	 * Method to build an SQL query to load the list data.
 	 *
-	 * @return	string	An SQL query
+	 * @return    string    An SQL query
 	 */
 	protected function getListQuery()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Create a new query object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 
 		// Select some fields
@@ -275,7 +283,7 @@ class ComponentbuilderModelLibraries extends ListModel
 		{
 			$query->where('a.access = ' . (int) $_access);
 		}
-		elseif (ComponentbuilderHelper::checkArray($_access))
+		elseif (UtilitiesArrayHelper::check($_access))
 		{
 			// Secure the array for the query
 			$_access = ArrayHelper::toInteger($_access);
@@ -316,7 +324,7 @@ class ComponentbuilderModelLibraries extends ListModel
 				$query->where('a.target = ' . (int) $_target);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_target))
+		elseif (StringHelper::check($_target))
 		{
 			$query->where('a.target = ' . $db->quote($db->escape($_target)));
 		}
@@ -333,7 +341,7 @@ class ComponentbuilderModelLibraries extends ListModel
 				$query->where('a.how = ' . (int) $_how);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_how))
+		elseif (StringHelper::check($_how))
 		{
 			$query->where('a.how = ' . $db->quote($db->escape($_how)));
 		}
@@ -350,22 +358,24 @@ class ComponentbuilderModelLibraries extends ListModel
 				$query->where('a.type = ' . (int) $_type);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_type))
+		elseif (StringHelper::check($_type))
 		{
 			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'desc');
+		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{
+			// Check that the order direction is valid encase we have a field called direction as part of filers.
+			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'desc';
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 
 		return $query;
 	}
-	
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -380,13 +390,13 @@ class ComponentbuilderModelLibraries extends ListModel
 		$id .= ':' . $this->getState('filter.published');
 		// Check if the value is an array
 		$_access = $this->getState('filter.access');
-		if (ComponentbuilderHelper::checkArray($_access))
+		if (UtilitiesArrayHelper::check($_access))
 		{
 			$id .= ':' . implode(':', $_access);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_access)
-		 || ComponentbuilderHelper::checkString($_access))
+		 || StringHelper::check($_access))
 		{
 			$id .= ':' . $_access;
 		}
@@ -405,19 +415,18 @@ class ComponentbuilderModelLibraries extends ListModel
 	/**
 	 * Build an SQL query to checkin all items left checked out longer then a set time.
 	 *
-	 * @return  a bool
-	 *
+	 * @return bool
+	 * @since 3.2.0
 	 */
-	protected function checkInNow()
+	protected function checkInNow(): bool
 	{
 		// Get set check in time
-		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
+		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
 
 		if ($time)
 		{
-
 			// Get a db connection.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			// Reset query.
 			$query = $db->getQuery(true);
 			$query->select('*');
@@ -429,7 +438,7 @@ class ComponentbuilderModelLibraries extends ListModel
 			if ($db->getNumRows())
 			{
 				// Get Yesterdays date.
-				$date = JFactory::getDate()->modify($time)->toSql();
+				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
@@ -450,7 +459,7 @@ class ComponentbuilderModelLibraries extends ListModel
 
 				$db->setQuery($query);
 
-				$db->execute();
+				return $db->execute();
 			}
 		}
 

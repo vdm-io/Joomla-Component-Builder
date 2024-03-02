@@ -67,6 +67,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -156,38 +157,21 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_HINT"
 		/>
-		<!-- Css_admin Field. Type: Editor. (joomla) -->
+		<!-- Debug_linenr Field. Type: Radio. (joomla) -->
 		<field
-			type="editor"
-			name="css_admin"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CSS_ADMIN_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CSS_ADMIN_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="css"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
-		<!-- Php_admin_event Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_admin_event"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_ADMIN_EVENT_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_ADMIN_EVENT_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
+			type="radio"
+			name="debug_linenr"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
 		<!-- Php_site_event Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -204,41 +188,55 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Crowdin_username Field. Type: Text. (joomla) -->
+		<!-- Translation_tool Field. Type: List. (joomla) -->
 		<field
-			type="text"
-			name="crowdin_username"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_USERNAME_LABEL"
-			size="50"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_USERNAME_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="CMD"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_USERNAME_MESSAGE"
-			autocomplete="off"
-		/>
-		<!-- Component_version Field. Type: Text. (joomla) -->
+			type="list"
+			name="translation_tool"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TRANSLATION_TOOL_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0">
+			<!-- Option Set. -->
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NONE</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN</option>
+		</field>
+		<!-- Buildcompsql Field. Type: Textarea. (joomla) -->
 		<field
-			type="text"
-			name="component_version"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_LABEL"
-			size="40"
-			maxlength="50"
-			default="1.0.0"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_DESCRIPTION"
-			class="text_area"
+			type="textarea"
+			name="buildcompsql"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_HINT"
 			required="true"
-			filter="CMD"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_MESSAGE"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_HINT"
 		/>
-		<!-- Php_postflight_install Field. Type: Editor. (joomla) -->
+		<!-- Note_readme Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_readme" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_README_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_README_DESCRIPTION" heading="h4" class="note_readme" />
+		<!-- Add_sales_server Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_sales_server"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SALES_SERVER_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Php_preflight_install Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_postflight_install"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_POSTFLIGHT_INSTALL_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_POSTFLIGHT_INSTALL_DESCRIPTION"
+			name="php_preflight_install"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_PREFLIGHT_INSTALL_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_PREFLIGHT_INSTALL_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
@@ -249,63 +247,40 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Remove_line_breaks Field. Type: Radio. (joomla) -->
+		<!-- Php_method_uninstall Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="remove_line_breaks"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_REMOVE_LINE_BREAKS_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_REMOVE_LINE_BREAKS_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Description Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="description"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_LABEL"
-			rows="11"
-			cols="10"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_DESCRIPTION"
-			class="text_area span12"
-			filter="HTML"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_HINT"
-		/>
-		<!-- Sql_uninstall Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="sql_uninstall"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_UNINSTALL_LABEL"
-			rows="30"
+			type="editor"
+			name="php_method_uninstall"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_METHOD_UNINSTALL_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_METHOD_UNINSTALL_DESCRIPTION"
+			width="100%"
+			height="450px"
 			cols="15"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_UNINSTALL_DESCRIPTION"
-			class="text_area span12"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
 			filter="raw"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_UNINSTALL_HINT"
-			required="true"
+			validate="code"
 		/>
 		<!-- Note_version_options_3 Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_version_options_3" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_3_DESCRIPTION" class="alert alert-info note_version_options_3" showon="mvc_versiondate:3" />
-		<!-- Debug_linenr Field. Type: Radio. (joomla) -->
+		<!-- Css_admin Field. Type: Editor. (joomla) -->
 		<field
-			type="radio"
-			name="debug_linenr"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEBUG_LINENR_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
+			type="editor"
+			name="css_admin"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CSS_ADMIN_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CSS_ADMIN_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="css"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
 		<!-- Note_version_options_2 Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_version_options_2" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_VERSION_OPTIONS_2_DESCRIPTION" class="alert alert-info note_version_options_2" showon="mvc_versiondate:2" />
 		<!-- Note_version_options_1 Field. Type: Note. A None Database Field. (joomla) -->
@@ -331,16 +306,56 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_ONLY_FIRST_NUMBER_OF_GLOBAL_VERSION_1XX</option>
 		</field>
+		<!-- Remove_line_breaks Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="remove_line_breaks"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_REMOVE_LINE_BREAKS_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_REMOVE_LINE_BREAKS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Add_placeholders Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_placeholders"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PLACEHOLDERS_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PLACEHOLDERS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
 		<!-- Note_dynamic_dashboard Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_dynamic_dashboard" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DYNAMIC_DASHBOARD_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DYNAMIC_DASHBOARD_DESCRIPTION" heading="h4" class="alert alert-info note_dynamic_dashboard" />
-		<!-- Note_update_server_note_ftp Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_update_server_note_ftp" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_UPDATE_SERVER_NOTE_FTP_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_UPDATE_SERVER_NOTE_FTP_DESCRIPTION" heading="h4" class="alert alert-success note_update_server_note_ftp" />
-		<!-- Php_preflight_install Field. Type: Editor. (joomla) -->
+		<!-- Description Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="description"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_LABEL"
+			rows="11"
+			cols="10"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DESCRIPTION_HINT"
+		/>
+		<!-- Php_postflight_install Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_preflight_install"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_PREFLIGHT_INSTALL_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_PREFLIGHT_INSTALL_DESCRIPTION"
+			name="php_postflight_install"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_POSTFLIGHT_INSTALL_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_POSTFLIGHT_INSTALL_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
@@ -350,6 +365,68 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+		/>
+		<!-- Author Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="author"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL"
+			size="10"
+			maxlength="120"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_DESCRIPTION"
+			class="text_area"
+			readonly="false"
+			disabled="false"
+			required="true"
+			filter="HTML"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_HINT"
+		/>
+		<!-- Sql_uninstall Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="sql_uninstall"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_UNINSTALL_LABEL"
+			rows="30"
+			cols="15"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_UNINSTALL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_UNINSTALL_HINT"
+			required="true"
+		/>
+		<!-- Email Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="email"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="STRING"
+			validate="email"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_HINT"
+		/>
+		<!-- Note_update_server_note_ftp Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_update_server_note_ftp" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_UPDATE_SERVER_NOTE_FTP_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_UPDATE_SERVER_NOTE_FTP_DESCRIPTION" heading="h4" class="alert alert-success note_update_server_note_ftp" />
+		<!-- Website Field. Type: Url. (joomla) -->
+		<field
+			type="url"
+			name="website"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_LABEL"
+			size="60"
+			maxlength="150"
+			default=""
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="url"
+			validated="url"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_HINT"
 		/>
 		<!-- Backup_folder_path Field. Type: Text. (joomla) -->
 		<field
@@ -369,12 +446,42 @@
 			autocomplete="on"
 			showon="add_backup_folder_path:1"
 		/>
-		<!-- Php_method_uninstall Field. Type: Editor. (joomla) -->
+		<!-- Php_helper_both Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_method_uninstall"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_METHOD_UNINSTALL_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_METHOD_UNINSTALL_DESCRIPTION"
+			name="php_helper_both"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_HELPER_BOTH_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_HELPER_BOTH_DESCRIPTION"
+			width="100%"
+			height="550px"
+			cols="15"
+			rows="80"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
+		<!-- Crowdin_username Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="crowdin_username"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_USERNAME_LABEL"
+			size="50"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_USERNAME_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="CMD"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_USERNAME_MESSAGE"
+			autocomplete="off"
+		/>
+		<!-- Php_admin_event Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="php_admin_event"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_ADMIN_EVENT_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_ADMIN_EVENT_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
@@ -384,111 +491,6 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
-		/>
-		<!-- Add_placeholders Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_placeholders"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PLACEHOLDERS_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PLACEHOLDERS_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Note_readme Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_readme" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_README_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_README_DESCRIPTION" heading="h4" class="note_readme" />
-		<!-- Author Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="author"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_LABEL"
-			size="10"
-			maxlength="120"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="HTML"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_MESSAGE"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_AUTHOR_HINT"
-		/>
-		<!-- Add_sales_server Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_sales_server"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SALES_SERVER_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Email Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="email"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_LABEL"
-			size="40"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="STRING"
-			validate="email"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_MESSAGE"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMAIL_HINT"
-		/>
-		<!-- Translation_tool Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="translation_tool"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TRANSLATION_TOOL_LABEL"
-			class="list_class"
-			multiple="false"
-			default="0">
-			<!-- Option Set. -->
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NONE</option>
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN</option>
-		</field>
-		<!-- Website Field. Type: Url. (joomla) -->
-		<field
-			type="url"
-			name="website"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_LABEL"
-			size="60"
-			maxlength="150"
-			default=""
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="url"
-			validated="url"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_MESSAGE"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_WEBSITE_HINT"
-		/>
-		<!-- Buildcompsql Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="buildcompsql"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_LABEL"
-			rows="30"
-			cols="15"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMPSQL_HINT"
-			required="true"
 		/>
 		<!-- Add_license Field. Type: Radio. (joomla) -->
 		<field
@@ -505,6 +507,21 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
+		<!-- Component_version Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="component_version"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_LABEL"
+			size="40"
+			maxlength="50"
+			default="1.0.0"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="CMD"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPONENT_VERSION_HINT"
+		/>
 		<!-- Php_helper_admin Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -834,6 +851,22 @@
 		/>
 		<!-- Note_add_custom_menus Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_add_custom_menus" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ADD_CUSTOM_MENUS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ADD_CUSTOM_MENUS_DESCRIPTION" heading="h4" class="alert alert-info note_add_custom_menus" />
+		<!-- Add_php_helper_both Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_helper_both"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_HELPER_BOTH_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Spacer_hr_3 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_3" hr="true" class="spacer_hr_3" />
 		<!-- Add_php_helper_admin Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -848,8 +881,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_3 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_3" hr="true" class="spacer_hr_3" />
+		<!-- Note_add_config Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_config" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ADD_CONFIG_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ADD_CONFIG_DESCRIPTION" heading="h4" class="alert alert-info note_add_config" />
 		<!-- Add_admin_event Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -864,8 +897,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Note_add_config Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_config" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ADD_CONFIG_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ADD_CONFIG_DESCRIPTION" heading="h4" class="alert alert-info note_add_config" />
+		<!-- Note_component_files_folders Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_component_files_folders" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_COMPONENT_FILES_FOLDERS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_COMPONENT_FILES_FOLDERS_DESCRIPTION" heading="h4" class="alert alert-info note_component_files_folders" />
 		<!-- Add_php_helper_site Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -880,8 +913,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Note_component_files_folders Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_component_files_folders" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_COMPONENT_FILES_FOLDERS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_COMPONENT_FILES_FOLDERS_DESCRIPTION" heading="h4" class="alert alert-info note_component_files_folders" />
+		<!-- Spacer_hr_4 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_4" hr="true" class="spacer_hr_4" />
 		<!-- Add_site_event Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -896,13 +929,72 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_4 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_4" hr="true" class="spacer_hr_4" />
+		<!-- Add_namespace_prefix Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_namespace_prefix"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_NAMESPACE_PREFIX_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_NAMESPACE_PREFIX_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="">
+			<!-- Option Set. -->
+			<option value="">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_USE_GLOBAL</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_OVERRIDE</option>
+		</field>
 		<!-- Add_javascript Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
 			name="add_javascript"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_JAVASCRIPT_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Namespace_prefix Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="namespace_prefix"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAMESPACE_PREFIX_LABEL"
+			size="250"
+			maxlength="250"
+			default="JCB"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAMESPACE_PREFIX_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="WORD"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAMESPACE_PREFIX_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAMESPACE_PREFIX_HINT"
+			autocomplete="on"
+			showon="add_namespace_prefix:1"
+		/>
+		<!-- Add_css_admin Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_css_admin"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_CSS_ADMIN_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Spacer_hr_5 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_5" hr="true" class="spacer_hr_5" />
+		<!-- Add_css_site Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_css_site"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_CSS_SITE_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -928,19 +1020,20 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Add_css_admin Field. Type: Radio. (joomla) -->
+		<!-- Dashboard_type Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_css_admin"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_CSS_ADMIN_LABEL"
+			name="dashboard_type"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_DESCRIPTION"
 			class="btn-group btn-group-yesno"
-			default="0"
+			default="1"
 			required="true">
 			<!-- Option Set. -->
 			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEFAULT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
 		</field>
 		<!-- Menu_prefix Field. Type: Text. (joomla) -->
 		<field
@@ -958,39 +1051,6 @@
 			autocomplete="on"
 			showon="add_menu_prefix:1"
 		/>
-		<!-- Add_css_site Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_css_site"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_CSS_SITE_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Spacer_hr_5 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_5" hr="true" class="spacer_hr_5" />
-		<!-- Dashboard_type Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="dashboard_type"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_TYPE_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DEFAULT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC</option>
-		</field>
-		<!-- To_ignore_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="to_ignore_note" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TO_IGNORE_NOTE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TO_IGNORE_NOTE_DESCRIPTION" heading="h4" class="alert alert-info to_ignore_note" />
 		<!-- Dashboard Field. Type: Dynamicdashboard. (custom) -->
 		<field
 			type="dynamicdashboard"
@@ -1001,20 +1061,8 @@
 			multiple="false"
 			default=""
 		/>
-		<!-- Toignore Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="toignore"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_LABEL"
-			size="10"
-			maxlength="550"
-			default=".git"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_DESCRIPTION"
-			class="text_area"
-			filter="STRING"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_HINT"
-			autocomplete="on"
-		/>
+		<!-- Spacer_hr_6 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_6" hr="true" class="spacer_hr_6" />
 		<!-- Add_php_preflight_install Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1029,8 +1077,8 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Spacer_hr_6 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_6" hr="true" class="spacer_hr_6" />
+		<!-- To_ignore_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="to_ignore_note" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TO_IGNORE_NOTE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TO_IGNORE_NOTE_DESCRIPTION" heading="h4" class="alert alert-info to_ignore_note" />
 		<!-- Add_php_preflight_update Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1045,13 +1093,57 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Jcb_export_package_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="jcb_export_package_note" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JCB_EXPORT_PACKAGE_NOTE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JCB_EXPORT_PACKAGE_NOTE_DESCRIPTION" heading="h4" class="alert alert-info jcb_export_package_note" />
+		<!-- Toignore Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="toignore"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_LABEL"
+			size="10"
+			maxlength="550"
+			default=".git"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TOIGNORE_HINT"
+			autocomplete="on"
+		/>
 		<!-- Add_php_postflight_install Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
 			name="add_php_postflight_install"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_INSTALL_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Spacer_hr_7 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_7" hr="true" class="spacer_hr_7" />
+		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_postflight_update"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_UPDATE_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
+		<!-- Jcb_export_package_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="jcb_export_package_note" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JCB_EXPORT_PACKAGE_NOTE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JCB_EXPORT_PACKAGE_NOTE_DESCRIPTION" heading="h4" class="alert alert-info jcb_export_package_note" />
+		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_method_uninstall"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_METHOD_UNINSTALL_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1075,11 +1167,11 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_KEY_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_KEY_HINT"
 		/>
-		<!-- Add_php_postflight_update Field. Type: Radio. (joomla) -->
+		<!-- Add_sql Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_postflight_update"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_POSTFLIGHT_UPDATE_LABEL"
+			name="add_sql"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SQL_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1105,11 +1197,11 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JOOMLA_SOURCE_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_JOOMLA_SOURCE_LINK_HINT"
 		/>
-		<!-- Add_php_method_uninstall Field. Type: Radio. (joomla) -->
+		<!-- Add_sql_uninstall Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_method_uninstall"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_METHOD_UNINSTALL_LABEL"
+			name="add_sql_uninstall"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SQL_UNINSTALL_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -1135,38 +1227,6 @@
 			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_BUY_LINK_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EXPORT_BUY_LINK_HINT"
 		/>
-		<!-- Add_sql Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_sql"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SQL_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Spacer_hr_7 Field. Type: Spacer. A None Database Field. (joomla) -->
-		<field type="spacer" name="spacer_hr_7" hr="true" class="spacer_hr_7" />
-		<!-- Add_sql_uninstall Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_sql_uninstall"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_SQL_UNINSTALL_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Note_on_contributors Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_contributors" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CONTRIBUTORS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CONTRIBUTORS_DESCRIPTION" heading="h4" class="alert alert-info note_on_contributors" />
 		<!-- Assets_table_fix Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -1185,6 +1245,36 @@
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SQL_ADDREMOVE</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_INTELLIGENT_ADDREMOVEIF</option>
+		</field>
+		<!-- Spacer_hr_8 Field. Type: Spacer. A None Database Field. (joomla) -->
+		<field type="spacer" name="spacer_hr_8" hr="true" class="spacer_hr_8" />
+		<!-- Readme Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="readme"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_README_LABEL"
+			default="You can use all the normal markdown, including the place-holders."
+			width="100%"
+			height="1200px"
+			buttons="false"
+			editor="none"
+			filter="raw"
+		/>
+		<!-- Note_on_contributors Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_contributors" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CONTRIBUTORS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CONTRIBUTORS_DESCRIPTION" heading="h4" class="alert alert-info note_on_contributors" />
+		<!-- Add_update_server Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_update_server"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UPDATE_SERVER_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
 		<!-- Addcontributors Field. Type: Subform. (joomla) -->
 		<field
@@ -1297,57 +1387,6 @@
 				</field>
 			</form>
 		</field>
-		<!-- Readme Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="readme"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_README_LABEL"
-			default="You can use all the normal markdown, including the place-holders."
-			width="100%"
-			height="1200px"
-			buttons="false"
-			editor="none"
-			filter="raw"
-		/>
-		<!-- Emptycontributors Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="emptycontributors"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMPTYCONTRIBUTORS_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMPTYCONTRIBUTORS_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Add_update_server Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_update_server"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UPDATE_SERVER_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Number Field. Type: Number. (joomla) -->
-		<field
-			type="number"
-			name="number"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NUMBER_LABEL"
-			default="4"
-			class="text_area"
-			min="1"
-			max="40"
-			step="1"
-		/>
 		<!-- Update_server_target Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1365,12 +1404,33 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_OTHER</option>
 		</field>
-		<!-- Note_on_admin_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_admin_views" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_ADMIN_VIEWS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_ADMIN_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_admin_views" />
+		<!-- Emptycontributors Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="emptycontributors"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMPTYCONTRIBUTORS_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_EMPTYCONTRIBUTORS_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
 		<!-- Note_update_server_note_zip Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_update_server_note_zip" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_UPDATE_SERVER_NOTE_ZIP_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_UPDATE_SERVER_NOTE_ZIP_DESCRIPTION" heading="h4" class="alert alert-info note_update_server_note_zip" />
-		<!-- Note_display_component_admin_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_display_component_admin_views" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DISPLAY_COMPONENT_ADMIN_VIEWS_DESCRIPTION" class="note_display_component_admin_views" />
+		<!-- Number Field. Type: Number. (joomla) -->
+		<field
+			type="number"
+			name="number"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NUMBER_LABEL"
+			default="4"
+			class="text_area"
+			min="1"
+			max="40"
+			step="1"
+		/>
 		<!-- Update_server Field. Type: Servers. (custom) -->
 		<field
 			type="servers"
@@ -1382,8 +1442,8 @@
 			default="0"
 			button="true"
 		/>
-		<!-- Note_on_site_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_site_views" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_SITE_VIEWS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_SITE_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_site_views" />
+		<!-- Note_on_admin_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_admin_views" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_ADMIN_VIEWS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_ADMIN_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_admin_views" />
 		<!-- Sales_server Field. Type: Servers. (custom) -->
 		<field
 			type="servers"
@@ -1395,12 +1455,12 @@
 			default="0"
 			button="true"
 		/>
-		<!-- Note_display_component_site_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_display_component_site_views" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DISPLAY_COMPONENT_SITE_VIEWS_DESCRIPTION" class="note_display_component_site_views" />
+		<!-- Note_display_component_admin_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_display_component_admin_views" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DISPLAY_COMPONENT_ADMIN_VIEWS_DESCRIPTION" class="note_display_component_admin_views" />
 		<!-- Note_backup_folder_path Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_backup_folder_path" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_BACKUP_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_BACKUP_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_backup_folder_path" showon="add_backup_folder_path:1" />
-		<!-- Note_on_custom_admin_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_on_custom_admin_views" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CUSTOM_ADMIN_VIEWS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CUSTOM_ADMIN_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_custom_admin_views" />
+		<!-- Note_on_site_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_site_views" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_SITE_VIEWS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_SITE_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_site_views" />
 		<!-- Add_git_folder_path Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1415,8 +1475,8 @@
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_OVERRIDE</option>
 		</field>
-		<!-- Note_display_component_custom_admin_views Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_display_component_custom_admin_views" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DISPLAY_COMPONENT_CUSTOM_ADMIN_VIEWS_DESCRIPTION" class="note_display_component_custom_admin_views" />
+		<!-- Note_display_component_site_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_display_component_site_views" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DISPLAY_COMPONENT_SITE_VIEWS_DESCRIPTION" class="note_display_component_site_views" />
 		<!-- Git_folder_path Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -1435,6 +1495,27 @@
 			autocomplete="on"
 			showon="add_git_folder_path:1"
 		/>
+		<!-- Note_on_custom_admin_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_custom_admin_views" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CUSTOM_ADMIN_VIEWS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_ON_CUSTOM_ADMIN_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_custom_admin_views" />
+		<!-- Note_crowdin Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_crowdin" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_CROWDIN_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_CROWDIN_DESCRIPTION" heading="h2" class="note_crowdin" />
+		<!-- Note_display_component_custom_admin_views Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_display_component_custom_admin_views" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_DISPLAY_COMPONENT_CUSTOM_ADMIN_VIEWS_DESCRIPTION" class="note_display_component_custom_admin_views" />
+		<!-- Crowdin_project_api_key Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="crowdin_project_api_key"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_PROJECT_API_KEY_LABEL"
+			size="50"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_PROJECT_API_KEY_DESCRIPTION"
+			class="text_area"
+			required="true"
+			filter="ALNUM"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_PROJECT_API_KEY_MESSAGE"
+			autocomplete="off"
+			onchange="getTranslationToolDetails()"
+		/>
 		<!-- Creatuserhelper Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -1449,8 +1530,19 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Note_crowdin Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_crowdin" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_CROWDIN_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_CROWDIN_DESCRIPTION" heading="h2" class="note_crowdin" />
+		<!-- Crowdin_account_api_key Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="crowdin_account_api_key"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_ACCOUNT_API_KEY_LABEL"
+			size="50"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_ACCOUNT_API_KEY_DESCRIPTION"
+			class="text_area"
+			filter="ALNUM"
+			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_ACCOUNT_API_KEY_MESSAGE"
+			autocomplete="off"
+		/>
 		<!-- Adduikit Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -1469,21 +1561,21 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_UIKIT_V3</option>
 		</field>
-		<!-- Crowdin_project_api_key Field. Type: Text. (joomla) -->
+		<!-- Buildcomp Field. Type: Radio. (joomla) -->
 		<field
-			type="text"
-			name="crowdin_project_api_key"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_PROJECT_API_KEY_LABEL"
-			size="50"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_PROJECT_API_KEY_DESCRIPTION"
-			class="text_area"
-			required="true"
-			filter="ALNUM"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_PROJECT_API_KEY_MESSAGE"
-			autocomplete="off"
-			onchange="getTranslationToolDetails()"
-		/>
+			type="radio"
+			name="buildcomp"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMP_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMP_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
+		</field>
 		<!-- Addfootable Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -1502,18 +1594,19 @@
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_FOOTABLE_V2</option>
 		</field>
-		<!-- Crowdin_account_api_key Field. Type: Text. (joomla) -->
+		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"
-			name="crowdin_account_api_key"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_ACCOUNT_API_KEY_LABEL"
-			size="50"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_ACCOUNT_API_KEY_DESCRIPTION"
+			name="guid"
+			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_GUID_DESCRIPTION"
 			class="text_area"
-			filter="ALNUM"
-			message="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_CROWDIN_ACCOUNT_API_KEY_MESSAGE"
-			autocomplete="off"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_GUID_HINT"
 		/>
 		<!-- Add_email_helper Field. Type: Radio. (joomla) -->
 		<field
@@ -1530,65 +1623,6 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
 		</field>
-		<!-- Buildcomp Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="buildcomp"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMP_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_BUILDCOMP_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Add_php_helper_both Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_helper_both"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADD_PHP_HELPER_BOTH_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NO</option>
-		</field>
-		<!-- Guid Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="guid"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_GUID_LABEL"
-			size="40"
-			maxlength="40"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_GUID_DESCRIPTION"
-			class="text_area"
-			readonly="true"
-			filter="CMD"
-			validate="guid"
-			hint="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_GUID_HINT"
-		/>
-		<!-- Php_helper_both Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_helper_both"
-			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_HELPER_BOTH_LABEL"
-			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_PHP_HELPER_BOTH_DESCRIPTION"
-			width="100%"
-			height="550px"
-			cols="15"
-			rows="80"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
 		<!-- Modified Field. Type: Calendar. (joomla) -->
 		<field
 			type="calendar"
@@ -1640,7 +1674,7 @@
 			/>
 		</fieldset>
 	</fields>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

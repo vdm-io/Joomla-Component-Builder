@@ -12,6 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,22 +28,22 @@ class JFormFieldPowersclassproperties extends JFormFieldList
 	/**
 	 * The powersclassproperties field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'powersclassproperties';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
 		
 // Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Get the databse object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.name','a.visibility'),array('id','property_name','visibility')));
 		$query->from($db->quoteName('#__componentbuilder_class_property', 'a'));
@@ -61,7 +65,7 @@ class JFormFieldPowersclassproperties extends JFormFieldList
 		$options = array();
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select a property');
+			$options[] = Html::_('select.option', '', 'Select a property');
 			foreach($items as $item)
 			{
 				// we are using this code in more then one field JCB custom_code
@@ -73,7 +77,7 @@ class JFormFieldPowersclassproperties extends JFormFieldList
 				{
 					$select = $item->visibility  . ' $' . $item->property_name;
 				}
-				$options[] = JHtml::_('select.option', $item->id, $select);
+				$options[] = Html::_('select.option', $item->id, $select);
 			}
 		}
 		return $options;

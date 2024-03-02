@@ -12,8 +12,12 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 
 /**
  * Get_snippets Admin Controller
@@ -30,9 +34,9 @@ class ComponentbuilderControllerGet_snippets extends AdminController
 
 	/**
 	 * Proxy for getModel.
-	 * @since	2.5
+	 * @since    2.5
 	 */
-	public function getModel($name = 'Get_snippets', $prefix = 'ComponentbuilderModel', $config = array())
+	public function getModel($name = 'Get_snippets', $prefix = 'ComponentbuilderModel', $config = [])
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
@@ -41,61 +45,61 @@ class ComponentbuilderControllerGet_snippets extends AdminController
 
 	public function dashboard()
 	{
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder', false));
 		return;
 	}
 
 	public function openLibraries()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the libraries
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=libraries', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=libraries', false));
 		return;
 	}
 
 	public function openSnippets()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the snippets
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=snippets', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=snippets', false));
 		return;
 	}
 
 	public function openSiteViews()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the site views
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=site_views', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=site_views', false));
 		return;
 	}
 
 	public function openCustomAdminViews()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the custom admin views
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=custom_admin_views', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=custom_admin_views', false));
 		return;
 	}
 
 	public function openTemplates()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the templates
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=templates', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=templates', false));
 		return;
 	}
 
 	public function openLayouts()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// redirect to the layouts
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=layouts', false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=layouts', false));
 		return;
 	}
 }

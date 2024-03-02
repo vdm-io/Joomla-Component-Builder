@@ -13,6 +13,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Language\Text;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
@@ -31,7 +32,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Meta.Data')->get($key);
 	 */
-	public $metadataBuilder = array();
+	public $metadataBuilder = [];
 
 	/**
 	 * View access Switch
@@ -39,7 +40,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Access.Switch')->get($key);
 	 */
-	public $accessBuilder = array();
+	public $accessBuilder = [];
 
 	/**
 	 * edit view tabs counter
@@ -47,7 +48,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Tab.Counter')->get($key);
 	 */
-	public $tabCounter = array();
+	public $tabCounter = [];
 
 	/**
 	 * layout builder
@@ -55,7 +56,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Layout')->get($key);
 	 */
-	public $layoutBuilder = array();
+	public $layoutBuilder = [];
 
 	/**
 	 * permissions builder
@@ -63,7 +64,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Has.Permissions')->get($key);
 	 */
-	public $hasPermissions = array();
+	public $hasPermissions = [];
 
 	/**
 	 * used to fix the zero order
@@ -71,7 +72,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Order.Zero')->get($key);
 	 */
-	private $zeroOrderFix = array();
+	private $zeroOrderFix = [];
 
 	/**
 	 * Site field data
@@ -79,7 +80,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Site.Field.Data')->get($key);
 	 */
-	public $siteFieldData = array();
+	public $siteFieldData = [];
 
 	/**
 	 * list of fields that are not being escaped
@@ -87,7 +88,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Do.Not.Escape')->get($key);
 	 */
-	public $doNotEscape = array();
+	public $doNotEscape = [];
 
 	/**
 	 * list of classes used in the list view for the fields
@@ -95,7 +96,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.List.Field.Class')->set($key, true);
 	 */
-	public $listFieldClass = array();
+	public $listFieldClass = [];
 
 	/**
 	 * tags builder
@@ -103,7 +104,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Tags')->get($key);
 	 */
-	public $tagsBuilder = array();
+	public $tagsBuilder = [];
 
 	/**
 	 * query builder
@@ -111,7 +112,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Database.Tables')->get($key);
 	 */
-	public $queryBuilder = array();
+	public $queryBuilder = [];
 
 	/**
 	 * unique keys for database field
@@ -119,7 +120,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Database.Unique.Keys')->get($key);
 	 */
-	public $dbUniqueKeys = array();
+	public $dbUniqueKeys = [];
 
 	/**
 	 * unique guid swtich
@@ -127,7 +128,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Database.Unique.Guid')->get($key);
 	 */
-	public $dbUniqueGuid = array();
+	public $dbUniqueGuid = [];
 
 	/**
 	 * keys for database field
@@ -135,7 +136,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Database.Keys')->get($key);
 	 */
-	public $dbKeys = array();
+	public $dbKeys = [];
 
 	/**
 	 * history builder
@@ -143,7 +144,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.History')->get($key);
 	 */
-	public $historyBuilder = array();
+	public $historyBuilder = [];
 
 	/**
 	 * alias builder
@@ -151,7 +152,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 CFactory::_('Compiler.Builder.Alias')->get($key);
 	 */
-	public $aliasBuilder = array();
+	public $aliasBuilder = [];
 
 	/**
 	 * title builder
@@ -159,7 +160,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 CFactory::_('Compiler.Builder.Title')->get($key);
 	 */
-	public $titleBuilder = array();
+	public $titleBuilder = [];
 
 	/**
 	 * list builder
@@ -167,7 +168,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Lists')->get($key);
 	 */
-	public $listBuilder = array();
+	public $listBuilder = [];
 
 	/**
 	 * custom Builder List
@@ -175,7 +176,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Custom.List')->get($key);
 	 */
-	public $customBuilderList = array();
+	public $customBuilderList = [];
 
 	/**
 	 * Hidden Fields Builder
@@ -183,7 +184,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Hidden.Fields')->get($key);
 	 */
-	public $hiddenFieldsBuilder = array();
+	public $hiddenFieldsBuilder = [];
 
 	/**
 	 * INT Field Builder
@@ -191,7 +192,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Integer.Fields')->get($key);
 	 */
-	public $intFieldsBuilder = array();
+	public $intFieldsBuilder = [];
 
 	/**
 	 * Dynamic Fields Builder
@@ -199,7 +200,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Dynamic.Fields')->get($key);
 	 */
-	public $dynamicfieldsBuilder = array();
+	public $dynamicfieldsBuilder = [];
 
 	/**
 	 * Main text Builder
@@ -207,7 +208,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Main.Text.Field')->get($key);
 	 */
-	public $maintextBuilder = array();
+	public $maintextBuilder = [];
 
 	/**
 	 * Custom Builder
@@ -215,7 +216,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Custom.Field')->get($key);
 	 */
-	public $customBuilder = array();
+	public $customBuilder = [];
 
 	/**
 	 * Custom Field Links Builder
@@ -223,7 +224,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Custom.Field.Links')->get($key);
 	 */
-	public $customFieldLinksBuilder = array();
+	public $customFieldLinksBuilder = [];
 
 	/**
 	 * Set Script for User Switch
@@ -231,7 +232,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Script.User.Switch')->get($key);
 	 */
-	public $setScriptUserSwitch = array();
+	public $setScriptUserSwitch = [];
 
 	/**
 	 * Set Script for Media Switch
@@ -239,7 +240,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Script.Media.Switch')->get($key);
 	 */
-	public $setScriptMediaSwitch = array();
+	public $setScriptMediaSwitch = [];
 
 	/**
 	 * Category builder
@@ -247,7 +248,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Category')->get($key);
 	 */
-	public $categoryBuilder = array();
+	public $categoryBuilder = [];
 
 	/**
 	 * Category Code builder
@@ -255,7 +256,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Category.Code')->get($key);
 	 */
-	public $catCodeBuilder = array();
+	public $catCodeBuilder = [];
 
 	/**
 	 * Check Box builder
@@ -263,7 +264,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Check.Box')->get($key);
 	 */
-	public $checkboxBuilder = array();
+	public $checkboxBuilder = [];
 
 	/**
 	 * Json String Builder
@@ -271,7 +272,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Json.String')->get($key);
 	 */
-	public $jsonStringBuilder = array();
+	public $jsonStringBuilder = [];
 
 	/**
 	 * Json String Builder for return values to array
@@ -279,7 +280,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Json.Item.Array')->get($key);
 	 */
-	public $jsonItemBuilderArray = array();
+	public $jsonItemBuilderArray = [];
 
 	/**
 	 * Json Item Builder
@@ -287,7 +288,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Json.Item')->get($key);
 	 */
-	public $jsonItemBuilder = array();
+	public $jsonItemBuilder = [];
 
 	/**
 	 * Base 64 Builder
@@ -295,7 +296,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Base.Six.Four')->get($key);
 	 */
-	public $base64Builder = array();
+	public $base64Builder = [];
 
 	/**
 	 * Basic Encryption Field Modeling
@@ -303,7 +304,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Model.Basic.Field')->get($key);
 	 */
-	public $basicFieldModeling = array();
+	public $basicFieldModeling = [];
 
 	/**
 	 * WHMCS Encryption Field Modeling
@@ -311,7 +312,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Model.Whmcs.Field')->get($key);
 	 */
-	public $whmcsFieldModeling = array();
+	public $whmcsFieldModeling = [];
 
 	/**
 	 * Medium Encryption Field Modeling
@@ -319,7 +320,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Model.Medium.Field')->get($key);
 	 */
-	public $mediumFieldModeling = array();
+	public $mediumFieldModeling = [];
 
 	/**
 	 * Expert Field Modeling
@@ -327,7 +328,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Model.Expert.Field')->get($key);
 	 */
-	public $expertFieldModeling = array();
+	public $expertFieldModeling = [];
 
 	/**
 	 * Expert Mode Initiator
@@ -335,7 +336,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Model.Expert.Field.Initiator')->get($key);
 	 */
-	public $expertFieldModelInitiator = array();
+	public $expertFieldModelInitiator = [];
 
 	/**
 	 * Get Items Method List String Fix Builder
@@ -343,7 +344,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Items.Method.List.String')->get($key);
 	 */
-	public $getItemsMethodListStringFixBuilder = array();
+	public $getItemsMethodListStringFixBuilder = [];
 
 	/**
 	 * Get Items Method Eximport String Fix Builder
@@ -351,7 +352,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Items.Method.Eximport.String')->get($key);
 	 */
-	public $getItemsMethodEximportStringFixBuilder = array();
+	public $getItemsMethodEximportStringFixBuilder = [];
 
 	/**
 	 * Selection Translation Fix Builder
@@ -359,7 +360,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Selection.Translation')->get($key);
 	 */
-	public $selectionTranslationFixBuilder = array();
+	public $selectionTranslationFixBuilder = [];
 
 	/**
 	 * Sort Builder
@@ -367,7 +368,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Sort')->get($key);
 	 */
-	public $sortBuilder = array();
+	public $sortBuilder = [];
 
 	/**
 	 * Search Builder
@@ -375,7 +376,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Search')->get($key);
 	 */
-	public $searchBuilder = array();
+	public $searchBuilder = [];
 
 	/**
 	 * Filter Builder
@@ -383,7 +384,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Filter')->get($key);
 	 */
-	public $filterBuilder = array();
+	public $filterBuilder = [];
 
 	/**
 	 * Set Group Control
@@ -391,7 +392,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Field.Group.Control')->get($key);
 	 */
-	public $setGroupControl = array();
+	public $setGroupControl = [];
 
 	/**
 	 * Set Field Names
@@ -399,7 +400,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Field.Names')->get($key);
 	 */
-	public $fieldsNames = array();
+	public $fieldsNames = [];
 
 	/**
 	 * Default Fields set to publishing
@@ -407,7 +408,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.New.Publishing.Fields')->set($key);
 	 */
-	public $newPublishingFields = array();
+	public $newPublishingFields = [];
 
 	/**
 	 * Default Fields set to publishing
@@ -415,7 +416,7 @@ class Fields extends Structure
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Moved.Publishing.Fields')->set($key);
 	 */
-	public $movedPublishingFields = array();
+	public $movedPublishingFields = [];
 
 	/**
 	 * set the Field set of a view
@@ -731,10 +732,10 @@ class Fields extends Structure
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -854,6 +855,42 @@ class Fields extends Structure
 	 */
 	public function setFieldFilterSet(&$nameSingleCode, &$nameListCode)
 	{
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			return $this->setFieldFilterSetJ3($nameSingleCode, $nameListCode);
+		}
+		return $this->setFieldFilterSetJ4($nameSingleCode, $nameListCode);
+	}
+
+	/**
+	 * set the Filter List set of a view
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
+	public function setFieldFilterListSet(&$nameSingleCode, &$nameListCode)
+	{
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			return $this->setFieldFilterListSetJ3($nameSingleCode, $nameListCode);
+		}
+		return $this->setFieldFilterListSetJ4($nameSingleCode, $nameListCode);
+	}
+
+	/**
+	 * set the Filter Field set of a view
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
+	public function setFieldFilterSetJ3(&$nameSingleCode, &$nameListCode)
+	{
 		// check if this is the above/new filter option
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 		{
@@ -879,7 +916,7 @@ class Fields extends Structure
 				. ' items. Prefix with ID: to search for an item by ID.'
 			);
 			// now build the XML
-			$field_filter_sets   = array();
+			$field_filter_sets   = [];
 			$field_filter_sets[] = Indent::_(1) . '<fields name="filter">';
 			// we first add the search
 			$field_filter_sets[] = Indent::_(2) . '<field';
@@ -1035,7 +1072,7 @@ class Fields extends Structure
 	 * @return  string The fields set in xml
 	 *
 	 */
-	public function setFieldFilterListSet(&$nameSingleCode, &$nameListCode)
+	public function setFieldFilterListSetJ3(&$nameSingleCode, &$nameListCode)
 	{
 		// check if this is the above/new filter option
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
@@ -1043,7 +1080,7 @@ class Fields extends Structure
 			// keep track of all fields already added
 			$donelist = array('ordering' => true, 'id' => true);
 			// now build the XML
-			$list_sets   = array();
+			$list_sets   = [];
 			$list_sets[] = Indent::_(1) . '<fields name="list">';
 			$list_sets[] = Indent::_(2) . '<field';
 			$list_sets[] = Indent::_(3) . 'name="fullordering"';
@@ -1150,6 +1187,309 @@ class Fields extends Structure
 	}
 
 	/**
+	 * set the Filter Field set of a view
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
+	public function setFieldFilterSetJ4(&$nameSingleCode, &$nameListCode)
+	{
+		// check if this is the above/new filter option
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
+		{
+			// we first create the file
+			$target = ['admin' => 'filter_' . $nameListCode];
+			CFactory::_('Utilities.Structure')->build(
+				$target, 'filter'
+			);
+			// the search language string
+			$lang_search = CFactory::_('Config')->lang_prefix . '_FILTER_SEARCH';
+			// and to translation
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $lang_search, 'Search'
+				. StringHelper::safe($nameListCode, 'w')
+			);
+			// the search description language string
+			$lang_search_desc = CFactory::_('Config')->lang_prefix . '_FILTER_SEARCH_'
+				. strtoupper($nameListCode);
+			// and to translation
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $lang_search_desc, 'Search the '
+				. StringHelper::safe($nameSingleCode, 'w')
+				. ' items. Prefix with ID: to search for an item by ID.'
+			);
+			// now build the XML
+			$field_filter_sets   = [];
+			$field_filter_sets[] = Indent::_(1) . '<fields name="filter">';
+			// we first add the search
+			$field_filter_sets[] = Indent::_(2) . '<field';
+			$field_filter_sets[] = Indent::_(3) . 'type="text"';
+			$field_filter_sets[] = Indent::_(3) . 'name="search"';
+			$field_filter_sets[] = Indent::_(3) . 'inputmode="search"';
+			$field_filter_sets[] = Indent::_(3)
+				. 'label="' . $lang_search . '"';
+			$field_filter_sets[] = Indent::_(3)
+				. 'description="' . $lang_search_desc . '"';
+			$field_filter_sets[] = Indent::_(3) . 'hint="JSEARCH_FILTER"';
+			$field_filter_sets[] = Indent::_(2) . '/>';
+			// add the published filter if published is not set
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
+			{
+				// the published language string
+				$lang_published = CFactory::_('Config')->lang_prefix . '_FILTER_PUBLISHED';
+				// and to translation
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $lang_published, 'Status'
+				);
+				// the published description language string
+				$lang_published_desc = CFactory::_('Config')->lang_prefix . '_FILTER_PUBLISHED_'
+					. strtoupper($nameListCode);
+				// and to translation
+				CFactory::_('Language')->set(
+					CFactory::_('Config')->lang_target, $lang_published_desc, 'Status options for '
+					. StringHelper::safe($nameListCode, 'w')
+				);
+				$field_filter_sets[] = Indent::_(2) . '<field';
+				$field_filter_sets[] = Indent::_(3) . 'type="status"';
+				$field_filter_sets[] = Indent::_(3) . 'name="published"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'label="' . $lang_published . '"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'description="' . $lang_published_desc . '"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'class="js-select-submit-on-change"';
+				$field_filter_sets[] = Indent::_(2) . '>';
+				$field_filter_sets[] = Indent::_(3)
+					. '<option value="">JOPTION_SELECT_PUBLISHED</option>';
+				$field_filter_sets[] = Indent::_(2) . '</field>';
+			}
+			// add the category if found
+			if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension")
+				&& CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.filter", 0) >= 1)
+			{
+				$field_filter_sets[] = Indent::_(2) . '<field';
+				$field_filter_sets[] = Indent::_(3) . 'type="category"';
+				$field_filter_sets[] = Indent::_(3) . 'name="category_id"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'label="' . CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.name", 'error')
+					. '"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'description="JOPTION_FILTER_CATEGORY_DESC"';
+				$field_filter_sets[] = Indent::_(3) . 'multiple="true"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'class="js-select-submit-on-change"';
+				$field_filter_sets[] = Indent::_(3) . 'extension="'
+					. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension") . '"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'layout="joomla.form.field.list-fancy-select"';
+				// TODO NOT SURE IF THIS SHOULD BE STATIC
+				$field_filter_sets[] = Indent::_(3) . 'published="0,1,2"';
+				$field_filter_sets[] = Indent::_(2) . '/>';
+			}
+			// add the access filter if this view has access
+			// and if access manually is not set
+			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
+				&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
+			{
+				$field_filter_sets[] = Indent::_(2) . '<field';
+				$field_filter_sets[] = Indent::_(3) . 'type="accesslevel"';
+				$field_filter_sets[] = Indent::_(3) . 'name="access"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'label="JGRID_HEADING_ACCESS"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'hint="JOPTION_SELECT_ACCESS"';
+				$field_filter_sets[] = Indent::_(3) . 'multiple="true"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'class="js-select-submit-on-change"';
+				$field_filter_sets[] = Indent::_(3)
+					. 'layout="joomla.form.field.list-fancy-select"';
+				$field_filter_sets[] = Indent::_(2) . '/>';
+			}
+			// now add the dynamic fields
+			if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
+			{
+				foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $n => $filter)
+				{
+					if ($filter['type'] != 'category')
+					{
+						$field_filter_sets[] = Indent::_(2) . '<field';
+						// if this is a custom field
+						if (ArrayHelper::check($filter['custom']))
+						{
+							// we use the field type from the custom field
+							$field_filter_sets[] = Indent::_(3) . 'type="'
+								. $filter['type'] . '"';
+							// set css classname of this field
+							$filter_class = ucfirst((string) $filter['type']);
+						}
+						else
+						{
+							// we use the filter field type that was build
+							$field_filter_sets[] = Indent::_(3) . 'type="'
+								. $filter['filter_type'] . '"';
+							// set css classname of this field
+							$filter_class = ucfirst((string) $filter['filter_type']);
+						}
+
+						$field_filter_sets[] = Indent::_(3) . 'name="'
+							. $filter['code'] . '"';
+						$field_filter_sets[] = Indent::_(3) . 'label="'
+							. $filter['label'] . '"';
+
+						// if this is a multi field
+						if ($filter['multi'] == 2)
+						{
+							$field_filter_sets[] = Indent::_(3) . 'layout="joomla.form.field.list-fancy-select"';
+							$field_filter_sets[] = Indent::_(3) . 'multiple="true"';
+							if (isset($filter['lang_select']))
+							{
+								$field_filter_sets[] = Indent::_(3) . 'hint="' . $filter['lang_select'] . '"';
+							}
+						}
+						else
+						{
+							$field_filter_sets[] = Indent::_(3) . 'multiple="false"';
+						}
+
+						// we add the on change css class
+						$field_filter_sets[] = Indent::_(3) . 'class="js-select-submit-on-change"';
+						$field_filter_sets[] = Indent::_(2) . '/>';
+					}
+				}
+			}
+			$field_filter_sets[] = Indent::_(2)
+				. '<input type="hidden" name="form_submited" value="1"/>';
+			$field_filter_sets[] = Indent::_(1) . '</fields>';
+
+			// now update the file
+			return implode(PHP_EOL, $field_filter_sets);
+		}
+
+		return '';
+	}
+
+	/**
+	 * set the Filter List set of a view
+	 *
+	 * @param   string  $nameSingleCode  The single view name
+	 * @param   string  $nameListCode    The list view name
+	 *
+	 * @return  string The fields set in xml
+	 *
+	 */
+	public function setFieldFilterListSetJ4(&$nameSingleCode, &$nameListCode)
+	{
+		// check if this is the above/new filter option
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
+		{
+			// keep track of all fields already added
+			$donelist = ['ordering' => true, 'id' => true];
+			// now build the XML
+			$list_sets   = [];
+			$list_sets[] = Indent::_(1) . '<fields name="list">';
+			$list_sets[] = Indent::_(2) . '<field';
+			$list_sets[] = Indent::_(3) . 'name="fullordering"';
+			$list_sets[] = Indent::_(3) . 'type="list"';
+			$list_sets[] = Indent::_(3)
+				. 'label="JGLOBAL_SORT_BY"';
+			$list_sets[] = Indent::_(3) . 'class="js-select-submit-on-change"';
+			// add dynamic ordering (Admin view)
+			$default_ordering = $this->getListViewDefaultOrdering(
+				$nameListCode
+			);
+			// set the default ordering
+			$list_sets[] = Indent::_(3) . 'default="'
+				. $default_ordering['name'] . ' '
+				. $default_ordering['direction'] . '"';
+			$list_sets[] = Indent::_(3) . 'validate="options"';
+			$list_sets[] = Indent::_(2) . '>';
+			$list_sets[] = Indent::_(3)
+				. '<option value="">JGLOBAL_SORT_BY</option>';
+			$list_sets[] = Indent::_(3)
+				. '<option value="a.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>';
+			$list_sets[] = Indent::_(3)
+				. '<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>';
+			// add the published filter if published is not set
+			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.published'))
+			{
+				// add to done list
+				$donelist['published'] = true;
+				// add to xml :)
+				$list_sets[] = Indent::_(3)
+					. '<option value="a.published ASC">JSTATUS_ASC</option>';
+				$list_sets[] = Indent::_(3)
+					. '<option value="a.published DESC">JSTATUS_DESC</option>';
+			}
+
+			// add the rest of the set filters
+			if (CFactory::_('Compiler.Builder.Sort')->exists($nameListCode))
+			{
+				foreach (CFactory::_('Compiler.Builder.Sort')->get($nameListCode) as $filter)
+				{
+					if (!isset($donelist[$filter['code']]))
+					{
+						if ($filter['type'] === 'category')
+						{
+							$list_sets[] = Indent::_(3)
+								. '<option value="category_title ASC">'
+								. $filter['lang_asc'] . '</option>';
+							$list_sets[] = Indent::_(3)
+								. '<option value="category_title DESC">'
+								. $filter['lang_desc'] . '</option>';
+						}
+						elseif (ArrayHelper::check(
+							$filter['custom']
+						))
+						{
+							$list_sets[] = Indent::_(3) . '<option value="'
+								. $filter['custom']['db'] . '.'
+								. $filter['custom']['text'] . ' ASC">'
+								. $filter['lang_asc'] . '</option>';
+							$list_sets[] = Indent::_(3) . '<option value="'
+								. $filter['custom']['db'] . '.'
+								. $filter['custom']['text'] . ' DESC">'
+								. $filter['lang_desc'] . '</option>';
+						}
+						else
+						{
+							$list_sets[] = Indent::_(3) . '<option value="a.'
+								. $filter['code'] . ' ASC">'
+								. $filter['lang_asc'] . '</option>';
+							$list_sets[] = Indent::_(3) . '<option value="a.'
+								. $filter['code'] . ' DESC">'
+								. $filter['lang_desc'] . '</option>';
+						}
+						// do not add again
+						$donelist[$filter['code']] = true;
+					}
+				}
+			}
+
+			$list_sets[] = Indent::_(3)
+				. '<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>';
+			$list_sets[] = Indent::_(3)
+				. '<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>';
+			$list_sets[] = Indent::_(2) . '</field>' . PHP_EOL;
+
+			$list_sets[] = Indent::_(2) . '<field';
+			$list_sets[] = Indent::_(3) . 'name="limit"';
+			$list_sets[] = Indent::_(3) . 'type="limitbox"';
+			$list_sets[] = Indent::_(3) . 'label="JGLOBAL_LIST_LIMIT"';
+			$list_sets[] = Indent::_(3) . 'default="25"';
+			$list_sets[] = Indent::_(3) . 'class="js-select-submit-on-change"';
+			$list_sets[] = Indent::_(2) . '/>';
+			$list_sets[] = Indent::_(1) . '</fields>';
+
+			return implode(PHP_EOL, $list_sets);
+		}
+
+		return '';
+	}
+
+	/**
 	 * set Custom Field for Filter
 	 *
 	 * @param   string  $getOptions  The get options php string/code
@@ -1167,7 +1507,7 @@ class Fields extends Structure
 			// start loading the field type
 			// $this->fileContentDynamic['customfilterfield_'
 			// . $filter['filter_type']]
-			// = array();
+			// = [];
 			// JPREFIX <<DYNAMIC>>>
 			CFactory::_('Compiler.Builder.Content.Multi')->set('customfilterfield_' . $filter['filter_type'] . '|JPREFIX', 'J');
 			// Type <<<DYNAMIC>>>

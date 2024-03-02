@@ -12,25 +12,29 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Installer\Adapter\ComponentAdapter;
+use Joomla\CMS\Version;
+use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
-JHTML::_('bootstrap.renderModal');
+HTML::_('bootstrap.renderModal');
 
 /**
  * Script File of Componentbuilder Component
  */
-class com_componentbuilderInstallerScript
+class Com_ComponentbuilderInstallerScript
 {
 	/**
 	 * Constructor
 	 *
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 */
 	public function __construct(ComponentAdapter $parent) {}
 
@@ -51,10 +55,10 @@ class com_componentbuilderInstallerScript
 	public function uninstall(ComponentAdapter $parent)
 	{
 		// Get Application object
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get The Database object
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -84,7 +88,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_component_done)
 			{
 				// If successfully remove Joomla_component add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_component items from the contentitem tag map table
@@ -99,7 +103,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_component_done)
 			{
 				// If successfully remove Joomla_component add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_component items from the ucm content table
@@ -114,7 +118,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_component_done)
 			{
 				// If successfully removed Joomla_component add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_component) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_component items are cleared from DB
@@ -170,7 +174,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_done)
 			{
 				// If successfully remove Joomla_module add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_module items from the contentitem tag map table
@@ -185,7 +189,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_done)
 			{
 				// If successfully remove Joomla_module add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_module items from the ucm content table
@@ -200,7 +204,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_done)
 			{
 				// If successfully removed Joomla_module add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_module items are cleared from DB
@@ -256,7 +260,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_done)
 			{
 				// If successfully remove Joomla_plugin add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_plugin items from the contentitem tag map table
@@ -271,7 +275,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_done)
 			{
 				// If successfully remove Joomla_plugin add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_plugin items from the ucm content table
@@ -286,7 +290,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_done)
 			{
 				// If successfully removed Joomla_plugin add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_plugin items are cleared from DB
@@ -342,7 +346,7 @@ class com_componentbuilderInstallerScript
 			if ($power_done)
 			{
 				// If successfully remove Power add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.power) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.power) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Power items from the contentitem tag map table
@@ -357,7 +361,7 @@ class com_componentbuilderInstallerScript
 			if ($power_done)
 			{
 				// If successfully remove Power add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.power) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.power) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Power items from the ucm content table
@@ -372,7 +376,7 @@ class com_componentbuilderInstallerScript
 			if ($power_done)
 			{
 				// If successfully removed Power add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.power) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.power) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Power items are cleared from DB
@@ -428,7 +432,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_view_done)
 			{
 				// If successfully remove Admin_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Admin_view items from the contentitem tag map table
@@ -443,7 +447,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_view_done)
 			{
 				// If successfully remove Admin_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Admin_view items from the ucm content table
@@ -458,7 +462,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_view_done)
 			{
 				// If successfully removed Admin_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_view) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Admin_view items are cleared from DB
@@ -514,7 +518,7 @@ class com_componentbuilderInstallerScript
 			if ($custom_admin_view_done)
 			{
 				// If successfully remove Custom_admin_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Custom_admin_view items from the contentitem tag map table
@@ -529,7 +533,7 @@ class com_componentbuilderInstallerScript
 			if ($custom_admin_view_done)
 			{
 				// If successfully remove Custom_admin_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Custom_admin_view items from the ucm content table
@@ -544,7 +548,7 @@ class com_componentbuilderInstallerScript
 			if ($custom_admin_view_done)
 			{
 				// If successfully removed Custom_admin_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.custom_admin_view) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Custom_admin_view items are cleared from DB
@@ -600,7 +604,7 @@ class com_componentbuilderInstallerScript
 			if ($site_view_done)
 			{
 				// If successfully remove Site_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Site_view items from the contentitem tag map table
@@ -615,7 +619,7 @@ class com_componentbuilderInstallerScript
 			if ($site_view_done)
 			{
 				// If successfully remove Site_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Site_view items from the ucm content table
@@ -630,7 +634,7 @@ class com_componentbuilderInstallerScript
 			if ($site_view_done)
 			{
 				// If successfully removed Site_view add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.site_view) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Site_view items are cleared from DB
@@ -686,7 +690,7 @@ class com_componentbuilderInstallerScript
 			if ($template_done)
 			{
 				// If successfully remove Template add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.template) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.template) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Template items from the contentitem tag map table
@@ -701,7 +705,7 @@ class com_componentbuilderInstallerScript
 			if ($template_done)
 			{
 				// If successfully remove Template add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.template) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.template) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Template items from the ucm content table
@@ -716,7 +720,7 @@ class com_componentbuilderInstallerScript
 			if ($template_done)
 			{
 				// If successfully removed Template add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.template) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.template) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Template items are cleared from DB
@@ -772,7 +776,7 @@ class com_componentbuilderInstallerScript
 			if ($layout_done)
 			{
 				// If successfully remove Layout add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Layout items from the contentitem tag map table
@@ -787,7 +791,7 @@ class com_componentbuilderInstallerScript
 			if ($layout_done)
 			{
 				// If successfully remove Layout add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Layout items from the ucm content table
@@ -802,7 +806,7 @@ class com_componentbuilderInstallerScript
 			if ($layout_done)
 			{
 				// If successfully removed Layout add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.layout) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Layout items are cleared from DB
@@ -858,7 +862,7 @@ class com_componentbuilderInstallerScript
 			if ($dynamic_get_done)
 			{
 				// If successfully remove Dynamic_get add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Dynamic_get items from the contentitem tag map table
@@ -873,7 +877,7 @@ class com_componentbuilderInstallerScript
 			if ($dynamic_get_done)
 			{
 				// If successfully remove Dynamic_get add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Dynamic_get items from the ucm content table
@@ -888,7 +892,7 @@ class com_componentbuilderInstallerScript
 			if ($dynamic_get_done)
 			{
 				// If successfully removed Dynamic_get add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.dynamic_get) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Dynamic_get items are cleared from DB
@@ -944,7 +948,7 @@ class com_componentbuilderInstallerScript
 			if ($custom_code_done)
 			{
 				// If successfully remove Custom_code add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Custom_code items from the contentitem tag map table
@@ -959,7 +963,7 @@ class com_componentbuilderInstallerScript
 			if ($custom_code_done)
 			{
 				// If successfully remove Custom_code add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Custom_code items from the ucm content table
@@ -974,7 +978,7 @@ class com_componentbuilderInstallerScript
 			if ($custom_code_done)
 			{
 				// If successfully removed Custom_code add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.custom_code) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Custom_code items are cleared from DB
@@ -1030,7 +1034,7 @@ class com_componentbuilderInstallerScript
 			if ($class_property_done)
 			{
 				// If successfully remove Class_property add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Class_property items from the contentitem tag map table
@@ -1045,7 +1049,7 @@ class com_componentbuilderInstallerScript
 			if ($class_property_done)
 			{
 				// If successfully remove Class_property add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Class_property items from the ucm content table
@@ -1060,7 +1064,7 @@ class com_componentbuilderInstallerScript
 			if ($class_property_done)
 			{
 				// If successfully removed Class_property add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_property) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Class_property items are cleared from DB
@@ -1116,7 +1120,7 @@ class com_componentbuilderInstallerScript
 			if ($class_method_done)
 			{
 				// If successfully remove Class_method add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Class_method items from the contentitem tag map table
@@ -1131,7 +1135,7 @@ class com_componentbuilderInstallerScript
 			if ($class_method_done)
 			{
 				// If successfully remove Class_method add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Class_method items from the ucm content table
@@ -1146,7 +1150,7 @@ class com_componentbuilderInstallerScript
 			if ($class_method_done)
 			{
 				// If successfully removed Class_method add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_method) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Class_method items are cleared from DB
@@ -1202,7 +1206,7 @@ class com_componentbuilderInstallerScript
 			if ($placeholder_done)
 			{
 				// If successfully remove Placeholder add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Placeholder items from the contentitem tag map table
@@ -1217,7 +1221,7 @@ class com_componentbuilderInstallerScript
 			if ($placeholder_done)
 			{
 				// If successfully remove Placeholder add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Placeholder items from the ucm content table
@@ -1232,7 +1236,7 @@ class com_componentbuilderInstallerScript
 			if ($placeholder_done)
 			{
 				// If successfully removed Placeholder add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.placeholder) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Placeholder items are cleared from DB
@@ -1288,7 +1292,7 @@ class com_componentbuilderInstallerScript
 			if ($library_done)
 			{
 				// If successfully remove Library add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Library items from the contentitem tag map table
@@ -1303,7 +1307,7 @@ class com_componentbuilderInstallerScript
 			if ($library_done)
 			{
 				// If successfully remove Library add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Library items from the ucm content table
@@ -1318,7 +1322,7 @@ class com_componentbuilderInstallerScript
 			if ($library_done)
 			{
 				// If successfully removed Library add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Library items are cleared from DB
@@ -1374,7 +1378,7 @@ class com_componentbuilderInstallerScript
 			if ($snippet_done)
 			{
 				// If successfully remove Snippet add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Snippet items from the contentitem tag map table
@@ -1389,7 +1393,7 @@ class com_componentbuilderInstallerScript
 			if ($snippet_done)
 			{
 				// If successfully remove Snippet add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Snippet items from the ucm content table
@@ -1404,7 +1408,7 @@ class com_componentbuilderInstallerScript
 			if ($snippet_done)
 			{
 				// If successfully removed Snippet add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.snippet) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Snippet items are cleared from DB
@@ -1460,7 +1464,7 @@ class com_componentbuilderInstallerScript
 			if ($validation_rule_done)
 			{
 				// If successfully remove Validation_rule add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Validation_rule items from the contentitem tag map table
@@ -1475,7 +1479,7 @@ class com_componentbuilderInstallerScript
 			if ($validation_rule_done)
 			{
 				// If successfully remove Validation_rule add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Validation_rule items from the ucm content table
@@ -1490,7 +1494,7 @@ class com_componentbuilderInstallerScript
 			if ($validation_rule_done)
 			{
 				// If successfully removed Validation_rule add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.validation_rule) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Validation_rule items are cleared from DB
@@ -1546,7 +1550,7 @@ class com_componentbuilderInstallerScript
 			if ($field_done)
 			{
 				// If successfully remove Field add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.field) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.field) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Field items from the contentitem tag map table
@@ -1561,7 +1565,7 @@ class com_componentbuilderInstallerScript
 			if ($field_done)
 			{
 				// If successfully remove Field add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.field) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.field) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Field items from the ucm content table
@@ -1576,7 +1580,7 @@ class com_componentbuilderInstallerScript
 			if ($field_done)
 			{
 				// If successfully removed Field add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.field) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.field) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Field items are cleared from DB
@@ -1632,7 +1636,7 @@ class com_componentbuilderInstallerScript
 			if ($field_catid_done)
 			{
 				// If successfully remove Field catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Field catid items from the contentitem tag map table
@@ -1647,7 +1651,7 @@ class com_componentbuilderInstallerScript
 			if ($field_catid_done)
 			{
 				// If successfully remove Field catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Field catid items from the ucm content table
@@ -1662,7 +1666,7 @@ class com_componentbuilderInstallerScript
 			if ($field_catid_done)
 			{
 				// If successfully removed Field catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.field.category) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Field catid items are cleared from DB
@@ -1718,7 +1722,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_done)
 			{
 				// If successfully remove Fieldtype add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Fieldtype items from the contentitem tag map table
@@ -1733,7 +1737,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_done)
 			{
 				// If successfully remove Fieldtype add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Fieldtype items from the ucm content table
@@ -1748,7 +1752,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_done)
 			{
 				// If successfully removed Fieldtype add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.fieldtype) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Fieldtype items are cleared from DB
@@ -1804,7 +1808,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_catid_done)
 			{
 				// If successfully remove Fieldtype catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Fieldtype catid items from the contentitem tag map table
@@ -1819,7 +1823,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_catid_done)
 			{
 				// If successfully remove Fieldtype catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Fieldtype catid items from the ucm content table
@@ -1834,7 +1838,7 @@ class com_componentbuilderInstallerScript
 			if ($fieldtype_catid_done)
 			{
 				// If successfully removed Fieldtype catid add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.fieldtype.category) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Fieldtype catid items are cleared from DB
@@ -1890,7 +1894,7 @@ class com_componentbuilderInstallerScript
 			if ($language_translation_done)
 			{
 				// If successfully remove Language_translation add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Language_translation items from the contentitem tag map table
@@ -1905,7 +1909,7 @@ class com_componentbuilderInstallerScript
 			if ($language_translation_done)
 			{
 				// If successfully remove Language_translation add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Language_translation items from the ucm content table
@@ -1920,7 +1924,7 @@ class com_componentbuilderInstallerScript
 			if ($language_translation_done)
 			{
 				// If successfully removed Language_translation add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.language_translation) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Language_translation items are cleared from DB
@@ -1976,7 +1980,7 @@ class com_componentbuilderInstallerScript
 			if ($language_done)
 			{
 				// If successfully remove Language add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.language) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Language items from the contentitem tag map table
@@ -1991,7 +1995,7 @@ class com_componentbuilderInstallerScript
 			if ($language_done)
 			{
 				// If successfully remove Language add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.language) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Language items from the ucm content table
@@ -2006,7 +2010,7 @@ class com_componentbuilderInstallerScript
 			if ($language_done)
 			{
 				// If successfully removed Language add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.language) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.language) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Language items are cleared from DB
@@ -2062,7 +2066,7 @@ class com_componentbuilderInstallerScript
 			if ($server_done)
 			{
 				// If successfully remove Server add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.server) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.server) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Server items from the contentitem tag map table
@@ -2077,7 +2081,7 @@ class com_componentbuilderInstallerScript
 			if ($server_done)
 			{
 				// If successfully remove Server add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.server) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.server) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Server items from the ucm content table
@@ -2092,7 +2096,7 @@ class com_componentbuilderInstallerScript
 			if ($server_done)
 			{
 				// If successfully removed Server add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.server) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.server) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Server items are cleared from DB
@@ -2148,7 +2152,7 @@ class com_componentbuilderInstallerScript
 			if ($help_document_done)
 			{
 				// If successfully remove Help_document add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Help_document items from the contentitem tag map table
@@ -2163,7 +2167,7 @@ class com_componentbuilderInstallerScript
 			if ($help_document_done)
 			{
 				// If successfully remove Help_document add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Help_document items from the ucm content table
@@ -2178,7 +2182,7 @@ class com_componentbuilderInstallerScript
 			if ($help_document_done)
 			{
 				// If successfully removed Help_document add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.help_document) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Help_document items are cleared from DB
@@ -2234,7 +2238,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_done)
 			{
 				// If successfully remove Admin_fields add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Admin_fields items from the contentitem tag map table
@@ -2249,7 +2253,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_done)
 			{
 				// If successfully remove Admin_fields add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Admin_fields items from the ucm content table
@@ -2264,7 +2268,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_done)
 			{
 				// If successfully removed Admin_fields add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Admin_fields items are cleared from DB
@@ -2320,7 +2324,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_conditions_done)
 			{
 				// If successfully remove Admin_fields_conditions add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Admin_fields_conditions items from the contentitem tag map table
@@ -2335,7 +2339,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_conditions_done)
 			{
 				// If successfully remove Admin_fields_conditions add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Admin_fields_conditions items from the ucm content table
@@ -2350,7 +2354,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_conditions_done)
 			{
 				// If successfully removed Admin_fields_conditions add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields_conditions) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Admin_fields_conditions items are cleared from DB
@@ -2406,7 +2410,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_relations_done)
 			{
 				// If successfully remove Admin_fields_relations add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Admin_fields_relations items from the contentitem tag map table
@@ -2421,7 +2425,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_relations_done)
 			{
 				// If successfully remove Admin_fields_relations add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Admin_fields_relations items from the ucm content table
@@ -2436,7 +2440,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_fields_relations_done)
 			{
 				// If successfully removed Admin_fields_relations add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_fields_relations) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Admin_fields_relations items are cleared from DB
@@ -2492,7 +2496,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_custom_tabs_done)
 			{
 				// If successfully remove Admin_custom_tabs add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Admin_custom_tabs items from the contentitem tag map table
@@ -2507,7 +2511,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_custom_tabs_done)
 			{
 				// If successfully remove Admin_custom_tabs add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Admin_custom_tabs items from the ucm content table
@@ -2522,7 +2526,7 @@ class com_componentbuilderInstallerScript
 			if ($admin_custom_tabs_done)
 			{
 				// If successfully removed Admin_custom_tabs add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.admin_custom_tabs) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Admin_custom_tabs items are cleared from DB
@@ -2578,7 +2582,7 @@ class com_componentbuilderInstallerScript
 			if ($component_admin_views_done)
 			{
 				// If successfully remove Component_admin_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_admin_views items from the contentitem tag map table
@@ -2593,7 +2597,7 @@ class com_componentbuilderInstallerScript
 			if ($component_admin_views_done)
 			{
 				// If successfully remove Component_admin_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_admin_views items from the ucm content table
@@ -2608,7 +2612,7 @@ class com_componentbuilderInstallerScript
 			if ($component_admin_views_done)
 			{
 				// If successfully removed Component_admin_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_admin_views) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_admin_views items are cleared from DB
@@ -2664,7 +2668,7 @@ class com_componentbuilderInstallerScript
 			if ($component_site_views_done)
 			{
 				// If successfully remove Component_site_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_site_views items from the contentitem tag map table
@@ -2679,7 +2683,7 @@ class com_componentbuilderInstallerScript
 			if ($component_site_views_done)
 			{
 				// If successfully remove Component_site_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_site_views items from the ucm content table
@@ -2694,7 +2698,7 @@ class com_componentbuilderInstallerScript
 			if ($component_site_views_done)
 			{
 				// If successfully removed Component_site_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_site_views) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_site_views items are cleared from DB
@@ -2750,7 +2754,7 @@ class com_componentbuilderInstallerScript
 			if ($component_custom_admin_views_done)
 			{
 				// If successfully remove Component_custom_admin_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_custom_admin_views items from the contentitem tag map table
@@ -2765,7 +2769,7 @@ class com_componentbuilderInstallerScript
 			if ($component_custom_admin_views_done)
 			{
 				// If successfully remove Component_custom_admin_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_custom_admin_views items from the ucm content table
@@ -2780,7 +2784,7 @@ class com_componentbuilderInstallerScript
 			if ($component_custom_admin_views_done)
 			{
 				// If successfully removed Component_custom_admin_views add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_custom_admin_views) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_custom_admin_views items are cleared from DB
@@ -2836,7 +2840,7 @@ class com_componentbuilderInstallerScript
 			if ($component_updates_done)
 			{
 				// If successfully remove Component_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_updates items from the contentitem tag map table
@@ -2851,7 +2855,7 @@ class com_componentbuilderInstallerScript
 			if ($component_updates_done)
 			{
 				// If successfully remove Component_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_updates items from the ucm content table
@@ -2866,7 +2870,7 @@ class com_componentbuilderInstallerScript
 			if ($component_updates_done)
 			{
 				// If successfully removed Component_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_updates) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_updates items are cleared from DB
@@ -2922,7 +2926,7 @@ class com_componentbuilderInstallerScript
 			if ($component_mysql_tweaks_done)
 			{
 				// If successfully remove Component_mysql_tweaks add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_mysql_tweaks items from the contentitem tag map table
@@ -2937,7 +2941,7 @@ class com_componentbuilderInstallerScript
 			if ($component_mysql_tweaks_done)
 			{
 				// If successfully remove Component_mysql_tweaks add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_mysql_tweaks items from the ucm content table
@@ -2952,7 +2956,7 @@ class com_componentbuilderInstallerScript
 			if ($component_mysql_tweaks_done)
 			{
 				// If successfully removed Component_mysql_tweaks add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_mysql_tweaks) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_mysql_tweaks items are cleared from DB
@@ -3008,7 +3012,7 @@ class com_componentbuilderInstallerScript
 			if ($component_custom_admin_menus_done)
 			{
 				// If successfully remove Component_custom_admin_menus add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_custom_admin_menus items from the contentitem tag map table
@@ -3023,7 +3027,7 @@ class com_componentbuilderInstallerScript
 			if ($component_custom_admin_menus_done)
 			{
 				// If successfully remove Component_custom_admin_menus add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_custom_admin_menus items from the ucm content table
@@ -3038,7 +3042,7 @@ class com_componentbuilderInstallerScript
 			if ($component_custom_admin_menus_done)
 			{
 				// If successfully removed Component_custom_admin_menus add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_custom_admin_menus) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_custom_admin_menus items are cleared from DB
@@ -3071,6 +3075,92 @@ class com_componentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Component_router alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_router') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$component_router_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($component_router_found)
+		{
+			// Since there are load the needed  component_router type ids
+			$component_router_ids = $db->loadColumn();
+			// Remove Component_router from the content type table
+			$component_router_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_router') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($component_router_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_router items
+			$component_router_done = $db->execute();
+			if ($component_router_done)
+			{
+				// If successfully remove Component_router add queued success message.
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_router) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Component_router items from the contentitem tag map table
+			$component_router_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_router') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($component_router_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_router items
+			$component_router_done = $db->execute();
+			if ($component_router_done)
+			{
+				// If successfully remove Component_router add queued success message.
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_router) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Component_router items from the ucm content table
+			$component_router_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.component_router') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($component_router_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Component_router items
+			$component_router_done = $db->execute();
+			if ($component_router_done)
+			{
+				// If successfully removed Component_router add queued success message.
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_router) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Component_router items are cleared from DB
+			foreach ($component_router_ids as $component_router_id)
+			{
+				// Remove Component_router items from the ucm base table
+				$component_router_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $component_router_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($component_router_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Component_router items
+				$db->execute();
+
+				// Remove Component_router items from the ucm history table
+				$component_router_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $component_router_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($component_router_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Component_router items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Component_config alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_config') );
 		$db->setQuery($query);
@@ -3094,7 +3184,7 @@ class com_componentbuilderInstallerScript
 			if ($component_config_done)
 			{
 				// If successfully remove Component_config add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_config items from the contentitem tag map table
@@ -3109,7 +3199,7 @@ class com_componentbuilderInstallerScript
 			if ($component_config_done)
 			{
 				// If successfully remove Component_config add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_config items from the ucm content table
@@ -3124,7 +3214,7 @@ class com_componentbuilderInstallerScript
 			if ($component_config_done)
 			{
 				// If successfully removed Component_config add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_config) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_config items are cleared from DB
@@ -3180,7 +3270,7 @@ class com_componentbuilderInstallerScript
 			if ($component_dashboard_done)
 			{
 				// If successfully remove Component_dashboard add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_dashboard items from the contentitem tag map table
@@ -3195,7 +3285,7 @@ class com_componentbuilderInstallerScript
 			if ($component_dashboard_done)
 			{
 				// If successfully remove Component_dashboard add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_dashboard items from the ucm content table
@@ -3210,7 +3300,7 @@ class com_componentbuilderInstallerScript
 			if ($component_dashboard_done)
 			{
 				// If successfully removed Component_dashboard add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_dashboard) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_dashboard items are cleared from DB
@@ -3266,7 +3356,7 @@ class com_componentbuilderInstallerScript
 			if ($component_files_folders_done)
 			{
 				// If successfully remove Component_files_folders add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_files_folders items from the contentitem tag map table
@@ -3281,7 +3371,7 @@ class com_componentbuilderInstallerScript
 			if ($component_files_folders_done)
 			{
 				// If successfully remove Component_files_folders add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_files_folders items from the ucm content table
@@ -3296,7 +3386,7 @@ class com_componentbuilderInstallerScript
 			if ($component_files_folders_done)
 			{
 				// If successfully removed Component_files_folders add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_files_folders) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_files_folders items are cleared from DB
@@ -3352,7 +3442,7 @@ class com_componentbuilderInstallerScript
 			if ($component_placeholders_done)
 			{
 				// If successfully remove Component_placeholders add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_placeholders items from the contentitem tag map table
@@ -3367,7 +3457,7 @@ class com_componentbuilderInstallerScript
 			if ($component_placeholders_done)
 			{
 				// If successfully remove Component_placeholders add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_placeholders items from the ucm content table
@@ -3382,7 +3472,7 @@ class com_componentbuilderInstallerScript
 			if ($component_placeholders_done)
 			{
 				// If successfully removed Component_placeholders add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_placeholders) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_placeholders items are cleared from DB
@@ -3438,7 +3528,7 @@ class com_componentbuilderInstallerScript
 			if ($component_plugins_done)
 			{
 				// If successfully remove Component_plugins add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_plugins items from the contentitem tag map table
@@ -3453,7 +3543,7 @@ class com_componentbuilderInstallerScript
 			if ($component_plugins_done)
 			{
 				// If successfully remove Component_plugins add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_plugins items from the ucm content table
@@ -3468,7 +3558,7 @@ class com_componentbuilderInstallerScript
 			if ($component_plugins_done)
 			{
 				// If successfully removed Component_plugins add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_plugins) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_plugins items are cleared from DB
@@ -3524,7 +3614,7 @@ class com_componentbuilderInstallerScript
 			if ($component_modules_done)
 			{
 				// If successfully remove Component_modules add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Component_modules items from the contentitem tag map table
@@ -3539,7 +3629,7 @@ class com_componentbuilderInstallerScript
 			if ($component_modules_done)
 			{
 				// If successfully remove Component_modules add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Component_modules items from the ucm content table
@@ -3554,7 +3644,7 @@ class com_componentbuilderInstallerScript
 			if ($component_modules_done)
 			{
 				// If successfully removed Component_modules add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.component_modules) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Component_modules items are cleared from DB
@@ -3610,7 +3700,7 @@ class com_componentbuilderInstallerScript
 			if ($snippet_type_done)
 			{
 				// If successfully remove Snippet_type add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Snippet_type items from the contentitem tag map table
@@ -3625,7 +3715,7 @@ class com_componentbuilderInstallerScript
 			if ($snippet_type_done)
 			{
 				// If successfully remove Snippet_type add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Snippet_type items from the ucm content table
@@ -3640,7 +3730,7 @@ class com_componentbuilderInstallerScript
 			if ($snippet_type_done)
 			{
 				// If successfully removed Snippet_type add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.snippet_type) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Snippet_type items are cleared from DB
@@ -3696,7 +3786,7 @@ class com_componentbuilderInstallerScript
 			if ($library_config_done)
 			{
 				// If successfully remove Library_config add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Library_config items from the contentitem tag map table
@@ -3711,7 +3801,7 @@ class com_componentbuilderInstallerScript
 			if ($library_config_done)
 			{
 				// If successfully remove Library_config add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Library_config items from the ucm content table
@@ -3726,7 +3816,7 @@ class com_componentbuilderInstallerScript
 			if ($library_config_done)
 			{
 				// If successfully removed Library_config add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library_config) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Library_config items are cleared from DB
@@ -3782,7 +3872,7 @@ class com_componentbuilderInstallerScript
 			if ($library_files_folders_urls_done)
 			{
 				// If successfully remove Library_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Library_files_folders_urls items from the contentitem tag map table
@@ -3797,7 +3887,7 @@ class com_componentbuilderInstallerScript
 			if ($library_files_folders_urls_done)
 			{
 				// If successfully remove Library_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Library_files_folders_urls items from the ucm content table
@@ -3812,7 +3902,7 @@ class com_componentbuilderInstallerScript
 			if ($library_files_folders_urls_done)
 			{
 				// If successfully removed Library_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.library_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Library_files_folders_urls items are cleared from DB
@@ -3868,7 +3958,7 @@ class com_componentbuilderInstallerScript
 			if ($class_extends_done)
 			{
 				// If successfully remove Class_extends add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Class_extends items from the contentitem tag map table
@@ -3883,7 +3973,7 @@ class com_componentbuilderInstallerScript
 			if ($class_extends_done)
 			{
 				// If successfully remove Class_extends add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Class_extends items from the ucm content table
@@ -3898,7 +3988,7 @@ class com_componentbuilderInstallerScript
 			if ($class_extends_done)
 			{
 				// If successfully removed Class_extends add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.class_extends) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Class_extends items are cleared from DB
@@ -3954,7 +4044,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_updates_done)
 			{
 				// If successfully remove Joomla_module_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_module_updates items from the contentitem tag map table
@@ -3969,7 +4059,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_updates_done)
 			{
 				// If successfully remove Joomla_module_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_module_updates items from the ucm content table
@@ -3984,7 +4074,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_updates_done)
 			{
 				// If successfully removed Joomla_module_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module_updates) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_module_updates items are cleared from DB
@@ -4040,7 +4130,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_files_folders_urls_done)
 			{
 				// If successfully remove Joomla_module_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_module_files_folders_urls items from the contentitem tag map table
@@ -4055,7 +4145,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_files_folders_urls_done)
 			{
 				// If successfully remove Joomla_module_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_module_files_folders_urls items from the ucm content table
@@ -4070,7 +4160,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_module_files_folders_urls_done)
 			{
 				// If successfully removed Joomla_module_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_module_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_module_files_folders_urls items are cleared from DB
@@ -4126,7 +4216,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_group_done)
 			{
 				// If successfully remove Joomla_plugin_group add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_plugin_group items from the contentitem tag map table
@@ -4141,7 +4231,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_group_done)
 			{
 				// If successfully remove Joomla_plugin_group add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_plugin_group items from the ucm content table
@@ -4156,7 +4246,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_group_done)
 			{
 				// If successfully removed Joomla_plugin_group add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_group) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_plugin_group items are cleared from DB
@@ -4212,7 +4302,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_updates_done)
 			{
 				// If successfully remove Joomla_plugin_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_plugin_updates items from the contentitem tag map table
@@ -4227,7 +4317,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_updates_done)
 			{
 				// If successfully remove Joomla_plugin_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_plugin_updates items from the ucm content table
@@ -4242,7 +4332,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_updates_done)
 			{
 				// If successfully removed Joomla_plugin_updates add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_updates) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_plugin_updates items are cleared from DB
@@ -4298,7 +4388,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_files_folders_urls_done)
 			{
 				// If successfully remove Joomla_plugin_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__content_type</b> table'));
 			}
 
 			// Remove Joomla_plugin_files_folders_urls items from the contentitem tag map table
@@ -4313,7 +4403,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_files_folders_urls_done)
 			{
 				// If successfully remove Joomla_plugin_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
 			}
 
 			// Remove Joomla_plugin_files_folders_urls items from the ucm content table
@@ -4328,7 +4418,7 @@ class com_componentbuilderInstallerScript
 			if ($joomla_plugin_files_folders_urls_done)
 			{
 				// If successfully removed Joomla_plugin_files_folders_urls add queued success message.
-				$app->enqueueMessage(JText::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_plugin_files_folders_urls) type alias was removed from the <b>#__ucm_content</b> table'));
 			}
 
 			// Make sure that all the Joomla_plugin_files_folders_urls items are cleared from DB
@@ -4357,8 +4447,8 @@ class com_componentbuilderInstallerScript
 		}
 
 		// If All related items was removed queued success message.
-		$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_base</b> table'));
-		$app->enqueueMessage(JText::_('All related items was removed from the <b>#__ucm_history</b> table'));
+		$app->enqueueMessage(Text::_('All related items was removed from the <b>#__ucm_base</b> table'));
+		$app->enqueueMessage(Text::_('All related items was removed from the <b>#__ucm_history</b> table'));
 
 		// Remove componentbuilder assets from the assets table
 		$componentbuilder_condition = array( $db->quoteName('name') . ' LIKE ' . $db->quote('com_componentbuilder%') );
@@ -4372,7 +4462,7 @@ class com_componentbuilderInstallerScript
 		if ($joomla_plugin_files_folders_urls_done)
 		{
 			// If successfully removed componentbuilder add queued success message.
-			$app->enqueueMessage(JText::_('All related items was removed from the <b>#__assets</b> table'));
+			$app->enqueueMessage(Text::_('All related items was removed from the <b>#__assets</b> table'));
 		}
 
 		// Get the biggest rule column in the assets table at this point.
@@ -4388,24 +4478,24 @@ class com_componentbuilderInstallerScript
 				$revert_rule = "ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.';";
 				$db->setQuery($revert_rule);
 				$db->execute();
-				$app->enqueueMessage(JText::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));
+				$app->enqueueMessage(Text::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));
 			}
 			else
 			{
 
-				$app->enqueueMessage(JText::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));
+				$app->enqueueMessage(Text::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));
 			}
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder from the action_logs_extensions table
 		$componentbuilder_action_logs_extensions = array( $db->quoteName('extension') . ' = ' . $db->quote('com_componentbuilder') );
@@ -4419,18 +4509,18 @@ class com_componentbuilderInstallerScript
 		if ($componentbuilder_removed_done)
 		{
 			// If successfully remove Componentbuilder add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder extension was removed from the <b>#__action_logs_extensions</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder extension was removed from the <b>#__action_logs_extensions</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_component from the action_log_config table
 		$joomla_component_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_component') );
@@ -4444,18 +4534,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_component_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_component add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_component type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_component type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_module from the action_log_config table
 		$joomla_module_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module') );
@@ -4469,18 +4559,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_module_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_module add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_module type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_module type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_plugin from the action_log_config table
 		$joomla_plugin_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin') );
@@ -4494,18 +4584,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_plugin_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_plugin add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_plugin type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Power from the action_log_config table
 		$power_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
@@ -4519,18 +4609,18 @@ class com_componentbuilderInstallerScript
 		if ($power_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Power add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.power type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.power type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Admin_view from the action_log_config table
 		$admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_view') );
@@ -4544,18 +4634,18 @@ class com_componentbuilderInstallerScript
 		if ($admin_view_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Admin_view add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_view type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.admin_view type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Custom_admin_view from the action_log_config table
 		$custom_admin_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_admin_view') );
@@ -4569,18 +4659,18 @@ class com_componentbuilderInstallerScript
 		if ($custom_admin_view_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Custom_admin_view add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.custom_admin_view type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.custom_admin_view type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Site_view from the action_log_config table
 		$site_view_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.site_view') );
@@ -4594,18 +4684,18 @@ class com_componentbuilderInstallerScript
 		if ($site_view_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Site_view add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.site_view type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.site_view type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Template from the action_log_config table
 		$template_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.template') );
@@ -4619,18 +4709,18 @@ class com_componentbuilderInstallerScript
 		if ($template_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Template add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.template type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.template type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Layout from the action_log_config table
 		$layout_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.layout') );
@@ -4644,18 +4734,18 @@ class com_componentbuilderInstallerScript
 		if ($layout_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Layout add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.layout type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.layout type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Dynamic_get from the action_log_config table
 		$dynamic_get_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.dynamic_get') );
@@ -4669,18 +4759,18 @@ class com_componentbuilderInstallerScript
 		if ($dynamic_get_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Dynamic_get add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.dynamic_get type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.dynamic_get type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Custom_code from the action_log_config table
 		$custom_code_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.custom_code') );
@@ -4694,18 +4784,18 @@ class com_componentbuilderInstallerScript
 		if ($custom_code_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Custom_code add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.custom_code type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.custom_code type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Class_property from the action_log_config table
 		$class_property_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_property') );
@@ -4719,18 +4809,18 @@ class com_componentbuilderInstallerScript
 		if ($class_property_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Class_property add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.class_property type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.class_property type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Class_method from the action_log_config table
 		$class_method_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_method') );
@@ -4744,18 +4834,18 @@ class com_componentbuilderInstallerScript
 		if ($class_method_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Class_method add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.class_method type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.class_method type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Placeholder from the action_log_config table
 		$placeholder_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.placeholder') );
@@ -4769,18 +4859,18 @@ class com_componentbuilderInstallerScript
 		if ($placeholder_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Placeholder add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.placeholder type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.placeholder type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Library from the action_log_config table
 		$library_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library') );
@@ -4794,18 +4884,18 @@ class com_componentbuilderInstallerScript
 		if ($library_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Library add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.library type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.library type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Snippet from the action_log_config table
 		$snippet_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet') );
@@ -4819,18 +4909,18 @@ class com_componentbuilderInstallerScript
 		if ($snippet_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Snippet add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.snippet type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.snippet type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Validation_rule from the action_log_config table
 		$validation_rule_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.validation_rule') );
@@ -4844,18 +4934,18 @@ class com_componentbuilderInstallerScript
 		if ($validation_rule_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Validation_rule add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.validation_rule type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.validation_rule type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Field from the action_log_config table
 		$field_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.field') );
@@ -4869,18 +4959,18 @@ class com_componentbuilderInstallerScript
 		if ($field_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Field add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.field type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.field type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Fieldtype from the action_log_config table
 		$fieldtype_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.fieldtype') );
@@ -4894,18 +4984,18 @@ class com_componentbuilderInstallerScript
 		if ($fieldtype_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Fieldtype add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.fieldtype type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.fieldtype type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Language_translation from the action_log_config table
 		$language_translation_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language_translation') );
@@ -4919,18 +5009,18 @@ class com_componentbuilderInstallerScript
 		if ($language_translation_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Language_translation add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.language_translation type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.language_translation type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Language from the action_log_config table
 		$language_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.language') );
@@ -4944,18 +5034,18 @@ class com_componentbuilderInstallerScript
 		if ($language_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Language add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.language type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.language type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Server from the action_log_config table
 		$server_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.server') );
@@ -4969,18 +5059,18 @@ class com_componentbuilderInstallerScript
 		if ($server_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Server add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.server type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.server type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Help_document from the action_log_config table
 		$help_document_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.help_document') );
@@ -4994,18 +5084,18 @@ class com_componentbuilderInstallerScript
 		if ($help_document_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Help_document add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.help_document type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.help_document type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Admin_fields from the action_log_config table
 		$admin_fields_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields') );
@@ -5019,18 +5109,18 @@ class com_componentbuilderInstallerScript
 		if ($admin_fields_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Admin_fields add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.admin_fields type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Admin_fields_conditions from the action_log_config table
 		$admin_fields_conditions_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_conditions') );
@@ -5044,18 +5134,18 @@ class com_componentbuilderInstallerScript
 		if ($admin_fields_conditions_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Admin_fields_conditions add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields_conditions type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.admin_fields_conditions type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Admin_fields_relations from the action_log_config table
 		$admin_fields_relations_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_fields_relations') );
@@ -5069,18 +5159,18 @@ class com_componentbuilderInstallerScript
 		if ($admin_fields_relations_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Admin_fields_relations add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_fields_relations type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.admin_fields_relations type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Admin_custom_tabs from the action_log_config table
 		$admin_custom_tabs_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.admin_custom_tabs') );
@@ -5094,18 +5184,18 @@ class com_componentbuilderInstallerScript
 		if ($admin_custom_tabs_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Admin_custom_tabs add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.admin_custom_tabs type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.admin_custom_tabs type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_admin_views from the action_log_config table
 		$component_admin_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_admin_views') );
@@ -5119,18 +5209,18 @@ class com_componentbuilderInstallerScript
 		if ($component_admin_views_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_admin_views add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_site_views from the action_log_config table
 		$component_site_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_site_views') );
@@ -5144,18 +5234,18 @@ class com_componentbuilderInstallerScript
 		if ($component_site_views_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_site_views add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_site_views type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_site_views type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_custom_admin_views from the action_log_config table
 		$component_custom_admin_views_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_custom_admin_views') );
@@ -5169,18 +5259,18 @@ class com_componentbuilderInstallerScript
 		if ($component_custom_admin_views_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_custom_admin_views add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_custom_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_custom_admin_views type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_updates from the action_log_config table
 		$component_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_updates') );
@@ -5194,18 +5284,18 @@ class com_componentbuilderInstallerScript
 		if ($component_updates_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_updates add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_updates type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_updates type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_mysql_tweaks from the action_log_config table
 		$component_mysql_tweaks_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_mysql_tweaks') );
@@ -5219,18 +5309,18 @@ class com_componentbuilderInstallerScript
 		if ($component_mysql_tweaks_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_mysql_tweaks add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_mysql_tweaks type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_mysql_tweaks type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_custom_admin_menus from the action_log_config table
 		$component_custom_admin_menus_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_custom_admin_menus') );
@@ -5244,18 +5334,43 @@ class com_componentbuilderInstallerScript
 		if ($component_custom_admin_menus_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_custom_admin_menus add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_custom_admin_menus type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_custom_admin_menus type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
+		}
+		// Remove Componentbuilder Component_router from the action_log_config table
+		$component_router_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_router') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($component_router_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.component_router
+		$component_router_action_log_config_done = $db->execute();
+		if ($component_router_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Component_router add queued success message.
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_router type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = Factory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_config from the action_log_config table
 		$component_config_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_config') );
@@ -5269,18 +5384,18 @@ class com_componentbuilderInstallerScript
 		if ($component_config_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_config add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_config type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_config type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_dashboard from the action_log_config table
 		$component_dashboard_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_dashboard') );
@@ -5294,18 +5409,18 @@ class com_componentbuilderInstallerScript
 		if ($component_dashboard_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_dashboard add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_dashboard type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_dashboard type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_files_folders from the action_log_config table
 		$component_files_folders_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_files_folders') );
@@ -5319,18 +5434,18 @@ class com_componentbuilderInstallerScript
 		if ($component_files_folders_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_files_folders add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_files_folders type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_files_folders type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_placeholders from the action_log_config table
 		$component_placeholders_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_placeholders') );
@@ -5344,18 +5459,18 @@ class com_componentbuilderInstallerScript
 		if ($component_placeholders_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_placeholders add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_placeholders type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_placeholders type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_plugins from the action_log_config table
 		$component_plugins_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_plugins') );
@@ -5369,18 +5484,18 @@ class com_componentbuilderInstallerScript
 		if ($component_plugins_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_plugins add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_plugins type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_plugins type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Component_modules from the action_log_config table
 		$component_modules_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.component_modules') );
@@ -5394,18 +5509,18 @@ class com_componentbuilderInstallerScript
 		if ($component_modules_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Component_modules add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.component_modules type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.component_modules type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Snippet_type from the action_log_config table
 		$snippet_type_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.snippet_type') );
@@ -5419,18 +5534,18 @@ class com_componentbuilderInstallerScript
 		if ($snippet_type_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Snippet_type add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.snippet_type type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.snippet_type type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Library_config from the action_log_config table
 		$library_config_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library_config') );
@@ -5444,18 +5559,18 @@ class com_componentbuilderInstallerScript
 		if ($library_config_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Library_config add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.library_config type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.library_config type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Library_files_folders_urls from the action_log_config table
 		$library_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.library_files_folders_urls') );
@@ -5469,18 +5584,18 @@ class com_componentbuilderInstallerScript
 		if ($library_files_folders_urls_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Library_files_folders_urls add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.library_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.library_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Class_extends from the action_log_config table
 		$class_extends_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.class_extends') );
@@ -5494,18 +5609,18 @@ class com_componentbuilderInstallerScript
 		if ($class_extends_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Class_extends add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.class_extends type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.class_extends type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_module_updates from the action_log_config table
 		$joomla_module_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_updates') );
@@ -5519,18 +5634,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_module_updates_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_module_updates add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_module_updates type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_module_updates type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_module_files_folders_urls from the action_log_config table
 		$joomla_module_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_module_files_folders_urls') );
@@ -5544,18 +5659,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_module_files_folders_urls_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_module_files_folders_urls add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_module_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_module_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_plugin_group from the action_log_config table
 		$joomla_plugin_group_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_group') );
@@ -5569,18 +5684,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_plugin_group_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_plugin_group add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_group type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_plugin_group type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_plugin_updates from the action_log_config table
 		$joomla_plugin_updates_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_updates') );
@@ -5594,18 +5709,18 @@ class com_componentbuilderInstallerScript
 		if ($joomla_plugin_updates_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_plugin_updates add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_updates type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_plugin_updates type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 
 		// Set db if not set already.
 		if (!isset($db))
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 		}
 		// Set app if not set already.
 		if (!isset($app))
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 		}
 		// Remove Componentbuilder Joomla_plugin_files_folders_urls from the action_log_config table
 		$joomla_plugin_files_folders_urls_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_plugin_files_folders_urls') );
@@ -5619,7 +5734,7 @@ class com_componentbuilderInstallerScript
 		if ($joomla_plugin_files_folders_urls_action_log_config_done)
 		{
 			// If successfully removed Componentbuilder Joomla_plugin_files_folders_urls add queued success message.
-			$app->enqueueMessage(JText::_('The com_componentbuilder.joomla_plugin_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_plugin_files_folders_urls type alias was removed from the <b>#__action_log_config</b> table'));
 		}
 		// little notice as after service, in case of bad experience with component.
 		echo '<h2>Did something go wrong? Are you disappointed?</h2>
@@ -5649,14 +5764,14 @@ class com_componentbuilderInstallerScript
 	public function preflight($type, ComponentAdapter $parent)
 	{
 		// get application
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		// is redundant or so it seems ...hmmm let me know if it works again
 		if ($type === 'uninstall')
 		{
 			return true;
 		}
 		// the default for both install and update
-		$jversion = new JVersion();
+		$jversion = new Version();
 		if (!$jversion->isCompatible('3.8.0'))
 		{
 			$app->enqueueMessage('Please upgrade to at least Joomla! 3.8.0 before continuing!', 'error');
@@ -5675,7 +5790,7 @@ class com_componentbuilderInstallerScript
 				// get the version
 				$this->JCBversion = explode('.', $manifest->version);
 				// Get a db connection.
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 
 				// target version less then 2.5.2
 				if (count($this->JCBversion) == 3 && $this->JCBversion[0] <= 2 && $this->JCBversion[1] <= 5 && (($this->JCBversion[1] == 5 && $this->JCBversion[2] <= 1) || ($this->JCBversion[1] < 5)))
@@ -6131,7 +6246,7 @@ class com_componentbuilderInstallerScript
 	public function postflight($type, ComponentAdapter $parent)
 	{
 		// get application
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		// We check if we have dynamic folders to copy
 		$this->setDynamicF0ld3rs($app, $parent);
 		// set the default component settings
@@ -6139,226 +6254,226 @@ class com_componentbuilderInstallerScript
 		{
 
 			// Get The Database object
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 
 			// Create the joomla_component content type object.
-			$joomla_component = new stdClass();
+			$joomla_component = new \stdClass();
 			$joomla_component->type_title = 'Componentbuilder Joomla_component';
 			$joomla_component->type_alias = 'com_componentbuilder.joomla_component';
 			$joomla_component->table = '{"special": {"dbtable": "#__componentbuilder_joomla_component","key": "id","type": "Joomla_component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_admin","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","css_admin":"css_admin","php_admin_event":"php_admin_event","php_site_event":"php_site_event","crowdin_username":"crowdin_username","component_version":"component_version","php_postflight_install":"php_postflight_install","remove_line_breaks":"remove_line_breaks","description":"description","sql_uninstall":"sql_uninstall","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","php_preflight_install":"php_preflight_install","backup_folder_path":"backup_folder_path","php_method_uninstall":"php_method_uninstall","add_placeholders":"add_placeholders","author":"author","add_sales_server":"add_sales_server","email":"email","translation_tool":"translation_tool","website":"website","buildcompsql":"buildcompsql","add_license":"add_license","php_helper_admin":"php_helper_admin","license_type":"license_type","php_helper_site":"php_helper_site","javascript":"javascript","whmcs_key":"whmcs_key","css_site":"css_site","whmcs_url":"whmcs_url","whmcs_buy_link":"whmcs_buy_link","php_preflight_update":"php_preflight_update","license":"license","php_postflight_update":"php_postflight_update","bom":"bom","sql":"sql","image":"image","addreadme":"addreadme","copyright":"copyright","update_server_url":"update_server_url","add_powers":"add_powers","add_backup_folder_path":"add_backup_folder_path","crowdin_project_identifier":"crowdin_project_identifier","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_javascript":"add_javascript","add_menu_prefix":"add_menu_prefix","add_css_admin":"add_css_admin","menu_prefix":"menu_prefix","add_css_site":"add_css_site","dashboard_type":"dashboard_type","dashboard":"dashboard","toignore":"toignore","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","add_php_postflight_install":"add_php_postflight_install","export_key":"export_key","add_php_postflight_update":"add_php_postflight_update","joomla_source_link":"joomla_source_link","add_php_method_uninstall":"add_php_method_uninstall","export_buy_link":"export_buy_link","add_sql":"add_sql","add_sql_uninstall":"add_sql_uninstall","assets_table_fix":"assets_table_fix","readme":"readme","emptycontributors":"emptycontributors","add_update_server":"add_update_server","number":"number","update_server_target":"update_server_target","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","creatuserhelper":"creatuserhelper","adduikit":"adduikit","crowdin_project_api_key":"crowdin_project_api_key","addfootable":"addfootable","crowdin_account_api_key":"crowdin_account_api_key","add_email_helper":"add_email_helper","buildcomp":"buildcomp","add_php_helper_both":"add_php_helper_both","guid":"guid","php_helper_both":"php_helper_both","name":"name"}}';
+			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_site_event","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","debug_linenr":"debug_linenr","php_site_event":"php_site_event","translation_tool":"translation_tool","buildcompsql":"buildcompsql","add_sales_server":"add_sales_server","php_preflight_install":"php_preflight_install","php_method_uninstall":"php_method_uninstall","css_admin":"css_admin","mvc_versiondate":"mvc_versiondate","remove_line_breaks":"remove_line_breaks","add_placeholders":"add_placeholders","description":"description","php_postflight_install":"php_postflight_install","author":"author","sql_uninstall":"sql_uninstall","email":"email","website":"website","backup_folder_path":"backup_folder_path","php_helper_both":"php_helper_both","crowdin_username":"crowdin_username","php_admin_event":"php_admin_event","add_license":"add_license","component_version":"component_version","php_helper_admin":"php_helper_admin","license_type":"license_type","php_helper_site":"php_helper_site","javascript":"javascript","whmcs_key":"whmcs_key","css_site":"css_site","whmcs_url":"whmcs_url","whmcs_buy_link":"whmcs_buy_link","php_preflight_update":"php_preflight_update","license":"license","php_postflight_update":"php_postflight_update","bom":"bom","sql":"sql","image":"image","addreadme":"addreadme","copyright":"copyright","update_server_url":"update_server_url","add_powers":"add_powers","add_backup_folder_path":"add_backup_folder_path","crowdin_project_identifier":"crowdin_project_identifier","add_php_helper_both":"add_php_helper_both","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_namespace_prefix":"add_namespace_prefix","add_javascript":"add_javascript","namespace_prefix":"namespace_prefix","add_css_admin":"add_css_admin","add_css_site":"add_css_site","add_menu_prefix":"add_menu_prefix","dashboard_type":"dashboard_type","menu_prefix":"menu_prefix","dashboard":"dashboard","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","toignore":"toignore","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","add_php_method_uninstall":"add_php_method_uninstall","export_key":"export_key","add_sql":"add_sql","joomla_source_link":"joomla_source_link","add_sql_uninstall":"add_sql_uninstall","export_buy_link":"export_buy_link","assets_table_fix":"assets_table_fix","readme":"readme","add_update_server":"add_update_server","update_server_target":"update_server_target","emptycontributors":"emptycontributors","number":"number","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","crowdin_project_api_key":"crowdin_project_api_key","creatuserhelper":"creatuserhelper","crowdin_account_api_key":"crowdin_account_api_key","adduikit":"adduikit","buildcomp":"buildcomp","addfootable":"addfootable","guid":"guid","add_email_helper":"add_email_helper","name":"name"}}';
 			$joomla_component->router = 'ComponentbuilderHelperRoute::getJoomla_componentRoute';
-			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","remove_line_breaks","debug_linenr","mvc_versiondate","add_placeholders","add_sales_server","translation_tool","add_license","license_type","addreadme","add_powers","add_backup_folder_path","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","emptycontributors","add_update_server","number","update_server_target","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","addfootable","add_email_helper","buildcomp","add_php_helper_both"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","debug_linenr","translation_tool","add_sales_server","mvc_versiondate","remove_line_breaks","add_placeholders","add_license","license_type","addreadme","add_powers","add_backup_folder_path","add_php_helper_both","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","add_update_server","update_server_target","emptycontributors","number","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","buildcomp","addfootable","add_email_helper"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_component_Inserted = $db->insertObject('#__content_types', $joomla_component);
 
 			// Create the joomla_module content type object.
-			$joomla_module = new stdClass();
+			$joomla_module = new \stdClass();
 			$joomla_module->type_title = 'Componentbuilder Joomla_module';
 			$joomla_module->type_alias = 'com_componentbuilder.joomla_module';
 			$joomla_module->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module","key": "id","type": "Joomla_module","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_module->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "default","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","target":"target","description":"description","add_php_method_uninstall":"add_php_method_uninstall","add_php_postflight_update":"add_php_postflight_update","add_php_postflight_install":"add_php_postflight_install","add_php_preflight_uninstall":"add_php_preflight_uninstall","addreadme":"addreadme","default":"default","snippet":"snippet","add_sql":"add_sql","update_server_target":"update_server_target","add_sql_uninstall":"add_sql_uninstall","update_server":"update_server","add_update_server":"add_update_server","libraries":"libraries","module_version":"module_version","sales_server":"sales_server","custom_get":"custom_get","php_preflight_update":"php_preflight_update","php_preflight_uninstall":"php_preflight_uninstall","mod_code":"mod_code","php_postflight_install":"php_postflight_install","add_class_helper":"add_class_helper","php_postflight_update":"php_postflight_update","add_class_helper_header":"add_class_helper_header","php_method_uninstall":"php_method_uninstall","class_helper_header":"class_helper_header","sql":"sql","class_helper_code":"class_helper_code","sql_uninstall":"sql_uninstall","readme":"readme","add_php_script_construct":"add_php_script_construct","update_server_url":"update_server_url","php_script_construct":"php_script_construct","add_php_preflight_install":"add_php_preflight_install","php_preflight_install":"php_preflight_install","add_sales_server":"add_sales_server","add_php_preflight_update":"add_php_preflight_update","guid":"guid","name":"name"}}';
 			$joomla_module->router = 'ComponentbuilderHelperRoute::getJoomla_moduleRoute';
-			$joomla_module->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","target","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","add_php_preflight_uninstall","addreadme","snippet","add_sql","update_server_target","add_sql_uninstall","update_server","add_update_server","sales_server","add_class_helper","add_class_helper_header","add_php_script_construct","add_php_preflight_install","add_sales_server","add_php_preflight_update"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_module->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","target","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","add_php_preflight_uninstall","addreadme","snippet","add_sql","update_server_target","add_sql_uninstall","update_server","add_update_server","sales_server","add_class_helper","add_class_helper_header","add_php_script_construct","add_php_preflight_install","add_sales_server","add_php_preflight_update"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_module_Inserted = $db->insertObject('#__content_types', $joomla_module);
 
 			// Create the joomla_plugin content type object.
-			$joomla_plugin = new stdClass();
+			$joomla_plugin = new \stdClass();
 			$joomla_plugin->type_title = 'Componentbuilder Joomla_plugin';
 			$joomla_plugin->type_alias = 'com_componentbuilder.joomla_plugin';
 			$joomla_plugin->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin","key": "id","type": "Joomla_plugin","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "head","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","class_extends":"class_extends","joomla_plugin_group":"joomla_plugin_group","add_sql":"add_sql","add_php_method_uninstall":"add_php_method_uninstall","add_php_postflight_update":"add_php_postflight_update","add_php_postflight_install":"add_php_postflight_install","sales_server":"sales_server","add_update_server":"add_update_server","add_head":"add_head","add_sql_uninstall":"add_sql_uninstall","addreadme":"addreadme","head":"head","update_server_target":"update_server_target","main_class_code":"main_class_code","update_server":"update_server","description":"description","php_postflight_install":"php_postflight_install","plugin_version":"plugin_version","php_postflight_update":"php_postflight_update","php_method_uninstall":"php_method_uninstall","add_php_script_construct":"add_php_script_construct","sql":"sql","php_script_construct":"php_script_construct","sql_uninstall":"sql_uninstall","add_php_preflight_install":"add_php_preflight_install","readme":"readme","php_preflight_install":"php_preflight_install","update_server_url":"update_server_url","add_php_preflight_update":"add_php_preflight_update","php_preflight_update":"php_preflight_update","add_php_preflight_uninstall":"add_php_preflight_uninstall","add_sales_server":"add_sales_server","php_preflight_uninstall":"php_preflight_uninstall","guid":"guid","name":"name"}}';
 			$joomla_plugin->router = 'ComponentbuilderHelperRoute::getJoomla_pluginRoute';
-			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends","joomla_plugin_group","add_sql","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","sales_server","add_update_server","add_head","add_sql_uninstall","addreadme","update_server_target","update_server","add_php_script_construct","add_php_preflight_install","add_php_preflight_update","add_php_preflight_uninstall","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","class_extends","joomla_plugin_group","add_sql","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","sales_server","add_update_server","add_head","add_sql_uninstall","addreadme","update_server_target","update_server","add_php_script_construct","add_php_preflight_install","add_php_preflight_update","add_php_preflight_uninstall","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_plugin_Inserted = $db->insertObject('#__content_types', $joomla_plugin);
 
 			// Create the power content type object.
-			$power = new stdClass();
+			$power = new \stdClass();
 			$power->type_title = 'Componentbuilder Power';
 			$power->type_alias = 'com_componentbuilder.power';
 			$power->table = '{"special": {"dbtable": "#__componentbuilder_power","key": "id","type": "Power","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$power->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "head","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","namespace":"namespace","type":"type","power_version":"power_version","licensing_template":"licensing_template","description":"description","extends":"extends","approved":"approved","add_head":"add_head","extends_custom":"extends_custom","implements_custom":"implements_custom","implements":"implements","head":"head","approved_paths":"approved_paths","main_class_code":"main_class_code","add_licensing_template":"add_licensing_template","guid":"guid","name":"name"}}';
 			$power->router = 'ComponentbuilderHelperRoute::getPowerRoute';
-			$power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","approved","add_head","add_licensing_template"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "extends","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"},{"sourceColumn": "implements","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"}]}';
+			$power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","approved","add_head","add_licensing_template"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "extends","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"},{"sourceColumn": "implements","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$power_Inserted = $db->insertObject('#__content_types', $power);
 
 			// Create the admin_view content type object.
-			$admin_view = new stdClass();
+			$admin_view = new \stdClass();
 			$admin_view->type_title = 'Componentbuilder Admin_view';
 			$admin_view->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view->table = '{"special": {"dbtable": "#__componentbuilder_admin_view","key": "id","type": "Admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_allowedit","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","short_description":"short_description","php_allowedit":"php_allowedit","php_postsavehook":"php_postsavehook","php_before_save":"php_before_save","php_getlistquery":"php_getlistquery","php_import_ext":"php_import_ext","icon":"icon","php_after_publish":"php_after_publish","add_fadein":"add_fadein","description":"description","icon_category":"icon_category","icon_add":"icon_add","php_after_cancel":"php_after_cancel","mysql_table_charset":"mysql_table_charset","php_batchmove":"php_batchmove","type":"type","php_after_delete":"php_after_delete","source":"source","php_import":"php_import","php_getitems_after_all":"php_getitems_after_all","php_getform":"php_getform","php_save":"php_save","php_allowadd":"php_allowadd","php_before_cancel":"php_before_cancel","php_batchcopy":"php_batchcopy","php_before_publish":"php_before_publish","alias_builder_type":"alias_builder_type","php_before_delete":"php_before_delete","php_document":"php_document","mysql_table_row_format":"mysql_table_row_format","alias_builder":"alias_builder","sql":"sql","php_import_display":"php_import_display","add_category_submenu":"add_category_submenu","php_import_setdata":"php_import_setdata","name_list":"name_list","add_php_getlistquery":"add_php_getlistquery","add_css_view":"add_css_view","add_php_getform":"add_php_getform","css_view":"css_view","add_php_before_save":"add_php_before_save","add_css_views":"add_css_views","add_php_save":"add_php_save","css_views":"css_views","add_php_postsavehook":"add_php_postsavehook","add_javascript_view_file":"add_javascript_view_file","add_php_allowadd":"add_php_allowadd","javascript_view_file":"javascript_view_file","add_php_allowedit":"add_php_allowedit","add_javascript_view_footer":"add_javascript_view_footer","add_php_before_cancel":"add_php_before_cancel","javascript_view_footer":"javascript_view_footer","add_php_after_cancel":"add_php_after_cancel","add_javascript_views_file":"add_javascript_views_file","add_php_batchcopy":"add_php_batchcopy","javascript_views_file":"javascript_views_file","add_php_batchmove":"add_php_batchmove","add_javascript_views_footer":"add_javascript_views_footer","add_php_before_publish":"add_php_before_publish","javascript_views_footer":"javascript_views_footer","add_php_after_publish":"add_php_after_publish","add_custom_button":"add_custom_button","add_php_before_delete":"add_php_before_delete","add_php_after_delete":"add_php_after_delete","php_controller":"php_controller","add_php_document":"add_php_document","php_model":"php_model","mysql_table_engine":"mysql_table_engine","php_controller_list":"php_controller_list","mysql_table_collate":"mysql_table_collate","php_model_list":"php_model_list","add_sql":"add_sql","add_php_ajax":"add_php_ajax","php_ajaxmethod":"php_ajaxmethod","add_custom_import":"add_custom_import","add_php_getitem":"add_php_getitem","html_import_view":"html_import_view","php_getitem":"php_getitem","php_import_headers":"php_import_headers","add_php_getitems":"add_php_getitems","php_import_save":"php_import_save","php_getitems":"php_getitems","guid":"guid","add_php_getitems_after_all":"add_php_getitems_after_all"}}';
 			$admin_view->router = 'ComponentbuilderHelperRoute::getAdmin_viewRoute';
-			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_fadein","type","source","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
+			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_fadein","type","source","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$admin_view_Inserted = $db->insertObject('#__content_types', $admin_view);
 
 			// Create the custom_admin_view content type object.
-			$custom_admin_view = new stdClass();
+			$custom_admin_view = new \stdClass();
 			$custom_admin_view->type_title = 'Componentbuilder Custom_admin_view';
 			$custom_admin_view->type_alias = 'com_componentbuilder.custom_admin_view';
 			$custom_admin_view->table = '{"special": {"dbtable": "#__componentbuilder_custom_admin_view","key": "id","type": "Custom_admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$custom_admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_document","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name":"name","description":"description","main_get":"main_get","add_php_jview_display":"add_php_jview_display","css_document":"css_document","css":"css","js_document":"js_document","javascript_file":"javascript_file","codename":"codename","default":"default","snippet":"snippet","icon":"icon","add_php_jview":"add_php_jview","context":"context","add_js_document":"add_js_document","custom_get":"custom_get","add_javascript_file":"add_javascript_file","php_ajaxmethod":"php_ajaxmethod","add_css_document":"add_css_document","add_php_document":"add_php_document","add_css":"add_css","add_php_view":"add_php_view","add_php_ajax":"add_php_ajax","libraries":"libraries","dynamic_get":"dynamic_get","php_document":"php_document","php_view":"php_view","add_custom_button":"add_custom_button","php_jview_display":"php_jview_display","php_jview":"php_jview","php_controller":"php_controller","guid":"guid","php_model":"php_model"}}';
 			$custom_admin_view->router = 'ComponentbuilderHelperRoute::getCustom_admin_viewRoute';
-			$custom_admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_get","add_php_jview_display","snippet","add_php_jview","add_js_document","add_javascript_file","add_css_document","add_php_document","add_css","add_php_view","add_php_ajax","dynamic_get","add_custom_button"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+			$custom_admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_get","add_php_jview_display","snippet","add_php_jview","add_js_document","add_javascript_file","add_css_document","add_php_document","add_css","add_php_view","add_php_ajax","dynamic_get","add_custom_button"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$custom_admin_view_Inserted = $db->insertObject('#__content_types', $custom_admin_view);
 
 			// Create the site_view content type object.
-			$site_view = new stdClass();
+			$site_view = new \stdClass();
 			$site_view->type_title = 'Componentbuilder Site_view';
 			$site_view->type_alias = 'com_componentbuilder.site_view';
 			$site_view->table = '{"special": {"dbtable": "#__componentbuilder_site_view","key": "id","type": "Site_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$site_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "js_document","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name":"name","description":"description","main_get":"main_get","add_php_jview_display":"add_php_jview_display","add_php_document":"add_php_document","add_php_view":"add_php_view","js_document":"js_document","codename":"codename","javascript_file":"javascript_file","context":"context","default":"default","snippet":"snippet","add_php_jview":"add_php_jview","custom_get":"custom_get","css_document":"css_document","add_javascript_file":"add_javascript_file","css":"css","add_js_document":"add_js_document","php_ajaxmethod":"php_ajaxmethod","add_css_document":"add_css_document","libraries":"libraries","add_css":"add_css","dynamic_get":"dynamic_get","add_php_ajax":"add_php_ajax","add_custom_button":"add_custom_button","php_document":"php_document","button_position":"button_position","php_view":"php_view","php_jview_display":"php_jview_display","php_jview":"php_jview","php_controller":"php_controller","guid":"guid","php_model":"php_model"}}';
 			$site_view->router = 'ComponentbuilderHelperRoute::getSite_viewRoute';
-			$site_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/site_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_get","add_php_jview_display","add_php_document","add_php_view","snippet","add_php_jview","add_javascript_file","add_js_document","add_css_document","add_css","dynamic_get","add_php_ajax","add_custom_button","button_position"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+			$site_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/site_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_get","add_php_jview_display","add_php_document","add_php_view","snippet","add_php_jview","add_javascript_file","add_js_document","add_css_document","add_css","dynamic_get","add_php_ajax","add_custom_button","button_position"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$site_view_Inserted = $db->insertObject('#__content_types', $site_view);
 
 			// Create the template content type object.
-			$template = new stdClass();
+			$template = new \stdClass();
 			$template->type_title = 'Componentbuilder Template';
 			$template->type_alias = 'com_componentbuilder.template';
 			$template->table = '{"special": {"dbtable": "#__componentbuilder_template","key": "id","type": "Template","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$template->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "php_view","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description","dynamic_get":"dynamic_get","php_view":"php_view","add_php_view":"add_php_view","template":"template","snippet":"snippet","libraries":"libraries","alias":"alias"}}';
 			$template->router = 'ComponentbuilderHelperRoute::getTemplateRoute';
-			$template->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/template.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","dynamic_get","add_php_view","snippet"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$template->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/template.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","dynamic_get","add_php_view","snippet"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$template_Inserted = $db->insertObject('#__content_types', $template);
 
 			// Create the layout content type object.
-			$layout = new stdClass();
+			$layout = new \stdClass();
 			$layout->type_title = 'Componentbuilder Layout';
 			$layout->type_alias = 'com_componentbuilder.layout';
 			$layout->table = '{"special": {"dbtable": "#__componentbuilder_layout","key": "id","type": "Layout","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$layout->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "php_view","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description","dynamic_get":"dynamic_get","snippet":"snippet","php_view":"php_view","add_php_view":"add_php_view","layout":"layout","libraries":"libraries","alias":"alias"}}';
 			$layout->router = 'ComponentbuilderHelperRoute::getLayoutRoute';
-			$layout->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/layout.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","dynamic_get","snippet","add_php_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$layout->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/layout.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","dynamic_get","snippet","add_php_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$layout_Inserted = $db->insertObject('#__content_types', $layout);
 
 			// Create the dynamic_get content type object.
-			$dynamic_get = new stdClass();
+			$dynamic_get = new \stdClass();
 			$dynamic_get->type_title = 'Componentbuilder Dynamic_get';
 			$dynamic_get->type_alias = 'com_componentbuilder.dynamic_get';
 			$dynamic_get->table = '{"special": {"dbtable": "#__componentbuilder_dynamic_get","key": "id","type": "Dynamic_get","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$dynamic_get->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_before_getitems","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","main_source":"main_source","gettype":"gettype","php_router_parse":"php_router_parse","php_before_getitems":"php_before_getitems","php_after_getitems":"php_after_getitems","php_after_getitem":"php_after_getitem","php_getlistquery":"php_getlistquery","view_selection":"view_selection","db_table_main":"db_table_main","php_custom_get":"php_custom_get","plugin_events":"plugin_events","db_selection":"db_selection","php_calculation":"php_calculation","php_before_getitem":"php_before_getitem","view_table_main":"view_table_main","select_all":"select_all","add_php_before_getitem":"add_php_before_getitem","getcustom":"getcustom","add_php_after_getitem":"add_php_after_getitem","pagination":"pagination","add_php_getlistquery":"add_php_getlistquery","add_php_before_getitems":"add_php_before_getitems","add_php_after_getitems":"add_php_after_getitems","add_php_router_parse":"add_php_router_parse","addcalculation":"addcalculation","guid":"guid"}}';
+			$dynamic_get->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_calculation","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","main_source":"main_source","gettype":"gettype","php_calculation":"php_calculation","php_router_parse":"php_router_parse","add_php_after_getitems":"add_php_after_getitems","add_php_router_parse":"add_php_router_parse","view_selection":"view_selection","add_php_before_getitems":"add_php_before_getitems","add_php_before_getitem":"add_php_before_getitem","add_php_after_getitem":"add_php_after_getitem","db_table_main":"db_table_main","php_custom_get":"php_custom_get","plugin_events":"plugin_events","db_selection":"db_selection","view_table_main":"view_table_main","add_php_getlistquery":"add_php_getlistquery","select_all":"select_all","php_before_getitem":"php_before_getitem","getcustom":"getcustom","php_after_getitem":"php_after_getitem","pagination":"pagination","php_getlistquery":"php_getlistquery","php_before_getitems":"php_before_getitems","php_after_getitems":"php_after_getitems","addcalculation":"addcalculation","guid":"guid"}}';
 			$dynamic_get->router = 'ComponentbuilderHelperRoute::getDynamic_getRoute';
-			$dynamic_get->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_source","gettype","view_table_main","select_all","add_php_before_getitem","add_php_after_getitem","pagination","add_php_getlistquery","add_php_before_getitems","add_php_after_getitems","add_php_router_parse"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$dynamic_get->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_source","gettype","add_php_after_getitems","add_php_router_parse","add_php_before_getitems","add_php_before_getitem","add_php_after_getitem","view_table_main","add_php_getlistquery","select_all","pagination"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$dynamic_get_Inserted = $db->insertObject('#__content_types', $dynamic_get);
 
 			// Create the custom_code content type object.
-			$custom_code = new stdClass();
+			$custom_code = new \stdClass();
 			$custom_code->type_title = 'Componentbuilder Custom_code';
 			$custom_code->type_alias = 'com_componentbuilder.custom_code';
 			$custom_code->table = '{"special": {"dbtable": "#__componentbuilder_custom_code","key": "id","type": "Custom_code","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","comment_type":"comment_type","function_name":"function_name","system_name":"system_name","code":"code","hashendtarget":"hashendtarget","to_line":"to_line","from_line":"from_line","hashtarget":"hashtarget"}}';
+			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","comment_type":"comment_type","joomla_version":"joomla_version","function_name":"function_name","system_name":"system_name","code":"code","hashendtarget":"hashendtarget","to_line":"to_line","from_line":"from_line","hashtarget":"hashtarget"}}';
 			$custom_code->router = 'ComponentbuilderHelperRoute::getCustom_codeRoute';
-			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","component","target","type","comment_type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","component","target","type","comment_type","joomla_version"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$custom_code_Inserted = $db->insertObject('#__content_types', $custom_code);
 
 			// Create the class_property content type object.
-			$class_property = new stdClass();
+			$class_property = new \stdClass();
 			$class_property->type_title = 'Componentbuilder Class_property';
 			$class_property->type_alias = 'com_componentbuilder.class_property';
 			$class_property->table = '{"special": {"dbtable": "#__componentbuilder_class_property","key": "id","type": "Class_property","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$class_property->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","visibility":"visibility","extension_type":"extension_type","guid":"guid","comment":"comment","joomla_plugin_group":"joomla_plugin_group","default":"default"}}';
 			$class_property->router = 'ComponentbuilderHelperRoute::getClass_propertyRoute';
-			$class_property->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_property.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
+			$class_property->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_property.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$class_property_Inserted = $db->insertObject('#__content_types', $class_property);
 
 			// Create the class_method content type object.
-			$class_method = new stdClass();
+			$class_method = new \stdClass();
 			$class_method->type_title = 'Componentbuilder Class_method';
 			$class_method->type_alias = 'com_componentbuilder.class_method';
 			$class_method->table = '{"special": {"dbtable": "#__componentbuilder_class_method","key": "id","type": "Class_method","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$class_method->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","visibility":"visibility","extension_type":"extension_type","guid":"guid","code":"code","comment":"comment","joomla_plugin_group":"joomla_plugin_group","arguments":"arguments"}}';
 			$class_method->router = 'ComponentbuilderHelperRoute::getClass_methodRoute';
-			$class_method->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_method.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
+			$class_method->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_method.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$class_method_Inserted = $db->insertObject('#__content_types', $class_method);
 
 			// Create the placeholder content type object.
-			$placeholder = new stdClass();
+			$placeholder = new \stdClass();
 			$placeholder->type_title = 'Componentbuilder Placeholder';
 			$placeholder->type_alias = 'com_componentbuilder.placeholder';
 			$placeholder->table = '{"special": {"dbtable": "#__componentbuilder_placeholder","key": "id","type": "Placeholder","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$placeholder->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "target","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"target":"target","value":"value"}}';
 			$placeholder->router = 'ComponentbuilderHelperRoute::getPlaceholderRoute';
-			$placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$placeholder_Inserted = $db->insertObject('#__content_types', $placeholder);
 
 			// Create the library content type object.
-			$library = new stdClass();
+			$library = new \stdClass();
 			$library->type_title = 'Componentbuilder Library';
 			$library->type_alias = 'com_componentbuilder.library';
 			$library->table = '{"special": {"dbtable": "#__componentbuilder_library","key": "id","type": "Library","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$library->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","target":"target","how":"how","type":"type","description":"description","libraries":"libraries","php_setdocument":"php_setdocument","guid":"guid"}}';
 			$library->router = 'ComponentbuilderHelperRoute::getLibraryRoute';
-			$library->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","target","how","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$library->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","target","how","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$library_Inserted = $db->insertObject('#__content_types', $library);
 
 			// Create the snippet content type object.
-			$snippet = new stdClass();
+			$snippet = new \stdClass();
 			$snippet->type_title = 'Componentbuilder Snippet';
 			$snippet->type_alias = 'com_componentbuilder.snippet';
 			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","guid":"guid","contributor_email":"contributor_email","contributor_name":"contributor_name","contributor_website":"contributor_website","contributor_company":"contributor_company","snippet":"snippet","usage":"usage","description":"description"}}';
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
-			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$snippet_Inserted = $db->insertObject('#__content_types', $snippet);
 
 			// Create the validation_rule content type object.
-			$validation_rule = new stdClass();
+			$validation_rule = new \stdClass();
 			$validation_rule->type_title = 'Componentbuilder Validation_rule';
 			$validation_rule->type_alias = 'com_componentbuilder.validation_rule';
 			$validation_rule->table = '{"special": {"dbtable": "#__componentbuilder_validation_rule","key": "id","type": "Validation_rule","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$validation_rule->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","short_description":"short_description","inherit":"inherit","php":"php"}}';
 			$validation_rule->router = 'ComponentbuilderHelperRoute::getValidation_ruleRoute';
-			$validation_rule->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/validation_rule.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "inherit","targetTable": "#__componentbuilder_validation_rule","targetColumn": "id","displayColumn": "name"}]}';
+			$validation_rule->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/validation_rule.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "inherit","targetTable": "#__componentbuilder_validation_rule","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$validation_rule_Inserted = $db->insertObject('#__content_types', $validation_rule);
 
 			// Create the field content type object.
-			$field = new stdClass();
+			$field = new \stdClass();
 			$field->type_title = 'Componentbuilder Field';
 			$field->type_alias = 'com_componentbuilder.field';
 			$field->table = '{"special": {"dbtable": "#__componentbuilder_field","key": "id","type": "Field","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_views","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","fieldtype":"fieldtype","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","store":"store","on_save_model_field":"on_save_model_field","initiator_on_get_model":"initiator_on_get_model","initiator_on_save_model":"initiator_on_save_model","xml":"xml","datalenght":"datalenght","css_views":"css_views","css_view":"css_view","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","on_get_model_field":"on_get_model_field","javascript_view_footer":"javascript_view_footer","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","add_javascript_views_footer":"add_javascript_views_footer","guid":"guid"}}';
 			$field->router = 'ComponentbuilderHelperRoute::getFieldRoute';
-			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","xml"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","fieldtype","store","catid","add_css_view","add_css_views","add_javascript_view_footer","add_javascript_views_footer"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "fieldtype","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
+			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","xml"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","fieldtype","store","catid","add_css_view","add_css_views","add_javascript_view_footer","add_javascript_views_footer"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "fieldtype","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$field_Inserted = $db->insertObject('#__content_types', $field);
 
 			// Create the field category content type object.
-			$field_category = new stdClass();
+			$field_category = new \stdClass();
 			$field_category->type_title = 'Componentbuilder Field Catid';
 			$field_category->type_alias = 'com_componentbuilder.field.category';
 			$field_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
@@ -6370,19 +6485,19 @@ class com_componentbuilderInstallerScript
 			$field_category_Inserted = $db->insertObject('#__content_types', $field_category);
 
 			// Create the fieldtype content type object.
-			$fieldtype = new stdClass();
+			$fieldtype = new \stdClass();
 			$fieldtype->type_title = 'Componentbuilder Fieldtype';
 			$fieldtype->type_alias = 'com_componentbuilder.fieldtype';
 			$fieldtype->table = '{"special": {"dbtable": "#__componentbuilder_fieldtype","key": "id","type": "Fieldtype","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","store":"store","null_switch":"null_switch","indexes":"indexes","datadefault_other":"datadefault_other","datadefault":"datadefault","short_description":"short_description","datatype":"datatype","has_defaults":"has_defaults","description":"description","datalenght":"datalenght","datalenght_other":"datalenght_other","guid":"guid"}}';
 			$fieldtype->router = 'ComponentbuilderHelperRoute::getFieldtypeRoute';
-			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","store","has_defaults","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","store","has_defaults","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$fieldtype_Inserted = $db->insertObject('#__content_types', $fieldtype);
 
 			// Create the fieldtype category content type object.
-			$fieldtype_category = new stdClass();
+			$fieldtype_category = new \stdClass();
 			$fieldtype_category->type_title = 'Componentbuilder Fieldtype Catid';
 			$fieldtype_category->type_alias = 'com_componentbuilder.fieldtype.category';
 			$fieldtype_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
@@ -6394,359 +6509,388 @@ class com_componentbuilderInstallerScript
 			$fieldtype_category_Inserted = $db->insertObject('#__content_types', $fieldtype_category);
 
 			// Create the language_translation content type object.
-			$language_translation = new stdClass();
+			$language_translation = new \stdClass();
 			$language_translation->type_title = 'Componentbuilder Language_translation';
 			$language_translation->type_alias = 'com_componentbuilder.language_translation';
 			$language_translation->table = '{"special": {"dbtable": "#__componentbuilder_language_translation","key": "id","type": "Language_translation","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$language_translation->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "source","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"source":"source","plugins":"plugins","modules":"modules","components":"components"}}';
 			$language_translation->router = 'ComponentbuilderHelperRoute::getLanguage_translationRoute';
-			$language_translation->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language_translation.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "plugins","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "modules","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "components","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$language_translation->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language_translation.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "plugins","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "modules","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "components","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$language_translation_Inserted = $db->insertObject('#__content_types', $language_translation);
 
 			// Create the language content type object.
-			$language = new stdClass();
+			$language = new \stdClass();
 			$language->type_title = 'Componentbuilder Language';
 			$language->type_alias = 'com_componentbuilder.language';
 			$language->table = '{"special": {"dbtable": "#__componentbuilder_language","key": "id","type": "Language","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$language->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","langtag":"langtag"}}';
 			$language->router = 'ComponentbuilderHelperRoute::getLanguageRoute';
-			$language->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$language->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$language_Inserted = $db->insertObject('#__content_types', $language);
 
 			// Create the server content type object.
-			$server = new stdClass();
+			$server = new \stdClass();
 			$server->type_title = 'Componentbuilder Server';
 			$server->type_alias = 'com_componentbuilder.server';
 			$server->table = '{"special": {"dbtable": "#__componentbuilder_server","key": "id","type": "Server","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$server->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","protocol":"protocol","signature":"signature","private_key":"private_key","secret":"secret","password":"password","private":"private","authentication":"authentication","path":"path","port":"port","host":"host","username":"username"}}';
 			$server->router = 'ComponentbuilderHelperRoute::getServerRoute';
-			$server->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/server.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","protocol","authentication"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$server->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/server.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","protocol","authentication"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$server_Inserted = $db->insertObject('#__content_types', $server);
 
 			// Create the help_document content type object.
-			$help_document = new stdClass();
+			$help_document = new \stdClass();
 			$help_document->type_title = 'Componentbuilder Help_document';
 			$help_document->type_alias = 'com_componentbuilder.help_document';
 			$help_document->table = '{"special": {"dbtable": "#__componentbuilder_help_document","key": "id","type": "Help_document","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "null","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","content":"content","article":"article","url":"url","target":"target","alias":"alias"}}';
 			$help_document->router = 'ComponentbuilderHelperRoute::getHelp_documentRoute';
-			$help_document->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
 			// Set the object into the content types table.
 			$help_document_Inserted = $db->insertObject('#__content_types', $help_document);
 
 			// Create the admin_fields content type object.
-			$admin_fields = new stdClass();
+			$admin_fields = new \stdClass();
 			$admin_fields->type_title = 'Componentbuilder Admin_fields';
 			$admin_fields->type_alias = 'com_componentbuilder.admin_fields';
 			$admin_fields->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields","key": "id","type": "Admin_fields","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_fields->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_fields->router = 'ComponentbuilderHelperRoute::getAdmin_fieldsRoute';
-			$admin_fields->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_fields->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$admin_fields_Inserted = $db->insertObject('#__content_types', $admin_fields);
 
 			// Create the admin_fields_conditions content type object.
-			$admin_fields_conditions = new stdClass();
+			$admin_fields_conditions = new \stdClass();
 			$admin_fields_conditions->type_title = 'Componentbuilder Admin_fields_conditions';
 			$admin_fields_conditions->type_alias = 'com_componentbuilder.admin_fields_conditions';
 			$admin_fields_conditions->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields_conditions","key": "id","type": "Admin_fields_conditions","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_fields_conditions->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_fields_conditions->router = 'ComponentbuilderHelperRoute::getAdmin_fields_conditionsRoute';
-			$admin_fields_conditions->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_conditions.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_fields_conditions->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_conditions.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$admin_fields_conditions_Inserted = $db->insertObject('#__content_types', $admin_fields_conditions);
 
 			// Create the admin_fields_relations content type object.
-			$admin_fields_relations = new stdClass();
+			$admin_fields_relations = new \stdClass();
 			$admin_fields_relations->type_title = 'Componentbuilder Admin_fields_relations';
 			$admin_fields_relations->type_alias = 'com_componentbuilder.admin_fields_relations';
 			$admin_fields_relations->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields_relations","key": "id","type": "Admin_fields_relations","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_fields_relations->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_fields_relations->router = 'ComponentbuilderHelperRoute::getAdmin_fields_relationsRoute';
-			$admin_fields_relations->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_relations.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_fields_relations->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_relations.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$admin_fields_relations_Inserted = $db->insertObject('#__content_types', $admin_fields_relations);
 
 			// Create the admin_custom_tabs content type object.
-			$admin_custom_tabs = new stdClass();
+			$admin_custom_tabs = new \stdClass();
 			$admin_custom_tabs->type_title = 'Componentbuilder Admin_custom_tabs';
 			$admin_custom_tabs->type_alias = 'com_componentbuilder.admin_custom_tabs';
 			$admin_custom_tabs->table = '{"special": {"dbtable": "#__componentbuilder_admin_custom_tabs","key": "id","type": "Admin_custom_tabs","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_custom_tabs->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_custom_tabs->router = 'ComponentbuilderHelperRoute::getAdmin_custom_tabsRoute';
-			$admin_custom_tabs->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_custom_tabs.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_custom_tabs->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_custom_tabs.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$admin_custom_tabs_Inserted = $db->insertObject('#__content_types', $admin_custom_tabs);
 
 			// Create the component_admin_views content type object.
-			$component_admin_views = new stdClass();
+			$component_admin_views = new \stdClass();
 			$component_admin_views->type_title = 'Componentbuilder Component_admin_views';
 			$component_admin_views->type_alias = 'com_componentbuilder.component_admin_views';
 			$component_admin_views->table = '{"special": {"dbtable": "#__componentbuilder_component_admin_views","key": "id","type": "Component_admin_views","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_admin_views->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_admin_views->router = 'ComponentbuilderHelperRoute::getComponent_admin_viewsRoute';
-			$component_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_admin_views_Inserted = $db->insertObject('#__content_types', $component_admin_views);
 
 			// Create the component_site_views content type object.
-			$component_site_views = new stdClass();
+			$component_site_views = new \stdClass();
 			$component_site_views->type_title = 'Componentbuilder Component_site_views';
 			$component_site_views->type_alias = 'com_componentbuilder.component_site_views';
 			$component_site_views->table = '{"special": {"dbtable": "#__componentbuilder_component_site_views","key": "id","type": "Component_site_views","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_site_views->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_site_views->router = 'ComponentbuilderHelperRoute::getComponent_site_viewsRoute';
-			$component_site_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_site_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_site_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_site_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_site_views_Inserted = $db->insertObject('#__content_types', $component_site_views);
 
 			// Create the component_custom_admin_views content type object.
-			$component_custom_admin_views = new stdClass();
+			$component_custom_admin_views = new \stdClass();
 			$component_custom_admin_views->type_title = 'Componentbuilder Component_custom_admin_views';
 			$component_custom_admin_views->type_alias = 'com_componentbuilder.component_custom_admin_views';
 			$component_custom_admin_views->table = '{"special": {"dbtable": "#__componentbuilder_component_custom_admin_views","key": "id","type": "Component_custom_admin_views","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_custom_admin_views->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_custom_admin_views->router = 'ComponentbuilderHelperRoute::getComponent_custom_admin_viewsRoute';
-			$component_custom_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_custom_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_custom_admin_views_Inserted = $db->insertObject('#__content_types', $component_custom_admin_views);
 
 			// Create the component_updates content type object.
-			$component_updates = new stdClass();
+			$component_updates = new \stdClass();
 			$component_updates->type_title = 'Componentbuilder Component_updates';
 			$component_updates->type_alias = 'com_componentbuilder.component_updates';
 			$component_updates->table = '{"special": {"dbtable": "#__componentbuilder_component_updates","key": "id","type": "Component_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_updates->router = 'ComponentbuilderHelperRoute::getComponent_updatesRoute';
-			$component_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_updates_Inserted = $db->insertObject('#__content_types', $component_updates);
 
 			// Create the component_mysql_tweaks content type object.
-			$component_mysql_tweaks = new stdClass();
+			$component_mysql_tweaks = new \stdClass();
 			$component_mysql_tweaks->type_title = 'Componentbuilder Component_mysql_tweaks';
 			$component_mysql_tweaks->type_alias = 'com_componentbuilder.component_mysql_tweaks';
 			$component_mysql_tweaks->table = '{"special": {"dbtable": "#__componentbuilder_component_mysql_tweaks","key": "id","type": "Component_mysql_tweaks","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_mysql_tweaks->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_mysql_tweaks->router = 'ComponentbuilderHelperRoute::getComponent_mysql_tweaksRoute';
-			$component_mysql_tweaks->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_mysql_tweaks.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_mysql_tweaks->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_mysql_tweaks.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_mysql_tweaks_Inserted = $db->insertObject('#__content_types', $component_mysql_tweaks);
 
 			// Create the component_custom_admin_menus content type object.
-			$component_custom_admin_menus = new stdClass();
+			$component_custom_admin_menus = new \stdClass();
 			$component_custom_admin_menus->type_title = 'Componentbuilder Component_custom_admin_menus';
 			$component_custom_admin_menus->type_alias = 'com_componentbuilder.component_custom_admin_menus';
 			$component_custom_admin_menus->table = '{"special": {"dbtable": "#__componentbuilder_component_custom_admin_menus","key": "id","type": "Component_custom_admin_menus","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_custom_admin_menus->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_custom_admin_menus->router = 'ComponentbuilderHelperRoute::getComponent_custom_admin_menusRoute';
-			$component_custom_admin_menus->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_menus.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_custom_admin_menus->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_menus.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_custom_admin_menus_Inserted = $db->insertObject('#__content_types', $component_custom_admin_menus);
 
+			// Create the component_router content type object.
+			$component_router = new \stdClass();
+			$component_router->type_title = 'Componentbuilder Component_router';
+			$component_router->type_alias = 'com_componentbuilder.component_router';
+			$component_router->table = '{"special": {"dbtable": "#__componentbuilder_component_router","key": "id","type": "Component_router","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component_router->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "methods_code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component","mode_constructor_before_parent":"mode_constructor_before_parent","mode_constructor_after_parent":"mode_constructor_after_parent","mode_methods":"mode_methods","methods_code":"methods_code","constructor_after_parent_code":"constructor_after_parent_code","constructor_before_parent_code":"constructor_before_parent_code"}}';
+			$component_router->router = 'ComponentbuilderHelperRoute::getComponent_routerRoute';
+			$component_router->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_router.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component","mode_constructor_before_parent","mode_constructor_after_parent","mode_methods"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Set the object into the content types table.
+			$component_router_Inserted = $db->insertObject('#__content_types', $component_router);
+
 			// Create the component_config content type object.
-			$component_config = new stdClass();
+			$component_config = new \stdClass();
 			$component_config->type_title = 'Componentbuilder Component_config';
 			$component_config->type_alias = 'com_componentbuilder.component_config';
 			$component_config->table = '{"special": {"dbtable": "#__componentbuilder_component_config","key": "id","type": "Component_config","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_config->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_config->router = 'ComponentbuilderHelperRoute::getComponent_configRoute';
-			$component_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_config_Inserted = $db->insertObject('#__content_types', $component_config);
 
 			// Create the component_dashboard content type object.
-			$component_dashboard = new stdClass();
+			$component_dashboard = new \stdClass();
 			$component_dashboard->type_title = 'Componentbuilder Component_dashboard';
 			$component_dashboard->type_alias = 'com_componentbuilder.component_dashboard';
 			$component_dashboard->table = '{"special": {"dbtable": "#__componentbuilder_component_dashboard","key": "id","type": "Component_dashboard","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_dashboard->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component","php_dashboard_methods":"php_dashboard_methods"}}';
 			$component_dashboard->router = 'ComponentbuilderHelperRoute::getComponent_dashboardRoute';
-			$component_dashboard->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_dashboard.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_dashboard->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_dashboard.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_dashboard_Inserted = $db->insertObject('#__content_types', $component_dashboard);
 
 			// Create the component_files_folders content type object.
-			$component_files_folders = new stdClass();
+			$component_files_folders = new \stdClass();
 			$component_files_folders->type_title = 'Componentbuilder Component_files_folders';
 			$component_files_folders->type_alias = 'com_componentbuilder.component_files_folders';
 			$component_files_folders->table = '{"special": {"dbtable": "#__componentbuilder_component_files_folders","key": "id","type": "Component_files_folders","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_files_folders->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_files_folders->router = 'ComponentbuilderHelperRoute::getComponent_files_foldersRoute';
-			$component_files_folders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_files_folders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_files_folders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_files_folders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_files_folders_Inserted = $db->insertObject('#__content_types', $component_files_folders);
 
 			// Create the component_placeholders content type object.
-			$component_placeholders = new stdClass();
+			$component_placeholders = new \stdClass();
 			$component_placeholders->type_title = 'Componentbuilder Component_placeholders';
 			$component_placeholders->type_alias = 'com_componentbuilder.component_placeholders';
 			$component_placeholders->table = '{"special": {"dbtable": "#__componentbuilder_component_placeholders","key": "id","type": "Component_placeholders","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_placeholders->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_placeholders->router = 'ComponentbuilderHelperRoute::getComponent_placeholdersRoute';
-			$component_placeholders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_placeholders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_placeholders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_placeholders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_placeholders_Inserted = $db->insertObject('#__content_types', $component_placeholders);
 
 			// Create the component_plugins content type object.
-			$component_plugins = new stdClass();
+			$component_plugins = new \stdClass();
 			$component_plugins->type_title = 'Componentbuilder Component_plugins';
 			$component_plugins->type_alias = 'com_componentbuilder.component_plugins';
 			$component_plugins->table = '{"special": {"dbtable": "#__componentbuilder_component_plugins","key": "id","type": "Component_plugins","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_plugins->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_plugins->router = 'ComponentbuilderHelperRoute::getComponent_pluginsRoute';
-			$component_plugins->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_plugins.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_plugins->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_plugins.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_plugins_Inserted = $db->insertObject('#__content_types', $component_plugins);
 
 			// Create the component_modules content type object.
-			$component_modules = new stdClass();
+			$component_modules = new \stdClass();
 			$component_modules->type_title = 'Componentbuilder Component_modules';
 			$component_modules->type_alias = 'com_componentbuilder.component_modules';
 			$component_modules->table = '{"special": {"dbtable": "#__componentbuilder_component_modules","key": "id","type": "Component_modules","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_modules->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_modules->router = 'ComponentbuilderHelperRoute::getComponent_modulesRoute';
-			$component_modules->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_modules.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_modules->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_modules.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$component_modules_Inserted = $db->insertObject('#__content_types', $component_modules);
 
 			// Create the snippet_type content type object.
-			$snippet_type = new stdClass();
+			$snippet_type = new \stdClass();
 			$snippet_type->type_title = 'Componentbuilder Snippet_type';
 			$snippet_type->type_alias = 'com_componentbuilder.snippet_type';
 			$snippet_type->table = '{"special": {"dbtable": "#__componentbuilder_snippet_type","key": "id","type": "Snippet_type","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$snippet_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description"}}';
 			$snippet_type->router = 'ComponentbuilderHelperRoute::getSnippet_typeRoute';
-			$snippet_type->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$snippet_type->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$snippet_type_Inserted = $db->insertObject('#__content_types', $snippet_type);
 
 			// Create the library_config content type object.
-			$library_config = new stdClass();
+			$library_config = new \stdClass();
 			$library_config->type_title = 'Componentbuilder Library_config';
 			$library_config->type_alias = 'com_componentbuilder.library_config';
 			$library_config->table = '{"special": {"dbtable": "#__componentbuilder_library_config","key": "id","type": "Library_config","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$library_config->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "library","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"library":"library"}}';
 			$library_config->router = 'ComponentbuilderHelperRoute::getLibrary_configRoute';
-			$library_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$library_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$library_config_Inserted = $db->insertObject('#__content_types', $library_config);
 
 			// Create the library_files_folders_urls content type object.
-			$library_files_folders_urls = new stdClass();
+			$library_files_folders_urls = new \stdClass();
 			$library_files_folders_urls->type_title = 'Componentbuilder Library_files_folders_urls';
 			$library_files_folders_urls->type_alias = 'com_componentbuilder.library_files_folders_urls';
 			$library_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_library_files_folders_urls","key": "id","type": "Library_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$library_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "library","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"library":"library"}}';
 			$library_files_folders_urls->router = 'ComponentbuilderHelperRoute::getLibrary_files_folders_urlsRoute';
-			$library_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$library_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$library_files_folders_urls_Inserted = $db->insertObject('#__content_types', $library_files_folders_urls);
 
 			// Create the class_extends content type object.
-			$class_extends = new stdClass();
+			$class_extends = new \stdClass();
 			$class_extends->type_title = 'Componentbuilder Class_extends';
 			$class_extends->type_alias = 'com_componentbuilder.class_extends';
 			$class_extends->table = '{"special": {"dbtable": "#__componentbuilder_class_extends","key": "id","type": "Class_extends","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$class_extends->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "head","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","extension_type":"extension_type","head":"head","comment":"comment"}}';
 			$class_extends->router = 'ComponentbuilderHelperRoute::getClass_extendsRoute';
-			$class_extends->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_extends.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$class_extends->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_extends.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$class_extends_Inserted = $db->insertObject('#__content_types', $class_extends);
 
 			// Create the joomla_module_updates content type object.
-			$joomla_module_updates = new stdClass();
+			$joomla_module_updates = new \stdClass();
 			$joomla_module_updates->type_title = 'Componentbuilder Joomla_module_updates';
 			$joomla_module_updates->type_alias = 'com_componentbuilder.joomla_module_updates';
 			$joomla_module_updates->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_updates","key": "id","type": "Joomla_module_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_module_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
 			$joomla_module_updates->router = 'ComponentbuilderHelperRoute::getJoomla_module_updatesRoute';
-			$joomla_module_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_module_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_module_updates_Inserted = $db->insertObject('#__content_types', $joomla_module_updates);
 
 			// Create the joomla_module_files_folders_urls content type object.
-			$joomla_module_files_folders_urls = new stdClass();
+			$joomla_module_files_folders_urls = new \stdClass();
 			$joomla_module_files_folders_urls->type_title = 'Componentbuilder Joomla_module_files_folders_urls';
 			$joomla_module_files_folders_urls->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
 			$joomla_module_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_files_folders_urls","key": "id","type": "Joomla_module_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_module_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
 			$joomla_module_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_module_files_folders_urlsRoute';
-			$joomla_module_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_module_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_module_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_module_files_folders_urls);
 
 			// Create the joomla_plugin_group content type object.
-			$joomla_plugin_group = new stdClass();
+			$joomla_plugin_group = new \stdClass();
 			$joomla_plugin_group->type_title = 'Componentbuilder Joomla_plugin_group';
 			$joomla_plugin_group->type_alias = 'com_componentbuilder.joomla_plugin_group';
 			$joomla_plugin_group->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_group","key": "id","type": "Joomla_plugin_group","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin_group->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","class_extends":"class_extends"}}';
 			$joomla_plugin_group->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_groupRoute';
-			$joomla_plugin_group->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_plugin_group->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","class_extends"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_plugin_group_Inserted = $db->insertObject('#__content_types', $joomla_plugin_group);
 
 			// Create the joomla_plugin_updates content type object.
-			$joomla_plugin_updates = new stdClass();
+			$joomla_plugin_updates = new \stdClass();
 			$joomla_plugin_updates->type_title = 'Componentbuilder Joomla_plugin_updates';
 			$joomla_plugin_updates->type_alias = 'com_componentbuilder.joomla_plugin_updates';
 			$joomla_plugin_updates->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_updates","key": "id","type": "Joomla_plugin_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_plugin","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_plugin":"joomla_plugin"}}';
 			$joomla_plugin_updates->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_updatesRoute';
-			$joomla_plugin_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_plugin_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_plugin_updates_Inserted = $db->insertObject('#__content_types', $joomla_plugin_updates);
 
 			// Create the joomla_plugin_files_folders_urls content type object.
-			$joomla_plugin_files_folders_urls = new stdClass();
+			$joomla_plugin_files_folders_urls = new \stdClass();
 			$joomla_plugin_files_folders_urls->type_title = 'Componentbuilder Joomla_plugin_files_folders_urls';
 			$joomla_plugin_files_folders_urls->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
 			$joomla_plugin_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_files_folders_urls","key": "id","type": "Joomla_plugin_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_plugin","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_plugin":"joomla_plugin"}}';
 			$joomla_plugin_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_files_folders_urlsRoute';
-			$joomla_plugin_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_plugin_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Set the object into the content types table.
 			$joomla_plugin_files_folders_urls_Inserted = $db->insertObject('#__content_types', $joomla_plugin_files_folders_urls);
 
 
+			// Get the biggest rule column in the assets table at this point.
+			$get_rule_length = "SELECT CHAR_LENGTH(`rules`) as rule_size FROM #__assets ORDER BY rule_size DESC LIMIT 1";
+			$db->setQuery($get_rule_length);
+			if ($db->execute())
+			{
+				$rule_length = $db->loadResult();
+				// Check the size of the rules column
+				if ($rule_length <= 99360)
+				{
+					// Fix the assets table rules column size
+					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
+					$db->setQuery($fix_rules_size);
+					$db->execute();
+					$app->enqueueMessage(Text::_('The <b>#__assets</b> table rules column was resized to the MEDIUMTEXT datatype for the components possible large permission rules.'));
+				}
+			}
 			// Install the global extension params.
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true);
 			// Field to update.
 			$fields = array(
-				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","approved_paths":"default","add_custom_gitea_url":"1","custom_gitea_url":"https://git.vdm.dev","super_powers_core_organisation":"joomla","super_powers_core":"joomla/super-powers","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'),
+				$db->quoteName('params') . ' = ' . $db->quote('{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","approved_paths":"default","add_custom_gitea_url":"1","custom_gitea_url":"https://git.vdm.dev","super_powers_core_organisation":"joomla","super_powers_core":"joomla/super-powers","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","namespace_prefix":"JCB","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'),
 			);
 			// Condition.
 			$conditions = array(
@@ -6756,33 +6900,18 @@ class com_componentbuilderInstallerScript
 			$db->setQuery($query);
 			$allDone = $db->execute();
 
-			// Get the biggest rule column in the assets table at this point.
-			$get_rule_length = "SELECT CHAR_LENGTH(`rules`) as rule_size FROM #__assets ORDER BY rule_size DESC LIMIT 1";
-			$db->setQuery($get_rule_length);
-			if ($db->execute())
-			{
-				$rule_length = $db->loadResult();
-				// Check the size of the rules column
-				if ($rule_length <= 97600)
-				{
-					// Fix the assets table rules column size
-					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
-					$db->setQuery($fix_rules_size);
-					$db->execute();
-					$app->enqueueMessage(JText::_('The <b>#__assets</b> table rules column was resized to the MEDIUMTEXT datatype for the components possible large permission rules.'));
-				}
-			}
-			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
+
+			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
-				</a>';
+				</a></div>';
 
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the componentbuilder action logs extensions object.
-			$componentbuilder_action_logs_extensions = new stdClass();
+			$componentbuilder_action_logs_extensions = new \stdClass();
 			$componentbuilder_action_logs_extensions->extension = 'com_componentbuilder';
 
 			// Set the object into the action logs extensions table.
@@ -6791,10 +6920,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_component action log config object.
-			$joomla_component_action_log_config = new stdClass();
+			$joomla_component_action_log_config = new \stdClass();
 			$joomla_component_action_log_config->type_title = 'JOOMLA_COMPONENT';
 			$joomla_component_action_log_config->type_alias = 'com_componentbuilder.joomla_component';
 			$joomla_component_action_log_config->id_holder = 'id';
@@ -6808,10 +6937,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_module action log config object.
-			$joomla_module_action_log_config = new stdClass();
+			$joomla_module_action_log_config = new \stdClass();
 			$joomla_module_action_log_config->type_title = 'JOOMLA_MODULE';
 			$joomla_module_action_log_config->type_alias = 'com_componentbuilder.joomla_module';
 			$joomla_module_action_log_config->id_holder = 'id';
@@ -6825,10 +6954,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin action log config object.
-			$joomla_plugin_action_log_config = new stdClass();
+			$joomla_plugin_action_log_config = new \stdClass();
 			$joomla_plugin_action_log_config->type_title = 'JOOMLA_PLUGIN';
 			$joomla_plugin_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin';
 			$joomla_plugin_action_log_config->id_holder = 'id';
@@ -6842,10 +6971,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the power action log config object.
-			$power_action_log_config = new stdClass();
+			$power_action_log_config = new \stdClass();
 			$power_action_log_config->type_title = 'POWER';
 			$power_action_log_config->type_alias = 'com_componentbuilder.power';
 			$power_action_log_config->id_holder = 'id';
@@ -6859,10 +6988,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_view action log config object.
-			$admin_view_action_log_config = new stdClass();
+			$admin_view_action_log_config = new \stdClass();
 			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
 			$admin_view_action_log_config->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view_action_log_config->id_holder = 'id';
@@ -6876,10 +7005,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the custom_admin_view action log config object.
-			$custom_admin_view_action_log_config = new stdClass();
+			$custom_admin_view_action_log_config = new \stdClass();
 			$custom_admin_view_action_log_config->type_title = 'CUSTOM_ADMIN_VIEW';
 			$custom_admin_view_action_log_config->type_alias = 'com_componentbuilder.custom_admin_view';
 			$custom_admin_view_action_log_config->id_holder = 'id';
@@ -6893,10 +7022,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the site_view action log config object.
-			$site_view_action_log_config = new stdClass();
+			$site_view_action_log_config = new \stdClass();
 			$site_view_action_log_config->type_title = 'SITE_VIEW';
 			$site_view_action_log_config->type_alias = 'com_componentbuilder.site_view';
 			$site_view_action_log_config->id_holder = 'id';
@@ -6910,10 +7039,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the template action log config object.
-			$template_action_log_config = new stdClass();
+			$template_action_log_config = new \stdClass();
 			$template_action_log_config->type_title = 'TEMPLATE';
 			$template_action_log_config->type_alias = 'com_componentbuilder.template';
 			$template_action_log_config->id_holder = 'id';
@@ -6927,10 +7056,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the layout action log config object.
-			$layout_action_log_config = new stdClass();
+			$layout_action_log_config = new \stdClass();
 			$layout_action_log_config->type_title = 'LAYOUT';
 			$layout_action_log_config->type_alias = 'com_componentbuilder.layout';
 			$layout_action_log_config->id_holder = 'id';
@@ -6944,10 +7073,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the dynamic_get action log config object.
-			$dynamic_get_action_log_config = new stdClass();
+			$dynamic_get_action_log_config = new \stdClass();
 			$dynamic_get_action_log_config->type_title = 'DYNAMIC_GET';
 			$dynamic_get_action_log_config->type_alias = 'com_componentbuilder.dynamic_get';
 			$dynamic_get_action_log_config->id_holder = 'id';
@@ -6961,10 +7090,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the custom_code action log config object.
-			$custom_code_action_log_config = new stdClass();
+			$custom_code_action_log_config = new \stdClass();
 			$custom_code_action_log_config->type_title = 'CUSTOM_CODE';
 			$custom_code_action_log_config->type_alias = 'com_componentbuilder.custom_code';
 			$custom_code_action_log_config->id_holder = 'id';
@@ -6978,10 +7107,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the class_property action log config object.
-			$class_property_action_log_config = new stdClass();
+			$class_property_action_log_config = new \stdClass();
 			$class_property_action_log_config->type_title = 'CLASS_PROPERTY';
 			$class_property_action_log_config->type_alias = 'com_componentbuilder.class_property';
 			$class_property_action_log_config->id_holder = 'id';
@@ -6995,10 +7124,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the class_method action log config object.
-			$class_method_action_log_config = new stdClass();
+			$class_method_action_log_config = new \stdClass();
 			$class_method_action_log_config->type_title = 'CLASS_METHOD';
 			$class_method_action_log_config->type_alias = 'com_componentbuilder.class_method';
 			$class_method_action_log_config->id_holder = 'id';
@@ -7012,10 +7141,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the placeholder action log config object.
-			$placeholder_action_log_config = new stdClass();
+			$placeholder_action_log_config = new \stdClass();
 			$placeholder_action_log_config->type_title = 'PLACEHOLDER';
 			$placeholder_action_log_config->type_alias = 'com_componentbuilder.placeholder';
 			$placeholder_action_log_config->id_holder = 'id';
@@ -7029,10 +7158,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the library action log config object.
-			$library_action_log_config = new stdClass();
+			$library_action_log_config = new \stdClass();
 			$library_action_log_config->type_title = 'LIBRARY';
 			$library_action_log_config->type_alias = 'com_componentbuilder.library';
 			$library_action_log_config->id_holder = 'id';
@@ -7046,10 +7175,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the snippet action log config object.
-			$snippet_action_log_config = new stdClass();
+			$snippet_action_log_config = new \stdClass();
 			$snippet_action_log_config->type_title = 'SNIPPET';
 			$snippet_action_log_config->type_alias = 'com_componentbuilder.snippet';
 			$snippet_action_log_config->id_holder = 'id';
@@ -7063,10 +7192,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the validation_rule action log config object.
-			$validation_rule_action_log_config = new stdClass();
+			$validation_rule_action_log_config = new \stdClass();
 			$validation_rule_action_log_config->type_title = 'VALIDATION_RULE';
 			$validation_rule_action_log_config->type_alias = 'com_componentbuilder.validation_rule';
 			$validation_rule_action_log_config->id_holder = 'id';
@@ -7080,10 +7209,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the field action log config object.
-			$field_action_log_config = new stdClass();
+			$field_action_log_config = new \stdClass();
 			$field_action_log_config->type_title = 'FIELD';
 			$field_action_log_config->type_alias = 'com_componentbuilder.field';
 			$field_action_log_config->id_holder = 'id';
@@ -7097,10 +7226,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the fieldtype action log config object.
-			$fieldtype_action_log_config = new stdClass();
+			$fieldtype_action_log_config = new \stdClass();
 			$fieldtype_action_log_config->type_title = 'FIELDTYPE';
 			$fieldtype_action_log_config->type_alias = 'com_componentbuilder.fieldtype';
 			$fieldtype_action_log_config->id_holder = 'id';
@@ -7114,10 +7243,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the language_translation action log config object.
-			$language_translation_action_log_config = new stdClass();
+			$language_translation_action_log_config = new \stdClass();
 			$language_translation_action_log_config->type_title = 'LANGUAGE_TRANSLATION';
 			$language_translation_action_log_config->type_alias = 'com_componentbuilder.language_translation';
 			$language_translation_action_log_config->id_holder = 'id';
@@ -7131,10 +7260,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the language action log config object.
-			$language_action_log_config = new stdClass();
+			$language_action_log_config = new \stdClass();
 			$language_action_log_config->type_title = 'LANGUAGE';
 			$language_action_log_config->type_alias = 'com_componentbuilder.language';
 			$language_action_log_config->id_holder = 'id';
@@ -7148,10 +7277,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the server action log config object.
-			$server_action_log_config = new stdClass();
+			$server_action_log_config = new \stdClass();
 			$server_action_log_config->type_title = 'SERVER';
 			$server_action_log_config->type_alias = 'com_componentbuilder.server';
 			$server_action_log_config->id_holder = 'id';
@@ -7165,10 +7294,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the help_document action log config object.
-			$help_document_action_log_config = new stdClass();
+			$help_document_action_log_config = new \stdClass();
 			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
 			$help_document_action_log_config->type_alias = 'com_componentbuilder.help_document';
 			$help_document_action_log_config->id_holder = 'id';
@@ -7182,10 +7311,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_fields action log config object.
-			$admin_fields_action_log_config = new stdClass();
+			$admin_fields_action_log_config = new \stdClass();
 			$admin_fields_action_log_config->type_title = 'ADMIN_FIELDS';
 			$admin_fields_action_log_config->type_alias = 'com_componentbuilder.admin_fields';
 			$admin_fields_action_log_config->id_holder = 'id';
@@ -7199,10 +7328,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_fields_conditions action log config object.
-			$admin_fields_conditions_action_log_config = new stdClass();
+			$admin_fields_conditions_action_log_config = new \stdClass();
 			$admin_fields_conditions_action_log_config->type_title = 'ADMIN_FIELDS_CONDITIONS';
 			$admin_fields_conditions_action_log_config->type_alias = 'com_componentbuilder.admin_fields_conditions';
 			$admin_fields_conditions_action_log_config->id_holder = 'id';
@@ -7216,10 +7345,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_fields_relations action log config object.
-			$admin_fields_relations_action_log_config = new stdClass();
+			$admin_fields_relations_action_log_config = new \stdClass();
 			$admin_fields_relations_action_log_config->type_title = 'ADMIN_FIELDS_RELATIONS';
 			$admin_fields_relations_action_log_config->type_alias = 'com_componentbuilder.admin_fields_relations';
 			$admin_fields_relations_action_log_config->id_holder = 'id';
@@ -7233,10 +7362,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_custom_tabs action log config object.
-			$admin_custom_tabs_action_log_config = new stdClass();
+			$admin_custom_tabs_action_log_config = new \stdClass();
 			$admin_custom_tabs_action_log_config->type_title = 'ADMIN_CUSTOM_TABS';
 			$admin_custom_tabs_action_log_config->type_alias = 'com_componentbuilder.admin_custom_tabs';
 			$admin_custom_tabs_action_log_config->id_holder = 'id';
@@ -7250,10 +7379,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_admin_views action log config object.
-			$component_admin_views_action_log_config = new stdClass();
+			$component_admin_views_action_log_config = new \stdClass();
 			$component_admin_views_action_log_config->type_title = 'COMPONENT_ADMIN_VIEWS';
 			$component_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_admin_views';
 			$component_admin_views_action_log_config->id_holder = 'id';
@@ -7267,10 +7396,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_site_views action log config object.
-			$component_site_views_action_log_config = new stdClass();
+			$component_site_views_action_log_config = new \stdClass();
 			$component_site_views_action_log_config->type_title = 'COMPONENT_SITE_VIEWS';
 			$component_site_views_action_log_config->type_alias = 'com_componentbuilder.component_site_views';
 			$component_site_views_action_log_config->id_holder = 'id';
@@ -7284,10 +7413,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_custom_admin_views action log config object.
-			$component_custom_admin_views_action_log_config = new stdClass();
+			$component_custom_admin_views_action_log_config = new \stdClass();
 			$component_custom_admin_views_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_VIEWS';
 			$component_custom_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_views';
 			$component_custom_admin_views_action_log_config->id_holder = 'id';
@@ -7301,10 +7430,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_updates action log config object.
-			$component_updates_action_log_config = new stdClass();
+			$component_updates_action_log_config = new \stdClass();
 			$component_updates_action_log_config->type_title = 'COMPONENT_UPDATES';
 			$component_updates_action_log_config->type_alias = 'com_componentbuilder.component_updates';
 			$component_updates_action_log_config->id_holder = 'id';
@@ -7318,10 +7447,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_mysql_tweaks action log config object.
-			$component_mysql_tweaks_action_log_config = new stdClass();
+			$component_mysql_tweaks_action_log_config = new \stdClass();
 			$component_mysql_tweaks_action_log_config->type_title = 'COMPONENT_MYSQL_TWEAKS';
 			$component_mysql_tweaks_action_log_config->type_alias = 'com_componentbuilder.component_mysql_tweaks';
 			$component_mysql_tweaks_action_log_config->id_holder = 'id';
@@ -7335,10 +7464,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_custom_admin_menus action log config object.
-			$component_custom_admin_menus_action_log_config = new stdClass();
+			$component_custom_admin_menus_action_log_config = new \stdClass();
 			$component_custom_admin_menus_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_MENUS';
 			$component_custom_admin_menus_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_menus';
 			$component_custom_admin_menus_action_log_config->id_holder = 'id';
@@ -7352,10 +7481,27 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
+			}
+			// Create the component_router action log config object.
+			$component_router_action_log_config = new \stdClass();
+			$component_router_action_log_config->type_title = 'COMPONENT_ROUTER';
+			$component_router_action_log_config->type_alias = 'com_componentbuilder.component_router';
+			$component_router_action_log_config->id_holder = 'id';
+			$component_router_action_log_config->title_holder = 'joomla_component';
+			$component_router_action_log_config->table_name = '#__componentbuilder_component_router';
+			$component_router_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$component_router_Inserted = $db->insertObject('#__action_log_config', $component_router_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = Factory::getDbo();
 			}
 			// Create the component_config action log config object.
-			$component_config_action_log_config = new stdClass();
+			$component_config_action_log_config = new \stdClass();
 			$component_config_action_log_config->type_title = 'COMPONENT_CONFIG';
 			$component_config_action_log_config->type_alias = 'com_componentbuilder.component_config';
 			$component_config_action_log_config->id_holder = 'id';
@@ -7369,10 +7515,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_dashboard action log config object.
-			$component_dashboard_action_log_config = new stdClass();
+			$component_dashboard_action_log_config = new \stdClass();
 			$component_dashboard_action_log_config->type_title = 'COMPONENT_DASHBOARD';
 			$component_dashboard_action_log_config->type_alias = 'com_componentbuilder.component_dashboard';
 			$component_dashboard_action_log_config->id_holder = 'id';
@@ -7386,10 +7532,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_files_folders action log config object.
-			$component_files_folders_action_log_config = new stdClass();
+			$component_files_folders_action_log_config = new \stdClass();
 			$component_files_folders_action_log_config->type_title = 'COMPONENT_FILES_FOLDERS';
 			$component_files_folders_action_log_config->type_alias = 'com_componentbuilder.component_files_folders';
 			$component_files_folders_action_log_config->id_holder = 'id';
@@ -7403,10 +7549,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_placeholders action log config object.
-			$component_placeholders_action_log_config = new stdClass();
+			$component_placeholders_action_log_config = new \stdClass();
 			$component_placeholders_action_log_config->type_title = 'COMPONENT_PLACEHOLDERS';
 			$component_placeholders_action_log_config->type_alias = 'com_componentbuilder.component_placeholders';
 			$component_placeholders_action_log_config->id_holder = 'id';
@@ -7420,10 +7566,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_plugins action log config object.
-			$component_plugins_action_log_config = new stdClass();
+			$component_plugins_action_log_config = new \stdClass();
 			$component_plugins_action_log_config->type_title = 'COMPONENT_PLUGINS';
 			$component_plugins_action_log_config->type_alias = 'com_componentbuilder.component_plugins';
 			$component_plugins_action_log_config->id_holder = 'id';
@@ -7437,10 +7583,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_modules action log config object.
-			$component_modules_action_log_config = new stdClass();
+			$component_modules_action_log_config = new \stdClass();
 			$component_modules_action_log_config->type_title = 'COMPONENT_MODULES';
 			$component_modules_action_log_config->type_alias = 'com_componentbuilder.component_modules';
 			$component_modules_action_log_config->id_holder = 'id';
@@ -7454,10 +7600,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the snippet_type action log config object.
-			$snippet_type_action_log_config = new stdClass();
+			$snippet_type_action_log_config = new \stdClass();
 			$snippet_type_action_log_config->type_title = 'SNIPPET_TYPE';
 			$snippet_type_action_log_config->type_alias = 'com_componentbuilder.snippet_type';
 			$snippet_type_action_log_config->id_holder = 'id';
@@ -7471,10 +7617,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the library_config action log config object.
-			$library_config_action_log_config = new stdClass();
+			$library_config_action_log_config = new \stdClass();
 			$library_config_action_log_config->type_title = 'LIBRARY_CONFIG';
 			$library_config_action_log_config->type_alias = 'com_componentbuilder.library_config';
 			$library_config_action_log_config->id_holder = 'id';
@@ -7488,10 +7634,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the library_files_folders_urls action log config object.
-			$library_files_folders_urls_action_log_config = new stdClass();
+			$library_files_folders_urls_action_log_config = new \stdClass();
 			$library_files_folders_urls_action_log_config->type_title = 'LIBRARY_FILES_FOLDERS_URLS';
 			$library_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.library_files_folders_urls';
 			$library_files_folders_urls_action_log_config->id_holder = 'id';
@@ -7505,10 +7651,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the class_extends action log config object.
-			$class_extends_action_log_config = new stdClass();
+			$class_extends_action_log_config = new \stdClass();
 			$class_extends_action_log_config->type_title = 'CLASS_EXTENDS';
 			$class_extends_action_log_config->type_alias = 'com_componentbuilder.class_extends';
 			$class_extends_action_log_config->id_holder = 'id';
@@ -7522,10 +7668,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_module_updates action log config object.
-			$joomla_module_updates_action_log_config = new stdClass();
+			$joomla_module_updates_action_log_config = new \stdClass();
 			$joomla_module_updates_action_log_config->type_title = 'JOOMLA_MODULE_UPDATES';
 			$joomla_module_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_module_updates';
 			$joomla_module_updates_action_log_config->id_holder = 'id';
@@ -7539,10 +7685,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_module_files_folders_urls action log config object.
-			$joomla_module_files_folders_urls_action_log_config = new stdClass();
+			$joomla_module_files_folders_urls_action_log_config = new \stdClass();
 			$joomla_module_files_folders_urls_action_log_config->type_title = 'JOOMLA_MODULE_FILES_FOLDERS_URLS';
 			$joomla_module_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
 			$joomla_module_files_folders_urls_action_log_config->id_holder = 'id';
@@ -7556,10 +7702,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin_group action log config object.
-			$joomla_plugin_group_action_log_config = new stdClass();
+			$joomla_plugin_group_action_log_config = new \stdClass();
 			$joomla_plugin_group_action_log_config->type_title = 'JOOMLA_PLUGIN_GROUP';
 			$joomla_plugin_group_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_group';
 			$joomla_plugin_group_action_log_config->id_holder = 'id';
@@ -7573,10 +7719,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin_updates action log config object.
-			$joomla_plugin_updates_action_log_config = new stdClass();
+			$joomla_plugin_updates_action_log_config = new \stdClass();
 			$joomla_plugin_updates_action_log_config->type_title = 'JOOMLA_PLUGIN_UPDATES';
 			$joomla_plugin_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_updates';
 			$joomla_plugin_updates_action_log_config->id_holder = 'id';
@@ -7590,10 +7736,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin_files_folders_urls action log config object.
-			$joomla_plugin_files_folders_urls_action_log_config = new stdClass();
+			$joomla_plugin_files_folders_urls_action_log_config = new \stdClass();
 			$joomla_plugin_files_folders_urls_action_log_config->type_title = 'JOOMLA_PLUGIN_FILES_FOLDERS_URLS';
 			$joomla_plugin_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
 			$joomla_plugin_files_folders_urls_action_log_config->id_holder = 'id';
@@ -7609,16 +7755,16 @@ class com_componentbuilderInstallerScript
 		{
 
 			// Get The Database object
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 
 			// Create the joomla_component content type object.
-			$joomla_component = new stdClass();
+			$joomla_component = new \stdClass();
 			$joomla_component->type_title = 'Componentbuilder Joomla_component';
 			$joomla_component->type_alias = 'com_componentbuilder.joomla_component';
 			$joomla_component->table = '{"special": {"dbtable": "#__componentbuilder_joomla_component","key": "id","type": "Joomla_component","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_admin","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","css_admin":"css_admin","php_admin_event":"php_admin_event","php_site_event":"php_site_event","crowdin_username":"crowdin_username","component_version":"component_version","php_postflight_install":"php_postflight_install","remove_line_breaks":"remove_line_breaks","description":"description","sql_uninstall":"sql_uninstall","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","php_preflight_install":"php_preflight_install","backup_folder_path":"backup_folder_path","php_method_uninstall":"php_method_uninstall","add_placeholders":"add_placeholders","author":"author","add_sales_server":"add_sales_server","email":"email","translation_tool":"translation_tool","website":"website","buildcompsql":"buildcompsql","add_license":"add_license","php_helper_admin":"php_helper_admin","license_type":"license_type","php_helper_site":"php_helper_site","javascript":"javascript","whmcs_key":"whmcs_key","css_site":"css_site","whmcs_url":"whmcs_url","whmcs_buy_link":"whmcs_buy_link","php_preflight_update":"php_preflight_update","license":"license","php_postflight_update":"php_postflight_update","bom":"bom","sql":"sql","image":"image","addreadme":"addreadme","copyright":"copyright","update_server_url":"update_server_url","add_powers":"add_powers","add_backup_folder_path":"add_backup_folder_path","crowdin_project_identifier":"crowdin_project_identifier","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_javascript":"add_javascript","add_menu_prefix":"add_menu_prefix","add_css_admin":"add_css_admin","menu_prefix":"menu_prefix","add_css_site":"add_css_site","dashboard_type":"dashboard_type","dashboard":"dashboard","toignore":"toignore","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","add_php_postflight_install":"add_php_postflight_install","export_key":"export_key","add_php_postflight_update":"add_php_postflight_update","joomla_source_link":"joomla_source_link","add_php_method_uninstall":"add_php_method_uninstall","export_buy_link":"export_buy_link","add_sql":"add_sql","add_sql_uninstall":"add_sql_uninstall","assets_table_fix":"assets_table_fix","readme":"readme","emptycontributors":"emptycontributors","add_update_server":"add_update_server","number":"number","update_server_target":"update_server_target","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","creatuserhelper":"creatuserhelper","adduikit":"adduikit","crowdin_project_api_key":"crowdin_project_api_key","addfootable":"addfootable","crowdin_account_api_key":"crowdin_account_api_key","add_email_helper":"add_email_helper","buildcomp":"buildcomp","add_php_helper_both":"add_php_helper_both","guid":"guid","php_helper_both":"php_helper_both","name":"name"}}';
+			$joomla_component->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_site_event","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","debug_linenr":"debug_linenr","php_site_event":"php_site_event","translation_tool":"translation_tool","buildcompsql":"buildcompsql","add_sales_server":"add_sales_server","php_preflight_install":"php_preflight_install","php_method_uninstall":"php_method_uninstall","css_admin":"css_admin","mvc_versiondate":"mvc_versiondate","remove_line_breaks":"remove_line_breaks","add_placeholders":"add_placeholders","description":"description","php_postflight_install":"php_postflight_install","author":"author","sql_uninstall":"sql_uninstall","email":"email","website":"website","backup_folder_path":"backup_folder_path","php_helper_both":"php_helper_both","crowdin_username":"crowdin_username","php_admin_event":"php_admin_event","add_license":"add_license","component_version":"component_version","php_helper_admin":"php_helper_admin","license_type":"license_type","php_helper_site":"php_helper_site","javascript":"javascript","whmcs_key":"whmcs_key","css_site":"css_site","whmcs_url":"whmcs_url","whmcs_buy_link":"whmcs_buy_link","php_preflight_update":"php_preflight_update","license":"license","php_postflight_update":"php_postflight_update","bom":"bom","sql":"sql","image":"image","addreadme":"addreadme","copyright":"copyright","update_server_url":"update_server_url","add_powers":"add_powers","add_backup_folder_path":"add_backup_folder_path","crowdin_project_identifier":"crowdin_project_identifier","add_php_helper_both":"add_php_helper_both","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_namespace_prefix":"add_namespace_prefix","add_javascript":"add_javascript","namespace_prefix":"namespace_prefix","add_css_admin":"add_css_admin","add_css_site":"add_css_site","add_menu_prefix":"add_menu_prefix","dashboard_type":"dashboard_type","menu_prefix":"menu_prefix","dashboard":"dashboard","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","toignore":"toignore","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","add_php_method_uninstall":"add_php_method_uninstall","export_key":"export_key","add_sql":"add_sql","joomla_source_link":"joomla_source_link","add_sql_uninstall":"add_sql_uninstall","export_buy_link":"export_buy_link","assets_table_fix":"assets_table_fix","readme":"readme","add_update_server":"add_update_server","update_server_target":"update_server_target","emptycontributors":"emptycontributors","number":"number","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","crowdin_project_api_key":"crowdin_project_api_key","creatuserhelper":"creatuserhelper","crowdin_account_api_key":"crowdin_account_api_key","adduikit":"adduikit","buildcomp":"buildcomp","addfootable":"addfootable","guid":"guid","add_email_helper":"add_email_helper","name":"name"}}';
 			$joomla_component->router = 'ComponentbuilderHelperRoute::getJoomla_componentRoute';
-			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","remove_line_breaks","debug_linenr","mvc_versiondate","add_placeholders","add_sales_server","translation_tool","add_license","license_type","addreadme","add_powers","add_backup_folder_path","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","emptycontributors","add_update_server","number","update_server_target","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","addfootable","add_email_helper","buildcomp","add_php_helper_both"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_component->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","debug_linenr","translation_tool","add_sales_server","mvc_versiondate","remove_line_breaks","add_placeholders","add_license","license_type","addreadme","add_powers","add_backup_folder_path","add_php_helper_both","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","add_update_server","update_server_target","emptycontributors","number","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","buildcomp","addfootable","add_email_helper"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_component type is already in content_type DB.
 			$joomla_component_id = null;
@@ -7641,13 +7787,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_module content type object.
-			$joomla_module = new stdClass();
+			$joomla_module = new \stdClass();
 			$joomla_module->type_title = 'Componentbuilder Joomla_module';
 			$joomla_module->type_alias = 'com_componentbuilder.joomla_module';
 			$joomla_module->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module","key": "id","type": "Joomla_module","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_module->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "default","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","target":"target","description":"description","add_php_method_uninstall":"add_php_method_uninstall","add_php_postflight_update":"add_php_postflight_update","add_php_postflight_install":"add_php_postflight_install","add_php_preflight_uninstall":"add_php_preflight_uninstall","addreadme":"addreadme","default":"default","snippet":"snippet","add_sql":"add_sql","update_server_target":"update_server_target","add_sql_uninstall":"add_sql_uninstall","update_server":"update_server","add_update_server":"add_update_server","libraries":"libraries","module_version":"module_version","sales_server":"sales_server","custom_get":"custom_get","php_preflight_update":"php_preflight_update","php_preflight_uninstall":"php_preflight_uninstall","mod_code":"mod_code","php_postflight_install":"php_postflight_install","add_class_helper":"add_class_helper","php_postflight_update":"php_postflight_update","add_class_helper_header":"add_class_helper_header","php_method_uninstall":"php_method_uninstall","class_helper_header":"class_helper_header","sql":"sql","class_helper_code":"class_helper_code","sql_uninstall":"sql_uninstall","readme":"readme","add_php_script_construct":"add_php_script_construct","update_server_url":"update_server_url","php_script_construct":"php_script_construct","add_php_preflight_install":"add_php_preflight_install","php_preflight_install":"php_preflight_install","add_sales_server":"add_sales_server","add_php_preflight_update":"add_php_preflight_update","guid":"guid","name":"name"}}';
 			$joomla_module->router = 'ComponentbuilderHelperRoute::getJoomla_moduleRoute';
-			$joomla_module->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","target","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","add_php_preflight_uninstall","addreadme","snippet","add_sql","update_server_target","add_sql_uninstall","update_server","add_update_server","sales_server","add_class_helper","add_class_helper_header","add_php_script_construct","add_php_preflight_install","add_sales_server","add_php_preflight_update"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_module->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","target","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","add_php_preflight_uninstall","addreadme","snippet","add_sql","update_server_target","add_sql_uninstall","update_server","add_update_server","sales_server","add_class_helper","add_class_helper_header","add_php_script_construct","add_php_preflight_install","add_sales_server","add_php_preflight_update"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_module type is already in content_type DB.
 			$joomla_module_id = null;
@@ -7670,13 +7816,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_plugin content type object.
-			$joomla_plugin = new stdClass();
+			$joomla_plugin = new \stdClass();
 			$joomla_plugin->type_title = 'Componentbuilder Joomla_plugin';
 			$joomla_plugin->type_alias = 'com_componentbuilder.joomla_plugin';
 			$joomla_plugin->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin","key": "id","type": "Joomla_plugin","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "head","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","class_extends":"class_extends","joomla_plugin_group":"joomla_plugin_group","add_sql":"add_sql","add_php_method_uninstall":"add_php_method_uninstall","add_php_postflight_update":"add_php_postflight_update","add_php_postflight_install":"add_php_postflight_install","sales_server":"sales_server","add_update_server":"add_update_server","add_head":"add_head","add_sql_uninstall":"add_sql_uninstall","addreadme":"addreadme","head":"head","update_server_target":"update_server_target","main_class_code":"main_class_code","update_server":"update_server","description":"description","php_postflight_install":"php_postflight_install","plugin_version":"plugin_version","php_postflight_update":"php_postflight_update","php_method_uninstall":"php_method_uninstall","add_php_script_construct":"add_php_script_construct","sql":"sql","php_script_construct":"php_script_construct","sql_uninstall":"sql_uninstall","add_php_preflight_install":"add_php_preflight_install","readme":"readme","php_preflight_install":"php_preflight_install","update_server_url":"update_server_url","add_php_preflight_update":"add_php_preflight_update","php_preflight_update":"php_preflight_update","add_php_preflight_uninstall":"add_php_preflight_uninstall","add_sales_server":"add_sales_server","php_preflight_uninstall":"php_preflight_uninstall","guid":"guid","name":"name"}}';
 			$joomla_plugin->router = 'ComponentbuilderHelperRoute::getJoomla_pluginRoute';
-			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends","joomla_plugin_group","add_sql","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","sales_server","add_update_server","add_head","add_sql_uninstall","addreadme","update_server_target","update_server","add_php_script_construct","add_php_preflight_install","add_php_preflight_update","add_php_preflight_uninstall","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_plugin->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","class_extends","joomla_plugin_group","add_sql","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","sales_server","add_update_server","add_head","add_sql_uninstall","addreadme","update_server_target","update_server","add_php_script_construct","add_php_preflight_install","add_php_preflight_update","add_php_preflight_uninstall","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_plugin type is already in content_type DB.
 			$joomla_plugin_id = null;
@@ -7699,13 +7845,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the power content type object.
-			$power = new stdClass();
+			$power = new \stdClass();
 			$power->type_title = 'Componentbuilder Power';
 			$power->type_alias = 'com_componentbuilder.power';
 			$power->table = '{"special": {"dbtable": "#__componentbuilder_power","key": "id","type": "Power","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$power->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "head","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","namespace":"namespace","type":"type","power_version":"power_version","licensing_template":"licensing_template","description":"description","extends":"extends","approved":"approved","add_head":"add_head","extends_custom":"extends_custom","implements_custom":"implements_custom","implements":"implements","head":"head","approved_paths":"approved_paths","main_class_code":"main_class_code","add_licensing_template":"add_licensing_template","guid":"guid","name":"name"}}';
 			$power->router = 'ComponentbuilderHelperRoute::getPowerRoute';
-			$power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","approved","add_head","add_licensing_template"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "extends","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"},{"sourceColumn": "implements","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"}]}';
+			$power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","approved","add_head","add_licensing_template"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "extends","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"},{"sourceColumn": "implements","targetTable": "#__componentbuilder_power","targetColumn": "guid","displayColumn": "name"}]}';
 
 			// Check if power type is already in content_type DB.
 			$power_id = null;
@@ -7728,13 +7874,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the admin_view content type object.
-			$admin_view = new stdClass();
+			$admin_view = new \stdClass();
 			$admin_view->type_title = 'Componentbuilder Admin_view';
 			$admin_view->type_alias = 'com_componentbuilder.admin_view';
 			$admin_view->table = '{"special": {"dbtable": "#__componentbuilder_admin_view","key": "id","type": "Admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "null","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_allowedit","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_single":"name_single","short_description":"short_description","php_allowedit":"php_allowedit","php_postsavehook":"php_postsavehook","php_before_save":"php_before_save","php_getlistquery":"php_getlistquery","php_import_ext":"php_import_ext","icon":"icon","php_after_publish":"php_after_publish","add_fadein":"add_fadein","description":"description","icon_category":"icon_category","icon_add":"icon_add","php_after_cancel":"php_after_cancel","mysql_table_charset":"mysql_table_charset","php_batchmove":"php_batchmove","type":"type","php_after_delete":"php_after_delete","source":"source","php_import":"php_import","php_getitems_after_all":"php_getitems_after_all","php_getform":"php_getform","php_save":"php_save","php_allowadd":"php_allowadd","php_before_cancel":"php_before_cancel","php_batchcopy":"php_batchcopy","php_before_publish":"php_before_publish","alias_builder_type":"alias_builder_type","php_before_delete":"php_before_delete","php_document":"php_document","mysql_table_row_format":"mysql_table_row_format","alias_builder":"alias_builder","sql":"sql","php_import_display":"php_import_display","add_category_submenu":"add_category_submenu","php_import_setdata":"php_import_setdata","name_list":"name_list","add_php_getlistquery":"add_php_getlistquery","add_css_view":"add_css_view","add_php_getform":"add_php_getform","css_view":"css_view","add_php_before_save":"add_php_before_save","add_css_views":"add_css_views","add_php_save":"add_php_save","css_views":"css_views","add_php_postsavehook":"add_php_postsavehook","add_javascript_view_file":"add_javascript_view_file","add_php_allowadd":"add_php_allowadd","javascript_view_file":"javascript_view_file","add_php_allowedit":"add_php_allowedit","add_javascript_view_footer":"add_javascript_view_footer","add_php_before_cancel":"add_php_before_cancel","javascript_view_footer":"javascript_view_footer","add_php_after_cancel":"add_php_after_cancel","add_javascript_views_file":"add_javascript_views_file","add_php_batchcopy":"add_php_batchcopy","javascript_views_file":"javascript_views_file","add_php_batchmove":"add_php_batchmove","add_javascript_views_footer":"add_javascript_views_footer","add_php_before_publish":"add_php_before_publish","javascript_views_footer":"javascript_views_footer","add_php_after_publish":"add_php_after_publish","add_custom_button":"add_custom_button","add_php_before_delete":"add_php_before_delete","add_php_after_delete":"add_php_after_delete","php_controller":"php_controller","add_php_document":"add_php_document","php_model":"php_model","mysql_table_engine":"mysql_table_engine","php_controller_list":"php_controller_list","mysql_table_collate":"mysql_table_collate","php_model_list":"php_model_list","add_sql":"add_sql","add_php_ajax":"add_php_ajax","php_ajaxmethod":"php_ajaxmethod","add_custom_import":"add_custom_import","add_php_getitem":"add_php_getitem","html_import_view":"html_import_view","php_getitem":"php_getitem","php_import_headers":"php_import_headers","add_php_getitems":"add_php_getitems","php_import_save":"php_import_save","php_getitems":"php_getitems","guid":"guid","add_php_getitems_after_all":"add_php_getitems_after_all"}}';
 			$admin_view->router = 'ComponentbuilderHelperRoute::getAdmin_viewRoute';
-			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","add_fadein","type","source","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
+			$admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_fadein","type","source","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if admin_view type is already in content_type DB.
 			$admin_view_id = null;
@@ -7757,13 +7903,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the custom_admin_view content type object.
-			$custom_admin_view = new stdClass();
+			$custom_admin_view = new \stdClass();
 			$custom_admin_view->type_title = 'Componentbuilder Custom_admin_view';
 			$custom_admin_view->type_alias = 'com_componentbuilder.custom_admin_view';
 			$custom_admin_view->table = '{"special": {"dbtable": "#__componentbuilder_custom_admin_view","key": "id","type": "Custom_admin_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$custom_admin_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_document","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name":"name","description":"description","main_get":"main_get","add_php_jview_display":"add_php_jview_display","css_document":"css_document","css":"css","js_document":"js_document","javascript_file":"javascript_file","codename":"codename","default":"default","snippet":"snippet","icon":"icon","add_php_jview":"add_php_jview","context":"context","add_js_document":"add_js_document","custom_get":"custom_get","add_javascript_file":"add_javascript_file","php_ajaxmethod":"php_ajaxmethod","add_css_document":"add_css_document","add_php_document":"add_php_document","add_css":"add_css","add_php_view":"add_php_view","add_php_ajax":"add_php_ajax","libraries":"libraries","dynamic_get":"dynamic_get","php_document":"php_document","php_view":"php_view","add_custom_button":"add_custom_button","php_jview_display":"php_jview_display","php_jview":"php_jview","php_controller":"php_controller","guid":"guid","php_model":"php_model"}}';
 			$custom_admin_view->router = 'ComponentbuilderHelperRoute::getCustom_admin_viewRoute';
-			$custom_admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_get","add_php_jview_display","snippet","add_php_jview","add_js_document","add_javascript_file","add_css_document","add_php_document","add_css","add_php_view","add_php_ajax","dynamic_get","add_custom_button"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+			$custom_admin_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_get","add_php_jview_display","snippet","add_php_jview","add_js_document","add_javascript_file","add_css_document","add_php_document","add_css","add_php_view","add_php_ajax","dynamic_get","add_custom_button"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if custom_admin_view type is already in content_type DB.
 			$custom_admin_view_id = null;
@@ -7786,13 +7932,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the site_view content type object.
-			$site_view = new stdClass();
+			$site_view = new \stdClass();
 			$site_view->type_title = 'Componentbuilder Site_view';
 			$site_view->type_alias = 'com_componentbuilder.site_view';
 			$site_view->table = '{"special": {"dbtable": "#__componentbuilder_site_view","key": "id","type": "Site_view","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$site_view->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "js_document","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name":"name","description":"description","main_get":"main_get","add_php_jview_display":"add_php_jview_display","add_php_document":"add_php_document","add_php_view":"add_php_view","js_document":"js_document","codename":"codename","javascript_file":"javascript_file","context":"context","default":"default","snippet":"snippet","add_php_jview":"add_php_jview","custom_get":"custom_get","css_document":"css_document","add_javascript_file":"add_javascript_file","css":"css","add_js_document":"add_js_document","php_ajaxmethod":"php_ajaxmethod","add_css_document":"add_css_document","libraries":"libraries","add_css":"add_css","dynamic_get":"dynamic_get","add_php_ajax":"add_php_ajax","add_custom_button":"add_custom_button","php_document":"php_document","button_position":"button_position","php_view":"php_view","php_jview_display":"php_jview_display","php_jview":"php_jview","php_controller":"php_controller","guid":"guid","php_model":"php_model"}}';
 			$site_view->router = 'ComponentbuilderHelperRoute::getSite_viewRoute';
-			$site_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/site_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_get","add_php_jview_display","add_php_document","add_php_view","snippet","add_php_jview","add_javascript_file","add_js_document","add_css_document","add_css","dynamic_get","add_php_ajax","add_custom_button","button_position"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
+			$site_view->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/site_view.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_get","add_php_jview_display","add_php_document","add_php_view","snippet","add_php_jview","add_javascript_file","add_js_document","add_css_document","add_css","dynamic_get","add_php_ajax","add_custom_button","button_position"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "main_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "custom_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if site_view type is already in content_type DB.
 			$site_view_id = null;
@@ -7815,13 +7961,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the template content type object.
-			$template = new stdClass();
+			$template = new \stdClass();
 			$template->type_title = 'Componentbuilder Template';
 			$template->type_alias = 'com_componentbuilder.template';
 			$template->table = '{"special": {"dbtable": "#__componentbuilder_template","key": "id","type": "Template","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$template->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "php_view","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description","dynamic_get":"dynamic_get","php_view":"php_view","add_php_view":"add_php_view","template":"template","snippet":"snippet","libraries":"libraries","alias":"alias"}}';
 			$template->router = 'ComponentbuilderHelperRoute::getTemplateRoute';
-			$template->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/template.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","dynamic_get","add_php_view","snippet"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$template->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/template.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","dynamic_get","add_php_view","snippet"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if template type is already in content_type DB.
 			$template_id = null;
@@ -7844,13 +7990,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the layout content type object.
-			$layout = new stdClass();
+			$layout = new \stdClass();
 			$layout->type_title = 'Componentbuilder Layout';
 			$layout->type_alias = 'com_componentbuilder.layout';
 			$layout->table = '{"special": {"dbtable": "#__componentbuilder_layout","key": "id","type": "Layout","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$layout->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "php_view","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description","dynamic_get":"dynamic_get","snippet":"snippet","php_view":"php_view","add_php_view":"add_php_view","layout":"layout","libraries":"libraries","alias":"alias"}}';
 			$layout->router = 'ComponentbuilderHelperRoute::getLayoutRoute';
-			$layout->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/layout.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","dynamic_get","snippet","add_php_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$layout->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/layout.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","dynamic_get","snippet","add_php_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dynamic_get","targetTable": "#__componentbuilder_dynamic_get","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "snippet","targetTable": "#__componentbuilder_snippet","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if layout type is already in content_type DB.
 			$layout_id = null;
@@ -7873,13 +8019,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the dynamic_get content type object.
-			$dynamic_get = new stdClass();
+			$dynamic_get = new \stdClass();
 			$dynamic_get->type_title = 'Componentbuilder Dynamic_get';
 			$dynamic_get->type_alias = 'com_componentbuilder.dynamic_get';
 			$dynamic_get->table = '{"special": {"dbtable": "#__componentbuilder_dynamic_get","key": "id","type": "Dynamic_get","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$dynamic_get->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_before_getitems","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","main_source":"main_source","gettype":"gettype","php_router_parse":"php_router_parse","php_before_getitems":"php_before_getitems","php_after_getitems":"php_after_getitems","php_after_getitem":"php_after_getitem","php_getlistquery":"php_getlistquery","view_selection":"view_selection","db_table_main":"db_table_main","php_custom_get":"php_custom_get","plugin_events":"plugin_events","db_selection":"db_selection","php_calculation":"php_calculation","php_before_getitem":"php_before_getitem","view_table_main":"view_table_main","select_all":"select_all","add_php_before_getitem":"add_php_before_getitem","getcustom":"getcustom","add_php_after_getitem":"add_php_after_getitem","pagination":"pagination","add_php_getlistquery":"add_php_getlistquery","add_php_before_getitems":"add_php_before_getitems","add_php_after_getitems":"add_php_after_getitems","add_php_router_parse":"add_php_router_parse","addcalculation":"addcalculation","guid":"guid"}}';
+			$dynamic_get->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_calculation","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","main_source":"main_source","gettype":"gettype","php_calculation":"php_calculation","php_router_parse":"php_router_parse","add_php_after_getitems":"add_php_after_getitems","add_php_router_parse":"add_php_router_parse","view_selection":"view_selection","add_php_before_getitems":"add_php_before_getitems","add_php_before_getitem":"add_php_before_getitem","add_php_after_getitem":"add_php_after_getitem","db_table_main":"db_table_main","php_custom_get":"php_custom_get","plugin_events":"plugin_events","db_selection":"db_selection","view_table_main":"view_table_main","add_php_getlistquery":"add_php_getlistquery","select_all":"select_all","php_before_getitem":"php_before_getitem","getcustom":"getcustom","php_after_getitem":"php_after_getitem","pagination":"pagination","php_getlistquery":"php_getlistquery","php_before_getitems":"php_before_getitems","php_after_getitems":"php_after_getitems","addcalculation":"addcalculation","guid":"guid"}}';
 			$dynamic_get->router = 'ComponentbuilderHelperRoute::getDynamic_getRoute';
-			$dynamic_get->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","main_source","gettype","view_table_main","select_all","add_php_before_getitem","add_php_after_getitem","pagination","add_php_getlistquery","add_php_before_getitems","add_php_after_getitems","add_php_router_parse"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$dynamic_get->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_source","gettype","add_php_after_getitems","add_php_router_parse","add_php_before_getitems","add_php_before_getitem","add_php_after_getitem","view_table_main","add_php_getlistquery","select_all","pagination"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if dynamic_get type is already in content_type DB.
 			$dynamic_get_id = null;
@@ -7902,13 +8048,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the custom_code content type object.
-			$custom_code = new stdClass();
+			$custom_code = new \stdClass();
 			$custom_code->type_title = 'Componentbuilder Custom_code';
 			$custom_code->type_alias = 'com_componentbuilder.custom_code';
 			$custom_code->table = '{"special": {"dbtable": "#__componentbuilder_custom_code","key": "id","type": "Custom_code","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
-			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","comment_type":"comment_type","function_name":"function_name","system_name":"system_name","code":"code","hashendtarget":"hashendtarget","to_line":"to_line","from_line":"from_line","hashtarget":"hashtarget"}}';
+			$custom_code->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"component":"component","path":"path","target":"target","type":"type","comment_type":"comment_type","joomla_version":"joomla_version","function_name":"function_name","system_name":"system_name","code":"code","hashendtarget":"hashendtarget","to_line":"to_line","from_line":"from_line","hashtarget":"hashtarget"}}';
 			$custom_code->router = 'ComponentbuilderHelperRoute::getCustom_codeRoute';
-			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","component","target","type","comment_type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$custom_code->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/custom_code.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","component","target","type","comment_type","joomla_version"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if custom_code type is already in content_type DB.
 			$custom_code_id = null;
@@ -7931,13 +8077,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the class_property content type object.
-			$class_property = new stdClass();
+			$class_property = new \stdClass();
 			$class_property->type_title = 'Componentbuilder Class_property';
 			$class_property->type_alias = 'com_componentbuilder.class_property';
 			$class_property->table = '{"special": {"dbtable": "#__componentbuilder_class_property","key": "id","type": "Class_property","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$class_property->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","visibility":"visibility","extension_type":"extension_type","guid":"guid","comment":"comment","joomla_plugin_group":"joomla_plugin_group","default":"default"}}';
 			$class_property->router = 'ComponentbuilderHelperRoute::getClass_propertyRoute';
-			$class_property->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_property.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
+			$class_property->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_property.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if class_property type is already in content_type DB.
 			$class_property_id = null;
@@ -7960,13 +8106,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the class_method content type object.
-			$class_method = new stdClass();
+			$class_method = new \stdClass();
 			$class_method->type_title = 'Componentbuilder Class_method';
 			$class_method->type_alias = 'com_componentbuilder.class_method';
 			$class_method->table = '{"special": {"dbtable": "#__componentbuilder_class_method","key": "id","type": "Class_method","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$class_method->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","visibility":"visibility","extension_type":"extension_type","guid":"guid","code":"code","comment":"comment","joomla_plugin_group":"joomla_plugin_group","arguments":"arguments"}}';
 			$class_method->router = 'ComponentbuilderHelperRoute::getClass_methodRoute';
-			$class_method->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_method.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
+			$class_method->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_method.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin_group"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if class_method type is already in content_type DB.
 			$class_method_id = null;
@@ -7989,13 +8135,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the placeholder content type object.
-			$placeholder = new stdClass();
+			$placeholder = new \stdClass();
 			$placeholder->type_title = 'Componentbuilder Placeholder';
 			$placeholder->type_alias = 'com_componentbuilder.placeholder';
 			$placeholder->table = '{"special": {"dbtable": "#__componentbuilder_placeholder","key": "id","type": "Placeholder","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$placeholder->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "target","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"target":"target","value":"value"}}';
 			$placeholder->router = 'ComponentbuilderHelperRoute::getPlaceholderRoute';
-			$placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$placeholder->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/placeholder.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if placeholder type is already in content_type DB.
 			$placeholder_id = null;
@@ -8018,13 +8164,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the library content type object.
-			$library = new stdClass();
+			$library = new \stdClass();
 			$library->type_title = 'Componentbuilder Library';
 			$library->type_alias = 'com_componentbuilder.library';
 			$library->table = '{"special": {"dbtable": "#__componentbuilder_library","key": "id","type": "Library","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$library->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","target":"target","how":"how","type":"type","description":"description","libraries":"libraries","php_setdocument":"php_setdocument","guid":"guid"}}';
 			$library->router = 'ComponentbuilderHelperRoute::getLibraryRoute';
-			$library->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","target","how","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$library->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","target","how","type"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "libraries","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if library type is already in content_type DB.
 			$library_id = null;
@@ -8047,13 +8193,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the snippet content type object.
-			$snippet = new stdClass();
+			$snippet = new \stdClass();
 			$snippet->type_title = 'Componentbuilder Snippet';
 			$snippet->type_alias = 'com_componentbuilder.snippet';
 			$snippet->table = '{"special": {"dbtable": "#__componentbuilder_snippet","key": "id","type": "Snippet","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$snippet->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","url":"url","type":"type","heading":"heading","library":"library","guid":"guid","contributor_email":"contributor_email","contributor_name":"contributor_name","contributor_website":"contributor_website","contributor_company":"contributor_company","snippet":"snippet","usage":"usage","description":"description"}}';
 			$snippet->router = 'ComponentbuilderHelperRoute::getSnippetRoute';
-			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$snippet->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","type","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "type","targetTable": "#__componentbuilder_snippet_type","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if snippet type is already in content_type DB.
 			$snippet_id = null;
@@ -8076,13 +8222,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the validation_rule content type object.
-			$validation_rule = new stdClass();
+			$validation_rule = new \stdClass();
 			$validation_rule->type_title = 'Componentbuilder Validation_rule';
 			$validation_rule->type_alias = 'com_componentbuilder.validation_rule';
 			$validation_rule->table = '{"special": {"dbtable": "#__componentbuilder_validation_rule","key": "id","type": "Validation_rule","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$validation_rule->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","short_description":"short_description","inherit":"inherit","php":"php"}}';
 			$validation_rule->router = 'ComponentbuilderHelperRoute::getValidation_ruleRoute';
-			$validation_rule->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/validation_rule.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "inherit","targetTable": "#__componentbuilder_validation_rule","targetColumn": "id","displayColumn": "name"}]}';
+			$validation_rule->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/validation_rule.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "inherit","targetTable": "#__componentbuilder_validation_rule","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if validation_rule type is already in content_type DB.
 			$validation_rule_id = null;
@@ -8105,13 +8251,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the field content type object.
-			$field = new stdClass();
+			$field = new \stdClass();
 			$field->type_title = 'Componentbuilder Field';
 			$field->type_alias = 'com_componentbuilder.field';
 			$field->table = '{"special": {"dbtable": "#__componentbuilder_field","key": "id","type": "Field","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$field->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "css_views","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","fieldtype":"fieldtype","datatype":"datatype","indexes":"indexes","null_switch":"null_switch","store":"store","on_save_model_field":"on_save_model_field","initiator_on_get_model":"initiator_on_get_model","initiator_on_save_model":"initiator_on_save_model","xml":"xml","datalenght":"datalenght","css_views":"css_views","css_view":"css_view","datadefault_other":"datadefault_other","datadefault":"datadefault","datalenght_other":"datalenght_other","on_get_model_field":"on_get_model_field","javascript_view_footer":"javascript_view_footer","javascript_views_footer":"javascript_views_footer","add_css_view":"add_css_view","add_css_views":"add_css_views","add_javascript_view_footer":"add_javascript_view_footer","add_javascript_views_footer":"add_javascript_views_footer","guid":"guid"}}';
 			$field->router = 'ComponentbuilderHelperRoute::getFieldRoute';
-			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","xml"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","fieldtype","store","catid","add_css_view","add_css_views","add_javascript_view_footer","add_javascript_views_footer"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "fieldtype","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
+			$field->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/field.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","xml"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","fieldtype","store","catid","add_css_view","add_css_views","add_javascript_view_footer","add_javascript_views_footer"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "fieldtype","targetTable": "#__componentbuilder_fieldtype","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if field type is already in content_type DB.
 			$field_id = null;
@@ -8134,7 +8280,7 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the field category content type object.
-			$field_category = new stdClass();
+			$field_category = new \stdClass();
 			$field_category->type_title = 'Componentbuilder Field Catid';
 			$field_category->type_alias = 'com_componentbuilder.field.category';
 			$field_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
@@ -8163,13 +8309,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the fieldtype content type object.
-			$fieldtype = new stdClass();
+			$fieldtype = new \stdClass();
 			$fieldtype->type_title = 'Componentbuilder Fieldtype';
 			$fieldtype->type_alias = 'com_componentbuilder.fieldtype';
 			$fieldtype->table = '{"special": {"dbtable": "#__componentbuilder_fieldtype","key": "id","type": "Fieldtype","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$fieldtype->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "catid","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","store":"store","null_switch":"null_switch","indexes":"indexes","datadefault_other":"datadefault_other","datadefault":"datadefault","short_description":"short_description","datatype":"datatype","has_defaults":"has_defaults","description":"description","datalenght":"datalenght","datalenght_other":"datalenght_other","guid":"guid"}}';
 			$fieldtype->router = 'ComponentbuilderHelperRoute::getFieldtypeRoute';
-			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","store","has_defaults","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$fieldtype->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/fieldtype.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","store","has_defaults","catid"],"displayLookup": [{"sourceColumn": "catid","targetTable": "#__categories","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if fieldtype type is already in content_type DB.
 			$fieldtype_id = null;
@@ -8192,7 +8338,7 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the fieldtype category content type object.
-			$fieldtype_category = new stdClass();
+			$fieldtype_category = new \stdClass();
 			$fieldtype_category->type_title = 'Componentbuilder Fieldtype Catid';
 			$fieldtype_category->type_alias = 'com_componentbuilder.fieldtype.category';
 			$fieldtype_category->table = '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
@@ -8221,13 +8367,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the language_translation content type object.
-			$language_translation = new stdClass();
+			$language_translation = new \stdClass();
 			$language_translation->type_title = 'Componentbuilder Language_translation';
 			$language_translation->type_alias = 'com_componentbuilder.language_translation';
 			$language_translation->table = '{"special": {"dbtable": "#__componentbuilder_language_translation","key": "id","type": "Language_translation","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$language_translation->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "source","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"source":"source","plugins":"plugins","modules":"modules","components":"components"}}';
 			$language_translation->router = 'ComponentbuilderHelperRoute::getLanguage_translationRoute';
-			$language_translation->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language_translation.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "plugins","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "modules","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "components","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$language_translation->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language_translation.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "plugins","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "modules","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "components","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if language_translation type is already in content_type DB.
 			$language_translation_id = null;
@@ -8250,13 +8396,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the language content type object.
-			$language = new stdClass();
+			$language = new \stdClass();
 			$language->type_title = 'Componentbuilder Language';
 			$language->type_alias = 'com_componentbuilder.language';
 			$language->table = '{"special": {"dbtable": "#__componentbuilder_language","key": "id","type": "Language","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$language->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","langtag":"langtag"}}';
 			$language->router = 'ComponentbuilderHelperRoute::getLanguageRoute';
-			$language->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$language->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/language.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if language type is already in content_type DB.
 			$language_id = null;
@@ -8279,13 +8425,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the server content type object.
-			$server = new stdClass();
+			$server = new \stdClass();
 			$server->type_title = 'Componentbuilder Server';
 			$server->type_alias = 'com_componentbuilder.server';
 			$server->table = '{"special": {"dbtable": "#__componentbuilder_server","key": "id","type": "Server","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$server->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","protocol":"protocol","signature":"signature","private_key":"private_key","secret":"secret","password":"password","private":"private","authentication":"authentication","path":"path","port":"port","host":"host","username":"username"}}';
 			$server->router = 'ComponentbuilderHelperRoute::getServerRoute';
-			$server->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/server.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","protocol","authentication"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$server->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/server.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","protocol","authentication"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if server type is already in content_type DB.
 			$server_id = null;
@@ -8308,13 +8454,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the help_document content type object.
-			$help_document = new stdClass();
+			$help_document = new \stdClass();
 			$help_document->type_title = 'Componentbuilder Help_document';
 			$help_document->type_alias = 'com_componentbuilder.help_document';
 			$help_document->table = '{"special": {"dbtable": "#__componentbuilder_help_document","key": "id","type": "Help_document","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$help_document->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "title","core_state": "published","core_alias": "alias","core_created_time": "created","core_modified_time": "modified","core_body": "content","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "null","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"title":"title","type":"type","groups":"groups","location":"location","admin_view":"admin_view","site_view":"site_view","not_required":"not_required","content":"content","article":"article","url":"url","target":"target","alias":"alias"}}';
 			$help_document->router = 'ComponentbuilderHelperRoute::getHelp_documentRoute';
-			$help_document->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
+			$help_document->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/help_document.xml","hideFields": ["asset_id","checked_out","checked_out_time","version","not_required"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","type","location","not_required","article","target"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "article","targetTable": "#__content","targetColumn": "id","displayColumn": "title"}]}';
 
 			// Check if help_document type is already in content_type DB.
 			$help_document_id = null;
@@ -8337,13 +8483,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the admin_fields content type object.
-			$admin_fields = new stdClass();
+			$admin_fields = new \stdClass();
 			$admin_fields->type_title = 'Componentbuilder Admin_fields';
 			$admin_fields->type_alias = 'com_componentbuilder.admin_fields';
 			$admin_fields->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields","key": "id","type": "Admin_fields","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_fields->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_fields->router = 'ComponentbuilderHelperRoute::getAdmin_fieldsRoute';
-			$admin_fields->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_fields->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if admin_fields type is already in content_type DB.
 			$admin_fields_id = null;
@@ -8366,13 +8512,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the admin_fields_conditions content type object.
-			$admin_fields_conditions = new stdClass();
+			$admin_fields_conditions = new \stdClass();
 			$admin_fields_conditions->type_title = 'Componentbuilder Admin_fields_conditions';
 			$admin_fields_conditions->type_alias = 'com_componentbuilder.admin_fields_conditions';
 			$admin_fields_conditions->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields_conditions","key": "id","type": "Admin_fields_conditions","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_fields_conditions->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_fields_conditions->router = 'ComponentbuilderHelperRoute::getAdmin_fields_conditionsRoute';
-			$admin_fields_conditions->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_conditions.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_fields_conditions->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_conditions.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if admin_fields_conditions type is already in content_type DB.
 			$admin_fields_conditions_id = null;
@@ -8395,13 +8541,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the admin_fields_relations content type object.
-			$admin_fields_relations = new stdClass();
+			$admin_fields_relations = new \stdClass();
 			$admin_fields_relations->type_title = 'Componentbuilder Admin_fields_relations';
 			$admin_fields_relations->type_alias = 'com_componentbuilder.admin_fields_relations';
 			$admin_fields_relations->table = '{"special": {"dbtable": "#__componentbuilder_admin_fields_relations","key": "id","type": "Admin_fields_relations","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_fields_relations->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_fields_relations->router = 'ComponentbuilderHelperRoute::getAdmin_fields_relationsRoute';
-			$admin_fields_relations->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_relations.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_fields_relations->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_fields_relations.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if admin_fields_relations type is already in content_type DB.
 			$admin_fields_relations_id = null;
@@ -8424,13 +8570,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the admin_custom_tabs content type object.
-			$admin_custom_tabs = new stdClass();
+			$admin_custom_tabs = new \stdClass();
 			$admin_custom_tabs->type_title = 'Componentbuilder Admin_custom_tabs';
 			$admin_custom_tabs->type_alias = 'com_componentbuilder.admin_custom_tabs';
 			$admin_custom_tabs->table = '{"special": {"dbtable": "#__componentbuilder_admin_custom_tabs","key": "id","type": "Admin_custom_tabs","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$admin_custom_tabs->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "admin_view","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"admin_view":"admin_view"}}';
 			$admin_custom_tabs->router = 'ComponentbuilderHelperRoute::getAdmin_custom_tabsRoute';
-			$admin_custom_tabs->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_custom_tabs.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
+			$admin_custom_tabs->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/admin_custom_tabs.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","admin_view"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "admin_view","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if admin_custom_tabs type is already in content_type DB.
 			$admin_custom_tabs_id = null;
@@ -8453,13 +8599,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_admin_views content type object.
-			$component_admin_views = new stdClass();
+			$component_admin_views = new \stdClass();
 			$component_admin_views->type_title = 'Componentbuilder Component_admin_views';
 			$component_admin_views->type_alias = 'com_componentbuilder.component_admin_views';
 			$component_admin_views->table = '{"special": {"dbtable": "#__componentbuilder_component_admin_views","key": "id","type": "Component_admin_views","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_admin_views->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_admin_views->router = 'ComponentbuilderHelperRoute::getComponent_admin_viewsRoute';
-			$component_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_admin_views type is already in content_type DB.
 			$component_admin_views_id = null;
@@ -8482,13 +8628,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_site_views content type object.
-			$component_site_views = new stdClass();
+			$component_site_views = new \stdClass();
 			$component_site_views->type_title = 'Componentbuilder Component_site_views';
 			$component_site_views->type_alias = 'com_componentbuilder.component_site_views';
 			$component_site_views->table = '{"special": {"dbtable": "#__componentbuilder_component_site_views","key": "id","type": "Component_site_views","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_site_views->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_site_views->router = 'ComponentbuilderHelperRoute::getComponent_site_viewsRoute';
-			$component_site_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_site_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_site_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_site_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_site_views type is already in content_type DB.
 			$component_site_views_id = null;
@@ -8511,13 +8657,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_custom_admin_views content type object.
-			$component_custom_admin_views = new stdClass();
+			$component_custom_admin_views = new \stdClass();
 			$component_custom_admin_views->type_title = 'Componentbuilder Component_custom_admin_views';
 			$component_custom_admin_views->type_alias = 'com_componentbuilder.component_custom_admin_views';
 			$component_custom_admin_views->table = '{"special": {"dbtable": "#__componentbuilder_component_custom_admin_views","key": "id","type": "Component_custom_admin_views","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_custom_admin_views->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_custom_admin_views->router = 'ComponentbuilderHelperRoute::getComponent_custom_admin_viewsRoute';
-			$component_custom_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_custom_admin_views->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_views.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_custom_admin_views type is already in content_type DB.
 			$component_custom_admin_views_id = null;
@@ -8540,13 +8686,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_updates content type object.
-			$component_updates = new stdClass();
+			$component_updates = new \stdClass();
 			$component_updates->type_title = 'Componentbuilder Component_updates';
 			$component_updates->type_alias = 'com_componentbuilder.component_updates';
 			$component_updates->table = '{"special": {"dbtable": "#__componentbuilder_component_updates","key": "id","type": "Component_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_updates->router = 'ComponentbuilderHelperRoute::getComponent_updatesRoute';
-			$component_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_updates type is already in content_type DB.
 			$component_updates_id = null;
@@ -8569,13 +8715,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_mysql_tweaks content type object.
-			$component_mysql_tweaks = new stdClass();
+			$component_mysql_tweaks = new \stdClass();
 			$component_mysql_tweaks->type_title = 'Componentbuilder Component_mysql_tweaks';
 			$component_mysql_tweaks->type_alias = 'com_componentbuilder.component_mysql_tweaks';
 			$component_mysql_tweaks->table = '{"special": {"dbtable": "#__componentbuilder_component_mysql_tweaks","key": "id","type": "Component_mysql_tweaks","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_mysql_tweaks->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_mysql_tweaks->router = 'ComponentbuilderHelperRoute::getComponent_mysql_tweaksRoute';
-			$component_mysql_tweaks->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_mysql_tweaks.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_mysql_tweaks->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_mysql_tweaks.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_mysql_tweaks type is already in content_type DB.
 			$component_mysql_tweaks_id = null;
@@ -8598,13 +8744,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_custom_admin_menus content type object.
-			$component_custom_admin_menus = new stdClass();
+			$component_custom_admin_menus = new \stdClass();
 			$component_custom_admin_menus->type_title = 'Componentbuilder Component_custom_admin_menus';
 			$component_custom_admin_menus->type_alias = 'com_componentbuilder.component_custom_admin_menus';
 			$component_custom_admin_menus->table = '{"special": {"dbtable": "#__componentbuilder_component_custom_admin_menus","key": "id","type": "Component_custom_admin_menus","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_custom_admin_menus->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_custom_admin_menus->router = 'ComponentbuilderHelperRoute::getComponent_custom_admin_menusRoute';
-			$component_custom_admin_menus->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_menus.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_custom_admin_menus->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_custom_admin_menus.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_custom_admin_menus type is already in content_type DB.
 			$component_custom_admin_menus_id = null;
@@ -8626,14 +8772,43 @@ class com_componentbuilderInstallerScript
 				$component_custom_admin_menus_Inserted = $db->insertObject('#__content_types', $component_custom_admin_menus);
 			}
 
+			// Create the component_router content type object.
+			$component_router = new \stdClass();
+			$component_router->type_title = 'Componentbuilder Component_router';
+			$component_router->type_alias = 'com_componentbuilder.component_router';
+			$component_router->table = '{"special": {"dbtable": "#__componentbuilder_component_router","key": "id","type": "Component_router","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$component_router->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "methods_code","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component","mode_constructor_before_parent":"mode_constructor_before_parent","mode_constructor_after_parent":"mode_constructor_after_parent","mode_methods":"mode_methods","methods_code":"methods_code","constructor_after_parent_code":"constructor_after_parent_code","constructor_before_parent_code":"constructor_before_parent_code"}}';
+			$component_router->router = 'ComponentbuilderHelperRoute::getComponent_routerRoute';
+			$component_router->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_router.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component","mode_constructor_before_parent","mode_constructor_after_parent","mode_methods"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+
+			// Check if component_router type is already in content_type DB.
+			$component_router_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_router->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_router->type_id = $db->loadResult();
+				$component_router_Updated = $db->updateObject('#__content_types', $component_router, 'type_id');
+			}
+			else
+			{
+				$component_router_Inserted = $db->insertObject('#__content_types', $component_router);
+			}
+
 			// Create the component_config content type object.
-			$component_config = new stdClass();
+			$component_config = new \stdClass();
 			$component_config->type_title = 'Componentbuilder Component_config';
 			$component_config->type_alias = 'com_componentbuilder.component_config';
 			$component_config->table = '{"special": {"dbtable": "#__componentbuilder_component_config","key": "id","type": "Component_config","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_config->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_config->router = 'ComponentbuilderHelperRoute::getComponent_configRoute';
-			$component_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_config type is already in content_type DB.
 			$component_config_id = null;
@@ -8656,13 +8831,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_dashboard content type object.
-			$component_dashboard = new stdClass();
+			$component_dashboard = new \stdClass();
 			$component_dashboard->type_title = 'Componentbuilder Component_dashboard';
 			$component_dashboard->type_alias = 'com_componentbuilder.component_dashboard';
 			$component_dashboard->table = '{"special": {"dbtable": "#__componentbuilder_component_dashboard","key": "id","type": "Component_dashboard","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_dashboard->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component","php_dashboard_methods":"php_dashboard_methods"}}';
 			$component_dashboard->router = 'ComponentbuilderHelperRoute::getComponent_dashboardRoute';
-			$component_dashboard->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_dashboard.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_dashboard->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_dashboard.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_dashboard type is already in content_type DB.
 			$component_dashboard_id = null;
@@ -8685,13 +8860,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_files_folders content type object.
-			$component_files_folders = new stdClass();
+			$component_files_folders = new \stdClass();
 			$component_files_folders->type_title = 'Componentbuilder Component_files_folders';
 			$component_files_folders->type_alias = 'com_componentbuilder.component_files_folders';
 			$component_files_folders->table = '{"special": {"dbtable": "#__componentbuilder_component_files_folders","key": "id","type": "Component_files_folders","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_files_folders->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_files_folders->router = 'ComponentbuilderHelperRoute::getComponent_files_foldersRoute';
-			$component_files_folders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_files_folders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_files_folders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_files_folders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_files_folders type is already in content_type DB.
 			$component_files_folders_id = null;
@@ -8714,13 +8889,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_placeholders content type object.
-			$component_placeholders = new stdClass();
+			$component_placeholders = new \stdClass();
 			$component_placeholders->type_title = 'Componentbuilder Component_placeholders';
 			$component_placeholders->type_alias = 'com_componentbuilder.component_placeholders';
 			$component_placeholders->table = '{"special": {"dbtable": "#__componentbuilder_component_placeholders","key": "id","type": "Component_placeholders","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_placeholders->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_placeholders->router = 'ComponentbuilderHelperRoute::getComponent_placeholdersRoute';
-			$component_placeholders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_placeholders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_placeholders->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_placeholders.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_placeholders type is already in content_type DB.
 			$component_placeholders_id = null;
@@ -8743,13 +8918,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_plugins content type object.
-			$component_plugins = new stdClass();
+			$component_plugins = new \stdClass();
 			$component_plugins->type_title = 'Componentbuilder Component_plugins';
 			$component_plugins->type_alias = 'com_componentbuilder.component_plugins';
 			$component_plugins->table = '{"special": {"dbtable": "#__componentbuilder_component_plugins","key": "id","type": "Component_plugins","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_plugins->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_plugins->router = 'ComponentbuilderHelperRoute::getComponent_pluginsRoute';
-			$component_plugins->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_plugins.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_plugins->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_plugins.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_plugins type is already in content_type DB.
 			$component_plugins_id = null;
@@ -8772,13 +8947,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the component_modules content type object.
-			$component_modules = new stdClass();
+			$component_modules = new \stdClass();
 			$component_modules->type_title = 'Componentbuilder Component_modules';
 			$component_modules->type_alias = 'com_componentbuilder.component_modules';
 			$component_modules->table = '{"special": {"dbtable": "#__componentbuilder_component_modules","key": "id","type": "Component_modules","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$component_modules->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_component","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_component":"joomla_component"}}';
 			$component_modules->router = 'ComponentbuilderHelperRoute::getComponent_modulesRoute';
-			$component_modules->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_modules.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
+			$component_modules->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/component_modules.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_component"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_component","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"},{"sourceColumn": "clone_me","targetTable": "#__componentbuilder_joomla_component","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if component_modules type is already in content_type DB.
 			$component_modules_id = null;
@@ -8801,13 +8976,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the snippet_type content type object.
-			$snippet_type = new stdClass();
+			$snippet_type = new \stdClass();
 			$snippet_type->type_title = 'Componentbuilder Snippet_type';
 			$snippet_type->type_alias = 'com_componentbuilder.snippet_type';
 			$snippet_type->table = '{"special": {"dbtable": "#__componentbuilder_snippet_type","key": "id","type": "Snippet_type","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$snippet_type->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","description":"description"}}';
 			$snippet_type->router = 'ComponentbuilderHelperRoute::getSnippet_typeRoute';
-			$snippet_type->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$snippet_type->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/snippet_type.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if snippet_type type is already in content_type DB.
 			$snippet_type_id = null;
@@ -8830,13 +9005,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the library_config content type object.
-			$library_config = new stdClass();
+			$library_config = new \stdClass();
 			$library_config->type_title = 'Componentbuilder Library_config';
 			$library_config->type_alias = 'com_componentbuilder.library_config';
 			$library_config->table = '{"special": {"dbtable": "#__componentbuilder_library_config","key": "id","type": "Library_config","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$library_config->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "library","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"library":"library"}}';
 			$library_config->router = 'ComponentbuilderHelperRoute::getLibrary_configRoute';
-			$library_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$library_config->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_config.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if library_config type is already in content_type DB.
 			$library_config_id = null;
@@ -8859,13 +9034,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the library_files_folders_urls content type object.
-			$library_files_folders_urls = new stdClass();
+			$library_files_folders_urls = new \stdClass();
 			$library_files_folders_urls->type_title = 'Componentbuilder Library_files_folders_urls';
 			$library_files_folders_urls->type_alias = 'com_componentbuilder.library_files_folders_urls';
 			$library_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_library_files_folders_urls","key": "id","type": "Library_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$library_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "library","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"library":"library"}}';
 			$library_files_folders_urls->router = 'ComponentbuilderHelperRoute::getLibrary_files_folders_urlsRoute';
-			$library_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
+			$library_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/library_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","library"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "library","targetTable": "#__componentbuilder_library","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if library_files_folders_urls type is already in content_type DB.
 			$library_files_folders_urls_id = null;
@@ -8888,13 +9063,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the class_extends content type object.
-			$class_extends = new stdClass();
+			$class_extends = new \stdClass();
 			$class_extends->type_title = 'Componentbuilder Class_extends';
 			$class_extends->type_alias = 'com_componentbuilder.class_extends';
 			$class_extends->table = '{"special": {"dbtable": "#__componentbuilder_class_extends","key": "id","type": "Class_extends","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$class_extends->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "head","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","extension_type":"extension_type","head":"head","comment":"comment"}}';
 			$class_extends->router = 'ComponentbuilderHelperRoute::getClass_extendsRoute';
-			$class_extends->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_extends.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+			$class_extends->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/class_extends.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if class_extends type is already in content_type DB.
 			$class_extends_id = null;
@@ -8917,13 +9092,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_module_updates content type object.
-			$joomla_module_updates = new stdClass();
+			$joomla_module_updates = new \stdClass();
 			$joomla_module_updates->type_title = 'Componentbuilder Joomla_module_updates';
 			$joomla_module_updates->type_alias = 'com_componentbuilder.joomla_module_updates';
 			$joomla_module_updates->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_updates","key": "id","type": "Joomla_module_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_module_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
 			$joomla_module_updates->router = 'ComponentbuilderHelperRoute::getJoomla_module_updatesRoute';
-			$joomla_module_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_module_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if joomla_module_updates type is already in content_type DB.
 			$joomla_module_updates_id = null;
@@ -8946,13 +9121,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_module_files_folders_urls content type object.
-			$joomla_module_files_folders_urls = new stdClass();
+			$joomla_module_files_folders_urls = new \stdClass();
 			$joomla_module_files_folders_urls->type_title = 'Componentbuilder Joomla_module_files_folders_urls';
 			$joomla_module_files_folders_urls->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
 			$joomla_module_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_module_files_folders_urls","key": "id","type": "Joomla_module_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_module_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_module","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_module":"joomla_module"}}';
 			$joomla_module_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_module_files_folders_urlsRoute';
-			$joomla_module_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_module_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_module_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_module"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_module","targetTable": "#__componentbuilder_joomla_module","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if joomla_module_files_folders_urls type is already in content_type DB.
 			$joomla_module_files_folders_urls_id = null;
@@ -8975,13 +9150,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_plugin_group content type object.
-			$joomla_plugin_group = new stdClass();
+			$joomla_plugin_group = new \stdClass();
 			$joomla_plugin_group->type_title = 'Componentbuilder Joomla_plugin_group';
 			$joomla_plugin_group->type_alias = 'com_componentbuilder.joomla_plugin_group';
 			$joomla_plugin_group->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_group","key": "id","type": "Joomla_plugin_group","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin_group->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"name":"name","class_extends":"class_extends"}}';
 			$joomla_plugin_group->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_groupRoute';
-			$joomla_plugin_group->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","class_extends"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"}]}';
+			$joomla_plugin_group->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_group.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","class_extends"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"}]}';
 
 			// Check if joomla_plugin_group type is already in content_type DB.
 			$joomla_plugin_group_id = null;
@@ -9004,13 +9179,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_plugin_updates content type object.
-			$joomla_plugin_updates = new stdClass();
+			$joomla_plugin_updates = new \stdClass();
 			$joomla_plugin_updates->type_title = 'Componentbuilder Joomla_plugin_updates';
 			$joomla_plugin_updates->type_alias = 'com_componentbuilder.joomla_plugin_updates';
 			$joomla_plugin_updates->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_updates","key": "id","type": "Joomla_plugin_updates","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin_updates->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_plugin","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_plugin":"joomla_plugin"}}';
 			$joomla_plugin_updates->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_updatesRoute';
-			$joomla_plugin_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_plugin_updates->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_updates.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if joomla_plugin_updates type is already in content_type DB.
 			$joomla_plugin_updates_id = null;
@@ -9033,13 +9208,13 @@ class com_componentbuilderInstallerScript
 			}
 
 			// Create the joomla_plugin_files_folders_urls content type object.
-			$joomla_plugin_files_folders_urls = new stdClass();
+			$joomla_plugin_files_folders_urls = new \stdClass();
 			$joomla_plugin_files_folders_urls->type_title = 'Componentbuilder Joomla_plugin_files_folders_urls';
 			$joomla_plugin_files_folders_urls->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
 			$joomla_plugin_files_folders_urls->table = '{"special": {"dbtable": "#__componentbuilder_joomla_plugin_files_folders_urls","key": "id","type": "Joomla_plugin_files_folders_urls","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
 			$joomla_plugin_files_folders_urls->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "joomla_plugin","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"joomla_plugin":"joomla_plugin"}}';
 			$joomla_plugin_files_folders_urls->router = 'ComponentbuilderHelperRoute::getJoomla_plugin_files_folders_urlsRoute';
-			$joomla_plugin_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
+			$joomla_plugin_files_folders_urls->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_plugin_files_folders_urls.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","joomla_plugin"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin","targetTable": "#__componentbuilder_joomla_plugin","targetColumn": "id","displayColumn": "system_name"}]}';
 
 			// Check if joomla_plugin_files_folders_urls type is already in content_type DB.
 			$joomla_plugin_files_folders_urls_id = null;
@@ -9102,7 +9277,7 @@ class com_componentbuilderInstallerScript
 											if (strpos($row->url, $library['not']) === false)
 											{
 												// Create an object.
-												$updater[$row->id] = new stdClass();
+												$updater[$row->id] = new \stdClass();
 												$updater[$row->id]->id = $row->id;
 												$updater[$row->id]->library = $id;
 											}
@@ -9112,7 +9287,7 @@ class com_componentbuilderInstallerScript
 											if (strpos($row->url, $library['and']) !== false)
 											{
 												// Create an object.
-												$updater[$row->id] = new stdClass();
+												$updater[$row->id] = new \stdClass();
 												$updater[$row->id]->id = $row->id;
 												$updater[$row->id]->library = $id;
 											}
@@ -9120,7 +9295,7 @@ class com_componentbuilderInstallerScript
 										else
 										{
 											// Create an object.
-											$updater[$row->id] = new stdClass();
+											$updater[$row->id] = new \stdClass();
 											$updater[$row->id]->id = $row->id;
 											$updater[$row->id]->library = $id;
 										}
@@ -9132,7 +9307,7 @@ class com_componentbuilderInstallerScript
 						if (!isset($updater[$row->id]))
 						{
 							// Create an object.
-							$updater[$row->id] = new stdClass();
+							$updater[$row->id] = new \stdClass();
 							$updater[$row->id]->id = $row->id;
 							$updater[$row->id]->library = 1; // default (no library)
 						}
@@ -9160,9 +9335,9 @@ class com_componentbuilderInstallerScript
 			if ((isset($this->setFtpValues) && ArrayHelper::check($this->setFtpValues)) || (isset($this->setMoveValues) && ArrayHelper::check($this->setMoveValues)))
 			{
 				// Get the date
-				$today = JFactory::getDate()->toSql();
+				$today = Factory::getDate()->toSql();
 				// Get the user object
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			// check if we have stuff to move
 			if (isset($this->setMoveValues) && ArrayHelper::check($this->setMoveValues))
@@ -9175,7 +9350,7 @@ class com_componentbuilderInstallerScript
 						foreach($items as $item)
 						{
 							// okay if found ignore move
-							if (isset($item->{$this->dynamicTable[$table]}) && $item->{$this->dynamicTable[$table]} > 0 && !ComponentbuilderHelper::getVar($table, (int) $item->{$this->dynamicTable[$table]}, $this->dynamicTable[$table], 'id'))
+							if (isset($item->{$this->dynamicTable[$table]}) && $item->{$this->dynamicTable[$table]} > 0 && !GetHelper::var($table, (int) $item->{$this->dynamicTable[$table]}, $this->dynamicTable[$table], 'id'))
 							{
 								$item->published = 1;
 								$item->version = 2;
@@ -9210,7 +9385,7 @@ class com_componentbuilderInstallerScript
 					{
 						$name = explode('.', $hostusername);
 						// Create an object.
-						$object = new stdClass();
+						$object = new \stdClass();
 						$object->signature = $item['signature']; // the still locked version (if there is a basic key)
 						$object->name = str_replace('@', ' ', $name[0]);
 						$object->published = 1;
@@ -9232,7 +9407,7 @@ class com_componentbuilderInstallerScript
 								foreach ($item['ids'] as $compId)
 								{
 									// Create an object.
-									$object = new stdClass();
+									$object = new \stdClass();
 									$object->id = $compId;
 									$object->{$key} = $newId;
 									// Update with the object the joomla_component table.
@@ -9249,7 +9424,7 @@ class com_componentbuilderInstallerScript
 							foreach ($item['ids'] as $compId)
 							{
 								// Create an object.
-								$object = new stdClass();
+								$object = new \stdClass();
 								$object->id = $compId;
 								$object->{$key} = ''; // remove all values to insure stability
 								// Insert the object into the joomla_component table.
@@ -9434,18 +9609,19 @@ class com_componentbuilderInstallerScript
 				// set a notice that this was done
 				$app->enqueueMessage('<p><b>Clean-up!</b><br />We have removed the internal old Gitea folder <b>/libraries/jcb_powers/VDM.Gitea</b> that is no longer used.<br />The new Gitea classes are now found here <b>/libraries/jcb_powers/VDM.Joomla.Gitea</b> and is available to any JCB project from the following super power: https://git.vdm.dev/joomla/gitea</p>', 'Notice');
 			}
-			echo '<a target="_blank" href="https://dev.vdm.io" title="Component Builder">
+
+			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.1.28 Was Successful! Let us know if anything is not working as expected.</h3>';
+				<h3>Upgrade to Version 3.2.0-beta1 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the componentbuilder action logs extensions object.
-			$componentbuilder_action_logs_extensions = new stdClass();
+			$componentbuilder_action_logs_extensions = new \stdClass();
 			$componentbuilder_action_logs_extensions->extension = 'com_componentbuilder';
 
 			// Check if componentbuilder action log extension is already in action logs extensions DB.
@@ -9465,10 +9641,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_component action log config object.
-			$joomla_component_action_log_config = new stdClass();
+			$joomla_component_action_log_config = new \stdClass();
 			$joomla_component_action_log_config->id = null;
 			$joomla_component_action_log_config->type_title = 'JOOMLA_COMPONENT';
 			$joomla_component_action_log_config->type_alias = 'com_componentbuilder.joomla_component';
@@ -9499,10 +9675,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_module action log config object.
-			$joomla_module_action_log_config = new stdClass();
+			$joomla_module_action_log_config = new \stdClass();
 			$joomla_module_action_log_config->id = null;
 			$joomla_module_action_log_config->type_title = 'JOOMLA_MODULE';
 			$joomla_module_action_log_config->type_alias = 'com_componentbuilder.joomla_module';
@@ -9533,10 +9709,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin action log config object.
-			$joomla_plugin_action_log_config = new stdClass();
+			$joomla_plugin_action_log_config = new \stdClass();
 			$joomla_plugin_action_log_config->id = null;
 			$joomla_plugin_action_log_config->type_title = 'JOOMLA_PLUGIN';
 			$joomla_plugin_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin';
@@ -9567,10 +9743,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the power action log config object.
-			$power_action_log_config = new stdClass();
+			$power_action_log_config = new \stdClass();
 			$power_action_log_config->id = null;
 			$power_action_log_config->type_title = 'POWER';
 			$power_action_log_config->type_alias = 'com_componentbuilder.power';
@@ -9601,10 +9777,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_view action log config object.
-			$admin_view_action_log_config = new stdClass();
+			$admin_view_action_log_config = new \stdClass();
 			$admin_view_action_log_config->id = null;
 			$admin_view_action_log_config->type_title = 'ADMIN_VIEW';
 			$admin_view_action_log_config->type_alias = 'com_componentbuilder.admin_view';
@@ -9635,10 +9811,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the custom_admin_view action log config object.
-			$custom_admin_view_action_log_config = new stdClass();
+			$custom_admin_view_action_log_config = new \stdClass();
 			$custom_admin_view_action_log_config->id = null;
 			$custom_admin_view_action_log_config->type_title = 'CUSTOM_ADMIN_VIEW';
 			$custom_admin_view_action_log_config->type_alias = 'com_componentbuilder.custom_admin_view';
@@ -9669,10 +9845,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the site_view action log config object.
-			$site_view_action_log_config = new stdClass();
+			$site_view_action_log_config = new \stdClass();
 			$site_view_action_log_config->id = null;
 			$site_view_action_log_config->type_title = 'SITE_VIEW';
 			$site_view_action_log_config->type_alias = 'com_componentbuilder.site_view';
@@ -9703,10 +9879,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the template action log config object.
-			$template_action_log_config = new stdClass();
+			$template_action_log_config = new \stdClass();
 			$template_action_log_config->id = null;
 			$template_action_log_config->type_title = 'TEMPLATE';
 			$template_action_log_config->type_alias = 'com_componentbuilder.template';
@@ -9737,10 +9913,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the layout action log config object.
-			$layout_action_log_config = new stdClass();
+			$layout_action_log_config = new \stdClass();
 			$layout_action_log_config->id = null;
 			$layout_action_log_config->type_title = 'LAYOUT';
 			$layout_action_log_config->type_alias = 'com_componentbuilder.layout';
@@ -9771,10 +9947,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the dynamic_get action log config object.
-			$dynamic_get_action_log_config = new stdClass();
+			$dynamic_get_action_log_config = new \stdClass();
 			$dynamic_get_action_log_config->id = null;
 			$dynamic_get_action_log_config->type_title = 'DYNAMIC_GET';
 			$dynamic_get_action_log_config->type_alias = 'com_componentbuilder.dynamic_get';
@@ -9805,10 +9981,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the custom_code action log config object.
-			$custom_code_action_log_config = new stdClass();
+			$custom_code_action_log_config = new \stdClass();
 			$custom_code_action_log_config->id = null;
 			$custom_code_action_log_config->type_title = 'CUSTOM_CODE';
 			$custom_code_action_log_config->type_alias = 'com_componentbuilder.custom_code';
@@ -9839,10 +10015,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the class_property action log config object.
-			$class_property_action_log_config = new stdClass();
+			$class_property_action_log_config = new \stdClass();
 			$class_property_action_log_config->id = null;
 			$class_property_action_log_config->type_title = 'CLASS_PROPERTY';
 			$class_property_action_log_config->type_alias = 'com_componentbuilder.class_property';
@@ -9873,10 +10049,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the class_method action log config object.
-			$class_method_action_log_config = new stdClass();
+			$class_method_action_log_config = new \stdClass();
 			$class_method_action_log_config->id = null;
 			$class_method_action_log_config->type_title = 'CLASS_METHOD';
 			$class_method_action_log_config->type_alias = 'com_componentbuilder.class_method';
@@ -9907,10 +10083,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the placeholder action log config object.
-			$placeholder_action_log_config = new stdClass();
+			$placeholder_action_log_config = new \stdClass();
 			$placeholder_action_log_config->id = null;
 			$placeholder_action_log_config->type_title = 'PLACEHOLDER';
 			$placeholder_action_log_config->type_alias = 'com_componentbuilder.placeholder';
@@ -9941,10 +10117,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the library action log config object.
-			$library_action_log_config = new stdClass();
+			$library_action_log_config = new \stdClass();
 			$library_action_log_config->id = null;
 			$library_action_log_config->type_title = 'LIBRARY';
 			$library_action_log_config->type_alias = 'com_componentbuilder.library';
@@ -9975,10 +10151,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the snippet action log config object.
-			$snippet_action_log_config = new stdClass();
+			$snippet_action_log_config = new \stdClass();
 			$snippet_action_log_config->id = null;
 			$snippet_action_log_config->type_title = 'SNIPPET';
 			$snippet_action_log_config->type_alias = 'com_componentbuilder.snippet';
@@ -10009,10 +10185,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the validation_rule action log config object.
-			$validation_rule_action_log_config = new stdClass();
+			$validation_rule_action_log_config = new \stdClass();
 			$validation_rule_action_log_config->id = null;
 			$validation_rule_action_log_config->type_title = 'VALIDATION_RULE';
 			$validation_rule_action_log_config->type_alias = 'com_componentbuilder.validation_rule';
@@ -10043,10 +10219,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the field action log config object.
-			$field_action_log_config = new stdClass();
+			$field_action_log_config = new \stdClass();
 			$field_action_log_config->id = null;
 			$field_action_log_config->type_title = 'FIELD';
 			$field_action_log_config->type_alias = 'com_componentbuilder.field';
@@ -10077,10 +10253,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the fieldtype action log config object.
-			$fieldtype_action_log_config = new stdClass();
+			$fieldtype_action_log_config = new \stdClass();
 			$fieldtype_action_log_config->id = null;
 			$fieldtype_action_log_config->type_title = 'FIELDTYPE';
 			$fieldtype_action_log_config->type_alias = 'com_componentbuilder.fieldtype';
@@ -10111,10 +10287,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the language_translation action log config object.
-			$language_translation_action_log_config = new stdClass();
+			$language_translation_action_log_config = new \stdClass();
 			$language_translation_action_log_config->id = null;
 			$language_translation_action_log_config->type_title = 'LANGUAGE_TRANSLATION';
 			$language_translation_action_log_config->type_alias = 'com_componentbuilder.language_translation';
@@ -10145,10 +10321,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the language action log config object.
-			$language_action_log_config = new stdClass();
+			$language_action_log_config = new \stdClass();
 			$language_action_log_config->id = null;
 			$language_action_log_config->type_title = 'LANGUAGE';
 			$language_action_log_config->type_alias = 'com_componentbuilder.language';
@@ -10179,10 +10355,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the server action log config object.
-			$server_action_log_config = new stdClass();
+			$server_action_log_config = new \stdClass();
 			$server_action_log_config->id = null;
 			$server_action_log_config->type_title = 'SERVER';
 			$server_action_log_config->type_alias = 'com_componentbuilder.server';
@@ -10213,10 +10389,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the help_document action log config object.
-			$help_document_action_log_config = new stdClass();
+			$help_document_action_log_config = new \stdClass();
 			$help_document_action_log_config->id = null;
 			$help_document_action_log_config->type_title = 'HELP_DOCUMENT';
 			$help_document_action_log_config->type_alias = 'com_componentbuilder.help_document';
@@ -10247,10 +10423,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_fields action log config object.
-			$admin_fields_action_log_config = new stdClass();
+			$admin_fields_action_log_config = new \stdClass();
 			$admin_fields_action_log_config->id = null;
 			$admin_fields_action_log_config->type_title = 'ADMIN_FIELDS';
 			$admin_fields_action_log_config->type_alias = 'com_componentbuilder.admin_fields';
@@ -10281,10 +10457,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_fields_conditions action log config object.
-			$admin_fields_conditions_action_log_config = new stdClass();
+			$admin_fields_conditions_action_log_config = new \stdClass();
 			$admin_fields_conditions_action_log_config->id = null;
 			$admin_fields_conditions_action_log_config->type_title = 'ADMIN_FIELDS_CONDITIONS';
 			$admin_fields_conditions_action_log_config->type_alias = 'com_componentbuilder.admin_fields_conditions';
@@ -10315,10 +10491,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_fields_relations action log config object.
-			$admin_fields_relations_action_log_config = new stdClass();
+			$admin_fields_relations_action_log_config = new \stdClass();
 			$admin_fields_relations_action_log_config->id = null;
 			$admin_fields_relations_action_log_config->type_title = 'ADMIN_FIELDS_RELATIONS';
 			$admin_fields_relations_action_log_config->type_alias = 'com_componentbuilder.admin_fields_relations';
@@ -10349,10 +10525,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the admin_custom_tabs action log config object.
-			$admin_custom_tabs_action_log_config = new stdClass();
+			$admin_custom_tabs_action_log_config = new \stdClass();
 			$admin_custom_tabs_action_log_config->id = null;
 			$admin_custom_tabs_action_log_config->type_title = 'ADMIN_CUSTOM_TABS';
 			$admin_custom_tabs_action_log_config->type_alias = 'com_componentbuilder.admin_custom_tabs';
@@ -10383,10 +10559,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_admin_views action log config object.
-			$component_admin_views_action_log_config = new stdClass();
+			$component_admin_views_action_log_config = new \stdClass();
 			$component_admin_views_action_log_config->id = null;
 			$component_admin_views_action_log_config->type_title = 'COMPONENT_ADMIN_VIEWS';
 			$component_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_admin_views';
@@ -10417,10 +10593,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_site_views action log config object.
-			$component_site_views_action_log_config = new stdClass();
+			$component_site_views_action_log_config = new \stdClass();
 			$component_site_views_action_log_config->id = null;
 			$component_site_views_action_log_config->type_title = 'COMPONENT_SITE_VIEWS';
 			$component_site_views_action_log_config->type_alias = 'com_componentbuilder.component_site_views';
@@ -10451,10 +10627,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_custom_admin_views action log config object.
-			$component_custom_admin_views_action_log_config = new stdClass();
+			$component_custom_admin_views_action_log_config = new \stdClass();
 			$component_custom_admin_views_action_log_config->id = null;
 			$component_custom_admin_views_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_VIEWS';
 			$component_custom_admin_views_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_views';
@@ -10485,10 +10661,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_updates action log config object.
-			$component_updates_action_log_config = new stdClass();
+			$component_updates_action_log_config = new \stdClass();
 			$component_updates_action_log_config->id = null;
 			$component_updates_action_log_config->type_title = 'COMPONENT_UPDATES';
 			$component_updates_action_log_config->type_alias = 'com_componentbuilder.component_updates';
@@ -10519,10 +10695,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_mysql_tweaks action log config object.
-			$component_mysql_tweaks_action_log_config = new stdClass();
+			$component_mysql_tweaks_action_log_config = new \stdClass();
 			$component_mysql_tweaks_action_log_config->id = null;
 			$component_mysql_tweaks_action_log_config->type_title = 'COMPONENT_MYSQL_TWEAKS';
 			$component_mysql_tweaks_action_log_config->type_alias = 'com_componentbuilder.component_mysql_tweaks';
@@ -10553,10 +10729,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_custom_admin_menus action log config object.
-			$component_custom_admin_menus_action_log_config = new stdClass();
+			$component_custom_admin_menus_action_log_config = new \stdClass();
 			$component_custom_admin_menus_action_log_config->id = null;
 			$component_custom_admin_menus_action_log_config->type_title = 'COMPONENT_CUSTOM_ADMIN_MENUS';
 			$component_custom_admin_menus_action_log_config->type_alias = 'com_componentbuilder.component_custom_admin_menus';
@@ -10587,10 +10763,44 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
+			}
+			// Create the component_router action log config object.
+			$component_router_action_log_config = new \stdClass();
+			$component_router_action_log_config->id = null;
+			$component_router_action_log_config->type_title = 'COMPONENT_ROUTER';
+			$component_router_action_log_config->type_alias = 'com_componentbuilder.component_router';
+			$component_router_action_log_config->id_holder = 'id';
+			$component_router_action_log_config->title_holder = 'joomla_component';
+			$component_router_action_log_config->table_name = '#__componentbuilder_component_router';
+			$component_router_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if component_router action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($component_router_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$component_router_action_log_config->id = $db->loadResult();
+				$component_router_action_log_config_Updated = $db->updateObject('#__action_log_config', $component_router_action_log_config, 'id');
+			}
+			else
+			{
+				$component_router_action_log_config_Inserted = $db->insertObject('#__action_log_config', $component_router_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = Factory::getDbo();
 			}
 			// Create the component_config action log config object.
-			$component_config_action_log_config = new stdClass();
+			$component_config_action_log_config = new \stdClass();
 			$component_config_action_log_config->id = null;
 			$component_config_action_log_config->type_title = 'COMPONENT_CONFIG';
 			$component_config_action_log_config->type_alias = 'com_componentbuilder.component_config';
@@ -10621,10 +10831,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_dashboard action log config object.
-			$component_dashboard_action_log_config = new stdClass();
+			$component_dashboard_action_log_config = new \stdClass();
 			$component_dashboard_action_log_config->id = null;
 			$component_dashboard_action_log_config->type_title = 'COMPONENT_DASHBOARD';
 			$component_dashboard_action_log_config->type_alias = 'com_componentbuilder.component_dashboard';
@@ -10655,10 +10865,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_files_folders action log config object.
-			$component_files_folders_action_log_config = new stdClass();
+			$component_files_folders_action_log_config = new \stdClass();
 			$component_files_folders_action_log_config->id = null;
 			$component_files_folders_action_log_config->type_title = 'COMPONENT_FILES_FOLDERS';
 			$component_files_folders_action_log_config->type_alias = 'com_componentbuilder.component_files_folders';
@@ -10689,10 +10899,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_placeholders action log config object.
-			$component_placeholders_action_log_config = new stdClass();
+			$component_placeholders_action_log_config = new \stdClass();
 			$component_placeholders_action_log_config->id = null;
 			$component_placeholders_action_log_config->type_title = 'COMPONENT_PLACEHOLDERS';
 			$component_placeholders_action_log_config->type_alias = 'com_componentbuilder.component_placeholders';
@@ -10723,10 +10933,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_plugins action log config object.
-			$component_plugins_action_log_config = new stdClass();
+			$component_plugins_action_log_config = new \stdClass();
 			$component_plugins_action_log_config->id = null;
 			$component_plugins_action_log_config->type_title = 'COMPONENT_PLUGINS';
 			$component_plugins_action_log_config->type_alias = 'com_componentbuilder.component_plugins';
@@ -10757,10 +10967,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the component_modules action log config object.
-			$component_modules_action_log_config = new stdClass();
+			$component_modules_action_log_config = new \stdClass();
 			$component_modules_action_log_config->id = null;
 			$component_modules_action_log_config->type_title = 'COMPONENT_MODULES';
 			$component_modules_action_log_config->type_alias = 'com_componentbuilder.component_modules';
@@ -10791,10 +11001,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the snippet_type action log config object.
-			$snippet_type_action_log_config = new stdClass();
+			$snippet_type_action_log_config = new \stdClass();
 			$snippet_type_action_log_config->id = null;
 			$snippet_type_action_log_config->type_title = 'SNIPPET_TYPE';
 			$snippet_type_action_log_config->type_alias = 'com_componentbuilder.snippet_type';
@@ -10825,10 +11035,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the library_config action log config object.
-			$library_config_action_log_config = new stdClass();
+			$library_config_action_log_config = new \stdClass();
 			$library_config_action_log_config->id = null;
 			$library_config_action_log_config->type_title = 'LIBRARY_CONFIG';
 			$library_config_action_log_config->type_alias = 'com_componentbuilder.library_config';
@@ -10859,10 +11069,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the library_files_folders_urls action log config object.
-			$library_files_folders_urls_action_log_config = new stdClass();
+			$library_files_folders_urls_action_log_config = new \stdClass();
 			$library_files_folders_urls_action_log_config->id = null;
 			$library_files_folders_urls_action_log_config->type_title = 'LIBRARY_FILES_FOLDERS_URLS';
 			$library_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.library_files_folders_urls';
@@ -10893,10 +11103,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the class_extends action log config object.
-			$class_extends_action_log_config = new stdClass();
+			$class_extends_action_log_config = new \stdClass();
 			$class_extends_action_log_config->id = null;
 			$class_extends_action_log_config->type_title = 'CLASS_EXTENDS';
 			$class_extends_action_log_config->type_alias = 'com_componentbuilder.class_extends';
@@ -10927,10 +11137,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_module_updates action log config object.
-			$joomla_module_updates_action_log_config = new stdClass();
+			$joomla_module_updates_action_log_config = new \stdClass();
 			$joomla_module_updates_action_log_config->id = null;
 			$joomla_module_updates_action_log_config->type_title = 'JOOMLA_MODULE_UPDATES';
 			$joomla_module_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_module_updates';
@@ -10961,10 +11171,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_module_files_folders_urls action log config object.
-			$joomla_module_files_folders_urls_action_log_config = new stdClass();
+			$joomla_module_files_folders_urls_action_log_config = new \stdClass();
 			$joomla_module_files_folders_urls_action_log_config->id = null;
 			$joomla_module_files_folders_urls_action_log_config->type_title = 'JOOMLA_MODULE_FILES_FOLDERS_URLS';
 			$joomla_module_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_module_files_folders_urls';
@@ -10995,10 +11205,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin_group action log config object.
-			$joomla_plugin_group_action_log_config = new stdClass();
+			$joomla_plugin_group_action_log_config = new \stdClass();
 			$joomla_plugin_group_action_log_config->id = null;
 			$joomla_plugin_group_action_log_config->type_title = 'JOOMLA_PLUGIN_GROUP';
 			$joomla_plugin_group_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_group';
@@ -11029,10 +11239,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin_updates action log config object.
-			$joomla_plugin_updates_action_log_config = new stdClass();
+			$joomla_plugin_updates_action_log_config = new \stdClass();
 			$joomla_plugin_updates_action_log_config->id = null;
 			$joomla_plugin_updates_action_log_config->type_title = 'JOOMLA_PLUGIN_UPDATES';
 			$joomla_plugin_updates_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_updates';
@@ -11063,10 +11273,10 @@ class com_componentbuilderInstallerScript
 			// Set db if not set already.
 			if (!isset($db))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 			}
 			// Create the joomla_plugin_files_folders_urls action log config object.
-			$joomla_plugin_files_folders_urls_action_log_config = new stdClass();
+			$joomla_plugin_files_folders_urls_action_log_config = new \stdClass();
 			$joomla_plugin_files_folders_urls_action_log_config->id = null;
 			$joomla_plugin_files_folders_urls_action_log_config->type_title = 'JOOMLA_PLUGIN_FILES_FOLDERS_URLS';
 			$joomla_plugin_files_folders_urls_action_log_config->type_alias = 'com_componentbuilder.joomla_plugin_files_folders_urls';
@@ -11099,12 +11309,12 @@ class com_componentbuilderInstallerScript
 
 	/**
 	 * Remove folders with files
-	 * 
+	 *
 	 * @param   string   $dir     The path to folder to remove
 	 * @param   boolean  $ignore  The folders and files to ignore and not remove
 	 *
 	 * @return  boolean   True in all is removed
-	 * 
+	 *
 	 */
 	protected function removeFolder($dir, $ignore = false)
 	{
@@ -11173,7 +11383,7 @@ class com_componentbuilderInstallerScript
 	/**
 	 * Check if have an array with a length
 	 *
-	 * @input	array   The array to check
+	 * @input    array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
 	 */
@@ -11205,13 +11415,13 @@ class com_componentbuilderInstallerScript
 	 */
 	protected function setDynamicF0ld3rs($app, $parent)
 	{
-		// get the instalation path
+		// get the installation path
 		$installer = $parent->getParent();
 		$installPath = $installer->getPath('source');
 		// get all the folders
 		$folders = Folder::folders($installPath);
 		// check if we have folders we may want to copy
-		$doNotCopy = array('media','admin','site'); // Joomla already deals with these
+		$doNotCopy = ['media','admin','site']; // Joomla already deals with these
 		if (count((array) $folders) > 1)
 		{
 			foreach ($folders as $folder)

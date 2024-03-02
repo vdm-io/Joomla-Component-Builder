@@ -12,9 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\JsonHelper;
 
 /**
  * Componentbuilder List Model for Compiler
@@ -43,19 +48,19 @@ class ComponentbuilderModelCompiler extends ListModel
 	protected function getListQuery()
 	{
 		// Get the current user for authorisation checks
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		$this->userId = $this->user->get('id');
 		$this->guest = $this->user->get('guest');
 		$this->groups = $this->user->get('groups');
-		$this->authorisedGroups	= $this->user->getAuthorisedGroups();
+		$this->authorisedGroups    = $this->user->getAuthorisedGroups();
 		$this->levels = $this->user->getAuthorisedViewLevels();
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		$this->input = $this->app->input;
-		$this->initSet = true; 
+		$this->initSet = true;
 		// Make sure all records load, since no pagination allowed.
 		$this->setState('list.limit', 0);
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -81,12 +86,12 @@ class ComponentbuilderModelCompiler extends ListModel
 	 */
 	public function getItems()
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// check if this user has permission to access items
 		if (!$user->authorise('compiler.access', 'com_componentbuilder'))
 		{
-			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
+			$app = Factory::getApplication();
+			$app->enqueueMessage(Text::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_componentbuilder');
 			return false;
@@ -95,22 +100,22 @@ class ComponentbuilderModelCompiler extends ListModel
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = JComponentHelper::getParams('com_componentbuilder', true);
+		$globalParams = ComponentHelper::getParams('com_componentbuilder', true);
 
 		// Insure all item fields are adapted where needed.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			// Load the JEvent Dispatcher
-			JPluginHelper::importPlugin('content');
-			$this->_dispatcher = JFactory::getApplication();
+			PluginHelper::importPlugin('content');
+			$this->_dispatcher = Factory::getApplication();
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's
-				$item->slug = (isset($item->alias) && isset($item->id)) ? $item->id.':'.$item->alias : $item->id;
+				$item->slug = ($item->id ?? '0') . (isset($item->alias) ? ':' . $item->alias : '');
 				// Check if item has params, or pass whole item.
-				$params = (isset($item->params) && ComponentbuilderHelper::checkJson($item->params)) ? json_decode($item->params) : $item;
+				$params = (isset($item->params) && JsonHelper::check($item->params)) ? json_decode($item->params) : $item;
 				// Make sure the content prepare plugins fire on copyright
-				$_copyright = new stdClass();
+				$_copyright = new \stdClass();
 				$_copyright->text =& $item->copyright; // value must be in text
 				// Since all values are now in text (Joomla Limitation), we also add the field name (copyright) to context
 				$this->_dispatcher->triggerEvent("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$params, 0));
@@ -131,7 +136,7 @@ class ComponentbuilderModelCompiler extends ListModel
 	 */
 	public function getUikitComp()
 	{
-		if (isset($this->uikitComp) && ComponentbuilderHelper::checkArray($this->uikitComp))
+		if (isset($this->uikitComp) && UtilitiesArrayHelper::check($this->uikitComp))
 		{
 			return $this->uikitComp;
 		}
@@ -196,7 +201,7 @@ class ComponentbuilderModelCompiler extends ListModel
 
 		// Set FTP credentials, if given.
 		JClientHelper::setCredentialsFromRequest('ftp');
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Load installer plugins for assistance if required:
 		JPluginHelper::importPlugin('installer');
@@ -218,7 +223,7 @@ class ComponentbuilderModelCompiler extends ListModel
 			return false;
 		}
 
-		$config   = JFactory::getConfig();
+		$config   = Factory::getConfig();
 		$tmp_dest = $config->get('tmp_path');
 
 		// Unpack the downloaded package file.
@@ -242,7 +247,7 @@ class ComponentbuilderModelCompiler extends ListModel
 		// Was the package unpacked?
 		if (!$package || !$package['type'])
 		{
-			$app->enqueueMessage(JText::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
+			$app->enqueueMessage(Text::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
 			return false;
 		}
 
@@ -253,14 +258,14 @@ class ComponentbuilderModelCompiler extends ListModel
 		if (!$installer->install($package['dir']))
 		{
 			// There was an error installing the package.
-			$msg = JText::sprintf('COM_INSTALLER_INSTALL_ERROR', JText::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+			$msg = Text::sprintf('COM_INSTALLER_INSTALL_ERROR', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
 			$result = false;
 			$msgType = 'error';
 		}
 		else
 		{
 			// Package installed successfully.
-			$msg = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS', JText::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+			$msg = Text::sprintf('COM_INSTALLER_INSTALL_SUCCESS', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
 			$result = true;
 			$msgType = 'message';
 		}
@@ -269,7 +274,7 @@ class ComponentbuilderModelCompiler extends ListModel
 		$dispatcher->trigger('onInstallerAfterInstaller', array($this, &$package, $installer, &$result, &$msg));
 
 		// Set some model state values.
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$app->enqueueMessage($msg, $msgType);
 		$this->setState('name', $installer->get('name'));
 		$this->setState('result', $result);
@@ -280,7 +285,7 @@ class ComponentbuilderModelCompiler extends ListModel
 		// Cleanup the install files.
 		if (!is_file($package['packagefile']))
 		{
-			$config = JFactory::getConfig();
+			$config = Factory::getConfig();
 			$package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
 		}
 
@@ -367,7 +372,7 @@ class ComponentbuilderModelCompiler extends ListModel
 					{
     						if (!ComponentbuilderHelper::getDynamicContent($type, $size, false, 0, $target))
     						{
-    							$errorMessage[] = JText::sprintf('COM_COMPONENTBUILDER_S_S_NUMBER_BSB_COULD_NOT_BE_DOWNLOADED_SUCCESSFULLY_TO_THIS_JOOMLA_INSTALL', $type, $size, $target);
+    							$errorMessage[] = Text::sprintf('COM_COMPONENTBUILDER_S_S_NUMBER_BSB_COULD_NOT_BE_DOWNLOADED_SUCCESSFULLY_TO_THIS_JOOMLA_INSTALL', $type, $size, $target);
     						}
 					}
 				}

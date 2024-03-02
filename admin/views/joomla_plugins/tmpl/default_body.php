@@ -11,7 +11,12 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_plugin.edit";
 
@@ -19,7 +24,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 <?php foreach ($this->items as $i => $item): ?>
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
-		$userChkOut = JFactory::getUser($item->checked_out);
+		$userChkOut = Factory::getUser($item->checked_out);
 		$canDo = ComponentbuilderHelper::getActions('joomla_plugin',$item,'joomla_plugins');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -29,7 +34,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 				$iconClass = '';
 				if (!$this->saveOrder)
 				{
-					$iconClass = ' inactive tip-top" hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+					$iconClass = ' inactive tip-top" hasTooltip" title="' . Html::tooltipText('JORDERINGDISABLED');
 				}
 			?>
 			<span class="sortable-handler<?php echo $iconClass; ?>">
@@ -47,12 +52,12 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		<?php if ($canDo->get('joomla_plugin.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+						<?php echo Html::_('grid.id', $i, $item->id); ?>
 					<?php else: ?>
 						&#9633;
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+					<?php echo Html::_('grid.id', $i, $item->id); ?>
 				<?php endif; ?>
 		<?php else: ?>
 			&#9633;
@@ -63,7 +68,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 			<?php if ($canDo->get('joomla_plugin.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
-					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_plugins.', $canCheckin); ?>
+					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_plugins.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php echo $this->escape($item->system_name); ?>
@@ -79,19 +84,19 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 						array(
 							'view' => 'joomla_plugin_updates',
 							'views' => 'joomla_plugins_updates',
-							'title' => JText::_('COM_COMPONENTBUILDER_THE_PLUGIN_UPDATES'),
+							'title' => Text::_('COM_COMPONENTBUILDER_THE_PLUGIN_UPDATES'),
 							'icon' => 'database'),
 						array(
 							'view' => 'joomla_plugin_files_folders_urls',
 							'views' => 'joomla_plugins_files_folders_urls',
-							'title' => JText::_('COM_COMPONENTBUILDER_THE_PLUGIN_FILES_FOLDERS'),
+							'title' => Text::_('COM_COMPONENTBUILDER_THE_PLUGIN_FILES_FOLDERS'),
 							'icon' => 'briefcase')
 						);
 				}
 			?>
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons[0] as $_button): ?>
-				<?php if ($canDo->get($_button['view'].'.edit') && ($id = ComponentbuilderHelper::getVar($_button['view'], $item->id, 'joomla_plugin', 'id')) !== false): ?>
+				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->id, 'joomla_plugin', 'id')) !== false): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_plugin&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
@@ -121,15 +126,15 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		<?php if ($canDo->get('joomla_plugin.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'joomla_plugins.', true, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'joomla_plugins.', true, 'cb'); ?>
 					<?php else: ?>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'joomla_plugins.', false, 'cb'); ?>
+						<?php echo Html::_('jgrid.published', $item->published, $i, 'joomla_plugins.', false, 'cb'); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'joomla_plugins.', true, 'cb'); ?>
+					<?php echo Html::_('jgrid.published', $item->published, $i, 'joomla_plugins.', true, 'cb'); ?>
 				<?php endif; ?>
 		<?php else: ?>
-			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'joomla_plugins.', false, 'cb'); ?>
+			<?php echo Html::_('jgrid.published', $item->published, $i, 'joomla_plugins.', false, 'cb'); ?>
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center hidden-phone">

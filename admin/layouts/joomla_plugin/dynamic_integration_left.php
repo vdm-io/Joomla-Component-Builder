@@ -37,7 +37,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'sales_server'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+$hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>

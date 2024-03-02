@@ -73,6 +73,7 @@
 			label="COM_COMPONENTBUILDER_HELP_DOCUMENT_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_HELP_DOCUMENT_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -113,9 +114,9 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_HELP_DOCUMENT_URL</option>
 		</field>
-		<!-- Groups Field. Type: Usergroup. (joomla) -->
+		<!-- Groups Field. Type: Usergrouplist. (custom) -->
 		<field
-			type="usergroup"
+			type="usergrouplist"
 			name="groups"
 			label="COM_COMPONENTBUILDER_HELP_DOCUMENT_GROUPS_LABEL"
 			description="COM_COMPONENTBUILDER_HELP_DOCUMENT_GROUPS_DESCRIPTION"
@@ -157,7 +158,6 @@
 			description="COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_DESCRIPTION"
 			class="list_class"
 			multiple="false"
-			default=""
 			required="true"
 			button="false"
 		/>
@@ -228,7 +228,7 @@
 			hint="COM_COMPONENTBUILDER_HELP_DOCUMENT_ALIAS_HINT"
 		/>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

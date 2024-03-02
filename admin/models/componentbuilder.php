@@ -12,9 +12,17 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\Registry\Registry;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder List Model
@@ -24,9 +32,9 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 	public function getIcons()
 	{
 		// load user for access menus
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// reset icon array
-		$icons  = array();
+		$icons  = [];
 		// view groups array
 		$viewGroups = array(
 			'main' => array('png.compiler', 'png.joomla_components', 'png.joomla_modules', 'png.joomla_plugins', 'png.powers', 'png.search', 'png||importjcbpackages||index.php?option=com_componentbuilder&view=joomla_components&task=joomla_components.smartImport', 'png.admin_views', 'png.custom_admin_views', 'png.site_views', 'png.template.add', 'png.templates', 'png.layouts', 'png.dynamic_get.add', 'png.dynamic_gets', 'png.custom_codes', 'png.placeholders', 'png.libraries', 'png.snippets', 'png.get_snippets', 'png.validation_rules', 'png.field.add', 'png.fields', 'png.fields.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_field', 'png.fieldtypes', 'png.fieldtypes.catid_qpo0O0oqp_com_componentbuilder_po0O0oq_fieldtype', 'png.language_translations', 'png.servers', 'png.help_documents')
@@ -178,6 +186,9 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 			'component_custom_admin_menus.create' => 'component_custom_admin_menus.create',
 			'components_custom_admin_menus.access' => 'component_custom_admin_menus.access',
 			'component_custom_admin_menus.access' => 'component_custom_admin_menus.access',
+			'component_router.create' => 'component_router.create',
+			'components_routers.access' => 'component_router.access',
+			'component_router.access' => 'component_router.access',
 			'component_config.create' => 'component_config.create',
 			'components_config.access' => 'component_config.access',
 			'component_config.access' => 'component_config.access',
@@ -227,7 +238,7 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 		foreach($viewGroups as $group => $views)
 		{
 			$i = 0;
-			if (ComponentbuilderHelper::checkArray($views))
+			if (UtilitiesArrayHelper::check($views))
 			{
 				foreach($views as $view)
 				{
@@ -239,11 +250,11 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 						if (count($dwd) == 3)
 						{
 							list($type, $name, $url) = $dwd;
-							$viewName 	= $name;
-							$alt 		= $name;
-							$url 		= $url;
-							$image 		= $name . '.' . $type;
-							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_' . ComponentbuilderHelper::safeString($name,'U');
+							$viewName = $name;
+							$alt      = $name;
+							$url      = $url;
+							$image    = $name . '.' . $type;
+							$name     = 'COM_COMPONENTBUILDER_DASHBOARD_' . StringHelper::safe($name,'U');
 						}
 					}
 					// internal views
@@ -265,11 +276,11 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 							switch($action)
 							{
 								case 'add':
-									$url	= 'index.php?option=com_componentbuilder&view=' . $name . '&layout=edit';
-									$image	= $name . '_' . $action.  '.' . $type;
-									$alt	= $name . '&nbsp;' . $action;
-									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_'.ComponentbuilderHelper::safeString($name,'U').'_ADD';
-									$add	= true;
+									$url   = 'index.php?option=com_componentbuilder&view=' . $name . '&layout=edit';
+									$image = $name . '_' . $action.  '.' . $type;
+									$alt   = $name . '&nbsp;' . $action;
+									$name  = 'COM_COMPONENTBUILDER_DASHBOARD_'.StringHelper::safe($name,'U').'_ADD';
+									$add   = true;
 								break;
 								default:
 									// check for new convention (more stable)
@@ -282,34 +293,34 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 									{
 										$extension = 'com_componentbuilder.' . $name;
 									}
-									$url	= 'index.php?option=com_categories&view=categories&extension=' . $extension;
-									$image	= $name . '_' . $action . '.' . $type;
-									$alt	= $viewName . '&nbsp;' . $action;
-									$name	= 'COM_COMPONENTBUILDER_DASHBOARD_' . ComponentbuilderHelper::safeString($name,'U') . '_' . ComponentbuilderHelper::safeString($action,'U');
+									$url   = 'index.php?option=com_categories&view=categories&extension=' . $extension;
+									$image = $name . '_' . $action . '.' . $type;
+									$alt   = $viewName . '&nbsp;' . $action;
+									$name  = 'COM_COMPONENTBUILDER_DASHBOARD_' . StringHelper::safe($name,'U') . '_' . StringHelper::safe($action,'U');
 								break;
 							}
 						}
 						else
 						{
-							$viewName 	= $name;
-							$alt 		= $name;
-							$url 		= 'index.php?option=com_componentbuilder&view=' . $name;
-							$image 		= $name . '.' . $type;
-							$name 		= 'COM_COMPONENTBUILDER_DASHBOARD_' . ComponentbuilderHelper::safeString($name,'U');
-							$hover		= false;
+							$viewName = $name;
+							$alt      = $name;
+							$url      = 'index.php?option=com_componentbuilder&view=' . $name;
+							$image    = $name . '.' . $type;
+							$name     = 'COM_COMPONENTBUILDER_DASHBOARD_' . StringHelper::safe($name,'U');
+							$hover    = false;
 						}
 					}
 					else
 					{
-						$viewName 	= $view;
-						$alt 		= $view;
-						$url 		= 'index.php?option=com_componentbuilder&view=' . $view;
-						$image 		= $view . '.png';
-						$name 		= ucwords($view).'<br /><br />';
-						$hover		= false;
+						$viewName = $view;
+						$alt      = $view;
+						$url      = 'index.php?option=com_componentbuilder&view=' . $view;
+						$image    = $view . '.png';
+						$name     = ucwords($view).'<br /><br />';
+						$hover    = false;
 					}
 					// first make sure the view access is set
-					if (ComponentbuilderHelper::checkArray($viewAccess))
+					if (UtilitiesArrayHelper::check($viewAccess))
 					{
 						// setup some defaults
 						$dashboard_add = false;
@@ -317,11 +328,11 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 						$accessTo = '';
 						$accessAdd = '';
 						// access checking start
-						$accessCreate = (isset($viewAccess[$viewName.'.create'])) ? ComponentbuilderHelper::checkString($viewAccess[$viewName.'.create']):false;
-						$accessAccess = (isset($viewAccess[$viewName.'.access'])) ? ComponentbuilderHelper::checkString($viewAccess[$viewName.'.access']):false;
+						$accessCreate = (isset($viewAccess[$viewName.'.create'])) ? StringHelper::check($viewAccess[$viewName.'.create']):false;
+						$accessAccess = (isset($viewAccess[$viewName.'.access'])) ? StringHelper::check($viewAccess[$viewName.'.access']):false;
 						// set main controllers
-						$accessDashboard_add = (isset($viewAccess[$viewName.'.dashboard_add'])) ? ComponentbuilderHelper::checkString($viewAccess[$viewName.'.dashboard_add']):false;
-						$accessDashboard_list = (isset($viewAccess[$viewName.'.dashboard_list'])) ? ComponentbuilderHelper::checkString($viewAccess[$viewName.'.dashboard_list']):false;
+						$accessDashboard_add = (isset($viewAccess[$viewName.'.dashboard_add'])) ? StringHelper::check($viewAccess[$viewName.'.dashboard_add']):false;
+						$accessDashboard_list = (isset($viewAccess[$viewName.'.dashboard_list'])) ? StringHelper::check($viewAccess[$viewName.'.dashboard_list']):false;
 						// check for adding access
 						if ($add && $accessCreate)
 						{
@@ -339,64 +350,64 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 						// set main access controllers
 						if ($accessDashboard_add)
 						{
-							$dashboard_add	= $user->authorise($viewAccess[$viewName.'.dashboard_add'], 'com_componentbuilder');
+							$dashboard_add    = $user->authorise($viewAccess[$viewName.'.dashboard_add'], 'com_componentbuilder');
 						}
 						if ($accessDashboard_list)
 						{
 							$dashboard_list = $user->authorise($viewAccess[$viewName.'.dashboard_list'], 'com_componentbuilder');
 						}
-						if (ComponentbuilderHelper::checkString($accessAdd) && ComponentbuilderHelper::checkString($accessTo))
+						if (StringHelper::check($accessAdd) && StringHelper::check($accessTo))
 						{
 							// check access
 							if($user->authorise($accessAdd, 'com_componentbuilder') && $user->authorise($accessTo, 'com_componentbuilder') && $dashboard_add)
 							{
-								$icons[$group][$i]			= new StdClass;
-								$icons[$group][$i]->url 	= $url;
-								$icons[$group][$i]->name 	= $name;
-								$icons[$group][$i]->image 	= $image;
-								$icons[$group][$i]->alt 	= $alt;
+								$icons[$group][$i]        = new StdClass;
+								$icons[$group][$i]->url   = $url;
+								$icons[$group][$i]->name  = $name;
+								$icons[$group][$i]->image = $image;
+								$icons[$group][$i]->alt   = $alt;
 							}
 						}
-						elseif (ComponentbuilderHelper::checkString($accessTo))
+						elseif (StringHelper::check($accessTo))
 						{
 							// check access
 							if($user->authorise($accessTo, 'com_componentbuilder') && $dashboard_list)
 							{
-								$icons[$group][$i]			= new StdClass;
-								$icons[$group][$i]->url 	= $url;
-								$icons[$group][$i]->name 	= $name;
-								$icons[$group][$i]->image 	= $image;
-								$icons[$group][$i]->alt 	= $alt;
+								$icons[$group][$i]        = new StdClass;
+								$icons[$group][$i]->url   = $url;
+								$icons[$group][$i]->name  = $name;
+								$icons[$group][$i]->image = $image;
+								$icons[$group][$i]->alt   = $alt;
 							}
 						}
-						elseif (ComponentbuilderHelper::checkString($accessAdd))
+						elseif (StringHelper::check($accessAdd))
 						{
 							// check access
 							if($user->authorise($accessAdd, 'com_componentbuilder') && $dashboard_add)
 							{
-								$icons[$group][$i]			= new StdClass;
-								$icons[$group][$i]->url 	= $url;
-								$icons[$group][$i]->name 	= $name;
-								$icons[$group][$i]->image 	= $image;
-								$icons[$group][$i]->alt 	= $alt;
+								$icons[$group][$i]        = new StdClass;
+								$icons[$group][$i]->url   = $url;
+								$icons[$group][$i]->name  = $name;
+								$icons[$group][$i]->image = $image;
+								$icons[$group][$i]->alt   = $alt;
 							}
 						}
 						else
 						{
-							$icons[$group][$i]			= new StdClass;
-							$icons[$group][$i]->url 	= $url;
-							$icons[$group][$i]->name 	= $name;
-							$icons[$group][$i]->image 	= $image;
-							$icons[$group][$i]->alt 	= $alt;
+							$icons[$group][$i]        = new StdClass;
+							$icons[$group][$i]->url   = $url;
+							$icons[$group][$i]->name  = $name;
+							$icons[$group][$i]->image = $image;
+							$icons[$group][$i]->alt   = $alt;
 						}
 					}
 					else
 					{
-						$icons[$group][$i]			= new StdClass;
-						$icons[$group][$i]->url 	= $url;
-						$icons[$group][$i]->name 	= $name;
-						$icons[$group][$i]->image 	= $image;
-						$icons[$group][$i]->alt 	= $alt;
+						$icons[$group][$i]        = new StdClass;
+						$icons[$group][$i]->url   = $url;
+						$icons[$group][$i]->name  = $name;
+						$icons[$group][$i]->image = $image;
+						$icons[$group][$i]->alt   = $alt;
 					}
 					$i++;
 				}
@@ -413,18 +424,17 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 	public function getWiki()
 	{
 		// the call URL
-		$call_url = JUri::base() . 'index.php?option=com_componentbuilder&task=ajax.getWiki&format=json&raw=true&' . JSession::getFormToken() . '=1&name=Home';
-		$document = JFactory::getDocument();
+		$call_url = Uri::base() . 'index.php?option=com_componentbuilder&task=ajax.getWiki&format=json&raw=true&' . Session::getFormToken() . '=1&name=Home';
+		$document = Factory::getDocument();
 		$document->addScriptDeclaration('
 		function getWikiPage(){
-
 			fetch("' . $call_url . '").then((response) => {
 				if (response.ok) {
 					return response.json();
 				}
 			}).then((result) => {
 				if (typeof result.page !== "undefined") {
-					document.getElementById("wiki-md").innerHTML = result.page;
+					document.getElementById("wiki-md").innerHTML = marked.parse(result.page);
 				} else if (typeof result.error !== "undefined") {
 					document.getElementById("wiki-md-error").innerHTML = result.error
 				}
@@ -432,34 +442,44 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 		}
 		setTimeout(getWikiPage, 1000);');
 
-		return '<div id="wiki-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div><div id="wiki-md-error" style="color: red"></div>';
+		return '<div id="wiki-md"><small>'.Text::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div><div id="wiki-md-error" style="color: red"></div>';
 	}
 	
 
 	public function getNoticeboard()
 	{
 		// get the document to load the scripts
-		$document = JFactory::getDocument();
-		$document->addScript(JURI::root() . "media/com_componentbuilder/js/marked.js");
+		$document = Factory::getDocument();
+		Html::_('script', "media/com_componentbuilder/js/marked.js", ['version' => 'auto']);
 		$document->addScriptDeclaration('
-		var token = "'.JSession::getFormToken().'";
+		var token = "' . Session::getFormToken() . '";
 		var noticeboard = "https://vdm.bz/componentbuilder-noticeboard-md";
-		jQuery(document).ready(function () {
-			jQuery.get(noticeboard)
-			.success(function(board) { 
+		document.addEventListener("DOMContentLoaded", function() {
+			fetch(noticeboard)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+				return response.text();
+			})
+			.then(board => {
 				if (board.length > 5) {
-					jQuery("#noticeboard-md").html(marked.parse(board));
-					getIS(1,board).done(function(result) {
-						if (result){
-							jQuery("#cpanel_tabTabs a").each(function() {
-								if (this.href.indexOf("#vast_development_method") >= 0 || this.href.indexOf("#notice_board") >= 0) {
-									var textVDM = jQuery(this).text();
-									jQuery(this).html("<span class=\"label label-important vdm-new-notice\">1</span> "+textVDM);
-									jQuery(this).attr("id","vdm-new-notice");
-									jQuery("#vdm-new-notice").click(function() {
-										getIS(2,board).done(function(result) {
-												if (result) {
-												jQuery(".vdm-new-notice").fadeOut(500);
+					document.getElementById("noticeboard-md").innerHTML = marked.parse(board);
+					getIS(1, board)
+					.then(result => {
+						if (result) {
+							document.querySelectorAll("#cpanel_tabTabs a").forEach(link => {
+								if (link.href.includes("#vast_development_method") || link.href.includes("#notice_board")) {
+									var textVDM = link.textContent;
+									link.innerHTML = "<span class=\"label label-important vdm-new-notice\">1</span> " + textVDM;
+									link.id = "vdm-new-notice";
+									document.getElementById("vdm-new-notice").addEventListener("click", () => {
+										getIS(2, board)
+										.then(result => {
+											if (result) {
+												document.querySelectorAll(".vdm-new-notice").forEach(element => {
+													element.style.opacity = 0;
+												});
 											}
 										});
 									});
@@ -468,64 +488,78 @@ class ComponentbuilderModelComponentbuilder extends ListModel
 						}
 					});
 				} else {
-					jQuery("#noticeboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
+					document.getElementById("noticeboard-md").innerHTML = "'.Text::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATER').'.";
 				}
 			})
-			.error(function(jqXHR, textStatus, errorThrown) { 
-				jQuery("#noticeboard-md").html("'.JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATTER').'");
+			.catch(error => {
+				console.error("There was an error!", error);
+				document.getElementById("noticeboard-md").innerHTML = "'.Text::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_PLEASE_CHECK_AGAIN_LATER').'.";
 			});
 		});
+
 		// to check is READ/NEW
-		function getIS(type,notice){
-			if(type == 1){
-				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true";
-			} else if (type == 2) {
-				var getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true";
-			}	
-			if(token.length > 0 && notice.length){
-				var request = token+"=1&notice="+notice;
+		function getIS(type, notice) {
+			let getUrl = "";
+			if (type === 1) {
+				getUrl = "index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true";
+			} else if (type === 2) {
+				getUrl = "index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true";
 			}
-			return jQuery.ajax({
-				type: "POST",
-				url: getUrl,
-				dataType: "json",
-				data: request,
-				jsonp: false
-			});
+			let request = new URLSearchParams();
+			if (token.length > 0 && notice.length) {
+				request.append(token, "1");
+				request.append("notice", notice);
+			}
+			return fetch(getUrl, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+				},
+				body: request
+			}).then(response => response.json());
 		}
 		
-// nice little dot trick :)
-jQuery(document).ready( function($) {
-  var x=0;
-  setInterval(function() {
-	var dots = "";
-	x++;
-	for (var y=0; y < x%8; y++) {
-		dots+=".";
-	}
-	$(".loading-dots").text(dots);
-  } , 500);
+document.addEventListener("DOMContentLoaded", function() {
+	document.querySelectorAll(".loading-dots").forEach(function(loading_dots) {
+		let x = 0;
+		let intervalId = setInterval(function() {
+			if (!loading_dots.classList.contains("loading-dots")) {
+				clearInterval(intervalId);
+				return;
+			}
+			let dots = ".".repeat(x % 8);
+			loading_dots.textContent = dots;
+			x++;
+		}, 500);
+	});
 });');
 
-		return '<div id="noticeboard-md">'.JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+		return '<div id="noticeboard-md">'.Text::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
 	public function getReadme()
 	{
-		$document = JFactory::getDocument();
+		$document = Factory::getDocument();
 		$document->addScriptDeclaration('
-		var getreadme = "'. JURI::root() . 'administrator/components/com_componentbuilder/README.txt";
-		jQuery(document).ready(function () {
-			jQuery.get(getreadme)
-			.success(function(readme) { 
-				jQuery("#readme-md").html(marked.parse(readme));
+		var getreadme = "'. Uri::root() . 'administrator/components/com_componentbuilder/README.txt";
+		document.addEventListener("DOMContentLoaded", function () {
+			fetch(getreadme)
+			.then(response => {
+				if (!response.ok) {
+				    throw new Error("Network response was not ok");
+				}
+				return response.text();
 			})
-			.error(function(jqXHR, textStatus, errorThrown) { 
-				jQuery("#readme-md").html("'.JText::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATTER').'");
+			.then(readme => {
+				document.getElementById("readme-md").innerHTML = marked.parse(readme);
+			})
+			.catch(error => {
+				console.error("There has been a problem with your fetch operation:", error);
+				document.getElementById("readme-md").innerHTML = "'.Text::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATER').'.";
 			});
 		});');
 
-		return '<div id="readme-md"><small>'.JText::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+		return '<div id="readme-md"><small>'.Text::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
 	}
 
 	/**
@@ -537,8 +571,8 @@ jQuery(document).ready( function($) {
 	public function getVersion()
 	{
 		// the call URL
-		$call_url = JUri::base() . 'index.php?option=com_componentbuilder&task=ajax.getVersion&format=json&raw=true&' . JSession::getFormToken() . '=1&version=1';
-		$document = JFactory::getDocument();
+		$call_url = Uri::base() . 'index.php?option=com_componentbuilder&task=ajax.getVersion&format=json&raw=true&' . Session::getFormToken() . '=1&version=1';
+		$document = Factory::getDocument();
 		$document->addScriptDeclaration('
 		function getComponentVersionStatus() {
 			fetch("' . $call_url . '").then((response) => {

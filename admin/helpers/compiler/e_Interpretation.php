@@ -13,8 +13,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filter\OutputFilter;
+use Joomla\CMS\Language\Text;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -39,15 +42,17 @@ class Interpretation extends Fields
 	 * The global config Field Sets
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Config.Fieldsets')->add($key, $value);
 	 */
-	public $configFieldSets = array();
+	public $configFieldSets = [];
 
 	/**
 	 * The global config Field Sets Custom Fields
 	 *
 	 * @var     array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Config.Fieldsets.Customfield')->add($key, $value);
 	 */
-	public $configFieldSetsCustomField = array();
+	public $configFieldSetsCustomField = [];
 
 	/**
 	 * The contributors
@@ -60,22 +65,24 @@ class Interpretation extends Fields
 	 * The unistall builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Builder.Database.Uninstall')->set(...);
 	 */
-	public $uninstallBuilder = array();
+	public $uninstallBuilder = [];
 
 	/**
 	 * The update SQL builder
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Model.Updatesql')->set($old, $new, string $type, $key = null, ?array $ignore = null);
 	 */
-	public $updateSQLBuilder = array();
+	public $updateSQLBuilder = [];
 
 	/**
 	 * The List Column Builder
 	 *
 	 * @var    array
 	 */
-	public $listColnrBuilder = array();
+	public $listColnrBuilder = [];
 
 	/**
 	 * The permissions Builder
@@ -84,7 +91,7 @@ class Interpretation extends Fields
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Action')->set($action, $nameView, $nameView);
 	 * @deprecated 3.3 or Use CFactory::_('Compiler.Builder.Permission.Global')->set($action, $nameView, $nameView);
 	 */
-	public $permissionBuilder = array();
+	public $permissionBuilder = [];
 
 	/**
 	 * The dashboard permissions builder
@@ -92,7 +99,7 @@ class Interpretation extends Fields
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Dashboard')->add('icon', $key, $value)
 	 */
-	public $permissionDashboard = array();
+	public $permissionDashboard = [];
 
 	/**
 	 * The permissions core
@@ -100,149 +107,169 @@ class Interpretation extends Fields
 	 * @var    array
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Core')->set($nameView, $coreTarget, $action);
 	 */
-	public $permissionCore = array();
+	public $permissionCore = [];
 
 	/**
 	 * The customs field builder
 	 *
 	 * @var    array
 	 */
-	public $customFieldBuilder = array();
+	public $customFieldBuilder = [];
 
 	/**
 	 * The category builder
 	 *
 	 * @var    array
 	 */
-	public $buildCategories = array();
+	public $buildCategories = [];
 
 	/**
 	 * The icon builder
 	 *
 	 * @var    array
 	 */
-	public $iconBuilder = array();
+	public $iconBuilder = [];
 
 	/**
 	 * The validation fix builder
 	 *
 	 * @var    array
 	 */
-	public $validationFixBuilder = array();
+	public $validationFixBuilder = [];
 
 	/**
 	 * The view script builder
 	 *
 	 * @var    array
 	 */
-	public $viewScriptBuilder = array();
+	public $viewScriptBuilder = [];
 
 	/**
 	 * The target relation control
 	 *
 	 * @var    array
 	 */
-	public $targetRelationControl = array();
+	public $targetRelationControl = [];
 
 	/**
 	 * The target control script checker
 	 *
 	 * @var    array
 	 */
-	public $targetControlsScriptChecker = array();
+	public $targetControlsScriptChecker = [];
 
 	/**
 	 * The router helper
 	 *
 	 * @var    array
 	 */
-	public $setRouterHelpDone = array();
+	public $setRouterHelpDone = [];
 
 	/**
 	 * The other where
 	 *
 	 * @var    array
 	 */
-	public $otherWhere = array();
+	public $otherWhere = [];
 
 	/**
 	 * The dashboard get custom data
 	 *
 	 * @var    array
 	 */
-	public $DashboardGetCustomData = array();
+	public $DashboardGetCustomData = [];
 
 	/**
 	 * The custom admin added
 	 *
 	 * @var    array
 	 */
-	public $customAdminAdded = array();
+	public $customAdminAdded = [];
 
 	/**
 	 * Switch to add form to views
 	 *
 	 * @var    array
 	 */
-	public $addCustomForm = array();
+	public $addCustomForm = [];
 
 	/**
 	 * The extensions params
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Extensions.Params')
 	 */
-	protected $extensionsParams = array();
+	protected $extensionsParams = [];
 
 	/**
 	 * The asset rules
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Assets.Rules')
 	 */
-	public $assetsRules = array();
+	public $assetsRules = [];
 
 	/**
 	 * View Has Category Request
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Request')->get("catid.$key")
 	 */
-	protected $hasCatIdRequest = array();
+	protected $hasCatIdRequest = [];
 
 	/**
 	 * All fields with permissions
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Fields')
 	 */
-	public $permissionFields = array();
+	public $permissionFields = [];
 
 	/**
 	 * Custom Admin View List Link
 	 *
 	 * @var    array
 	 */
-	protected $customAdminViewListLink = array();
+	protected $customAdminViewListLink = [];
 
 	/**
 	 * load Tracker of fields to fix
 	 *
 	 * @var    array
 	 */
-	protected $loadTracker = array();
+	protected $loadTracker = [];
 
 	/**
 	 * View Has Id Request
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Request')->get("id.$key")
 	 */
-	protected $hasIdRequest = array();
-	protected $libwarning = array();
+	protected $hasIdRequest = [];
 
 	/**
-	 * Language message buckets
+	 * Library warning
 	 *
 	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Library.Warning')
 	 */
-	public $langNot = array();
-	public $langSet = array();
+	protected $libwarning = [];
+
+	/**
+	 * Language message bucket
+	 *
+	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Language.Messages')
+	 */
+	public $langNot = [];
+
+	/**
+	 * Language message bucket
+	 *
+	 * @var    array
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Language.Messages')
+	 */
+	public $langSet = [];
 
 	/**
 	 * alignment names
@@ -311,7 +338,7 @@ class Interpretation extends Fields
 				CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_INT', $this->setInitLicenseLock($_WHMCS));
 				CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_DEFINED',
 					PHP_EOL . PHP_EOL . 'defined(\'' . $_WHMCS
-					. '\') or die(JText:' . ':_(\'NIE_REG_NIE\'));');
+					. '\') or die(Text:' . ':_(\'NIE_REG_NIE\'));');
 			}
 		}
 		else
@@ -374,8 +401,8 @@ class Interpretation extends Fields
 		$statment[] = PHP_EOL . Indent::_(2) . "if (!" . $thIIS . "->"
 			. $boolMethod . "())";
 		$statment[] = Indent::_(2) . "{";
-		$statment[] = Indent::_(3) . "\$app = JFactory::getApplication();";
-		$statment[] = Indent::_(3) . "\$app->enqueueMessage(JText:"
+		$statment[] = Indent::_(3) . "\$app = Factory::getApplication();";
+		$statment[] = Indent::_(3) . "\$app->enqueueMessage(Text:"
 			. ":_('NIE_REG_NIE'), 'error');";
 		$statment[] = Indent::_(3) . "\$app->redirect('index.php');";
 		$statment[] = Indent::_(3) . "return false;";
@@ -410,7 +437,7 @@ class Interpretation extends Fields
 		$bool[] = Indent::_(2) . "}";
 		$bool[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Get the global params";
-		$bool[] = Indent::_(2) . "\$params = JComponentHelper::getParams('com_"
+		$bool[] = Indent::_(2) . "\$params = ComponentHelper::getParams('com_"
 			. CFactory::_('Config')->component_code_name . "', true);";
 		$bool[] = Indent::_(2)
 			. "\$whmcs_key = \$params->get('whmcs_key', null);";
@@ -450,7 +477,7 @@ class Interpretation extends Fields
 		$helper[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Get the global params";
 		$helper[] = Indent::_(2)
-			. "\$params = JComponentHelper::getParams('com_"
+			. "\$params = ComponentHelper::getParams('com_"
 			. CFactory::_('Config')->component_code_name . "', true);";
 		$helper[] = Indent::_(2)
 			. "\$whmcs_key = \$params->get('whmcs_key', null);";
@@ -538,7 +565,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(1) . "{";
 				$encrypt[] = Indent::_(2) . "// get the session";
 				$encrypt[] = Indent::_(2)
-					. "\$session = JFactory::getSession();";
+					. "\$session = Factory::getSession();";
 				$encrypt[] = Indent::_(2)
 					. "\$V2uekt2wcgwk = \$session->get(\$Vk5smi0wjnjb, null);";
 				$encrypt[] = Indent::_(2)
@@ -616,7 +643,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(7) . "\$Vlpolphukogz = false;";
 				$encrypt[] = Indent::_(7)
 					. "\$Vm5cxjdc43g4finding['status'] = \"sleg\";";
-				$encrypt[] = Indent::_(7) . "\$Vwasqoybpyed = array();";
+				$encrypt[] = Indent::_(7) . "\$Vwasqoybpyed = [];";
 				$encrypt[] = Indent::_(6) . "}";
 				$encrypt[] = Indent::_(6)
 					. "\$Vkni3xyhkqzv = explode(',', \$Vwasqoybpyed['validip']);";
@@ -625,7 +652,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(7) . "\$Vlpolphukogz = false;";
 				$encrypt[] = Indent::_(7)
 					. "\$Vm5cxjdc43g4finding['status'] = \"sleg\";";
-				$encrypt[] = Indent::_(7) . "\$Vwasqoybpyed = array();";
+				$encrypt[] = Indent::_(7) . "\$Vwasqoybpyed = [];";
 				$encrypt[] = Indent::_(6) . "}";
 				$encrypt[] = Indent::_(6)
 					. "\$Vckfvnepoaxj = explode(',', \$Vwasqoybpyed['validdirectory']);";
@@ -634,7 +661,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(7) . "\$Vlpolphukogz = false;";
 				$encrypt[] = Indent::_(7)
 					. "\$Vm5cxjdc43g4finding['status'] = \"sleg\";";
-				$encrypt[] = Indent::_(7) . "\$Vwasqoybpyed = array();";
+				$encrypt[] = Indent::_(7) . "\$Vwasqoybpyed = [];";
 				$encrypt[] = Indent::_(6) . "}";
 				$encrypt[] = Indent::_(5) . "}";
 				$encrypt[] = Indent::_(4) . "}";
@@ -714,7 +741,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(5)
 					. "\$Vwasqoybpyed = \$Vm5cxjdc43g4finding;";
 				$encrypt[] = Indent::_(4) . "} else {";
-				$encrypt[] = Indent::_(5) . "\$Vwasqoybpyed = array();";
+				$encrypt[] = Indent::_(5) . "\$Vwasqoybpyed = [];";
 				$encrypt[] = Indent::_(5)
 					. "\$Vwasqoybpyed['status'] = \"sleg\";";
 				$encrypt[] = Indent::_(5)
@@ -725,7 +752,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(4) . "preg_match_all('"
 					. '/<(.*?)>([^<]+)<\/\\1>/i'
 					. "', \$Vqojefyeohg5, \$V1ot20wob03f);";
-				$encrypt[] = Indent::_(4) . "\$Vwasqoybpyed = array();";
+				$encrypt[] = Indent::_(4) . "\$Vwasqoybpyed = [];";
 				$encrypt[] = Indent::_(4)
 					. "foreach (\$V1ot20wob03f[1] AS \$V2sgyscukmgi=>\$V1u00zkzmb1d) {";
 				$encrypt[] = Indent::_(5)
@@ -781,10 +808,10 @@ class Interpretation extends Fields
 		}
 		// give notice of this issue
 		$this->app->enqueueMessage(
-			JText::_('<hr /><h3>WHMCS Error</h3>'), 'Error'
+			Text::_('<hr /><h3>WHMCS Error</h3>'), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::_(
+			Text::_(
 				'The <b>WHMCS class</b> could not be added to this component. You will need to enable the add-on in the Joomla Component area (Add WHMCS)->Yes. If you have done this, then please check that you have your own <b>Basic Encryption<b/> set in the global settings of JCB. Then open and save this component again, making sure that your WHMCS settings are still correct.'
 			), 'Error'
 		);
@@ -824,7 +851,7 @@ class Interpretation extends Fields
 			// get component name
 			$component = CFactory::_('Config')->component_code_name;
 			// set the getCryptKey function to the helper class
-			$function = array();
+			$function = [];
 			// start building the getCryptKey function/class method
 			$function[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$function[] = Indent::_(1) . " *	Get The Encryption Keys";
@@ -843,7 +870,7 @@ class Interpretation extends Fields
 			$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get the global params";
 			$function[] = Indent::_(2)
-				. "\$params = JComponentHelper::getParams('com_" . $component
+				. "\$params = ComponentHelper::getParams('com_" . $component
 				. "', true);";
 			// add the basic option
 			if (CFactory::_('Compiler.Builder.Model.Basic.Field')->isActive())
@@ -855,7 +882,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3)
 					. "\$basic_key = \$params->get('basic_key', \$default);";
 				$function[] = Indent::_(3)
-					. "if (self::checkString(\$basic_key))";
+					. "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$basic_key))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4) . "return \$basic_key;";
 				$function[] = Indent::_(3) . "}";
@@ -871,7 +898,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " check if medium key is already loaded.";
 				$function[] = Indent::_(3)
-					. "if (self::checkString(self::\$mediumCryptKey))";
+					. "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(self::\$mediumCryptKey))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4)
 					. "return (self::\$mediumCryptKey !== 'none') ? trim(self::\$mediumCryptKey) : \$default;";
@@ -881,7 +908,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3)
 					. "\$medium_key_path = \$params->get('medium_key_path', null);";
 				$function[] = Indent::_(3)
-					. "if (self::checkString(\$medium_key_path))";
+					. "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$medium_key_path))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " load the key from the file.";
@@ -905,7 +932,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(2) . "{";
 				$function[] = Indent::_(3)
 					. "\$key = \$params->get('whmcs_key', \$default);";
-				$function[] = Indent::_(3) . "if (self::checkString(\$key))";
+				$function[] = Indent::_(3) . "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$key))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " load the file";
@@ -958,7 +985,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Set the error message.";
 				$function[] = Indent::_(3)
-					. "JFactory::getApplication()->enqueueMessage(JText::_('"
+					. "Factory::getApplication()->enqueueMessage(Text:" . ":_('"
 					. CFactory::_('Config')->lang_prefix
 					. "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = Indent::_(3) . "return false;";
@@ -989,7 +1016,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Set the error message.";
 				$function[] = Indent::_(3)
-					. "JFactory::getApplication()->enqueueMessage(JText::_('"
+					. "Factory::getApplication()->enqueueMessage(Text:" . ":_('"
 					. CFactory::_('Config')->lang_prefix
 					. "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = Indent::_(3) . "return false;";
@@ -1008,7 +1035,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Set the error message.";
 				$function[] = Indent::_(3)
-					. "JFactory::getApplication()->enqueueMessage(JText::_('"
+					. "Factory::getApplication()->enqueueMessage(Text:" . ":_('"
 					. CFactory::_('Config')->lang_prefix
 					. "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = Indent::_(3) . "return false;";
@@ -1037,7 +1064,7 @@ class Interpretation extends Fields
 		if (CFactory::_('Component')->isArray('version_update')
 			|| CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 		{
-			$updateXML = array();
+			$updateXML = [];
 			// add the update server
 			if (CFactory::_('Component')->get('update_server_target', 3) != 3)
 			{
@@ -1099,7 +1126,7 @@ class Interpretation extends Fields
 			&& CFactory::_('Component')->isString('update_server_url'))
 		{
 			// UPDATESERVER
-			$updateServer   = array();
+			$updateServer   = [];
 			$updateServer[] = PHP_EOL . Indent::_(1) . "<updateservers>";
 			$updateServer[] = Indent::_(2)
 				. '<server type="extension" enabled="1" element="com_'
@@ -1120,7 +1147,7 @@ class Interpretation extends Fields
 		// ensure to update Component version data
 		if (CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 		{
-			$buket = array();
+			$buket = [];
 			$nr    = 0;
 			foreach (CFactory::_('Component')->get('version_update') as $values)
 			{
@@ -1128,7 +1155,7 @@ class Interpretation extends Fields
 				$nr++;
 			}
 			// update the joomla component table
-			$newJ       = array();
+			$newJ       = [];
 			$newJ['id'] = (int) CFactory::_('Config')->component_id;
 			$newJ['component_version']
 				= CFactory::_('Component')->get('component_version');
@@ -1139,7 +1166,7 @@ class Interpretation extends Fields
 			CFactory::_('History')->get('joomla_component', CFactory::_('Config')->component_id);
 
 			// update the component update table
-			$newU = array();
+			$newU = [];
 			if (CFactory::_('Component')->get('version_update_id', 0)  > 0)
 			{
 				$newU['id'] = (int) CFactory::_('Component')->get('version_update_id', 0);
@@ -1165,7 +1192,7 @@ class Interpretation extends Fields
 	)
 	{
 		// start building the update
-		$update_ = array();
+		$update_ = [];
 		if ($current_version)
 		{
 			// setup new version
@@ -1351,7 +1378,7 @@ class Interpretation extends Fields
 	 */
 	public function noHelp()
 	{
-		$help   = array();
+		$help   = [];
 		$help[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 		$help[] = Indent::_(1) . " *	Can be used to build help urls.";
 		$help[] = Indent::_(1) . " **/";
@@ -1398,15 +1425,29 @@ class Interpretation extends Fields
 		{
 			$target = 'site_view';
 		}
-		$help   = array();
+		$help   = [];
 		$help[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 		$help[] = Indent::_(1) . " *	Load the Component Help URLs.";
 		$help[] = Indent::_(1) . " **/";
 		$help[] = Indent::_(1) . "public static function getHelpUrl(\$view)";
 		$help[] = Indent::_(1) . "{";
-		$help[] = Indent::_(2) . "\$user	= JFactory::getUser();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$help[] = Indent::_(2) . "\$user	= Factory::getUser();";
+		}
+		else
+		{
+			$help[] = Indent::_(2) . "\$user	= Factory::getApplication()->getIdentity();";
+		}
 		$help[] = Indent::_(2) . "\$groups = \$user->get('groups');";
-		$help[] = Indent::_(2) . "\$db	= JFactory::getDbo();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$help[] = Indent::_(2) . "\$db	= Factory::getDbo();";
+		}
+		else
+		{
+			$help[] = Indent::_(2) . "\$db	= Factory::getContainer()->get(DatabaseInterface::class);";
+		}
 		$help[] = Indent::_(2) . "\$query	= \$db->getQuery(true);";
 		$help[] = Indent::_(2)
 			. "\$query->select(array('a.id','a.groups','a.target','a.type','a.article','a.url'));";
@@ -1422,7 +1463,7 @@ class Interpretation extends Fields
 		$help[] = Indent::_(2) . "if(\$db->getNumRows())";
 		$help[] = Indent::_(2) . "{";
 		$help[] = Indent::_(3) . "\$helps = \$db->loadObjectList();";
-		$help[] = Indent::_(3) . "if (self::checkArray(\$helps))";
+		$help[] = Indent::_(3) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$helps))";
 		$help[] = Indent::_(3) . "{";
 		$help[] = Indent::_(4) . "foreach (\$helps as \$nr => \$help)";
 		$help[] = Indent::_(4) . "{";
@@ -1471,7 +1512,7 @@ class Interpretation extends Fields
 			. "protected static function loadArticleLink(\$id)";
 		$help[] = Indent::_(1) . "{";
 		$help[] = Indent::_(2)
-			. "return JURI::root().'index.php?option=com_content&view=article&id='.\$id.'&tmpl=component&layout=modal';";
+			. "return Uri::root() . 'index.php?option=com_content&view=article&id='.\$id.'&tmpl=component&layout=modal';";
 		$help[] = Indent::_(1) . "}";
 		$help[] = PHP_EOL . Indent::_(1) . "/**";
 		$help[] = Indent::_(1) . " *	Get the Help Text Link.";
@@ -1479,10 +1520,10 @@ class Interpretation extends Fields
 		$help[] = Indent::_(1)
 			. "protected static function loadHelpTextLink(\$id)";
 		$help[] = Indent::_(1) . "{";
-		$help[] = Indent::_(2) . "\$token = JSession::getFormToken();";
+		$help[] = Indent::_(2) . "\$token = Session::getFormToken();";
 		$help[] = Indent::_(2) . "return 'index.php?option=com_"
 			. CFactory::_('Config')->component_code_name
-			. "&task=help.getText&id=' . (int) \$id . '&token=' . \$token;";
+			. "&task=help.getText&id=' . (int) \$id . '&' . \$token . '=1';";
 		$help[] = Indent::_(1) . "}";
 
 		// return the help methods
@@ -1496,7 +1537,7 @@ class Interpretation extends Fields
 			// we use the company name set in the GUI
 			$company_name = CFactory::_('Compiler.Builder.Content.One')->get('COMPANYNAME');
 			// start building the xml function
-			$exel   = array();
+			$exel   = [];
 			$exel[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$exel[] = Indent::_(1) . "* Prepares the xml document";
 			$exel[] = Indent::_(1) . "*/";
@@ -1505,13 +1546,20 @@ class Interpretation extends Fields
 			$exel[] = Indent::_(1) . "{";
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set the user";
-			$exel[] = Indent::_(2) . "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$exel[] = Indent::_(2) . "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$help[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+			}
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set fileName if not set";
 			$exel[] = Indent::_(2) . "if (!\$fileName)";
 			$exel[] = Indent::_(2) . "{";
 			$exel[] = Indent::_(3)
-				. "\$fileName = 'exported_'.JFactory::getDate()->format('jS_F_Y');";
+				. "\$fileName = 'exported_'.Factory::getDate()->format('jS_F_Y');";
 			$exel[] = Indent::_(2) . "}";
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set modified if not set";
@@ -1595,7 +1643,7 @@ class Interpretation extends Fields
 			$exel[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add some data";
 			$exel[] = Indent::_(2)
-				. "if ((\$size = self::checkArray(\$rows)) !== false)";
+				. "if ((\$size = Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$rows)) !== false)";
 			$exel[] = Indent::_(2) . "{";
 			$exel[] = Indent::_(3) . "\$i = 1;";
 			$exel[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -1699,7 +1747,7 @@ class Interpretation extends Fields
 				. "self::composerAutoload('phpspreadsheet');";
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get session object";
-			$exel[] = Indent::_(2) . "\$session = JFactory::getSession();";
+			$exel[] = Indent::_(2) . "\$session = Factory::getSession();";
 			$exel[] = Indent::_(2)
 				. "\$package = \$session->get('package', null);";
 			$exel[] = Indent::_(2)
@@ -1729,7 +1777,7 @@ class Interpretation extends Fields
 				. " load the rows (only first three)";
 			$exel[] = Indent::_(3)
 				. "\$excelObj = \$excelReader->load(\$package['dir']);";
-			$exel[] = Indent::_(3) . "\$headers = array();";
+			$exel[] = Indent::_(3) . "\$headers = [];";
 			$exel[] = Indent::_(3)
 				. "foreach (\$excelObj->getActiveSheet()->getRowIterator() as \$row)";
 			$exel[] = Indent::_(3) . "{";
@@ -1785,7 +1833,7 @@ class Interpretation extends Fields
 	{
 		if ($add)
 		{
-			$method   = array();
+			$method   = [];
 			$method[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$method[] = Indent::_(1) . " * Greate user and update given table";
 			$method[] = Indent::_(1) . " *";
@@ -1829,7 +1877,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " load the user component language files if there is an error.";
-			$method[] = Indent::_(2) . "\$lang = JFactory::getLanguage();";
+			$method[] = Indent::_(2) . "\$lang = Factory::getLanguage();";
 			$method[] = Indent::_(2) . "\$extension = 'com_users';";
 			$method[] = Indent::_(2) . "\$base_dir = JPATH_SITE;";
 			$method[] = Indent::_(2) . "\$language_tag = '" . CFactory::_('Config')->get('lang_tag', 'en-GB')
@@ -1859,7 +1907,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if we have params/config";
-			$method[] = Indent::_(2) . "if (self::checkArray(\$params))";
+			$method[] = Indent::_(2) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$params))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Make changes to user config";
@@ -1875,7 +1923,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Set username to email if not set";
 			$method[] = Indent::_(2)
-				. "if (!isset(\$credentials['username']) || !self::checkString(\$credentials['username']))";
+				. "if (!isset(\$credentials['username']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['username']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3)
 				. "\$credentials['username'] = \$credentials['email'];";
@@ -1903,13 +1951,13 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$data['email'] = \$credentials['email'];";
 			$method[] = Indent::_(3)
-				. "\$data['registerDate'] = JFactory::getDate()->toSql();";
+				. "\$data['registerDate'] = Factory::getDate()->toSql();";
 			$method[] = Indent::_(2) . "}";
 
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if password was set";
 			$method[] = Indent::_(2)
-				. "if (\$mode == 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !self::checkString(\$credentials['password']) || !self::checkString(\$credentials['password2'])))";
+				. "if (\$mode == 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password2'])))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Set random password when empty password was submitted,";
@@ -1924,7 +1972,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Now Add password if set";
 			$method[] = Indent::_(2)
-				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && self::checkString(\$credentials['password']) && self::checkString(\$credentials['password2']))";
+				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password']) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password2']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "if (\$mode == 1) //" . Line::_(
 					__LINE__,__CLASS__
@@ -1946,7 +1994,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Load the group/s value if set, only for Admin Registration (\$mode == 0)";
 			$method[] = Indent::_(2)
-				. "if (\$mode == 0 && isset(\$credentials['groups']) && self::checkArray(\$credentials['groups']))";
+				. "if (\$mode == 0 && isset(\$credentials['groups']) && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$credentials['groups']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3)
 				. "\$data['groups'] = \$credentials['groups'];";
@@ -1970,7 +2018,7 @@ class Interpretation extends Fields
 
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if we have params";
-			$method[] = Indent::_(2) . "if (self::checkArray(\$params))";
+			$method[] = Indent::_(2) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$params))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Change user params/config back";
@@ -1996,8 +2044,8 @@ class Interpretation extends Fields
 				. " Try to login";
 			$method[] = Indent::_(4) . "try{";
 			$method[] = Indent::_(5)
-				. "JFactory::getApplication()->login(\$credentials);";
-			$method[] = Indent::_(4) . "} catch (Exception \$exception){";
+				. "Factory::getApplication()->login(\$credentials);";
+			$method[] = Indent::_(4) . "} catch (\Exception \$exception){";
 			$method[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " Do noting for now, may want to set redirect.";
 			$method[] = Indent::_(4) . "}";
@@ -2015,14 +2063,23 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get the params and set the new values";
 			$method[] = Indent::_(2)
-				. "\$params = JComponentHelper::getParams(\$component);";
+				. "\$params = ComponentHelper::getParams(\$component);";
 			$method[] = Indent::_(2) . "\$was = \$params->get(\$target, null);";
 			$method[] = Indent::_(2) . "if (\$was != \$value)";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "\$params->set(\$target, \$value);";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get a new database query instance";
-			$method[] = Indent::_(3) . "\$db = JFactory::getDBO();";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$method[] = Indent::_(3) . "\$db = Factory::getDBO();";
+			}
+			else
+			{
+				$method[] = Indent::_(3) . "\$db = Factory::getContainer()->get(DatabaseInterface::class);";
+			}
+
 			$method[] = Indent::_(3) . "\$query = \$db->getQuery(true);";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Build the query";
@@ -2048,7 +2105,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(1) . "{";
 			$method[] = Indent::_(2)
 				. "// load the user component language files if there is an error.";
-			$method[] = Indent::_(2) . "\$lang = JFactory::getLanguage();";
+			$method[] = Indent::_(2) . "\$lang = Factory::getLanguage();";
 			$method[] = Indent::_(2) . "\$extension = 'com_users';";
 			$method[] = Indent::_(2) . "\$base_dir = JPATH_ADMINISTRATOR;";
 			$method[] = Indent::_(2) . "\$language_tag = '" . CFactory::_('Config')->get('lang_tag', 'en-GB')
@@ -2061,7 +2118,7 @@ class Interpretation extends Fields
 				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
 			$method[] = Indent::_(2) . "// Check if password was set";
 			$method[] = Indent::_(2)
-				. "if (isset(\$new['password']) && isset(\$new['password2']) && self::checkString(\$new['password']) && self::checkString(\$new['password2']))";
+				. "if (isset(\$new['password']) && isset(\$new['password2']) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['password']) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['password2']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "// Use the users passwords";
 			$method[] = Indent::_(3) . "\$password = \$new['password'];";
@@ -2069,7 +2126,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "// set username";
 			$method[] = Indent::_(2)
-				. "if (!isset(\$new['username']) || !self::checkString(\$new['username']))";
+				. "if (!isset(\$new['username']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['username']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3)
 				. "\$new['username'] = \$new['email'];";
@@ -2087,7 +2144,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3) . "'block' => 0 );";
 			$method[] = Indent::_(2) . "// set groups if found";
 			$method[] = Indent::_(2)
-				. "if (isset(\$new['groups']) && self::checkArray(\$new['groups']))";
+				. "if (isset(\$new['groups']) && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$new['groups']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "\$data['groups'] = \$new['groups'];";
 			$method[] = Indent::_(2) . "}";
@@ -2148,7 +2205,7 @@ class Interpretation extends Fields
 		else
 		{
 			$this->app->enqueueMessage(
-				JText::sprintf(
+				Text::sprintf(
 					'<hr /><p>Site menu for <b>%s</b> was not build.</p>',
 					$nameSingleCode
 				), 'Warning'
@@ -2160,6 +2217,11 @@ class Interpretation extends Fields
 
 	public function setCustomViewMenu(&$view)
 	{
+		$target_area = 'Administrator';
+		if (CFactory::_('Config')->build_target === 'site')
+		{
+			$target_area = 'Site';
+		}
 		$xml = '';
 		// build the file target values
 		$target = array('site' => $view['settings']->code);
@@ -2189,8 +2251,8 @@ class Interpretation extends Fields
 			$xml .= PHP_EOL . Indent::_(3) . '<![CDATA[' . $lang . '_DESC]]>';
 			$xml .= PHP_EOL . Indent::_(2) . '</message>';
 			$xml .= PHP_EOL . Indent::_(1) . '</layout>';
-			if (isset($this->hasIdRequest[$view['settings']->code])
-				|| isset($this->hasCatIdRequest[$view['settings']->code]))
+			if (CFactory::_('Compiler.Builder.Request')->isArray("id.{$view['settings']->code}")
+				|| CFactory::_('Compiler.Builder.Request')->isArray("catid.{$view['settings']->code}"))
 			{
 				$xml .= PHP_EOL . Indent::_(1) . '<!--' . Line::_(
 						__LINE__,__CLASS__
@@ -2198,34 +2260,40 @@ class Interpretation extends Fields
 					. ' Add fields to the request variables for the layout. -->';
 				$xml .= PHP_EOL . Indent::_(1) . '<fields name="request">';
 				$xml .= PHP_EOL . Indent::_(2) . '<fieldset name="request"';
-				$xml .= PHP_EOL . Indent::_(3)
-					. 'addrulepath="/administrator/components/com_'
-					. CFactory::_('Config')->component_code_name . '/models/rules"';
-				$xml .= PHP_EOL . Indent::_(3)
-					. 'addfieldpath="/administrator/components/com_'
-					. CFactory::_('Config')->component_code_name . '/models/fields">';
-				if (isset($this->hasIdRequest[$view['settings']->code])
-					&& ArrayHelper::check(
-						$this->hasIdRequest[$view['settings']->code]
-					))
+
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 				{
-					foreach (
-						$this->hasIdRequest[$view['settings']->code] as
-						$requestFieldXML
-					)
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addrulepath="/administrator/components/com_'
+						. CFactory::_('Config')->component_code_name . '/models/rules"';
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addfieldpath="/administrator/components/com_'
+						. CFactory::_('Config')->component_code_name . '/models/fields">';
+				}
+				else
+				{
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\\'. $target_area . '\Rule"';
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\\'. $target_area . '\Field">';
+				}
+
+				if (CFactory::_('Compiler.Builder.Request')->isArray("id.{$view['settings']->code}"))
+				{
+					foreach (CFactory::_('Compiler.Builder.Request')->
+						get("id.{$view['settings']->code}") as $requestFieldXML)
 					{
 						$xml .= PHP_EOL . Indent::_(3) . $requestFieldXML;
 					}
 				}
-				if (isset($this->hasCatIdRequest[$view['settings']->code])
-					&& ArrayHelper::check(
-						$this->hasCatIdRequest[$view['settings']->code]
-					))
+				if (CFactory::_('Compiler.Builder.Request')->isArray("catid.{$view['settings']->code}"))
 				{
-					foreach (
-						$this->hasCatIdRequest[$view['settings']->code] as
-						$requestFieldXML
-					)
+					foreach (CFactory::_('Compiler.Builder.Request')->
+						get("catid.{$view['settings']->code}") as $requestFieldXML)
 					{
 						$xml .= PHP_EOL . Indent::_(3) . $requestFieldXML;
 					}
@@ -2233,12 +2301,11 @@ class Interpretation extends Fields
 				$xml .= PHP_EOL . Indent::_(2) . '</fieldset>';
 				$xml .= PHP_EOL . Indent::_(1) . '</fields>';
 			}
-			if (isset($this->frontEndParams)
-				&& isset($this->frontEndParams[$view['settings']->name]))
+			if (CFactory::_('Compiler.Builder.Frontend.Params')->exists($view['settings']->name))
 			{
 				// first we must setup the fields for the page use
 				$params = $this->setupFrontendParamFields(
-					$this->frontEndParams[$view['settings']->name],
+					CFactory::_('Compiler.Builder.Frontend.Params')->get($view['settings']->name),
 					$view['settings']->code
 				);
 				// now load the fields
@@ -2251,12 +2318,26 @@ class Interpretation extends Fields
 					$xml .= PHP_EOL . Indent::_(2)
 						. '<fieldset name="basic" label="COM_'
 						. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '"';
-					$xml .= PHP_EOL . Indent::_(3)
-						. 'addrulepath="/administrator/components/com_'
-						. CFactory::_('Config')->component_code_name . '/models/rules"';
-					$xml .= PHP_EOL . Indent::_(3)
-						. 'addfieldpath="/administrator/components/com_'
-						. CFactory::_('Config')->component_code_name . '/models/fields">';
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$xml .= PHP_EOL . Indent::_(3)
+							. 'addrulepath="/administrator/components/com_'
+							. CFactory::_('Config')->component_code_name . '/models/rules"';
+						$xml .= PHP_EOL . Indent::_(3)
+							. 'addfieldpath="/administrator/components/com_'
+							. CFactory::_('Config')->component_code_name . '/models/fields">';
+					}
+					else
+					{
+						$xml .= PHP_EOL . Indent::_(3)
+							. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
+							. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+							. '\\'. $target_area . '\Rule"';
+						$xml .= PHP_EOL . Indent::_(3)
+							. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
+							. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+							. '\\'. $target_area . '\Field">';
+					}
 					$xml .= implode(Indent::_(3), $params);
 					$xml .= PHP_EOL . Indent::_(2) . '</fieldset>';
 					$xml .= PHP_EOL . Indent::_(1) . '</fields>';
@@ -2267,7 +2348,7 @@ class Interpretation extends Fields
 		else
 		{
 			$this->app->enqueueMessage(
-				JText::sprintf(
+				Text::sprintf(
 					'<hr /><p>Site menu for <b>%s</b> was not build.</p>',
 					$view['settings']->code
 				), 'Warning'
@@ -2279,7 +2360,7 @@ class Interpretation extends Fields
 
 	public function setupFrontendParamFields($params, $view)
 	{
-		$keep       = array();
+		$keep       = [];
 		$menuSetter = $view . '_menu';
 		foreach ($params as $field)
 		{
@@ -2335,7 +2416,7 @@ class Interpretation extends Fields
 		$query = '';
 		if (ArrayHelper::check($gets))
 		{
-			$mainAsArray = array();
+			$mainAsArray = [];
 			$check       = 'zzz';
 			foreach ($gets as $nr => $the_get)
 			{
@@ -2517,8 +2598,7 @@ class Interpretation extends Fields
 
 								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
 									. $tab . Indent::_(1) . "if ("
-									. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-									. "Helper::checkArray(" . $string . "->"
+									. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "{";
@@ -2570,8 +2650,7 @@ class Interpretation extends Fields
 									. $as . " based on repeatable value";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "if ("
-									. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-									. "Helper::checkString(" . $string . "->"
+									. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "{";
@@ -2581,8 +2660,7 @@ class Interpretation extends Fields
 									. $string . "->" . $field . ",true);";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "if ("
-									. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-									. "Helper::checkArray(\$array))";
+									. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "{";
 
@@ -2700,7 +2778,7 @@ class Interpretation extends Fields
 					{
 						$if = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 							. "if (isset(" . $string . "->" . $field . ") && "
-							. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkJson("
+							. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check("
 							. $string . "->" . $field . "))" . PHP_EOL
 							. Indent::_(1) . $tab . Indent::_(1) . "{";
 						// json_decode
@@ -2824,9 +2902,9 @@ class Interpretation extends Fields
 						. Line::_(__Line__, __Class__)
 						. " Load the JEvent Dispatcher";
 					$runplugins .= PHP_EOL . $tab . Indent::_(1)
-						. "JPluginHelper::importPlugin('content');";
+						. "PluginHelper::importPlugin('content');";
 					$runplugins .= PHP_EOL . $tab . Indent::_(1)
-						. '$this->_dispatcher = JFactory::getApplication();';
+						. '$this->_dispatcher = Factory::getApplication();';
 				}
 				if (!$params)
 				{
@@ -2837,7 +2915,7 @@ class Interpretation extends Fields
 					$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(
 							1
 						) . "\$params = (isset(" . $string . "->params) && "
-						. $Component . "Helper::checkJson(" . $string
+						. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(" . $string
 						. "->params)) ? json_decode(" . $string . "->params) : "
 						. $string . ";";
 					$params       = true;
@@ -2847,7 +2925,7 @@ class Interpretation extends Fields
 					. " Make sure the content prepare plugins fire on "
 					. $field;
 				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$_" . $field . " = new stdClass();";
+					. "\$_" . $field . " = new \stdClass();";
 				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 					. "\$_" . $field . '->text =& ' . $string . '->' . $field
 					. '; //' . Line::_(__Line__, __Class__)
@@ -3077,8 +3155,7 @@ class Interpretation extends Fields
 								. "\$array = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$array) && "
-								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-								. "Helper::checkArray(\$array))";
+								. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. Indent::_(1) . "\$query->where('"
@@ -3106,8 +3183,7 @@ class Interpretation extends Fields
 								. "\$checkValue = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$checkValue) && "
-								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-								. "Helper::checkString(\$checkValue))";
+								. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$checkValue))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. Indent::_(1) . "\$query->where('"
@@ -3313,7 +3389,7 @@ class Interpretation extends Fields
 						|| $whe['operator'] === 'NOT IN')
 					{
 						$string = "if (isset(" . $whe['value_key'] . ") && "
-							. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray("
+							. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check("
 							. $whe['value_key'] . "))";
 						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
 							. "{";
@@ -3449,7 +3525,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					)
 					. " redirect away to the default view if no access allowed.";
-				$redirectString  = "JRoute::_('index.php?option=com_"
+				$redirectString  = "Route::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view="
 					. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
 			}
@@ -3458,7 +3534,7 @@ class Interpretation extends Fields
 				$redirectMessage = Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " redirect away to the home page if no access allowed.";
-				$redirectString  = 'JURI::root()';
+				$redirectString  = 'Uri::root()';
 			}
 			$accessCheck[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -3468,7 +3544,7 @@ class Interpretation extends Fields
 				. ".access', 'com_" . CFactory::_('Config')->component_code_name . "'))";
 			$accessCheck[] = Indent::_(2) . "{";
 			$accessCheck[] = Indent::_(3)
-				. "\$app = JFactory::getApplication();";
+				. "\$app = Factory::getApplication();";
 			// set lang
 			$langKeyWord = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe(
@@ -3479,7 +3555,7 @@ class Interpretation extends Fields
 				'site', $langKeyWord,
 				'Not authorised to view ' . $view['settings']->code . '!'
 			);
-			$accessCheck[] = Indent::_(3) . "\$app->enqueueMessage(JText:"
+			$accessCheck[] = Indent::_(3) . "\$app->enqueueMessage(Text:"
 				. ":_('" . $langKeyWord . "'), 'error');";
 			$accessCheck[] = $redirectMessage;
 			$accessCheck[] = Indent::_(3) . "\$app->redirect(" . $redirectString
@@ -3528,8 +3604,16 @@ class Interpretation extends Fields
 			// start loadin the get Item
 			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "//"
 				. Line::_(__Line__, __Class__) . " Get a db connection.";
-			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-				. "\$db = JFactory::getDbo();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
+					. "\$db = Factory::getDbo();";
+			}
+			else
+			{
+				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
+					. "\$db = \$this->getDatabase();";
+			}
 			$getItem .= PHP_EOL . PHP_EOL . $tab . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Create a new query object.";
 			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
@@ -3606,7 +3690,7 @@ class Interpretation extends Fields
 			if ($type === 'main')
 			{
 				$getItem      .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "\$app = JFactory::getApplication();";
+					. "\$app = Factory::getApplication();";
 				$langKeyWoord = CFactory::_('Config')->lang_prefix . '_'
 					. StringHelper::safe(
 						'Not found or access denied', 'U'
@@ -3618,7 +3702,7 @@ class Interpretation extends Fields
 					. Line::_(__Line__, __Class__)
 					. " If no data is found redirect to default page and show warning.";
 				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "\$app->enqueueMessage(JText:" . ":_('" . $langKeyWoord
+					. "\$app->enqueueMessage(Text:" . ":_('" . $langKeyWoord
 					. "'), 'warning');";
 				if ('site' === CFactory::_('Config')->build_target)
 				{
@@ -3626,13 +3710,13 @@ class Interpretation extends Fields
 					if (CFactory::_('Compiler.Builder.Content.One')->exists('SITE_DEFAULT_VIEW')
 						&& CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') != $code)
 					{
-						$redirectString = "JRoute::_('index.php?option=com_"
+						$redirectString = "Route::_('index.php?option=com_"
 							. CFactory::_('Config')->component_code_name . "&view="
 							. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
 					}
 					else
 					{
-						$redirectString = 'JURI::root()';
+						$redirectString = 'Uri::root()';
 					}
 					$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 						. "\$app->redirect(" . $redirectString . ");";
@@ -3656,7 +3740,7 @@ class Interpretation extends Fields
 			$getItem .= Placefix::_h("DISPATCHER") ;
 			if (ArrayHelper::check($get->main_get))
 			{
-				$asBucket = array();
+				$asBucket = [];
 				foreach ($get->main_get as $main_get)
 				{
 					if (isset($main_get['key']) && isset($main_get['as']))
@@ -3750,7 +3834,7 @@ class Interpretation extends Fields
 			$getItem .= $this->setCustomViewGlobals(
 				$get->global, '$data', $asBucket, $tab
 			);
-			// setup the custom gets that returns multipal values
+			// setup the custom gets that returns multiple values
 			$getItem .= $this->setCustomViewCustomJoin(
 				$get->custom_get, '$data', $code, $asBucket, $tab
 			);
@@ -3762,7 +3846,7 @@ class Interpretation extends Fields
 					$get->php_calculation
 				)
 				);
-				$getItem              .= PHP_EOL . Indent::_(1) . $tab
+				$getItem .= PHP_EOL . Indent::_(1) . $tab
 					. Indent::_(1) . implode(
 						PHP_EOL . Indent::_(1) . $tab . Indent::_(1),
 						$get->php_calculation
@@ -3849,24 +3933,27 @@ class Interpretation extends Fields
 				$main       = '';
 				if ($view->gettype == 3)
 				{
-					// SITE_GET_ITEM <<<DYNAMIC>>>
-					$main .= PHP_EOL . PHP_EOL . Indent::_(2)
-						. "if (!isset(\$this->initSet) || !\$this->initSet)";
-					$main .= PHP_EOL . Indent::_(2) . "{";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->user = JFactory::getUser();";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->userId = \$this->user->get('id');";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->guest = \$this->user->get('guest');";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->groups = \$this->user->get('groups');";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->authorisedGroups = \$this->user->getAuthorisedGroups();";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->levels = \$this->user->getAuthorisedViewLevels();";
-					$main .= PHP_EOL . Indent::_(3) . "\$this->initSet = true;";
-					$main .= PHP_EOL . Indent::_(2) . "}";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						// SITE_GET_ITEM <<<DYNAMIC>>>
+						$main .= PHP_EOL . PHP_EOL . Indent::_(2)
+							. "if (!isset(\$this->initSet) || !\$this->initSet)";
+						$main .= PHP_EOL . Indent::_(2) . "{";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->user = Factory::getUser();";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->userId = \$this->user->get('id');";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->guest = \$this->user->get('guest');";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->groups = \$this->user->get('groups');";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->authorisedGroups = \$this->user->getAuthorisedGroups();";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->levels = \$this->user->getAuthorisedViewLevels();";
+						$main .= PHP_EOL . Indent::_(3) . "\$this->initSet = true;";
+						$main .= PHP_EOL . Indent::_(2) . "}";
+					}
 					$main .= $this->setCustomViewGetItem(
 						$view, $view->code, '', 'custom'
 					);
@@ -3875,27 +3962,30 @@ class Interpretation extends Fields
 				}
 				elseif ($view->gettype == 4)
 				{
-					$main .= PHP_EOL . PHP_EOL . Indent::_(2)
-						. "if (!isset(\$this->initSet) || !\$this->initSet)";
-					$main .= PHP_EOL . Indent::_(2) . "{";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->user = JFactory::getUser();";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->userId = \$this->user->get('id');";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->guest = \$this->user->get('guest');";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->groups = \$this->user->get('groups');";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->authorisedGroups = \$this->user->getAuthorisedGroups();";
-					$main .= PHP_EOL . Indent::_(3)
-						. "\$this->levels = \$this->user->getAuthorisedViewLevels();";
-					$main .= PHP_EOL . Indent::_(3) . "\$this->initSet = true;";
-					$main .= PHP_EOL . Indent::_(2) . "}";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$main .= PHP_EOL . PHP_EOL . Indent::_(2)
+							. "if (!isset(\$this->initSet) || !\$this->initSet)";
+						$main .= PHP_EOL . Indent::_(2) . "{";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->user = Factory::getUser();";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->userId = \$this->user->get('id');";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->guest = \$this->user->get('guest');";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->groups = \$this->user->get('groups');";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->authorisedGroups = \$this->user->getAuthorisedGroups();";
+						$main .= PHP_EOL . Indent::_(3)
+							. "\$this->levels = \$this->user->getAuthorisedViewLevels();";
+						$main .= PHP_EOL . Indent::_(3) . "\$this->initSet = true;";
+						$main .= PHP_EOL . Indent::_(2) . "}";
+					}
 					$main .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__) . " Get the global params";
 					$main .= PHP_EOL . Indent::_(2)
-						. "\$globalParams = JComponentHelper::getParams('com_"
+						. "\$globalParams = ComponentHelper::getParams('com_"
 						. CFactory::_('Config')->component_code_name . "', true);";
 					// set php before listquery
 					if (isset($view->add_php_getlistquery)
@@ -3985,7 +4075,7 @@ class Interpretation extends Fields
 		if (2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
 		{
 			// build uikit get method
-			$ukit   = array();
+			$ukit   = [];
 			$ukit[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$ukit[] = Indent::_(1) . " *  UIKIT Component Classes";
 			$ukit[] = Indent::_(1) . " **/";
@@ -4057,7 +4147,7 @@ class Interpretation extends Fields
 				. "if (strpos(\$content,'class=\"uk-') !== false)";
 			$ukit[] = Indent::_(2) . "{";
 			$ukit[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__) . " reset";
-			$ukit[] = Indent::_(3) . "\$temp = array();";
+			$ukit[] = Indent::_(3) . "\$temp = [];";
 			$ukit[] = Indent::_(3)
 				. "foreach (self::\$uk_components as \$looking => \$add)";
 			$ukit[] = Indent::_(3) . "{";
@@ -4076,11 +4166,11 @@ class Interpretation extends Fields
 			$ukit[] = Indent::_(3) . "}";
 			$ukit[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " sorter";
-			$ukit[] = Indent::_(3) . "if (self::checkArray(\$temp))";
+			$ukit[] = Indent::_(3) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$temp))";
 			$ukit[] = Indent::_(3) . "{";
 			$ukit[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " merger";
-			$ukit[] = Indent::_(4) . "if (self::checkArray(\$classes))";
+			$ukit[] = Indent::_(4) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$classes))";
 			$ukit[] = Indent::_(4) . "{";
 			$ukit[] = Indent::_(5)
 				. "\$newTemp = array_merge(\$temp,\$classes);";
@@ -4089,7 +4179,7 @@ class Interpretation extends Fields
 			$ukit[] = Indent::_(4) . "return \$temp;";
 			$ukit[] = Indent::_(3) . "}";
 			$ukit[] = Indent::_(2) . "}";
-			$ukit[] = Indent::_(2) . "if (self::checkArray(\$classes))";
+			$ukit[] = Indent::_(2) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$classes))";
 			$ukit[] = Indent::_(2) . "{";
 			$ukit[] = Indent::_(3) . "return \$classes;";
 			$ukit[] = Indent::_(2) . "}";
@@ -4123,7 +4213,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . Indent::_(1) . "{";
 			$method .= PHP_EOL . Indent::_(2)
 				. "if (isset(\$this->uikitComp) && "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$this->uikitComp))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->uikitComp))";
 			$method .= PHP_EOL . Indent::_(2) . "{";
 			$method .= PHP_EOL . Indent::_(3) . "return \$this->uikitComp;";
 			$method .= PHP_EOL . Indent::_(2) . "}";
@@ -4194,8 +4284,16 @@ class Interpretation extends Fields
 						$methods .= PHP_EOL . Indent::_(2) . "//"
 							. Line::_(__Line__, __Class__)
 							. " Get a db connection.";
-						$methods .= PHP_EOL . Indent::_(2)
-							. "\$db = JFactory::getDbo();";
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							$methods .= PHP_EOL . Indent::_(2)
+								. "\$db = Factory::getDbo();";
+						}
+						else
+						{
+							$methods .= PHP_EOL . Indent::_(2)
+								. "\$db = \$this->getDatabase();";
+						}
 						$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 							. Line::_(__Line__, __Class__)
 							. " Create a new query object.";
@@ -4218,16 +4316,14 @@ class Interpretation extends Fields
 								. $default['on_field']
 								. " is an array with values.";
 							$methods .= PHP_EOL . Indent::_(2) . "\$array = ("
-								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-								. "Helper::checkJson(\$"
+								. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$"
 								. $default['on_field']
 								. ", true)) ? json_decode(\$"
 								. $default['on_field'] . ",true) : \$"
 								. $default['on_field'] . ";";
 							$methods .= PHP_EOL . Indent::_(2)
 								. "if (isset(\$array) && "
-								. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-								. "Helper::checkArray(\$array, true))";
+								. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array, true))";
 							$methods .= PHP_EOL . Indent::_(2) . "{";
 							$methods .= PHP_EOL . Indent::_(3)
 								. "\$query->where('" . $get['join_field'] . " "
@@ -4554,7 +4650,14 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Get a db connection.";
 			}
-			$getItem .= PHP_EOL . Indent::_(2) . "\$db = JFactory::getDbo();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$getItem .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDbo();";
+			}
+			else
+			{
+				$getItem .= PHP_EOL . Indent::_(2) . "\$db = \$this->getDatabase();";
+			}
 			$getItem .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Create a new query object.";
 			$getItem .= PHP_EOL . Indent::_(2)
@@ -4625,8 +4728,8 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__)
 				. " Insure all item fields are adapted where needed.";
-			$getItem .= PHP_EOL . Indent::_(2) . "if (" . $Component
-				. "Helper::checkArray(\$items))";
+			$getItem .= PHP_EOL . Indent::_(2) . "if ("
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
 			$getItem .= PHP_EOL . Indent::_(2) . "{";
 			$getItem .= Placefix::_h("DISPATCHER") ;
 			$getItem .= PHP_EOL . Indent::_(3)
@@ -4635,13 +4738,13 @@ class Interpretation extends Fields
 			$getItem .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Always create a slug for sef URL's";
 			$getItem .= PHP_EOL . Indent::_(4)
-				. "\$item->slug = (isset(\$item->alias) && isset(\$item->id)) ? \$item->id.':'.\$item->alias : \$item->id;";
+				. "\$item->slug = (\$item->id ?? '0') . (isset(\$item->alias) ? ':' . \$item->alias : '');";
 			if (isset($get->main_get)
 				&& ArrayHelper::check(
 					$get->main_get
 				))
 			{
-				$asBucket = array();
+				$asBucket = [];
 				foreach ($get->main_get as $main_get)
 				{
 					// build path
@@ -4828,7 +4931,6 @@ class Interpretation extends Fields
 		if (isset($view['settings']->main_get)
 			&& ObjectHelper::check($view['settings']->main_get))
 		{
-
 			// add events if needed
 			if ($view['settings']->main_get->gettype == 1
 				&& ArrayHelper::check(
@@ -4907,7 +5009,7 @@ class Interpretation extends Fields
 					. Line::_(__Line__, __Class__) . " Set the toolbar";
 				$method .= PHP_EOL . Indent::_(2) . "\$this->addToolBar();";
 				$method .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-					. Line::_(__Line__, __Class__) . " set the document";
+					. Line::_(__Line__, __Class__) . " Set the html view document stuff";
 				$method .= PHP_EOL . Indent::_(2)
 					. "\$this->_prepareDocument();";
 			}
@@ -4924,9 +5026,13 @@ class Interpretation extends Fields
 					) . " add the tool bar";
 				$method .= PHP_EOL . Indent::_(3) . "\$this->addToolBar();";
 				$method .= PHP_EOL . Indent::_(2) . "}";
-				$method .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-					. Line::_(__Line__, __Class__) . " set the document";
-				$method .= PHP_EOL . Indent::_(2) . "\$this->setDocument();";
+
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$method .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
+						. Line::_(__Line__, __Class__) . " set the document";
+					$method .= PHP_EOL . Indent::_(2) . "\$this->setDocument();";
+				}
 			}
 
 			$method .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -4936,7 +5042,7 @@ class Interpretation extends Fields
 				. "if (count(\$errors = \$this->get('Errors')))";
 			$method .= PHP_EOL . Indent::_(2) . "{";
 			$method .= PHP_EOL . Indent::_(3)
-				. "throw new Exception(implode(PHP_EOL, \$errors), 500);";
+				. "throw new \Exception(implode(PHP_EOL, \$errors), 500);";
 			$method .= PHP_EOL . Indent::_(2) . "}";
 			// add events if needed
 			if ($view['settings']->main_get->gettype == 1
@@ -4948,10 +5054,10 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Process the content plugins.";
 				$method .= PHP_EOL . Indent::_(2) . "if ("
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$this->item))";
+					. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$this->item))";
 				$method .= PHP_EOL . Indent::_(2) . "{";
 				$method .= PHP_EOL . Indent::_(3)
-					. "JPluginHelper::importPlugin('content');";
+					. "PluginHelper::importPlugin('content');";
 				$method .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Setup Event Object.";
@@ -4962,8 +5068,7 @@ class Interpretation extends Fields
 					) . " Check if item has params, or pass global params";
 				$method .= PHP_EOL . Indent::_(3)
 					. "\$params = (isset(\$this->item->params) && "
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-					. "Helper::checkJson(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
+					. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
 				foreach (
 					$view['settings']->main_get->plugin_events as $plugin_event
@@ -5088,7 +5193,7 @@ class Interpretation extends Fields
 		if (CFactory::_('Compiler.Builder.Get.Module')->
 			exists(CFactory::_('Config')->build_target . '.' . $view['settings']->code))
 		{
-			$addModule   = array();
+			$addModule   = [];
 			$addModule[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$addModule[] = Indent::_(1)
 				. " * Get the modules published in a position";
@@ -5111,19 +5216,18 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " this is where you want to load your module position";
 			$addModule[] = Indent::_(3)
-				. "\$modules = JModuleHelper::getModules(\$position);";
+				. "\$modules = ModuleHelper::getModules(\$position);";
 			$addModule[] = Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-				. "Helper::checkArray(\$modules, true))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$modules, true))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " set the place holder";
 			$addModule[] = Indent::_(4)
-				. "\$this->setModules[\$position] = array();";
+				. "\$this->setModules[\$position] = [];";
 			$addModule[] = Indent::_(4) . "foreach(\$modules as \$module)";
 			$addModule[] = Indent::_(4) . "{";
 			$addModule[] = Indent::_(5)
-				. "\$this->setModules[\$position][] = JModuleHelper::renderModule(\$module);";
+				. "\$this->setModules[\$position][] = ModuleHelper::renderModule(\$module);";
 			$addModule[] = Indent::_(4) . "}";
 			$addModule[] = Indent::_(4) . "\$found = true;";
 			$addModule[] = Indent::_(3) . "}";
@@ -5132,13 +5236,12 @@ class Interpretation extends Fields
 				. " check if modules were found";
 			$addModule[] = Indent::_(2)
 				. "if (\$found && isset(\$this->setModules[\$position]) && "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-				. "Helper::checkArray(\$this->setModules[\$position]))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->setModules[\$position]))";
 			$addModule[] = Indent::_(2) . "{";
 			$addModule[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " set class";
 			$addModule[] = Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkString(\$class))";
+				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$class))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4)
 				. "\$class = ' class=\"'.\$class.'\" ';";
@@ -5174,7 +5277,7 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(1) . "}";
 
 			CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_GET_MODULE_JIMPORT',
-				PHP_EOL . "use Joomla\CMS\Helper\ModuleHelper as JModuleHelper;"
+				PHP_EOL . "use Joomla\CMS\Helper\ModuleHelper;"
 			);
 
 			return implode(PHP_EOL, $addModule);
@@ -5196,8 +5299,8 @@ class Interpretation extends Fields
 			))
 			{
 				$_tmp = PHP_EOL . Indent::_(2) . implode(
-						PHP_EOL . Indent::_(2), $view['settings']->php_document
-					);
+					PHP_EOL . Indent::_(2), $view['settings']->php_document
+				);
 
 				return CFactory::_('Placeholder')->update_($_tmp);
 			}
@@ -5222,25 +5325,33 @@ class Interpretation extends Fields
 			{
 				$viewCodeName = $view['settings']->name_single_code;
 			}
-			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER', '');
-			// set the custom buttons CUSTOM_BUTTONS_METHOD
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD', '');
 		}
 		elseif (3 == $type)
 		{
 			// set the names
 			$viewCodeName  = $view['settings']->name_single_code;
 			$viewsCodeName = $view['settings']->name_list_code;
-			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST', '');
-			// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST', '');
+			// if it's not been set before
+			if (!CFactory::_('Compiler.Builder.Content.Multi')->exists($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST'))
+			{
+				// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
+				CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST', '');
+				// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
+				CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST', '');
+			}
 			// validate selection
 			$validateSelection = 'true';
 		}
+		// if it's not been set before
+		if (!CFactory::_('Compiler.Builder.Content.Multi')->exists($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD'))
+		{
+			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER', '');
+			// set the custom buttons CUSTOM_BUTTONS_METHOD
+			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD', '');
+		}
 		// reset buttons
-		$buttons = array();
+		$buttons = [];
 		// if site add buttons to view
 		if (CFactory::_('Config')->build_target === 'site')
 		{
@@ -5291,7 +5402,7 @@ class Interpretation extends Fields
 				$buttons[] = $tab . Indent::_(2)
 					. "//" . Line::_(__Line__, __Class__) . " add cpanel button";
 				$buttons[] = $tab . Indent::_(2)
-					. "JToolBarHelper::custom('" . $viewCodeName . "."
+					. "ToolbarHelper::custom('" . $viewCodeName . "."
 					. "dashboard', 'grid-2', '', 'COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT')
 					. "_DASH', false);";
@@ -5301,8 +5412,8 @@ class Interpretation extends Fields
 		if (isset($view['settings']->add_custom_button)
 			&& $view['settings']->add_custom_button == 1)
 		{
-			$this->onlyFunctionButton = array();
-			$functionNames            = array();
+			$this->onlyFunctionButton = [];
+			$functionNames            = [];
 			if (isset($view['settings']->custom_buttons)
 				&& ArrayHelper::check(
 					$view['settings']->custom_buttons
@@ -5348,7 +5459,7 @@ class Interpretation extends Fields
 							. Line::_(__Line__, __Class__) . " add "
 							. $custom_button['name'] . " button.";
 						$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-							. "JToolBarHelper::custom('" . $viewCodeName . "."
+							. "ToolbarHelper::custom('" . $viewCodeName . "."
 							. $custom_button['method'] . "', '"
 							. $custom_button['icomoon'] . " custom-button-"
 							. strtolower((string) $custom_button['method']) . "', '', '"
@@ -5366,7 +5477,7 @@ class Interpretation extends Fields
 							if (!isset($this->onlyFunctionButton[$viewsCodeName]))
 							{
 								$this->onlyFunctionButton[$viewsCodeName]
-									= array();
+									= [];
 							}
 							$this->onlyFunctionButton[$viewsCodeName][]
 								= Indent::_(
@@ -5389,7 +5500,7 @@ class Interpretation extends Fields
 								= Indent::_(
 									1
 								) . $tab . Indent::_(1)
-								. "JToolBarHelper::custom('" . $viewsCodeName
+								. "ToolbarHelper::custom('" . $viewsCodeName
 								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
@@ -5414,7 +5525,7 @@ class Interpretation extends Fields
 								. "//" . Line::_(__Line__, __Class__) . " add "
 								. $custom_button['name'] . " button.";
 							$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-								. "JToolBarHelper::custom('" . $viewsCodeName
+								. "ToolbarHelper::custom('" . $viewsCodeName
 								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
@@ -5483,8 +5594,7 @@ class Interpretation extends Fields
 				// load the model
 				if (StringHelper::check(
 						$view['settings']->php_model
-					)
-					&& $view['settings']->php_model != '//')
+					) && $view['settings']->php_model != '//')
 				{
 					// set the custom buttons CUSTOM_BUTTONS_METHOD
 					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
@@ -5539,10 +5649,10 @@ class Interpretation extends Fields
 	public function setJavaScriptForButtons()
 	{
 		// add behavior.framework to insure Joomla function is on the page
-		$script   = array();
+		$script   = [];
 		$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Add the needed Javascript to insure that the buttons work.";
-		$script[] = Indent::_(2) . "JHtml::_('behavior.framework', true);";
+		$script[] = Indent::_(2) . "Html::_('behavior.framework', true);";
 		$script[] = Indent::_(2)
 			. "\$this->document->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
 
@@ -5747,7 +5857,25 @@ class Interpretation extends Fields
 
 	public function setMetadataItem($item = 'item')
 	{
-		$meta   = array();
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			return $this->setMetadataItemJ3($item);
+		}
+		return $this->setMetadataItemJ4($item);
+	}
+
+	public function setMetadataList()
+	{
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			return $this->setMetadataListJ3();
+		}
+		return $this->setMetadataListJ4();
+	}
+
+	public function setMetadataItemJ3($item = 'item')
+	{
+		$meta   = [];
 		$meta[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " load the meta description";
 		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
@@ -5819,9 +5947,9 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $meta);
 	}
 
-	public function setMetadataList()
+	public function setMetadataListJ3()
 	{
-		$meta   = array();
+		$meta   = [];
 		$meta[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " load the meta description";
 		$meta[] = Indent::_(2)
@@ -5849,12 +5977,116 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $meta);
 	}
 
+	public function setMetadataItemJ4($item = 'item')
+	{
+		$meta   = [];
+		$meta[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " load the meta description";
+		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
+			. "->metadesc) && \$this->" . $item . "->metadesc)";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3) . "\$this->getDocument()->setDescription(\$this->"
+			. $item . "->metadesc);";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2)
+			. "elseif (\$this->params->get('menu-meta_description'))";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setDescription(\$this->params->get('menu-meta_description'));";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " load the key words if set";
+		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
+			. "->metakey) && \$this->" . $item . "->metakey)";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetadata('keywords', \$this->" . $item
+			. "->metakey);";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2)
+			. "elseif (\$this->params->get('menu-meta_keywords'))";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetadata('keywords', \$this->params->get('menu-meta_keywords'));";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " check the robot params";
+		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
+			. "->robots) && \$this->" . $item . "->robots)";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetadata('robots', \$this->" . $item
+			. "->robots);";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "elseif (\$this->params->get('robots'))";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetadata('robots', \$this->params->get('robots'));";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " check if autor is to be set";
+		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
+			. "->created_by) && \$this->params->get('MetaAuthor') == '1')";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetaData('author', \$this->" . $item
+			. "->created_by);";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " check if metadata is available";
+		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
+			. "->metadata) && \$this->" . $item . "->metadata)";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3) . "\$mdata = json_decode(\$this->" . $item
+			. "->metadata,true);";
+		$meta[] = Indent::_(3) . "foreach (\$mdata as \$k => \$v)";
+		$meta[] = Indent::_(3) . "{";
+		$meta[] = Indent::_(4) . "if (\$v)";
+		$meta[] = Indent::_(4) . "{";
+		$meta[] = Indent::_(5) . "\$this->getDocument()->setMetadata(\$k, \$v);";
+		$meta[] = Indent::_(4) . "}";
+		$meta[] = Indent::_(3) . "}";
+		$meta[] = Indent::_(2) . "}";
+
+		return implode(PHP_EOL, $meta);
+	}
+
+	public function setMetadataListJ4()
+	{
+		$meta   = [];
+		$meta[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " load the meta description";
+		$meta[] = Indent::_(2)
+			. "if (\$this->params->get('menu-meta_description'))";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setDescription(\$this->params->get('menu-meta_description'));";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " load the key words if set";
+		$meta[] = Indent::_(2)
+			. "if (\$this->params->get('menu-meta_keywords'))";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetadata('keywords', \$this->params->get('menu-meta_keywords'));";
+		$meta[] = Indent::_(2) . "}";
+		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " check the robot params";
+		$meta[] = Indent::_(2) . "if (\$this->params->get('robots'))";
+		$meta[] = Indent::_(2) . "{";
+		$meta[] = Indent::_(3)
+			. "\$this->getDocument()->setMetadata('robots', \$this->params->get('robots'));";
+		$meta[] = Indent::_(2) . "}";
+
+		return implode(PHP_EOL, $meta);
+	}
+
 	public function setGoogleChartLoader(&$view)
 	{
 		if (CFactory::_('Compiler.Builder.Google.Chart')->
 			exists(CFactory::_('Config')->build_target . '.' . $view['settings']->code))
 		{
-			$chart   = array();
+			$chart   = [];
 			$chart[] = PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " add the google chart builder class.";
@@ -5863,12 +6095,12 @@ class Interpretation extends Fields
 			$chart[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " load the google chart js.";
 			$chart[] = Indent::_(2)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name . "/js/google.jsapi.js', ['version' => 'auto']);";
 			$chart[] = Indent::_(2)
-				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/rgbcolor.js', ['version' => 'auto']);";
+				. "Html::_('script', 'https://canvg.googlecode.com/svn/trunk/rgbcolor.js', ['version' => 'auto']);";
 			$chart[] = Indent::_(2)
-				. "\$this->document->addScript('https://canvg.googlecode.com/svn/trunk/canvg.js', ['version' => 'auto']);";
+				. "Html::_('script', 'https://canvg.googlecode.com/svn/trunk/canvg.js', ['version' => 'auto']);";
 
 			return implode(PHP_EOL, $chart);
 		}
@@ -5899,24 +6131,34 @@ class Interpretation extends Fields
 				) . " Only load jQuery if needed. (default is true)";
 			$setter .= PHP_EOL . Indent::_(2) . "if (\$this->params->get('add_jquery_framework', 1) == 1)";
 			$setter .= PHP_EOL . Indent::_(2) . "{";
-			$setter .= PHP_EOL . Indent::_(3) . "JHtml::_('jquery.framework');";
+			$setter .= PHP_EOL . Indent::_(3) . "Html::_('jquery.framework');";
 			$setter .= PHP_EOL . Indent::_(2) . "}";
 			$setter .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Load the header checker class.";
-			if (CFactory::_('Config')->build_target === 'site')
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$setter .= PHP_EOL . Indent::_(2)
-					. "require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+				if (CFactory::_('Config')->build_target === 'site')
+				{
+					$setter .= PHP_EOL . Indent::_(2)
+						. "require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+				}
+				else
+				{
+					$setter .= PHP_EOL . Indent::_(2)
+						. "require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
+				}
+				$setter .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+					. " Initialize the header checker.";
+				$setter .= PHP_EOL . Indent::_(2) . "\$HeaderCheck = new "
+					. CFactory::_('Config')->component_code_name . "HeaderCheck();";
 			}
 			else
 			{
-				$setter .= PHP_EOL . Indent::_(2)
-					. "require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
+				$setter .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+					. " Initialize the header checker.";
+				$setter .= PHP_EOL . Indent::_(2) . "\$HeaderCheck = new HeaderCheck();";
 			}
-			$setter .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Initialize the header checker.";
-			$setter .= PHP_EOL . Indent::_(2) . "\$HeaderCheck = new "
-				. CFactory::_('Config')->component_code_name . "HeaderCheck;";
 		}
 		// check if this view should get libraries
 		if (($data = CFactory::_('Compiler.Builder.Library.Manager')->
@@ -5931,7 +6173,11 @@ class Interpretation extends Fields
 				{
 					$setter .= PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
 							str_replace(
-								'$document->', '$this->document->',
+								[
+									'$document->',
+									'$this->document->'
+								],
+								'$this->getDocument()->',
 								(string) $library->document
 							)
 						);
@@ -5946,7 +6192,7 @@ class Interpretation extends Fields
 		// convert back to $document if module call (oops :)
 		if (!$view_active)
 		{
-			return str_replace('$this->document->', '$document->', $setter);
+			return str_replace(['$this->getDocument()->', '$this->document->'], '$document->', $setter);
 		}
 
 		return $setter;
@@ -6000,14 +6246,14 @@ class Interpretation extends Fields
 			$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
 
 			$this->app->enqueueMessage(
-				JText::_('<hr /><h3>Conditional Script Warning</h3>'), 'Warning'
+				Text::_('<hr /><h3>Conditional Script Warning</h3>'), 'Warning'
 			);
 
 			// message with name
 			if (is_object($library) && isset($library->name))
 			{
 				$this->app->enqueueMessage(
-					JText::sprintf(
+					Text::sprintf(
 						'The conditional script builder for <b>%s</b> is not ready, sorry!',
 						$library->name
 					), 'Warning'
@@ -6016,7 +6262,7 @@ class Interpretation extends Fields
 			else
 			{
 				$this->app->enqueueMessage(
-					JText::_(
+					Text::_(
 						'The conditional script builder for ID:<b>%s</b> is not ready, sorry!',
 						$id
 					), 'Warning'
@@ -6186,12 +6432,12 @@ class Interpretation extends Fields
 			switch ($pathInfo['extension'])
 			{
 				case 'js':
-					return 'JHtml::_(\'script\', "' . ltrim($path, '/')
+					return 'Html::_(\'script\', "' . ltrim($path, '/')
 						. '", [\'version\' => \'auto\']);';
 					break;
 				case 'css':
 				case 'less':
-					return 'JHtml::_(\'stylesheet\', "'
+					return 'Html::_(\'stylesheet\', "'
 						. ltrim($path, '/') . '", [\'version\' => \'auto\']);';
 					break;
 				case 'php':
@@ -6286,7 +6532,7 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/css/uikit'.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "}";
@@ -6297,7 +6543,7 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "}";
@@ -6315,7 +6561,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Set the default uikit components in this view.";
 			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "\$uikitComp = array();";
+				. "\$uikitComp = [];";
 			foreach ($data_ as $class)
 			{
 				$setter .= PHP_EOL . $tabV . Indent::_(3) . "\$uikitComp[] = '"
@@ -6331,11 +6577,11 @@ class Interpretation extends Fields
 					. "\$uikitFieldComp = \$this->get('UikitComp');";
 				$setter .= PHP_EOL . $tabV . Indent::_(3)
 					. "if (isset(\$uikitFieldComp) && "
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitFieldComp))";
+					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitFieldComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(4)
 					. "if (isset(\$uikitComp) && "
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitComp))";
+					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(5)
 					. "\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
@@ -6355,13 +6601,8 @@ class Interpretation extends Fields
 				. " Load the needed uikit components in this view.";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitComp))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
-			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " load just in case.";
-			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "jimport('joomla.filesystem.file');";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " loading...";
@@ -6383,7 +6624,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . Indent::_(6)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "}";
@@ -6399,7 +6640,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . Indent::_(6)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "}";
@@ -6417,7 +6658,7 @@ class Interpretation extends Fields
 				. "\$uikitComp = \$this->get('UikitComp');";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$uikitComp))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6440,7 +6681,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " load the css.";
 			$setter .= PHP_EOL . $tabV . Indent::_(6)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "}";
@@ -6456,7 +6697,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " load the js.";
 			$setter .= PHP_EOL . $tabV . Indent::_(6)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "}";
@@ -6485,7 +6726,7 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->css_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v3/css/uikit'.\$size.'.css', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "}";
@@ -6496,11 +6737,11 @@ class Interpretation extends Fields
 				. "if ((!\$HeaderCheck->js_loaded('uikit.min') || \$uikit == 1) && \$uikit != 2 && \$uikit != 3)";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v3/js/uikit'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(3)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v3/js/uikit-icons'.\$size.'.js', ['version' => 'auto']);";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "}";
@@ -6612,7 +6853,7 @@ class Interpretation extends Fields
 				}
 
 				// build body
-				$body = array();
+				$body = [];
 				// Load the default values to the body
 				$body[] = CFactory::_('Placeholder')->update_(
 					$view['settings']->default
@@ -6695,7 +6936,7 @@ class Interpretation extends Fields
 					// top
 					if ('site' === CFactory::_('Config')->build_target)
 					{
-						return '<form action="<?php echo JRoute::_(\'index.php?option=com_'
+						return '<form action="<?php echo Route::_(\'index.php?option=com_'
 							. CFactory::_('Config')->component_code_name
 							. '\'); ?>" method="post" name="adminForm" id="adminForm">'
 							. PHP_EOL;
@@ -6704,14 +6945,14 @@ class Interpretation extends Fields
 					{
 						if ($gettype == 2)
 						{
-							return '<form action="<?php echo JRoute::_(\'index.php?option=com_'
+							return '<form action="<?php echo Route::_(\'index.php?option=com_'
 								. CFactory::_('Config')->component_code_name . '&view=' . $view
 								. '\'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">'
 								. PHP_EOL;
 						}
 						else
 						{
-							return '<form action="<?php echo JRoute::_(\'index.php?option=com_'
+							return '<form action="<?php echo Route::_(\'index.php?option=com_'
 								. CFactory::_('Config')->component_code_name . '&view=' . $view
 								. '\' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">'
 								. PHP_EOL;
@@ -6730,7 +6971,7 @@ class Interpretation extends Fields
 
 					return $input . PHP_EOL
 						. '<input type="hidden" name="task" value="" />'
-						. PHP_EOL . "<?php echo JHtml::_('form.token'); ?>"
+						. PHP_EOL . "<?php echo Html::_('form.token'); ?>"
 						. PHP_EOL . '</form>';
 					break;
 			}
@@ -6749,7 +6990,7 @@ class Interpretation extends Fields
 					'Joomla.submitbutton = function('
 				) === false)
 			{
-				$script   = array();
+				$script   = [];
 				$script[] = PHP_EOL . "<script type=\"text/javascript\">";
 				$script[] = Indent::_(1)
 					. "Joomla.submitbutton = function(task) {";
@@ -6896,7 +7137,7 @@ class Interpretation extends Fields
 				);
 				// SITE_LAYOUT_HEADER <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set($layout . '|' . $TARGET . '_LAYOUT_HEADER',
-					(($header = $this->setFileHeader(
+					(($header = CFactory::_('Header')->get(
 							str_replace('_', '.', (string) CFactory::_('Config')->build_target) . '.layout',
 							$layout, false)) !== false) ? PHP_EOL . PHP_EOL . $header : ''
 				);
@@ -7114,7 +7355,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Get Tag IDs.";
 			$script .= PHP_EOL . Indent::_(4) . "\$item->tags"
-				. " = new JHelperTags;";
+				. " = new TagsHelper;";
 			$script .= PHP_EOL . Indent::_(4)
 				. "\$item->tags->getTagIds(\$item->id, 'com_$component.$view');";
 			$script .= PHP_EOL . Indent::_(3) . "}";
@@ -7172,17 +7413,13 @@ class Interpretation extends Fields
 					. "']))";
 				$script .= PHP_EOL . Indent::_(2) . "{";
 				$script .= PHP_EOL . Indent::_(3) . "\$" . $jsonItem
-					. " = new JRegistry;";
+					. " = new Registry;";
 				$script .= PHP_EOL . Indent::_(3) . "\$" . $jsonItem
 					. "->loadArray(\$data['" . $jsonItem . "']);";
 				$script .= PHP_EOL . Indent::_(3) . "\$data['" . $jsonItem
 					. "'] = (string) \$" . $jsonItem . ";";
 				$script .= PHP_EOL . Indent::_(2) . "}";
-				if (isset($this->permissionFields[$view])
-					&& isset($this->permissionFields[$view][$jsonItem])
-					&& ArrayHelper::check(
-						$this->permissionFields[$view][$jsonItem]
-					))
+				if (CFactory::_('Compiler.Builder.Permission.Fields')->isArray("$view.$jsonItem"))
 				{
 					$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 							__LINE__,__CLASS__
@@ -7196,15 +7433,24 @@ class Interpretation extends Fields
 					$script .= PHP_EOL . Indent::_(2)
 						. "elseif (!isset(\$data['" . $jsonItem . "'])";
 					// only add permission that are available
-					foreach (
-						$this->permissionFields[$view][$jsonItem] as
-						$permission_option => $fieldType
+					foreach (CFactory::_('Compiler.Builder.Permission.Fields')->get("$view.$jsonItem")
+						as $permission_option => $fieldType
 					)
 					{
-						$script .= PHP_EOL . Indent::_(3)
-							. "&& JFactory::getUser()->authorise('" . $view
-							. "." . $permission_option . "." . $jsonItem
-							. "', 'com_" . $component . "')";
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							$script .= PHP_EOL . Indent::_(3)
+								. "&& Factory::getUser()->authorise('" . $view
+								. "." . $permission_option . "." . $jsonItem
+								. "', 'com_" . $component . "')";
+						}
+						else
+						{
+							$script .= PHP_EOL . Indent::_(3)
+								. "&& Factory::getApplication()->getIdentity()->authorise('" . $view
+								. "." . $permission_option . "." . $jsonItem
+								. "', 'com_" . $component . "')";
+						}
 					}
 					$script .= ")";
 				}
@@ -7339,7 +7585,7 @@ class Interpretation extends Fields
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding Tag Options";
 			$oserver .= PHP_EOL . Indent::_(2)
-				. "JTableObserverTags::createObserver(\$this, array('typeAlias' => 'com_"
+				. "TableObserverTags::createObserver(\$this, array('typeAlias' => 'com_"
 				. $component . "." . $view . "'));";
 		}
 		// add the history/version observer
@@ -7348,7 +7594,7 @@ class Interpretation extends Fields
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding History Options";
 			$oserver .= PHP_EOL . Indent::_(2)
-				. "JTableObserverContenthistory::createObserver(\$this, array('typeAlias' => 'com_"
+				. "TableObserverContenthistory::createObserver(\$this, array('typeAlias' => 'com_"
 				. $component . "." . $view . "'));";
 		}
 
@@ -7369,13 +7615,12 @@ class Interpretation extends Fields
 
 	public function setComponentToContentTypes($action)
 	{
-		$script = '';
 		if (CFactory::_('Component')->isArray('admin_views'))
 		{
 			// set component name
 			$component = CFactory::_('Config')->component_code_name;
 			// reset
-			$dbStuff = array();
+			$dbStuff = [];
 			// start loading the content type data
 			foreach (CFactory::_('Component')->get('admin_views') as $viewData)
 			{
@@ -7407,88 +7652,161 @@ class Interpretation extends Fields
 					unset($dbStuff[$view]);
 				}
 			}
-			// build the db insert query
-			if (ArrayHelper::check($dbStuff))
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$taabb = '';
-				if ($action === 'update')
-				{
-					$taabb = Indent::_(1);
-				}
-				$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
-					. Line::_(__Line__, __Class__) . " Get The Database object";
-				$script .= PHP_EOL . Indent::_(3)
-					. "\$db = JFactory::getDbo();";
-				foreach ($dbStuff as $name => $tables)
-				{
-					if (ArrayHelper::check($tables))
-					{
-						$code   = StringHelper::safe($name);
-						$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
-							. Line::_(__Line__, __Class__) . " Create the " . $name
-							. " content type object.";
-						$script .= PHP_EOL . Indent::_(3) . "\$" . $code
-							. " = new stdClass();";
-						foreach ($tables as $table => $data)
-						{
-							$script .= PHP_EOL . Indent::_(3) . "\$" . $code
-								. "->" . $table . " = '" . $data . "';";
-						}
-						if ($action === 'update')
-						{
-							// we first load script to check if data exist
-							$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
-								. Line::_(__Line__, __Class__) . " Check if "
-								. $name
-								. " type is already in content_type DB.";
-							$script .= PHP_EOL . Indent::_(3) . "\$" . $code
-								. "_id = null;";
-							$script .= PHP_EOL . Indent::_(3)
-								. "\$query = \$db->getQuery(true);";
-							$script .= PHP_EOL . Indent::_(3)
-								. "\$query->select(\$db->quoteName(array('type_id')));";
-							$script .= PHP_EOL . Indent::_(3)
-								. "\$query->from(\$db->quoteName('#__content_types'));";
-							$script .= PHP_EOL . Indent::_(3)
-								. "\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($"
-								. $code . "->type_alias));";
-							$script .= PHP_EOL . Indent::_(3)
-								. "\$db->setQuery(\$query);";
-							$script .= PHP_EOL . Indent::_(3)
-								. "\$db->execute();";
-						}
-						$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
-							. Line::_(__Line__, __Class__)
-							. " Set the object into the content types table.";
-						if ($action === 'update')
-						{
-							$script .= PHP_EOL . Indent::_(3)
-								. "if (\$db->getNumRows())";
-							$script .= PHP_EOL . Indent::_(3) . "{";
-							$script .= PHP_EOL . Indent::_(4) . "\$" . $code
-								. "->type_id = \$db->loadResult();";
-							$script .= PHP_EOL . Indent::_(4) . "\$" . $code
-								. "_Updated = \$db->updateObject('#__content_types', \$"
-								. $code . ", 'type_id');";
-							$script .= PHP_EOL . Indent::_(3) . "}";
-							$script .= PHP_EOL . Indent::_(3) . "else";
-							$script .= PHP_EOL . Indent::_(3) . "{";
-						}
-						$script .= PHP_EOL . Indent::_(3) . $taabb . "\$"
-							. $code
-							. "_Inserted = \$db->insertObject('#__content_types', \$"
-							. $code . ");";
-						if ($action === 'update')
-						{
-							$script .= PHP_EOL . Indent::_(3) . "}";
-						}
-					}
-				}
-				$script .= PHP_EOL . PHP_EOL;
+				return $this->setComponentToContentTypesJ3($action, $dbStuff);
 			}
+
+			return $this->setComponentToContentTypesJ4($action, $dbStuff);
 		}
 
-		return $script;
+		return '';
+	}
+
+	protected function setComponentToContentTypesJ3($action, $dbStuff)
+	{
+		// build the db insert query
+		if (ArrayHelper::check($dbStuff))
+		{
+			$script = '';
+			$taabb = '';
+			if ($action === 'update')
+			{
+				$taabb = Indent::_(1);
+			}
+			$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
+				. Line::_(__Line__, __Class__) . " Get The Database object";
+			$script .= PHP_EOL . Indent::_(3)
+				. "\$db = Factory::getDbo();";
+			foreach ($dbStuff as $name => $tables)
+			{
+				if (ArrayHelper::check($tables))
+				{
+					$code   = StringHelper::safe($name);
+					$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
+						. Line::_(__Line__, __Class__) . " Create the " . $name
+						. " content type object.";
+					$script .= PHP_EOL . Indent::_(3) . "\$" . $code
+						. " = new \stdClass();";
+					foreach ($tables as $table => $data)
+					{
+						$script .= PHP_EOL . Indent::_(3) . "\$" . $code
+							. "->" . $table . " = '" . $data . "';";
+					}
+					if ($action === 'update')
+					{
+						// we first load script to check if data exist
+						$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
+							. Line::_(__Line__, __Class__) . " Check if "
+							. $name
+							. " type is already in content_type DB.";
+						$script .= PHP_EOL . Indent::_(3) . "\$" . $code
+							. "_id = null;";
+						$script .= PHP_EOL . Indent::_(3)
+							. "\$query = \$db->getQuery(true);";
+						$script .= PHP_EOL . Indent::_(3)
+							. "\$query->select(\$db->quoteName(array('type_id')));";
+						$script .= PHP_EOL . Indent::_(3)
+							. "\$query->from(\$db->quoteName('#__content_types'));";
+						$script .= PHP_EOL . Indent::_(3)
+							. "\$query->where(\$db->quoteName('type_alias') . ' LIKE '. \$db->quote($"
+							. $code . "->type_alias));";
+						$script .= PHP_EOL . Indent::_(3)
+							. "\$db->setQuery(\$query);";
+						$script .= PHP_EOL . Indent::_(3)
+							. "\$db->execute();";
+					}
+					$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
+						. Line::_(__Line__, __Class__)
+						. " Set the object into the content types table.";
+					if ($action === 'update')
+					{
+						$script .= PHP_EOL . Indent::_(3)
+							. "if (\$db->getNumRows())";
+						$script .= PHP_EOL . Indent::_(3) . "{";
+						$script .= PHP_EOL . Indent::_(4) . "\$" . $code
+							. "->type_id = \$db->loadResult();";
+						$script .= PHP_EOL . Indent::_(4) . "\$" . $code
+							. "_Updated = \$db->updateObject('#__content_types', \$"
+							. $code . ", 'type_id');";
+						$script .= PHP_EOL . Indent::_(3) . "}";
+						$script .= PHP_EOL . Indent::_(3) . "else";
+						$script .= PHP_EOL . Indent::_(3) . "{";
+					}
+					$script .= PHP_EOL . Indent::_(3) . $taabb . "\$"
+						. $code
+						. "_Inserted = \$db->insertObject('#__content_types', \$"
+						. $code . ");";
+					if ($action === 'update')
+					{
+						$script .= PHP_EOL . Indent::_(3) . "}";
+					}
+				}
+			}
+
+			$script .= PHP_EOL . PHP_EOL;
+			return $script;
+		}
+
+		return '';
+	}
+
+	protected function setComponentToContentTypesJ4($action, $dbStuff)
+	{
+		// build the db insert query
+		if (ArrayHelper::check($dbStuff))
+		{
+			$script = PHP_EOL;
+			foreach ($dbStuff as $name => $columns)
+			{
+				if (ArrayHelper::check($columns))
+				{
+					$script .= PHP_EOL . Indent::_(3) . "//"
+						. Line::_(__Line__, __Class__) . " "
+						. StringHelper::safe($action, 'Ww') . " "
+						. StringHelper::safe($name, 'Ww') . " Content Types.";
+
+					$script .= PHP_EOL . Indent::_(3) .
+						'$this->setContentType(';
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " typeTitle";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['type_title']}',";
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " typeAlias";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['type_alias']}',";
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " table";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['table']}',";
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " rules";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['rules']}',";
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " fieldMappings";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['field_mappings']}',";
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " router";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['router']}',";
+					$script .= PHP_EOL . Indent::_(4) .
+						"//" . Line::_(__Line__, __Class__) . " contentHistoryOptions";
+					$script .= PHP_EOL . Indent::_(4) .
+						"'{$columns['content_history_options']}'";
+					$script .= PHP_EOL . Indent::_(3) .
+						');';
+
+				}
+			}
+			$script .= PHP_EOL . PHP_EOL;
+			return $script;
+		}
+
+		return '';
 	}
 
 	public function setPostInstallScript()
@@ -7496,14 +7814,52 @@ class Interpretation extends Fields
 		// reset script
 		$script = $this->setComponentToContentTypes('install');
 
+		// add the Intelligent Fix script if needed
+		$script .= $this->getAssetsTableIntelligentInstall();
+
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$script .= $this->setPostInstallScriptJ3();
+		}
+		else
+		{
+			$script .= $this->setPostInstallScriptJ4();
+		}
+
+		// add the custom script
+		$script .= CFactory::_('Customcode.Dispenser')->get(
+			'php_postflight', 'install', PHP_EOL . PHP_EOL, null, true
+		);
+
+		// add the component installation notice
+		if (StringHelper::check($script))
+		{
+			$script .= PHP_EOL . PHP_EOL . Indent::_(3)
+				. 'echo \'<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="'
+				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . '" title="'
+				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
+			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
+				. CFactory::_('Config')->component_code_name . '/assets/images/vdm-component.'
+				. $this->componentImageType . '"/>';
+			$script .= PHP_EOL . Indent::_(4) . '</a></div>\';';
+
+			return $script;
+		}
+
+		return PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+			. " noting to install.";
+	}
+
+	public function setPostInstallScriptJ3()
+	{
+		// reset script
+		$script = '';
+
 		// set the component name
 		$component = CFactory::_('Config')->component_code_name;
 
 		// add the assets table update for permissions rules
-		if (isset($this->assetsRules)
-			&& ArrayHelper::check(
-				$this->assetsRules
-			))
+		if (CFactory::_('Compiler.Builder.Assets.Rules')->isArray('site'))
 		{
 			if (StringHelper::check($script))
 			{
@@ -7517,7 +7873,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Install the global extension assets permission.";
 				$script .= PHP_EOL . Indent::_(3)
-					. "\$db = JFactory::getDbo();";
+					. "\$db = Factory::getDbo();";
 			}
 			$script .= PHP_EOL . Indent::_(3)
 				. "\$query = \$db->getQuery(true);";
@@ -7526,7 +7882,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(3) . "\$fields = array(";
 			$script .= PHP_EOL . Indent::_(4)
 				. "\$db->quoteName('rules') . ' = ' . \$db->quote('{" . implode(
-					',', $this->assetsRules
+					',', CFactory::_('Compiler.Builder.Assets.Rules')->get('site')
 				) . "}'),";
 			$script .= PHP_EOL . Indent::_(3) . ");";
 			$script .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -7542,9 +7898,9 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(3) . "\$allDone = \$db->execute();"
 				. PHP_EOL;
 		}
+
 		// add the global params for the component global settings
-		if (isset($this->extensionsParams)
-			&& ArrayHelper::check($this->extensionsParams))
+		if (CFactory::_('Compiler.Builder.Extensions.Params')->isArray('component'))
 		{
 			if (StringHelper::check($script))
 			{
@@ -7558,7 +7914,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Install the global extension params.";
 				$script .= PHP_EOL . Indent::_(3)
-					. "\$db = JFactory::getDbo();";
+					. "\$db = Factory::getDbo();";
 			}
 			$script .= PHP_EOL . Indent::_(3)
 				. "\$query = \$db->getQuery(true);";
@@ -7567,7 +7923,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(3) . "\$fields = array(";
 			$script .= PHP_EOL . Indent::_(4)
 				. "\$db->quoteName('params') . ' = ' . \$db->quote('{"
-				. implode(',', $this->extensionsParams) . "}'),";
+				. implode(',', CFactory::_('Compiler.Builder.Extensions.Params')->get('component')) . "}'),";
 			$script .= PHP_EOL . Indent::_(3) . ");";
 			$script .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Condition.";
@@ -7582,29 +7938,42 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(3) . "\$allDone = \$db->execute();"
 				. PHP_EOL;
 		}
-		// add the custom script
-		$script .= CFactory::_('Customcode.Dispenser')->get(
-			'php_postflight', 'install', PHP_EOL . PHP_EOL, null, true
-		);
-		// add the Intelligent Fix script if needed
-		$script .= $this->getAssetsTableIntelligentInstall();
-		// add the component install notice
-		if (StringHelper::check($script))
-		{
-			$script .= PHP_EOL . Indent::_(3)
-				. 'echo \'<a target="_blank" href="'
-				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . '" title="'
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
-			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
-				. $component . '/assets/images/vdm-component.'
-				. $this->componentImageType . '"/>';
-			$script .= PHP_EOL . Indent::_(4) . '</a>\';';
 
-			return $script;
+		return $script;
+	}
+
+	public function setPostInstallScriptJ4()
+	{
+		// reset script
+		$script = '';
+
+		// add the assets table update for permissions rules
+		if (CFactory::_('Compiler.Builder.Assets.Rules')->isArray('site'))
+		{
+			$script .= PHP_EOL . Indent::_(3) . "//" . Line::_(
+					__LINE__,__CLASS__
+				) . " Install the global extension assets permission.";
+			$script .= PHP_EOL . Indent::_(3) . "\$this->setAssetsRules(";
+			$script .= PHP_EOL . Indent::_(4) . "'{" . implode(
+					',', CFactory::_('Compiler.Builder.Assets.Rules')->get('site')
+				) . "}'";
+			$script .= PHP_EOL . Indent::_(3) . ");" . PHP_EOL;
 		}
 
-		return PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-			. " noting to install.";
+		// add the global params for the component global settings
+		if (CFactory::_('Compiler.Builder.Extensions.Params')->isArray('component'))
+		{
+			$script .= PHP_EOL . Indent::_(3) . "//" . Line::_(
+					__LINE__,__CLASS__
+				) . " Install the global extension params.";
+			$script .= PHP_EOL . Indent::_(3) . "\$this->setExtensionsParams(";
+			$script .= PHP_EOL . Indent::_(4) . "'{"
+				. implode(',', CFactory::_('Compiler.Builder.Extensions.Params')->get('component')
+				) . "}'";
+			$script .= PHP_EOL . Indent::_(3) . ");" . PHP_EOL;
+		}
+
+		return $script;
 	}
 
 	public function setPostUpdateScript()
@@ -7617,8 +7986,8 @@ class Interpretation extends Fields
 		);
 		if (CFactory::_('Component')->isArray('admin_views'))
 		{
-			$script .= PHP_EOL . Indent::_(3)
-				. 'echo \'<a target="_blank" href="'
+			$script .= PHP_EOL . PHP_EOL . Indent::_(3)
+				. 'echo \'<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="'
 				. CFactory::_('Compiler.Builder.Content.One')->get('AUTHORWEBSITE') . '" title="'
 				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
@@ -7627,7 +7996,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(4) . '</a>';
 			$script .= PHP_EOL . Indent::_(4) . "<h3>Upgrade to Version "
 				. CFactory::_('Compiler.Builder.Content.One')->get('ACTUALVERSION')
-				. " Was Successful! Let us know if anything is not working as expected.</h3>';";
+				. " Was Successful! Let us know if anything is not working as expected.</h3></div>';";
 		}
 
 		if (StringHelper::check($script))
@@ -7641,6 +8010,16 @@ class Interpretation extends Fields
 
 	public function setUninstallScript()
 	{
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			return $this->setUninstallScriptJ3();
+		}
+
+		return $this->setUninstallScriptJ4();
+	}
+
+	public function setUninstallScriptJ3()
+	{
 		// reset script
 		$script = '';
 		if (isset($this->uninstallScriptBuilder)
@@ -7653,11 +8032,11 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get Application object";
 			$script .= PHP_EOL . Indent::_(2)
-				. "\$app = JFactory::getApplication();";
+				. "\$app = Factory::getApplication();";
 			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Get The Database object";
-			$script .= PHP_EOL . Indent::_(2) . "\$db = JFactory::getDbo();";
+			$script .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDbo();";
 
 			foreach (
 				$this->uninstallScriptBuilder as $viewsCodeName => $typeAlias
@@ -7744,7 +8123,7 @@ class Interpretation extends Fields
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . Indent::_(4)
-						. "\$app->enqueueMessage(JText:"
+						. "\$app->enqueueMessage(Text:"
 						. ":_('The fields with type (" . $typeAlias
 						. ") context was removed from the <b>#__fields</b> table'));";
 					$script .= PHP_EOL . Indent::_(3) . "}";
@@ -7780,7 +8159,7 @@ class Interpretation extends Fields
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . Indent::_(4)
-						. "\$app->enqueueMessage(JText:"
+						. "\$app->enqueueMessage(Text:"
 						. ":_('The fields values for " . $viewsCodeName
 						. " was removed from the <b>#__fields_values</b> table'));";
 					$script .= PHP_EOL . Indent::_(3) . "}";
@@ -7854,7 +8233,7 @@ class Interpretation extends Fields
 						. " add queued success message.";
 					// TODO lang is not translated
 					$script .= PHP_EOL . Indent::_(4)
-						. "\$app->enqueueMessage(JText:"
+						. "\$app->enqueueMessage(Text:"
 						. ":_('The field groups with type (" . $typeAlias
 						. ") context was removed from the <b>#__fields_groups</b> table'));";
 					$script .= PHP_EOL . Indent::_(3) . "}";
@@ -7930,7 +8309,7 @@ class Interpretation extends Fields
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . Indent::_(4)
-					. "\$app->enqueueMessage(JText:" . ":_('The (" . $typeAlias
+					. "\$app->enqueueMessage(Text:" . ":_('The (" . $typeAlias
 					. ") type alias was removed from the <b>#__content_type</b> table'));";
 				$script .= PHP_EOL . Indent::_(3) . "}";
 
@@ -7965,7 +8344,7 @@ class Interpretation extends Fields
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . Indent::_(4)
-					. "\$app->enqueueMessage(JText:" . ":_('The (" . $typeAlias
+					. "\$app->enqueueMessage(Text:" . ":_('The (" . $typeAlias
 					. ") type alias was removed from the <b>#__contentitem_tag_map</b> table'));";
 				$script .= PHP_EOL . Indent::_(3) . "}";
 
@@ -8000,7 +8379,7 @@ class Interpretation extends Fields
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . Indent::_(4)
-					. "\$app->enqueueMessage(JText:" . ":_('The (" . $typeAlias
+					. "\$app->enqueueMessage(Text:" . ":_('The (" . $typeAlias
 					. ") type alias was removed from the <b>#__ucm_content</b> table'));";
 				$script .= PHP_EOL . Indent::_(3) . "}";
 
@@ -8068,9 +8447,9 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " If All related items was removed queued success message.";
 			// TODO lang is not translated
-			$script .= PHP_EOL . Indent::_(2) . "\$app->enqueueMessage(JText:"
+			$script .= PHP_EOL . Indent::_(2) . "\$app->enqueueMessage(Text:"
 				. ":_('All related items was removed from the <b>#__ucm_base</b> table'));";
-			$script .= PHP_EOL . Indent::_(2) . "\$app->enqueueMessage(JText:"
+			$script .= PHP_EOL . Indent::_(2) . "\$app->enqueueMessage(Text:"
 				. ":_('All related items was removed from the <b>#__ucm_history</b> table'));";
 			// finaly remove the assets from the assets table
 			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -8097,7 +8476,7 @@ class Interpretation extends Fields
 				. " If successfully removed " . $component
 				. " add queued success message.";
 			// TODO lang is not translated
-			$script .= PHP_EOL . Indent::_(3) . "\$app->enqueueMessage(JText:"
+			$script .= PHP_EOL . Indent::_(3) . "\$app->enqueueMessage(Text:"
 				. ":_('All related items was removed from the <b>#__assets</b> table'));";
 			$script .= PHP_EOL . Indent::_(2) . "}";
 			// done
@@ -8109,15 +8488,65 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get Application object";
 			$script .= PHP_EOL . Indent::_(2)
-				. "\$app = JFactory::getApplication();";
+				. "\$app = Factory::getApplication();";
 			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Get The Database object";
-			$script .= PHP_EOL . Indent::_(2) . "\$db = JFactory::getDbo();";
+			$script .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDbo();";
 		}
 		// add the Intelligent Reversal script if needed
 		$script .= $this->getAssetsTableIntelligentUninstall();
 		// add the custom uninstall script
+		$script .= CFactory::_('Customcode.Dispenser')->get(
+			'php_method', 'uninstall', "", null, true, null, PHP_EOL
+		);
+
+		return $script;
+	}
+
+	public function setUninstallScriptJ4()
+	{
+		// reset script
+		$script = '';
+		if (isset($this->uninstallScriptBuilder)
+			&& ArrayHelper::check(
+				$this->uninstallScriptBuilder
+			))
+		{
+			// start loading the data to delete
+			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+				. " Remove Related Component Data.";
+			foreach ($this->uninstallScriptBuilder as $viewsCodeName => $context)
+			{
+				// set a var value
+				$View = StringHelper::safe($viewsCodeName, 'Ww');
+				// First check if data is till in table
+				$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
+					. Line::_(__Line__, __Class__)
+					. " Remove $View Data";
+				$field = '';
+				// check if it has field relations
+				if (isset($this->uninstallScriptFields)
+					&& isset($this->uninstallScriptFields[$viewsCodeName]))
+				{
+					$field = ', true';
+				}
+				// First check if data is till in table
+				$script .= PHP_EOL . Indent::_(2) . "\$this->removeViewData(\"$context\"$field);";
+			}
+
+			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
+					__LINE__,__CLASS__
+				) . " Remove Asset Data.";
+			$script .= PHP_EOL . Indent::_(2) . "\$this->removeAssetData();";
+			// done
+			$script .= PHP_EOL;
+		}
+
+		// add the Intelligent Reversal script if needed
+		$script .= $this->getAssetsTableIntelligentUninstall();
+
+		// add the custom uninstallation script
 		$script .= CFactory::_('Customcode.Dispenser')->get(
 			'php_method', 'uninstall', "", null, true, null, PHP_EOL
 		);
@@ -8137,7 +8566,7 @@ class Interpretation extends Fields
 		// https://www.mysqltutorial.org/mysql-varchar/
 		// https://stackoverflow.com/a/15227917/1429677
 		// https://forums.mysql.com/read.php?24,105964,105964
-		// https://github.com/vdm-io/Joomla-Component-Builder/issues/616#issuecomment-741502980
+		// https://git.vdm.dev/joomla/Component-Builder/issues/616#issuecomment-12085
 		// 30 actions each +-20 characters with 8 groups
 		// that makes 4800 characters and the current Joomla
 		// column size is varchar(5120)
@@ -8150,10 +8579,22 @@ class Interpretation extends Fields
 			// get the type we will convert to
 			$data_type = ($access_worse_case > 64000) ? "MEDIUMTEXT"
 				: "TEXT";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$script   = [];
+				$script[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+					. " Fix the assets table rules column size.";
+				$script[] = Indent::_(3) . '$this->setDatabaseAssetsRulesFix('
+					. (int) $access_worse_case . ', "' . $data_type . '");';
+
+				return PHP_EOL . implode(PHP_EOL, $script);
+			}
+
 			// the if statement about $rule_length
 			$codeIF = "\$rule_length <= " . $access_worse_case;
 			// fix column size
-			$script   = array();
+			$script   = [];
 			$script[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " Fix the assets table rules column size";
 			$script[] = Indent::_(5)
@@ -8166,7 +8607,7 @@ class Interpretation extends Fields
 			$codeA    = implode(PHP_EOL, $script);
 			// fixed message
 			$messageA = Indent::_(5)
-				. "\$app->enqueueMessage(JText::_('The <b>#__assets</b> table rules column was resized to the "
+				. "\$app->enqueueMessage(Text:" . ":_('The <b>#__assets</b> table rules column was resized to the "
 				. $data_type
 				. " datatype for the components possible large permission rules.'));";
 			// do nothing
@@ -8194,10 +8635,19 @@ class Interpretation extends Fields
 		// check if we should add the intelligent uninstall treatment for the assets table
 		if (CFactory::_('Config')->add_assets_table_fix == 2)
 		{
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$script   = [];
+				$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+					. " Revert the assets table rules column back to the default.";
+				$script[] = Indent::_(2) . '$this->removeDatabaseAssetsRulesFix();';
+
+				return PHP_EOL . implode(PHP_EOL, $script);
+			}
 			// the if statement about $rule_length
 			$codeIF = "\$rule_length < 5120";
 			// reverse column size
-			$script   = array();
+			$script   = [];
 			$script[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Revert the assets table rules column back to the default";
 			$script[] = Indent::_(4)
@@ -8207,12 +8657,12 @@ class Interpretation extends Fields
 			$codeA    = implode(PHP_EOL, $script);
 			// reverted message
 			$messageA = Indent::_(4)
-				. "\$app->enqueueMessage(JText::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));";
+				. "\$app->enqueueMessage(Text::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));";
 			// do nothing
 			$codeB = "";
 			// not reverted message
 			$messageB = Indent::_(4)
-				. "\$app->enqueueMessage(JText::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));";
+				. "\$app->enqueueMessage(Text:" . ":_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));";
 
 			// done
 			return $this->getAssetsTableIntelligentCode(
@@ -8240,7 +8690,7 @@ class Interpretation extends Fields
 	)
 	{
 		// reset script
-		$script   = array();
+		$script   = [];
 		$script[] = Indent::_($tab) . Indent::_(1) . "//" . Line::_(
 				__LINE__,__CLASS__
 			)
@@ -8284,12 +8734,17 @@ class Interpretation extends Fields
 	{
 		if (CFactory::_('Registry')->get('set_move_folders_install_script'))
 		{
+			$function = 'setDynamicF0ld3rs($app, $parent)';
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$function = 'moveFolders($adapter)';
+			}
 			// reset script
-			$script   = array();
+			$script   = [];
 			$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " We check if we have dynamic folders to copy";
 			$script[] = Indent::_(2)
-				. "\$this->setDynamicF0ld3rs(\$app, \$parent);";
+				. "\$this->{$function};";
 
 			// done
 			return PHP_EOL . implode(PHP_EOL, $script);
@@ -8303,19 +8758,41 @@ class Interpretation extends Fields
 		if (CFactory::_('Registry')->get('set_move_folders_install_script'))
 		{
 			// reset script
-			$script   = array();
-			$script[] = Indent::_(1) . "/**";
-			$script[] = Indent::_(1)
-				. " * Method to set/copy dynamic folders into place (use with caution)";
-			$script[] = Indent::_(1) . " *";
-			$script[] = Indent::_(1) . " * @return void";
-			$script[] = Indent::_(1) . " */";
-			$script[] = Indent::_(1)
-				. "protected function setDynamicF0ld3rs(\$app, \$parent)";
-			$script[] = Indent::_(1) . "{";
-			$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " get the instalation path";
-			$script[] = Indent::_(2) . "\$installer = \$parent->getParent();";
+			$script   = [];
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$script[] = Indent::_(1) . "/**";
+				$script[] = Indent::_(1)
+					. " * Method to move folders into place.";
+				$script[] = Indent::_(1) . " *";
+				$script[] = Indent::_(1) . " * @param   InstallerAdapter  \$adapter  The adapter calling this method";
+				$script[] = Indent::_(1) . " *";
+				$script[] = Indent::_(1) . " * @return void";
+				$script[] = Indent::_(1) . " * @since 4.4.2";
+				$script[] = Indent::_(1) . " */";
+				$script[] = Indent::_(1)
+					. "protected function moveFolders(InstallerAdapter \$adapter): void";
+				$script[] = Indent::_(1) . "{";
+				$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+					. " get the installation path";
+				$script[] = Indent::_(2) . "\$installer = \$adapter->getParent();";
+			}
+			else
+			{
+				$script[] = Indent::_(1) . "/**";
+				$script[] = Indent::_(1)
+					. " * Method to set/copy dynamic folders into place (use with caution)";
+				$script[] = Indent::_(1) . " *";
+				$script[] = Indent::_(1) . " * @return void";
+				$script[] = Indent::_(1) . " */";
+				$script[] = Indent::_(1)
+					. "protected function setDynamicF0ld3rs(\$app, \$parent)";
+				$script[] = Indent::_(1) . "{";
+				$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+					. " get the installation path";
+				$script[] = Indent::_(2) . "\$installer = \$parent->getParent();";
+			}
+
 			$script[] = Indent::_(2)
 				. "\$installPath = \$installer->getPath('source');";
 			$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
@@ -8325,7 +8802,7 @@ class Interpretation extends Fields
 			$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " check if we have folders we may want to copy";
 			$script[] = Indent::_(2)
-				. "\$doNotCopy = array('media','admin','site'); // Joomla already deals with these";
+				. "\$doNotCopy = ['media','admin','site']; // Joomla already deals with these";
 			$script[] = Indent::_(2) . "if (count((array) \$folders) > 1)";
 			$script[] = Indent::_(2) . "{";
 			$script[] = Indent::_(3) . "foreach (\$folders as \$folder)";
@@ -8345,8 +8822,18 @@ class Interpretation extends Fields
 			$script[] = Indent::_(5)
 				. "if (!Folder::copy(\$src, \$dest, '', true))";
 			$script[] = Indent::_(5) . "{";
-			$script[] = Indent::_(6)
-				. "\$app->enqueueMessage('Could not copy '.\$folder.' folder into place, please make sure destination is writable!', 'error');";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$script[] = Indent::_(6)
+				. "\$this->app->enqueueMessage('Could not copy '.\$folder.' folder into place, please make sure destination is writable!', 'error');";
+			}
+			else
+			{
+				$script[] = Indent::_(6)
+					. "\$app->enqueueMessage('Could not copy '.\$folder.' folder into place, please make sure destination is writable!', 'error');";
+			}
+
 			$script[] = Indent::_(5) . "}";
 			$script[] = Indent::_(4) . "}";
 			$script[] = Indent::_(3) . "}";
@@ -8367,7 +8854,7 @@ class Interpretation extends Fields
 			|| CFactory::_('Compiler.Builder.Tags')->exists($view))
 		{
 			// reset array
-			$array = array();
+			$array = [];
 			// set needed defaults
 			$alias            = CFactory::_('Compiler.Builder.Alias')->get($view, 'null');
 			$title            = CFactory::_('Compiler.Builder.Title')->get($view, 'null');
@@ -8387,8 +8874,7 @@ class Interpretation extends Fields
 			$intFields        = CFactory::_('Compiler.Builder.Integer.Fields')->toString($view, '');
 			$customfieldlinks = CFactory::_('Compiler.Builder.Custom.Field.Links')->toString($view, '');
 			// build uninstall script for content types
-			$this->uninstallScriptBuilder[$View] = 'com_' . $component . '.'
-				. $view;
+			$this->uninstallScriptBuilder[$View] = 'com_' . $component . '.' . $view;
 			$this->uninstallScriptContent[$view] = $view;
 			// check if this view has metadata
 			if (CFactory::_('Compiler.Builder.Meta.Data')->isString($view))
@@ -8419,11 +8905,26 @@ class Interpretation extends Fields
 			$array['type_title'] = $Component . ' ' . $View;
 			// set the alias
 			$array['type_alias'] = 'com_' . $component . '.' . $view;
-			// set the table
-			$array['table'] = '{"special": {"dbtable": "#__' . $component . '_'
-				. $view . '","key": "id","type": "' . $View . '","prefix": "'
-				. $component
-				. 'Table","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				// set the table
+				$array['table'] = '{"special": {"dbtable": "#__' . $component . '_'
+					. $view . '","key": "id","type": "' . $View . '","prefix": "'
+					. $component
+					. 'Table","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			}
+			else
+			{
+				// set the table
+				$array['table'] = '{"special": {"dbtable": "#__' . $component . '_'
+					. $view . '","key": "id","type": "' . $View . 'Table","prefix": "' . CFactory::_('Config')->namespace_prefix
+					. '\\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+					. '\\Administrator\\Table"}}';
+
+				// set rules field
+				$array['rules'] = '';
+			}
+
 			// set field map
 			$array['field_mappings']
 				= '{"common": {"core_content_item_id": "id","core_title": "'
@@ -8440,21 +8941,49 @@ class Interpretation extends Fields
 				. '","core_catid": "' . $category
 				. '","core_xreference": "null","asset_id": "asset_id"},"special": {'
 				. $dynamicfields . '}}';
-			// set the router class method
-			$array['router'] = $Component . 'HelperRoute::get' . $View
-				. 'Route';
-			// set content history
-			$array['content_history_options']
-				= '{"formFile": "administrator/components/com_' . $component
-				. '/models/forms/' . $view
-				. '.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"'
-				. $hiddenFields
-				. '],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering"'
-				. $intFields . '],"displayLookup": [' . $categoryHistory
-				. '{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}'
-				. $accessHistory
-				. ',{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}'
-				. $customfieldlinks . ']}';
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				// set the router class method
+				$array['router'] = $Component . 'HelperRoute::get' . $View
+					. 'Route';
+			}
+			else
+			{
+				// set the router class method
+				$array['router'] = '';
+			}
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				// set content history
+				$array['content_history_options']
+					= '{"formFile": "administrator/components/com_' . $component
+					. '/models/forms/' . $view
+					. '.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"'
+					. $hiddenFields
+					. '],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"'
+					. $intFields . '],"displayLookup": [' . $categoryHistory
+					. '{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}'
+					. $accessHistory
+					. ',{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}'
+					. $customfieldlinks . ']}';
+			}
+			else
+			{
+				// set content history
+				$array['content_history_options']
+					= '{"formFile": "administrator/components/com_' . $component
+					. '/forms/' . $view
+					. '.xml","hideFields": ["asset_id","checked_out","checked_out_time"'
+					. $hiddenFields
+					. '],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"'
+					. $intFields . '],"displayLookup": [' . $categoryHistory
+					. '{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}'
+					. $accessHistory
+					. ',{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}'
+					. $customfieldlinks . ']}';
+			}
 
 			return $array;
 		}
@@ -8483,14 +9012,31 @@ class Interpretation extends Fields
 		// set the table
 		$array['table']
 			= '{"special":{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}';
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			// set rules field
+			$array['rules'] = '';
+		}
 		// set field map
 		$array['field_mappings']
 			= '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"description", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"params", "core_featured":"null", "core_metadata":"metadata", "core_language":"language", "core_images":"null", "core_urls":"null", "core_version":"version", "core_ordering":"null", "core_metakey":"metakey", "core_metadesc":"metadesc", "core_catid":"parent_id", "core_xreference":"null", "asset_id":"asset_id"}, "special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}';
-		// set the router class method
-		$array['router'] = $Component . 'HelperRoute::getCategoryRoute';
-		// set content history
-		$array['content_history_options']
-			= '{"formFile":"administrator\/components\/com_categories\/models\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
+
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			// set the router class method
+			$array['router'] = $Component . 'HelperRoute::getCategoryRoute';
+			// set content history
+			$array['content_history_options']
+				= '{"formFile":"administrator\/components\/com_categories\/models\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
+		}
+		else
+		{
+			// set the router class method
+			$array['router'] = '';
+			// set content history
+			$array['content_history_options']
+				= '{"formFile":"administrator\/components\/com_categories\/forms\/category.xml", "hideFields":["asset_id","checked_out","checked_out_time","version","lft","rgt","level","path","extension"], "ignoreChanges":["modified_user_id", "modified_time", "checked_out", "checked_out_time", "version", "hits", "path"],"convertToInt":["publish_up", "publish_down"], "displayLookup":[{"sourceColumn":"created_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_user_id","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"parent_id","targetTable":"#__categories","targetColumn":"id","displayColumn":"title"}]}';
+		}
 
 		return $array;
 	}
@@ -8510,7 +9056,7 @@ class Interpretation extends Fields
 			$View          = StringHelper::safe(
 				$nameSingleCode, 'F'
 			);
-			$routeHelper   = array();
+			$routeHelper   = [];
 			$routeHelper[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$routeHelper[] = Indent::_(1) . " * @param int The route of the "
 				. $View;
@@ -8561,7 +9107,7 @@ class Interpretation extends Fields
 				$routeHelper[] = Indent::_(2) . "if (\$catid > 1)";
 				$routeHelper[] = Indent::_(2) . "{";
 				$routeHelper[] = Indent::_(3)
-					. "\$categories = JCategories::getInstance('"
+					. "\$categories = Categories::getInstance('"
 					. CFactory::_('Config')->component_code_name . "." . $nameListCode . "');";
 				$routeHelper[] = Indent::_(3)
 					. "\$category = \$categories->get(\$catid);";
@@ -8575,7 +9121,7 @@ class Interpretation extends Fields
 				$routeHelper[] = Indent::_(3) . "}";
 				$routeHelper[] = Indent::_(2) . "}";
 			}
-			if (isset($this->hasMenuGlobal[$nameSingleCode]))
+			if (CFactory::_('Compiler.Builder.Has.Menu.Global')->exists($nameSingleCode))
 			{
 				$routeHelper[] = PHP_EOL . Indent::_(2)
 					. "if (\$item = self::_findItem(\$needles, '"
@@ -8603,7 +9149,7 @@ class Interpretation extends Fields
 	)
 	{
 		// reset buckets
-		$routerSwitch = array();
+		$routerSwitch = [];
 		$isCategory   = '';
 		$viewTable    = false;
 		if ($viewArray && ArrayHelper::check($viewArray)
@@ -8744,7 +9290,7 @@ class Interpretation extends Fields
 	{
 		// set needed defaults
 		$category  = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.code");
-		$batchmove = array();
+		$batchmove = [];
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
 		$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
@@ -8775,8 +9321,16 @@ class Interpretation extends Fields
 		$batchmove[] = Indent::_(2) . "{";
 		$batchmove[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " Set some needed variables.";
-		$batchmove[] = Indent::_(3)
-			. "\$this->user		= JFactory::getUser();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$batchmove[] = Indent::_(3)
+				. "\$this->user		= Factory::getUser();";
+		}
+		else
+		{
+			$batchmove[] = Indent::_(3)
+				. "\$this->user		= Factory::getApplication()->getIdentity();";
+		}
 		$batchmove[] = Indent::_(3)
 			. "\$this->table		= \$this->getTable();";
 		$batchmove[] = Indent::_(3)
@@ -8790,7 +9344,7 @@ class Interpretation extends Fields
 			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.batch') . "'))";
 
 		$batchmove[] = Indent::_(2) . "{";
-		$batchmove[] = Indent::_(3) . "\$this->setError(JText:"
+		$batchmove[] = Indent::_(3) . "\$this->setError(Text:"
 			. ":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 		$batchmove[] = Indent::_(3) . "return false;";
 		$batchmove[] = Indent::_(2) . "}" . $customScript;
@@ -8839,7 +9393,7 @@ class Interpretation extends Fields
 		$batchmove[] = Indent::_(3) . "if (!\$this->user->authorise('"
 			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit') . "', \$contexts[\$pk]))";
 		$batchmove[] = Indent::_(3) . "{";
-		$batchmove[] = Indent::_(4) . "\$this->setError(JText:"
+		$batchmove[] = Indent::_(4) . "\$this->setError(Text:"
 			. ":_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));";
 
 		$batchmove[] = Indent::_(4) . "return false;";
@@ -8862,7 +9416,7 @@ class Interpretation extends Fields
 		$batchmove[] = Indent::_(4) . "{";
 		$batchmove[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 			. " Not fatal error";
-		$batchmove[] = Indent::_(5) . "\$this->setError(JText:"
+		$batchmove[] = Indent::_(5) . "\$this->setError(Text:"
 			. ":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
 		$batchmove[] = Indent::_(5) . "continue;";
 		$batchmove[] = Indent::_(4) . "}";
@@ -8870,8 +9424,8 @@ class Interpretation extends Fields
 
 		$batchmove[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " insert all set values.";
-		$batchmove[] = Indent::_(3) . "if (" . $Helper
-			. "::checkArray(\$values))";
+		$batchmove[] = Indent::_(3) . "if ("
+			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$values))";
 		$batchmove[] = Indent::_(3) . "{";
 		$batchmove[] = Indent::_(4) . "foreach (\$values as \$key => \$value)";
 		$batchmove[] = Indent::_(4) . "{";
@@ -8931,11 +9485,11 @@ class Interpretation extends Fields
 	{
 		// set needed defaults
 		$title     = false;
-		$titles    = array();
+		$titles    = [];
 		// only load alias if set in this view
 		$alias     = CFactory::_('Compiler.Builder.Alias')->get($nameSingleCode);
 		$category  = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.code");
-		$batchcopy = array();
+		$batchcopy = [];
 		$VIEW      = StringHelper::safe($nameSingleCode, 'U');
 		// component helper name
 		$Helper = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
@@ -8957,7 +9511,7 @@ class Interpretation extends Fields
 		if ($title)
 		{
 			// reset the bucket
-			$titleData = array();
+			$titleData = [];
 			// load the dynamic title builder
 			foreach ($titles as $_title)
 			{
@@ -8993,8 +9547,16 @@ class Interpretation extends Fields
 		$batchcopy[] = Indent::_(2) . "{";
 		$batchcopy[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " Set some needed variables.";
-		$batchcopy[] = Indent::_(3)
-			. "\$this->user 		= JFactory::getUser();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$batchcopy[] = Indent::_(3)
+				. "\$this->user 		= Factory::getUser();";
+		}
+		else
+		{
+			$batchcopy[] = Indent::_(3)
+				. "\$this->user 		= Factory::getApplication()->getIdentity();";
+		}
 		$batchcopy[] = Indent::_(3)
 			. "\$this->table 		= \$this->getTable();";
 		$batchcopy[] = Indent::_(3)
@@ -9053,7 +9615,7 @@ class Interpretation extends Fields
 			$batchcopy[] = Indent::_(2) . "}";
 		}
 
-		$batchcopy[] = PHP_EOL . Indent::_(2) . "\$newIds = array();";
+		$batchcopy[] = PHP_EOL . Indent::_(2) . "\$newIds = [];";
 
 		$batchcopy[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Parent exists so let's proceed";
@@ -9072,7 +9634,7 @@ class Interpretation extends Fields
 		$batchcopy[] = Indent::_(3) . "{";
 		$batchcopy[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 			. " Not fatal error";
-		$batchcopy[] = Indent::_(4) . "\$this->setError(JText:"
+		$batchcopy[] = Indent::_(4) . "\$this->setError(Text:"
 			. ":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
 		$batchcopy[] = Indent::_(4) . "continue;";
 		$batchcopy[] = Indent::_(3) . "}";
@@ -9094,7 +9656,7 @@ class Interpretation extends Fields
 		$batchcopy[] = Indent::_(4) . "{";
 		$batchcopy[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 			. " Not fatal error";
-		$batchcopy[] = Indent::_(5) . "\$this->setError(JText:"
+		$batchcopy[] = Indent::_(5) . "\$this->setError(Text:"
 			. ":sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', \$pk));";
 		$batchcopy[] = Indent::_(5) . "continue;";
 		$batchcopy[] = Indent::_(4) . "}";
@@ -9165,8 +9727,8 @@ class Interpretation extends Fields
 			$batchcopy[] = PHP_EOL . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Only for strings";
-			$batchcopy[] = Indent::_(3) . "if (" . $Helper
-				. "::checkString(\$this->table->" . implode('', $titles)
+			$batchcopy[] = Indent::_(3) . "if ("
+				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->table->" . implode('', $titles)
 				. ") && !is_numeric(\$this->table->" . implode('', $titles)
 				. "))";
 			$batchcopy[] = Indent::_(3) . "{";
@@ -9179,8 +9741,8 @@ class Interpretation extends Fields
 
 		$batchcopy[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " insert all set values";
-		$batchcopy[] = Indent::_(3) . "if (" . $Helper
-			. "::checkArray(\$values))";
+		$batchcopy[] = Indent::_(3) . "if ("
+			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$values))";
 		$batchcopy[] = Indent::_(3) . "{";
 		$batchcopy[] = Indent::_(4) . "foreach (\$values as \$key => \$value)";
 		$batchcopy[] = Indent::_(4) . "{";
@@ -9194,8 +9756,8 @@ class Interpretation extends Fields
 
 		$batchcopy[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " update all unique fields";
-		$batchcopy[] = Indent::_(3) . "if (" . $Helper
-			. "::checkArray(\$uniqueFields))";
+		$batchcopy[] = Indent::_(3) . "if ("
+			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uniqueFields))";
 		$batchcopy[] = Indent::_(3) . "{";
 		$batchcopy[] = Indent::_(4)
 			. "foreach (\$uniqueFields as \$uniqueField)";
@@ -9261,7 +9823,7 @@ class Interpretation extends Fields
 
 	public function setAliasTitleFix($nameSingleCode)
 	{
-		$fixUnique = array();
+		$fixUnique = [];
 		// only load this if these two items are set
 		if (CFactory::_('Compiler.Builder.Alias')->exists($nameSingleCode)
 			&& (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode)
@@ -9297,10 +9859,10 @@ class Interpretation extends Fields
 			$fixUnique[] = Indent::_(3)
 				. "\$origTable->load(\$input->getInt('id'));";
 			// reset the buckets
-			$ifStatment  = array();
-			$titleVars   = array();
-			$titleData   = array();
-			$titleUpdate = array();
+			$ifStatment  = [];
+			$titleVars   = [];
+			$titleData   = [];
+			$titleUpdate = [];
 			// load the dynamic title builder
 			foreach ($titles as $title)
 			{
@@ -9363,31 +9925,30 @@ class Interpretation extends Fields
 				. "'] == null || empty(\$data['" . $alias . "']))";
 			$fixUnique[] = Indent::_(3) . "{";
 			$fixUnique[] = Indent::_(4)
-				. "if (JFactory::getConfig()->get('unicodeslugs') == 1)";
+				. "if (Factory::getConfig()->get('unicodeslugs') == 1)";
 			$fixUnique[] = Indent::_(4) . "{";
 			$fixUnique[] = Indent::_(5) . "\$data['" . $alias
-				. "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(
+				. "'] = OutputFilter::stringURLUnicodeSlug(" . implode(
 					' . " " . ', $titleData
 				) . ");";
 			$fixUnique[] = Indent::_(4) . "}";
 			$fixUnique[] = Indent::_(4) . "else";
 			$fixUnique[] = Indent::_(4) . "{";
 			$fixUnique[] = Indent::_(5) . "\$data['" . $alias
-				. "'] = JFilterOutput::stringURLSafe(" . implode(
+				. "'] = OutputFilter::stringURLSafe(" . implode(
 					' . " " . ', $titleData
 				) . ");";
 			$fixUnique[] = Indent::_(4) . "}";
 			$fixUnique[] = PHP_EOL . Indent::_(4)
-				. "\$table = JTable::getInstance('" . $nameSingleCode . "', '"
-				. CFactory::_('Config')->component_code_name . "Table');";
+				. "\$table = clone \$this->getTable();";
 			if ($category !== null && count($titles) == 1)
 			{
 				$fixUnique[] = PHP_EOL . Indent::_(4)
-					. "if (\$table->load(array('" . $alias . "' => \$data['"
+					. "if (\$table->load(['" . $alias . "' => \$data['"
 					. $alias . "'], '" . $category . "' => \$data['" . $category
-					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
+					. "']]) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
-				$fixUnique[] = Indent::_(5) . "\$msg = JText:" . ":_('COM_"
+				$fixUnique[] = Indent::_(5) . "\$msg = Text:" . ":_('COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "list(" . implode(
@@ -9406,7 +9967,7 @@ class Interpretation extends Fields
 					. $alias
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
-				$fixUnique[] = Indent::_(5) . "\$msg = JText:" . ":_('COM_"
+				$fixUnique[] = Indent::_(5) . "\$msg = Text:" . ":_('COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "\$data['" . $alias
@@ -9416,7 +9977,7 @@ class Interpretation extends Fields
 			$fixUnique[] = PHP_EOL . Indent::_(4) . "if (isset(\$msg))";
 			$fixUnique[] = Indent::_(4) . "{";
 			$fixUnique[] = Indent::_(5)
-				. "JFactory::getApplication()->enqueueMessage(\$msg, 'warning');";
+				. "Factory::getApplication()->enqueueMessage(\$msg, 'warning');";
 			$fixUnique[] = Indent::_(4) . "}";
 			$fixUnique[] = Indent::_(3) . "}";
 			$fixUnique[] = Indent::_(2) . "}";
@@ -9424,13 +9985,13 @@ class Interpretation extends Fields
 //			$fixUnique[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__) . " Update alias if still empty at this point";
 //			$fixUnique[] = Indent::_(2) . "if (\$data['" . $alias . "'] == null || empty(\$data['" . $alias . "']))";
 //			$fixUnique[] = Indent::_(2) . "{";
-//			$fixUnique[] = Indent::_(3) . "if (JFactory::getConfig()->get('unicodeslugs') == 1)";
+//			$fixUnique[] = Indent::_(3) . "if (Factory::getConfig()->get('unicodeslugs') == 1)";
 //			$fixUnique[] = Indent::_(3) . "{";
-//			$fixUnique[] = Indent::_(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
+//			$fixUnique[] = Indent::_(4) . "\$data['" . $alias . "'] = OutputFilter::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
 //			$fixUnique[] = Indent::_(3) . "}";
 //			$fixUnique[] = Indent::_(3) . "else";
 //			$fixUnique[] = Indent::_(3) . "{";
-//			$fixUnique[] = Indent::_(4) . "\$data['" . $alias . "'] = JFilterOutput::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
+//			$fixUnique[] = Indent::_(4) . "\$data['" . $alias . "'] = OutputFilter::stringURLSafe(" . implode(' . " " . ', $titleData) . ");";
 //			$fixUnique[] = Indent::_(3) . "}";
 //			$fixUnique[] = Indent::_(2) . "}";
 		}
@@ -9445,8 +10006,7 @@ class Interpretation extends Fields
 		$fixUnique[] = Indent::_(3)
 			. "\$uniqueFields = \$this->getUniqueFields();";
 		$fixUnique[] = Indent::_(3) . "if ("
-			. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-			. "Helper::checkArray(\$uniqueFields))";
+			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uniqueFields))";
 		$fixUnique[] = Indent::_(3) . "{";
 		$fixUnique[] = Indent::_(4)
 			. "foreach (\$uniqueFields as \$uniqueField)";
@@ -9470,7 +10030,7 @@ class Interpretation extends Fields
 			// get component name
 			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
 			// rest the new function
-			$newFunction   = array();
+			$newFunction   = [];
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$newFunction[] = Indent::_(1)
 				. " * Method to change the title/s & alias.";
@@ -9492,12 +10052,12 @@ class Interpretation extends Fields
 				) . " Alter the title/s & alias";
 			$newFunction[] = Indent::_(2) . "\$table = \$this->getTable();";
 			$newFunction[] = PHP_EOL . Indent::_(2)
-				. "while (\$table->load(array('alias' => \$alias)))";
+				. "while (\$table->load(['alias' => \$alias]))";
 			$newFunction[] = Indent::_(2) . "{";
 			$newFunction[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Check if this is an array of titles";
-			$newFunction[] = Indent::_(3) . "if (" . $Component
-				. "Helper::checkArray(\$title))";
+			$newFunction[] = Indent::_(3) . "if ("
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$title))";
 			$newFunction[] = Indent::_(3) . "{";
 			$newFunction[] = Indent::_(4)
 				. "foreach(\$title as \$nr => &\$_title)";
@@ -9518,8 +10078,8 @@ class Interpretation extends Fields
 			$newFunction[] = Indent::_(2) . "}";
 			$newFunction[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if this is an array of titles";
-			$newFunction[] = Indent::_(2) . "if (" . $Component
-				. "Helper::checkArray(\$title))";
+			$newFunction[] = Indent::_(2) . "if ("
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$title))";
 			$newFunction[] = Indent::_(2) . "{";
 			$newFunction[] = Indent::_(3) . "\$title[] = \$alias;";
 			$newFunction[] = Indent::_(3) . "return \$title;";
@@ -9539,7 +10099,7 @@ class Interpretation extends Fields
 		}
 		elseif (CFactory::_('Compiler.Builder.Title')->exists($nameSingleCode))
 		{
-			$newFunction   = array();
+			$newFunction   = [];
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$newFunction[] = Indent::_(1) . " * Method to change the title";
 			$newFunction[] = Indent::_(1) . " *";
@@ -9558,7 +10118,7 @@ class Interpretation extends Fields
 				) . " Alter the title";
 			$newFunction[] = Indent::_(2) . "\$table = \$this->getTable();";
 			$newFunction[] = PHP_EOL . Indent::_(2)
-				. "while (\$table->load(array('title' => \$title)))";
+				. "while (\$table->load(['title' => \$title]))";
 			$newFunction[] = Indent::_(2) . "{";
 			$newFunction[] = Indent::_(3)
 				. "\$title = StringHelper::increment(\$title);";
@@ -9589,7 +10149,7 @@ class Interpretation extends Fields
 				$titles = [CFactory::_('Compiler.Builder.Title')->get($nameSingleCode)];
 			}
 			// reset the bucket
-			$titleData = array();
+			$titleData = [];
 			// load the dynamic title builder
 			if (isset($titles) && ArrayHelper::check($titles))
 			{
@@ -9604,7 +10164,7 @@ class Interpretation extends Fields
 					= array("'-'"); // just encase some mad man does not set a title/customAlias (we fall back on the date)
 			}
 			// rest the new function
-			$newFunction   = array();
+			$newFunction   = [];
 			$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 			$newFunction[] = Indent::_(1)
 				. " * Generate a valid alias from title / date.";
@@ -9622,12 +10182,12 @@ class Interpretation extends Fields
 				) . ';';
 			$newFunction[] = Indent::_(2) . "}";
 			$newFunction[] = PHP_EOL . Indent::_(2)
-				. "\$this->alias = JApplicationHelper::stringURLSafe(\$this->alias);";
+				. "\$this->alias = ApplicationHelper::stringURLSafe(\$this->alias);";
 			$newFunction[] = PHP_EOL . Indent::_(2)
 				. "if (trim(str_replace('-', '', \$this->alias)) == '')";
 			$newFunction[] = Indent::_(2) . "{";
 			$newFunction[] = Indent::_(3)
-				. "\$this->alias = JFactory::getDate()->format('Y-m-d-H-i-s');";
+				. "\$this->alias = Factory::getDate()->format('Y-m-d-H-i-s');";
 			$newFunction[] = Indent::_(2) . "}";
 			$newFunction[] = PHP_EOL . Indent::_(2) . "return \$this->alias;";
 			$newFunction[] = Indent::_(1) . "}";
@@ -9635,7 +10195,7 @@ class Interpretation extends Fields
 			return implode(PHP_EOL, $newFunction);
 		}
 		// rest the new function
-		$newFunction   = array();
+		$newFunction   = [];
 		$newFunction[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 		$newFunction[] = Indent::_(1)
 			. " * This view does not actually have an alias";
@@ -9658,13 +10218,19 @@ class Interpretation extends Fields
 			$component = CFactory::_('Config')->component_code_name;
 			// start building the db
 			$db = '';
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$db .= 'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";' . PHP_EOL;
+				$db .= 'SET time_zone = "+00:00";' . PHP_EOL . PHP_EOL;;
+			}
+
 			foreach ($database_tables as $view => $fields)
 			{
 				// cast the object to an array TODO we must update all to use the object
 				$fields = (array) $fields;
 				// build the uninstallation array
-				$this->uninstallBuilder[] = "DROP TABLE IF EXISTS `#__"
-					. $component . "_" . $view . "`;";
+				CFactory::_('Compiler.Builder.Database.Uninstall')->add('table', "DROP TABLE IF EXISTS `#__"
+					. $component . "_" . $view . "`;");
 
 				// setup the table DB string
 				$db_ = '';
@@ -9680,7 +10246,7 @@ class Interpretation extends Fields
 
 					CFactory::_('Compiler.Builder.Update.Mysql')->set($key_, $value_);
 				}
-				// check if default field was over written
+				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.id'))
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
@@ -9803,14 +10369,30 @@ class Interpretation extends Fields
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.created'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1)
-						. "`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					}
+					else
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`created` DATETIME DEFAULT CURRENT_TIMESTAMP,";
+					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.modified'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1)
-						. "`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					}
+					else
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`modified` DATETIME DEFAULT NULL,";
+					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.checked_out'))
@@ -9821,8 +10403,16 @@ class Interpretation extends Fields
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.checked_out_time'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1)
-						. "`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+					}
+					else
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`checked_out_time` DATETIME DEFAULT NULL,";
+					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.version'))
@@ -9855,8 +10445,16 @@ class Interpretation extends Fields
 					// check if default field was overwritten
 					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metakey'))
 					{
-						$db_ .= PHP_EOL . Indent::_(1)
-							. "`metakey` TEXT NOT NULL,";
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							$db_ .= PHP_EOL . Indent::_(1)
+								. "`metakey` TEXT NOT NULL,";
+						}
+						else
+						{
+							$db_ .= PHP_EOL . Indent::_(1)
+								. "`metakey` TEXT,";
+						}
 					}
 					// check if default field was overwritten
 					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metadesc'))
@@ -9874,7 +10472,7 @@ class Interpretation extends Fields
 				// TODO (we may want this to be dynamicly set)
 				$db_ .= PHP_EOL . Indent::_(1) . "PRIMARY KEY  (`id`)";
 				// check if a key was set for any of the default fields then we should not set it again
-				$check_keys_set = array();
+				$check_keys_set = [];
 				if (CFactory::_('Compiler.Builder.Database.Unique.Keys')->exists($view))
 				{
 					foreach (CFactory::_('Compiler.Builder.Database.Unique.Keys')->get($view) as $nr => $key)
@@ -9925,7 +10523,7 @@ class Interpretation extends Fields
 						. "KEY `idx_state` (`published`)";
 				}
 				// easy bucket
-				$easy = array();
+				$easy = [];
 				// get the mysql table settings
 				foreach (
 					CFactory::_('Config')->mysql_table_keys as $_mysqlTableKey => $_mysqlTableVal
@@ -10096,12 +10694,9 @@ class Interpretation extends Fields
 	public function setUninstall()
 	{
 		$db = '';
-		if (CFactory::_('Compiler.Builder.Database.Tables')->isActive())
+		if (CFactory::_('Compiler.Builder.Database.Uninstall')->isArray('table'))
 		{
-			foreach ($this->uninstallBuilder as $line)
-			{
-				$db .= $line . PHP_EOL;
-			}
+			$db .= implode(PHP_EOL, CFactory::_('Compiler.Builder.Database.Uninstall')->get('table')) . PHP_EOL;
 		}
 		// add custom sql uninstall dump to the file
 		if (isset(CFactory::_('Customcode.Dispenser')->hub['sql_uninstall'])
@@ -10156,24 +10751,14 @@ class Interpretation extends Fields
 		return $db;
 	}
 
-	public function setLangAdmin()
+	public function setLangAdmin(string $componentName): bool
 	{
-		// add final list of needed lang strings
-		$componentName = CFactory::_('Component')->get('name');
-		$componentName = JFilterOutput::cleanText($componentName);
-		// for plugin event TODO change event api signatures
-		$langContent = CFactory::_('Language')->getTarget('admin');
-		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildAdminLang
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeBuildAdminLang',
-			array(&$component_context, &$langContent,
-				&$this->langPrefix, &$componentName)
+			'jcb_ce_onBeforeBuildAdminLang'
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Config')->lang_prefix = $this->langPrefix;
-		CFactory::_('Language')->setTarget('admin', $langContent);
-		// start loding the defaults
+
+		// start loading the defaults
 		CFactory::_('Language')->set('adminsys', CFactory::_('Config')->lang_prefix, $componentName);
 		CFactory::_('Language')->set(
 			'adminsys', CFactory::_('Config')->lang_prefix . '_CONFIGURATION',
@@ -10258,6 +10843,7 @@ class Interpretation extends Fields
 			'admin', CFactory::_('Config')->lang_prefix . '_NOT_FOUND_OR_ACCESS_DENIED',
 			"Not found or access denied!"
 		);
+
 		if (CFactory::_('Component')->get('add_license')
 			&& CFactory::_('Component')->get('license_type') == 3)
 		{
@@ -10269,6 +10855,7 @@ class Interpretation extends Fields
 				. CFactory::_('Component')->get('companyname') . "</a>.</p></center>"
 			);
 		}
+
 		// add the langug files needed to import and export data
 		if (CFactory::_('Config')->get('add_eximport', false))
 		{
@@ -10409,6 +10996,7 @@ class Interpretation extends Fields
 				"-- Ignore This Column --"
 			);
 		}
+
 		// check if the both array is set
 		if (CFactory::_('Language')->exist('both'))
 		{
@@ -10417,6 +11005,7 @@ class Interpretation extends Fields
 				CFactory::_('Language')->set('admin', $keylang, $langval);
 			}
 		}
+
 		// check if the both admin array is set
 		if (CFactory::_('Language')->exist('bothadmin'))
 		{
@@ -10425,18 +11014,15 @@ class Interpretation extends Fields
 				CFactory::_('Language')->set('admin', $keylang, $langval);
 			}
 		}
+
 		if (CFactory::_('Language')->exist('admin'))
 		{
-			// for plugin event TODO change event api signatures
-			$langContent = CFactory::_('Language')->getTarget('admin');
 			// Trigger Event: jcb_ce_onAfterBuildAdminLang
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onAfterBuildAdminLang',
-				array(&$component_context, &$langContent,
-					&$this->langPrefix, &$componentName)
+				'jcb_ce_onAfterBuildAdminLang'
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Config')->lang_prefix = $this->langPrefix;
+			// get language content
+			$langContent = CFactory::_('Language')->getTarget('admin');
 			// sort the strings
 			ksort($langContent);
 			// load to global languages
@@ -10451,23 +11037,13 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setLangSite()
+	public function setLangSite(string $componentName): bool
 	{
-		// add final list of needed lang strings
-		$componentName = CFactory::_('Component')->get('name');
-		$componentName = JFilterOutput::cleanText($componentName);
-		// for plugin event TODO change event api signatures
-		$langContent = CFactory::_('Language')->getTarget('site');
-		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildSiteLang
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeBuildSiteLang',
-			array(&$component_context, &$langContent,
-				&$this->langPrefix, &$componentName)
+			'jcb_ce_onBeforeBuildSiteLang'
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Config')->lang_prefix = $this->langPrefix;
-		CFactory::_('Language')->setTarget('site', $langContent);
+
 		// add final list of needed lang strings
 		CFactory::_('Language')->set('site', CFactory::_('Config')->lang_prefix, $componentName);
 		// some more defaults
@@ -10518,6 +11094,7 @@ class Interpretation extends Fields
 				CFactory::_('Language')->set('site', $keylang, $langval);
 			}
 		}
+
 		// check if the both site array is set
 		if (CFactory::_('Language')->exist('bothsite'))
 		{
@@ -10526,18 +11103,16 @@ class Interpretation extends Fields
 				CFactory::_('Language')->set('site', $keylang, $langval);
 			}
 		}
+
 		if (CFactory::_('Language')->exist('site'))
 		{
-			// for plugin event TODO change event api signatures
-			$langContent = CFactory::_('Language')->getTarget('site');
 			// Trigger Event: jcb_ce_onAfterBuildSiteLang
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onAfterBuildSiteLang',
-				array(&$component_context, &$langContent,
-					&$this->langPrefix, &$componentName)
+				'jcb_ce_onAfterBuildSiteLang'
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Config')->lang_prefix = $this->langPrefix;
+
+			// Get the site language content
+			$langContent = CFactory::_('Language')->getTarget('site');
 			// sort the strings
 			ksort($langContent);
 			// load to global languages
@@ -10552,23 +11127,13 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setLangSiteSys()
+	public function setLangSiteSys(string $componentName): bool
 	{
-		// add final list of needed lang strings
-		$componentName = CFactory::_('Component')->get('name');
-		$componentName = JFilterOutput::cleanText($componentName);
-		// for plugin event TODO change event api signatures
-		$langContent = CFactory::_('Language')->getTarget('sitesys');
-		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildSiteSysLang
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeBuildSiteSysLang',
-			array(&$component_context, &$langContent,
-				&$this->langPrefix, &$componentName)
+			'jcb_ce_onBeforeBuildSiteSysLang'
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Config')->lang_prefix = $this->langPrefix;
-		CFactory::_('Language')->setTarget('sitesys', $langContent);
+
 		// add final list of needed lang strings
 		CFactory::_('Language')->set('sitesys', CFactory::_('Config')->lang_prefix, $componentName);
 		CFactory::_('Language')->set(
@@ -10590,16 +11155,12 @@ class Interpretation extends Fields
 		}
 		if (CFactory::_('Language')->exist('sitesys'))
 		{
-			// for plugin event TODO change event api signatures
-			$langContent = CFactory::_('Language')->getTarget('sitesys');
 			// Trigger Event: jcb_ce_onAfterBuildSiteSysLang
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onAfterBuildSiteSysLang',
-				array(&$component_context, &$langContent,
-					&$this->langPrefix, &$componentName)
+				'jcb_ce_onAfterBuildSiteSysLang'
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Config')->lang_prefix = $this->langPrefix;
+			// get site system language content
+			$langContent = CFactory::_('Language')->getTarget('sitesys');
 			// sort strings
 			ksort($langContent);
 			// load to global languages
@@ -10614,23 +11175,13 @@ class Interpretation extends Fields
 		return false;
 	}
 
-	public function setLangAdminSys()
+	public function setLangAdminSys(): bool
 	{
-		// add final list of needed lang strings
-		$componentName = CFactory::_('Component')->get('name');
-		$componentName = JFilterOutput::cleanText($componentName);
-		// for plugin event TODO change event api signatures
-		$langContent = CFactory::_('Language')->getTarget('adminsys');
-		$component_context = CFactory::_('Config')->component_context;
 		// Trigger Event: jcb_ce_onBeforeBuildAdminSysLang
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeBuildAdminSysLang',
-			array(&$component_context, &$langContent,
-				&$this->langPrefix, &$componentName)
+			'jcb_ce_onBeforeBuildAdminSysLang'
 		);
-		// for plugin event TODO change event api signatures
-		CFactory::_('Config')->lang_prefix = $this->langPrefix;
-		CFactory::_('Language')->setTarget('adminsys', $langContent);
+
 		// check if the both admin array is set
 		if (CFactory::_('Language')->exist('bothadmin'))
 		{
@@ -10641,16 +11192,12 @@ class Interpretation extends Fields
 		}
 		if (CFactory::_('Language')->exist('adminsys'))
 		{
-			// for plugin event TODO change event api signatures
-			$langContent = CFactory::_('Language')->getTarget('adminsys');
 			// Trigger Event: jcb_ce_onAfterBuildAdminSysLang
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onAfterBuildAdminSysLang',
-				array(&$component_context, &$langContent,
-					&$this->langPrefix, &$componentName)
+				'jcb_ce_onAfterBuildAdminSysLang'
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Config')->lang_prefix = $this->langPrefix;
+			// get admin system langauge content
+			$langContent = CFactory::_('Language')->getTarget('adminsys');
 			// sort strings
 			ksort($langContent);
 			// load to global languages
@@ -10752,8 +11299,20 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . "<?php";
 			$body .= PHP_EOL . Indent::_(2)
 				. "\$canCheckin = \$this->user->authorise('core.manage', 'com_checkin') || \$item->checked_out == \$this->user->id || \$item->checked_out == 0;";
-			$body .= PHP_EOL . Indent::_(2)
-				. "\$userChkOut = JFactory::getUser(\$item->checked_out);";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$body .= PHP_EOL . Indent::_(2)
+					. "\$userChkOut = Factory::getUser(\$item->checked_out);";
+			}
+			else
+			{
+				$body .= PHP_EOL . Indent::_(2)
+					. "\$userChkOut = Factory::getContainer()->";
+				$body .= PHP_EOL . Indent::_(3)
+					. "get(\Joomla\CMS\User\UserFactoryInterface::class)->";
+				$body .= PHP_EOL . Indent::_(4)
+					. "loadUserById(\$item->checked_out);";
+			}
 			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
 				. "::getActions('" . $nameSingleCode . "',\$item,'"
 				. $nameListCode . "');";
@@ -10775,7 +11334,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(5)
 					. "\$iconClass = ' inactive tip-top"
 					. '" hasTooltip" title="'
-					. "' . JHtml::tooltipText('JORDERINGDISABLED');";
+					. "' . Html::tooltipText('JORDERINGDISABLED');";
 				$body .= PHP_EOL . Indent::_(4) . "}";
 				$body .= PHP_EOL . Indent::_(3) . "?>";
 				$body .= PHP_EOL . Indent::_(3)
@@ -10802,13 +11361,13 @@ class Interpretation extends Fields
 				. "<?php if (\$item->checked_out) : ?>";
 			$body .= PHP_EOL . Indent::_(5) . "<?php if (\$canCheckin) : ?>";
 			$body .= PHP_EOL . Indent::_(6)
-				. "<?php echo JHtml::_('grid.id', \$i, \$item->id); ?>";
+				. "<?php echo Html::_('grid.id', \$i, \$item->id); ?>";
 			$body .= PHP_EOL . Indent::_(5) . "<?php else: ?>";
 			$body .= PHP_EOL . Indent::_(6) . "&#9633;";
 			$body .= PHP_EOL . Indent::_(5) . "<?php endif; ?>";
 			$body .= PHP_EOL . Indent::_(4) . "<?php else: ?>";
 			$body .= PHP_EOL . Indent::_(5)
-				. "<?php echo JHtml::_('grid.id', \$i, \$item->id); ?>";
+				. "<?php echo Html::_('grid.id', \$i, \$item->id); ?>";
 			$body .= PHP_EOL . Indent::_(4) . "<?php endif; ?>";
 			$body .= PHP_EOL . Indent::_(2) . "<?php else: ?>";
 			$body .= PHP_EOL . Indent::_(3) . "&#9633;";
@@ -10865,21 +11424,21 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(5)
 					. "<?php if (\$canCheckin) : ?>";
 				$body .= PHP_EOL . Indent::_(6)
-					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
+					. "<?php echo Html::_('jgrid.published', \$item->published, \$i, '"
 					. $nameListCode . ".', true, 'cb'); ?>";
 				$body .= PHP_EOL . Indent::_(5) . "<?php else: ?>";
 				$body .= PHP_EOL . Indent::_(6)
-					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
+					. "<?php echo Html::_('jgrid.published', \$item->published, \$i, '"
 					. $nameListCode . ".', false, 'cb'); ?>";
 				$body .= PHP_EOL . Indent::_(5) . "<?php endif; ?>";
 				$body .= PHP_EOL . Indent::_(4) . "<?php else: ?>";
 				$body .= PHP_EOL . Indent::_(5)
-					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
+					. "<?php echo Html::_('jgrid.published', \$item->published, \$i, '"
 					. $nameListCode . ".', true, 'cb'); ?>";
 				$body .= PHP_EOL . Indent::_(4) . "<?php endif; ?>";
 				$body .= PHP_EOL . Indent::_(2) . "<?php else: ?>";
 				$body .= PHP_EOL . Indent::_(3)
-					. "<?php echo JHtml::_('jgrid.published', \$item->published, \$i, '"
+					. "<?php echo Html::_('jgrid.published', \$item->published, \$i, '"
 					. $nameListCode . ".', false, 'cb'); ?>";
 				$body .= PHP_EOL . Indent::_(2) . "<?php endif; ?>";
 				$body .= PHP_EOL . Indent::_(2) . "</td>";
@@ -10932,7 +11491,7 @@ class Interpretation extends Fields
 			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode . '.' . (int) $item['id'] . '.2')) !== null)
 		{
 			// set the fields array
-			$field = array();
+			$field = [];
 			// use custom code
 			$useCustomCode
 				= (isset($field_relations['join_type'])
@@ -11052,12 +11611,8 @@ class Interpretation extends Fields
 			$defaultLink = false;
 		}
 		// is this a linked item
-		if (($item['link']
-				|| (ArrayHelper::check(
-						$item['custom']
-					)
-					&& $item['custom']['extends'] === 'user'))
-			&& $defaultLink)
+		$extends_field = $item['custom']['extends'] ?? '';
+		if (($item['link'] || $extends_field === 'user') && $defaultLink)
 		{
 			// set some defaults
 			$checkoutTriger = false;
@@ -11119,7 +11674,7 @@ class Interpretation extends Fields
 			$link .= PHP_EOL . $tab . Indent::_(4)
 				. "<?php if (\$item->checked_out): ?>";
 			$link .= PHP_EOL . $tab . Indent::_(5)
-				. "<?php echo JHtml::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '"
+				. "<?php echo Html::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '"
 				. $nameListCode . ".', \$canCheckin); ?>";
 			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php endif; ?>";
 		}
@@ -11170,14 +11725,14 @@ class Interpretation extends Fields
 					. '<a class="hasTooltip btn btn-mini" href="index.php?option=com_'
 					. CFactory::_('Config')->component_code_name . '&view='
 					. $customLinkView['link'] . '&id=<?php echo $item->id; ?>'
-					. $ref . '" title="<?php echo JText:' . ':_(' . "'COM_"
+					. $ref . '" title="<?php echo Text:' . ':_(' . "'COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '_' . $customLinkView['NAME'] . "'"
 					. '); ?>" ><span class="icon-' . $customLinkView['icon']
 					. '"></span></a>';
 				$customAdminViewButton .= PHP_EOL . Indent::_(3)
 					. "<?php else: ?>";
 				$customAdminViewButton .= PHP_EOL . Indent::_(4)
-					. '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo JText:'
+					. '<a class="hasTooltip btn btn-mini disabled" href="#" title="<?php echo Text:'
 					. ':_(' . "'COM_" . CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '_' . $customLinkView['NAME']
 					. "'" . '); ?>"><span class="icon-'
 					. $customLinkView['icon'] . '"></span></a>';
@@ -11219,6 +11774,9 @@ class Interpretation extends Fields
 				$item['code'] = $item['code'] . '_' . $item['custom']['text'];
 			}
 		}
+		//  set the extends value
+		$extends_field = $item['custom']['extends'] ?? '';
+		$extends_text = $item['custom']['text'] ?? '';
 		// check if category
 		if ($item['type'] === 'category' && !$item['title'])
 		{
@@ -11227,32 +11785,54 @@ class Interpretation extends Fields
 		// check if user
 		elseif ($item['type'] === 'user')
 		{
-			return 'JFactory::getUser((int)$item->' . $item['code'] . ')->name';
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				return 'Factory::getUser((int)$item->' . $item['code'] . ')->name';
+			}
+			else
+			{
+				return 'Factory::getContainer()->'
+					. 'get(\Joomla\CMS\User\UserFactoryInterface::class)->'
+					. 'loadUserById((int) $item->' . $item['code'] . ')->name';
+			}
 		}
 		// check if custom user
 		elseif (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& $item['custom']['extends'] === 'user'
+			&& ArrayHelper::check($item['custom'])
+			&& $extends_field === 'user'
 			&& isset($item['id_code']))
 		{
-			return 'JFactory::getUser((int)$item->' . $item['id_code']
-				. ')->name';
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				return 'Factory::getUser((int)$item->' . $item['id_code'] . ')->name';
+			}
+			else
+			{
+				return 'Factory::getContainer()->'
+					. 'get(\Joomla\CMS\User\UserFactoryInterface::class)->'
+					. 'loadUserById((int) $item->' . $item['id_code'] . ')->name';
+			}
 		}
 		// check if translated value is used
 		elseif (CFactory::_('Compiler.Builder.Selection.Translation')->
 			exists($nameListCode . '.' . $item['code']))
 		{
-			return 'JText:' . ':_($item->' . $item['code'] . ')';
+			return 'Text:' . ':_($item->' . $item['code'] . ')';
 		}
 		elseif (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& $item['custom']['text'] === 'user')
+			&& ArrayHelper::check($item['custom'])
+			&& ($extends_text === 'user' || $extends_field === 'user'))
 		{
-			return 'JFactory::getUser((int)$item->' . $item['code'] . ')->name';
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				return 'Factory::getUser((int)$item->' . $item['code'] . ')->name';
+			}
+			else
+			{
+				return 'Factory::getContainer()->'
+					. 'get(\Joomla\CMS\User\UserFactoryInterface::class)->'
+					. 'loadUserById((int) $item->' . $item['code'] . ')->name';
+			}
 		}
 		elseif ($doNotEscape)
 		{
@@ -11440,7 +12020,7 @@ class Interpretation extends Fields
 	 *
 	 * @return string
 	 */
-	public function setDefaultViewsBody($nameSingleCode, $nameListCode)
+	public function setDefaultViewsBody(string $nameSingleCode, string $nameListCode): string
 	{
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
@@ -11449,7 +12029,7 @@ class Interpretation extends Fields
 		// set uppercase view
 		$VIEWS = strtoupper($nameListCode);
 		// build the body
-		$body = array();
+		$body = [];
 		// check if the filter type is sidebar (1 = sidebar)
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
@@ -11478,32 +12058,32 @@ class Interpretation extends Fields
 		}
 		// Trigger Event: jcb_ce_onSetDefaultViewsBodyTop
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onSetDefaultViewsBodyTop',
-			array(&$this,
-				&$body,
-				&$nameSingleCode,
-				&$nameListCode)
+			'jcb_ce_onSetDefaultViewsBodyTop', [&$body, &$nameSingleCode, &$nameListCode]
 		);
-		$body[] = "<form action=\"<?php echo JRoute::_('index.php?option=com_"
+		$body[] = "<form action=\"<?php echo Route::_('index.php?option=com_"
 			. $component . "&view=" . $nameListCode
 			. "'); ?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\">";
-		$body[] = "<?php if(!empty( \$this->sidebar)): ?>";
-		$body[] = Indent::_(1)
-			. "<div id=\"j-sidebar-container\" class=\"span2\">";
-		$body[] = Indent::_(2) . "<?php echo \$this->sidebar; ?>";
-		$body[] = Indent::_(1) . "</div>";
-		$body[] = Indent::_(1)
-			. "<div id=\"j-main-container\" class=\"span10\">";
-		$body[] = "<?php else : ?>";
-		$body[] = Indent::_(1) . "<div id=\"j-main-container\">";
-		$body[] = "<?php endif; ?>";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$body[] = "<?php if(!empty( \$this->sidebar)): ?>";
+			$body[] = Indent::_(1)
+				. "<div id=\"j-sidebar-container\" class=\"span2\">";
+			$body[] = Indent::_(2) . "<?php echo \$this->sidebar; ?>";
+			$body[] = Indent::_(1) . "</div>";
+			$body[] = Indent::_(1)
+				. "<div id=\"j-main-container\" class=\"span10\">";
+			$body[] = "<?php else : ?>";
+			$body[] = Indent::_(1) . "<div id=\"j-main-container\">";
+			$body[] = "<?php endif; ?>";
+		}
+		else
+		{
+			$body[] = Indent::_(1)
+				. "<div id=\"j-main-container\">";
+		}
 		// Trigger Event: jcb_ce_onSetDefaultViewsFormTop
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onSetDefaultViewsFormTop',
-			array(&$this,
-				&$body,
-				&$nameSingleCode,
-				&$nameListCode)
+			'jcb_ce_onSetDefaultViewsFormTop', [&$body, &$nameSingleCode, &$nameListCode]
 		);
 		// check if the filter type is sidebar (2 = topbar)
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
@@ -11511,9 +12091,9 @@ class Interpretation extends Fields
 			$body[] = "<?php";
 			// build code to add the trash helper layout
 			$addTrashHelper = Indent::_(1)
-				. "echo JLayoutHelper::render('trashhelper', \$this);";
+				. "echo LayoutHelper::render('trashhelper', \$this);";
 			// add the trash helper layout if found in JCB
-			if ($this->setTemplateAndLayoutData($addTrashHelper, $nameListCode))
+			if (CFactory::_('Templatelayout.Data')->set($addTrashHelper, $nameListCode))
 			{
 				$body[] = Indent::_(1) . "//" . Line::_(
 						__LINE__,__CLASS__
@@ -11525,7 +12105,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the searchtools";
 			$body[] = Indent::_(1)
-				. "echo JLayoutHelper::render('joomla.searchtools.default', array('view' => \$this));";
+				. "echo LayoutHelper::render('joomla.searchtools.default', array('view' => \$this));";
 			$body[] = "?>";
 		}
 		$body[] = "<?php if (empty(\$this->items)): ?>";
@@ -11538,7 +12118,7 @@ class Interpretation extends Fields
 		$body[] = Indent::_(1)
 			. "<div class=\"alert alert-no-items\">";
 		$body[] = Indent::_(2)
-			. "<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
+			. "<?php echo Text:" . ":_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
 		$body[] = Indent::_(1) . "</div>";
 		$body[] = "<?php else : ?>";
 		// check if the filter type is sidebar (1 = sidebar)
@@ -11556,24 +12136,27 @@ class Interpretation extends Fields
 		$body[] = Indent::_(2)
 			. "<tbody><?php echo \$this->loadTemplate('body');?></tbody>";
 		$body[] = Indent::_(1) . "</table>";
-		$body[] = Indent::_(1) . "<?php //" . Line::_(
-				__LINE__,__CLASS__
-			) . " Load the batch processing form. ?>";
-		$body[] = Indent::_(1)
-			. "<?php if (\$this->canCreate && \$this->canEdit) : ?>";
-		$body[] = Indent::_(2) . "<?php echo JHtml::_(";
-		$body[] = Indent::_(3) . "'bootstrap.renderModal',";
-		$body[] = Indent::_(3) . "'collapseModal',";
-		$body[] = Indent::_(3) . "array(";
-		$body[] = Indent::_(4) . "'title' => JText::_('COM_" . $COMPONENT . "_"
-			. $VIEWS
-			. "_BATCH_OPTIONS'),";
-		$body[] = Indent::_(4)
-			. "'footer' => \$this->loadTemplate('batch_footer')";
-		$body[] = Indent::_(3) . "),";
-		$body[] = Indent::_(3) . "\$this->loadTemplate('batch_body')";
-		$body[] = Indent::_(2) . "); ?>";
-		$body[] = Indent::_(1) . "<?php endif; ?>";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$body[] = Indent::_(1) . "<?php //" . Line::_(
+					__LINE__, __CLASS__
+				) . " Load the batch processing form. ?>";
+			$body[] = Indent::_(1)
+				. "<?php if (\$this->canCreate && \$this->canEdit) : ?>";
+			$body[] = Indent::_(2) . "<?php echo Html::_(";
+			$body[] = Indent::_(3) . "'bootstrap.renderModal',";
+			$body[] = Indent::_(3) . "'collapseModal',";
+			$body[] = Indent::_(3) . "array(";
+			$body[] = Indent::_(4) . "'title' => Text:" . ":_('COM_" . $COMPONENT . "_"
+				. $VIEWS
+				. "_BATCH_OPTIONS'),";
+			$body[] = Indent::_(4)
+				. "'footer' => \$this->loadTemplate('batch_footer')";
+			$body[] = Indent::_(3) . "),";
+			$body[] = Indent::_(3) . "\$this->loadTemplate('batch_body')";
+			$body[] = Indent::_(2) . "); ?>";
+			$body[] = Indent::_(1) . "<?php endif; ?>";
+		}
 		// check if the filter type is sidebar (1 = sidebar)
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 1)
 		{
@@ -11588,23 +12171,15 @@ class Interpretation extends Fields
 		$body[] = "<?php endif; ?>";
 		$body[] = Indent::_(1)
 			. "<input type=\"hidden\" name=\"task\" value=\"\" />";
-		$body[] = Indent::_(1) . "<?php echo JHtml::_('form.token'); ?>";
+		$body[] = Indent::_(1) . "<?php echo Html::_('form.token'); ?>";
 		// Trigger Event: jcb_ce_onSetDefaultViewsFormBottom
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onSetDefaultViewsFormBottom',
-			array(&$this,
-				&$body,
-				&$nameSingleCode,
-				&$nameListCode)
+			'jcb_ce_onSetDefaultViewsFormBottom', [&$body, &$nameSingleCode, &$nameListCode]
 		);
 		$body[] = "</form>";
 		// Trigger Event: jcb_ce_onSetDefaultViewsBodyBottom
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onSetDefaultViewsBodyBottom',
-			array(&$this,
-				&$body,
-				&$nameSingleCode,
-				&$nameListCode)
+			'jcb_ce_onSetDefaultViewsBodyBottom', [&$body, &$nameSingleCode, &$nameListCode]
 		);
 
 		return implode(PHP_EOL, $body);
@@ -11622,7 +12197,7 @@ class Interpretation extends Fields
 	{
 		if (($items = CFactory::_('Compiler.Builder.Lists')->get($nameListCode)) !== null)
 		{
-			// set the JHtml values based on filter type
+			// set the Html values based on filter type
 			$jhtml_sort        = "grid.sort";
 			$jhtml_sort_icon   = "<i class=\"icon-menu-2\"></i>";
 			$jhtml_sort_icon_2 = "";
@@ -11634,7 +12209,7 @@ class Interpretation extends Fields
 				$jhtml_sort_icon_2 = ", 'icon-menu-2'";
 			}
 			// main lang prefix
-			$langView = $this->langPrefix . '_'
+			$langView = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe($nameSingleCode, 'U');
 			// set status lang
 			$statusLangName = $langView . '_STATUS';
@@ -11653,7 +12228,7 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . Indent::_(2)
 					. '<th width="1%" class="nowrap center hidden-phone">';
 				$head .= PHP_EOL . Indent::_(3)
-					. "<?php echo JHtml::_('" . $jhtml_sort . "', '"
+					. "<?php echo Html::_('" . $jhtml_sort . "', '"
 					. $jhtml_sort_icon . "'"
 					. ", 'a.ordering', \$this->listDirn, \$this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'"
 					. $jhtml_sort_icon_2 . "); ?>";
@@ -11662,7 +12237,7 @@ class Interpretation extends Fields
 			$head .= PHP_EOL . Indent::_(2)
 				. '<th width="20" class="nowrap center">';
 			$head .= PHP_EOL . Indent::_(3)
-				. "<?php echo JHtml::_('grid.checkall'); ?>";
+				. "<?php echo Html::_('grid.checkall'); ?>";
 			$head .= PHP_EOL . Indent::_(2) . "</th>";
 			$head .= PHP_EOL . Indent::_(1) . "<?php else: ?>";
 			$head .= PHP_EOL . Indent::_(2)
@@ -11700,7 +12275,7 @@ class Interpretation extends Fields
 						if ($item['type'] === 'category')
 						{
 							// only one category per/view allowed at this point
-							$title = "<?php echo JHtml::_('" . $jhtml_sort
+							$title = "<?php echo Html::_('" . $jhtml_sort
 								. "', '"
 								. $item['lang'] . "', 'category_title"
 								. "', \$this->listDirn, \$this->listOrder); ?>";
@@ -11711,7 +12286,7 @@ class Interpretation extends Fields
 						))
 						{
 							// keep an eye on this
-							$title = "<?php echo JHtml::_('" . $jhtml_sort
+							$title = "<?php echo Html::_('" . $jhtml_sort
 								. "', '"
 								. $item['lang'] . "', '" . $item['custom']['db']
 								. "." . $item['custom']['text']
@@ -11719,7 +12294,7 @@ class Interpretation extends Fields
 						}
 						else
 						{
-							$title = "<?php echo JHtml::_('" . $jhtml_sort
+							$title = "<?php echo Html::_('" . $jhtml_sort
 								. "', '"
 								. $item['lang'] . "', 'a." . $item['code']
 								. "', \$this->listDirn, \$this->listOrder); ?>";
@@ -11727,7 +12302,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$title = "<?php echo JText:" . ":_('" . $item['lang']
+						$title = "<?php echo Text:" . ":_('" . $item['lang']
 							. "'); ?>";
 					}
 					$head .= PHP_EOL . Indent::_(1) . '<th class="' . $class
@@ -11745,14 +12320,14 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . Indent::_(2)
 					. '<th width="10" class="nowrap center" >';
 				$head .= PHP_EOL . Indent::_(3)
-					. "<?php echo JHtml::_('" . $jhtml_sort . "', '"
+					. "<?php echo Html::_('" . $jhtml_sort . "', '"
 					. $statusLangName
 					. "', 'a.published', \$this->listDirn, \$this->listOrder); ?>";
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 				$head .= PHP_EOL . Indent::_(1) . "<?php else: ?>";
 				$head .= PHP_EOL . Indent::_(2)
 					. '<th width="10" class="nowrap center" >';
-				$head .= PHP_EOL . Indent::_(3) . "<?php echo JText:" . ":_('"
+				$head .= PHP_EOL . Indent::_(3) . "<?php echo Text:" . ":_('"
 					. $statusLangName . "'); ?>";
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 				$head .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
@@ -11762,7 +12337,7 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . Indent::_(1)
 					. '<th width="5" class="nowrap center hidden-phone" >';
 				$head .= PHP_EOL . Indent::_(3)
-					. "<?php echo JHtml::_('" . $jhtml_sort . "', '"
+					. "<?php echo Html::_('" . $jhtml_sort . "', '"
 					. $idLangName
 					. "', 'a.id', \$this->listDirn, \$this->listOrder); ?>";
 				$head .= PHP_EOL . Indent::_(1) . "</th>";
@@ -11799,19 +12374,19 @@ class Interpretation extends Fields
 		if (CFactory::_('Compiler.Builder.Layout')->exists($nameSingleCode))
 		{
 			$layout_builder = CFactory::_('Compiler.Builder.Layout')->get($nameSingleCode);
-			$layoutArray = array();
+			$layoutArray = [];
 			foreach ($layout_builder as $layout => $alignments)
 			{
 				$alignments = (array) $alignments;
 				// sort the alignments
 				ksort($alignments);
-				$alignmentArray = array();
+				$alignmentArray = [];
 				foreach ($alignments as $alignment => $fields)
 				{
 					$fields = (array) $fields;
 					// sort the fields
 					ksort($fields);
-					$fieldArray = array();
+					$fieldArray = [];
 					foreach ($fields as $field)
 					{
 						// add each field
@@ -11852,27 +12427,42 @@ class Interpretation extends Fields
 		// set view name
 		$nameSingleCode = $view['settings']->name_single_code;
 		// main lang prefix
-		$langView = $this->langPrefix . '_'
+		$langView = CFactory::_('Config')->lang_prefix . '_'
 			. StringHelper::safe($nameSingleCode, 'U');
 		// check if the load build is set for this view
 		if (CFactory::_('Compiler.Builder.Layout')->exists($nameSingleCode))
 		{
 			// reset the linked keys
-			$keys                 = array();
-			$linkedViewIdentifier = array();
+			$keys                 = [];
+			$linkedViewIdentifier = [];
 			// set the linked view tabs
 			$linkedTab = $this->getEditBodyLinkedAdminViewsTabs(
 				$view, $nameSingleCode, $keys, $linkedViewIdentifier
 			);
 			// custom tab searching array
-			$searchTabs = array();
+			$searchTabs = [];
 			// reset tab values
-			$leftside  = '';
-			$rightside = '';
-			$footer    = '';
-			$header    = '';
-			$mainwidth = 12;
-			$sidewidth = 0;
+			$leftside    = '';
+			$rightside   = '';
+			$side_open   = '';
+			$side_close  = '';
+			$footer      = '';
+			$header      = '';
+			$mainwidth   = 12;
+			$sidewidth   = 0;
+			$width_class = 'span';
+			$row_class   = 'row-fluid form-horizontal-desktop';
+			$form_class  = 'form-horizontal';
+			$uitab       = 'bootstrap';
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$width_class = 'col-md-';
+				$row_class   = 'row';
+				$form_class  = 'main-card';
+				$uitab       = 'uitab';
+				$side_open   = '<div class="m-md-3">';
+				$side_close  = '</div>';
+			}
 			// get the tabs with positions
 			$tabBucket = $this->getEditBodyTabs(
 				$nameSingleCode, $langView, $linkedTab, $keys,
@@ -11885,10 +12475,15 @@ class Interpretation extends Fields
 			$span = '';
 			if ($mainwidth != 12)
 			{
-				$span = 'span' . $mainwidth;
+				$span = $width_class . $mainwidth;
 			}
 			// start building body
-			$body = PHP_EOL . '<div class="form-horizontal">';
+			$body = PHP_EOL . '<div class="' . $form_class . '">';
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3 &&
+				(strlen((string) $leftside) > 2 || strlen((string) $rightside) > 2))
+			{
+				$body .= PHP_EOL . '<div class="row">';
+			}
 			if (StringHelper::check($span))
 			{
 				$body .= PHP_EOL . Indent::_(1) . '<div class="' . $span . '">';
@@ -11908,9 +12503,9 @@ class Interpretation extends Fields
 				if ($tabCounter == 0)
 				{
 					$body .= PHP_EOL . PHP_EOL . Indent::_(1)
-						. "<?php echo JHtml::_('bootstrap.startTabSet', '"
-						. $nameSingleCode . "Tab', array('active' => '"
-						. $tabCodeName . "')); ?>";
+						. "<?php echo Html::_('{$uitab}.startTabSet', '"
+						. $nameSingleCode . "Tab', ['active' => '"
+						. $tabCodeName . "', 'recall' => true]); ?>";
 				}
 				// check if custom tab must be added
 				if (($_customTabHTML = $this->addCustomTabs(
@@ -11951,12 +12546,12 @@ class Interpretation extends Fields
 				}
 				// start addtab body
 				$body .= PHP_EOL . Indent::_(1)
-					. "<?php echo JHtml::_('bootstrap.addTab', '"
-					. $nameSingleCode . "Tab', '" . $tabCodeName . "', JText:"
+					. "<?php echo Html::_('{$uitab}.addTab', '"
+					. $nameSingleCode . "Tab', '" . $tabCodeName . "', Text:"
 					. ":_('" . $tabLangName . "', true)); ?>";
 				// add the main
 				$body .= PHP_EOL . Indent::_(2)
-					. '<div class="row-fluid form-horizontal-desktop">';
+					. '<div class="' . $row_class . '">';
 				$body .= $main;
 				$body .= PHP_EOL . Indent::_(2) . "</div>";
 				// add main body bottom div if needed
@@ -11964,13 +12559,13 @@ class Interpretation extends Fields
 				{
 					// add the main bottom
 					$body .= PHP_EOL . Indent::_(2)
-						. '<div class="row-fluid form-horizontal-desktop">';
+						. '<div class="' . $row_class . '">';
 					$body .= $mainbottom;
 					$body .= PHP_EOL . Indent::_(2) . "</div>";
 				}
 				// end addtab body
 				$body .= PHP_EOL . Indent::_(1)
-					. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+					. "<?php echo Html::_('{$uitab}.endTab'); ?>";
 				// if we had permissions added
 				if ($closeIT)
 				{
@@ -11992,46 +12587,62 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . "<?php \$this->tab_name = '"
 				. $nameSingleCode . "Tab'; ?>";
 			$body .= PHP_EOL . Indent::_(1)
-				. "<?php echo JLayoutHelper::render('joomla.edit.params', \$this); ?>";
+				. "<?php echo LayoutHelper::render('joomla.edit.params', \$this); ?>";
 			// add the publish and meta data tabs
 			$body .= $this->getEditBodyPublishMetaTabs(
 				$nameSingleCode, $langView
 			);
 			// end the tab set
 			$body .= PHP_EOL . PHP_EOL . Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
+				. "<?php echo Html::_('{$uitab}.endTabSet'); ?>";
 			$body .= PHP_EOL . PHP_EOL . Indent::_(1) . "<div>";
 			$body .= PHP_EOL . Indent::_(2)
 				. '<input type="hidden" name="task" value="' . $nameSingleCode
 				. '.edit" />';
 			$body .= PHP_EOL . Indent::_(2)
-				. "<?php echo JHtml::_('form.token'); ?>";
+				. "<?php echo Html::_('form.token'); ?>";
 			$body .= PHP_EOL . Indent::_(1) . "</div>";
 			// close divs
 			if (StringHelper::check($span))
 			{
 				$body .= PHP_EOL . Indent::_(1) . "</div>";
 			}
-			$body .= PHP_EOL . "</div>";
-			// check if left has been set
-			if (strlen((string) $leftside) > 0)
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$left = '<div class="span' . $sidewidth . '">' . $leftside
-					. PHP_EOL . "</div>";
+				$body .= PHP_EOL . "</div>";
+			}
+			// check if left has been set
+			if (strlen((string) $leftside) > 2)
+			{
+				$left = PHP_EOL . Indent::_(1) . '<div class="' . $width_class . $sidewidth . '">' . $side_open;
+				$left .= $leftside;
+				$left .= PHP_EOL . Indent::_(1) . $side_close . "</div>";
 			}
 			else
 			{
 				$left = '';
 			}
 			// check if right has been set
-			if (strlen((string) $rightside) > 0)
+			if (strlen((string) $rightside) > 2)
 			{
-				$right = '<div class="span' . $sidewidth . '">' . $rightside
-					. PHP_EOL . "</div>";
+				$right = PHP_EOL . Indent::_(1) . '<div class="' . $width_class . $sidewidth . '">' . $side_open;
+				$right .= $rightside;
+				$right .= PHP_EOL . Indent::_(1) . $side_close . "</div>";
 			}
 			else
 			{
 				$right = '';
+			}
+
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3 &&
+				(strlen((string) $leftside) > 2 || strlen((string) $rightside) > 2))
+			{
+				$right .= PHP_EOL . '</div>';
+				$right .= PHP_EOL . '</div>';
+			}
+			elseif (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$body .= PHP_EOL . '</div>';
 			}
 
 			// set active tab and return
@@ -12057,7 +12668,7 @@ class Interpretation extends Fields
 	)
 	{
 		// start linked tabs bucket
-		$linkedTab = array();
+		$linkedTab = [];
 		// check if the view has linked admin view
 		if (($linkedAdminViews = CFactory::_('Registry')->get('builder.linked_admin_views.' . $nameSingleCode, null)) !== null
 			&& ArrayHelper::check($linkedAdminViews))
@@ -12134,7 +12745,7 @@ class Interpretation extends Fields
 	)
 	{
 		// start tabs
-		$tabs = array();
+		$tabs = [];
 		// sort the tabs based on key order
 		$tab_counter = (array) CFactory::_('Compiler.Builder.Tab.Counter')->get($nameSingleCode, []);
 		ksort($tab_counter);
@@ -12215,7 +12826,7 @@ class Interpretation extends Fields
 							{
 								$tabs[$tabCodeName][(int) $alignment] = '';
 							}
-							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('"
+							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo LayoutHelper::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12232,7 +12843,7 @@ class Interpretation extends Fields
 							{
 								$tabs[$tabCodeName][(int) $alignment] = '';
 							}
-							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo JLayoutHelper::render('"
+							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo LayoutHelper::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12243,8 +12854,8 @@ class Interpretation extends Fields
 								'layouttitle'
 							);
 							// load to header
-							$header .= PHP_EOL . Indent::_(1)
-								. "<?php echo JLayoutHelper::render('"
+							$header .= PHP_EOL
+								. "<?php echo LayoutHelper::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12257,7 +12868,7 @@ class Interpretation extends Fields
 							// load to footer
 							$footer .= PHP_EOL . PHP_EOL
 								. "<div class=\"clearfix\"></div>" . PHP_EOL
-								. "<?php echo JLayoutHelper::render('"
+								. "<?php echo LayoutHelper::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12269,8 +12880,8 @@ class Interpretation extends Fields
 								'layoutitems'
 							);
 							// load the body
-							$leftside .= PHP_EOL . Indent::_(1)
-								. "<?php echo JLayoutHelper::render('"
+							$leftside .= PHP_EOL . Indent::_(2)
+								. "<?php echo LayoutHelper::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12282,8 +12893,8 @@ class Interpretation extends Fields
 								'layoutitems'
 							);
 							// load the body
-							$rightside .= PHP_EOL . Indent::_(1)
-								. "<?php echo JLayoutHelper::render('"
+							$rightside .= PHP_EOL . Indent::_(2)
+								. "<?php echo LayoutHelper::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12321,7 +12932,7 @@ class Interpretation extends Fields
 				{
 					$tabs[$tabCodeName][3] = '';
 				}
-				$tabs[$tabCodeName][3] .= "<?php echo JLayoutHelper::render('"
+				$tabs[$tabCodeName][3] .= "<?php echo LayoutHelper::render('"
 					. $nameSingleCode . "." . $layoutCodeName
 					. "', \$this); ?>";
 			}
@@ -12353,9 +12964,15 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function setEditBodyTabMainCenterPositionDiv(&$main, &$mainbottom,
-	                                                       &$positions
+														   &$positions
 	)
 	{
+		$width_class       = 'span';
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			$width_class = 'col-md-';
+		}
+
 		foreach ($positions as $position => $string)
 		{
 			if ($positions['lr'] == 2)
@@ -12364,7 +12981,7 @@ class Interpretation extends Fields
 				{
 					case 1: // left
 					case 2: // right
-						$main .= PHP_EOL . Indent::_(3) . '<div class="span6">';
+						$main .= PHP_EOL . Indent::_(3) . '<div class="' . $width_class . '6">';
 						$main .= PHP_EOL . Indent::_(4) . $string;
 						$main .= PHP_EOL . Indent::_(3) . '</div>';
 						break;
@@ -12377,7 +12994,7 @@ class Interpretation extends Fields
 					case 1: // left
 					case 2: // right
 						$main .= PHP_EOL . Indent::_(3)
-							. '<div class="span12">';
+							. '<div class="' . $width_class . '12">';
 						$main .= PHP_EOL . Indent::_(4) . $string;
 						$main .= PHP_EOL . Indent::_(3) . '</div>';
 						break;
@@ -12387,7 +13004,7 @@ class Interpretation extends Fields
 			{
 				case 3: // fullwidth
 					$mainbottom .= PHP_EOL . Indent::_(3)
-						. '<div class="span12">';
+						. '<div class="' . $width_class . '12">';
 					$mainbottom .= PHP_EOL . Indent::_(4) . $string;
 					$mainbottom .= PHP_EOL . Indent::_(3) . '</div>';
 					break;
@@ -12418,6 +13035,15 @@ class Interpretation extends Fields
 		// Setup the default (custom) fields
 		// only load (1 => 'left', 2 => 'right')
 		$fieldsAddedRight = false;
+		$width_class      = 'span';
+		$row_class        = 'row-fluid form-horizontal-desktop';
+		$uitab            = 'bootstrap';
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			$width_class = 'col-md-';
+			$row_class   = 'row';
+			$uitab       = 'uitab';
+		}
 		if (CFactory::_('Compiler.Builder.New.Publishing.Fields')->exists($nameSingleCode))
 		{
 			$new_published_fields = CFactory::_('Compiler.Builder.New.Publishing.Fields')->get($nameSingleCode);
@@ -12433,10 +13059,10 @@ class Interpretation extends Fields
 					else
 					{
 						$this->app->enqueueMessage(
-							JText::_('<hr /><h3>Field Warning</h3>'), 'Warning'
+							Text::_('<hr /><h3>Field Warning</h3>'), 'Warning'
 						);
 						$this->app->enqueueMessage(
-							JText::sprintf(
+							Text::sprintf(
 								'Your <b>%s</b> field could not be added, since the <b>%s</b> alignment position is not available in the %s (publishing) tab. Please only target <b>Left or right</b> in the publishing tab.',
 								$df_name,
 								$this->alignmentOptions[$df_alignment],
@@ -12519,10 +13145,10 @@ class Interpretation extends Fields
 				if ($fieldsAddedRight)
 				{
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Field Notice</h3>'), 'Notice'
+						Text::_('<hr /><h3>Field Notice</h3>'), 'Notice'
 					);
 					$this->app->enqueueMessage(
-						JText::sprintf(
+						Text::sprintf(
 							'Your field/s added to the <b>right</b> alignment position in the %s (publishing) tab was added to the <b>left</b>. Since we have metadata fields on the right. Fields can only be loaded to the right of the publishing tab if there is no metadata fields.',
 							$nameSingleCode
 						), 'Notice'
@@ -12591,17 +13217,17 @@ class Interpretation extends Fields
 		}
 		if ($items_one && $items_two)
 		{
-			$classs = "span6";
+			$classs = "{$width_class}6";
 		}
 		elseif ($items_one || $items_two)
 		{
-			$classs = "span12";
+			$classs = "{$width_class}12";
 		}
 		// only load this if needed
 		if ($items_one || $items_two)
 		{
 			// check if the item has permissions.
-			$publishingPerOR  = array();
+			$publishingPerOR  = [];
 			$allToBeChekcedOR = array('core.edit.created_by',
 				'core.edit.created',
 				'core.edit.state');
@@ -12611,7 +13237,7 @@ class Interpretation extends Fields
 				$publishingPerOR[] = "\$this->canDo->get('"
 					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, $core_permission) . "')";
 			}
-			$publishingPerAND  = array();
+			$publishingPerAND  = [];
 			$allToBeChekcedAND = array('core.delete', 'core.edit.state');
 			foreach ($allToBeChekcedAND as $core_permission)
 			{
@@ -12634,17 +13260,17 @@ class Interpretation extends Fields
 				) . ") : ?>";
 			// set the default publishing tab
 			$tabs .= PHP_EOL . Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.addTab', '"
-				. $nameSingleCode . "Tab', '" . $tabCodeNameLeft . "', JText:"
+				. "<?php echo Html::_('{$uitab}.addTab', '"
+				. $nameSingleCode . "Tab', '" . $tabCodeNameLeft . "', Text:"
 				. ":_('" . $tabLangName . "', true)); ?>";
 			$tabs .= PHP_EOL . Indent::_(2)
-				. '<div class="row-fluid form-horizontal-desktop">';
+				. '<div class="' . $row_class . '">';
 			if ($items_one)
 			{
 				$tabs .= PHP_EOL . Indent::_(3) . '<div class="' . $classs
 					. '">';
 				$tabs .= PHP_EOL . Indent::_(4)
-					. "<?php echo JLayoutHelper::render('" . $nameSingleCode
+					. "<?php echo LayoutHelper::render('" . $nameSingleCode
 					. "." . $tabCodeNameLeft . "', \$this); ?>";
 				$tabs .= PHP_EOL . Indent::_(3) . "</div>";
 			}
@@ -12653,13 +13279,13 @@ class Interpretation extends Fields
 				$tabs .= PHP_EOL . Indent::_(3) . '<div class="' . $classs
 					. '">';
 				$tabs .= PHP_EOL . Indent::_(4)
-					. "<?php echo JLayoutHelper::render('" . $nameSingleCode
+					. "<?php echo LayoutHelper::render('" . $nameSingleCode
 					. "." . $tabCodeNameRight . "', \$this); ?>";
 				$tabs .= PHP_EOL . Indent::_(3) . "</div>";
 			}
 			$tabs .= PHP_EOL . Indent::_(2) . "</div>";
 			$tabs .= PHP_EOL . Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				. "<?php echo Html::_('{$uitab}.endTab'); ?>";
 			$tabs .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
 			// check if custom tab must be added
 			if (($_customTabHTML = $this->addCustomTabs(
@@ -12684,12 +13310,12 @@ class Interpretation extends Fields
 			$tabs .= PHP_EOL . PHP_EOL . Indent::_(1)
 				. "<?php if (\$this->canDo->get('core.admin')) : ?>";
 			$tabs .= PHP_EOL . Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.addTab', '"
-				. $nameSingleCode . "Tab', '" . $tabCodeName . "', JText:"
+				. "<?php echo Html::_('{$uitab}.addTab', '"
+				. $nameSingleCode . "Tab', '" . $tabCodeName . "', Text:"
 				. ":_('" . $tabLangName . "', true)); ?>";
 			$tabs .= PHP_EOL . Indent::_(2)
-				. '<div class="row-fluid form-horizontal-desktop">';
-			$tabs .= PHP_EOL . Indent::_(3) . '<div class="span12">';
+				. '<div class="' . $row_class . '">';
+			$tabs .= PHP_EOL . Indent::_(3) . '<div class="' . $width_class . '12">';
 			$tabs .= PHP_EOL . Indent::_(4) . '<fieldset class="adminform">';
 			$tabs .= PHP_EOL . Indent::_(5) . '<div class="adminformlist">';
 			$tabs .= PHP_EOL . Indent::_(5)
@@ -12705,7 +13331,7 @@ class Interpretation extends Fields
 			$tabs .= PHP_EOL . Indent::_(3) . "</div>";
 			$tabs .= PHP_EOL . Indent::_(2) . "</div>";
 			$tabs .= PHP_EOL . Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				. "<?php echo Html::_('{$uitab}.endTab'); ?>";
 			$tabs .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
 		}
 
@@ -12753,36 +13379,22 @@ class Interpretation extends Fields
 			// set view name
 			$fadein[] = "<script type=\"text/javascript\">";
 			$fadein[] = Indent::_(1) . "// waiting spinner";
-			$fadein[] = Indent::_(1) . "var outerDiv = jQuery('body');";
-			$fadein[] = Indent::_(1) . "jQuery('<div id=\"loading\"></div>')";
-			$fadein[] = Indent::_(2)
-				. ".css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_"
+			$fadein[] = Indent::_(1) . "var outerDiv = document.querySelector('body');";
+			$fadein[] = Indent::_(1) . "var loadingDiv = document.createElement('div');";
+			$fadein[] = Indent::_(1) . "loadingDiv.id = 'loading';";
+			$fadein[] = Indent::_(1) . "loadingDiv.style.cssText = \"background: rgba(255, 255, 255, .8) url('components/com_"
 				. CFactory::_('Config')->component_code_name
-				. "/assets/images/import.gif') 50% 15% no-repeat\")";
-			$fadein[] = Indent::_(2)
-				. ".css(\"top\", outerDiv.position().top - jQuery(window).scrollTop())";
-			$fadein[] = Indent::_(2)
-				. ".css(\"left\", outerDiv.position().left - jQuery(window).scrollLeft())";
-			$fadein[] = Indent::_(2) . ".css(\"width\", outerDiv.width())";
-			$fadein[] = Indent::_(2) . ".css(\"height\", outerDiv.height())";
-			$fadein[] = Indent::_(2) . ".css(\"position\", \"fixed\")";
-			$fadein[] = Indent::_(2) . ".css(\"opacity\", \"0.80\")";
-			$fadein[] = Indent::_(2)
-				. ".css(\"-ms-filter\", \"progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)\")";
-			$fadein[] = Indent::_(2)
-				. ".css(\"filter\", \"alpha(opacity = 80)\")";
-			$fadein[] = Indent::_(2) . ".css(\"display\", \"none\")";
-			$fadein[] = Indent::_(2) . ".appendTo(outerDiv);";
-			$fadein[] = Indent::_(1) . "jQuery('#loading').show();";
+				. "/assets/images/import.gif') 50% 15% no-repeat; top: \" + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + \"px; left: \" + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + \"px; width: \" + outerDiv.offsetWidth + \"px; height: \" + outerDiv.offsetHeight + \"px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;\";";
+			$fadein[] = Indent::_(1) . "outerDiv.appendChild(loadingDiv);";
+			$fadein[] = Indent::_(1) . "loadingDiv.style.display = 'block';";
 			$fadein[] = Indent::_(1) . "// when page is ready remove and show";
-			$fadein[] = Indent::_(1) . "jQuery(window).load(function() {";
-			$fadein[] = Indent::_(2) . "jQuery('#" . CFactory::_('Config')->component_code_name
-				. "_loader').fadeIn('fast');";
-			$fadein[] = Indent::_(2) . "jQuery('#loading').hide();";
+			$fadein[] = Indent::_(1) . "window.addEventListener('load', function() {";
+			$fadein[] = Indent::_(2) . "var componentLoader = document.getElementById('" . CFactory::_('Config')->component_code_name . "_loader');";
+			$fadein[] = Indent::_(2) . "if (componentLoader) componentLoader.style.display = 'block';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.display = 'none';";
 			$fadein[] = Indent::_(1) . "});";
 			$fadein[] = "</script>";
-			$fadein[] = "<div id=\"" . CFactory::_('Config')->component_code_name
-				. "_loader\" style=\"display: none;\">";
+			$fadein[] = "<div id=\"" . CFactory::_('Config')->component_code_name . "_loader\" style=\"display: none;\">";
 
 			return implode(PHP_EOL, $fadein);
 		}
@@ -12875,7 +13487,7 @@ class Interpretation extends Fields
 			);
 			// OVERRIDE_LAYOUT_HEADER <<<DYNAMIC>>>
 			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutName . '|OVERRIDE_LAYOUT_HEADER',
-				(($header = $this->setFileHeader(
+				(($header = CFactory::_('Header')->get(
 						'override.layout',
 						$layoutName, false)
 					) !== false) ? PHP_EOL . PHP_EOL . $header : ''
@@ -13026,7 +13638,7 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check for a return value';
 			$headerscript .= PHP_EOL
-				. '$jinput = JFactory::getApplication()->input;';
+				. '$jinput = Factory::getApplication()->input;';
 			$headerscript .= PHP_EOL
 				. "if (\$_return = \$jinput->get('return', null, 'base64'))";
 			$headerscript .= PHP_EOL . '{';
@@ -13036,7 +13648,7 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check if return value was set';
 			$headerscript .= PHP_EOL . 'if ('
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper::checkString($return))';
+				. 'Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
 					__LINE__,__CLASS__
@@ -13126,7 +13738,7 @@ class Interpretation extends Fields
 					$parent_keys
 				))
 			{
-				$globalKey = array();
+				$globalKey = [];
 				foreach ($parent_keys as $parent_key)
 				{
 					$globalKey[$parent_key]
@@ -13182,7 +13794,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the CSS for Footable.";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v2/css/footable.core.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
@@ -13192,7 +13804,7 @@ class Interpretation extends Fields
 				. "if (!isset(\$this->fooTableStyle) || 0 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . Indent::_(2) . "{";
 			$foo .= PHP_EOL . Indent::_(3)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v2/css/footable.metro.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2) . "}";
@@ -13202,7 +13814,7 @@ class Interpretation extends Fields
 				. "elseif (isset(\$this->fooTableStyle) && 1 == \$this->fooTableStyle)";
 			$foo .= PHP_EOL . Indent::_(2) . "{";
 			$foo .= PHP_EOL . Indent::_(3)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v2/css/footable.standalone.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2) . "}";
@@ -13210,18 +13822,18 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the JavaScript for Footable";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name . "/footable-v2/js/footable.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v2/js/footable.sort.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v2/js/footable.filter.js', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v2/js/footable.paginate.js', ['version' => 'auto']);";
 			if ($init)
@@ -13234,7 +13846,7 @@ class Interpretation extends Fields
 					. "'.footable'" . ').trigger(' . "'footable_resize'"
 					. '); }";';
 				$foo .= PHP_EOL . Indent::_(2)
-					. "\$this->document->addScriptDeclaration(\$footable);"
+					. "\$this->getDocument()->addScriptDeclaration(\$footable);"
 					. PHP_EOL;
 			}
 		}
@@ -13245,15 +13857,15 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the CSS for Footable";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "\$this->document->addStyleSheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');";
+				. "Html::_('stylesheet', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('stylesheet', 'media/com_"
+				. "Html::_('stylesheet', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);";
 			$foo .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add the JavaScript for Footable (adding all functions)";
 			$foo .= PHP_EOL . Indent::_(2)
-				. "JHtml::_('script', 'media/com_"
+				. "Html::_('script', 'media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/footable-v3/js/footable.min.js', ['version' => 'auto']);";
 			if ($init)
@@ -13262,7 +13874,7 @@ class Interpretation extends Fields
 					. '$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('
 					. "'.footable'" . ').footable();});});";';
 				$foo .= PHP_EOL . Indent::_(2)
-					. "\$this->document->addScriptDeclaration(\$footable);"
+					. "\$this->getDocument()->addScriptDeclaration(\$footable);"
 					. PHP_EOL;
 			}
 		}
@@ -13279,9 +13891,7 @@ class Interpretation extends Fields
 	 *
 	 * @return string
 	 */
-	public function setListBodyLinked($nameSingleCode, $nameListCode,
-	                                  $refview
-	)
+	public function setListBodyLinked($nameSingleCode, $nameListCode, $refview)
 	{
 		if (($items = CFactory::_('Compiler.Builder.Lists')->get($nameListCode)) !== null)
 		{
@@ -13297,8 +13907,20 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . "<?php";
 			$body .= PHP_EOL . Indent::_(2)
 				. "\$canCheckin = \$user->authorise('core.manage', 'com_checkin') || \$item->checked_out == \$user->id || \$item->checked_out == 0;";
-			$body .= PHP_EOL . Indent::_(2)
-				. "\$userChkOut = JFactory::getUser(\$item->checked_out);";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$body .= PHP_EOL . Indent::_(2)
+					. "\$userChkOut = Factory::getUser(\$item->checked_out);";
+			}
+			else
+			{
+				$body .= PHP_EOL . Indent::_(2)
+					. "\$userChkOut = Factory::getContainer()->";
+				$body .= PHP_EOL . Indent::_(3)
+					. "get(\Joomla\CMS\User\UserFactoryInterface::class)->";
+				$body .= PHP_EOL . Indent::_(4)
+					. "loadUserById(\$item->checked_out);";
+			}
 			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
 				. "::getActions('" . $nameSingleCode . "',\$item,'"
 				. $nameListCode . "');";
@@ -13359,12 +13981,12 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3) . '<td class="center"  '
 					. $data_value . '="1">';
 				$body .= PHP_EOL . Indent::_(4)
-					. '<span class="status-metro status-published" title="<?php echo JText:'
-					. ':_(' . "'" . $this->langPrefix . "_PUBLISHED'"
+					. '<span class="status-metro status-published" title="<?php echo Text:'
+					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_PUBLISHED'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo JText:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
 					. "'"
-					. $this->langPrefix . "_PUBLISHED'" . '); ?>';
+					. CFactory::_('Config')->lang_prefix . "_PUBLISHED'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
 				$body .= PHP_EOL . Indent::_(3) . '</td>';
 
@@ -13373,12 +13995,12 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3) . '<td class="center"  '
 					. $data_value . '="2">';
 				$body .= PHP_EOL . Indent::_(4)
-					. '<span class="status-metro status-inactive" title="<?php echo JText:'
-					. ':_(' . "'" . $this->langPrefix . "_INACTIVE'"
+					. '<span class="status-metro status-inactive" title="<?php echo Text:'
+					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_INACTIVE'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo JText:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
 					. "'"
-					. $this->langPrefix . "_INACTIVE'" . '); ?>';
+					. CFactory::_('Config')->lang_prefix . "_INACTIVE'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
 				$body .= PHP_EOL . Indent::_(3) . '</td>';
 
@@ -13387,12 +14009,12 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3) . '<td class="center"  '
 					. $data_value . '="3">';
 				$body .= PHP_EOL . Indent::_(4)
-					. '<span class="status-metro status-archived" title="<?php echo JText:'
-					. ':_(' . "'" . $this->langPrefix . "_ARCHIVED'"
+					. '<span class="status-metro status-archived" title="<?php echo Text:'
+					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_ARCHIVED'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo JText:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
 					. "'"
-					. $this->langPrefix . "_ARCHIVED'" . '); ?>';
+					. CFactory::_('Config')->lang_prefix . "_ARCHIVED'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
 				$body .= PHP_EOL . Indent::_(3) . '</td>';
 
@@ -13401,12 +14023,12 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3) . '<td class="center"  '
 					. $data_value . '="4">';
 				$body .= PHP_EOL . Indent::_(4)
-					. '<span class="status-metro status-trashed" title="<?php echo JText:'
-					. ':_(' . "'" . $this->langPrefix . "_TRASHED'"
+					. '<span class="status-metro status-trashed" title="<?php echo Text:'
+					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_TRASHED'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo JText:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
 					. "'"
-					. $this->langPrefix . "_TRASHED'" . '); ?>';
+					. CFactory::_('Config')->lang_prefix . "_TRASHED'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
 				$body .= PHP_EOL . Indent::_(3) . '</td>';
 				$body .= PHP_EOL . Indent::_(2) . '<?php endif; ?>';
@@ -13440,7 +14062,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . '<?php else: ?>';
 			$body .= PHP_EOL . Indent::_(1)
 				. '<div class="alert alert-no-items">';
-			$body .= PHP_EOL . Indent::_(2) . '<?php echo JText:' . ':_('
+			$body .= PHP_EOL . Indent::_(2) . '<?php echo Text:' . ':_('
 				. "'JGLOBAL_NO_MATCHING_RESULTS'" . '); ?>';
 			$body .= PHP_EOL . Indent::_(1) . '</div>';
 			$body .= PHP_EOL . '<?php endif; ?>';
@@ -13490,8 +14112,8 @@ class Interpretation extends Fields
 				if ($addNewButon == 1 || $addNewButon == 2)
 				{
 					$head .= PHP_EOL . $tabB . Indent::_(1)
-						. '<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText:'
-						. ':_(' . "'" . $this->langPrefix . "_NEW'"
+						. '<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo Text:'
+						. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_NEW'"
 						. '); ?></a>';
 				}
 				// add the close and new button
@@ -13500,8 +14122,8 @@ class Interpretation extends Fields
 					$head .= PHP_EOL . $tabB . Indent::_(1)
 						. '<a class="btn btn-small" onclick="Joomla.submitbutton(\''
 						. $refview
-						. '.cancel\');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo JText:'
-						. ':_(' . "'" . $this->langPrefix . "_CLOSE_NEW'"
+						. '.cancel\');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo Text:'
+						. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_CLOSE_NEW'"
 						. '); ?></a>';
 				}
 				// close group button if needed
@@ -13515,7 +14137,7 @@ class Interpretation extends Fields
 				}
 				$head .= PHP_EOL . '<?php endif; ?>' . PHP_EOL;
 			}
-			$head .= '<?php if (' . $Helper . '::checkArray($items)): ?>';
+			$head .= '<?php if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($items)): ?>';
 			// set the style for V2
 			$metro_blue = (2 == $footable_version) ? ' metro-blue' : '';
 			// set the toggle for V3
@@ -13533,7 +14155,7 @@ class Interpretation extends Fields
 				. $nameListCode . $metro_blue . '"' . $toggle . $paging . '>';
 			$head    .= PHP_EOL . "<thead>";
 			// main lang prefix
-			$langView = $this->langPrefix . '_'
+			$langView = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe($nameSingleCode, 'U');
 			// set status lang
 			$statusLangName = $langView . '_STATUS';
@@ -13583,7 +14205,7 @@ class Interpretation extends Fields
 					}
 					$head .= PHP_EOL . Indent::_(2) . "<th" . $setin . $htmlFix
 						. ">";
-					$head .= PHP_EOL . Indent::_(3) . "<?php echo JText:"
+					$head .= PHP_EOL . Indent::_(3) . "<?php echo Text:"
 						. ":_('" . $item['lang'] . "'); ?>";
 					$head .= PHP_EOL . Indent::_(2) . "</th>";
 					$controller++;
@@ -13597,7 +14219,7 @@ class Interpretation extends Fields
 			{
 				$head .= PHP_EOL . Indent::_(2) . '<th width="10" ' . $data_hide
 					. '>';
-				$head .= PHP_EOL . Indent::_(3) . "<?php echo JText:" . ":_('"
+				$head .= PHP_EOL . Indent::_(3) . "<?php echo Text:" . ":_('"
 					. $statusLangName . "'); ?>";
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 			}
@@ -13611,7 +14233,7 @@ class Interpretation extends Fields
 				$head      .= PHP_EOL . Indent::_(2) . '<th width="5" '
 					. $data_type
 					. ' ' . $data_hide . '>';
-				$head      .= PHP_EOL . Indent::_(3) . "<?php echo JText:"
+				$head      .= PHP_EOL . Indent::_(3) . "<?php echo Text:"
 					. ":_('"
 					. $idLangName . "'); ?>";
 				$head      .= PHP_EOL . Indent::_(2) . "</th>";
@@ -13662,10 +14284,24 @@ class Interpretation extends Fields
 		// setup the query
 		$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Get the user object.";
-		$query .= PHP_EOL . Indent::_(2) . "\$user = JFactory::getUser();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$user = Factory::getUser();";
+		}
+		else
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+		}
 		$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Create a new query object.";
-		$query .= PHP_EOL . Indent::_(2) . "\$db = JFactory::getDBO();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDBO();";
+		}
+		else
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$db = \$this->getDatabase();";
+		}
 		$query .= PHP_EOL . Indent::_(2) . "\$query = \$db->getQuery(true);";
 		$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 				__LINE__,__CLASS__
@@ -13815,7 +14451,7 @@ class Interpretation extends Fields
 					. "\$query->where('a.access = ' . (int) \$_access);";
 				$query .= PHP_EOL . Indent::_(2) . "}";
 				$query .= PHP_EOL . Indent::_(2) . "elseif ("
-					. $Helper . "::checkArray(\$_access))";
+					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_access))";
 				$query .= PHP_EOL . Indent::_(2) . "{";
 				$query .= PHP_EOL . Indent::_(3) . "//"
 					. Line::_(__Line__, __Class__)
@@ -13842,14 +14478,11 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2) . "}";
 		}
 		// add dynamic ordering (Linked view)
-		if (isset($this->viewsDefaultOrdering[$nameListCode])
-			&& $this->viewsDefaultOrdering[$nameListCode]['add_linked_ordering']
-			== 1)
+		if (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+			get("$nameListCode.add_linked_ordering", 0) == 1)
 		{
-			foreach (
-				$this->viewsDefaultOrdering[$nameListCode]['linked_ordering_fields']
-				as $order_field
-			)
+			foreach (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+				get("$nameListCode.linked_ordering_fields", []) as $order_field)
 			{
 				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
@@ -13912,19 +14545,19 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Filter by " . $globalKey . " in this Repetable Field";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && isset(\$this->"
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && isset(\$this->"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $field
-				. ") && " . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkJson(\$item->" . $field . "))";
+				. ") && Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $field . "))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6)
 				. "\$tmpArray = json_decode(\$item->" . $field . ",true);";
 			$query .= PHP_EOL . Indent::_(6) . "if (!isset(\$tmpArray['"
-				. $target . "']) || !" . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$tmpArray['"
+				. $target . "']) || !Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$tmpArray['"
 				. $target . "']) || !in_array(\$this->" . $globalKey
 				. ", \$tmpArray['" . $target . "']))";
 			$query .= PHP_EOL . Indent::_(6) . "{";
@@ -13957,7 +14590,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && \$" . $globalKey
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && \$" . $globalKey
 				. ")";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -13967,14 +14600,13 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $target
-					. ") && " . CFactory::_('Compiler.Builder.Content.One')->get('Component')
-					. "Helper::checkJson(\$item->" . $target . "))";
+					. ") && Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $target
 					. " = json_decode(\$item->" . $target . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $target . ") || !" . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$item->"
+					. $target . ") || !Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$item->"
 					. $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -13986,13 +14618,13 @@ class Interpretation extends Fields
 			else
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $_key . ") && "
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkJson(\$item->" . $_key . "))";
+					. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $_key
 					. " = json_decode(\$item->" . $_key . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $_key . ") || !" . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$item->"
+					. $_key . ") || !Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$item->"
 					. $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14026,8 +14658,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey
 				. " = json_decode(\$this->" . $globalKey . ",true);";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && isset(\$"
-				. $globalKey . ") && " . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$"
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && isset(\$"
+				. $globalKey . ") && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14035,7 +14667,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
 				. " && isset(\$" . $globalKey . "['" . $target . "']) && "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "['"
 				. $target . "']))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->" . $_key
@@ -14070,8 +14702,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$items) && "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$" . $globalKey . "))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && "
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
@@ -14080,7 +14712,7 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
-					. " && " . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$" . $globalKey . "['"
+					. " && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "['"
 					. $target . "']))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->"
@@ -14148,14 +14780,14 @@ class Interpretation extends Fields
 				$this->customAdminDynamicButtons[$nameListCode]
 			))
 		{
-			$buttons = array();
+			$buttons = [];
 			foreach (
 				$this->customAdminDynamicButtons[$nameListCode] as
 				$custom_button
 			)
 			{
 				// Load to lang
-				$keyLang = $this->langPrefix . '_' . $custom_button['NAME'];
+				$keyLang = CFactory::_('Config')->lang_prefix . '_' . $custom_button['NAME'];
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $keyLang, StringHelper::safe(
 					$custom_button['name'], 'Ww'
@@ -14167,7 +14799,7 @@ class Interpretation extends Fields
 				$buttons[] = Indent::_(2) . "{";
 				$buttons[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " add " . $custom_button['name'] . " button.";
-				$buttons[] = Indent::_(3) . "JToolBarHelper::custom('"
+				$buttons[] = Indent::_(3) . "ToolbarHelper::custom('"
 					. $nameListCode . ".redirectTo"
 					. StringHelper::safe(
 						$custom_button['link'], 'F'
@@ -14197,7 +14829,7 @@ class Interpretation extends Fields
 				$this->customAdminDynamicButtons[$nameListCode]
 			))
 		{
-			$method = array();
+			$method = [];
 			foreach (
 				$this->customAdminDynamicButtons[$nameListCode] as
 				$custom_button
@@ -14213,11 +14845,18 @@ class Interpretation extends Fields
 				$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Check for request forgeries";
 				$method[] = Indent::_(2)
-					. "JSession::checkToken() or die(JText:"
+					. "Session::checkToken() or die(Text:"
 					. ":_('JINVALID_TOKEN'));";
 				$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " check if export is allowed for this user.";
-				$method[] = Indent::_(2) . "\$user = JFactory::getUser();";
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$method[] = Indent::_(2) . "\$user = Factory::getUser();";
+				}
+				else
+				{
+					$method[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+				}
 				$method[] = Indent::_(2) . "if (\$user->authorise('"
 					. $custom_button['link'] . ".access', 'com_"
 					. CFactory::_('Config')->component_code_name . "'))";
@@ -14225,7 +14864,7 @@ class Interpretation extends Fields
 				$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Get the input";
 				$method[] = Indent::_(3)
-					. "\$input = JFactory::getApplication()->input;";
+					. "\$input = Factory::getApplication()->input;";
 				$method[] = Indent::_(3)
 					. "\$pks = \$input->post->get('cid', array(), 'array');";
 				$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -14236,24 +14875,24 @@ class Interpretation extends Fields
 					. " convert to string";
 				$method[] = Indent::_(3) . "\$ids = implode('_', \$pks);";
 				$method[] = Indent::_(3)
-					. "\$this->setRedirect(JRoute::_('index.php?option=com_"
+					. "\$this->setRedirect(Route::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view="
 					. $custom_button['link'] . "&cid='.\$ids, false));";
 				$method[] = Indent::_(3) . "return;";
 				$method[] = Indent::_(2) . "}";
 				$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Redirect to the list screen with error.";
-				$method[] = Indent::_(2) . "\$message = JText:" . ":_('"
-					. $this->langPrefix . "_ACCESS_TO_" . $custom_button['NAME']
+				$method[] = Indent::_(2) . "\$message = Text:" . ":_('"
+					. CFactory::_('Config')->lang_prefix . "_ACCESS_TO_" . $custom_button['NAME']
 					. "_FAILED');";
 				$method[] = Indent::_(2)
-					. "\$this->setRedirect(JRoute::_('index.php?option=com_"
+					. "\$this->setRedirect(Route::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view=" . $nameListCode
 					. "', false), \$message, 'error');";
 				$method[] = Indent::_(2) . "return;";
 				$method[] = Indent::_(1) . "}";
 				// add to lang array
-				$lankey = $this->langPrefix . "_ACCESS_TO_"
+				$lankey = CFactory::_('Config')->lang_prefix . "_ACCESS_TO_"
 					. $custom_button['NAME'] . "_FAILED";
 				CFactory::_('Language')->set(
 					CFactory::_('Config')->lang_target, $lankey,
@@ -14309,8 +14948,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " setup the query";
 			$query .= PHP_EOL . Indent::_(2) . "if ((\$pks_size = "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component')
-				. "Helper::checkArray(\$pks)) !== false || 'bulk' === \$pks)";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$pks)) !== false || 'bulk' === \$pks)";
 			$query .= PHP_EOL . Indent::_(2) . "{";
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Set a value to know this is " . $config['type']
@@ -14320,13 +14958,27 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get the user object if not set.";
 			$query .= PHP_EOL . Indent::_(3) . "if (!isset(\$user) || !"
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$user))";
+				. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$user))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
-			$query .= PHP_EOL . Indent::_(4) . "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$query .= PHP_EOL . Indent::_(4) . "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$query .= PHP_EOL . Indent::_(4) . "\$user = \$this->getCurrentUser();";
+			}
 			$query .= PHP_EOL . Indent::_(3) . "}";
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Create a new query object.";
-			$query .= PHP_EOL . Indent::_(3) . "\$db = JFactory::getDBO();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$query .= PHP_EOL . Indent::_(3) . "\$db = Factory::getDBO();";
+			}
+			else
+			{
+				$query .= PHP_EOL . Indent::_(3) . "\$db = \$this->getDatabase();";
+			}
 			$query .= PHP_EOL . Indent::_(3)
 				. "\$query = \$db->getQuery(true);";
 			$query .= PHP_EOL . PHP_EOL . Indent::_(3) . "//" . Line::_(
@@ -14380,14 +15032,14 @@ class Interpretation extends Fields
 				PHP_EOL . PHP_EOL . Indent::_(1)
 			);
 			// first check if we export of text only is avalable
-			if ($this->exportTextOnly)
+			if (CFactory::_('Config')->get('export_text_only', 0))
 			{
 				// add switch
 				$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Get global switch to activate text only export";
 				$query .= PHP_EOL . Indent::_(3)
-					. "\$export_text_only = JComponentHelper::getParams('com_"
+					. "\$export_text_only = ComponentHelper::getParams('com_"
 					. CFactory::_('Config')->component_code_name
 					. "')->get('export_text_only', 0);";
 				// first check if we have custom queries
@@ -14427,14 +15079,11 @@ class Interpretation extends Fields
 				$query .= PHP_EOL . Indent::_(3) . "}";
 			}
 			// add dynamic ordering (Exported data)
-			if (isset($this->viewsDefaultOrdering[$nameListCode])
-				&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
-				== 1)
+			if (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+				get("$nameListCode.add_admin_ordering", 0) == 1)
 			{
-				foreach (
-					$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
-					as $order_field
-				)
+				foreach (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+					get("$nameListCode.admin_ordering_fields", []) as $order_field)
 				{
 					if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 							$nameListCode, $order_field['field']
@@ -14476,7 +15125,7 @@ class Interpretation extends Fields
 				Indent::_(2), $isExport, true
 			);
 			// first check if we export of text only is avalable
-			if ($this->exportTextOnly)
+			if (CFactory::_('Config')->get('export_text_only', 0))
 			{
 				$query_translations = $this->setSelectionTranslationFix(
 					$nameListCode,
@@ -14542,7 +15191,7 @@ class Interpretation extends Fields
 		if (isset($this->eximportView[$nameListCode])
 			&& $this->eximportView[$nameListCode])
 		{
-			$method = array();
+			$method = [];
 
 			// add the export method
 			$method[] = PHP_EOL . PHP_EOL . Indent::_(1)
@@ -14550,11 +15199,18 @@ class Interpretation extends Fields
 			$method[] = Indent::_(1) . "{";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check for request forgeries";
-			$method[] = Indent::_(2) . "JSession::checkToken() or die(JText:"
+			$method[] = Indent::_(2) . "Session::checkToken() or die(Text:"
 				. ":_('JINVALID_TOKEN'));";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " check if export is allowed for this user.";
-			$method[] = Indent::_(2) . "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$method[] = Indent::_(2) . "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$method[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+			}
 			$method[] = Indent::_(2) . "if (\$user->authorise('"
 				. $nameSingleCode . ".export', 'com_"
 				. CFactory::_('Config')->component_code_name
@@ -14564,7 +15220,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get the input";
 			$method[] = Indent::_(3)
-				. "\$input = JFactory::getApplication()->input;";
+				. "\$input = Factory::getApplication()->input;";
 			$method[] = Indent::_(3)
 				. "\$pks = \$input->post->get('cid', array(), 'array');";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -14580,11 +15236,11 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$data = \$model->getExportData(\$pks);";
 			$method[] = Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkArray(\$data))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$data))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " now set the data to the spreadsheet";
-			$method[] = Indent::_(4) . "\$date = JFactory::getDate();";
+			$method[] = Indent::_(4) . "\$date = Factory::getDate();";
 			$method[] = Indent::_(4) . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::xls(\$data,'"
 				. StringHelper::safe($nameListCode, 'F')
 				. "_'.\$date->format('jS_F_Y'),'"
@@ -14596,10 +15252,10 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Redirect to the list screen with error.";
-			$method[] = Indent::_(2) . "\$message = JText:" . ":_('"
-				. $this->langPrefix . "_EXPORT_FAILED');";
+			$method[] = Indent::_(2) . "\$message = Text:" . ":_('"
+				. CFactory::_('Config')->lang_prefix . "_EXPORT_FAILED');";
 			$method[] = Indent::_(2)
-				. "\$this->setRedirect(JRoute::_('index.php?option=com_"
+				. "\$this->setRedirect(Route::_('index.php?option=com_"
 				. CFactory::_('Config')->component_code_name . "&view=" . $nameListCode
 				. "', false), \$message, 'error');";
 			$method[] = Indent::_(2) . "return;";
@@ -14611,11 +15267,18 @@ class Interpretation extends Fields
 			$method[] = Indent::_(1) . "{";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check for request forgeries";
-			$method[] = Indent::_(2) . "JSession::checkToken() or die(JText:"
+			$method[] = Indent::_(2) . "Session::checkToken() or die(Text:"
 				. ":_('JINVALID_TOKEN'));";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " check if import is allowed for this user.";
-			$method[] = Indent::_(2) . "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$method[] = Indent::_(2) . "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$method[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+			}
 			$method[] = Indent::_(2) . "if (\$user->authorise('"
 				. $nameSingleCode . ".import', 'com_"
 				. CFactory::_('Config')->component_code_name
@@ -14632,11 +15295,11 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$headers = \$model->getExImPortHeaders();";
 			$method[] = Indent::_(3) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$headers))";
+				. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$headers))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load headers to session.";
-			$method[] = Indent::_(4) . "\$session = JFactory::getSession();";
+			$method[] = Indent::_(4) . "\$session = Factory::getSession();";
 			$method[] = Indent::_(4) . "\$headers = json_encode(\$headers);";
 			$method[] = Indent::_(4) . "\$session->set('" . $nameSingleCode
 				. "_VDM_IMPORTHEADERS', \$headers);";
@@ -14648,28 +15311,28 @@ class Interpretation extends Fields
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Redirect to import view.";
 			// add to lang array
-			$selectImportFileNote = $this->langPrefix
+			$selectImportFileNote = CFactory::_('Config')->lang_prefix
 				. "_IMPORT_SELECT_FILE_FOR_"
 				. StringHelper::safe($nameListCode, 'U');
 			CFactory::_('Language')->set(
 				CFactory::_('Config')->lang_target, $selectImportFileNote,
 				'Select the file to import data to ' . $nameListCode . '.'
 			);
-			$method[] = Indent::_(4) . "\$message = JText:" . ":_('"
+			$method[] = Indent::_(4) . "\$message = Text:" . ":_('"
 				. $selectImportFileNote . "');";
 			// if this view has custom script it must have as custom import (model, veiw, controller)
 			if (isset($this->importCustomScripts[$nameListCode])
 				&& $this->importCustomScripts[$nameListCode])
 			{
 				$method[] = Indent::_(4)
-					. "\$this->setRedirect(JRoute::_('index.php?option=com_"
+					. "\$this->setRedirect(Route::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view=import_"
 					. $nameListCode . "', false), \$message);";
 			}
 			else
 			{
 				$method[] = Indent::_(4)
-					. "\$this->setRedirect(JRoute::_('index.php?option=com_"
+					. "\$this->setRedirect(Route::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name
 					. "&view=import', false), \$message);";
 			}
@@ -14678,10 +15341,10 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Redirect to the list screen with error.";
-			$method[] = Indent::_(2) . "\$message = JText:" . ":_('"
-				. $this->langPrefix . "_IMPORT_FAILED');";
+			$method[] = Indent::_(2) . "\$message = Text:" . ":_('"
+				. CFactory::_('Config')->lang_prefix . "_IMPORT_FAILED');";
 			$method[] = Indent::_(2)
-				. "\$this->setRedirect(JRoute::_('index.php?option=com_"
+				. "\$this->setRedirect(Route::_('index.php?option=com_"
 				. CFactory::_('Config')->component_code_name . "&view=" . $nameListCode
 				. "', false), \$message, 'error');";
 			$method[] = Indent::_(2) . "return;";
@@ -14697,19 +15360,20 @@ class Interpretation extends Fields
 	{
 		$button = '';
 		if (isset($this->eximportView[$nameListCode])
-			&& $this->eximportView[$nameListCode])
+			&& $this->eximportView[$nameListCode]
+			&& CFactory::_('Config')->get('joomla_version', 3) == 3) // needs fixing for Joomla 4 and above
 		{
 			// main lang prefix
-			$langExport = $this->langPrefix . '_'
+			$langExport = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe('Export Data', 'U');
 			// add to lang array
 			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langExport, 'Export Data');
-			$button   = array();
+			$button   = [];
 			$button[] = PHP_EOL . PHP_EOL . Indent::_(3)
 				. "if (\$this->canDo->get('core.export') && \$this->canDo->get('"
 				. $nameSingleCode . ".export'))";
 			$button[] = Indent::_(3) . "{";
-			$button[] = Indent::_(4) . "JToolBarHelper::custom('"
+			$button[] = Indent::_(4) . "ToolbarHelper::custom('"
 				. $nameListCode . ".exportData', 'download', '', '"
 				. $langExport . "', true);";
 			$button[] = Indent::_(3) . "}";
@@ -14724,19 +15388,20 @@ class Interpretation extends Fields
 	{
 		$button = '';
 		if (isset($this->eximportView[$nameListCode])
-			&& $this->eximportView[$nameListCode])
+			&& $this->eximportView[$nameListCode]
+			&& CFactory::_('Config')->get('joomla_version', 3) == 3) // needs fixing for Joomla 4 and above
 		{
 			// main lang prefix
-			$langImport = $this->langPrefix . '_'
+			$langImport = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe('Import Data', 'U');
 			// add to lang array
 			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langImport, 'Import Data');
-			$button   = array();
+			$button   = [];
 			$button[] = PHP_EOL . PHP_EOL . Indent::_(2)
 				. "if (\$this->canDo->get('core.import') && \$this->canDo->get('"
 				. $nameSingleCode . ".import'))";
 			$button[] = Indent::_(2) . "{";
-			$button[] = Indent::_(3) . "JToolBarHelper::custom('"
+			$button[] = Indent::_(3) . "ToolbarHelper::custom('"
 				. $nameListCode . ".importData', 'upload', '', '"
 				. $langImport
 				. "', false);";
@@ -14798,13 +15463,13 @@ class Interpretation extends Fields
 		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|views', 'import_' . CFactory::_('Placeholder')->get_h('views'));
 
 		// IMPORT_CUSTOM_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
-		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_CUSTOM_CONTROLLER_HEADER', $this->setFileHeader(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_CUSTOM_CONTROLLER_HEADER', CFactory::_('Header')->get(
 			'import.custom.controller',
 			$nameListCode
 		));
 
 		// IMPORT_CUSTOM_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
-		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_CUSTOM_MODEL_HEADER', $this->setFileHeader(
+		CFactory::_('Compiler.Builder.Content.Multi')->set('import_' . $nameListCode . '|IMPORT_CUSTOM_MODEL_HEADER', CFactory::_('Header')->get(
 			'import.custom.model',
 			$nameListCode
 		));
@@ -14827,10 +15492,24 @@ class Interpretation extends Fields
 		}
 		// setup the query
 		$query = "//" . Line::_(__Line__, __Class__) . " Get the user object.";
-		$query .= PHP_EOL . Indent::_(2) . "\$user = JFactory::getUser();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$user = Factory::getUser();";
+		}
+		else
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$user = \$this->getCurrentUser();";
+		}
 		$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Create a new query object.";
-		$query .= PHP_EOL . Indent::_(2) . "\$db = JFactory::getDBO();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDBO();";
+		}
+		else
+		{
+			$query .= PHP_EOL . Indent::_(2) . "\$db = \$this->getDatabase();";
+		}
 		$query .= PHP_EOL . Indent::_(2) . "\$query = \$db->getQuery(true);";
 		$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 				__LINE__,__CLASS__
@@ -14904,7 +15583,7 @@ class Interpretation extends Fields
 					. "\$query->where('a.access = ' . (int) \$_access);";
 				$query .= PHP_EOL . Indent::_(2) . "}";
 				$query .= PHP_EOL . Indent::_(2) . "elseif ("
-					. $Helper . "::checkArray(\$_access))";
+					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_access))";
 				$query .= PHP_EOL . Indent::_(2) . "{";
 				$query .= PHP_EOL . Indent::_(3) . "//"
 					. Line::_(__Line__, __Class__)
@@ -14947,7 +15626,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2) . "if (is_numeric(\$categoryId))";
 			$query .= PHP_EOL . Indent::_(2) . "{";
 			$query .= PHP_EOL . Indent::_(3)
-				. "\$cat_tbl = JTable::getInstance('Category', 'JTable');";
+				. "\$cat_tbl = Table::getInstance('Category', 'JTable');";
 			$query .= PHP_EOL . Indent::_(3) . "\$cat_tbl->load(\$categoryId);";
 			$query .= PHP_EOL . Indent::_(3) . "\$rgt = \$cat_tbl->rgt;";
 			$query .= PHP_EOL . Indent::_(3) . "\$lft = \$cat_tbl->lft;";
@@ -14973,16 +15652,13 @@ class Interpretation extends Fields
 		}
 		// setup values for the view ordering
 		// add dynamic ordering (Admin view)
-		if (isset($this->viewsDefaultOrdering[$nameListCode])
-			&& $this->viewsDefaultOrdering[$nameListCode]['add_admin_ordering']
-			== 1)
+		if (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+			get("$nameListCode.add_admin_ordering", 0) == 1)
 		{
 			// the first is from the state
 			$order_first = true;
-			foreach (
-				$this->viewsDefaultOrdering[$nameListCode]['admin_ordering_fields']
-				as $order_field
-			)
+			foreach (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
+				get("$nameListCode.admin_ordering_fields", []) as $order_field)
 			{
 				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
@@ -14997,14 +15673,19 @@ class Interpretation extends Fields
 								__LINE__,__CLASS__
 							) . " Add the list ordering clause.";
 						$query       .= PHP_EOL . Indent::_(2)
-							. "\$orderCol = \$this->state->get('list.ordering', '"
+							. "\$orderCol = \$this->getState('list.ordering', '"
 							. $order_field_name . "');";
 						$query       .= PHP_EOL . Indent::_(2)
-							. "\$orderDirn = \$this->state->get('list.direction', '"
+							. "\$orderDirn = \$this->getState('list.direction', '"
 							. $order_field['direction'] . "');";
 						$query       .= PHP_EOL . Indent::_(2)
 							. "if (\$orderCol != '')";
 						$query       .= PHP_EOL . Indent::_(2) . "{";
+						$query       .= PHP_EOL . Indent::_(3) . "//" . Line::_(__LINE__,__CLASS__
+							) . " Check that the order direction is valid encase we have a field called direction as part of filers.";
+						$query .= PHP_EOL . Indent::_(3)
+							. "\$orderDirn = (is_string(\$orderDirn) && in_array(strtolower(\$orderDirn), ['asc', 'desc'])) ? \$orderDirn : '"
+							. $order_field['direction'] . "';";
 						$query       .= PHP_EOL . Indent::_(3)
 							. "\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
 						$query       .= PHP_EOL . Indent::_(2) . "}";
@@ -15029,11 +15710,15 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the list ordering clause.";
 			$query .= PHP_EOL . Indent::_(2)
-				. "\$orderCol = \$this->state->get('list.ordering', 'a.id');";
+				. "\$orderCol = \$this->getState('list.ordering', 'a.id');";
 			$query .= PHP_EOL . Indent::_(2)
-				. "\$orderDirn = \$this->state->get('list.direction', 'desc');";
+				. "\$orderDirn = \$this->getState('list.direction', 'desc');";
 			$query .= PHP_EOL . Indent::_(2) . "if (\$orderCol != '')";
 			$query .= PHP_EOL . Indent::_(2) . "{";
+			$query       .= PHP_EOL . Indent::_(3) . "//" . Line::_(__LINE__,__CLASS__
+				) . " Check that the order direction is valid encase we have a field called direction as part of filers.";
+			$query .= PHP_EOL . Indent::_(3)
+				. "\$orderDirn = (is_string(\$orderDirn) && in_array(strtolower(\$orderDirn), ['asc', 'desc'])) ? \$orderDirn : 'desc';";
 			$query .= PHP_EOL . Indent::_(3)
 				. "\$query->order(\$db->escape(\$orderCol . ' ' . \$orderDirn));";
 			$query .= PHP_EOL . Indent::_(2) . "}";
@@ -15278,7 +15963,7 @@ class Interpretation extends Fields
 		$filterQuery .= PHP_EOL . Indent::_(3) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "elseif ("
-			. $Helper . "::checkString(\$_" . $filter['code'] . "))";
+			. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "{";
 		$filterQuery .= PHP_EOL . Indent::_(3)
 			. "\$query->where('" . $a . "." . $filter['code']
@@ -15322,7 +16007,7 @@ class Interpretation extends Fields
 		$filterQuery .= PHP_EOL . Indent::_(3) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "elseif ("
-			. $Helper . "::checkString(\$_" . $filter['code'] . "))";
+			. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "{";
 		$filterQuery .= PHP_EOL . Indent::_(3)
 			. "\$query->where('" . $a . "." . $filter['code']
@@ -15330,7 +16015,7 @@ class Interpretation extends Fields
 			. ")));";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "elseif ("
-			. $Helper . "::checkArray(\$_" . $filter['code'] . "))";
+			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "{";
 
 		$filterQuery .= PHP_EOL . Indent::_(3) . "//"
@@ -15350,7 +16035,7 @@ class Interpretation extends Fields
 		$filterQuery .= PHP_EOL . Indent::_(5) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(4) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(4) . "elseif ("
-			. $Helper . "::checkString(\$val))";
+			. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$val))";
 		$filterQuery .= PHP_EOL . Indent::_(4) . "{";
 		$filterQuery .= PHP_EOL . Indent::_(5)
 			. "return \$db->quote(\$db->escape(\$val));";
@@ -15381,10 +16066,10 @@ class Interpretation extends Fields
 			))
 		{
 			// reset defaults
-			$getValue       = array();
-			$ifValue        = array();
-			$targetControls = array();
-			$functions      = array();
+			$getValue       = [];
+			$ifValue        = [];
+			$targetControls = [];
+			$functions      = [];
 
 			foreach ($viewArray['settings']->conditions as $condition)
 			{
@@ -15538,7 +16223,7 @@ class Interpretation extends Fields
 			{
 				// now build the initial script
 				$initial .= "//" . Line::_(__Line__, __Class__) . " Initial Script"
-					. PHP_EOL . "jQuery(document).ready(function()";
+					. PHP_EOL . "document.addEventListener('DOMContentLoaded', function()";
 				$initial .= PHP_EOL . "{";
 				foreach ($functions as $function => $matchKeys)
 				{
@@ -15783,7 +16468,7 @@ class Interpretation extends Fields
 					$validation .= PHP_EOL . Indent::_(1)
 						. "// check if not_required exist";
 					$validation .= PHP_EOL . Indent::_(1)
-						. "if (jQuery('#jform_not_required').length > 0) {";
+						. "if (document.getElementById('jform_not_required')) {";
 					$validation .= PHP_EOL . Indent::_(2)
 						. "var not_required = jQuery('#jform_not_required').val().split(\",\");";
 					$validation .= PHP_EOL . PHP_EOL . Indent::_(2)
@@ -15987,7 +16672,7 @@ class Interpretation extends Fields
 	public function buildFunctionCall($function, $matchKeys, $getValue)
 	{
 		$initial  = '';
-		$funcsets = array();
+		$funcsets = [];
 		$array    = false;
 		foreach ($matchKeys as $matchKey)
 		{
@@ -16019,7 +16704,7 @@ class Interpretation extends Fields
 	public function getTargetRelationScript($relations, $condition, $view)
 	{
 		// reset the buket
-		$buket = array();
+		$buket = [];
 		// convert to name array
 		foreach ($condition['target_field'] as $targetField)
 		{
@@ -16117,7 +16802,7 @@ class Interpretation extends Fields
 	                                        $targetBehavior, $targetDefault, $uniqueVar, $nameSingleCode
 	)
 	{
-		$bucket = array();
+		$bucket = [];
 		if (ArrayHelper::check($targets)
 			&& !in_array(
 				$uniqueVar, $this->targetControlsScriptChecker
@@ -16614,7 +17299,7 @@ class Interpretation extends Fields
 
 	public function getOptionsScript($type, $options)
 	{
-		$buket = array();
+		$buket = [];
 		if (StringHelper::check($options))
 		{
 			if (CFactory::_('Field.Groups')->check($type, 'list')
@@ -16801,8 +17486,8 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " check if the not_required field is set";
 			$fix .= PHP_EOL . Indent::_(2)
-				. "if (isset(\$data['not_required']) && " . $Component
-				. "Helper::checkString(\$data['not_required']))";
+				. "if (isset(\$data['not_required']) && "
+				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$data['not_required']))";
 			$fix .= PHP_EOL . Indent::_(2) . "{";
 			$fix .= PHP_EOL . Indent::_(3)
 				. "\$requiredFields = (array) explode(',',(string) \$data['not_required']);";
@@ -16815,8 +17500,8 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(3) . "{";
 			$fix .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " make sure there is a string value";
-			$fix .= PHP_EOL . Indent::_(4) . "if (" . $Component
-				. "Helper::checkString(\$requiredField))";
+			$fix .= PHP_EOL . Indent::_(4) . "if ("
+				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$requiredField))";
 			$fix .= PHP_EOL . Indent::_(4) . "{";
 			$fix .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " change to false";
@@ -16845,7 +17530,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add Ajax Token";
 			$fix .= PHP_EOL . Indent::_(2)
-				. "\$this->document->addScriptDeclaration(\"var token = '\".JSession::getFormToken().\"';\");";
+				. "\$this->getDocument()->addScriptDeclaration(\"var token = '\" . Session::getFormToken() . \"';\");";
 		}
 
 		return $fix;
@@ -16859,7 +17544,7 @@ class Interpretation extends Fields
 				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller']
 			))
 		{
-			$taskArray = array();
+			$taskArray = [];
 			foreach (
 				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'] as $view
 			)
@@ -16890,11 +17575,18 @@ class Interpretation extends Fields
 				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller']
 			))
 		{
-			$input      = array();
-			$valueArray = array();
-			$ifArray    = array();
-			$getModel   = array();
-			$userCheck  = array();
+			$input      = [];
+			$valueArray = [];
+			$ifArray    = [];
+			$getModel   = [];
+			$userCheck  = [];
+			$prefix     = ($target == 'site') ? 'Site':'Administrator';
+			$isJoomla3  = (CFactory::_('Config')->get('joomla_version', 3) == 3);
+			$failed     = "false";
+			if (!$isJoomla3)
+			{
+				$failed = "['error' => 'There was an error! [149]']";
+			}
 			foreach (
 				CFactory::_('Customcode.Dispenser')->hub[$target]['ajax_controller'] as $view
 			)
@@ -16907,8 +17599,8 @@ class Interpretation extends Fields
 						. ", '" . $task['input_filter'] . "');";
 					$valueArray[$task['task_name']][] = "\$"
 						. $task['value_name'] . "Value";
-					$getModel[$task['task_name']]
-						= "\$result = \$this->getModel('ajax')->"
+					$getModel[$task['task_name']] =
+						"\$result = \$ajaxModule->"
 						. $task['method_name'] . "(" . Placefix::_("valueArray") . ");";
 					// check if null or zero is allowed
 					if (!isset($task['allow_zero']) || 1 != $task['allow_zero'])
@@ -16957,16 +17649,46 @@ class Interpretation extends Fields
 						$cases .= PHP_EOL . Indent::_(6) . "if(" . $ifvalues
 							. ")";
 						$cases .= PHP_EOL . Indent::_(6) . "{";
-						$cases .= PHP_EOL . Indent::_(7) . $getMethod;
+						if ($isJoomla3)
+						{
+							$cases .= PHP_EOL . Indent::_(7) . "\$ajaxModule = \$this->getModel('ajax');";
+						}
+						else
+						{
+							$cases .= PHP_EOL . Indent::_(7) . "\$ajaxModule = \$this->getModel('ajax', '$prefix');";
+						}
+						$cases .= PHP_EOL . Indent::_(7) . "if (\$ajaxModule)";
+						$cases .= PHP_EOL . Indent::_(7) . "{";
+						$cases .= PHP_EOL . Indent::_(8) . $getMethod;
+						$cases .= PHP_EOL . Indent::_(7) . "}";
+						$cases .= PHP_EOL . Indent::_(7) . "else";
+						$cases .= PHP_EOL . Indent::_(7) . "{";
+						$cases .= PHP_EOL . Indent::_(8) . "\$result = $failed;";
+						$cases .= PHP_EOL . Indent::_(7) . "}";
 						$cases .= PHP_EOL . Indent::_(6) . "}";
 						$cases .= PHP_EOL . Indent::_(6) . "else";
 						$cases .= PHP_EOL . Indent::_(6) . "{";
-						$cases .= PHP_EOL . Indent::_(7) . "\$result = false;";
+						$cases .= PHP_EOL . Indent::_(7) . "\$result = $failed;";
 						$cases .= PHP_EOL . Indent::_(6) . "}";
 					}
 					else
 					{
-						$cases .= PHP_EOL . Indent::_(6) . $getMethod;
+						if ($isJoomla3)
+						{
+							$cases .= PHP_EOL . Indent::_(6) . "\$ajaxModule = \$this->getModel('ajax');";
+						}
+						else
+						{
+							$cases .= PHP_EOL . Indent::_(6) . "\$ajaxModule = \$this->getModel('ajax', '$prefix');";
+						}
+						$cases .= PHP_EOL . Indent::_(6) . "if (\$ajaxModule)";
+						$cases .= PHP_EOL . Indent::_(6) . "{";
+						$cases .= PHP_EOL . Indent::_(7) . $getMethod;
+						$cases .= PHP_EOL . Indent::_(6) . "}";
+						$cases .= PHP_EOL . Indent::_(6) . "else";
+						$cases .= PHP_EOL . Indent::_(6) . "{";
+						$cases .= PHP_EOL . Indent::_(7) . "\$result = $failed;";
+						$cases .= PHP_EOL . Indent::_(6) . "}";
 					}
 					// continue the build
 					$cases .= PHP_EOL . Indent::_(6)
@@ -16986,7 +17708,7 @@ class Interpretation extends Fields
 						. "echo \"(\".json_encode(\$result).\");\";";
 					$cases .= PHP_EOL . Indent::_(6) . "}";
 					$cases .= PHP_EOL . Indent::_(5) . "}";
-					$cases .= PHP_EOL . Indent::_(5) . "catch(Exception \$e)";
+					$cases .= PHP_EOL . Indent::_(5) . "catch(\Exception \$e)";
 					$cases .= PHP_EOL . Indent::_(5) . "{";
 					$cases .= PHP_EOL . Indent::_(6)
 						. "if(\$callback)";
@@ -17058,7 +17780,7 @@ class Interpretation extends Fields
 			{
 				$funtion_path = false;
 			}
-			$function = array();
+			$function = [];
 			// set component name
 			$component = CFactory::_('Config')->component_code_name;
 			$Component = ucfirst((string) $component);
@@ -17080,7 +17802,14 @@ class Interpretation extends Fields
 					}
 					$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 						. " Get a db connection.";
-					$function[] = Indent::_(2) . "\$db = JFactory::getDbo();";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$function[] = Indent::_(2) . "\$db = Factory::getDbo();";
+					}
+					else
+					{
+						$function[] = Indent::_(2) . "\$db = Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
+					}
 					$function[] = PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__)
 						. " Create a new query object.";
@@ -17098,7 +17827,7 @@ class Interpretation extends Fields
 					$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 						. " get the targeted groups";
 					$function[] = Indent::_(2)
-						. "\$groups= JComponentHelper::getParams('com_"
+						. "\$groups= ComponentHelper::getParams('com_"
 						. $component . "')->get('" . $filter['type'] . "');";
 					$function[] = Indent::_(2)
 						. "if (!empty(\$groups) && count((array) \$groups) > 0)";
@@ -17116,12 +17845,12 @@ class Interpretation extends Fields
 					$function[] = Indent::_(2) . "\$db->setQuery(\$query);";
 					$function[] = PHP_EOL . Indent::_(2)
 						. "\$results = \$db->loadObjectList();";
-					$function[] = Indent::_(2) . "\$_filter = array();";
+					$function[] = Indent::_(2) . "\$_filter = [];";
 					// if this is not a multi field
 					if (!$funtion_path && $filter['multi'] == 1)
 					{
 						$function[] = Indent::_(2)
-							. "\$_filter[] = JHtml::_('select.option', '', '- Select ' . JText:"
+							. "\$_filter[] = Html::_('select.option', '', '- Select ' . Text:"
 							. ":_('" . $filter['lang'] . "') . ' -');";
 					}
 					$function[] = Indent::_(2) . "if (\$results)";
@@ -17130,7 +17859,7 @@ class Interpretation extends Fields
 						. "foreach (\$results as \$result)";
 					$function[] = Indent::_(3) . "{";
 					$function[] = Indent::_(4)
-						. "\$_filter[] = JHtml::_('select.option', \$result->"
+						. "\$_filter[] = Html::_('select.option', \$result->"
 						. $filter['custom']['id'] . ", \$result->"
 						. $filter['custom']['text'] . ");";
 					$function[] = Indent::_(3) . "}";
@@ -17147,7 +17876,7 @@ class Interpretation extends Fields
 					  $function[] = PHP_EOL.Indent::_(1) . "protected function getThe".$filter['function'].StringHelper::safe($filter['custom']['text'],'F')."Selections()";
 					  $function[] = Indent::_(1) . "{";
 					  $function[] = Indent::_(2) . "//".Line::_(__Line__, __Class__)." Get a db connection.";
-					  $function[] = Indent::_(2) . "\$db = JFactory::getDbo();";
+					  $function[] = Indent::_(2) . "\$db = Factory::getDbo();";
 					  $function[] = PHP_EOL.Indent::_(2) . "//".Line::_(__Line__, __Class__)." Select the text.";
 					  $function[] = Indent::_(2) . "\$query = \$db->getQuery(true);";
 					  $function[] = PHP_EOL.Indent::_(2) . "//".Line::_(__Line__, __Class__)." Select the text.";
@@ -17160,19 +17889,19 @@ class Interpretation extends Fields
 					  $function[] = PHP_EOL.Indent::_(2) . "\$results = \$db->loadObjectList();";
 					  $function[] = PHP_EOL.Indent::_(2) . "if (\$results)";
 					  $function[] = Indent::_(2) . "{";
-					  $function[] = Indent::_(3) . "\$filter = array();";
-					  $function[] = Indent::_(3) . "\$batch = array();";
+					  $function[] = Indent::_(3) . "\$filter = [];";
+					  $function[] = Indent::_(3) . "\$batch = [];";
 					  $function[] = Indent::_(3) . "foreach (\$results as \$result)";
 					  $function[] = Indent::_(3) . "{";
 					  if ($filter['custom']['text'] === 'user')
 					  {
-					  $function[] = Indent::_(4) . "\$filter[] = JHtml::_('select.option', \$result->".$filter['custom']['text'].", JFactory::getUser(\$result->".$filter['custom']['text'].")->name);";
-					  $function[] = Indent::_(4) . "\$batch[] = JHtml::_('select.option', \$result->".$filter['custom']['id'].", JFactory::getUser(\$result->".$filter['custom']['text'].")->name);";
+					  $function[] = Indent::_(4) . "\$filter[] = Html::_('select.option', \$result->".$filter['custom']['text'].", Factory::getUser(\$result->".$filter['custom']['text'].")->name);";
+					  $function[] = Indent::_(4) . "\$batch[] = Html::_('select.option', \$result->".$filter['custom']['id'].", Factory::getUser(\$result->".$filter['custom']['text'].")->name);";
 					  }
 					  else
 					  {
-					  $function[] = Indent::_(4) . "\$filter[] = JHtml::_('select.option', \$result->".$filter['custom']['text'].", \$result->".$filter['custom']['text'].");";
-					  $function[] = Indent::_(4) . "\$batch[] = JHtml::_('select.option', \$result->".$filter['custom']['id'].", \$result->".$filter['custom']['text'].");";
+					  $function[] = Indent::_(4) . "\$filter[] = Html::_('select.option', \$result->".$filter['custom']['text'].", \$result->".$filter['custom']['text'].");";
+					  $function[] = Indent::_(4) . "\$batch[] = Html::_('select.option', \$result->".$filter['custom']['id'].", \$result->".$filter['custom']['text'].");";
 					  }
 					  $function[] = Indent::_(3) . "}";
 					  $function[] = Indent::_(3) . "return array('filter' => \$filter, 'batch' => \$batch);";
@@ -17207,7 +17936,14 @@ class Interpretation extends Fields
 						$function[] = "//" . Line::_(__Line__, __Class__)
 							. " Get a db connection.";
 					}
-					$function[] = Indent::_(2) . "\$db = JFactory::getDbo();";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$function[] = Indent::_(2) . "\$db = Factory::getDbo();";
+					}
+					else
+					{
+						$function[] = Indent::_(2) . "\$db = Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
+					}
 					$function[] = PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__)
 						. " Create a new query object.";
@@ -17262,12 +17998,12 @@ class Interpretation extends Fields
 						$function[] = PHP_EOL . Indent::_(2)
 							. "\$_results = \$db->loadColumn();";
 					}
-					$function[] = Indent::_(2) . "\$_filter = array();";
+					$function[] = Indent::_(2) . "\$_filter = [];";
 					// if this is not a multi field
 					if (!$funtion_path && $filter['multi'] == 1)
 					{
 						$function[] = Indent::_(2)
-							. "\$_filter[] = JHtml::_('select.option', '', '- ' . JText:"
+							. "\$_filter[] = Html::_('select.option', '', '- ' . Text:"
 							. ":_('" . $filter['lang_select'] . "') . ' -');";
 					}
 					$function[] = PHP_EOL . Indent::_(2) . "if (\$_results)";
@@ -17316,8 +18052,8 @@ class Interpretation extends Fields
 							) . " Now add the " . $filter['code']
 							. " and its text to the options array";
 						$function[] = Indent::_(4)
-							. "\$_filter[] = JHtml::_('select.option', \$"
-							. $filter['code'] . ", JText:" . ":_(\$_text));";
+							. "\$_filter[] = Html::_('select.option', \$"
+							. $filter['code'] . ", Text:" . ":_(\$_text));";
 					}
 					elseif ($filter['type'] === 'user')
 					{
@@ -17325,10 +18061,28 @@ class Interpretation extends Fields
 								__LINE__,__CLASS__
 							) . " Now add the " . $filter['code']
 							. " and its text to the options array";
-						$function[] = Indent::_(4)
-							. "\$_filter[] = JHtml::_('select.option', \$"
-							. $filter['code'] . ", JFactory::getUser(\$"
-							. $filter['code'] . ")->name);";
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							$function[] = Indent::_(4)
+								. "\$_filter[] = Html::_('select.option', \$"
+								. $filter['code'] . ", Factory::getUser(\$"
+								. $filter['code'] . ")->name);";
+						}
+						else
+						{
+							$function[] = Indent::_(4)
+								. "\$_filter[] = Html::_('select.option', \$"
+								. $filter['code'] . ",";
+							$function[] = Indent::_(5)
+								. "Factory::getContainer()->";
+								$function[] = Indent::_(5)
+									. "get(\Joomla\CMS\User\UserFactoryInterface::class)->";
+								$function[] = Indent::_(5)
+									. "loadUserById(\$"
+									. $filter['code'] . ")->name";
+								$function[] = Indent::_(5)
+									. ");";
+							}
 					}
 					else
 					{
@@ -17339,7 +18093,7 @@ class Interpretation extends Fields
 								) . " Now add the " . $filter['code']
 								. " and its text to the options array";
 							$function[] = Indent::_(4)
-								. "\$_filter[] = JHtml::_('select.option', \$"
+								. "\$_filter[] = Html::_('select.option', \$"
 								. $filter['code'] . "->id, \$" . $filter['code']
 								. "->title);";
 						}
@@ -17350,7 +18104,7 @@ class Interpretation extends Fields
 								) . " Now add the " . $filter['code']
 								. " and its text to the options array";
 							$function[] = Indent::_(4)
-								. "\$_filter[] = JHtml::_('select.option', \$"
+								. "\$_filter[] = Html::_('select.option', \$"
 								. $filter['code'] . ", \$" . $filter['code']
 								. ");";
 						}
@@ -17375,15 +18129,15 @@ class Interpretation extends Fields
 					$field_code = $this->getCustomFieldCode(
 						$filter['custom']
 					)['JFORM_TYPE_PHP'];
-					// check for the [JHtml::_('select.option', '',] code
-					if (strpos((string) $field_code, "JHtml::_('select.option', '',")
+					// check for the [Html::_('select.option', '',] code
+					if (strpos((string) $field_code, "Html::_('select.option', '',")
 						!== false
 						&& strpos((string) $field_code, '($this->multiple === false)')
 						=== false)
 					{
 						// for now we just give an error message (don't fix it)
 						$this->app->enqueueMessage(
-							JText::_('<hr /><h3>Multi Filter Error</h3>'),
+							Text::_('<hr /><h3>Multi Filter Error</h3>'),
 							'Error'
 						);
 						$field_url
@@ -17392,10 +18146,10 @@ class Interpretation extends Fields
 						$field_fix
 							= "<pre>if (\$this->multiple === false) { // <-- this if statement is needed";
 						$field_fix .= PHP_EOL . Indent::_(1)
-							. "\$options[] = JHtml::_('select.option', '', 'Select an option'); // <-- the empty option";
+							. "\$options[] = Html::_('select.option', '', 'Select an option'); // <-- the empty option";
 						$field_fix .= PHP_EOL . "}</pre>";
 						$this->app->enqueueMessage(
-							JText::sprintf(
+							Text::sprintf(
 								'We detected that you have an empty option in a <a href=%s>custom field (%s)</a> that is used in a multi filter.<br />This will cause a problem, you will need to add the following code to it.<br />%s',
 								$field_url,
 								$filter['code'],
@@ -17415,7 +18169,7 @@ class Interpretation extends Fields
 						implode(PHP_EOL, $function), $filter
 					);
 					// clear the filter out
-					$function = array();
+					$function = [];
 				}
 			}
 			// if this is a function path, return the function if set
@@ -17431,7 +18185,7 @@ class Interpretation extends Fields
 
 	public function setUniqueFields(&$view)
 	{
-		$fields   = array();
+		$fields   = [];
 		$fields[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
 		$fields[] = Indent::_(1)
 			. " * Method to get the unique fields of this table.";
@@ -17488,7 +18242,7 @@ class Interpretation extends Fields
 	)
 	{
 		// start the filter bucket
-		$fieldFilters = array();
+		$fieldFilters = [];
 		// add the default filter
 		$this->setDefaultSidebarFilterHelper(
 			$fieldFilters, $nameSingleCode, $nameListCode
@@ -17522,20 +18276,20 @@ class Interpretation extends Fields
 						. Line::_(__Line__, __Class__) . " Set " . $CodeName
 						. " Selection";
 					$fieldFilters[] = Indent::_(2) . "\$this->" . $codeName
-						. "Options = JFormHelper::loadFieldType('" . $type
+						. "Options = FormHelper::loadFieldType('" . $type
 						. "')->options;";
 					$fieldFilters[] = Indent::_(2) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " We do some sanitation for " . $CodeName
 						. " filter";
-					$fieldFilters[] = Indent::_(2) . "if (" . $Component
-						. "Helper::checkArray(\$this->" . $codeName
+					$fieldFilters[] = Indent::_(2) . "if ("
+						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
 						. "Options) &&";
 					$fieldFilters[] = Indent::_(3) . "isset(\$this->"
 						. $codeName
 						. "Options[0]->value) &&";
-					$fieldFilters[] = Indent::_(3) . "!" . $Component
-						. "Helper::checkString(\$this->" . $codeName
+					$fieldFilters[] = Indent::_(3) . "!"
+						. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $codeName
 						. "Options[0]->value))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "unset(\$this->"
@@ -17546,21 +18300,21 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Only load " . $CodeName
 						. " filter if it has values";
-					$fieldFilters[] = Indent::_(2) . "if (" . $Component
-						. "Helper::checkArray(\$this->" . $codeName
+					$fieldFilters[] = Indent::_(2) . "if ("
+						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
 						. "Options))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " " . $CodeName . " Filter";
-					$fieldFilters[] = Indent::_(3) . "JHtmlSidebar::addFilter(";
-					$fieldFilters[] = Indent::_(4) . "'- Select ' . JText:"
+					$fieldFilters[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+					$fieldFilters[] = Indent::_(4) . "'- Select ' . Text:"
 						. ":_('" . $filter['lang'] . "') . ' -',";
 					$fieldFilters[] = Indent::_(4) . "'filter_"
 						. $filter['code']
 						. "',";
 					$fieldFilters[] = Indent::_(4)
-						. "JHtml::_('select.options', \$this->" . $codeName
+						. "Html::_('select.options', \$this->" . $codeName
 						. "Options, 'value', 'text', \$this->state->get('filter."
 						. $filter['code'] . "'))";
 					$fieldFilters[] = Indent::_(3) . ");";
@@ -17595,13 +18349,13 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " We do some sanitation for " . $Codename
 						. " filter";
-					$fieldFilters[] = Indent::_(2) . "if (" . $Component
-						. "Helper::checkArray(\$this->" . $filter['code']
+					$fieldFilters[] = Indent::_(2) . "if ("
+						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
 						. "Options) &&";
 					$fieldFilters[] = Indent::_(3) . "isset(\$this->"
 						. $filter['code'] . "Options[0]->value) &&";
-					$fieldFilters[] = Indent::_(3) . "!" . $Component
-						. "Helper::checkString(\$this->" . $filter['code']
+					$fieldFilters[] = Indent::_(3) . "!"
+						. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $filter['code']
 						. "Options[0]->value))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "unset(\$this->"
@@ -17611,21 +18365,21 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Only load " . $Codename
 						. " filter if it has values";
-					$fieldFilters[] = Indent::_(2) . "if (" . $Component
-						. "Helper::checkArray(\$this->" . $filter['code']
+					$fieldFilters[] = Indent::_(2) . "if ("
+						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
 						. "Options))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " " . $Codename . " Filter";
-					$fieldFilters[] = Indent::_(3) . "JHtmlSidebar::addFilter(";
-					$fieldFilters[] = Indent::_(4) . "'- Select '.JText:"
+					$fieldFilters[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+					$fieldFilters[] = Indent::_(4) . "'- Select '.Text:"
 						. ":_('" . $filter['lang'] . "').' -',";
 					$fieldFilters[] = Indent::_(4) . "'filter_"
 						. $filter['code']
 						. "',";
 					$fieldFilters[] = Indent::_(4)
-						. "JHtml::_('select.options', \$this->"
+						. "Html::_('select.options', \$this->"
 						. $filter['code']
 						. "Options, 'value', 'text', \$this->state->get('filter."
 						. $filter['code'] . "'))";
@@ -17669,24 +18423,24 @@ class Interpretation extends Fields
 			$filter[] = Indent::_(2)
 				. "if (\$this->canState)";
 			$filter[] = Indent::_(2) . "{";
-			$filter[] = Indent::_(3) . "JHtmlSidebar::addFilter(";
-			$filter[] = Indent::_(4) . "JText:"
+			$filter[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+			$filter[] = Indent::_(4) . "Text:"
 				. ":_('JOPTION_SELECT_PUBLISHED'),";
 			$filter[] = Indent::_(4) . "'filter_published',";
 			$filter[] = Indent::_(4)
-				. "JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', \$this->state->get('filter.published'), true)";
+				. "Html::_('select.options', Html::_('jgrid.publishedOptions'), 'value', 'text', \$this->state->get('filter.published'), true)";
 			$filter[] = Indent::_(3) . ");";
 			$filter[] = Indent::_(2) . "}";
 			// check if view has access
 			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
 				&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 			{
-				$filter[] = PHP_EOL . Indent::_(2) . "JHtmlSidebar::addFilter(";
-				$filter[] = Indent::_(3) . "JText:"
+				$filter[] = PHP_EOL . Indent::_(2) . "\JHtmlSidebar::addFilter(";
+				$filter[] = Indent::_(3) . "Text:"
 					. ":_('JOPTION_SELECT_ACCESS'),";
 				$filter[] = Indent::_(3) . "'filter_access',";
 				$filter[] = Indent::_(3)
-					. "JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', \$this->state->get('filter.access'))";
+					. "Html::_('select.options', Html::_('access.assetgroups'), 'value', 'text', \$this->state->get('filter.access'))";
 				$filter[] = Indent::_(2) . ");";
 			}
 		}
@@ -17711,12 +18465,12 @@ class Interpretation extends Fields
 			// set filter
 			$filter[] = PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Category Filter.";
-			$filter[] = Indent::_(2) . "JHtmlSidebar::addFilter(";
-			$filter[] = Indent::_(3) . "JText:"
+			$filter[] = Indent::_(2) . "\JHtmlSidebar::addFilter(";
+			$filter[] = Indent::_(3) . "Text:"
 				. ":_('JOPTION_SELECT_CATEGORY'),";
 			$filter[] = Indent::_(3) . "'filter_category_id',";
 			$filter[] = Indent::_(3)
-				. "JHtml::_('select.options', JHtml::_('category.options', '"
+				. "Html::_('select.options', Html::_('category.options', '"
 				. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 				. "'), 'value', 'text', \$this->state->get('filter.category_id'))";
 			$filter[] = Indent::_(2) . ");";
@@ -17734,8 +18488,14 @@ class Interpretation extends Fields
 	 */
 	public function setBatchDisplayHelper(&$nameSingleCode, &$nameListCode)
 	{
+		// temp fix
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			return '';
+		}
+
 		// start the batch bucket
-		$fieldBatch = array();
+		$fieldBatch = [];
 		// add the default batch
 		$this->setDefaultBatchHelper($fieldBatch, $nameSingleCode);
 		// add the category filter stuff
@@ -17783,20 +18543,20 @@ class Interpretation extends Fields
 							. Line::_(__Line__, __Class__) . " Set " . $CodeName
 							. " Selection";
 						$fieldBatch[] = Indent::_(3) . "\$this->" . $codeName
-							. "Options = JFormHelper::loadFieldType('" . $type
+							. "Options = FormHelper::loadFieldType('" . $type
 							. "')->options;";
 						$fieldBatch[] = Indent::_(3) . "//" . Line::_(
 								__LINE__,__CLASS__
 							) . " We do some sanitation for " . $CodeName
 							. " filter";
-						$fieldBatch[] = Indent::_(3) . "if (" . $Component
-							. "Helper::checkArray(\$this->" . $codeName
+						$fieldBatch[] = Indent::_(3) . "if ("
+							. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
 							. "Options) &&";
 						$fieldBatch[] = Indent::_(4) . "isset(\$this->"
 							. $codeName
 							. "Options[0]->value) &&";
-						$fieldBatch[] = Indent::_(4) . "!" . $Component
-							. "Helper::checkString(\$this->" . $codeName
+						$fieldBatch[] = Indent::_(4) . "!"
+							. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $codeName
 							. "Options[0]->value))";
 						$fieldBatch[] = Indent::_(3) . "{";
 						$fieldBatch[] = Indent::_(4) . "unset(\$this->"
@@ -17809,12 +18569,12 @@ class Interpretation extends Fields
 						) . " " . $CodeName . " Batch Selection";
 					$fieldBatch[] = Indent::_(3)
 						. "JHtmlBatch_::addListSelection(";
-					$fieldBatch[] = Indent::_(4) . "'- Keep Original '.JText:"
+					$fieldBatch[] = Indent::_(4) . "'- Keep Original '.Text:"
 						. ":_('" . $filter['lang'] . "').' -',";
 					$fieldBatch[] = Indent::_(4) . "'batch[" . $filter['code']
 						. "]',";
 					$fieldBatch[] = Indent::_(4)
-						. "JHtml::_('select.options', \$this->" . $codeName
+						. "Html::_('select.options', \$this->" . $codeName
 						. "Options, 'value', 'text')";
 					$fieldBatch[] = Indent::_(3) . ");";
 					$fieldBatch[] = Indent::_(2) . "}";
@@ -17840,20 +18600,20 @@ class Interpretation extends Fields
 							. " Selection";
 						$fieldBatch[] = Indent::_(3) . "\$this->"
 							. $filter['code']
-							. "Options = JFormHelper::loadFieldType('"
+							. "Options = FormHelper::loadFieldType('"
 							. $filter['filter_type']
 							. "')->options;";
 						$fieldBatch[] = Indent::_(3) . "//" . Line::_(
 								__LINE__,__CLASS__
 							) . " We do some sanitation for " . $CodeName
 							. " filter";
-						$fieldBatch[] = Indent::_(3) . "if (" . $Component
-							. "Helper::checkArray(\$this->" . $filter['code']
+						$fieldBatch[] = Indent::_(3) . "if ("
+							. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
 							. "Options) &&";
 						$fieldBatch[] = Indent::_(4) . "isset(\$this->"
 							. $filter['code'] . "Options[0]->value) &&";
-						$fieldBatch[] = Indent::_(4) . "!" . $Component
-							. "Helper::checkString(\$this->" . $filter['code']
+						$fieldBatch[] = Indent::_(4) . "!"
+							. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $filter['code']
 							. "Options[0]->value))";
 						$fieldBatch[] = Indent::_(3) . "{";
 						$fieldBatch[] = Indent::_(4) . "unset(\$this->"
@@ -17865,12 +18625,12 @@ class Interpretation extends Fields
 						) . " " . $CodeName . " Batch Selection";
 					$fieldBatch[] = Indent::_(3)
 						. "JHtmlBatch_::addListSelection(";
-					$fieldBatch[] = Indent::_(4) . "'- Keep Original '.JText:"
+					$fieldBatch[] = Indent::_(4) . "'- Keep Original '.Text:"
 						. ":_('" . $filter['lang'] . "').' -',";
 					$fieldBatch[] = Indent::_(4) . "'batch[" . $filter['code']
 						. "]',";
 					$fieldBatch[] = Indent::_(4)
-						. "JHtml::_('select.options', \$this->"
+						. "Html::_('select.options', \$this->"
 						. $filter['code'] . "Options, 'value', 'text')";
 					$fieldBatch[] = Indent::_(3) . ");";
 					$fieldBatch[] = Indent::_(2) . "}";
@@ -17911,11 +18671,11 @@ class Interpretation extends Fields
 			. "if (\$this->canState && \$this->canBatch)";
 		$batch[] = Indent::_(2) . "{";
 		$batch[] = Indent::_(3) . "JHtmlBatch_::addListSelection(";
-		$batch[] = Indent::_(4) . "JText:" . ":_('COM_" . $COPMONENT
+		$batch[] = Indent::_(4) . "Text:" . ":_('COM_" . $COPMONENT
 			. "_KEEP_ORIGINAL_STATE'),";
 		$batch[] = Indent::_(4) . "'batch[published]',";
 		$batch[] = Indent::_(4)
-			. "JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)";
+			. "Html::_('select.options', Html::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)";
 		$batch[] = Indent::_(3) . ");";
 		$batch[] = Indent::_(2) . "}";
 		// check if view has access
@@ -17929,11 +18689,11 @@ class Interpretation extends Fields
 				. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
 			$batch[] = Indent::_(2) . "{";
 			$batch[] = Indent::_(3) . "JHtmlBatch_::addListSelection(";
-			$batch[] = Indent::_(4) . "JText:" . ":_('COM_" . $COPMONENT
+			$batch[] = Indent::_(4) . "Text:" . ":_('COM_" . $COPMONENT
 				. "_KEEP_ORIGINAL_ACCESS'),";
 			$batch[] = Indent::_(4) . "'batch[access]',";
 			$batch[] = Indent::_(4)
-				. "JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')";
+				. "Html::_('select.options', Html::_('access.assetgroups'), 'value', 'text')";
 			$batch[] = Indent::_(3) . ");";
 			$batch[] = Indent::_(2) . "}";
 		}
@@ -17962,11 +18722,11 @@ class Interpretation extends Fields
 			$batch[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Category Batch selection.";
 			$batch[] = Indent::_(3) . "JHtmlBatch_::addListSelection(";
-			$batch[] = Indent::_(4) . "JText:" . ":_('COM_" . $COPMONENT
+			$batch[] = Indent::_(4) . "Text:" . ":_('COM_" . $COPMONENT
 				. "_KEEP_ORIGINAL_CATEGORY'),";
 			$batch[] = Indent::_(4) . "'batch[category]',";
 			$batch[] = Indent::_(4)
-				. "JHtml::_('select.options', JHtml::_('category.options', '"
+				. "Html::_('select.options', Html::_('category.options', '"
 				. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
 				. "'), 'value', 'text')";
 			$batch[] = Indent::_(3) . ");";
@@ -18009,7 +18769,7 @@ class Interpretation extends Fields
 				CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|views', $otherViews);
 				CFactory::_('Compiler.Builder.Content.Multi')->set('category' . $otherView . '|Views', ucfirst((string) $otherViews));
 				// set script to global helper file
-				$includeHelper   = array();
+				$includeHelper   = [];
 				$includeHelper[] = "\n//" . Line::_(__Line__, __Class__)
 					. "Insure this view category file is loaded.";
 				$includeHelper[] = "\$classname = '" . ucfirst((string) $component)
@@ -18047,324 +18807,32 @@ class Interpretation extends Fields
 		return '';
 	}
 
+	/**
+	 * Get Admin Controller Allow Add
+	 *
+	 * @param   string  $nameSingleCode  The view edit or single name
+	 * @param   string  $nameListCode    The view list name
+	 *
+	 * @return  string The method code
+	 * @deprecated 3.3 Use CFactory::_('Architecture.Controller.AllowAdd')->get($nameSingleCode);
+	 */
 	public function setJcontrollerAllowAdd($nameSingleCode, $nameListCode)
 	{
-		$allow = array();
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-		// prepare custom permission script
-		$customAllow = CFactory::_('Customcode.Dispenser')->get(
-			'php_allowadd', $nameSingleCode, '', null, true
-		);
-		// check if item has category
-		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}")) <-- remove category from check
-		{
-			// check if category has another name
-			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.view', $nameSingleCode);
-			// setup the category script
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " get the user object";
-			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
-			// check if the item has permissions.
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($otherView, 'core.access'))
-			{
-				$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Access check.";
-				$allow[] = Indent::_(2) . "\$access = \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.access')
-					. "', 'com_" . $component . "');";
-				$allow[] = Indent::_(2) . "if (!\$access)";
-				$allow[] = Indent::_(2) . "{";
-				$allow[] = Indent::_(3) . "return false;";
-				$allow[] = Indent::_(2) . "}";
-			}
-			$allow[] = Indent::_(2)
-				. "\$categoryId = ArrayHelper::getValue(\$data, 'catid', \$this->input->getInt('filter_category_id'), 'int');";
-			$allow[] = Indent::_(2) . "\$allow = null;";
-			$allow[] = PHP_EOL . Indent::_(2) . "if (\$categoryId)";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " If the category has been passed in the URL check it.";
-			$allow[] = Indent::_(3)
-				. "\$allow = \$user->authorise('core.create', \$this->option . '."
-				. $otherView . ".category.' . \$categoryId);";
-			$allow[] = Indent::_(2) . "}";
-			$allow[] = PHP_EOL . Indent::_(2) . "if (\$allow === null)";
-			$allow[] = Indent::_(2) . "{";
-			// check if the item has permissions.
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.access'))
-			{
-				// setup the default script
-				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(3) . "return \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create')
-					. "', \$this->option);";
-			}
-			else
-			{
-				// setup the default script
-				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(3) . "return parent::allowAdd(\$data);";
-			}
-			$allow[] = Indent::_(2) . "}";
-			$allow[] = Indent::_(2) . "else";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "return \$allow;";
-			$allow[] = Indent::_(2) . "}";
-		}
-		else
-		{
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Get user object.";
-			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
-			// check if the item has permissions.
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.access'))
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " Access check.";
-				$allow[] = Indent::_(2) . "\$access = \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.access')
-					. "', 'com_" . $component . "');";
-				$allow[] = Indent::_(2) . "if (!\$access)";
-				$allow[] = Indent::_(2) . "{";
-				$allow[] = Indent::_(3) . "return false;";
-				$allow[] = Indent::_(2) . "}";
-			}
-			// load custom permission script
-			$allow[] = $customAllow;
-			// check if the item has permissions.
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.create'))
-			{
-				// setup the default script
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create')
-					. "', \$this->option);";
-			}
-			else
-			{
-				// setup the default script
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(2) . "return parent::allowAdd(\$data);";
-			}
-		}
-
-		return implode(PHP_EOL, $allow);
+		return CFactory::_('Architecture.Controller.AllowAdd')->get($nameSingleCode);
 	}
 
+	/**
+	 * Get Admin Controller Allow Edit
+	 *
+	 * @param   string  $nameSingleCode  The view edit or single name
+	 * @param   string  $nameListCode    The view list name
+	 *
+	 * @return  string The method code
+	 * @deprecated 3.3 Use CFactory::_('Architecture.Controller.AllowEdit')->get($nameSingleCode, $nameListCode);
+	 */
 	public function setJcontrollerAllowEdit($nameSingleCode, $nameListCode)
 	{
-		$allow = array();
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-		// prepare custom permission script
-		$customAllow = CFactory::_('Customcode.Dispenser')->get(
-			'php_allowedit', $nameSingleCode, '', null, true
-		);
-		if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))
-		{
-			// check if category has another name
-			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.view', $nameSingleCode);
-			// setup the category script
-			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " get user object.";
-			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
-			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " get record id.";
-			$allow[] = Indent::_(2)
-				. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;";
-			// load custom permission script
-			$allow[] = $customAllow;
-			// check if the item has permissions.
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($otherView, 'core.access'))
-			{
-				$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Access check.";
-				$allow[] = Indent::_(2) . "\$access = (\$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.access')
-					. "', 'com_" . $component . "." . $otherView
-					. ".' . (int) \$recordId) && \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.access')
-					. "', 'com_" . $component . "'));";
-				$allow[] = Indent::_(2) . "if (!\$access)";
-				$allow[] = Indent::_(2) . "{";
-				$allow[] = Indent::_(3) . "return false;";
-				$allow[] = Indent::_(2) . "}";
-			}
-			$allow[] = PHP_EOL . Indent::_(2) . "if (\$recordId)";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " The record has been set. Check the record permissions.";
-			// check if the item has permissions.
-			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($otherView, 'core.edit') . "', 'com_" . $component . "."
-				. $otherView . ".' . (int) \$recordId);";
-			$allow[] = Indent::_(3) . "if (!\$permission)";
-			$allow[] = Indent::_(3) . "{";
-			// check if the item has permissions.
-			$allow[] = Indent::_(4) . "if (\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($otherView, 'core.edit.own') . "', 'com_" . $component . "."
-				. $otherView . ".' . \$recordId))";
-			$allow[] = Indent::_(4) . "{";
-			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " Fallback on edit.own. Now test the owner is the user.";
-			$allow[] = Indent::_(5)
-				. "\$ownerId = (int) isset(\$data['created_by']) ? \$data['created_by'] : 0;";
-			$allow[] = Indent::_(5) . "if (empty(\$ownerId))";
-			$allow[] = Indent::_(5) . "{";
-			$allow[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__)
-				. " Need to do a lookup from the model.";
-			$allow[] = Indent::_(6)
-				. "\$record = \$this->getModel()->getItem(\$recordId);";
-			$allow[] = PHP_EOL . Indent::_(6) . "if (empty(\$record))";
-			$allow[] = Indent::_(6) . "{";
-			$allow[] = Indent::_(7) . "return false;";
-			$allow[] = Indent::_(6) . "}";
-			$allow[] = Indent::_(6) . "\$ownerId = \$record->created_by;";
-			$allow[] = Indent::_(5) . "}";
-			$allow[] = PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " If the owner matches 'me' then do the test.";
-			$allow[] = Indent::_(5) . "if (\$ownerId == \$user->id)";
-			$allow[] = Indent::_(5) . "{";
-			// check if the item has permissions.
-			$allow[] = Indent::_(6) . "if (\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.edit.own') . "', 'com_" . $component . "'))";
-			$allow[] = Indent::_(6) . "{";
-			$allow[] = Indent::_(7) . "return true;";
-			$allow[] = Indent::_(6) . "}";
-			$allow[] = Indent::_(5) . "}";
-			$allow[] = Indent::_(4) . "}";
-			$allow[] = Indent::_(4) . "return false;";
-			$allow[] = Indent::_(3) . "}";
-//			$allow[] = PHP_EOL.Indent::_(3) . "\$categoryId = (int) isset(\$data['catid']) ? \$data['catid']: \$this->getModel()->getItem(\$recordId)->catid;";  <-- remove category from check
-//			$allow[] = PHP_EOL.Indent::_(3) . "if (\$categoryId)";
-//			$allow[] = Indent::_(3) . "{";
-//			$allow[] = Indent::_(4) . "//".Line::_(__Line__, __Class__)." The category has been set. Check the category permissions.";
-//			$allow[] = Indent::_(4) . "\$catpermission = \$user->authorise('core.edit', \$this->option . '.".$otherView.".category.' . \$categoryId);";
-//			$allow[] = Indent::_(4) . "if (!\$catpermission && !is_null(\$catpermission))";
-//			$allow[] = Indent::_(4) . "{";
-//			$allow[] = Indent::_(5) . "return false;";
-//			$allow[] = Indent::_(4) . "}";
-//			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(2) . "}";
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($otherView, 'core.edit'))
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " Since there is no permission, revert to the component permissions.";
-				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($otherView, 'core.edit') . "', \$this->option);";
-			}
-			else
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " Since there is no permission, revert to the component permissions.";
-				$allow[] = Indent::_(2)
-					. "return parent::allowEdit(\$data, \$key);";
-			}
-		}
-		else
-		{
-			// setup the category script
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " get user object.";
-			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
-			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " get record id.";
-			$allow[] = Indent::_(2)
-				. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;";
-			// load custom permission script
-			$allow[] = $customAllow;
-			// check if the item has permissions.
-			if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.access'))
-			{
-				$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Access check.";
-				$allow[] = Indent::_(2) . "\$access = (\$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.access') . "', 'com_" . $component . "."
-					. $nameSingleCode
-					. ".' . (int) \$recordId) && \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.access') . "', 'com_" . $component . "'));";
-				$allow[] = Indent::_(2) . "if (!\$access)";
-				$allow[] = Indent::_(2) . "{";
-				$allow[] = Indent::_(3) . "return false;";
-				$allow[] = Indent::_(2) . "}";
-			}
-			$allow[] = PHP_EOL . Indent::_(2) . "if (\$recordId)";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " The record has been set. Check the record permissions.";
-			// check if the item has permissions.
-			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit') . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$recordId);";
-			$allow[] = Indent::_(3) . "if (!\$permission)";
-			$allow[] = Indent::_(3) . "{";
-			// check if the item has permissions.
-			$allow[] = Indent::_(4) . "if (\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.own') . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . \$recordId))";
-			$allow[] = Indent::_(4) . "{";
-			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " Now test the owner is the user.";
-			$allow[] = Indent::_(5)
-				. "\$ownerId = (int) isset(\$data['created_by']) ? \$data['created_by'] : 0;";
-			$allow[] = Indent::_(5) . "if (empty(\$ownerId))";
-			$allow[] = Indent::_(5) . "{";
-			$allow[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__)
-				. " Need to do a lookup from the model.";
-			$allow[] = Indent::_(6)
-				. "\$record = \$this->getModel()->getItem(\$recordId);";
-			$allow[] = PHP_EOL . Indent::_(6) . "if (empty(\$record))";
-			$allow[] = Indent::_(6) . "{";
-			$allow[] = Indent::_(7) . "return false;";
-			$allow[] = Indent::_(6) . "}";
-			$allow[] = Indent::_(6) . "\$ownerId = \$record->created_by;";
-			$allow[] = Indent::_(5) . "}";
-			$allow[] = PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " If the owner matches 'me' then allow.";
-			$allow[] = Indent::_(5) . "if (\$ownerId == \$user->id)";
-			$allow[] = Indent::_(5) . "{";
-			// check if the item has permissions.
-			$allow[] = Indent::_(6) . "if (\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.own') . "', 'com_" . $component . "'))";
-			$allow[] = Indent::_(6) . "{";
-			$allow[] = Indent::_(7) . "return true;";
-			$allow[] = Indent::_(6) . "}";
-			$allow[] = Indent::_(5) . "}";
-			$allow[] = Indent::_(4) . "}";
-			$allow[] = Indent::_(4) . "return false;";
-			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(2) . "}";
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.edit'))
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " Since there is no permission, revert to the component permissions.";
-				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "', \$this->option);";
-			}
-			else
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " Since there is no permission, revert to the component permissions.";
-				$allow[] = Indent::_(2)
-					. "return parent::allowEdit(\$data, \$key);";
-			}
-		}
-
-		return implode(PHP_EOL, $allow);
+		return CFactory::_('Architecture.Controller.AllowEdit')->get($nameSingleCode, $nameListCode);
 	}
 
 	public function setJmodelAdminGetForm($nameSingleCode, $nameListCode)
@@ -18372,7 +18840,7 @@ class Interpretation extends Fields
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
 		// allways load these
-		$getForm   = array();
+		$getForm   = [];
 		$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " check if xpath was set in options";
 		$getForm[] = Indent::_(2) . "\$xpath = false;";
@@ -18415,7 +18883,7 @@ class Interpretation extends Fields
 				get($nameListCode . '.view', $nameSingleCode);
 			// setup the category script
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = JFactory::getApplication()->input;";
+				. "\$jinput = Factory::getApplication()->input;";
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				)
@@ -18466,8 +18934,16 @@ class Interpretation extends Fields
 			$getForm[] = Indent::_(3)
 				. "\$form->setFieldAttribute('catid', 'action', 'core.create');";
 			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$getForm[] = PHP_EOL . Indent::_(2)
+					. "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$getForm[] = PHP_EOL . Indent::_(2)
+					. "\$user = Factory::getApplication()->getIdentity();";
+			}
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Check for existing item.";
@@ -18508,7 +18984,7 @@ class Interpretation extends Fields
 		else
 		{
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = JFactory::getApplication()->input;";
+				. "\$jinput = Factory::getApplication()->input;";
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				)
@@ -18524,8 +19000,16 @@ class Interpretation extends Fields
 			$getForm[] = Indent::_(2) . "{";
 			$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
 			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$getForm[] = PHP_EOL . Indent::_(2)
+					. "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$getForm[] = PHP_EOL . Indent::_(2)
+					. "\$user = Factory::getApplication()->getIdentity();";
+			}
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Check for existing item.";
@@ -18646,19 +19130,12 @@ class Interpretation extends Fields
 			$getForm[] = Indent::_(2) . "}";
 		}
 		// handel the fields permissions
-		if (isset($this->permissionFields[$nameSingleCode])
-			&& ArrayHelper::check(
-				$this->permissionFields[$nameSingleCode]
-			))
+		if (CFactory::_('Compiler.Builder.Permission.Fields')->isArray($nameSingleCode))
 		{
-			foreach (
-				$this->permissionFields[$nameSingleCode] as $fieldName =>
-				$permission_options
-			)
+			foreach (CFactory::_('Compiler.Builder.Permission.Fields')->get($nameSingleCode)
+				as $fieldName => $permission_options)
 			{
-				foreach (
-					$permission_options as $permission_option => $fieldType
-				)
+				foreach ($permission_options as $permission_option => $fieldType)
 				{
 					switch ($permission_option)
 					{
@@ -18860,8 +19337,8 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(4) . "\$form->setValue('" . $fieldName
 				. "', null, '');";
 			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(3) . "elseif (" . ucfirst((string) $component)
-				. "Helper::checkArray(\$val))";
+			$allow[] = Indent::_(3) . "elseif ("
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$val))";
 			$allow[] = Indent::_(3) . "{";
 			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We have to unset then (TODO)";
@@ -18878,7 +19355,7 @@ class Interpretation extends Fields
 
 	public function setJmodelAdminAllowEdit($nameSingleCode, $nameListCode)
 	{
-		$allow = array();
+		$allow = [];
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
 		// prepare custom permission script
@@ -18892,7 +19369,14 @@ class Interpretation extends Fields
 		{
 			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check specific edit permission then general edit permission.";
-			$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$allow[] = Indent::_(2) . "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$allow[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+			}
 			// load custom permission script
 			$allow[] = $customAllow;
 			$allow[] = Indent::_(2) . "return \$user->authorise('"
@@ -18908,183 +19392,67 @@ class Interpretation extends Fields
 				. " Check specific edit permission then general edit permission.";
 			if (StringHelper::check($customAllow))
 			{
-				$allow[] = Indent::_(2) . "\$user = JFactory::getUser();";
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$allow[] = Indent::_(2) . "\$user = Factory::getUser();";
+				}
+				else
+				{
+					$allow[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+				}
 			}
 			// load custom permission script
 			$allow[] = $customAllow;
-			$allow[] = Indent::_(2)
-				. "return JFactory::getUser()->authorise('core.edit', 'com_"
-				. $component . "." . $nameSingleCode
-				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$allow[] = Indent::_(2)
+					. "return Factory::getUser()->authorise('core.edit', 'com_"
+					. $component . "." . $nameSingleCode
+					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
+			}
+			else
+			{
+				$allow[] = Indent::_(2)
+					. "return Factory::getApplication()->getIdentity()->authorise('core.edit', 'com_"
+					. $component . "." . $nameSingleCode
+					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
+			}
 		}
 
 		return implode(PHP_EOL, $allow);
 	}
 
+	/**
+	 * Get Admin Module Can Delete
+	 *
+	 * @param   string  $nameSingleCode  The view edit or single name
+	 * @param   string  $nameListCode    The view list name
+	 *
+	 * @return  string The method code
+	 * @deprecated 3.3 Use CFactory::_('Architecture.Model.CanDelete')->get($nameSingleCode);
+	 */
 	public function setJmodelAdminCanDelete($nameSingleCode, $nameListCode)
 	{
-		$allow = array();
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
-		{
-			// check if category has another name
-			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.view', $nameSingleCode);
-			// setup the category script
-			$allow[] = PHP_EOL . Indent::_(2) . "if (!empty(\$record->id))";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "if (\$record->published != -2)";
-			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "return;";
-			$allow[] = Indent::_(3) . "}";
-			$allow[] = PHP_EOL . Indent::_(3) . "\$user = JFactory::getUser();";
-			$allow[] = Indent::_(3)
-				. "\$allow = \$user->authorise('core.delete', 'com_"
-				. $component . "." . $otherView
-				. ".category.' . (int) \$record->catid);";
-			// check if the item has permissions.
-			$allow[] = PHP_EOL . Indent::_(3) . "if (\$allow)";
-			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " The record has been set. Check the record permissions.";
-			$allow[] = Indent::_(4) . "return \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($otherView, 'core.delete') . "', 'com_" . $component . "."
-				. $otherView . ".' . (int) \$record->id);";
-			$allow[] = Indent::_(3) . "}";
-		}
-		else
-		{
-			// setup the default script
-			$allow[] = PHP_EOL . Indent::_(2) . "if (!empty(\$record->id))";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "if (\$record->published != -2)";
-			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "return;";
-			$allow[] = Indent::_(3) . "}";
-			// check if the item has permissions.
-			$allow[] = PHP_EOL . Indent::_(3)
-				. "\$user = JFactory::getUser();";
-			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " The record has been set. Check the record permissions.";
-			$allow[] = Indent::_(3) . "return \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.delete') . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$record->id);";
-			$allow[] = Indent::_(2) . "}";
-			$allow[] = Indent::_(2) . "return false;";
-		}
-
-		return implode(PHP_EOL, $allow);
+		return CFactory::_('Architecture.Model.CanDelete')->get($nameSingleCode);
 	}
 
-	public function setJmodelAdminCanEditState($nameSingleCode,
-	                                           $nameListCode
-	)
+	/**
+	 * Get Admin Module Can Delete
+	 *
+	 * @param   string  $nameSingleCode  The view edit or single name
+	 * @param   string  $nameListCode    The view list name
+	 *
+	 * @return  string The method code
+	 * @deprecated 3.3 Use CFactory::_('Architecture.Model.CanEditState')->get($nameSingleCode);
+	 */
+	public function setJmodelAdminCanEditState($nameSingleCode, $nameListCode)
 	{
-		$allow = array();
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
-		{
-			// check if category has another name
-			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.view', $nameSingleCode);
-
-			$allow[] = PHP_EOL . Indent::_(2) . "\$user = JFactory::getUser();";
-			$allow[] = Indent::_(2)
-				. "\$recordId = (!empty(\$record->id)) ? \$record->id : 0;";
-			$allow[] = PHP_EOL . Indent::_(2) . "if (\$recordId)";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " The record has been set. Check the record permissions.";
-			// check if the item has permissions.
-			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$recordId);";
-			$allow[] = Indent::_(3)
-				. "if (!\$permission && !is_null(\$permission))";
-			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "return false;";
-			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(2) . "}";
-			// setup the category script
-			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Check against the category.";
-			$allow[] = Indent::_(2) . "if (!empty(\$record->catid))";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3)
-				. "\$catpermission = \$user->authorise('core.edit.state', 'com_"
-				. $component . "." . $otherView
-				. ".category.' . (int) \$record->catid);";
-			$allow[] = Indent::_(3)
-				. "if (!\$catpermission && !is_null(\$catpermission))";
-			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "return false;";
-			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(2) . "}";
-			if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit.state'))
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
-					. "', 'com_" . $component . "');";
-			}
-			else
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(2)
-					. "return parent::canEditState(\$record);";
-			}
-		}
-		else
-		{
-			// setup the default script
-			$allow[] = PHP_EOL . Indent::_(2) . "\$user = JFactory::getUser();";
-			$allow[] = Indent::_(2)
-				. "\$recordId = (!empty(\$record->id)) ? \$record->id : 0;";
-			$allow[] = PHP_EOL . Indent::_(2) . "if (\$recordId)";
-			$allow[] = Indent::_(2) . "{";
-			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " The record has been set. Check the record permissions.";
-			// check if the item has permissions.
-			$allow[] = Indent::_(3) . "\$permission = \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
-				. "', 'com_" . $component . "." . $nameSingleCode . ".' . (int) \$recordId);";
-			$allow[] = Indent::_(3)
-				. "if (!\$permission && !is_null(\$permission))";
-			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "return false;";
-			$allow[] = Indent::_(3) . "}";
-			$allow[] = Indent::_(2) . "}";
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.edit.state'))
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(2) . "return \$user->authorise('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
-					. "');";
-			}
-			else
-			{
-				$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " In the absence of better information, revert to the component permissions.";
-				$allow[] = Indent::_(2)
-					. "return parent::canEditState(\$record);";
-			}
-		}
-
-		return implode(PHP_EOL, $allow);
+		return CFactory::_('Architecture.Model.CanEditState')->get($nameSingleCode);
 	}
 
 	public function setJviewListCanDo($nameSingleCode, $nameListCode)
 	{
-		$allow = array();
+		$allow = [];
 		// set component name
 		$component = CFactory::_('Config')->component_code_name;
 		// check if the item has permissions for edit.
@@ -19453,7 +19821,7 @@ class Interpretation extends Fields
 			. "\$_" . $key . " = \$this->getState('filter."
 			. $key . "');";
 		$stored .= PHP_EOL . Indent::_(2)
-			. "if (" . $Component . "Helper::checkArray(\$_"
+			. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_"
 			. $key . "))";
 		$stored .= PHP_EOL . Indent::_(2)
 			. "{";
@@ -19467,7 +19835,7 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . Indent::_(2)
 			. "elseif (is_numeric(\$_" . $key . ")";
 		$stored .= PHP_EOL . Indent::_(2)
-			. " || " . $Component . "Helper::checkString(\$_" . $key . "))";
+			. " || Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $key . "))";
 		$stored .= PHP_EOL . Indent::_(2)
 			. "{";
 		$stored .= PHP_EOL . Indent::_(3)
@@ -19482,11 +19850,38 @@ class Interpretation extends Fields
 	{
 		// set view name
 		$nameSingleCode = $view['settings']->name_single_code;
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			$langViews = CFactory::_('Config')->lang_prefix . '_'
+				. StringHelper::safe(
+					$view['settings']->name_list_code, 'U'
+				);
+			$name_list = strtolower($view['settings']->name_list);
+			$name_single = strtolower($view['settings']->name_single);
+			// add empty title
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target,
+				$langViews . '_EMPTYSTATE_TITLE',
+				'No ' . $name_list . ' have been created yet.'
+			);
+			// add empty content
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target,
+				$langViews . '_EMPTYSTATE_CONTENT',
+				$view['settings']->description
+			);
+			// add empty button add
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target,
+				$langViews . '_EMPTYSTATE_BUTTON_ADD',
+				'Add your first ' . $name_single
+			);
+		}
 		// check type
 		if ($view['settings']->type == 2)
 		{
 			// set lang strings
-			$viewNameLang_readonly = $this->langPrefix . '_'
+			$viewNameLang_readonly = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe(
 					$view['settings']->name_single . ' readonly', 'U'
 				);
@@ -19498,21 +19893,21 @@ class Interpretation extends Fields
 
 			// build toolbar
 			$toolBar
-				= "JFactory::getApplication()->input->set('hidemainmenu', true);";
-			$toolBar .= PHP_EOL . Indent::_(2) . "JToolBarHelper::title(JText:"
+				= "Factory::getApplication()->input->set('hidemainmenu', true);";
+			$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::title(Text:"
 				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
 				. "');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "JToolBarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 		}
 		else
 		{
 			// set lang strings
-			$viewNameLang_new  = $this->langPrefix . '_'
+			$viewNameLang_new  = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe(
 					$view['settings']->name_single . ' New', 'U'
 				);
-			$viewNameLang_edit = $this->langPrefix . '_'
+			$viewNameLang_edit = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe(
 					$view['settings']->name_single . ' Edit', 'U'
 				);
@@ -19527,27 +19922,35 @@ class Interpretation extends Fields
 			);
 			// build toolbar
 			$toolBar
-				= "JFactory::getApplication()->input->set('hidemainmenu', true);";
-			$toolBar .= PHP_EOL . Indent::_(2)
-				. "\$user = JFactory::getUser();";
+				= "Factory::getApplication()->input->set('hidemainmenu', true);";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$toolBar .= PHP_EOL . Indent::_(2)
+					. "\$user = Factory::getUser();";
+			}
+			else
+			{
+				$toolBar .= PHP_EOL . Indent::_(2)
+					. "\$user = Factory::getApplication()->getIdentity();";
+			}
 			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId	= \$user->id;";
 			$toolBar .= PHP_EOL . Indent::_(2)
 				. "\$isNew = \$this->item->id == 0;";
 			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
-				. "JToolbarHelper::title( JText:" . ":_(\$isNew ? '"
+				. "ToolbarHelper::title( Text:" . ":_(\$isNew ? '"
 				. $viewNameLang_new . "' : '" . $viewNameLang_edit
 				. "'), 'pencil-2 article-add');";
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Built the actions for new and existing records.";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkString(\$this->referral))";
+				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->referral))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
 			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && \$isNew)";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can create the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3)
@@ -19557,21 +19960,21 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can save the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Do not creat but cancel.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "else";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can close it.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(2) . "}";
@@ -19584,15 +19987,15 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::apply('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::apply('"
 				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::custom('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::custom('"
 				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . Indent::_(4) . "};";
-			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "else";
@@ -19602,9 +20005,9 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
 			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " We can save the new record";
-			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::apply('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::apply('"
 				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " We can save this record, but check the create permission to see";
@@ -19613,7 +20016,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(5) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(5) . "{";
-			$toolBar .= PHP_EOL . Indent::_(6) . "JToolBarHelper::custom('"
+			$toolBar .= PHP_EOL . Indent::_(6) . "ToolbarHelper::custom('"
 				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . Indent::_(5) . "}";
@@ -19632,7 +20035,7 @@ class Interpretation extends Fields
 						. "') && \$canVersion)";
 					$toolBar .= PHP_EOL . Indent::_(4) . "{";
 					$toolBar .= PHP_EOL . Indent::_(5)
-						. "JToolbarHelper::versions('com_"
+						. "ToolbarHelper::versions('com_"
 						. CFactory::_('Config')->component_code_name . "." . $nameSingleCode
 						. "', \$this->item->id);";
 					$toolBar .= PHP_EOL . Indent::_(4) . "}";
@@ -19649,7 +20052,7 @@ class Interpretation extends Fields
 						. "if (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
 					$toolBar .= PHP_EOL . Indent::_(4) . "{";
 					$toolBar .= PHP_EOL . Indent::_(5)
-						. "JToolbarHelper::versions('com_"
+						. "ToolbarHelper::versions('com_"
 						. CFactory::_('Config')->component_code_name . "." . $nameSingleCode
 						. "', \$this->item->id);";
 					$toolBar .= PHP_EOL . Indent::_(4) . "}";
@@ -19658,27 +20061,31 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "JToolBarHelper::custom('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::custom('"
 				. $nameSingleCode
 				. ".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
 			$toolBar .= PHP_EOL . Indent::_(4) . "}";
 			// add custom buttons
 			$toolBar .= $this->setCustomButtons($view, 2, Indent::_(2));
-			$toolBar .= PHP_EOL . Indent::_(4) . "JToolBarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "JToolbarHelper::divider();";
+			$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::divider();";
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::inlinehelp();";
+			}
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set help url for this view if found";
 			$toolBar .= PHP_EOL . Indent::_(2) . "\$this->help_url = "
 				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::getHelpUrl('" . $nameSingleCode
 				. "');";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkString(\$this->help_url))";
+				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->help_url))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "JToolbarHelper::help('"
-				. $this->langPrefix . "_HELP_MANAGER', false, \$this->help_url);";
+			$toolBar .= PHP_EOL . Indent::_(3) . "ToolbarHelper::help('"
+				. CFactory::_('Config')->lang_prefix . "_HELP_MANAGER', false, \$this->help_url);";
 			$toolBar .= PHP_EOL . Indent::_(2) . "}";
 		}
 
@@ -19699,7 +20106,7 @@ class Interpretation extends Fields
 		// reset bucket
 		$state = '';
 		// keep track of all fields already added
-		$donelist = array();
+		$donelist = [];
 		// we must add the formSubmited code if new above filters is used (2 = topbar)
 		$new_filter = false;
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
@@ -19873,9 +20280,9 @@ class Interpretation extends Fields
 		$donelist = array('ordering', 'published');
 		// set the default first
 		$fields = "return array(";
-		$fields .= PHP_EOL . Indent::_(3) . "'a.ordering' => JText:"
+		$fields .= PHP_EOL . Indent::_(3) . "'a.ordering' => Text:"
 			. ":_('JGRID_HEADING_ORDERING')";
-		$fields .= "," . PHP_EOL . Indent::_(3) . "'a.published' => JText:"
+		$fields .= "," . PHP_EOL . Indent::_(3) . "'a.published' => Text:"
 			. ":_('JSTATUS')";
 
 		// add the rest of the set filters
@@ -19888,7 +20295,7 @@ class Interpretation extends Fields
 					if ($filter['type'] === 'category')
 					{
 						$fields .= "," . PHP_EOL . Indent::_(3)
-							. "'category_title' => JText:" . ":_('"
+							. "'category_title' => Text:" . ":_('"
 							. $filter['lang'] . "')";
 					}
 					elseif (ArrayHelper::check(
@@ -19897,19 +20304,19 @@ class Interpretation extends Fields
 					{
 						$fields .= "," . PHP_EOL . Indent::_(3) . "'"
 							. $filter['custom']['db'] . "."
-							. $filter['custom']['text'] . "' => JText:" . ":_('"
+							. $filter['custom']['text'] . "' => Text:" . ":_('"
 							. $filter['lang'] . "')";
 					}
 					else
 					{
 						$fields .= "," . PHP_EOL . Indent::_(3) . "'a."
-							. $filter['code'] . "' => JText:" . ":_('"
+							. $filter['code'] . "' => Text:" . ":_('"
 							. $filter['lang'] . "')";
 					}
 				}
 			}
 		}
-		$fields .= "," . PHP_EOL . Indent::_(3) . "'a.id' => JText:"
+		$fields .= "," . PHP_EOL . Indent::_(3) . "'a.id' => Text:"
 			. ":_('JGRID_HEADING_ID')";
 		$fields .= PHP_EOL . Indent::_(2) . ");";
 
@@ -19932,22 +20339,29 @@ class Interpretation extends Fields
 		$checkin .= PHP_EOL . Indent::_(1)
 			. " * Build an SQL query to checkin all items left checked out longer then a set time.";
 		$checkin .= PHP_EOL . Indent::_(1) . " *";
-		$checkin .= PHP_EOL . Indent::_(1) . " * @return  a bool";
-		$checkin .= PHP_EOL . Indent::_(1) . " *";
+		$checkin .= PHP_EOL . Indent::_(1) . " * @return bool";
+		$checkin .= PHP_EOL . Indent::_(1) . " * @since 3.2.0";
 		$checkin .= PHP_EOL . Indent::_(1) . " */";
-		$checkin .= PHP_EOL . Indent::_(1) . "protected function checkInNow()";
+		$checkin .= PHP_EOL . Indent::_(1) . "protected function checkInNow(): bool";
 		$checkin .= PHP_EOL . Indent::_(1) . "{";
 		$checkin .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Get set check in time";
 		$checkin .= PHP_EOL . Indent::_(2)
-			. "\$time = JComponentHelper::getParams('com_" . $component
+			. "\$time = ComponentHelper::getParams('com_" . $component
 			. "')->get('check_in');";
 		$checkin .= PHP_EOL . PHP_EOL . Indent::_(2) . "if (\$time)";
 		$checkin .= PHP_EOL . Indent::_(2) . "{";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(3) . "//" . Line::_(
+		$checkin .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 				__LINE__,__CLASS__
 			) . " Get a db connection.";
-		$checkin .= PHP_EOL . Indent::_(3) . "\$db = JFactory::getDbo();";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$checkin .= PHP_EOL . Indent::_(3) . "\$db = Factory::getDbo();";
+		}
+		else
+		{
+			$checkin .= PHP_EOL . Indent::_(3) . "\$db = \$this->getDatabase();";
+		}
 		$checkin .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " Reset query.";
 		$checkin .= PHP_EOL . Indent::_(3) . "\$query = \$db->getQuery(true);";
@@ -19968,7 +20382,7 @@ class Interpretation extends Fields
 		$checkin .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 			. " Get Yesterdays date.";
 		$checkin .= PHP_EOL . Indent::_(4)
-			. "\$date = JFactory::getDate()->modify(\$time)->toSql();";
+			. "\$date = Factory::getDate()->modify(\$time)->toSql();";
 		$checkin .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 			. " Reset query.";
 		$checkin .= PHP_EOL . Indent::_(4) . "\$query = \$db->getQuery(true);";
@@ -19998,7 +20412,7 @@ class Interpretation extends Fields
 			. "'))->set(\$fields)->where(\$conditions); ";
 		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4)
 			. "\$db->setQuery(\$query);";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4) . "\$db->execute();";
+		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4) . "return \$db->execute();";
 		$checkin .= PHP_EOL . Indent::_(3) . "}";
 		$checkin .= PHP_EOL . Indent::_(2) . "}";
 		$checkin .= PHP_EOL . PHP_EOL . Indent::_(2) . "return false;";
@@ -20051,7 +20465,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the tags";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-				. "\$item->tags = new JHelperTags;";
+				. "\$item->tags = new TagsHelper;";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 				. "\$item->tags->getTagIds(";
 			$fix_access .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
@@ -20161,11 +20575,11 @@ class Interpretation extends Fields
 						. $item['name'] . "Array = " . $decode . "(\$item->"
 						. $item['name'] . $suffix_decode . ");";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-						. "if (" . $Component . "Helper::checkArray(\$"
+						. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 						. $item['name'] . "Array))";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "{";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4) . "\$"
-						. $item['name'] . "Names = array();";
+						. $item['name'] . "Names = [];";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 						. "foreach (\$" . $item['name'] . "Array as \$"
 						. $item['name'] . ")";
@@ -20183,7 +20597,7 @@ class Interpretation extends Fields
 				{
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "//".Line::_(__Line__, __Class__)." decode ".$item['name'];
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
-					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "if (".$Component."Helper::checkArray(\$".$item['name']."Array))";
+					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$".$item['name']."Array))";
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "{";
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(4) . "\$item->".$item['name']." = implode('|',\$".$item['name']."Array);";
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "}";
@@ -20197,17 +20611,17 @@ class Interpretation extends Fields
 						. $item['name'] . "Array = " . $decode . "(\$item->"
 						. $item['name'] . $suffix_decode . ");";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-						. "if (" . $Component . "Helper::checkArray(\$"
+						. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 						. $item['name'] . "Array))";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "{";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4) . "\$"
-						. $item['name'] . "Names = array();";
+						. $item['name'] . "Names = [];";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 						. "foreach (\$" . $item['name'] . "Array as \$"
 						. $item['name'] . ")";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4) . "{";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(5) . "\$"
-						. $item['name'] . "Names[] = JText:"
+						. $item['name'] . "Names[] = Text:"
 						. ":_(\$this->selectionTranslation(\$" . $item['name']
 						. ", '" . $item['name'] . "'));";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4) . "}";
@@ -20317,12 +20731,12 @@ class Interpretation extends Fields
 								. "(\$item->" . $item['name'] . $suffix_decode
 								. ");";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-								. "if (" . $Component . "Helper::checkArray(\$"
+								. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 								. $item['name'] . "Array))";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 								. "{";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
-								. "\$bucket" . $item['name'] . " = array();";
+								. "\$bucket" . $item['name'] . " = [];";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 								. "foreach (\$" . $item['name'] . "Array as \$"
 								. $item['name'] . "FieldName => \$"
@@ -20330,7 +20744,7 @@ class Interpretation extends Fields
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 								. "{";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(5)
-								. "if (" . $Component . "Helper::checkArray(\$"
+								. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 								. $item['name'] . "))";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(5)
 								. "{";
@@ -20347,9 +20761,8 @@ class Interpretation extends Fields
 								. "//" . Line::_(__Line__, __Class__)
 								. " make sure the bucket has values.";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
-								. "if (" . $Component
-								. "Helper::checkArray(\$bucket" . $item['name']
-								. "))";
+								. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$bucket"
+								. $item['name'] . "))";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 								. "{";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(5)
@@ -20399,8 +20812,7 @@ class Interpretation extends Fields
 								}
 								$fix .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(3) . "\$item->" . $item['name']
-									. " = " . $Component
-									. "Helper::jsonToString(\$item->"
+									. " = Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
 									. $item['name'] . ", ', ', '"
 									. $keyTableNAme . "', '"
 									. $item['custom']['id'] . "', '"
@@ -20410,8 +20822,7 @@ class Interpretation extends Fields
 							{
 								$fix .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(3) . "\$item->" . $item['name']
-									. " = " . $Component
-									. "Helper::jsonToString(\$item->"
+									. " = Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
 									. $item['name'] . ", ', ', '"
 									. $item['name'] . "');";
 							}
@@ -20427,8 +20838,7 @@ class Interpretation extends Fields
 									) . " convert " . $item['name'];
 								$fix .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(3) . "\$item->" . $item['name']
-									. " = " . $Component
-									. "Helper::jsonToString(\$item->"
+									. " = Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
 									. $item['name'] . ");";
 							}
 						}
@@ -20471,7 +20881,7 @@ class Interpretation extends Fields
 				) . "//" . Line::_(__Line__, __Class__)
 				. " Set values to display correctly.";
 			$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-				. "if (" . $Component . "Helper::checkArray(\$items))";
+				. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
 			$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
 			// do not add to export since it is already done
 			if (!$export)
@@ -20481,34 +20891,34 @@ class Interpretation extends Fields
 					. " Get the user object if not set.";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "if (!isset(\$user) || !"
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::checkObject(\$user))";
+					. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$user))";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "{";
-				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-					. "\$user = JFactory::getUser();";
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
+						. "\$user = Factory::getUser();";
+				}
+				else
+				{
+					$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
+						. "\$user = \$this->getCurrentUser();";
+				}
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "}";
 			}
 			// the permissional acttion switch
 			$hasPermissional = false;
 			// add the permissional removal of values the user has not right to view or access
-			if ($this->strictFieldExportPermissions
-				&& isset($this->permissionFields[$nameSingleCode])
-				&& ArrayHelper::check(
-					$this->permissionFields[$nameSingleCode]
-				))
+			if (CFactory::_('Config')->get('permission_strict_per_field', false)
+				&& CFactory::_('Compiler.Builder.Permission.Fields')->isArray($nameSingleCode))
 			{
-				foreach (
-					$this->permissionFields[$nameSingleCode] as $fieldName =>
-					$permission_options
-				)
+				foreach (CFactory::_('Compiler.Builder.Permission.Fields')->get($nameSingleCode)
+					as $fieldName => $permission_options)
 				{
 					if (!$hasPermissional)
 					{
-						foreach (
-							$permission_options as $permission_option =>
-							$fieldType
-						)
+						foreach ($permission_options as $permission_option => $fieldType)
 						{
 							if (!$hasPermissional)
 							{
@@ -20533,7 +20943,7 @@ class Interpretation extends Fields
 					$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(
 							2
 						)
-						. "\$strict_permission_per_field = JComponentHelper::getParams('com_"
+						. "\$strict_permission_per_field = ComponentHelper::getParams('com_"
 						. $component
 						. "')->get('strict_permission_per_field', 0);"
 						. PHP_EOL;
@@ -20554,14 +20964,10 @@ class Interpretation extends Fields
 					. "if (\$strict_permission_per_field)";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 					. "{";
-				foreach (
-					$this->permissionFields[$nameSingleCode] as $fieldName =>
-					$permission_options
-				)
+				foreach (CFactory::_('Compiler.Builder.Permission.Fields')->get($nameSingleCode)
+					as $fieldName => $permission_options)
 				{
-					foreach (
-						$permission_options as $permission_option => $fieldType
-					)
+					foreach ($permission_options as $permission_option => $fieldType)
 					{
 						switch ($permission_option)
 						{
@@ -20628,7 +21034,7 @@ class Interpretation extends Fields
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 					. "\$headers = \$this->getExImPortHeaders();";
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "if ("
-					. $Component . "Helper::checkObject(\$headers))";
+					. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$headers))";
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "array_unshift(\$items,\$headers);";
@@ -20688,135 +21094,11 @@ class Interpretation extends Fields
 	 * @param   string  $default     The default to return if none is found
 	 *
 	 * @return  string The php to place in the header
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Header')->get($context, $codeName, $default);
 	 */
 	public function setFileHeader($context, $codeName, $default = '')
 	{
-		// set the defaults
-		$headers = array();
-		switch ($context)
-		{
-			case 'admin.component':
-			case 'site.component':
-			case 'site.view':
-			case 'site.views';
-			case 'admin.layout';
-			case 'override.layout';
-			case 'custom.admin.layout';
-			case 'site.layout';
-			case 'dashboard.view';
-			case 'dashboard.view.html';
-				break;
-			case 'site.view.model':
-			case 'custom.admin.view.model':
-				$headers[] = 'use Joomla\CMS\MVC\Model\ItemModel;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-			case 'admin.views.model':
-			case 'custom.admin.views.model':
-			case 'site.views.model':
-			case 'ajax.admin.model':
-			case 'ajax.site.model':
-			case 'dashboard.model':
-				$headers[] = 'use Joomla\CMS\MVC\Model\ListModel;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-			case 'admin.helper':
-			case 'site.helper':
-				$headers[] = 'use Joomla\CMS\Filesystem\File;';
-				$headers[] = 'use Joomla\CMS\Language\Language;';
-				$headers[] = 'use Joomla\Registry\Registry;';
-				$headers[] = 'use Joomla\String\StringHelper;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				// $headers[] = 'use VDM\Joomla\Utilities;';
-				// load the internal custom headers
-				$this->setHelperClassHeader($headers, $codeName);
-				break;
-			case 'admin.view.model':
-			case 'site.admin.view.model':
-				$headers[] = 'use Joomla\CMS\MVC\Model\AdminModel;';
-				$headers[] = 'use Joomla\Registry\Registry;';
-				$headers[] = 'use Joomla\String\StringHelper;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-			case 'admin.view':
-			case 'custom.admin.view':
-			case 'custom.admin.views':
-			case 'site.admin.view':
-				$headers[]
-					= 'JHtml::addIncludePath(JPATH_COMPONENT.\'/helpers/html\');';
-				$headers[] = 'JHtml::_(\'behavior.formvalidator\');';
-				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
-				$headers[] = 'JHtml::_(\'behavior.keepalive\');';
-				break;
-			case 'admin.views':
-				$headers[] = 'JHtml::_(\'behavior.multiselect\');';
-				$headers[] = 'JHtml::_(\'dropdown.init\');';
-				// add more headers if the new filter option is used
-				$this->setChosenMultiSelectionHeaders($headers, $codeName);
-				$headers[] = 'JHtml::_(\'formbehavior.chosen\', \'select\');';
-				break;
-			case 'admin.view.html':
-			case 'admin.views.html':
-			case 'site.admin.view.html':
-			case 'site.view.html':
-			case 'site.views.html':
-			case 'custom.admin.view.html':
-			case 'custom.admin.views.html':
-				$headers[] = 'use Joomla\CMS\MVC\View\HtmlView;';
-				// load the file class if uikit is being loaded
-				if ((2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-					&& CFactory::_('Compiler.Builder.Uikit.Comp')->exists($codeName))
-				{
-					$headers[] = 'use Joomla\CMS\Filesystem\File;';
-				}
-				break;
-			case 'admin.view.controller':
-			case 'site.admin.view.controller':
-			case 'site.view.controller':
-				$headers[] = 'use Joomla\CMS\MVC\Controller\FormController;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-			case 'custom.admin.view.controller':
-			case 'import.custom.controller':
-			case 'import.controller':
-				$headers[] = 'use Joomla\CMS\MVC\Controller\BaseController;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-			case 'import.custom.model':
-			case 'import.model':
-				$headers[] = 'use Joomla\CMS\MVC\Model\BaseDatabaseModel;';
-				$headers[] = 'use Joomla\CMS\Filesystem\File;';
-				$headers[] = 'use Joomla\CMS\Filesystem\Folder;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				$headers[] = 'use PhpOffice\PhpSpreadsheet\IOFactory;';
-				break;
-			case 'admin.views.controller':
-			case 'custom.admin.views.controller':
-			case 'dashboard.controller':
-				$headers[] = 'use Joomla\CMS\MVC\Controller\AdminController;';
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-			default:
-				$headers[] = 'use Joomla\Utilities\ArrayHelper;';
-				break;
-		}
-		// for plugin event TODO change event api signatures
-		$component_context = CFactory::_('Config')->component_context;
-		// Trigger Event: jcb_ce_setClassHeader
-		CFactory::_('Event')->trigger(
-			'jcb_ce_setClassHeader',
-			array(&$component_context, &$context, &$codeName,
-				&$headers)
-		);
-		// check if headers were added
-		if (ArrayHelper::check($headers))
-		{
-			// return the headers
-			return CFactory::_('Placeholder')->update_(implode(PHP_EOL, $headers));
-		}
-
-		return $default;
+		return CFactory::_('Header')->get($context, $codeName, $default);
 	}
 
 	/**
@@ -20826,16 +21108,19 @@ class Interpretation extends Fields
 	 * @param   string  $target_client
 	 *
 	 * @return void
+	 * @deprecated 3.3
 	 */
 	protected function setHelperClassHeader(&$headers, $target_client)
 	{
-		// add only to admin client
-		if ('admin' === $target_client && CFactory::_('Config')->get('add_eximport', false))
-		{
-			$headers[] = 'use PhpOffice\PhpSpreadsheet\IOFactory;';
-			$headers[] = 'use PhpOffice\PhpSpreadsheet\Spreadsheet;';
-			$headers[] = 'use PhpOffice\PhpSpreadsheet\Writer\Xlsx;';
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -20845,108 +21130,26 @@ class Interpretation extends Fields
 	 * @param   string  $nameListCode  The list view name
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function setChosenMultiSelectionHeaders(&$headers, $nameListCode)
 	{
-		// check that the filter type is the new filter option (2 = topbar)
-		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
-		{
-			// add category switch
-			$add_category = false;
-			if (CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.extension")
-				&& CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.filter", 0) >= 1)
-			{
-				// is found so add it
-				$add_category = true;
-			}
-			// add accessLevels switch
-			$add_access_levels = false;
-			if (CFactory::_('Compiler.Builder.Access.Switch.List')->exists($nameListCode))
-			{
-				// is found so add it
-				$add_access_levels = true;
-			}
-			// check if this view have filters
-			if (CFactory::_('Compiler.Builder.Filter')->exists($nameListCode))
-			{
-				foreach (CFactory::_('Compiler.Builder.Filter')->get($nameListCode) as $filter)
-				{
-					// we need this only for filters that are multi
-					if (isset($filter['multi']) && $filter['multi'] == 2)
-					{
-						// if this is a category we should make sure it must be added
-						if (!$add_category && $filter['type'] === 'category')
-						{
-							continue;
-						}
-						elseif ($add_category && $filter['type'] === 'category')
-						{
-							// already added here so no need to add again
-							$add_category = false;
-						}
-						// check if this was an access field
-						elseif ($filter['type'] === 'accesslevel')
-						{
-							// already added here so no need to add again
-							$add_access_levels = false;
-						}
-						// add the header
-						$headers[]
-							= 'JHtml::_(\'formbehavior.chosen\', \'.multiple'
-							. $filter['class']
-							. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
-							. $filter['lang_select'] . '\') . \' -\'));';
-					}
-					elseif ($add_category && $filter['type'] === 'category')
-					{
-						// add the header
-						$headers[]
-							= 'JHtml::_(\'formbehavior.chosen\', \'.multipleCategories'
-							. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
-							. $filter['lang_select'] . '\') . \' -\'));';
-						// already added here so no need to add again
-						$add_category = false;
-					}
-				}
-			}
-			// add category if not already added
-			if ($add_category)
-			{
-				// add the header
-				$headers[]
-					= 'JHtml::_(\'formbehavior.chosen\', \'.multipleCategories'
-					. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
-					. CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}.name", 'error')
-					. '\') . \' -\'));';
-			}
-			// add accessLevels if not already added
-			if ($add_access_levels)
-			{
-				// set the language strings for selection
-				$filter_name_select      = 'Select Access';
-				$filter_name_select_lang = $this->langPrefix . '_FILTER_'
-					. StringHelper::safe(
-						$filter_name_select, 'U'
-					);
-				// and to translation
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $filter_name_select_lang, $filter_name_select
-				);
-				// add the header
-				$headers[]
-					= 'JHtml::_(\'formbehavior.chosen\', \'.multipleAccessLevels'
-					. '\', null, array(\'placeholder_text_multiple\' => \'- \' . JText::_(\''
-					. $filter_name_select_lang . '\') . \' -\'));';
-			}
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	protected function setModelFieldRelation($item, $nameListCode, $tab)
 	{
 		$fix = '';
 		// set fields
-		$field = array();
+		$field = [];
 		// set list field name
 		$field['$item->{' . (int) $item['listfield'] . '}'] = '$item->'
 			. $item['code'];
@@ -21000,7 +21203,7 @@ class Interpretation extends Fields
 				. "//" . Line::_(__Line__, __Class__)
 				. " set selection value to a translatable value";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "if ("
-				. $Component . "Helper::checkArray(\$items))";
+				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 				. "foreach (\$items as \$nr => &\$item)";
@@ -21033,7 +21236,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(1)
 				. " * Method to convert selection values to translatable string.";
 			$fix .= PHP_EOL . Indent::_(1) . " *";
-			$fix .= PHP_EOL . Indent::_(1) . " * @return translatable string";
+			$fix .= PHP_EOL . Indent::_(1) . " * @return  string   The translatable string.";
 			$fix .= PHP_EOL . Indent::_(1) . " */";
 			$fix .= PHP_EOL . Indent::_(1)
 				. "public function selectionTranslation(\$value,\$name)";
@@ -21084,8 +21287,8 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Now check if value is found in this array";
 					$fix .= PHP_EOL . Indent::_(3) . "if (isset(\$" . $name
-						. "Array[\$value]) && " . $Component
-						. "Helper::checkString(\$" . $name . "Array[\$value]))";
+						. "Array[\$value]) && "
+						. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$" . $name . "Array[\$value]))";
 					$fix .= PHP_EOL . Indent::_(3) . "{";
 					$fix .= PHP_EOL . Indent::_(4) . "return \$" . $name
 						. "Array[\$value];";
@@ -21152,7 +21355,7 @@ class Interpretation extends Fields
 		{
 			$icons    = '';
 			$counter  = 0;
-			$catArray = array();
+			$catArray = [];
 			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
 				$name_single = StringHelper::safe(
@@ -21193,7 +21396,7 @@ class Interpretation extends Fields
 						. StringHelper::safe(
 							$view['settings']->name_single, 'W'
 						) . '<br /><br />';
-					$langKey  = $this->langPrefix . '_DASHBOARD_'
+					$langKey  = CFactory::_('Config')->lang_prefix . '_DASHBOARD_'
 						. StringHelper::safe(
 							$view['settings']->name_single, 'U'
 						) . '_ADD';
@@ -21230,7 +21433,7 @@ class Interpretation extends Fields
 					$langName = StringHelper::safe(
 							$view['settings']->name_list, 'W'
 						) . '<br /><br />';
-					$langKey  = $this->langPrefix . '_DASHBOARD_'
+					$langKey  = CFactory::_('Config')->lang_prefix . '_DASHBOARD_'
 						. StringHelper::safe(
 							$view['settings']->name_list, 'U'
 						);
@@ -21273,7 +21476,7 @@ class Interpretation extends Fields
 						);
 
 						// add to lang
-						$langKey = $this->langPrefix . '_DASHBOARD_'
+						$langKey = CFactory::_('Config')->lang_prefix . '_DASHBOARD_'
 							. StringHelper::safe(
 								$otherViews, 'U'
 							) . '_' . StringHelper::safe(
@@ -21395,7 +21598,7 @@ class Interpretation extends Fields
 			))
 		{
 			// gets array reset
-			$gets = array();
+			$gets = [];
 			// set dashboard gets
 			foreach ($this->DashboardGetCustomData as $get)
 			{
@@ -21416,11 +21619,22 @@ class Interpretation extends Fields
 	public function setDashboardDisplayData()
 	{
 		// display array reset
-		$display           = array();
+		$display           = [];
 		$mainAccordianName = 'cPanel';
-		$builder           = array();
-		$tab               = Indent::_(1);
+		$builder           = [];
+		$tab               = Indent::_(3);
 		$loadTabs          = false;
+		$width_class       = 'span';
+		$row_class         = 'row-fluid';
+		$form_class        = 'form-horizontal';
+		$uitab             = 'bootstrap';
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			$width_class = 'col-md-';
+			$row_class   = 'row';
+			$form_class  = 'main-card';
+			$uitab       = 'uitab';
+		}
 		// check if we have custom tabs
 		if (CFactory::_('Component')->isArray('dashboard_tab'))
 		{
@@ -21434,15 +21648,13 @@ class Interpretation extends Fields
 			}
 			// since we have custom tabs we must load the tab structure around the cpanel
 			$display[] = '<div id="j-main-container">';
-			$display[] = Indent::_(1) . '<div class="form-horizontal">';
+			$display[] = Indent::_(1) . '<div class="' . $form_class . '">';
 			$display[] = Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
+				. "<?php echo Html::_('{$uitab}.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
 			$display[] = PHP_EOL . Indent::_(2)
-				. "<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', 'cpanel', JText:"
+				. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', 'cpanel', Text:"
 				. ":_('cPanel', true)); ?>";
-			$display[] = Indent::_(2) . '<div class="row-fluid">';
-			// set the tab to insure correct spacing
-			$tab = Indent::_(3);
+			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
 			// change the name of the main tab
 			$mainAccordianName = 'Control Panel';
 			$loadTabs          = true;
@@ -21450,53 +21662,55 @@ class Interpretation extends Fields
 		else
 		{
 			$display[] = '<div id="j-main-container">';
+			$display[] = Indent::_(1) . '<div class="' . $form_class . '" style="padding: 20px;">';
+			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
 		}
 		// set dashboard display
-		$display[] = $tab . '<div class="span9">';
+		$display[] = $tab . '<div class="' . $width_class . '9">';
 		$display[] = $tab . Indent::_(1)
-			. "<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>";
+			. "<?php echo Html::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>";
 		$display[] = $tab . Indent::_(2)
-			. "<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_left', '"
+			. "<?php echo Html::_('bootstrap.addSlide', 'dashboard_left', '"
 			. $mainAccordianName . "', 'main'); ?>";
 		$display[] = $tab . Indent::_(3)
 			. "<?php echo \$this->loadTemplate('main');?>";
 		$display[] = $tab . Indent::_(2)
-			. "<?php echo JHtml::_('bootstrap.endSlide'); ?>";
+			. "<?php echo Html::_('bootstrap.endSlide'); ?>";
 		$display[] = $tab . Indent::_(1)
-			. "<?php echo JHtml::_('bootstrap.endAccordion'); ?>";
+			. "<?php echo Html::_('bootstrap.endAccordion'); ?>";
 		$display[] = $tab . "</div>";
-		$display[] = $tab . '<div class="span3">';
+		$display[] = $tab . '<div class="' . $width_class . '3">';
 		$display[] = $tab . Indent::_(1)
-			. "<?php echo JHtml::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
+			. "<?php echo Html::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
 		$display[] = $tab . Indent::_(2)
-			. "<?php echo JHtml::_('bootstrap.addSlide', 'dashboard_right', '"
+			. "<?php echo Html::_('bootstrap.addSlide', 'dashboard_right', '"
 			. CFactory::_('Compiler.Builder.Content.One')->get('COMPANYNAME')
 			. "', 'vdm'); ?>";
 		$display[] = $tab . Indent::_(3)
 			. "<?php echo \$this->loadTemplate('vdm');?>";
 		$display[] = $tab . Indent::_(2)
-			. "<?php echo JHtml::_('bootstrap.endSlide'); ?>";
+			. "<?php echo Html::_('bootstrap.endSlide'); ?>";
 		$display[] = $tab . Indent::_(1)
-			. "<?php echo JHtml::_('bootstrap.endAccordion'); ?>";
+			. "<?php echo Html::_('bootstrap.endAccordion'); ?>";
 		$display[] = $tab . "</div>";
 
 		if ($loadTabs)
 		{
 			$display[] = Indent::_(2) . "</div>";
 			$display[] = Indent::_(2)
-				. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+				. "<?php echo Html::_('{$uitab}.endTab'); ?>";
 			// load the new tabs
 			foreach ($builder as $tabname => $accordians)
 			{
 				$alias        = StringHelper::safe($tabname);
 				$display[]    = PHP_EOL . Indent::_(2)
-					. "<?php echo JHtml::_('bootstrap.addTab', 'cpanel_tab', '"
-					. $alias . "', JText:" . ":_('" . $tabname
+					. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', '"
+					. $alias . "', Text:" . ":_('" . $tabname
 					. "', true)); ?>";
-				$display[]    = Indent::_(2) . '<div class="row-fluid">';
-				$display[]    = $tab . '<div class="span12">';
+				$display[]    = Indent::_(2) . '<div class="' . $row_class . '">';
+				$display[]    = $tab . '<div class="' . $width_class . '12">';
 				$display[]    = $tab . Indent::_(1)
-					. "<?php  echo JHtml::_('bootstrap.startAccordion', '"
+					. "<?php  echo Html::_('bootstrap.startAccordion', '"
 					. $alias . "_accordian', array('active' => '" . $alias
 					. "_one')); ?>";
 				$slidecounter = 1;
@@ -21510,14 +21724,14 @@ class Interpretation extends Fields
 					);
 					$tempName    = $alias . '_' . $ac_alias;
 					$display[]   = $tab . Indent::_(2)
-						. "<?php  echo JHtml::_('bootstrap.addSlide', '"
+						. "<?php  echo Html::_('bootstrap.addSlide', '"
 						. $alias . "_accordian', '" . $accordianname . "', '"
 						. $alias . "_" . $counterName . "'); ?>";
 					$display[]   = $tab . Indent::_(3)
 						. "<?php echo \$this->loadTemplate('" . $tempName
 						. "');?>";
 					$display[]   = $tab . Indent::_(2)
-						. "<?php  echo JHtml::_('bootstrap.endSlide'); ?>";
+						. "<?php  echo Html::_('bootstrap.endSlide'); ?>";
 					$slidecounter++;
 					// build the template file
 					$target = array('custom_admin' => CFactory::_('Config')->component_code_name);
@@ -21532,17 +21746,21 @@ class Interpretation extends Fields
 					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
 				}
 				$display[] = $tab . Indent::_(1)
-					. "<?php  echo JHtml::_('bootstrap.endAccordion'); ?>";
+					. "<?php  echo Html::_('bootstrap.endAccordion'); ?>";
 				$display[] = $tab . "</div>";
 				$display[] = Indent::_(2) . "</div>";
 				$display[] = Indent::_(2)
-					. "<?php echo JHtml::_('bootstrap.endTab'); ?>";
+					. "<?php echo Html::_('{$uitab}.endTab'); ?>";
 			}
 
 			$display[] = PHP_EOL . Indent::_(1)
-				. "<?php echo JHtml::_('bootstrap.endTabSet'); ?>";
-			$display[] = Indent::_(1) . "</div>";
+				. "<?php echo Html::_('{$uitab}.endTabSet'); ?>";
 		}
+		else
+		{
+			$display[] = Indent::_(2) . "</div>";
+		}
+		$display[] = Indent::_(1) . "</div>";
 		$display[] = "</div>";
 
 		// return the display
@@ -21577,7 +21795,7 @@ class Interpretation extends Fields
 					}
 					// build lang
 					$langName = $menu['settings']->name . '<br /><br />';
-					$langKey  = $this->langPrefix . '_DASHBOARD_'
+					$langKey  = CFactory::_('Config')->lang_prefix . '_DASHBOARD_'
 						. $menu['settings']->CODE;
 					// add to lang
 					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langKey, $langName);
@@ -21614,7 +21832,7 @@ class Interpretation extends Fields
 					}
 					// build lang
 					$langName = $menu['settings']->name . '<br /><br />';
-					$langKey  = $this->langPrefix . '_DASHBOARD_'
+					$langKey  = CFactory::_('Config')->lang_prefix . '_DASHBOARD_'
 						. $menu['settings']->CODE;
 					// add to lang
 					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langKey, $langName);
@@ -21655,7 +21873,7 @@ class Interpretation extends Fields
 					}
 					// build lang
 					$langName = $menu['name'] . '<br /><br />';
-					$langKey  = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
+					$langKey  = CFactory::_('Config')->lang_prefix . '_DASHBOARD_' . $nameUpper;
 					// add to lang
 					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langKey, $langName);
 
@@ -21711,7 +21929,7 @@ class Interpretation extends Fields
 					}
 					// build lang
 					$langName = $menu['name'] . '<br /><br />';
-					$langKey  = $this->langPrefix . '_DASHBOARD_' . $nameUpper;
+					$langKey  = CFactory::_('Config')->lang_prefix . '_DASHBOARD_' . $nameUpper;
 					// add to lang
 					CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langKey, $langName);
 
@@ -21742,13 +21960,13 @@ class Interpretation extends Fields
 		{
 			$menus = '';
 			// main lang prefix
-			$lang = $this->langPrefix . '_SUBMENU';
+			$lang = CFactory::_('Config')->lang_prefix . '_SUBMENU';
 			// set the code name
 			$codeName = CFactory::_('Config')->component_code_name;
 			// set default dashboard
 			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
-				$menus .= "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang
+				$menus .= "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang
 					. "_DASHBOARD'), 'index.php?option=com_" . $codeName
 					. "&view=" . $codeName . "', \$submenu === '" . $codeName
 					. "');";
@@ -21756,7 +21974,7 @@ class Interpretation extends Fields
 					CFactory::_('Config')->lang_target, $lang . '_DASHBOARD', 'Dashboard'
 				);
 			}
-			$catArray = array();
+			$catArray = [];
 			// loop over all the admin views
 			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
@@ -21774,6 +21992,7 @@ class Interpretation extends Fields
 				{
 					// setup access defaults
 					$tab      = "";
+					$has_permissions = false;
 					// check if the item has permissions.
 					if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.access'))
 					{
@@ -21786,9 +22005,10 @@ class Interpretation extends Fields
 						$menus .= PHP_EOL . Indent::_(2) . "{";
 						// add tab to lines to follow
 						$tab = Indent::_(1);
+						$has_permissions = true;
 					}
 					$menus .= PHP_EOL . Indent::_(2) . $tab
-						. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+						. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 						. $nameUpper . "'), 'index.php?option=com_" . $codeName
 						. "&view=" . $nameListCode . "', \$submenu === '"
 						. $nameListCode . "');";
@@ -21821,7 +22041,7 @@ class Interpretation extends Fields
 						}
 						// now load the menus
 						$menus .= PHP_EOL . Indent::_(2) . $tab
-							. "JHtmlSidebar::addEntry(JText:" . ":_('"
+							. "\JHtmlSidebar::addEntry(Text:" . ":_('"
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.name", 'error')
 							. "'), 'index.php?option=com_categories&view=categories&extension="
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
@@ -21830,7 +22050,7 @@ class Interpretation extends Fields
 						$catArray[] = $otherViews;
 					}
 					// check if the item has permissions.
-					if (CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.access'))
+					if ($has_permissions)
 					{
 						$menus .= PHP_EOL . Indent::_(2) . "}";
 					}
@@ -21840,16 +22060,16 @@ class Interpretation extends Fields
 					&& $view['joomla_fields'] == 1)
 				{
 					$menus .= PHP_EOL . Indent::_(2)
-						. "if (JComponentHelper::isEnabled('com_fields'))";
+						. "if (ComponentHelper::isEnabled('com_fields'))";
 					$menus .= PHP_EOL . Indent::_(2) . "{";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+						. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS'), 'index.php?option=com_fields&context=com_"
 						. $codeName . "." . $nameSingleCode
 						. "', \$submenu === 'fields.fields');";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+						. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_"
 						. $codeName . "." . $nameSingleCode
@@ -21922,9 +22142,7 @@ class Interpretation extends Fields
 		return $custom;
 	}
 
-	public function setCustomAdminSubMenu(&$view, &$codeName, &$lang, &$nr,
-	                                      &$menu, $type
-	)
+	public function setCustomAdminSubMenu(&$view, &$codeName, &$lang, &$nr, &$menu, $type)
 	{
 		if ($type === 'customMenu')
 		{
@@ -21985,7 +22203,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -21996,7 +22214,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -22043,7 +22261,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -22054,7 +22272,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "JHtmlSidebar::addEntry(JText:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -22072,7 +22290,7 @@ class Interpretation extends Fields
 		{
 			$menus = '';
 			// main lang prefix
-			$lang = $this->langPrefix . '_MENU';
+			$lang = CFactory::_('Config')->lang_prefix . '_MENU';
 			// set the code name
 			$codeName = CFactory::_('Config')->component_code_name;
 			// default prefix is none
@@ -22110,6 +22328,20 @@ class Interpretation extends Fields
 					'adminsys', $lang, CFactory::_('Component')->get('name')
 				);
 			}
+
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3
+				&& CFactory::_('Registry')->get('build.dashboard', null) === null)
+			{
+				$menus .= PHP_EOL . Indent::_(3) . '<menu option="com_'
+					. $codeName . '" view="' . $codeName . '">' . $lang
+					. '_DASHBOARD</menu>';
+
+				CFactory::_('Language')->set(
+					'adminsys', $lang . '_DASHBOARD',
+					'Dashboard'
+				);
+			}
+
 			// loop over the admin views
 			foreach (CFactory::_('Component')->get('admin_views') as $view)
 			{
@@ -22325,3469 +22557,193 @@ class Interpretation extends Fields
 		return $customMenu;
 	}
 
-	public function setConfigFieldsets($timer = 0)
+	/**
+	 * Set Config Fieldsets
+	 *
+	 * @param int $timer
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets')->set($timer);
+	 */
+	public function setConfigFieldsets(int $timer = 0): void
 	{
-		// main lang prefix
-		$lang = $this->langPrefix . '_CONFIG';
-		// for plugin event TODO change event api signatures
-		$component_context = CFactory::_('Config')->component_context;
-		if (1 == $timer) // this is before the admin views are build
-		{
-			// start loading Global params
-			$autorName                = StringHelper::html(
-				CFactory::_('Component')->get('author')
-			);
-			$autorEmail               = StringHelper::html(
-				CFactory::_('Component')->get('email')
-			);
-			$this->extensionsParams[] = '"autorName":"' . $autorName
-				. '","autorEmail":"' . $autorEmail . '"';
-			// set the custom fields
-			if (CFactory::_('Component')->isArray('config'))
-			{
-				// set component code name
-				$component      = CFactory::_('Config')->component_code_name;
-				$nameSingleCode = 'config';
-				$nameListCode   = 'configs';
-				// set place holders
-				$placeholders = array();
-				$placeholders[Placefix::_h('component')]
-					= CFactory::_('Config')->component_code_name;
-				$placeholders[Placefix::_h('Component')]
-					= StringHelper::safe(
-					CFactory::_('Component')->get('name_code'), 'F'
-				);
-				$placeholders[Placefix::_h('COMPONENT')]
-					= StringHelper::safe(
-					CFactory::_('Component')->get('name_code'), 'U'
-				);
-				$placeholders[Placefix::_h('view')]
-					= $nameSingleCode;
-				$placeholders[Placefix::_h('views')]
-					= $nameListCode;
-				$placeholders[Placefix::_('component')]
-					= CFactory::_('Config')->component_code_name;
-				$placeholders[Placefix::_('Component')]
-					= $placeholders[Placefix::_h('Component')];
-				$placeholders[Placefix::_('COMPONENT')]
-					= $placeholders[Placefix::_h('COMPONENT')];
-				$placeholders[Placefix::_('view')]
-					= $nameSingleCode;
-				$placeholders[Placefix::_('views')]
-					= $nameListCode;
-				// load the global placeholders
-				foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder => $gloabalValue)
-				{
-					$placeholders[$globalPlaceholder] = $gloabalValue;
-				}
-				$view     = [];
-				$viewType = 0;
-				// set the custom table key
-				$dbkey = 'g';
-				// TODO: change plubin signature
-				$config_ = CFactory::_('Component')->get('config');
-				// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
-				CFactory::_('Event')->trigger(
-					'jcb_ce_onBeforeSetConfigFieldsets',
-					array(&$component_context, &$timer,
-						&$this->configFieldSets,
-						&$this->configFieldSetsCustomField,
-						&$config_,
-						&$this->extensionsParams, &$placeholders)
-				);
-				// update global values
-				CFactory::_('Component')->set('config', $config_);
-				// build the config fields
-				foreach ($config_ as $field)
-				{
-					// get the xml string
-					$xmlField = CFactory::_('Compiler.Creator.Field.As.String')->get(
-						$field, $view, $viewType, $lang, $nameSingleCode,
-						$nameListCode, $placeholders, $dbkey, false
-					);
-
-					// make sure the xml is set and a string
-					if (isset($xmlField)
-						&& StringHelper::check(
-							$xmlField
-						))
-					{
-						$this->configFieldSetsCustomField[$field['tabname']][]
-							= $xmlField;
-						// set global params to db on install
-						$fieldName    = StringHelper::safe(
-							CFactory::_('Placeholder')->update(
-								GetHelper::between(
-									$xmlField, 'name="', '"'
-								), $placeholders
-							)
-						);
-						$fieldDefault = CFactory::_('Placeholder')->update(
-							GetHelper::between(
-								$xmlField, 'default="', '"'
-							), $placeholders
-						);
-						if (isset($field['custom_value'])
-							&& StringHelper::check(
-								$field['custom_value']
-							))
-						{
-							// add array if found
-							if ((strpos((string) $field['custom_value'], '["') !== false)
-								&& (strpos((string) $field['custom_value'], '"]')
-									!== false))
-							{
-								// load the Global checkin defautls
-								$this->extensionsParams[] = '"' . $fieldName
-									. '":' . $field['custom_value'];
-							}
-							else
-							{
-								// load the Global checkin defautls
-								$this->extensionsParams[] = '"' . $fieldName
-									. '":"' . $field['custom_value'] . '"';
-							}
-						}
-						elseif (StringHelper::check(
-							$fieldDefault
-						))
-						{
-							// load the Global checkin defautls
-							$this->extensionsParams[] = '"' . $fieldName . '":"'
-								. $fieldDefault . '"';
-						}
-					}
-				}
-			}
-			// first run we must set the globals
-			$this->setGlobalConfigFieldsets($lang, $autorName, $autorEmail);
-			$this->setSiteControlConfigFieldsets($lang);
-		}
-		elseif (2 == $timer) // this is after the admin views are build
-		{
-			// for plugin event TODO change event api signatures
-			$placeholders = CFactory::_('Placeholder')->active;
-			$config_ = CFactory::_('Component')->get('config');
-			// Trigger Event: jcb_ce_onBeforeSetConfigFieldsets
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeSetConfigFieldsets',
-				array(&$component_context, &$timer,
-					&$this->configFieldSets,
-					&$this->configFieldSetsCustomField,
-					&$config_, &$this->extensionsParams,
-					&$placeholders)
-			);
-			// update global values
-			CFactory::_('Component')->set('config', $config_);
-			// these field sets can only be added after admin view is build
-			$this->setGroupControlConfigFieldsets($lang);
-			// these can be added anytime really (but looks best after groups
-			$this->setUikitConfigFieldsets($lang);
-			$this->setGooglechartConfigFieldsets($lang);
-			$this->setEmailHelperConfigFieldsets($lang);
-			$this->setEncryptionConfigFieldsets($lang);
-			// these are the coustom settings
-			$this->setCustomControlConfigFieldsets($lang);
-		}
-		// for plugin event TODO change event api signatures
-		$placeholders = CFactory::_('Placeholder')->active;
-		// Trigger Event: jcb_ce_onAfterSetConfigFieldsets
-		CFactory::_('Event')->trigger(
-			'jcb_ce_onAfterSetConfigFieldsets',
-			array(&$component_context, &$timer, &$this->configFieldSets,
-				&$this->configFieldSetsCustomField, &$this->extensionsParams,
-				&$this->frontEndParams, &$placeholders)
-		);
-	}
-
-	public function setSiteControlConfigFieldsets($lang)
-	{
-		$front_end = array();
-		// do quick build of front-end views
-		if (CFactory::_('Component')->isArray('site_views'))
-		{
-			// load the names only to link the page params
-			foreach (CFactory::_('Component')->get('site_views') as $siteView)
-			{
-				// now load the view name to the front-end array
-				$front_end[] = $siteView['settings']->name;
-			}
-		}
-
-		// add frontend view stuff including menus
-		if (isset($this->configFieldSetsCustomField)
-			&& ArrayHelper::check(
-				$this->configFieldSetsCustomField
-			))
-		{
-			foreach ($this->configFieldSetsCustomField as $tab => &$tabFields)
-			{
-				$tabCode  = StringHelper::safe($tab)
-					. '_custom_config';
-				$tabUpper = StringHelper::safe($tab, 'U');
-				$tabLower = StringHelper::safe($tab);
-				// load the request id setters for menu views
-				$viewRequest = 'name="' . $tabLower . '_request_id';
-				foreach ($tabFields as $et => $id_field)
-				{
-					if (strpos((string) $id_field, $viewRequest) !== false)
-					{
-						$this->setRequestValues(
-							$tabLower, $id_field, $viewRequest, 'id',
-							'hasIdRequest'
-						);
-						unset($tabFields[$et]);
-					}
-					elseif (strpos((string) $id_field, '_request_id') !== false)
-					{
-						// not loaded to a tab "view" name
-						$_viewRequest = GetHelper::between(
-							$id_field, 'name="', '_request_id'
-						);
-						$searchIdKe   = 'name="' . $_viewRequest
-							. '_request_id';
-						$this->setRequestValues(
-							$_viewRequest, $id_field, $searchIdKe, 'id',
-							'hasIdRequest'
-						);
-						unset($tabFields[$et]);
-					}
-				}
-				// load the request catid setters for menu views
-				$viewRequestC = 'name="' . $tabLower . '_request_catid';
-				foreach ($tabFields as $ci => $catid_field)
-				{
-					if (strpos((string) $catid_field, $viewRequestC) !== false)
-					{
-
-						$this->setRequestValues(
-							$tabLower, $catid_field, $viewRequestC, 'catid',
-							'hasCatIdRequest'
-						);
-						unset($tabFields[$ci]);
-					}
-					elseif (strpos((string) $catid_field, '_request_catid') !== false)
-					{
-						// not loaded to a tab "view" name
-						$_viewRequestC = GetHelper::between(
-							$catid_field, 'name="', '_request_catid'
-						);
-						$searchCatidKe = 'name="' . $_viewRequestC
-							. '_request_catid';
-						$this->setRequestValues(
-							$_viewRequestC, $catid_field, $searchCatidKe,
-							'catid', 'hasCatIdRequest'
-						);
-						unset($tabFields[$ci]);
-					}
-				}
-				// load the global menu setters for single fields
-				$menuSetter   = $tabLower . '_menu';
-				$pageSettings = array();
-				foreach ($tabFields as $ct => $field)
-				{
-					if (strpos((string) $field, $menuSetter) !== false)
-					{
-						// set the values needed to insure route is done correclty
-						$this->hasMenuGlobal[$tabLower] = $menuSetter;
-					}
-					elseif (strpos((string) $field, '_menu"') !== false)
-					{
-						// not loaded to a tab "view" name
-						$_tabLower = GetHelper::between(
-							$field, 'name="', '_menu"'
-						);
-						// set the values needed to insure route is done correclty
-						$this->hasMenuGlobal[$_tabLower] = $_tabLower . '_menu';
-					}
-					else
-					{
-						$pageSettings[$ct] = $field;
-					}
-				}
-				// insure we load the needed params
-				if (in_array($tab, $front_end))
-				{
-					$this->frontEndParams[$tab] = $pageSettings;
-				}
-			}
-		}
-	}
-
-	protected function setRequestValues($view, $field, $search, $target, $store)
-	{
-		$key = GetHelper::between($field, $search, '"');
-		if (!StringHelper::check($key))
-		{
-			// is not having special var
-			$key = $target;
-			// update field
-			$field = str_replace($search . '"', 'name="' . $key . '"', (string) $field);
-		}
-		else
-		{
-			// update field
-			$field = str_replace(
-				$search . $key . '"', 'name="' . $key . '"', (string) $field
-			);
-		}
-		if (!isset($this->{$store}[$view]))
-		{
-			$this->{$store}[$view] = array();
-		}
-		// set the values needed for view requests to be made
-		$this->{$store}[$view][$key] = $field;
-	}
-
-	public function setCustomControlConfigFieldsets($lang)
-	{
-		// add custom new global fields set
-		if (isset($this->configFieldSetsCustomField)
-			&& ArrayHelper::check(
-				$this->configFieldSetsCustomField
-			))
-		{
-			foreach ($this->configFieldSetsCustomField as $tab => $tabFields)
-			{
-				$tabCode  = StringHelper::safe($tab)
-					. '_custom_config';
-				$tabUpper = StringHelper::safe($tab, 'U');
-				$tabLower = StringHelper::safe($tab);
-				// remove display targeted fields
-				$bucket = array();
-				foreach ($tabFields as $tabField)
-				{
-					$display = GetHelper::between(
-						$tabField, 'display="', '"'
-					);
-					if (!StringHelper::check($display)
-						|| $display === 'config')
-					{
-						// remove this display since it is not used in Joomla
-						$bucket[] = str_replace(
-							'display="config"', '', (string) $tabField
-						);
-					}
-				}
-				// only add the tab if it has values
-				if (ArrayHelper::check($bucket))
-				{
-					// setup lang
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_' . $tabUpper, $tab
-					);
-					// start field set
-					$this->configFieldSets[] = Indent::_(1) . "<fieldset";
-					$this->configFieldSets[] = Indent::_(2) . 'name="'
-						. $tabCode . '"';
-					$this->configFieldSets[] = Indent::_(2) . 'label="' . $lang
-						. '_' . $tabUpper . '">';
-					// set the fields
-					$this->configFieldSets[] = implode("", $bucket);
-					// close field set
-					$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-				}
-				// remove after loading
-				unset($this->configFieldSetsCustomField[$tab]);
-			}
-		}
-	}
-
-	public function setGroupControlConfigFieldsets($lang)
-	{
-		// start loading Group control params if needed
-		if (CFactory::_('Compiler.Builder.Field.Group.Control')->isActive())
-		{
-			// start building field set for config
-			$this->configFieldSets[] = Indent::_(1) . "<fieldset";
-			$this->configFieldSets[] = Indent::_(2) . 'name="group_config"';
-			$this->configFieldSets[] = Indent::_(2) . 'label="' . $lang
-				. '_GROUPS_LABEL"';
-			$this->configFieldSets[] = Indent::_(2) . 'description="' . $lang
-				. '_GROUPS_DESC">';
-			// setup lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_GROUPS_LABEL', "Target Groups"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_GROUPS_DESC',
-				"The Parameters for the targeted groups are set here."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_TARGET_GROUP_DESC',
-				"Set the group/s being targeted by this user type."
-			);
-
-			foreach (CFactory::_('Compiler.Builder.Field.Group.Control')->allActive() as $selector => $label)
-			{
-				$this->configFieldSets[] = Indent::_(2) . '<field name="'
-					. $selector . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="usergroup"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $label
-					. '"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $lang . '_TARGET_GROUP_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'multiple="true"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				// set params defaults
-				$this->extensionsParams[] = '"' . $selector . '":["2"]';
-			}
-			// add custom Target Groups fields
-			if (isset($this->configFieldSetsCustomField['Target Groups'])
-				&& ArrayHelper::check(
-					$this->configFieldSetsCustomField['Target Groups']
-				))
-			{
-				$this->configFieldSets[] = implode(
-					"", $this->configFieldSetsCustomField['Target Groups']
-				);
-				unset($this->configFieldSetsCustomField['Target Groups']);
-			}
-			// close that fieldse
-			$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-		}
+		CFactory::_('Compiler.Creator.Config.Fieldsets')->set($timer);
 	}
 
 	/**
-	 * @param $lang
-	 * @param $autorName
-	 * @param $autorEmail
+	 * Set Site Control Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Site.Control')->set($lang);
 	 */
-	public function setGlobalConfigFieldsets($lang, $autorName, $autorEmail)
+	public function setSiteControlConfigFieldsets(string $lang): void
 	{
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-
-		// start building field set for config
-		$this->configFieldSets[] = '<fieldset';
-		$this->configFieldSets[] = Indent::_(2)
-			. 'addrulepath="/administrator/components/com_' . $component
-			. '/models/rules"';
-		$this->configFieldSets[] = Indent::_(2)
-			. 'addfieldpath="/administrator/components/com_' . $component
-			. '/models/fields"';
-		$this->configFieldSets[] = Indent::_(2) . 'name="global_config"';
-		$this->configFieldSets[] = Indent::_(2) . 'label="' . $lang
-			. '_GLOBAL_LABEL"';
-		$this->configFieldSets[] = Indent::_(2) . 'description="' . $lang
-			. '_GLOBAL_DESC">';
-		// setup lang
-		CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_GLOBAL_LABEL', "Global");
-		CFactory::_('Language')->set(
-			CFactory::_('Config')->lang_target, $lang . '_GLOBAL_DESC', "The Global Parameters"
-		);
-		// add auto checkin if required
-		if (CFactory::_('Config')->get('add_checkin', false))
-		{
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . 'name="check_in"';
-			$this->configFieldSets[] = Indent::_(3) . 'type="list"';
-			$this->configFieldSets[] = Indent::_(3) . 'default="0"';
-			$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-				. '_CHECK_TIMER_LABEL"';
-			$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
-				. '_CHECK_TIMER_DESC">';
-			$this->configFieldSets[] = Indent::_(3) . '<option';
-			$this->configFieldSets[] = Indent::_(4) . 'value="-5 hours">'
-				. $lang . '_CHECK_TIMER_OPTION_ONE</option>';
-			$this->configFieldSets[] = Indent::_(3) . '<option';
-			$this->configFieldSets[] = Indent::_(4) . 'value="-12 hours">'
-				. $lang . '_CHECK_TIMER_OPTION_TWO</option>';
-			$this->configFieldSets[] = Indent::_(3) . '<option';
-			$this->configFieldSets[] = Indent::_(4) . 'value="-1 day">' . $lang
-				. '_CHECK_TIMER_OPTION_THREE</option>';
-			$this->configFieldSets[] = Indent::_(3) . '<option';
-			$this->configFieldSets[] = Indent::_(4) . 'value="-2 day">' . $lang
-				. '_CHECK_TIMER_OPTION_FOUR</option>';
-			$this->configFieldSets[] = Indent::_(3) . '<option';
-			$this->configFieldSets[] = Indent::_(4) . 'value="-1 week">' . $lang
-				. '_CHECK_TIMER_OPTION_FIVE</option>';
-			$this->configFieldSets[] = Indent::_(3) . '<option';
-			$this->configFieldSets[] = Indent::_(4) . 'value="0">' . $lang
-				. '_CHECK_TIMER_OPTION_SIX</option>';
-			$this->configFieldSets[] = Indent::_(2) . "</field>";
-			$this->configFieldSets[] = Indent::_(2)
-				. '<field type="spacer" name="spacerAuthor" hr="true" />';
-			// setup lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_LABEL', "Check in timer"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_DESC',
-				"Set the intervals for the auto checkin fuction of tables that checks out the items to an user."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_OPTION_ONE',
-				"Every five hours"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_OPTION_TWO',
-				"Every twelve hours"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_OPTION_THREE', "Once a day"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_OPTION_FOUR',
-				"Every second day"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_OPTION_FIVE', "Once a week"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHECK_TIMER_OPTION_SIX', "Never"
-			);
-			// load the Global checkin defautls
-			$this->extensionsParams[] = '"check_in":"-1 day"';
-		}
-		// set history control
-		if (CFactory::_('Config')->get('set_tag_history', false))
-		{
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . 'name="save_history"';
-			$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'class="btn-group btn-group-yesno"';
-			$this->configFieldSets[] = Indent::_(3) . 'default="1"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'label="JGLOBAL_SAVE_HISTORY_OPTIONS_LABEL"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'description="JGLOBAL_SAVE_HISTORY_OPTIONS_DESC"';
-			$this->configFieldSets[] = Indent::_(3) . ">";
-			$this->configFieldSets[] = Indent::_(3)
-				. '<option value="1">JYES</option>';
-			$this->configFieldSets[] = Indent::_(3)
-				. '<option value="0">JNO</option>';
-			$this->configFieldSets[] = Indent::_(2) . "</field>";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . 'name="history_limit"';
-			$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-			$this->configFieldSets[] = Indent::_(3) . 'filter="integer"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'label="JGLOBAL_HISTORY_LIMIT_OPTIONS_LABEL"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'description="JGLOBAL_HISTORY_LIMIT_OPTIONS_DESC"';
-			$this->configFieldSets[] = Indent::_(3) . 'default="10"';
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2)
-				. '<field type="spacer" name="spacerHistory" hr="true" />';
-			// load the Global checkin defautls
-			$this->extensionsParams[]
-				= '"save_history":"1","history_limit":"10"';
-		}
-		// add custom global fields
-		if (isset($this->configFieldSetsCustomField['Global'])
-			&& ArrayHelper::check(
-				$this->configFieldSetsCustomField['Global']
-			))
-		{
-			$this->configFieldSets[] = implode(
-				"", $this->configFieldSetsCustomField['Global']
-			);
-			unset($this->configFieldSetsCustomField['Global']);
-		}
-		// set the author details
-		$this->configFieldSets[] = Indent::_(2) . '<field name="autorTitle"';
-		$this->configFieldSets[] = Indent::_(3) . 'type="spacer"';
-		$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-			. '_AUTHOR"';
-		$this->configFieldSets[] = Indent::_(2) . "/>";
-		$this->configFieldSets[] = Indent::_(2) . '<field name="autorName"';
-		$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-		$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-			. '_AUTHOR_NAME_LABEL"';
-		$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
-			. '_AUTHOR_NAME_DESC"';
-		$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-		$this->configFieldSets[] = Indent::_(3) . 'default="' . $autorName
-			. '"';
-		$this->configFieldSets[] = Indent::_(3) . 'readonly="true"';
-		$this->configFieldSets[] = Indent::_(3) . 'class="readonly"';
-		$this->configFieldSets[] = Indent::_(2) . "/>";
-		$this->configFieldSets[] = Indent::_(2) . '<field name="autorEmail"';
-		$this->configFieldSets[] = Indent::_(3) . 'type="email"';
-		$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-			. '_AUTHOR_EMAIL_LABEL"';
-		$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
-			. '_AUTHOR_EMAIL_DESC"';
-		$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-		$this->configFieldSets[] = Indent::_(3) . 'default="' . $autorEmail
-			. '"';
-		$this->configFieldSets[] = Indent::_(3) . 'readonly="true"';
-		$this->configFieldSets[] = Indent::_(3) . 'class="readonly"';
-		$this->configFieldSets[] = Indent::_(2) . "/>";
-		// setup lang
-		CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_AUTHOR', "Author Info");
-		CFactory::_('Language')->set(
-			CFactory::_('Config')->lang_target, $lang . '_AUTHOR_NAME_LABEL', "Author Name"
-		);
-		CFactory::_('Language')->set(
-			CFactory::_('Config')->lang_target, $lang . '_AUTHOR_NAME_DESC',
-			"The name of the author of this component."
-		);
-		CFactory::_('Language')->set(
-			CFactory::_('Config')->lang_target, $lang . '_AUTHOR_EMAIL_LABEL', "Author Email"
-		);
-		CFactory::_('Language')->set(
-			CFactory::_('Config')->lang_target, $lang . '_AUTHOR_EMAIL_DESC',
-			"The email address of the author of this component."
-		);
-		// set if contributors were added
-		$langCont = $lang . '_CONTRIBUTOR';
-		if (CFactory::_('Config')->get('add_contributors', false)
-			&& CFactory::_('Component')->isArray('contributors'))
-		{
-			foreach (
-				CFactory::_('Component')->get('contributors') as $counter => $contributor
-			)
-			{
-				// make sure we dont use 0
-				$counter++;
-				// get the word for this number
-				$COUNTER = StringHelper::safe($counter, 'U');
-				// set the dynamic values
-				$cbTitle   = htmlspecialchars(
-					(string) $contributor['title'], ENT_XML1, 'UTF-8'
-				);
-				$cbName    = htmlspecialchars(
-					(string) $contributor['name'], ENT_XML1, 'UTF-8'
-				);
-				$cbEmail   = htmlspecialchars(
-					(string) $contributor['email'], ENT_XML1, 'UTF-8'
-				);
-				$cbWebsite = htmlspecialchars(
-					(string) $contributor['website'], ENT_XML1, 'UTF-8'
-				); // StringHelper::html($contributor['website']);
-				// load to the $fieldsets
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field type="spacer" name="spacerContributor' . $counter
-					. '" hr="true" />';
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="contributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="spacer"';
-				$this->configFieldSets[] = Indent::_(3) . 'class="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_' . $COUNTER . '"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="titleContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_TITLE_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_TITLE_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="' . $cbTitle
-					. '"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="nameContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_NAME_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_NAME_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="' . $cbName
-					. '"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="emailContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="email"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_EMAIL_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_EMAIL_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="' . $cbEmail
-					. '"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="linkContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="url"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_LINK_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_LINK_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="'
-					. $cbWebsite . '"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="useContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="list"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="'
-					. (int) $contributor['use'] . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_USE_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_USE_DESC">';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="0">'
-					. $langCont . '_USE_NONE</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="1">'
-					. $langCont . '_USE_EMAIL</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="2">'
-					. $langCont . '_USE_WWW</option>';
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="showContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="list"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="'
-					. (int) $contributor['show'] . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_SHOW_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_SHOW_DESC">';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="0">'
-					. $langCont . '_SHOW_NONE</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="1">'
-					. $langCont . '_SHOW_BACK</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="2">'
-					. $langCont . '_SHOW_FRONT</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="3">'
-					. $langCont . '_SHOW_ALL</option>';
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				// add the contributor
-				$this->theContributors .= PHP_EOL . Indent::_(1) . "@"
-					. strtolower((string) $contributor['title']) . Indent::_(2)
-					. $contributor['name'] . ' <' . $contributor['website']
-					. '>';
-				// setup lang
-				$Counter = StringHelper::safe($counter, 'Ww');
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $langCont . '_' . $COUNTER,
-					"Contributor " . $Counter
-				);
-				// load the Global checkin defautls
-				$this->extensionsParams[] = '"titleContributor' . $counter
-					. '":"' . $cbTitle . '"';
-				$this->extensionsParams[] = '"nameContributor' . $counter
-					. '":"' . $cbName . '"';
-				$this->extensionsParams[] = '"emailContributor' . $counter
-					. '":"' . $cbEmail . '"';
-				$this->extensionsParams[] = '"linkContributor' . $counter
-					. '":"' . $cbWebsite . '"';
-				$this->extensionsParams[] = '"useContributor' . $counter . '":"'
-					. (int) $contributor['use'] . '"';
-				$this->extensionsParams[] = '"showContributor' . $counter
-					. '":"' . (int) $contributor['show'] . '"';
-			}
-		}
-		// add more contributors if required
-		if (1 == CFactory::_('Component')->get('emptycontributors', 0))
-		{
-			if (isset($counter))
-			{
-				$min = $counter + 1;
-				unset($counter);
-			}
-			else
-			{
-				$min = 1;
-			}
-			$max = $min + CFactory::_('Component')->get('number') - 1;
-			$moreContributerFields = range($min, $max, 1);
-			foreach ($moreContributerFields as $counter)
-			{
-				$COUNTER = StringHelper::safe($counter, 'U');
-
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field type="spacer" name="spacerContributor' . $counter
-					. '" hr="true" />';
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="contributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="spacer"';
-				$this->configFieldSets[] = Indent::_(3) . 'class="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_' . $COUNTER . '"';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="titleContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_TITLE_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_TITLE_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="nameContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_NAME_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_NAME_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="emailContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="email"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_EMAIL_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_EMAIL_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="linkContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="url"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_LINK_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_LINK_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="useContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="list"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="0"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_USE_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_USE_DESC">';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="0">'
-					. $langCont . '_USE_NONE</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="1">'
-					. $langCont . '_USE_EMAIL</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="2">'
-					. $langCont . '_USE_WWW</option>';
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="showContributor' . $counter . '"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="list"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="0"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $langCont
-					. '_SHOW_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $langCont . '_SHOW_DESC">';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="0">'
-					. $langCont . '_SHOW_NONE</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="1">'
-					. $langCont . '_SHOW_BACK</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="2">'
-					. $langCont . '_SHOW_FRONT</option>';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="3">'
-					. $langCont . '_SHOW_ALL</option>';
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				// setup lang
-				$Counter = StringHelper::safe($counter, 'Ww');
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $langCont . '_' . $COUNTER,
-					"Contributor " . $Counter
-				);
-			}
-		}
-		if (CFactory::_('Config')->get('add_contributors', false)
-			|| CFactory::_('Component')->get('emptycontributors', 0) == 1)
-		{
-			// setup lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_TITLE_LABEL', "Contributor Job Title"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_TITLE_DESC',
-				"The job title that best describes the contributor's relationship to this component."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_NAME_LABEL', "Contributor Name"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_NAME_DESC',
-				"The name of this contributor."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_EMAIL_LABEL', "Contributor Email"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_EMAIL_DESC',
-				"The email of this contributor."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_LINK_LABEL', "Contributor Website"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_LINK_DESC',
-				"The link to this contributor's website."
-			);
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langCont . '_USE_LABEL', "Use");
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_USE_DESC',
-				"How should we link to this contributor."
-			);
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langCont . '_USE_NONE', "None");
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_USE_EMAIL', "Email"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_USE_WWW', "Website"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_SHOW_LABEL', "Show"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_SHOW_DESC',
-				"Select where you want this contributor's details to show in the component."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_SHOW_NONE', "Hide"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_SHOW_BACK', "Back-end"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_SHOW_FRONT', "Front-end"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $langCont . '_SHOW_ALL', "Both Front & Back-end"
-			);
-		}
-		// close that fieldset
-		$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Site.Control')->set($lang);
 	}
 
+	/**
+	 * Set the request values
+	 *
+	 * @param string $view
+	 * @param string $field
+	 * @param string $search
+	 * @param string $target
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Request')->set($view, $field, $search, $target);
+	 */
+	protected function setRequestValues(string $view, string $field, string $search, string $target): void
+	{
+		CFactory::_('Compiler.Creator.Request')->set($view, $field, $search, $target);
+	}
+
+	/**
+	 * Set Custom Control Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Customfield')->set($lang);
+	 */
+	public function setCustomControlConfigFieldsets(string $lang): void
+	{
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Customfield')->set($lang);
+	}
+
+	/**
+	 * Set Group Control Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Group.Control')->set($lang);
+	 */
+	public function setGroupControlConfigFieldsets(string $lang): void
+	{
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Group.Control')->set($lang);
+	}
+
+	/**
+	 * Set Global Config Fieldsets
+	 *
+	 * @param string $lang
+	 * @param string $authorName
+	 * @param string $authorEmail
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Global')->set($lang, $authorName, $authorEmail);
+	 */
+	public function setGlobalConfigFieldsets(string $lang, string $authorName, string $authorEmail): void
+	{
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Global')->set($lang, $authorName, $authorEmail);
+	}
+
+	/**
+	 * Set Uikit Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Uikit')->set($lang);
+	 */
 	public function setUikitConfigFieldsets($lang)
 	{
-		if (CFactory::_('Config')->uikit > 0)
-		{
-			// main lang prefix
-			$lang = $lang . '';
-			// start building field set for uikit functions
-			$this->configFieldSets[] = Indent::_(1) . "<fieldset";
-			$this->configFieldSets[] = Indent::_(2) . 'name="uikit_config"';
-			$this->configFieldSets[] = Indent::_(2) . 'label="' . $lang
-				. '_UIKIT_LABEL"';
-			$this->configFieldSets[] = Indent::_(2) . 'description="' . $lang
-				. '_UIKIT_DESC">';
-			// set tab lang
-			if (1 == CFactory::_('Config')->uikit)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_LABEL', "Uikit2 Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href='https://getuikit.com/v2/' target='_blank'>https://getuikit.com/v2/</a>"
-				);
-			}
-			elseif (2 == CFactory::_('Config')->uikit)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_LABEL',
-					"Uikit2 and Uikit3 Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href='https://getuikit.com/v2/' target='_blank'>version 2</a> or <a href='https://getuikit.com/' target='_blank'>version 3</a>"
-				);
-			}
-			elseif (3 == CFactory::_('Config')->uikit)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_LABEL', "Uikit3 Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_DESC', "<b>The Parameters for the uikit are set here.</b><br />Uikit is a lightweight and modular front-end framework
-for developing fast and powerful web interfaces. For more info visit <a href='https://getuikit.com/' target='_blank'>https://getuikit.com/</a>"
-				);
-			}
-
-			// set field lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_JQUERY_LOAD_LABEL', "Load Joomla jQuery"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_JQUERY_LOAD_DESC',
-				"Would you like to load the Joomla jQuery Framework?"
-			);
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_JQUERY_LOAD', "Load jQuery");
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_JQUERY_REMOVE', "Remove jQuery");
-
-			// set the field
-			$this->configFieldSets[] = Indent::_(2)
-				. '<field name="add_jquery_framework"';
-			$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
-			$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-				. '_JQUERY_LOAD_LABEL"';
-			$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
-				. '_JQUERY_LOAD_DESC"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'class="btn-group btn-group-yesno"';
-			$this->configFieldSets[] = Indent::_(3) . 'default="">';
-			$this->configFieldSets[] = Indent::_(3) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Option Set. -->';
-			$this->configFieldSets[] = Indent::_(3) . '<option value="0">';
-			$this->configFieldSets[] = Indent::_(4) . $lang
-				. '_JQUERY_REMOVE</option>"';
-			$this->configFieldSets[] = Indent::_(3) . '<option value="1">';
-			$this->configFieldSets[] = Indent::_(4) . $lang
-				. '_JQUERY_LOAD</option>"';
-			$this->configFieldSets[] = Indent::_(2) . "</field>";
-			// set params defaults
-			$this->extensionsParams[] = '"add_jquery_framework":"1"';
-
-			// add version selection
-			if (2 == CFactory::_('Config')->uikit)
-			{
-				// set field lang
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_VERSION_LABEL',
-					"Uikit Versions"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_VERSION_DESC',
-					"Select what version you would like to use"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_V2', "Version 2"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_V3', "Version 3"
-				);
-				// set the field
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="uikit_version"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-					. '_UIKIT_VERSION_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $lang . '_UIKIT_VERSION_DESC"';
-				$this->configFieldSets[] = Indent::_(3)
-					. 'class="btn-group btn-group-yesno"';
-				$this->configFieldSets[] = Indent::_(3) . 'default="2">';
-				$this->configFieldSets[] = Indent::_(3) . '<!--'
-					. Line::_(__Line__, __Class__) . ' Option Set. -->';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="2">';
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. '_UIKIT_V2</option>"';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="3">';
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. '_UIKIT_V3</option>"';
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				// set params defaults
-				$this->extensionsParams[] = '"uikit_version":"2"';
-			}
-
-			// set field lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_UIKIT_LOAD_LABEL', "Loading Options"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_UIKIT_LOAD_DESC',
-				"Set the uikit loading option."
-			);
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_AUTO_LOAD', "Auto");
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_FORCE_LOAD', "Force");
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_DONT_LOAD', "Not");
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_ONLY_EXTRA', "Only Extra"
-			);
-			// set the field
-			$this->configFieldSets[] = Indent::_(2)
-				. '<field name="uikit_load"';
-			$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
-			$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-				. '_UIKIT_LOAD_LABEL"';
-			$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
-				. '_UIKIT_LOAD_DESC"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'class="btn-group btn-group-yesno"';
-			$this->configFieldSets[] = Indent::_(3) . 'default="">';
-			$this->configFieldSets[] = Indent::_(3) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Option Set. -->';
-			$this->configFieldSets[] = Indent::_(3) . '<option value="">';
-			$this->configFieldSets[] = Indent::_(4) . $lang
-				. '_AUTO_LOAD</option>"';
-			$this->configFieldSets[] = Indent::_(3) . '<option value="1">';
-			$this->configFieldSets[] = Indent::_(4) . $lang
-				. '_FORCE_LOAD</option>"';
-			if (2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-			{
-				$this->configFieldSets[] = Indent::_(3) . '<option value="3">';
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. '_ONLY_EXTRA</option>"';
-			}
-			$this->configFieldSets[] = Indent::_(3) . '<option value="2">';
-			$this->configFieldSets[] = Indent::_(4) . $lang
-				. '_DONT_LOAD</option>"';
-			$this->configFieldSets[] = Indent::_(2) . "</field>";
-			// set params defaults
-			$this->extensionsParams[] = '"uikit_load":"1"';
-
-			// set field lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_UIKIT_MIN_LABEL', "Load Minified"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_UIKIT_MIN_DESC',
-				"Should the minified version of uikit files be loaded?"
-			);
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_YES', "Yes");
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_NO', "No");
-			// set the field
-			$this->configFieldSets[] = Indent::_(2) . '<field name="uikit_min"';
-			$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
-			$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-				. '_UIKIT_MIN_LABEL"';
-			$this->configFieldSets[] = Indent::_(3) . 'description="' . $lang
-				. '_UIKIT_MIN_DESC"';
-			$this->configFieldSets[] = Indent::_(3)
-				. 'class="btn-group btn-group-yesno"';
-			$this->configFieldSets[] = Indent::_(3) . 'default="">';
-			$this->configFieldSets[] = Indent::_(3) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Option Set. -->';
-			$this->configFieldSets[] = Indent::_(3) . '<option value="">';
-			$this->configFieldSets[] = Indent::_(4) . $lang . '_NO</option>"';
-			$this->configFieldSets[] = Indent::_(3) . '<option value=".min">';
-			$this->configFieldSets[] = Indent::_(4) . $lang . '_YES</option>"';
-			$this->configFieldSets[] = Indent::_(2) . "</field>";
-			// set params defaults
-			$this->extensionsParams[] = '"uikit_min":""';
-
-			if (2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-			{
-				// set field lang
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_STYLE_LABEL', "css Style"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_UIKIT_STYLE_DESC',
-					"Set the css style that should be used."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_FLAT_LOAD', "Flat"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ALMOST_FLAT_LOAD', "Almost Flat"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_GRADIANT_LOAD', "Gradient"
-				);
-				// set the field
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="uikit_style"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="radio"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-					. '_UIKIT_STYLE_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $lang . '_UIKIT_STYLE_DESC"';
-				$this->configFieldSets[] = Indent::_(3)
-					. 'class="btn-group btn-group-yesno"';
-				if (2 == CFactory::_('Config')->uikit)
-				{
-					$this->configFieldSets[] = Indent::_(3)
-						. 'showon="uikit_version:2"';
-				}
-				$this->configFieldSets[] = Indent::_(3) . 'default="">';
-				$this->configFieldSets[] = Indent::_(3) . '<!--'
-					. Line::_(__Line__, __Class__) . ' Option Set. -->';
-				$this->configFieldSets[] = Indent::_(3) . '<option value="">';
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. '_FLAT_LOAD</option>"';
-				$this->configFieldSets[] = Indent::_(3)
-					. '<option value=".almost-flat">';
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. '_ALMOST_FLAT_LOAD</option>"';
-				$this->configFieldSets[] = Indent::_(3)
-					. '<option value=".gradient">';
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. '_GRADIANT_LOAD</option>"';
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				// set params defaults
-				$this->extensionsParams[] = '"uikit_style":""';
-			}
-			// add custom Uikit Settings fields
-			if (isset($this->configFieldSetsCustomField['Uikit Settings'])
-				&& ArrayHelper::check(
-					$this->configFieldSetsCustomField['Uikit Settings']
-				))
-			{
-				$this->configFieldSets[] = implode(
-					"", $this->configFieldSetsCustomField['Uikit Settings']
-				);
-				unset($this->configFieldSetsCustomField['Uikit Settings']);
-			}
-			// close that fieldset
-			$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-		}
-	}
-
-	public function setEmailHelperConfigFieldsets($lang)
-	{
-		if (CFactory::_('Component')->get('add_email_helper'))
-		{
-			// main lang prefix
-			$lang = $lang . '';
-			// set main lang string
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_MAIL_CONFIGURATION', "Mail Configuration"
-			);
-			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_DKIM', "DKIM");
-			// start building field set for email helper functions
-			$this->configFieldSets[] = PHP_EOL . Indent::_(1) . "<fieldset";
-			$this->configFieldSets[] = Indent::_(2)
-				. "name=\"mail_configuration_custom_config\"";
-			$this->configFieldSets[] = Indent::_(2) . "label=\"" . $lang
-				. "_MAIL_CONFIGURATION\">";
-			// add custom Mail Configurations
-			if (isset($this->configFieldSetsCustomField['Mail Configuration'])
-				&& ArrayHelper::check(
-					$this->configFieldSetsCustomField['Mail Configuration']
-				))
-			{
-				$this->configFieldSets[] = implode(
-					"", $this->configFieldSetsCustomField['Mail Configuration']
-				);
-				unset($this->configFieldSetsCustomField['Mail Configuration']);
-			}
-			else
-			{
-				// set all the laguage strings
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MAILONLINE_LABEL', "Mailer Status"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MAILONLINE_DESCRIPTION',
-					"Warning this will stop all emails from going out."
-				);
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_ON', "On");
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_OFF', "Off");
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MAILER_LABEL', "Mailer"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MAILER_DESCRIPTION',
-					"Select what mailer you would like to use to send emails."
-				);
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_GLOBAL', "Global");
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_PHP_MAIL', "PHP Mail"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SENDMAIL', "Sendmail"
-				);
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_SMTP', "SMTP");
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_EMAILFROM_LABEL', " From Email"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_EMAILFROM_DESCRIPTION',
-					"The global email address that will be used to send system email."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_EMAILFROM_HINT', "Email Address Here"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_FROMNAME_LABEL', "From Name"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_FROMNAME_DESCRIPTION',
-					"Text displayed in the header &quot;From:&quot; field when sending a site email. Usually the site name."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_FROMNAME_HINT', "From Name Here"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_EMAILREPLY_LABEL', " Reply to Email"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_EMAILREPLY_DESCRIPTION',
-					"The global email address that will be used to set as the reply email. (leave blank for none)"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_EMAILREPLY_HINT',
-					"Email Address Here"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_REPLYNAME_LABEL', "Reply to Name"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_REPLYNAME_DESCRIPTION',
-					"Text displayed in the header &quot;Reply To:&quot; field when replying to the site email. Usually the the person that receives the response. (leave blank for none)"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_REPLYNAME_HINT', "Reply Name Here"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SENDMAIL_LABEL', "Sendmail Path"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SENDMAIL_DESCRIPTION',
-					"Enter the path to the sendmail program directory on your host server."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SENDMAIL_HINT', "/usr/sbin/sendmail"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPAUTH_LABEL',
-					"SMTP Authentication"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPAUTH_DESCRIPTION',
-					"Select yes if your SMTP host requires SMTP Authentication."
-				);
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_YES', "Yes");
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_NO', "No");
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPSECURE_LABEL', "SMTP Security"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPSECURE_DESCRIPTION',
-					"Select the security model that your SMTP server uses."
-				);
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_NONE', "None");
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_SSL', "SSL");
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_TLS', "TLS");
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPPORT_LABEL', "SMTP Port"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPPORT_DESCRIPTION',
-					"Enter the port number of your SMTP server. Use 25 for most unsecured servers and 465 for most secure servers."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPPORT_HINT', "25"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPUSER_LABEL', "SMTP Username"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPUSER_DESCRIPTION',
-					"Enter the username for access to the SMTP host."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPUSER_HINT', "email@demo.com"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPPASS_LABEL', "SMTP Password"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPPASS_DESCRIPTION',
-					"Enter the password for access to the SMTP host."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPHOST_LABEL', "SMTP Host"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPHOST_DESCRIPTION',
-					"Enter the name of the SMTP host."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_SMTPHOST_HINT', "localhost"
-				);
-
-				// set the mailer fields
-				$this->configFieldSets[] = PHP_EOL . Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Mailonline Field. Type: Radio. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"radio\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"mailonline\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_MAILONLINE_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_MAILONLINE_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"btn-group btn-group-yesno\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"1\">";
-				$this->configFieldSets[] = Indent::_(3) . "<!--"
-					. Line::_(__Line__, __Class__) . " Option Set. -->";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"1\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_ON</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"0\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_OFF</option>";
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Mailer Field. Type: List. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"list\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"mailer\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_MAILER_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_MAILER_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"list_class\"";
-				$this->configFieldSets[] = Indent::_(3) . "multiple=\"false\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"WORD\"";
-				$this->configFieldSets[] = Indent::_(3) . "required=\"true\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"global\">";
-				$this->configFieldSets[] = Indent::_(3) . "<!--"
-					. Line::_(__Line__, __Class__) . " Option Set. -->";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"global\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_GLOBAL</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"default\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_PHP_MAIL</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"sendmail\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_SENDMAIL</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"smtp\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_SMTP</option>";
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Emailfrom Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"emailfrom\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_EMAILFROM_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_EMAILFROM_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3) . "validate=\"email\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add email address here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_EMAILFROM_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp,sendmail,default\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Fromname Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"fromname\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_FROMNAME_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_FROMNAME_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add some name here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_FROMNAME_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp,sendmail,default\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Email reply to Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"replyto\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_EMAILREPLY_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_EMAILREPLY_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3) . "validate=\"email\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add email address here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_EMAILREPLY_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp,sendmail,default\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Reply to name Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"replytoname\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_REPLYNAME_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_REPLYNAME_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add some name here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_REPLYNAME_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp,sendmail,default\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Sendmail Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"sendmail\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SENDMAIL_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SENDMAIL_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "required=\"false\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"PATH\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add path to you local sendmail here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_SENDMAIL_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:sendmail\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Smtpauth Field. Type: Radio. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"radio\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"smtpauth\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SMTPAUTH_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SMTPAUTH_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"btn-group btn-group-yesno\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"0\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp\">";
-				$this->configFieldSets[] = Indent::_(3) . "<!--"
-					. Line::_(__Line__, __Class__) . " Option Set. -->";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"1\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_YES</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"0\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_NO</option>";
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Smtpsecure Field. Type: List. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"list\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"smtpsecure\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SMTPSECURE_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SMTPSECURE_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"list_class\"";
-				$this->configFieldSets[] = Indent::_(3) . "multiple=\"false\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"WORD\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"none\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp\">";
-				$this->configFieldSets[] = Indent::_(3) . "<!--"
-					. Line::_(__Line__, __Class__) . " Option Set. -->";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"none\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_NONE</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"ssl\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_SSL</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"tls\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_TLS</option>";
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Smtpport Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"smtpport\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SMTPPORT_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"25\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SMTPPORT_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add the port number of your SMTP server here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_SMTPPORT_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Smtpuser Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"smtpuser\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SMTPUSER_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SMTPUSER_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add the username for SMTP server here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_SMTPUSER_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Smtppass Field. Type: Password. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"password\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"smtppass\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SMTPPASS_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SMTPPASS_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"raw\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add the password for SMTP server here.\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Smtphost Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"smtphost\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_SMTPHOST_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "default=\"localhost\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_SMTPHOST_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add the name of the SMTP host here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_SMTPHOST_HINT\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "showon=\"mailer:smtp\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-			}
-			// close that fieldset
-			$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-
-			// start dkim field set
-			$this->configFieldSets[] = Indent::_(1) . "<fieldset";
-			$this->configFieldSets[] = Indent::_(2)
-				. "name=\"dkim_custom_config\"";
-			$this->configFieldSets[] = Indent::_(2) . "label=\"" . $lang
-				. "_DKIM\">";
-			// add custom DKIM fields
-			if (isset($this->configFieldSetsCustomField['DKIM'])
-				&& ArrayHelper::check(
-					$this->configFieldSetsCustomField['DKIM']
-				))
-			{
-				$this->configFieldSets[] = implode(
-					"", $this->configFieldSetsCustomField['DKIM']
-				);
-				unset($this->configFieldSetsCustomField['DKIM']);
-			}
-			else
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_LABEL', "Enable DKIM"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_DESCRIPTION',
-					"Set this option to Yes if you want to sign your emails using DKIM."
-				);
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_YES', "Yes");
-				CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $lang . '_NO', "No");
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_DOMAIN_LABEL', "Domain"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_DOMAIN_DESCRIPTION',
-					"Set the domain. Eg. domain.com"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_DOMAIN_HINT', "domain.com"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_SELECTOR_LABEL', "Selector"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_SELECTOR_DESCRIPTION',
-					"Set your DKIM/DNS selector."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_SELECTOR_HINT', "vdm"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_PASSPHRASE_LABEL', "Passphrase"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_PASSPHRASE_DESCRIPTION',
-					"Enter your passphrase here."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_IDENTITY_LABEL', "Identity"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_IDENTITY_DESCRIPTION',
-					"Set DKIM identity. This can be in the format of an email address 'you@yourdomain.com' typically used as the source of the email."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_IDENTITY_HINT',
-					"you@yourdomain.com"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_PRIVATE_KEY_LABEL',
-					"Private key"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_PRIVATE_KEY_DESCRIPTION',
-					"set private key"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_PUBLIC_KEY_LABEL', "Public key"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_PUBLIC_KEY_DESCRIPTION',
-					"set public key"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_NOTE_DKIM_USE_LABEL',
-					"Server Configuration"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_NOTE_DKIM_USE_DESCRIPTION', "<p>Using the below details, you need to configure your DNS by adding a TXT record on your domain: <b><span id='a_dkim_domain'></span></b></p>
-<script>
-jQuery(document).ready(function()
-{
-	// house cleaning
-        if( !jQuery('#jform_dkim_domain').val() ) {
-            jQuery('#jform_dkim_domain').val(window.location.hostname);
-        }
-        jQuery('#jform_dkim_key').click(function(){
-            jQuery(this).select();
-        });
-        jQuery('#jform_dkim_value').click(function(){
-            jQuery(this).select();
-        });
-        vdm_dkim();
-});
-
-function vdm_dkim() {
-        jQuery('#a_dkim_domain').text(jQuery('#jform_dkim_domain').val());
-	jQuery('#jform_dkim_key').val(jQuery('#jform_dkim_selector').val() + '._domainkey');
-	if( !jQuery('#jform_dkim_public_key').val() ) {
-	        jQuery('#jform_dkim_value').val('v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY');
-        } else {
-	        jQuery('#jform_dkim_value').val('v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=' + jQuery('#jform_dkim_public_key').val());
-        }
-}
-</script>"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_KEY_LABEL', "Key"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_KEY_DESCRIPTION',
-					"This is the KEY to use in the DNS record."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_KEY_HINT', "vdm._domainkey"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_VALUE_LABEL', "Value"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_VALUE_DESCRIPTION',
-					"This is the TXT value to use in the DNS. Replace the PUBLICKEY with your public key."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_DKIM_VALUE_HINT',
-					"v=DKIM1;k=rsa;g=*;s=email;h=sha1;t=s;p=PUBLICKEY"
-				);
-
-
-				$this->configFieldSets[] = PHP_EOL . Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim Field. Type: Radio. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"radio\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"dkim\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"btn-group btn-group-yesno\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"0\"";
-				$this->configFieldSets[] = Indent::_(3) . "required=\"true\">";
-				$this->configFieldSets[] = Indent::_(3) . "<!--"
-					. Line::_(__Line__, __Class__) . " Option Set. -->";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"1\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_YES</option>";
-				$this->configFieldSets[] = Indent::_(3)
-					. "<option value=\"0\">";
-				$this->configFieldSets[] = Indent::_(4) . $lang
-					. "_NO</option>";
-				$this->configFieldSets[] = Indent::_(2) . "</field>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_domain Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"dkim_domain\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_DOMAIN_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_DOMAIN_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add DKIM Domain here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_DKIM_DOMAIN_HINT\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "onchange=\"vdm_dkim();\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_selector Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"dkim_selector\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_SELECTOR_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "default=\"vdm\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_SELECTOR_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add DKIM/DNS selector here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_DKIM_SELECTOR_HINT\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "onchange=\"vdm_dkim();\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_passphrase Field. Type: Password. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"password\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"dkim_passphrase\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_PASSPHRASE_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_PASSPHRASE_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"raw\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add  passphrase here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_identity Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"dkim_identity\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_IDENTITY_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"60\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_IDENTITY_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"raw\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add  DKIM Identity here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_DKIM_IDENTITY_HINT\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_private_key Field. Type: Textarea. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"textarea\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"dkim_private_key\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_PRIVATE_KEY_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "rows=\"15\"";
-				$this->configFieldSets[] = Indent::_(3) . "cols=\"5\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_PRIVATE_KEY_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"input-xxlarge span12\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_public_key Field. Type: Textarea. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"textarea\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "name=\"dkim_public_key\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_PUBLIC_KEY_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "rows=\"5\"";
-				$this->configFieldSets[] = Indent::_(3) . "cols=\"5\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_PUBLIC_KEY_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "class=\"input-xxlarge span12\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "onchange=\"vdm_dkim();\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Note_dkim_use Field. Type: Note. A None Database Field. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2)
-					. "<field type=\"note\" name=\"note_dkim_use\" label=\""
-					. $lang . "_NOTE_DKIM_USE_LABEL\" description=\"" . $lang
-					. "_NOTE_DKIM_USE_DESCRIPTION\" heading=\"h4\" class=\"note_dkim_use\" showon=\"dkim:1\" />";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_key Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"dkim_key\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_KEY_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"40\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"150\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_KEY_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add KEY here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_DKIM_KEY_HINT\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				$this->configFieldSets[] = Indent::_(2) . "<!--"
-					. Line::_(__Line__, __Class__)
-					. " Dkim_value Field. Type: Text. (joomla) -->";
-				$this->configFieldSets[] = Indent::_(2) . "<field";
-				$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-				$this->configFieldSets[] = Indent::_(3) . "name=\"dkim_value\"";
-				$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-					. "_DKIM_VALUE_LABEL\"";
-				$this->configFieldSets[] = Indent::_(3) . "size=\"80\"";
-				$this->configFieldSets[] = Indent::_(3) . "maxlength=\"350\"";
-				$this->configFieldSets[] = Indent::_(3) . "description=\""
-					. $lang . "_DKIM_VALUE_DESCRIPTION\"";
-				$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-				$this->configFieldSets[] = Indent::_(3) . "filter=\"STRING\"";
-				$this->configFieldSets[] = Indent::_(3)
-					. "message=\"Error! Please add TXT record here.\"";
-				$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-					. "_DKIM_VALUE_HINT\"";
-				$this->configFieldSets[] = Indent::_(3) . "showon=\"dkim:1\"";
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-			}
-			// close that fieldset
-			$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-		}
-	}
-
-	public function setGooglechartConfigFieldsets($lang)
-	{
-		if (CFactory::_('Config')->get('google_chart', false))
-		{
-			$this->configFieldSets[] = PHP_EOL . Indent::_(1) . "<fieldset";
-			$this->configFieldSets[] = Indent::_(2)
-				. "name=\"googlechart_config\"";
-			$this->configFieldSets[] = Indent::_(2) . "label=\"" . $lang
-				. "_CHART_SETTINGS_LABEL\"";
-			$this->configFieldSets[] = Indent::_(2) . "description=\"" . $lang
-				. "_CHART_SETTINGS_DESC\">";
-			$this->configFieldSets[] = Indent::_(2);
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"note\" name=\"chart_admin_naote\" class=\"alert alert-info\" label=\""
-				. $lang . "_ADMIN_CHART_NOTE_LABEL\" description=\"" . $lang
-				. "_ADMIN_CHART_NOTE_DESC\"  />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_chartbackground Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_chartbackground\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#F7F7FA\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTBACKGROUND_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTBACKGROUND_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_mainwidth Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_mainwidth\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_MAINWIDTH_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_MAINWIDTH_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add area width here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_MAINWIDTH_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartadmin_hr_a Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartadmin_hr_a\" hr=\"true\" class=\"spacer_chartadmin_hr_a\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_chartareatop Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_chartareatop\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTAREATOP_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTAREATOP_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add top spacing here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_CHARTAREATOP_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_chartarealeft Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_chartarealeft\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTAREALEFT_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTAREALEFT_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add left spacing here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_CHARTAREALEFT_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_chartareawidth Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_chartareawidth\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTAREAWIDTH_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTAREAWIDTH_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add chart width here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_CHARTAREAWIDTH_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartadmin_hr_b Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartadmin_hr_b\" hr=\"true\" class=\"spacer_chartadmin_hr_b\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_legendtextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_legendtextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_legendtextstylefontsize Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_legendtextstylefontsize\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTSIZE_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTSIZE_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add size of the legend here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTSIZE_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartadmin_hr_c Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartadmin_hr_c\" hr=\"true\" class=\"spacer_chartadmin_hr_c\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_vaxistextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_vaxistextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_VAXISTEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_VAXISTEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartadmin_hr_d Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartadmin_hr_d\" hr=\"true\" class=\"spacer_chartadmin_hr_d\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Admin_haxistextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_haxistextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_HAXISTEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_HAXISTEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Admin_haxistitletextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"admin_haxistitletextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_HAXISTITLETEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_HAXISTITLETEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2);
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"note\" name=\"chart_site_note\" class=\"alert alert-info\" label=\""
-				. $lang . "_SITE_CHART_NOTE_LABEL\" description=\"" . $lang
-				. "_SITE_CHART_NOTE_DESC\"  />";
-			$this->configFieldSets[] = Indent::_(2);
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_chartbackground Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_chartbackground\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#F7F7FA\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTBACKGROUND_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTBACKGROUND_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_mainwidth Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3) . "name=\"site_mainwidth\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_MAINWIDTH_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_MAINWIDTH_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add area width here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_MAINWIDTH_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartsite_hr_a Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartsite_hr_a\" hr=\"true\" class=\"spacer_chartsite_hr_a\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_chartareatop Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_chartareatop\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTAREATOP_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTAREATOP_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add top spacing here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_CHARTAREATOP_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_chartarealeft Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_chartarealeft\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTAREALEFT_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTAREALEFT_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add left spacing here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_CHARTAREALEFT_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_chartareawidth Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_chartareawidth\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_CHARTAREAWIDTH_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_CHARTAREAWIDTH_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add chart width here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_CHARTAREAWIDTH_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartsite_hr_b Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartsite_hr_b\" hr=\"true\" class=\"spacer_chartsite_hr_b\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_legendtextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_legendtextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_legendtextstylefontsize Field. Type: Text. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"text\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_legendtextstylefontsize\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTSIZE_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "size=\"20\"";
-			$this->configFieldSets[] = Indent::_(3) . "maxlength=\"50\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTSIZE_DESC\"";
-			$this->configFieldSets[] = Indent::_(3) . "class=\"text_area\"";
-			$this->configFieldSets[] = Indent::_(3) . "filter=\"INT\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "message=\"Error! Please add size of the legend here.\"";
-			$this->configFieldSets[] = Indent::_(3) . "hint=\"" . $lang
-				. "_LEGENDTEXTSTYLEFONTSIZE_HINT\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartsite_hr_c Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartsite_hr_c\" hr=\"true\" class=\"spacer_chartsite_hr_c\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_vaxistextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_vaxistextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_VAXISTEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_VAXISTEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Spacer_chartsite_hr_d Field. Type: Spacer. A None Database Field. -->";
-			$this->configFieldSets[] = Indent::_(2)
-				. "<field type=\"spacer\" name=\"spacer_chartsite_hr_d\" hr=\"true\" class=\"spacer_chartsite_hr_d\" />";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				) . " Site_haxistextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_haxistextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_HAXISTEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_HAXISTEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-			$this->configFieldSets[] = Indent::_(2) . "<!--" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Site_haxistitletextstylefontcolor Field. Type: Color. -->";
-			$this->configFieldSets[] = Indent::_(2) . "<field";
-			$this->configFieldSets[] = Indent::_(3) . "type=\"color\"";
-			$this->configFieldSets[] = Indent::_(3)
-				. "name=\"site_haxistitletextstylefontcolor\"";
-			$this->configFieldSets[] = Indent::_(3) . "default=\"#63B1F2\"";
-			$this->configFieldSets[] = Indent::_(3) . "label=\"" . $lang
-				. "_HAXISTITLETEXTSTYLEFONTCOLOR_LABEL\"";
-			$this->configFieldSets[] = Indent::_(3) . "description=\"" . $lang
-				. "_HAXISTITLETEXTSTYLEFONTCOLOR_DESC\"";
-			$this->configFieldSets[] = Indent::_(2) . "/>";
-
-			// add custom Encryption Settings fields
-			if (isset($this->configFieldSetsCustomField['Chart Settings'])
-				&& ArrayHelper::check(
-					$this->configFieldSetsCustomField['Chart Settings']
-				))
-			{
-				$this->configFieldSets[] = implode(
-					"", $this->configFieldSetsCustomField['Chart Settings']
-				);
-				unset($this->configFieldSetsCustomField['Chart Settings']);
-			}
-
-			$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-
-			// set params defaults
-			$this->extensionsParams[]
-				= '"admin_chartbackground":"#F7F7FA","admin_mainwidth":"1000","admin_chartareatop":"20","admin_chartarealeft":"20","admin_chartareawidth":"170","admin_legendtextstylefontcolor":"10","admin_legendtextstylefontsize":"20","admin_vaxistextstylefontcolor":"#63B1F2","admin_haxistextstylefontcolor":"#63B1F2","admin_haxistitletextstylefontcolor":"#63B1F2","site_chartbackground":"#F7F7FA","site_mainwidth":"1000","site_chartareatop":"20","site_chartarealeft":"20","site_chartareawidth":"170","site_legendtextstylefontcolor":"10","site_legendtextstylefontsize":"20","site_vaxistextstylefontcolor":"#63B1F2","site_haxistextstylefontcolor":"#63B1F2","site_haxistitletextstylefontcolor":"#63B1F2"';
-
-			// set field lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHART_SETTINGS_LABEL', "Chart Settings"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHART_SETTINGS_DESC',
-				"The Google Chart Display Settings Are Made Here."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_ADMIN_CHART_NOTE_LABEL', "Admin Settings"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_ADMIN_CHART_NOTE_DESC',
-				"The following settings are used on the back-end of the site called (admin)."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_SITE_CHART_NOTE_LABEL', "Site Settings"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_SITE_CHART_NOTE_DESC',
-				"The following settings are used on the front-end of the site called (site)."
-			);
-
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREALEFT_DESC',
-				"Set in pixels the spacing from the left of the chart area to the beginning of the chart it self. Please don't add the px sign"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREALEFT_HINT', "170"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREALEFT_LABEL', "Left Spacing"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREATOP_DESC',
-				"Set in pixels the spacing from the top of the chart area to the beginning of the chart it self. Please don't add the px sign"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREATOP_HINT', "20"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREATOP_LABEL', "Top Spacing"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREAWIDTH_DESC',
-				"Set in % the width of the chart it self inside the chart area. Please don't add the % sign"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREAWIDTH_HINT', "60"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTAREAWIDTH_LABEL', "Chart Width"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTBACKGROUND_DESC',
-				"Select the chart background color here."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_CHARTBACKGROUND_LABEL',
-				"Chart Background"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_HAXISTEXTSTYLEFONTCOLOR_DESC',
-				"Select the horizontal axis font color."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_HAXISTEXTSTYLEFONTCOLOR_LABEL',
-				"hAxis Font Color"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_HAXISTITLETEXTSTYLEFONTCOLOR_DESC',
-				"Select the horizontal axis title's font color."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_HAXISTITLETEXTSTYLEFONTCOLOR_LABEL',
-				"hAxis Title Font Color"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_LEGENDTEXTSTYLEFONTCOLOR_DESC',
-				"Select the legend font color."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_LEGENDTEXTSTYLEFONTCOLOR_LABEL',
-				"Legend Font Color"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_LEGENDTEXTSTYLEFONTSIZE_DESC',
-				"Set in pixels the font size of the legend"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_LEGENDTEXTSTYLEFONTSIZE_HINT', "10"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_LEGENDTEXTSTYLEFONTSIZE_LABEL',
-				"Legend Font Size"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_MAINWIDTH_DESC',
-				"Set the width of the entire chart area"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_MAINWIDTH_HINT', "1000"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_MAINWIDTH_LABEL', "Chart Area Width"
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_VAXISTEXTSTYLEFONTCOLOR_DESC',
-				"Select the vertical axis font color."
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $lang . '_VAXISTEXTSTYLEFONTCOLOR_LABEL',
-				"vAxis Font Color"
-			);
-		}
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Uikit')->set($lang);
 	}
 
 	/**
-	 * @param $lang
+	 * Set Email Helper Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Email.Helper')->set($lang);
+	 */
+	public function setEmailHelperConfigFieldsets($lang)
+	{
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Email.Helper')->set($lang);
+	}
+
+	/**
+	 * Set Googlechart Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Googlechart')->set($lang);
+	 */
+	public function setGooglechartConfigFieldsets($lang)
+	{
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Googlechart')->set($lang);
+	}
+
+	/**
+	 * Set Encryption Config Fieldsets
+	 *
+	 * @param string $lang
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Encryption')->set($lang);
 	 */
 	public function setEncryptionConfigFieldsets($lang)
 	{
-		// enable the loading of dynamic field sets
-		$dynamicAddFields = array();
-		// Add encryption if needed
-		if (CFactory::_('Config')->basic_encryption
-			|| CFactory::_('Config')->whmcs_encryption
-			|| CFactory::_('Config')->medium_encryption
-			|| CFactory::_('Component')->get('add_license')
-			|| (isset($this->configFieldSetsCustomField['Encryption Settings'])
-				&& ArrayHelper::check(
-					$this->configFieldSetsCustomField['Encryption Settings']
-				)))
-		{
-			$dynamicAddFields[] = "Encryption Settings";
-			// start building field set for encryption functions
-			$this->configFieldSets[] = Indent::_(1) . "<fieldset";
-			$this->configFieldSets[] = Indent::_(2)
-				. 'name="encryption_config"';
-			$this->configFieldSets[] = Indent::_(2) . 'label="' . $lang
-				. '_ENCRYPTION_LABEL"';
-			$this->configFieldSets[] = Indent::_(2) . 'description="' . $lang
-				. '_ENCRYPTION_DESC">';
-
-			// set tab lang
-			if ((CFactory::_('Config')->basic_encryption
-					|| CFactory::_('Config')->medium_encryption
-					|| CFactory::_('Config')->whmcs_encryption)
-				&& CFactory::_('Component')->get('add_license')
-				&& CFactory::_('Component')->get('license_type', 0) == 3)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL',
-					"License & Encryption Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_DESC',
-					"The license & encryption keys are set here."
-				);
-				// add the next dynamic option
-				$dynamicAddFields[] = "License & Encryption Settings";
-			}
-			elseif ((CFactory::_('Config')->basic_encryption
-					|| CFactory::_('Config')->medium_encryption
-					|| CFactory::_('Config')->whmcs_encryption)
-				&& CFactory::_('Component')->get('add_license')
-				&& CFactory::_('Component')->get('license_type', 0) == 2)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL',
-					"Update & Encryption Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_DESC',
-					"The update & encryption keys are set here."
-				);
-				// add the next dynamic option
-				$dynamicAddFields[] = "Update & Encryption Settings";
-			}
-			elseif (CFactory::_('Component')->get('add_license')
-				&& CFactory::_('Component')->get('license_type', 0) == 3)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL', "License Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_DESC',
-					"The license key is set here."
-				);
-				// add the next dynamic option
-				$dynamicAddFields[] = "License Settings";
-			}
-			elseif (CFactory::_('Component')->get('add_license')
-				&& CFactory::_('Component')->get('license_type', 0) == 2)
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL', "Update Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_DESC',
-					"The update key is set here."
-				);
-				// add the next dynamic option
-				$dynamicAddFields[] = "Update Settings";
-			}
-			else
-			{
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_LABEL',
-					"Encryption Settings"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_ENCRYPTION_DESC',
-					"The encryption key for the field encryption is set here."
-				);
-			}
-
-			if (CFactory::_('Config')->basic_encryption)
-			{
-				// set field lang
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_BASIC_KEY_LABEL', "Basic Key"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_BASIC_KEY_DESC',
-					"Set the basic local key here."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_BASIC_KEY_NOTE_LABEL',
-					"Basic Encryption"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_BASIC_KEY_NOTE_DESC',
-					"When using the basic encryption please use set a 32 character passphrase.<br />Never change this passphrase once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>"
-				);
-				// set the field
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field type="note" name="basic_key_note" class="alert alert-info" label="'
-					. $lang . '_BASIC_KEY_NOTE_LABEL" description="' . $lang
-					. '_BASIC_KEY_NOTE_DESC"  />';
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="basic_key"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-					. '_BASIC_KEY_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $lang . '_BASIC_KEY_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-			}
-			if (CFactory::_('Config')->medium_encryption)
-			{
-				// set field lang
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MEDIUM_KEY_LABEL',
-					"Medium Key (Path)"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MEDIUM_KEY_DESC',
-					"Set the full path to where the key file must be stored. Make sure it is behind the root folder of your website, so that it is not public accessible."
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MEDIUM_KEY_NOTE_LABEL',
-					"Medium Encryption"
-				);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MEDIUM_KEY_NOTE_DESC',
-					"When using the medium encryption option, the system generates its own key and stores it in a file at the folder/path you set here.<br />Never change this key once it is set, or remove the key file! <b>DATA WILL GET CORRUPTED IF YOU DO!</b> Also make sure the full path to where the the key file should be stored, is behind the root folder of your website/system, so that it is not public accessible. Making a backup of this key file over a <b>secure connection</b> is recommended!"
-				);
-				// set the field
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field type="note" name="medium_key_note" class="alert alert-info" label="'
-					. $lang . '_MEDIUM_KEY_NOTE_LABEL" description="' . $lang
-					. '_MEDIUM_KEY_NOTE_DESC" />';
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="medium_key_path"';
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-					. '_MEDIUM_KEY_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $lang . '_MEDIUM_KEY_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="160"';
-				$this->configFieldSets[] = Indent::_(3) . 'filter="PATH"';
-				$this->configFieldSets[] = Indent::_(3)
-					. 'hint="/home/user/hiddenfolder123/"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-				// set some error message if the path does not exist
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $lang . '_MEDIUM_KEY_PATH_ERROR',
-					"Medium key path (for encryption of various fields) does not exist, or is not writable. Please check the path and update it in the global option of this component."
-				);
-			}
-			if (CFactory::_('Config')->whmcs_encryption
-				|| CFactory::_('Component')->get('add_license'))
-			{
-				// set field lang label and description
-				if (CFactory::_('Component')->get('add_license')
-					&& CFactory::_('Component')->get('license_type', 0) == 3)
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_LABEL',
-						CFactory::_('Component')->get('companyname', '') . " License Key"
-					);
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_DESC',
-						"Add the license key you recieved from "
-						. CFactory::_('Component')->get('companyname', '') . " here."
-					);
-				}
-				elseif (CFactory::_('Component')->get('add_license')
-					&& CFactory::_('Component')->get('license_type', 0) == 2)
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_LABEL',
-						CFactory::_('Component')->get('companyname', '') . " Update Key"
-					);
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_DESC',
-						"Add the update key you recieved from "
-						. CFactory::_('Component')->get('companyname', '') . " here."
-					);
-				}
-				else
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_LABEL',
-						CFactory::_('Component')->get('companyname', '') . " Key"
-					);
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_DESC',
-						"Add the key you recieved from "
-						. CFactory::_('Component')->get('companyname', '') . " here."
-					);
-				}
-				// ajust the notice based on license
-				if (CFactory::_('Component')->get('license_type',0) == 3)
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-						"Your " . CFactory::_('Component')->get('companyname','')
-						. " License Key"
-					);
-				}
-				elseif (CFactory::_('Component')->get('license_type',0) == 2)
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-						"Your " . CFactory::_('Component')->get('companyname','')
-						. " Update Key"
-					);
-				}
-				else
-				{
-					if (CFactory::_('Config')->whmcs_encryption)
-					{
-						CFactory::_('Language')->set(
-							CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-							"Your " . CFactory::_('Component')->get('companyname','')
-							. " Field Encryption Key"
-						);
-					}
-					else
-					{
-						CFactory::_('Language')->set(
-							CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_LABEL',
-							"Your " . CFactory::_('Component')->get('companyname','') . " Key"
-						);
-					}
-				}
-				// add the description based on global settings
-				if (CFactory::_('Config')->whmcs_encryption)
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_DESC',
-						"You need to get this key from <a href='"
-						. CFactory::_('Component')->get('whmcs_buy_link','')
-						. "' target='_blank'>"
-						. CFactory::_('Component')->get('companyname','')
-						. "</a>.<br />When using the "
-						. CFactory::_('Component')->get('companyname','')
-						. " field encryption you can never change this key once it is set! <b>DATA WILL GET CORRUPTED IF YOU DO!</b>"
-					);
-				}
-				else
-				{
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $lang . '_WHMCS_KEY_NOTE_DESC',
-						"You need to get this key from <a href='"
-						. CFactory::_('Component')->get('whmcs_buy_link','')
-						. "' target='_blank'>"
-						. CFactory::_('Component')->get('companyname','') . "</a>."
-					);
-				}
-				// set the fields
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field type="note" name="whmcs_key_note" class="alert alert-info" label="'
-					. $lang . '_WHMCS_KEY_NOTE_LABEL" description="' . $lang
-					. '_WHMCS_KEY_NOTE_DESC"  />';
-				$this->configFieldSets[] = Indent::_(2)
-					. '<field name="whmcs_key"'; // We had to change this from license_key & advanced_key to whmcs_key
-				$this->configFieldSets[] = Indent::_(3) . 'type="text"';
-				$this->configFieldSets[] = Indent::_(3) . 'label="' . $lang
-					. '_WHMCS_KEY_LABEL"';
-				$this->configFieldSets[] = Indent::_(3) . 'description="'
-					. $lang . '_WHMCS_KEY_DESC"';
-				$this->configFieldSets[] = Indent::_(3) . 'size="60"';
-				$this->configFieldSets[] = Indent::_(3) . 'default=""';
-				$this->configFieldSets[] = Indent::_(2) . "/>";
-			}
-			// load the dynamic field sets
-			foreach ($dynamicAddFields as $dynamicAddField)
-			{
-				// add custom Encryption Settings fields
-				if (isset($this->configFieldSetsCustomField[$dynamicAddField])
-					&& ArrayHelper::check(
-						$this->configFieldSetsCustomField[$dynamicAddField]
-					))
-				{
-					$this->configFieldSets[] = implode(
-						"", $this->configFieldSetsCustomField[$dynamicAddField]
-					);
-					unset($this->configFieldSetsCustomField[$dynamicAddField]);
-				}
-			}
-			// close that fieldset
-			$this->configFieldSets[] = Indent::_(1) . "</fieldset>";
-		}
+		CFactory::_('Compiler.Creator.Config.Fieldsets.Encryption')->set($lang);
 	}
 
-	public function setAccessSectionsCategory($nameSingleCode, $nameListCode)
+	/**
+	 * Set Access Sections Category
+	 *
+	 * @param string $nameSingleCode
+	 * @param string $nameListCode
+	 *
+	 * @return  string
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Access.Sections.Category')->get($nameSingleCode, $nameListCode);
+	 */
+	public function setAccessSectionsCategory(string $nameSingleCode, string $nameListCode): string
 	{
-		$component = '';
-		// check if view has category
-		$otherViews = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.views");
-		if ($otherViews !== null && $otherViews == $nameListCode)
-		{
-			$component .= PHP_EOL . Indent::_(1)
-				. '<section name="category.' . $otherViews . '">';
-			$component .= PHP_EOL . Indent::_(2)
-				. '<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />';
-			$component .= PHP_EOL . Indent::_(2)
-				. '<action name="core.delete" title="JACTION_DELETE" description="COM_CATEGORIES_ACCESS_DELETE_DESC" />';
-			$component .= PHP_EOL . Indent::_(2)
-				. '<action name="core.edit" title="JACTION_EDIT" description="COM_CATEGORIES_ACCESS_EDIT_DESC" />';
-			$component .= PHP_EOL . Indent::_(2)
-				. '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORIES_ACCESS_EDITSTATE_DESC" />';
-			$component .= PHP_EOL . Indent::_(2)
-				. '<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />';
-			$component .= PHP_EOL . Indent::_(1) . "</section>";
-		}
-
-		return $component;
+		return CFactory::_('Compiler.Creator.Access.Sections.Category')->get($nameSingleCode, $nameListCode);
 	}
 
-	public function setAccessSectionsJoomlaFields()
+	/**
+	 * Set Access Sections Joomla Fields
+	 *
+	 * @return  string
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Access.Sections.Joomla.Fields')->get();
+	 */
+	public function setAccessSectionsJoomlaFields(): string
 	{
-		$component = '';
-		// set all the core field permissions
-		$component .= PHP_EOL . Indent::_(1) . '<section name="fieldgroup">';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.create" title="JACTION_CREATE" description="COM_FIELDS_GROUP_PERMISSION_CREATE_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.delete" title="JACTION_DELETE" description="COM_FIELDS_GROUP_PERMISSION_DELETE_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit" title="JACTION_EDIT" description="COM_FIELDS_GROUP_PERMISSION_EDIT_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_FIELDS_GROUP_PERMISSION_EDITSTATE_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit.own" title="JACTION_EDITOWN" description="COM_FIELDS_GROUP_PERMISSION_EDITOWN_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit.value" title="JACTION_EDITVALUE" description="COM_FIELDS_GROUP_PERMISSION_EDITVALUE_DESC" />';
-		$component .= PHP_EOL . Indent::_(1) . '</section>';
-		$component .= PHP_EOL . Indent::_(1) . '<section name="field">';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.delete" title="JACTION_DELETE" description="COM_FIELDS_FIELD_PERMISSION_DELETE_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit" title="JACTION_EDIT" description="COM_FIELDS_FIELD_PERMISSION_EDIT_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_FIELDS_FIELD_PERMISSION_EDITSTATE_DESC" />';
-		$component .= PHP_EOL . Indent::_(2)
-			. '<action name="core.edit.value" title="JACTION_EDITVALUE" description="COM_FIELDS_FIELD_PERMISSION_EDITVALUE_DESC" />';
-		$component .= PHP_EOL . Indent::_(1) . '</section>';
-
-		return $component;
+		return CFactory::_('Compiler.Creator.Access.Sections.Joomla.Fields')->get();
 	}
 
+	/**
+	 * Set Access Sections
+	 *
+	 * @return  string
+	 * @since 1.0
+	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Access.Sections')->get();
+	 */
 	public function setAccessSections()
 	{
-		// access size counter
-		CFactory::_('Utilities.Counter')->accessSize = 12; // ;)
-
-		// Get the default fields
-		$default_fields = CFactory::_('Config')->default_fields;
-
-		// for plugin event TODO change event api signatures
-		$component_context = CFactory::_('Config')->component_context;
-		// Trigger Event: jcb_ce_onBeforeBuildAccessSections
-		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeBuildAccessSections',
-			array(&$component_context, &$this)
-		);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.admin',
-			'title' => 'JACTION_ADMIN',
-			'description' => 'JACTION_ADMIN_COMPONENT_DESC'
-		], true);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.options',
-			'title' => 'JACTION_OPTIONS',
-			'description' => 'JACTION_OPTIONS_COMPONENT_DESC'
-		], true);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.manage',
-			'title' => 'JACTION_MANAGE',
-			'description' => 'JACTION_MANAGE_COMPONENT_DESC'
-		], true);
-		if (CFactory::_('Config')->get('add_eximport', false))
-		{
-			$exportTitle = $this->langPrefix . '_'
-				. StringHelper::safe('Export Data', 'U');
-			$exportDesc  = $this->langPrefix . '_'
-				. StringHelper::safe('Export Data', 'U')
-				. '_DESC';
-			CFactory::_('Language')->set('bothadmin', $exportTitle, 'Export Data');
-			CFactory::_('Language')->set(
-				'bothadmin', $exportDesc,
-				' Allows users in this group to export data.'
-			);
-			CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-				'name' => 'core.export',
-				'title' => $exportTitle,
-				'description' => $exportDesc
-			], true);
-			// the size needs increase
-			CFactory::_('Utilities.Counter')->accessSize++;
-			$importTitle = $this->langPrefix . '_'
-				. StringHelper::safe('Import Data', 'U');
-			$importDesc  = $this->langPrefix . '_'
-				. StringHelper::safe('Import Data', 'U')
-				. '_DESC';
-			CFactory::_('Language')->set('bothadmin', $importTitle, 'Import Data');
-			CFactory::_('Language')->set(
-				'bothadmin', $importDesc,
-				' Allows users in this group to import data.'
-			);
-			CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-				'name' => 'core.import',
-				'title' => $importTitle,
-				'description' => $importDesc
-			], true);
-			// the size needs increase
-			CFactory::_('Utilities.Counter')->accessSize++;
-		}
-		// version permission
-		$batchTitle = $this->langPrefix . '_'
-			. StringHelper::safe('Use Batch', 'U');
-		$batchDesc  = $this->langPrefix . '_'
-			. StringHelper::safe('Use Batch', 'U') . '_DESC';
-		CFactory::_('Language')->set('bothadmin', $batchTitle, 'Use Batch');
-		CFactory::_('Language')->set(
-			'bothadmin', $batchDesc,
-			' Allows users in this group to use batch copy/update method.'
-		);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.batch',
-			'title' => $batchTitle,
-			'description' => $batchDesc
-		], true);
-		// version permission
-		$importTitle = $this->langPrefix . '_'
-			. StringHelper::safe('Edit Versions', 'U');
-		$importDesc  = $this->langPrefix . '_'
-			. StringHelper::safe('Edit Versions', 'U')
-			. '_DESC';
-		CFactory::_('Language')->set('bothadmin', $importTitle, 'Edit Version');
-		CFactory::_('Language')->set(
-			'bothadmin', $importDesc,
-			' Allows users in this group to edit versions.'
-		);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.version',
-			'title' => $importTitle,
-			'description' => $importDesc
-		], true);
-		// set the defaults
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.create',
-			'title' => 'JACTION_CREATE',
-			'description' => 'JACTION_CREATE_COMPONENT_DESC'
-		], true);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.delete',
-			'title' => 'JACTION_DELETE',
-			'description' => 'JACTION_DELETE_COMPONENT_DESC'
-		], true);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.edit',
-			'title' => 'JACTION_EDIT',
-			'description' => 'JACTION_EDIT_COMPONENT_DESC'
-		], true);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.edit.state',
-			'title' => 'JACTION_EDITSTATE',
-			'description' => 'JACTION_ACCESS_EDITSTATE_DESC'
-		], true);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.edit.own',
-			'title' => 'JACTION_EDITOWN',
-			'description' => 'JACTION_EDITOWN_COMPONENT_DESC'
-		], true);
-		// set the Joomla fields
-		if (CFactory::_('Config')->get('set_joomla_fields', false))
-		{
-			CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-				'name' => 'core.edit.value',
-				'title' => 'JACTION_EDITVALUE',
-				'description' => 'JACTION_EDITVALUE_COMPONENT_DESC'
-			], true);
-			// the size needs increase
-			CFactory::_('Utilities.Counter')->accessSize++;
-		}
-		// new custom created by permissions
-		$created_byTitle = $this->langPrefix . '_'
-			. StringHelper::safe('Edit Created By', 'U');
-		$created_byDesc  = $this->langPrefix . '_'
-			. StringHelper::safe('Edit Created By', 'U')
-			. '_DESC';
-		CFactory::_('Language')->set('bothadmin', $created_byTitle, 'Edit Created By');
-		CFactory::_('Language')->set(
-			'bothadmin', $created_byDesc,
-			' Allows users in this group to edit created by.'
-		);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.edit.created_by',
-			'title' => $created_byTitle,
-			'description' => $created_byDesc
-		], true);
-		// new custom created date permissions
-		$createdTitle = $this->langPrefix . '_'
-			. StringHelper::safe('Edit Created Date', 'U');
-		$createdDesc  = $this->langPrefix . '_'
-			. StringHelper::safe('Edit Created Date', 'U')
-			. '_DESC';
-		CFactory::_('Language')->set('bothadmin', $createdTitle, 'Edit Created Date');
-		CFactory::_('Language')->set(
-			'bothadmin', $createdDesc,
-			' Allows users in this group to edit created date.'
-		);
-		CFactory::_('Compiler.Builder.Permission.Component')->add('->HEAD<-', [
-			'name' => 'core.edit.created',
-			'title' => $createdTitle,
-			'description' => $createdDesc
-		], true);
-
-		// set the menu controller lookup
-		$menuControllers = ['access', 'submenu', 'dashboard_list', 'dashboard_add'];
-		// set the custom admin views permissions
-		if (CFactory::_('Component')->isArray('custom_admin_views'))
-		{
-			foreach (
-				CFactory::_('Component')->get('custom_admin_views') as $custom_admin_view
-			)
-			{
-				// new custom permissions to access this view
-				$customAdminName  = $custom_admin_view['settings']->name;
-				$customAdminCode  = $custom_admin_view['settings']->code;
-				$customAdminTitle = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$customAdminName . ' Access', 'U'
-					);
-				$customAdminDesc  = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$customAdminName . ' Access', 'U'
-					) . '_DESC';
-				$sortKey          = StringHelper::safe(
-					$customAdminName . ' Access'
-				);
-				CFactory::_('Language')->set(
-					'bothadmin', $customAdminTitle, $customAdminName . ' Access'
-				);
-				CFactory::_('Language')->set(
-					'bothadmin', $customAdminDesc,
-					' Allows the users in this group to access '
-					. StringHelper::safe($customAdminName, 'w')
-					. '.'
-				);
-				CFactory::_('Compiler.Builder.Permission.Component')->set($sortKey, [
-					'name' => "$customAdminCode.access",
-					'title' => $customAdminTitle,
-					'description' => $customAdminDesc
-				]);
-				// the size needs increase
-				CFactory::_('Utilities.Counter')->accessSize++;
-				// add the custom permissions to use the buttons of this view
-				$this->addCustomButtonPermissions(
-					$custom_admin_view['settings'], $customAdminName,
-					$customAdminCode
-				);
-				// add menu controll view that has menus options
-				foreach ($menuControllers as $menuController)
-				{
-					// add menu controll view that has menus options
-					if (isset($custom_admin_view[$menuController])
-						&& $custom_admin_view[$menuController])
-					{
-						$targetView_ = 'views.';
-						if ($menuController === 'dashboard_add')
-						{
-							$targetView_ = 'view.';
-						}
-						// menucontroller
-						$menucontrollerView['action']         = $targetView_
-							. $menuController;
-						$menucontrollerView['implementation'] = '2';
-						if (isset($custom_admin_view['settings']->permissions)
-							&& ArrayHelper::check(
-								$custom_admin_view['settings']->permissions
-							))
-						{
-							array_push(
-								$custom_admin_view['settings']->permissions,
-								$menucontrollerView
-							);
-						}
-						else
-						{
-							$custom_admin_view['settings']->permissions
-								= array();
-							$custom_admin_view['settings']->permissions[]
-								= $menucontrollerView;
-						}
-						unset($menucontrollerView);
-					}
-				}
-				CFactory::_('Compiler.Creator.Permission')->set(
-					$custom_admin_view, $customAdminCode, $customAdminCode,
-					$menuControllers, 'customAdmin'
-				);
-			}
-		}
-		// set the site views permissions
-		if (CFactory::_('Component')->isArray('site_views'))
-		{
-			foreach (CFactory::_('Component')->get('site_views') as $site_view)
-			{
-				// new custom permissions to access this view
-				$siteName  = $site_view['settings']->name;
-				$siteCode  = $site_view['settings']->code;
-				$siteTitle = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$siteName . ' Access Site', 'U'
-					);
-				$siteDesc  = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$siteName . ' Access Site', 'U'
-					) . '_DESC';
-				$sortKey   = StringHelper::safe(
-					$siteName . ' Access Site'
-				);
-				if (isset($site_view['access']) && $site_view['access'] == 1)
-				{
-					CFactory::_('Language')->set(
-						'bothadmin', $siteTitle, $siteName . ' (Site) Access'
-					);
-					CFactory::_('Language')->set(
-						'bothadmin', $siteDesc,
-						' Allows the users in this group to access site '
-						. StringHelper::safe($siteName, 'w')
-						. '.'
-					);
-					CFactory::_('Compiler.Builder.Permission.Component')->set($sortKey, [
-						'name' => "site.$siteCode.access",
-						'title' => $siteTitle,
-						'description' => $siteDesc
-					]);
-					// the size needs increase
-					CFactory::_('Utilities.Counter')->accessSize++;
-					// check if this site view requires access rule to default to public
-					if (isset($site_view['public_access'])
-						&& $site_view['public_access'] == 1)
-					{
-						// we use one as public group (TODO we see if we run into any issues)
-						$this->assetsRules[] = '"site.' . $siteCode
-							. '.access":{"1":1}';
-					}
-				}
-				// add the custom permissions to use the buttons of this view
-				$this->addCustomButtonPermissions(
-					$site_view['settings'], $siteName, $siteCode
-				);
-			}
-		}
-		if (CFactory::_('Component')->isArray('admin_views'))
-		{
-			foreach (CFactory::_('Component')->get('admin_views') as $view)
-			{
-				// set view name
-				$nameView  = StringHelper::safe(
-					$view['settings']->name_single
-				);
-				$nameViews = StringHelper::safe(
-					$view['settings']->name_list
-				);
-				// add custom tab permissions if found
-				if (($tabs_ = CFactory::_('Compiler.Builder.Custom.Tabs')->get($nameView)) !== null
-					&& ArrayHelper::check($tabs_))
-				{
-					foreach ($tabs_ as $_customTab)
-					{
-						if (isset($_customTab['permission'])
-							&& $_customTab['permission'] == 1)
-						{
-							CFactory::_('Compiler.Builder.Permission.Component')->set($_customTab['sortKey'], [
-								'name' => $_customTab['view'] . '.' . $_customTab['code'] . '.viewtab',
-								'title' => $_customTab['lang_permission'],
-								'description' => $_customTab['lang_permission_desc']
-							]);
-							// the size needs increase
-							CFactory::_('Utilities.Counter')->accessSize++;
-						}
-					}
-				}
-				// add the custom permissions to use the buttons of this view
-				$this->addCustomButtonPermissions(
-					$view['settings'], $view['settings']->name_single, $nameView
-				);
-				if ($nameView != 'component')
-				{
-					// add menu controll view that has menus options
-					foreach ($menuControllers as $menuController)
-					{
-						// add menu controll view that has menus options
-						if (isset($view[$menuController])
-							&& $view[$menuController])
-						{
-							$targetView_ = 'views.';
-							if ($menuController === 'dashboard_add')
-							{
-								$targetView_ = 'view.';
-							}
-							// menucontroller
-							$menucontrollerView['action'] = $targetView_ . $menuController;
-							$menucontrollerView['implementation'] = '2';
-							if (isset($view['settings']->permissions)
-								&& ArrayHelper::check(
-									$view['settings']->permissions
-								))
-							{
-								array_push(
-									$view['settings']->permissions,
-									$menucontrollerView
-								);
-							}
-							else
-							{
-								$view['settings']->permissions = array();
-								$view['settings']->permissions[] = $menucontrollerView;
-							}
-							unset($menucontrollerView);
-						}
-					}
-					// check if there are fields
-					if (ArrayHelper::check(
-						$view['settings']->fields
-					))
-					{
-						// field permission options
-						$permission_options = array(1 => 'edit', 2 => 'access', 3 => 'view');
-						// check the fields for their permission settings
-						foreach ($view['settings']->fields as $field)
-						{
-							// see if field require permissions to be set
-							if (isset($field['permission'])
-								&& ArrayHelper::check(
-									$field['permission']
-								))
-							{
-								if (ArrayHelper::check(
-									$field['settings']->properties
-								))
-								{
-									$fieldType = CFactory::_('Field.Type.Name')->get($field);
-									$fieldName = CFactory::_('Field.Name')->get(
-										$field, $nameViews
-									);
-									// loop the permission options
-									foreach ($field['permission'] as $permission_id)
-									{
-										// set the permission key word
-										$permission_option = $permission_options[(int) $permission_id];
-										// reset the bucket
-										$fieldView = array();
-										// set the permission for this field
-										$fieldView['action'] = 'view.' . $permission_option . '.' . $fieldName;
-										$fieldView['implementation'] = '3';
-										// check if persmissions was already set
-										if (isset($view['settings']->permissions)
-											&& ArrayHelper::check(
-												$view['settings']->permissions
-											))
-										{
-											array_push(
-												$view['settings']->permissions,
-												$fieldView
-											);
-										}
-										else
-										{
-											$view['settings']->permissions = array();
-											$view['settings']->permissions[]
-												= $fieldView;
-										}
-										// ensure that no default field get loaded
-										if (!in_array(
-											$fieldName, $default_fields
-										))
-										{
-											// make sure the array is set
-											if (!isset($this->permissionFields[$nameView])
-												|| !ArrayHelper::check(
-													$this->permissionFields[$nameView]
-												))
-											{
-												$this->permissionFields[$nameView]
-													= array();
-											}
-											if (!isset($this->permissionFields[$nameView][$fieldName])
-												|| !ArrayHelper::check(
-													$this->permissionFields[$nameView][$fieldName]
-												))
-											{
-												$this->permissionFields[$nameView][$fieldName]
-													= array();
-											}
-											// load to global field permission set
-											$this->permissionFields[$nameView][$fieldName][$permission_option]
-												= $fieldType;
-										}
-									}
-								}
-							}
-						}
-					}
-					CFactory::_('Compiler.Creator.Permission')->set(
-						$view, $nameView, $nameViews, $menuControllers
-					);
-				}
-			}
-
-			// Trigger Event: jcb_ce_onAfterBuildAccessSections
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onAfterBuildAccessSections',
-				array(&$component_context, &$this)
-			);
-
-			/// now build the section
-			$component = CFactory::_('Compiler.Builder.Permission.Component')->build();
-			// add views to the component section
-			$component .= CFactory::_('Compiler.Builder.Permission.Views')->build();
-
-			// remove the fix, is not needed
-			if (CFactory::_('Utilities.Counter')->accessSize < 30)
-			{
-				// since we have less than 30 actions
-				// we do not need the fix for this component
-				$this->addAssetsTableFix = 0;
-				CFactory::_('Config')->set('add_assets_table_fix', $this->addAssetsTableFix);
-			}
-			else
-			{
-				// get the worst case column size required (can be worse I know)
-				// access/action size x 20 characters x 8 groups
-				$character_length = (int) MathHelper::bc(
-					'mul', CFactory::_('Utilities.Counter')->accessSize, 20, 0
-				);
-				// set worse case
-				CFactory::_('Config')->set('access_worse_case', (int) MathHelper::bc(
-					'mul', $character_length, 8, 0
-				));
-			}
-
-			// return the build
-			return $component;
-		}
-
-		return false;
+		return CFactory::_('Compiler.Creator.Access.Sections')->get();
 	}
 
+	/**
+	 * Add Custom Button Permissions
+	 *
+	 * @param object    $settings    The view settings
+	 * @param string    $nameView    The view name
+	 * @param string    $code        The view code name.
+	 *
+	 * @since 1.0
+	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Custom.Button.Permissions')->add($settings, $nameView, $code);
+	 */
 	protected function addCustomButtonPermissions($settings, $nameView, $code)
 	{
-		// add the custom permissions to use the buttons of this view
-		if (isset($settings->custom_buttons)
-			&& ArrayHelper::check($settings->custom_buttons))
-		{
-			foreach ($settings->custom_buttons as $custom_buttons)
-			{
-				$customButtonName  = $custom_buttons['name'];
-				$customButtonCode  = StringHelper::safe(
-					$customButtonName
-				);
-				$customButtonTitle = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$nameView . ' ' . $customButtonName . ' Button Access',
-						'U'
-					);
-				$customButtonDesc  = $this->langPrefix . '_'
-					. StringHelper::safe(
-						$nameView . ' ' . $customButtonName . ' Button Access',
-						'U'
-					) . '_DESC';
-				$sortButtonKey     = StringHelper::safe(
-					$nameView . ' ' . $customButtonName . ' Button Access'
-				);
-				CFactory::_('Language')->set(
-					'bothadmin', $customButtonTitle,
-					$nameView . ' ' . $customButtonName . ' Button Access'
-				);
-				CFactory::_('Language')->set(
-					'bothadmin', $customButtonDesc,
-					' Allows the users in this group to access the '
-					. StringHelper::safe($customButtonName, 'w')
-					. ' button.'
-				);
-				CFactory::_('Compiler.Builder.Permission.Component')->set($sortButtonKey, [
-					'name' => "$code.$customButtonCode",
-					'title' => $customButtonTitle,
-					'description' => $customButtonDesc
-				]);
-				// the size needs increase
-				CFactory::_('Utilities.Counter')->accessSize++;
-			}
-		}
+		CFactory::_('Compiler.Creator.Custom.Button.Permissions')->add($settings, $nameView, $code);
 	}
 
 	/**
@@ -25802,17 +22758,14 @@ function vdm_dkim() {
 	 * @return  void
 	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Permission')->set($view, $nameView, $nameViews, $menuControllers, $type);
 	 */
-	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin'
-	)
+	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin')
 	{
 		CFactory::_('Compiler.Creator.Permission')->set($view, $nameView, $nameViews, $menuControllers, $type);
 	}
 
-	public function getInbetweenStrings($str, $start = '#' . '#' . '#',
-	                                    $end = '#' . '#' . '#'
-	)
+	public function getInbetweenStrings($str, $start = '#' . '#' . '#', $end = '#' . '#' . '#')
 	{
-		$matches = array();
+		$matches = [];
 		$regex   = "/$start([a-zA-Z0-9_]*)$end/";
 		preg_match_all($regex, (string) $str, $matches);
 
@@ -25907,7 +22860,7 @@ function vdm_dkim() {
 		{
 			$setter .= '//' . Line::_(__Line__, __Class__)
 				. 'get the document object';
-			$setter .= PHP_EOL . '$document = JFactory::getDocument();';
+			$setter .= PHP_EOL . '$document = Factory::getDocument();';
 			foreach ($data_ as $id => $true)
 			{
 				// get the library
@@ -25956,7 +22909,7 @@ function vdm_dkim() {
 		// search if we must add the component path
 		$add_component_path = false;
 		// build the config fields
-		$config_fields = array();
+		$config_fields = [];
 		if (isset($module->config_fields)
 			&& ArrayHelper::check(
 				$module->config_fields
@@ -26001,25 +22954,23 @@ function vdm_dkim() {
 			}
 		}
 		// switch to add the language xml
-		$addLang = array();
+		$addLang = [];
 		// now build the language files
 		if (CFactory::_('Language')->exist($module->key))
 		{
-			// for plugin event TODO change event api signatures
+			// get model lang content
 			$langContent = CFactory::_('Language')->getTarget($module->key);
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLang
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildModuleLang',
-				array(&$component_context, &$module,
-					&$langContent, &$module->lang_prefix, &$module->official_name)
+				'jcb_ce_onBeforeBuildModuleLang', [&$module, &$langContent]
 			);
 			// get other languages
 			$values = array_unique($langContent);
 			// get the other lang strings if there is any
 			$this->multiLangString = $this->getMultiLangStrings($values);
 			// start the modules language bucket (must rest every time)
-			$this->languages['modules']                 = array();
-			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = array();
+			$this->languages['modules']                 = [];
+			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
 			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['all']
 				= $langContent;
 			CFactory::_('Language')->setTarget($module->key, null);
@@ -26029,17 +22980,12 @@ function vdm_dkim() {
 			$this->purgeLanuageStrings($values, $module->id, 'modules');
 			$total = count($values);
 			unset($values);
-			// for plugin event TODO change event api signatures
-			$component_context = CFactory::_('Config')->component_context;
+
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLangFiles
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildModuleLangFiles',
-				array(&$component_context, &$module,
-					&$this->languages['modules'],
-					&$this->langTag)
+				'jcb_ce_onBeforeBuildModuleLangFiles', [&$module, &$this->languages['modules']]
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Config')->lang_tag = $this->langTag;
+
 			// now we insert the values into the files
 			if (ArrayHelper::check($this->languages['modules']))
 			{
@@ -26210,12 +23156,26 @@ function vdm_dkim() {
 			{
 				// add path to module rules and custom fields
 				$xml .= PHP_EOL . Indent::_(1) . '<config';
-				$xml .= PHP_EOL . Indent::_(2)
-					. 'addrulepath="/administrator/components/com_'
-					. CFactory::_('Config')->component_code_name . '/models/rules"';
-				$xml .= PHP_EOL . Indent::_(2)
-					. 'addfieldpath="/administrator/components/com_'
-					. CFactory::_('Config')->component_code_name . '/models/fields"';
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$xml .= PHP_EOL . Indent::_(2)
+						. 'addrulepath="/administrator/components/com_'
+						. CFactory::_('Config')->component_code_name . '/models/rules"';
+					$xml .= PHP_EOL . Indent::_(2)
+						. 'addfieldpath="/administrator/components/com_'
+						. CFactory::_('Config')->component_code_name . '/models/fields"';
+				}
+				else
+				{
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Administrator\Rule"';
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Administrator\Field">';
+				}
 				$xml .= PHP_EOL . Indent::_(1) . '>';
 			}
 			else
@@ -26355,7 +23315,7 @@ function vdm_dkim() {
 		// search if we must add the component path
 		$add_component_path = false;
 		// build the config fields
-		$config_fields = array();
+		$config_fields = [];
 		if (isset($plugin->config_fields)
 			&& ArrayHelper::check(
 				$plugin->config_fields
@@ -26390,27 +23350,23 @@ function vdm_dkim() {
 			}
 		}
 		// switch to add the language xml
-		$addLang = array();
+		$addLang = [];
 		// now build the language files
 		if (CFactory::_('Language')->exist($plugin->key))
 		{
-			// for plugin event TODO change event api signatures
+			// get plugin lang content
 			$langContent = CFactory::_('Language')->getTarget($plugin->key);
-			$component_context = CFactory::_('Config')->component_context;
 			// Trigger Event: jcb_ce_onBeforeBuildPluginLang
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildPluginLang',
-				array(&$component_context, &$plugin,
-					&$langContent,
-					&$plugin->lang_prefix, &$plugin->official_name)
+				'jcb_ce_onBeforeBuildPluginLang', [&$plugin, &$langContent]
 			);
 			// get other languages
 			$values = array_unique($langContent);
 			// get the other lang strings if there is any
 			$this->multiLangString = $this->getMultiLangStrings($values);
 			// start the plugins language bucket (must rest every time)
-			$this->languages['plugins']                 = array();
-			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = array();
+			$this->languages['plugins']                 = [];
+			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
 			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['all']
 				= $langContent;
 			CFactory::_('Language')->setTarget($plugin->key, null);
@@ -26422,13 +23378,8 @@ function vdm_dkim() {
 			unset($values);
 			// Trigger Event: jcb_ce_onBeforeBuildPluginLangFiles
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildPluginLangFiles',
-				array(&$component_context, &$plugin,
-					&$this->languages['plugins'],
-					&$this->langTag)
+				'jcb_ce_onBeforeBuildPluginLangFiles', [&$plugin, &$this->languages['plugins']]
 			);
-			// for plugin event TODO change event api signatures
-			CFactory::_('Config')->lang_tag = $this->langTag;
 			// now we insert the values into the files
 			if (ArrayHelper::check($this->languages['plugins']))
 			{
@@ -26608,12 +23559,26 @@ function vdm_dkim() {
 			{
 				// add path to plugin rules and custom fields
 				$xml .= PHP_EOL . Indent::_(1) . '<config';
-				$xml .= PHP_EOL . Indent::_(2)
-					. 'addrulepath="/administrator/components/com_'
-					. CFactory::_('Config')->component_code_name . '/models/rules"';
-				$xml .= PHP_EOL . Indent::_(2)
-					. 'addfieldpath="/administrator/components/com_'
-					. CFactory::_('Config')->component_code_name . '/models/fields"';
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$xml .= PHP_EOL . Indent::_(2)
+						. 'addrulepath="/administrator/components/com_'
+						. CFactory::_('Config')->component_code_name . '/models/rules"';
+					$xml .= PHP_EOL . Indent::_(2)
+						. 'addfieldpath="/administrator/components/com_'
+						. CFactory::_('Config')->component_code_name . '/models/fields"';
+				}
+				else
+				{
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Administrator\Rule"';
+					$xml .= PHP_EOL . Indent::_(3)
+						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Administrator\Field">';
+				}
 				$xml .= PHP_EOL . Indent::_(1) . '>';
 			}
 			else
@@ -26715,7 +23680,7 @@ function vdm_dkim() {
 
 	public function getPowerCode(&$power)
 	{
-		$code = array();
+		$code = [];
 		// set the name space
 		$code[] = 'namespace ' . $power->_namespace . ';' . PHP_EOL;
 		// check if we have header data
@@ -26804,24 +23769,24 @@ function vdm_dkim() {
 			if (!CFactory::_('Config')->get('debug_line_nr', false))
 			{
 				// check if we should install this translation
-				if ($percentage < $this->percentageLanguageAdd)
+				if ($percentage < CFactory::_('Config')->percentage_language_add)
 				{
-					// dont add
-					$this->langNot[$file_name] = '<b>'
-						. $total . '</b>(total '
+					// languages that will be excluded
+					CFactory::_('Compiler.Builder.Language.Messages')->set("exclude.$file_name",
+					 	'<b>' . $total . '</b>(total '
 						. CFactory::_('Config')->get('lang_tag', 'en-GB') . ' strings) only <b>'
-						. $langStringNr . '</b>' . $stringNAme
-						. ' = ' . $percentage;
+						. $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage
+					);
 
 					return false;
 				}
 			}
-			// show if it was added as well
-			$this->langSet[$file_name] = '<b>'
-				. $total . '</b>(total '
+			// languages that will be included
+			CFactory::_('Compiler.Builder.Language.Messages')->set("include.$file_name",
+				'<b>' . $total . '</b>(total '
 				. CFactory::_('Config')->get('lang_tag', 'en-GB') . ' strings) and <b>'
-				. $langStringNr . '</b>' . $stringNAme . ' = '
-				. $percentage;
+				. $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage
+			);
 		}
 
 		return true;

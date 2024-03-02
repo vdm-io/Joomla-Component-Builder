@@ -12,8 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 
 /**
  * Class_properties Admin Controller
@@ -47,13 +53,13 @@ class ComponentbuilderControllerClass_properties extends AdminController
 	public function exportData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if export is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('class_property.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
 		{
 			// Get the input
-			$input = JFactory::getApplication()->input;
+			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
 			$pks = ArrayHelper::toInteger($pks);
@@ -61,16 +67,16 @@ class ComponentbuilderControllerClass_properties extends AdminController
 			$model = $this->getModel('Class_properties');
 			// get the data to export
 			$data = $model->getExportData($pks);
-			if (ComponentbuilderHelper::checkArray($data))
+			if (UtilitiesArrayHelper::check($data))
 			{
 				// now set the data to the spreadsheet
-				$date = JFactory::getDate();
+				$date = Factory::getDate();
 				ComponentbuilderHelper::xls($data,'Class_properties_'.$date->format('jS_F_Y'),'Class properties exported ('.$date->format('jS F, Y').')','class properties');
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=class_properties', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=class_properties', false), $message, 'error');
 		return;
 	}
 
@@ -78,32 +84,32 @@ class ComponentbuilderControllerClass_properties extends AdminController
 	public function importData()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if import is allowed for this user.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		if ($user->authorise('class_property.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
 		{
 			// Get the import model
 			$model = $this->getModel('Class_properties');
 			// get the headers to import
 			$headers = $model->getExImPortHeaders();
-			if (ComponentbuilderHelper::checkObject($headers))
+			if (ObjectHelper::check($headers))
 			{
 				// Load headers to session.
-				$session = JFactory::getSession();
+				$session = Factory::getSession();
 				$headers = json_encode($headers);
 				$session->set('class_property_VDM_IMPORTHEADERS', $headers);
 				$session->set('backto_VDM_IMPORT', 'class_properties');
 				$session->set('dataType_VDM_IMPORTINTO', 'class_property');
 				// Redirect to import view.
-				$message = JText::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_CLASS_PROPERTIES');
-				$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=import', false), $message);
+				$message = Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_CLASS_PROPERTIES');
+				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import', false), $message);
 				return;
 			}
 		}
 		// Redirect to the list screen with error.
-		$message = JText::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=class_properties', false), $message, 'error');
+		$message = Text::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=class_properties', false), $message, 'error');
 		return;
 	}
 }

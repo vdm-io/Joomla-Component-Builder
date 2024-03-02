@@ -12,7 +12,9 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -24,9 +26,9 @@ class ComponentbuilderControllerAjax extends BaseController
 	{
 		parent::__construct($config);
 		// make sure all json stuff are set
-		JFactory::getDocument()->setMimeEncoding( 'application/json' );
+		Factory::getDocument()->setMimeEncoding( 'application/json' );
 		// get the application
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$app->setHeader('Content-Disposition','attachment;filename="getajax.json"');
 		$app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks 
@@ -80,16 +82,16 @@ class ComponentbuilderControllerAjax extends BaseController
 	public function ajax()
 	{
 		// get the user for later use
-		$user 		= JFactory::getUser();
+		$user         = Factory::getUser();
 		// get the input values
-		$jinput 	= JFactory::getApplication()->input;
+		$jinput       = Factory::getApplication()->input;
 		// check if we should return raw
-		$returnRaw	= $jinput->get('raw', false, 'BOOLEAN');
+		$returnRaw    = $jinput->get('raw', false, 'BOOLEAN');
 		// return to a callback function
-		$callback	= $jinput->get('callback', null, 'CMD');
+		$callback     = $jinput->get('callback', null, 'CMD');
 		// Check Token!
-		$token 		= JSession::getFormToken();
-		$call_token	= $jinput->get('token', 0, 'ALNUM');
+		$token        = Session::getFormToken();
+		$call_token   = $jinput->get('token', 0, 'ALNUM');
 		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{
 			// get the task
@@ -102,7 +104,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$noticeValue = $jinput->get('notice', NULL, 'STRING');
 						if($noticeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->isNew($noticeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->isNew($noticeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -121,7 +131,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -143,7 +153,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$noticeValue = $jinput->get('notice', NULL, 'STRING');
 						if($noticeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->isRead($noticeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->isRead($noticeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -162,7 +180,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -184,7 +202,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getComponentDetails($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getComponentDetails($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -203,7 +229,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -225,7 +251,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$getTypeValue = $jinput->get('getType', NULL, 'WORD');
 						if($getTypeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getCronPath($getTypeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getCronPath($getTypeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -244,7 +278,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -266,7 +300,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$nameValue = $jinput->get('name', NULL, 'WORD');
 						if($nameValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getWiki($nameValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getWiki($nameValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -285,7 +327,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -307,7 +349,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$versionValue = $jinput->get('version', NULL, 'INT');
 						if($versionValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getVersion($versionValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getVersion($versionValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -326,7 +376,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -348,7 +398,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$packageValue = $jinput->get('package', NULL, 'BASE64');
 						if($packageValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getJCBpackageInfo($packageValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getJCBpackageInfo($packageValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -367,7 +425,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -390,7 +448,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$keyValue = $jinput->get('key', NULL, 'ALNUM');
 						if($identifierValue && $user->id != 0 && $keyValue)
 						{
-							$result = $this->getModel('ajax')->getCrowdinDetails($identifierValue, $keyValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getCrowdinDetails($identifierValue, $keyValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -409,7 +475,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -431,7 +497,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$dataValue = $jinput->get('data', NULL, 'STRING');
 						if($dataValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getModuleCode($dataValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getModuleCode($dataValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -450,7 +524,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -473,7 +547,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $typeValue)
 						{
-							$result = $this->getModel('ajax')->getClassCode($idValue, $typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getClassCode($idValue, $typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -492,7 +574,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -516,7 +598,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$keyValue = $jinput->get('key', 1, 'INT');
 						if($idValue && $user->id != 0 && $typeValue)
 						{
-							$result = $this->getModel('ajax')->getClassCodeIds($idValue, $typeValue, $keyValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getClassCodeIds($idValue, $typeValue, $keyValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -535,7 +625,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -558,7 +648,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $typeValue)
 						{
-							$result = $this->getModel('ajax')->getClassHeaderCode($idValue, $typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getClassHeaderCode($idValue, $typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -577,7 +675,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -599,7 +697,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$tableValue = $jinput->get('table', NULL, 'WORD');
 						if($tableValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getTableColumns($tableValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getTableColumns($tableValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -618,7 +724,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -640,7 +746,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getFieldSelectOptions($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getFieldSelectOptions($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -659,7 +773,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -681,7 +795,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getDynamicScripts($typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getDynamicScripts($typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -700,7 +822,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -723,7 +845,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$sizeValue = $jinput->get('size', NULL, 'INT');
 						if($typeValue && $user->id != 0 && $sizeValue)
 						{
-							$result = $this->getModel('ajax')->getButton($typeValue, $sizeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getButton($typeValue, $sizeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -742,7 +872,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -765,7 +895,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$sizeValue = $jinput->get('size', NULL, 'INT');
 						if($typeValue && $user->id != 0 && $sizeValue)
 						{
-							$result = $this->getModel('ajax')->getButtonID($typeValue, $sizeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getButtonID($typeValue, $sizeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -784,7 +922,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -806,7 +944,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'WORD');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getAjaxDisplay($typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getAjaxDisplay($typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -825,7 +971,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -847,7 +993,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getLinked($typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getLinked($typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -866,7 +1020,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -888,7 +1042,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->checkAliasField($typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->checkAliasField($typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -907,7 +1069,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -929,7 +1091,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'ALNUM');
 						if($typeValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->checkCategoryField($typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->checkCategoryField($typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -948,7 +1118,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -970,7 +1140,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', null, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getTemplateDetails($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getTemplateDetails($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -989,7 +1167,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1011,7 +1189,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getLayoutDetails($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getLayoutDetails($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1030,7 +1216,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1054,7 +1240,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'INT');
 						if($nameValue && $user->id != 0 && $asValue && $typeValue)
 						{
-							$result = $this->getModel('ajax')->getDbTableColumns($nameValue, $asValue, $typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getDbTableColumns($nameValue, $asValue, $typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1073,7 +1267,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1097,7 +1291,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$typeValue = $jinput->get('type', NULL, 'INT');
 						if($idValue && $user->id != 0 && $asValue && $typeValue)
 						{
-							$result = $this->getModel('ajax')->getViewTableColumns($idValue, $asValue, $typeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getViewTableColumns($idValue, $asValue, $typeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1116,7 +1318,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1139,7 +1341,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$viewValue = $jinput->get('view', NULL, 'WORD');
 						if($idValue && $user->id != 0 && $viewValue)
 						{
-							$result = $this->getModel('ajax')->getDynamicValues($idValue, $viewValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getDynamicValues($idValue, $viewValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1158,7 +1368,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1181,7 +1391,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($functioNameValue && $user->id != 0 && $idValue)
 						{
-							$result = $this->getModel('ajax')->checkFunctionName($functioNameValue, $idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->checkFunctionName($functioNameValue, $idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1200,7 +1418,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1224,7 +1442,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$targetValue = $jinput->get('target', NULL, 'WORD');
 						if($functioNameValue && $user->id != 0 && $idValue && $targetValue)
 						{
-							$result = $this->getModel('ajax')->usedin($functioNameValue, $idValue, $targetValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->usedin($functioNameValue, $idValue, $targetValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1243,7 +1469,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1265,7 +1491,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getEditCustomCodeButtons($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getEditCustomCodeButtons($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1284,7 +1518,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1308,7 +1542,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$targetValue = $jinput->get('target', NULL, 'WORD');
 						if($placeholderValue && $user->id != 0 && $idValue && $targetValue)
 						{
-							$result = $this->getModel('ajax')->placedin($placeholderValue, $idValue, $targetValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->placedin($placeholderValue, $idValue, $targetValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1327,7 +1569,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1350,7 +1592,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$placeholderNameValue = $jinput->get('placeholderName', NULL, 'STRING');
 						if($idValue && $user->id != 0 && $placeholderNameValue)
 						{
-							$result = $this->getModel('ajax')->checkPlaceholderName($idValue, $placeholderNameValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->checkPlaceholderName($idValue, $placeholderNameValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1369,7 +1619,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1391,7 +1641,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$nameValue = $jinput->get('name', NULL, 'WORD');
 						if($nameValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getExistingValidationRuleCode($nameValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getExistingValidationRuleCode($nameValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1410,7 +1668,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1432,7 +1690,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getValidationRulesTable($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getValidationRulesTable($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1451,7 +1717,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1474,7 +1740,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($nameValue && $user->id != 0 && $idValue)
 						{
-							$result = $this->getModel('ajax')->checkRuleName($nameValue, $idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->checkRuleName($nameValue, $idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1493,7 +1767,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1515,7 +1789,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue)
 						{
-							$result = $this->getModel('ajax')->getFieldTypeProperties($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getFieldTypeProperties($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1534,7 +1816,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1557,7 +1839,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'ALNUM');
 						if($propertyValue && $user->id != 0 && $fieldtypeValue)
 						{
-							$result = $this->getModel('ajax')->getFieldPropertyDesc($propertyValue, $fieldtypeValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getFieldPropertyDesc($propertyValue, $fieldtypeValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1576,7 +1866,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1601,7 +1891,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$areaValue = $jinput->get('area', NULL, 'INT');
 						if($listfieldValue && $user->id != 0 && $joinfieldsValue && $typeValue && $areaValue)
 						{
-							$result = $this->getModel('ajax')->getCodeGlueOptions($listfieldValue, $joinfieldsValue, $typeValue, $areaValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getCodeGlueOptions($listfieldValue, $joinfieldsValue, $typeValue, $areaValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1620,7 +1918,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1648,7 +1946,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$component_idValue = $jinput->get('component_id', 0, 'INT');
 						if($table_nameValue && $user->id != 0 && $type_searchValue && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->doSearch($table_nameValue, $type_searchValue, $search_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->doSearch($table_nameValue, $type_searchValue, $search_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1667,7 +1973,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1695,7 +2001,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$component_idValue = $jinput->get('component_id', 0, 'INT');
 						if($table_nameValue && $user->id != 0 && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->replaceAll($table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->replaceAll($table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue, $component_idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1714,7 +2028,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1743,7 +2057,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$regex_searchValue = $jinput->get('regex_search', 0, 'INT');
 						if($field_nameValue && $user->id != 0 && $row_idValue && $table_nameValue && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->getSearchValue($field_nameValue, $row_idValue, $table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getSearchValue($field_nameValue, $row_idValue, $table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1762,7 +2084,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1792,7 +2114,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$regex_searchValue = $jinput->get('regex_search', 0, 'INT');
 						if($field_nameValue && $user->id != 0 && $row_idValue && $table_nameValue && $search_valueValue)
 						{
-							$result = $this->getModel('ajax')->getReplaceValue($field_nameValue, $row_idValue, $line_nrValue, $table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getReplaceValue($field_nameValue, $row_idValue, $line_nrValue, $table_nameValue, $search_valueValue, $replace_valueValue, $match_caseValue, $whole_wordValue, $regex_searchValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1811,7 +2141,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1836,7 +2166,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$table_nameValue = $jinput->get('table_name', NULL, 'WORD');
 						if($valueValue && $user->id != 0 && $row_idValue && $field_nameValue && $table_nameValue)
 						{
-							$result = $this->getModel('ajax')->setValue($valueValue, $row_idValue, $field_nameValue, $table_nameValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->setValue($valueValue, $row_idValue, $field_nameValue, $table_nameValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1855,7 +2193,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1877,7 +2215,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$idValue = $jinput->get('id', NULL, 'INT');
 						if($idValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getSnippetDetails($idValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getSnippetDetails($idValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1896,7 +2242,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1919,7 +2265,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$statusValue = $jinput->get('status', NULL, 'WORD');
 						if($pathValue && $user->id != 0 && $statusValue)
 						{
-							$result = $this->getModel('ajax')->setSnippetGithub($pathValue, $statusValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->setSnippetGithub($pathValue, $statusValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1938,7 +2292,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{
@@ -1960,7 +2314,15 @@ class ComponentbuilderControllerAjax extends BaseController
 						$librariesValue = $jinput->get('libraries', NULL, 'STRING');
 						if($librariesValue && $user->id != 0)
 						{
-							$result = $this->getModel('ajax')->getSnippets($librariesValue);
+							$ajaxModule = $this->getModel('ajax');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getSnippets($librariesValue);
+							}
+							else
+							{
+								$result = false;
+							}
 						}
 						else
 						{
@@ -1979,7 +2341,7 @@ class ComponentbuilderControllerAjax extends BaseController
 							echo "(".json_encode($result).");";
 						}
 					}
-					catch(Exception $e)
+					catch(\Exception $e)
 					{
 						if($callback)
 						{

@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * ###Component### View class
  */
-class ###Component###View###Component### extends JViewLegacy
+class ###Component###View###Component### extends HtmlView
 {
 	/**
 	 * View display method
@@ -31,15 +31,15 @@ class ###Component###View###Component### extends JViewLegacy
 	function display($tpl = null)
 	{
 		// Assign data to the view
-		$this->icons			= $this->get('Icons');
-		$this->contributors		= ###Component###Helper::getContributors();###DASH_GET_CUSTOM_DATA###
-		
+		$this->icons          = $this->get('Icons');
+		$this->contributors   = ###Component###Helper::getContributors();###DASH_GET_CUSTOM_DATA###
+
 		// get the manifest details of the component
 		$this->manifest = ###Component###Helper::manifest();
-		
+
 		// Set the toolbar
 		$this->addToolBar();
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -59,18 +59,18 @@ class ###Component###View###Component### extends JViewLegacy
 	protected function addToolBar()
 	{
 		$canDo = ###Component###Helper::getActions('###component###');
-		JToolBarHelper::title(JText::_('COM_###COMPONENT###_DASHBOARD'), 'grid-2');
+		ToolbarHelper::title(Text::_('COM_###COMPONENT###_DASHBOARD'), 'grid-2');
 
 		// set help url for this view if found
 		$this->help_url = ###Component###Helper::getHelpUrl('###component###');
-		if (###Component###Helper::checkString($this->help_url))
+		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		if ($canDo->get('core.admin') || $canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_###component###');
+			ToolbarHelper::preferences('com_###component###');
 		}
 	}
 
@@ -81,15 +81,17 @@ class ###Component###View###Component### extends JViewLegacy
 	 */
 	protected function setDocument()
 	{
-		$document = JFactory::getDocument();
-		
-		// add dashboard style sheets
-		$document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/dashboard.css");
-		
+		if (!isset($this->document))
+		{
+			$this->document = Factory::getDocument();
+		}
 		// set page title
-		$document->setTitle(JText::_('COM_###COMPONENT###_DASHBOARD'));
-		
+		$this->document->setTitle(Text::_('COM_###COMPONENT###_DASHBOARD'));
+
 		// add manifest to page JavaScript
-		$document->addScriptDeclaration("var manifest = jQuery.parseJSON('" . json_encode($this->manifest) . "');", "text/javascript");
+		$this->document->addScriptDeclaration("var manifest = jQuery.parseJSON('" . json_encode($this->manifest) . "');", "text/javascript");
+
+		// add dashboard style sheets
+		Html::_('stylesheet', "administrator/components/com_###component###/assets/css/dashboard.css", ['version' => 'auto']);
 	}
 }

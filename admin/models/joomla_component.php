@@ -12,15 +12,23 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\UCM\UCMType;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
-use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
 /**
@@ -124,6 +132,22 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				'crowdin_account_api_key'
 			)
 		),
+		'dynamic_build_beta' => array(
+			'fullwidth' => array(
+				'note_buildcomp_dynamic_mysql',
+				'buildcomp',
+				'buildcompsql'
+			)
+		),
+		'readme' => array(
+			'left' => array(
+				'addreadme',
+				'readme'
+			),
+			'right' => array(
+				'note_readme'
+			)
+		),
 		'dash_install' => array(
 			'left' => array(
 				'dashboard_type'
@@ -155,22 +179,6 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				'assets_table_fix'
 			)
 		),
-		'readme' => array(
-			'left' => array(
-				'addreadme',
-				'readme'
-			),
-			'right' => array(
-				'note_readme'
-			)
-		),
-		'dynamic_build_beta' => array(
-			'fullwidth' => array(
-				'note_buildcomp_dynamic_mysql',
-				'buildcomp',
-				'buildcompsql'
-			)
-		),
 		'settings' => array(
 			'left' => array(
 				'note_moved_views',
@@ -184,19 +192,22 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			'right' => array(
 				'note_component_files_folders',
 				'spacer_hr_4',
+				'add_namespace_prefix',
+				'namespace_prefix',
+				'spacer_hr_5',
 				'add_menu_prefix',
 				'menu_prefix',
-				'spacer_hr_5',
+				'spacer_hr_6',
 				'to_ignore_note',
 				'toignore',
-				'spacer_hr_6',
+				'spacer_hr_7',
 				'jcb_export_package_note',
 				'export_key',
 				'joomla_source_link',
 				'export_buy_link'
 			),
 			'fullwidth' => array(
-				'spacer_hr_7',
+				'spacer_hr_8',
 				'note_on_contributors',
 				'addcontributors',
 				'emptycontributors',
@@ -244,16 +255,16 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A database object
+	 * @return  Table  A database object
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'joomla_component', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'joomla_component', $prefix = 'ComponentbuilderTable', $config = [])
 	{
 		// add table path for when model gets used from other component
 		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
 		// get instance of the table
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 
@@ -289,13 +300,12 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
 				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -324,7 +334,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		)
 	);
 
-    
+
 	/**
 	 * Method to get a single record.
 	 *
@@ -354,34 +364,16 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->css_admin))
-			{
-				// base64 Decode css_admin.
-				$item->css_admin = base64_decode($item->css_admin);
-			}
-
-			if (!empty($item->php_admin_event))
-			{
-				// base64 Decode php_admin_event.
-				$item->php_admin_event = base64_decode($item->php_admin_event);
-			}
-
 			if (!empty($item->php_site_event))
 			{
 				// base64 Decode php_site_event.
 				$item->php_site_event = base64_decode($item->php_site_event);
 			}
 
-			if (!empty($item->php_postflight_install))
+			if (!empty($item->buildcompsql))
 			{
-				// base64 Decode php_postflight_install.
-				$item->php_postflight_install = base64_decode($item->php_postflight_install);
-			}
-
-			if (!empty($item->sql_uninstall))
-			{
-				// base64 Decode sql_uninstall.
-				$item->sql_uninstall = base64_decode($item->sql_uninstall);
+				// base64 Decode buildcompsql.
+				$item->buildcompsql = base64_decode($item->buildcompsql);
 			}
 
 			if (!empty($item->php_preflight_install))
@@ -396,10 +388,34 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
-			if (!empty($item->buildcompsql))
+			if (!empty($item->css_admin))
 			{
-				// base64 Decode buildcompsql.
-				$item->buildcompsql = base64_decode($item->buildcompsql);
+				// base64 Decode css_admin.
+				$item->css_admin = base64_decode($item->css_admin);
+			}
+
+			if (!empty($item->php_postflight_install))
+			{
+				// base64 Decode php_postflight_install.
+				$item->php_postflight_install = base64_decode($item->php_postflight_install);
+			}
+
+			if (!empty($item->sql_uninstall))
+			{
+				// base64 Decode sql_uninstall.
+				$item->sql_uninstall = base64_decode($item->sql_uninstall);
+			}
+
+			if (!empty($item->php_helper_both))
+			{
+				// base64 Decode php_helper_both.
+				$item->php_helper_both = base64_decode($item->php_helper_both);
+			}
+
+			if (!empty($item->php_admin_event))
+			{
+				// base64 Decode php_admin_event.
+				$item->php_admin_event = base64_decode($item->php_admin_event);
 			}
 
 			if (!empty($item->php_helper_admin))
@@ -448,12 +464,6 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			{
 				// base64 Decode readme.
 				$item->readme = base64_decode($item->readme);
-			}
-
-			if (!empty($item->php_helper_both))
-			{
-				// base64 Decode php_helper_both.
-				$item->php_helper_both = base64_decode($item->php_helper_both);
 			}
 
 			// Get the basic encryption.
@@ -520,20 +530,19 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
 				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 
 			// update the fields
-			$objectUpdate = new stdClass();
+			$objectUpdate = new \stdClass();
 			$objectUpdate->id = (int) $item->id;
 			// repeatable values to check
 			$arrayChecker = array(
@@ -578,7 +587,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
+	public function getForm($data = [], $loadData = true, $options = array('control' => 'jform'))
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
@@ -605,7 +614,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -618,7 +627,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$id = $jinput->get('id', 0, 'INT');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
@@ -679,16 +688,16 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		if (0 == $id)
 		{
 			// set company defaults
-			$form->setValue('companyname', null, JComponentHelper::getParams('com_componentbuilder')->get('export_company', ''));
-			$form->setValue('author', null, JComponentHelper::getParams('com_componentbuilder')->get('export_owner', ''));
-			$form->setValue('email', null, JComponentHelper::getParams('com_componentbuilder')->get('export_email', ''));
-			$form->setValue('website', null, JComponentHelper::getParams('com_componentbuilder')->get('export_website', ''));
-			$form->setValue('copyright', null, JComponentHelper::getParams('com_componentbuilder')->get('export_copyright', 'Copyright (C) 2015. All Rights Reserved'));
-			$form->setValue('license', null, JComponentHelper::getParams('com_componentbuilder')->get('export_license', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html'));
+			$form->setValue('companyname', null, ComponentHelper::getParams('com_componentbuilder')->get('export_company', ''));
+			$form->setValue('author', null, ComponentHelper::getParams('com_componentbuilder')->get('export_owner', ''));
+			$form->setValue('email', null, ComponentHelper::getParams('com_componentbuilder')->get('export_email', ''));
+			$form->setValue('website', null, ComponentHelper::getParams('com_componentbuilder')->get('export_website', ''));
+			$form->setValue('copyright', null, ComponentHelper::getParams('com_componentbuilder')->get('export_copyright', 'Copyright (C) 2015. All Rights Reserved'));
+			$form->setValue('license', null, ComponentHelper::getParams('com_componentbuilder')->get('export_license', 'GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html'));
 		}
 
 		// update all editors to use this components global editor
-		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
@@ -716,13 +725,13 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	/**
 	 * Method to get the script that have to be included on the form
 	 *
-	 * @return string	script files
+	 * @return string    script files
 	 */
 	public function getScript()
 	{
 		return 'media/com_componentbuilder/js/joomla_component.js';
 	}
-    
+
 	/**
 	 * Method to test whether a record can be deleted.
 	 *
@@ -741,7 +750,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				return;
 			}
 
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// The record has been set. Check the record permissions.
 			return $user->authorise('joomla_component.delete', 'com_componentbuilder.joomla_component.' . (int) $record->id);
 		}
@@ -759,8 +768,8 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
-		$recordId = (!empty($record->id)) ? $record->id : 0;
+		$user = Factory::getUser();
+		$recordId = $record->id ??  0;
 
 		if ($recordId)
 		{
@@ -774,28 +783,28 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('joomla_component.edit.state', 'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Method override to check if you can edit an existing record.
 	 *
-	 * @param	array	$data	An array of input data.
-	 * @param	string	$key	The name of the key for the primary key.
+	 * @param    array    $data   An array of input data.
+	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return	boolean
-	 * @since	2.5
+	 * @return    boolean
+	 * @since    2.5
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		return $user->authorise('joomla_component.edit', 'com_componentbuilder.joomla_component.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('joomla_component.edit',  'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   JTable  $table  A JTable object.
+	 * @param   Table  $table  A Table object.
 	 *
 	 * @return  void
 	 *
@@ -803,19 +812,19 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
-		
+		$date = Factory::getDate();
+		$user = Factory::getUser();
+
 		if (isset($table->name))
 		{
 			$table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
 		}
-		
+
 		if (isset($table->alias) && empty($table->alias))
 		{
 			$table->generateAlias();
 		}
-		
+
 		if (empty($table->id))
 		{
 			$table->created = $date->toSql();
@@ -827,7 +836,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			// Set ordering to the last item if not set
 			if (empty($table->ordering))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_joomla_component'));
@@ -842,7 +851,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$table->modified = $date->toSql();
 			$table->modified_by = $user->id;
 		}
-        
+
 		if (!empty($table->id))
 		{
 			// Increment the items version number.
@@ -857,10 +866,10 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	protected function loadFormData() 
+	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.joomla_component.data', array());
+		$data = Factory::getApplication()->getUserState('com_componentbuilder.edit.joomla_component.data', []);
 
 		if (empty($data))
 		{
@@ -888,7 +897,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	public function validate($form, $data, $group = null)
 	{
 		// check if the not_required field is set
-		if (isset($data['not_required']) && ComponentbuilderHelper::checkString($data['not_required']))
+		if (isset($data['not_required']) && UtilitiesStringHelper::check($data['not_required']))
 		{
 			$requiredFields = (array) explode(',',(string) $data['not_required']);
 			$requiredFields = array_unique($requiredFields);
@@ -896,7 +905,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			foreach ($requiredFields as $requiredField)
 			{
 				// make sure there is a string value
-				if (ComponentbuilderHelper::checkString($requiredField))
+				if (UtilitiesStringHelper::check($requiredField))
 				{
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
@@ -919,7 +928,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	{
 		return array('guid');
 	}
-	
+
 	/**
 	 * Method to delete one or more records.
 	 *
@@ -964,7 +973,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -1013,10 +1022,10 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				}
 			}
 		}
-		
+
 		return true;
-        }
-    
+	}
+
 	/**
 	 * Method to perform batch operations on an item or a set of items.
 	 *
@@ -1042,30 +1051,30 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
 		$done = false;
 
 		// Set some needed variables.
-		$this->user			= JFactory::getUser();
-		$this->table			= $this->getTable();
-		$this->tableClassName		= get_class($this->table);
-		$this->contentType		= new JUcmType;
-		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('joomla_component');
-		$this->batchSet			= true;
+		$this->user = Factory::getUser();
+		$this->table = $this->getTable();
+		$this->tableClassName = get_class($this->table);
+		$this->contentType = new UCMType;
+		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
+		$this->canDo = ComponentbuilderHelper::getActions('joomla_component');
+		$this->batchSet = true;
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
-        
+
 		if ($this->type == false)
 		{
-			$type = new JUcmType;
+			$type = new UCMType;
 			$this->type = $type->getTypeByAlias($this->typeAlias);
 		}
 
@@ -1102,8 +1111,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -1129,7 +1137,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user 		= JFactory::getUser();
+			$this->user 		= Factory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
@@ -1155,7 +1163,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$values['published'] = 0;
 		}
 
-		$newIds = array();
+		$newIds = [];
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -1168,7 +1176,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			if (!$this->user->authorise('joomla_component.edit', $contexts[$pk]))
 			{
 				// Not fatal error
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 				continue;
 			}
 
@@ -1184,19 +1192,19 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->system_name) && !is_numeric($this->table->system_name))
+			if (UtilitiesStringHelper::check($this->table->system_name) && !is_numeric($this->table->system_name))
 			{
 				$this->table->system_name = $this->generateUnique('system_name',$this->table->system_name);
 			}
 
 			// insert all set values
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -1208,7 +1216,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			}
 
 			// update all unique fields
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -1272,7 +1280,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user		= JFactory::getUser();
+			$this->user		= Factory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
@@ -1280,7 +1288,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 
 		if (!$this->canDo->get('joomla_component.edit') && !$this->canDo->get('joomla_component.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
@@ -1297,7 +1305,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		{
 			if (!$this->user->authorise('joomla_component.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 				return false;
 			}
 
@@ -1313,13 +1321,13 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// insert all set values.
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -1363,7 +1371,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -1375,15 +1383,15 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input	= JFactory::getApplication()->input;
-		$filter	= JFilterInput::getInstance();
-        
+		$input    = Factory::getApplication()->input;
+		$filter   = InputFilter::getInstance();
+
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-            
-			$metadata = new JRegistry;
+
+			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
@@ -1411,7 +1419,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// Set the addcontributors items to data.
 		if (isset($data['addcontributors']) && is_array($data['addcontributors']))
 		{
-			$addcontributors = new JRegistry;
+			$addcontributors = new Registry;
 			$addcontributors->loadArray($data['addcontributors']);
 			$data['addcontributors'] = (string) $addcontributors;
 		}
@@ -1421,34 +1429,16 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$data['addcontributors'] = '';
 		}
 
-		// Set the css_admin string to base64 string.
-		if (isset($data['css_admin']))
-		{
-			$data['css_admin'] = base64_encode($data['css_admin']);
-		}
-
-		// Set the php_admin_event string to base64 string.
-		if (isset($data['php_admin_event']))
-		{
-			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
-		}
-
 		// Set the php_site_event string to base64 string.
 		if (isset($data['php_site_event']))
 		{
 			$data['php_site_event'] = base64_encode($data['php_site_event']);
 		}
 
-		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
+		// Set the buildcompsql string to base64 string.
+		if (isset($data['buildcompsql']))
 		{
-			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
-		}
-
-		// Set the sql_uninstall string to base64 string.
-		if (isset($data['sql_uninstall']))
-		{
-			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
+			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
 		}
 
 		// Set the php_preflight_install string to base64 string.
@@ -1463,10 +1453,34 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
-		// Set the buildcompsql string to base64 string.
-		if (isset($data['buildcompsql']))
+		// Set the css_admin string to base64 string.
+		if (isset($data['css_admin']))
 		{
-			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
+			$data['css_admin'] = base64_encode($data['css_admin']);
+		}
+
+		// Set the php_postflight_install string to base64 string.
+		if (isset($data['php_postflight_install']))
+		{
+			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
+		}
+
+		// Set the sql_uninstall string to base64 string.
+		if (isset($data['sql_uninstall']))
+		{
+			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
+		}
+
+		// Set the php_helper_both string to base64 string.
+		if (isset($data['php_helper_both']))
+		{
+			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
+		}
+
+		// Set the php_admin_event string to base64 string.
+		if (isset($data['php_admin_event']))
+		{
+			$data['php_admin_event'] = base64_encode($data['php_admin_event']);
 		}
 
 		// Set the php_helper_admin string to base64 string.
@@ -1517,12 +1531,6 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$data['readme'] = base64_encode($data['readme']);
 		}
 
-		// Set the php_helper_both string to base64 string.
-		if (isset($data['php_helper_both']))
-		{
-			$data['php_helper_both'] = base64_encode($data['php_helper_both']);
-		}
-
 		// Get the basic encryption key.
 		$basickey = ComponentbuilderHelper::getCryptKey('basic');
 		// Get the encryption object
@@ -1563,11 +1571,11 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		{
 			ComponentbuilderHelper::dynamicBuilder($data, 1);
 		}
-        
+
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new JRegistry;
+			$params = new Registry;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}
@@ -1577,7 +1585,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		{
 			// Automatic handling of other unique fields
 			$uniqueFields = $this->getUniqueFields();
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -1585,14 +1593,14 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				}
 			}
 		}
-		
+
 		if (parent::save($data))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to generate a unique value.
 	 *
@@ -1605,7 +1613,6 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 	 */
 	protected function generateUnique($field,$value)
 	{
-
 		// set field value unique
 		$table = $this->getTable();
 
@@ -1631,7 +1638,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(['title' => $title]))
 		{
 			$title = StringHelper::increment($title);
 		}

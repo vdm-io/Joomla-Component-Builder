@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -137,7 +138,6 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_SITEVIEW_DESCRIPTION"
 					class="fieldMedium"
 					multiple="false"
-					default=""
 					required="true"
 					button="false"
 				/>
@@ -196,7 +196,7 @@
 		<!-- Note_on_site_views Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_site_views" label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_NOTE_ON_SITE_VIEWS_LABEL" description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_NOTE_ON_SITE_VIEWS_DESCRIPTION" heading="h4" class="alert alert-info note_on_site_views" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

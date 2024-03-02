@@ -44,7 +44,9 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Conditions;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Fields;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Updatesql;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Tabs;
-use VDM\Joomla\Componentbuilder\Compiler\Model\Customtabs;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Model\CustomtabsInterface as Customtabs;
+use VDM\Joomla\Componentbuilder\Compiler\Model\JoomlaThree\Customtabs as CustomtabsJ3;
+use VDM\Joomla\Componentbuilder\Compiler\Model\JoomlaFour\Customtabs as CustomtabsJ4;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Adminviews;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sqltweaking;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sqldump;
@@ -52,6 +54,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Whmcs;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Modifieddate;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Createdate;
+use VDM\Joomla\Componentbuilder\Compiler\Model\Router;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Updateserver;
 
 
@@ -63,6 +66,14 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Updateserver;
 class Model implements ServiceProviderInterface
 {
 	/**
+	 * Current Joomla Version Being Build
+	 *
+	 * @var     int
+	 * @since 3.2.0
+	 **/
+	protected $targetVersion;
+
+	/**
 	 * Registers the service provider with a DI container.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -72,107 +83,119 @@ class Model implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(ServerLoad::class, 'Model.Server.Load')
+			->share('Model.Server.Load', [$this, 'getServerLoad'], true);
+
 		$container->alias(Joomlaplugins::class, 'Model.Joomlaplugins')
-			->share('Model.Joomlaplugins', [$this, 'getModelJoomlaplugins'], true);
+			->share('Model.Joomlaplugins', [$this, 'getJoomlaplugins'], true);
 
 		$container->alias(Joomlamodules::class, 'Model.Joomlamodules')
-			->share('Model.Joomlamodules', [$this, 'getModelJoomlamodules'], true);
+			->share('Model.Joomlamodules', [$this, 'getJoomlamodules'], true);
 
 		$container->alias(Historycomponent::class, 'Model.Historycomponent')
-			->share('Model.Historycomponent', [$this, 'getModelHistorycomponent'], true);
+			->share('Model.Historycomponent', [$this, 'getHistorycomponent'], true);
 
 		$container->alias(Customadminviews::class, 'Model.Customadminviews')
-			->share('Model.Customadminviews', [$this, 'getModelCustomadminviews'], true);
+			->share('Model.Customadminviews', [$this, 'getCustomadminviews'], true);
 
 		$container->alias(Ajaxcustomview::class, 'Model.Ajaxcustomview')
-			->share('Model.Ajaxcustomview', [$this, 'getModelAjaxcustomview'], true);
+			->share('Model.Ajaxcustomview', [$this, 'getAjaxcustomview'], true);
 
 		$container->alias(Javascriptcustomview::class, 'Model.Javascriptcustomview')
-			->share('Model.Javascriptcustomview', [$this, 'getModelJavascriptcustomview'], true);
+			->share('Model.Javascriptcustomview', [$this, 'getJavascriptcustomview'], true);
 
 		$container->alias(Csscustomview::class, 'Model.Csscustomview')
-			->share('Model.Csscustomview', [$this, 'getModelCsscustomview'], true);
+			->share('Model.Csscustomview', [$this, 'getCsscustomview'], true);
 
 		$container->alias(Phpcustomview::class, 'Model.Phpcustomview')
-			->share('Model.Phpcustomview', [$this, 'getModelPhpcustomview'], true);
+			->share('Model.Phpcustomview', [$this, 'getPhpcustomview'], true);
 
 		$container->alias(Dynamicget::class, 'Model.Dynamicget')
-			->share('Model.Dynamicget', [$this, 'getModelDynamicget'], true);
+			->share('Model.Dynamicget', [$this, 'getDynamicget'], true);
 
 		$container->alias(Libraries::class, 'Model.Libraries')
-			->share('Model.Libraries', [$this, 'getModelLibraries'], true);
+			->share('Model.Libraries', [$this, 'getLibraries'], true);
 
 		$container->alias(Siteviews::class, 'Model.Siteviews')
-			->share('Model.Siteviews', [$this, 'getModelSiteviews'], true);
+			->share('Model.Siteviews', [$this, 'getSiteviews'], true);
 
 		$container->alias(Permissions::class, 'Model.Permissions')
-			->share('Model.Permissions', [$this, 'getModelPermissions'], true);
+			->share('Model.Permissions', [$this, 'getPermissions'], true);
 
 		$container->alias(Historyadminview::class, 'Model.Historyadminview')
-			->share('Model.Historyadminview', [$this, 'getModelHistoryadminview'], true);
+			->share('Model.Historyadminview', [$this, 'getHistoryadminview'], true);
 
 		$container->alias(Mysqlsettings::class, 'Model.Mysqlsettings')
-			->share('Model.Mysqlsettings', [$this, 'getModelMysqlsettings'], true);
+			->share('Model.Mysqlsettings', [$this, 'getMysqlsettings'], true);
 
 		$container->alias(Sql::class, 'Model.Sql')
-			->share('Model.Sql', [$this, 'getModelSql'], true);
+			->share('Model.Sql', [$this, 'getSql'], true);
 
 		$container->alias(Customalias::class, 'Model.Customalias')
-			->share('Model.Customalias', [$this, 'getModelCustomalias'], true);
+			->share('Model.Customalias', [$this, 'getCustomalias'], true);
 
 		$container->alias(Ajaxadmin::class, 'Model.Ajaxadmin')
-			->share('Model.Ajaxadmin', [$this, 'getModelAjaxadmin'], true);
+			->share('Model.Ajaxadmin', [$this, 'getAjaxadmin'], true);
 
 		$container->alias(Customimportscripts::class, 'Model.Customimportscripts')
-			->share('Model.Customimportscripts', [$this, 'getModelCustomimportscripts'], true);
+			->share('Model.Customimportscripts', [$this, 'getCustomimportscripts'], true);
 
 		$container->alias(Custombuttons::class, 'Model.Custombuttons')
-			->share('Model.Custombuttons', [$this, 'getModelCustombuttons'], true);
+			->share('Model.Custombuttons', [$this, 'getCustombuttons'], true);
 
 		$container->alias(Loader::class, 'Model.Loader')
-			->share('Model.Loader', [$this, 'getModelLoader'], true);
+			->share('Model.Loader', [$this, 'getLoader'], true);
 
 		$container->alias(Phpadminview::class, 'Model.Phpadminview')
-			->share('Model.Phpadminview', [$this, 'getModelPhpadminview'], true);
+			->share('Model.Phpadminview', [$this, 'getPhpadminview'], true);
 
 		$container->alias(Cssadminview::class, 'Model.Cssadminview')
-			->share('Model.Cssadminview', [$this, 'getModelCssadminview'], true);
+			->share('Model.Cssadminview', [$this, 'getCssadminview'], true);
 
 		$container->alias(Javascriptadminview::class, 'Model.Javascriptadminview')
-			->share('Model.Javascriptadminview', [$this, 'getModelJavascriptadminview'], true);
+			->share('Model.Javascriptadminview', [$this, 'getJavascriptadminview'], true);
 
 		$container->alias(Linkedviews::class, 'Model.Linkedviews')
-			->share('Model.Linkedviews', [$this, 'getModelLinkedviews'], true);
+			->share('Model.Linkedviews', [$this, 'getLinkedviews'], true);
 
 		$container->alias(Relations::class, 'Model.Relations')
-			->share('Model.Relations', [$this, 'getModelRelations'], true);
+			->share('Model.Relations', [$this, 'getRelations'], true);
 
 		$container->alias(Conditions::class, 'Model.Conditions')
-			->share('Model.Conditions', [$this, 'getModelConditions'], true);
+			->share('Model.Conditions', [$this, 'getConditions'], true);
 
 		$container->alias(Fields::class, 'Model.Fields')
-			->share('Model.Fields', [$this, 'getModelFields'], true);
+			->share('Model.Fields', [$this, 'getFields'], true);
 
 		$container->alias(Updatesql::class, 'Model.Updatesql')
-			->share('Model.Updatesql', [$this, 'getModelUpdatesql'], true);
+			->share('Model.Updatesql', [$this, 'getUpdatesql'], true);
 
 		$container->alias(Tabs::class, 'Model.Tabs')
-			->share('Model.Tabs', [$this, 'getModelTabs'], true);
+			->share('Model.Tabs', [$this, 'getTabs'], true);
 
 		$container->alias(Customtabs::class, 'Model.Customtabs')
-			->share('Model.Customtabs', [$this, 'getModelCustomtabs'], true);
+			->share('Model.Customtabs', [$this, 'getCustomtabs'], true);
+
+		$container->alias(CustomtabsJ3::class, 'Model.J3.Customtabs')
+			->share('Model.J3.Customtabs', [$this, 'getCustomtabsJ3'], true);
+
+		$container->alias(CustomtabsJ4::class, 'Model.J4.Customtabs')
+			->share('Model.J4.Customtabs', [$this, 'getCustomtabsJ4'], true);
 
 		$container->alias(Adminviews::class, 'Model.Adminviews')
-			->share('Model.Adminviews', [$this, 'getModelAdminviews'], true);
+			->share('Model.Adminviews', [$this, 'getAdminviews'], true);
 
 		$container->alias(Sqltweaking::class, 'Model.Sqltweaking')
-			->share('Model.Sqltweaking', [$this, 'getModelSqltweaking'], true);
+			->share('Model.Sqltweaking', [$this, 'getSqltweaking'], true);
 
 		$container->alias(Sqldump::class, 'Model.Sqldump')
-			->share('Model.Sqldump', [$this, 'getModelSqldump'], true);
+			->share('Model.Sqldump', [$this, 'getSqldump'], true);
 
 		$container->alias(Whmcs::class, 'Model.Whmcs')
-			->share('Model.Whmcs', [$this, 'getModelWhmcs'], true);
+			->share('Model.Whmcs', [$this, 'getWhmcs'], true);
+
+		$container->alias(Filesfolders::class, 'Model.Filesfolders')
+			->share('Model.Filesfolders', [$this, 'getFilesfolders'], true);
 
 		$container->alias(Modifieddate::class, 'Model.Modifieddate')
 			->share('Model.Modifieddate', [$this, 'getModifieddate'], true);
@@ -180,25 +203,38 @@ class Model implements ServiceProviderInterface
 		$container->alias(Createdate::class, 'Model.Createdate')
 			->share('Model.Createdate', [$this, 'getCreatedate'], true);
 
+		$container->alias(Router::class, 'Model.Router')
+			->share('Model.Router', [$this, 'getRouter'], true);
+
 		$container->alias(Updateserver::class, 'Model.Updateserver')
 			->share('Model.Updateserver', [$this, 'getUpdateserver'], true);
-
-		$container->alias(Filesfolders::class, 'Model.Filesfolders')
-			->share('Model.Filesfolders', [$this, 'getModelFilesfolders'], true);
-
-		$container->alias(ServerLoad::class, 'Model.Server.Load')
-			->share('Model.Server.Load', [$this, 'getServerLoad'], true);
 	}
 
 	/**
-	 * Get the Joomla plugins Model
+	 * Get The Load Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ServerLoad
+	 * @since 3.2.0
+	 */
+	public function getServerLoad(Container $container): ServerLoad
+	{
+		return new ServerLoad(
+			$container->get('Crypt'),
+			$container->get('Table')
+		);
+	}
+
+	/**
+	 * Get The Joomlaplugins Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Joomlaplugins
 	 * @since 3.2.0
 	 */
-	public function getModelJoomlaplugins(Container $container): Joomlaplugins
+	public function getJoomlaplugins(Container $container): Joomlaplugins
 	{
 		return new Joomlaplugins(
 			$container->get('Joomlaplugin.Data')
@@ -206,14 +242,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Joomla modules Model
+	 * Get The Joomlamodules Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Joomlamodules
 	 * @since 3.2.0
 	 */
-	public function getModelJoomlamodules(Container $container): Joomlamodules
+	public function getJoomlamodules(Container $container): Joomlamodules
 	{
 		return new Joomlamodules(
 			$container->get('Joomlamodule.Data')
@@ -221,14 +257,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the history component Model
+	 * Get The Historycomponent Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Historycomponent
 	 * @since 3.2.0
 	 */
-	public function getModelHistorycomponent(Container $container): Historycomponent
+	public function getHistorycomponent(Container $container): Historycomponent
 	{
 		return new Historycomponent(
 			$container->get('Config'),
@@ -238,14 +274,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the custom admin views Model
+	 * Get The Customadminviews Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Customadminviews
 	 * @since 3.2.0
 	 */
-	public function getModelCustomadminviews(Container $container): Customadminviews
+	public function getCustomadminviews(Container $container): Customadminviews
 	{
 		return new Customadminviews(
 			$container->get('Customview.Data'),
@@ -254,14 +290,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the ajax custom view Model
+	 * Get The Ajaxcustomview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Ajaxcustomview
 	 * @since 3.2.0
 	 */
-	public function getModelAjaxcustomview(Container $container): Ajaxcustomview
+	public function getAjaxcustomview(Container $container): Ajaxcustomview
 	{
 		return new Ajaxcustomview(
 			$container->get('Config'),
@@ -270,14 +306,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the javascript custom view Model
+	 * Get The Javascriptcustomview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Javascriptcustomview
 	 * @since 3.2.0
 	 */
-	public function getModelJavascriptcustomview(Container $container): Javascriptcustomview
+	public function getJavascriptcustomview(Container $container): Javascriptcustomview
 	{
 		return new Javascriptcustomview(
 			$container->get('Customcode'),
@@ -286,14 +322,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the css custom view Model
+	 * Get The Csscustomview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Csscustomview
 	 * @since 3.2.0
 	 */
-	public function getModelCsscustomview(Container $container): Csscustomview
+	public function getCsscustomview(Container $container): Csscustomview
 	{
 		return new Csscustomview(
 			$container->get('Customcode')
@@ -301,14 +337,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the php custom view Model
+	 * Get The Phpcustomview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Phpcustomview
 	 * @since 3.2.0
 	 */
-	public function getModelPhpcustomview(Container $container): Phpcustomview
+	public function getPhpcustomview(Container $container): Phpcustomview
 	{
 		return new Phpcustomview(
 			$container->get('Customcode'),
@@ -319,14 +355,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the dynamic get Model
+	 * Get The Dynamicget Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Dynamicget
 	 * @since 3.2.0
 	 */
-	public function getModelDynamicget(Container $container): Dynamicget
+	public function getDynamicget(Container $container): Dynamicget
 	{
 		return new Dynamicget(
 			$container->get('Config'),
@@ -340,14 +376,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the libraries Model
+	 * Get The Libraries Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Libraries
 	 * @since 3.2.0
 	 */
-	public function getModelLibraries(Container $container): Libraries
+	public function getLibraries(Container $container): Libraries
 	{
 		return new Libraries(
 			$container->get('Config'),
@@ -357,14 +393,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the site views Model
+	 * Get The Siteviews Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Siteviews
 	 * @since 3.2.0
 	 */
-	public function getModelSiteviews(Container $container): Siteviews
+	public function getSiteviews(Container $container): Siteviews
 	{
 		return new Siteviews(
 			$container->get('Customview.Data'),
@@ -373,27 +409,27 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the permissions Model
+	 * Get The Permissions Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Permissions
 	 * @since 3.2.0
 	 */
-	public function getModelPermissions(Container $container): Permissions
+	public function getPermissions(Container $container): Permissions
 	{
 		return new Permissions();
 	}
 
 	/**
-	 * Get the admin view history Model
+	 * Get The Historyadminview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Historyadminview
 	 * @since 3.2.0
 	 */
-	public function getModelHistoryadminview(Container $container): Historyadminview
+	public function getHistoryadminview(Container $container): Historyadminview
 	{
 		return new Historyadminview(
 			$container->get('Config'),
@@ -403,14 +439,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the MySQL settings Model
+	 * Get The Mysqlsettings Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Mysqlsettings
 	 * @since 3.2.0
 	 */
-	public function getModelMysqlsettings(Container $container): Mysqlsettings
+	public function getMysqlsettings(Container $container): Mysqlsettings
 	{
 		return new Mysqlsettings(
 			$container->get('Config'),
@@ -419,14 +455,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Sql Model
+	 * Get The Sql Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Sql
 	 * @since 3.2.0
 	 */
-	public function getModelSql(Container $container): Sql
+	public function getSql(Container $container): Sql
 	{
 		return new Sql(
 			$container->get('Customcode.Dispenser'),
@@ -435,14 +471,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the custom alias Model
+	 * Get The Customalias Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Customalias
 	 * @since 3.2.0
 	 */
-	public function getModelCustomalias(Container $container): Customalias
+	public function getCustomalias(Container $container): Customalias
 	{
 		return new Customalias(
 			$container->get('Compiler.Builder.Custom.Alias'),
@@ -451,14 +487,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Admin Ajax Model
+	 * Get The Ajaxadmin Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Ajaxadmin
 	 * @since 3.2.0
 	 */
-	public function getModelAjaxadmin(Container $container): Ajaxadmin
+	public function getAjaxadmin(Container $container): Ajaxadmin
 	{
 		return new Ajaxadmin(
 			$container->get('Config'),
@@ -468,14 +504,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the custom import scripts Model
+	 * Get The Customimportscripts Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Customimportscripts
 	 * @since 3.2.0
 	 */
-	public function getModelCustomimportscripts(Container $container): Customimportscripts
+	public function getCustomimportscripts(Container $container): Customimportscripts
 	{
 		return new Customimportscripts(
 			$container->get('Customcode.Dispenser')
@@ -483,14 +519,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the custom import scripts Model
+	 * Get The Custombuttons Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Custombuttons
 	 * @since 3.2.0
 	 */
-	public function getModelCustombuttons(Container $container): Custombuttons
+	public function getCustombuttons(Container $container): Custombuttons
 	{
 		return new Custombuttons(
 			$container->get('Customcode'),
@@ -500,14 +536,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get The Model Loader Class.
+	 * Get The Loader Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Loader
 	 * @since 3.2.0
 	 */
-	public function getModelLoader(Container $container): Loader
+	public function getLoader(Container $container): Loader
 	{
 		return new Loader(
 			$container->get('Config'),
@@ -519,14 +555,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the php admin view Model
+	 * Get The Phpadminview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Phpadminview
 	 * @since 3.2.0
 	 */
-	public function getModelPhpadminview(Container $container): Phpadminview
+	public function getPhpadminview(Container $container): Phpadminview
 	{
 		return new Phpadminview(
 			$container->get('Customcode.Dispenser'),
@@ -535,14 +571,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Css Adminview Model
+	 * Get The Cssadminview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Cssadminview
 	 * @since 3.2.0
 	 */
-	public function getModelCssadminview(Container $container): Cssadminview
+	public function getCssadminview(Container $container): Cssadminview
 	{
 		return new Cssadminview(
 			$container->get('Customcode.Dispenser')
@@ -550,14 +586,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Javascript Adminview Model
+	 * Get The Javascriptadminview Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Javascriptadminview
 	 * @since 3.2.0
 	 */
-	public function getModelJavascriptadminview(Container $container): Javascriptadminview
+	public function getJavascriptadminview(Container $container): Javascriptadminview
 	{
 		return new Javascriptadminview(
 			$container->get('Customcode.Dispenser')
@@ -565,14 +601,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the linked views Model
+	 * Get The Linkedviews Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Linkedviews
 	 * @since 3.2.0
 	 */
-	public function getModelLinkedviews(Container $container): Linkedviews
+	public function getLinkedviews(Container $container): Linkedviews
 	{
 		return new Linkedviews(
 			$container->get('Registry')
@@ -580,14 +616,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the relations Model
+	 * Get The Relations Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Relations
 	 * @since 3.2.0
 	 */
-	public function getModelRelations(Container $container): Relations
+	public function getRelations(Container $container): Relations
 	{
 		return new Relations(
 			$container->get('Config'),
@@ -600,14 +636,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the conditions Model
+	 * Get The Conditions Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Conditions
 	 * @since 3.2.0
 	 */
-	public function getModelConditions(Container $container): Conditions
+	public function getConditions(Container $container): Conditions
 	{
 		return new Conditions(
 			$container->get('Field.Type.Name'),
@@ -617,14 +653,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the fields Model
+	 * Get The Fields Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Fields
 	 * @since 3.2.0
 	 */
-	public function getModelFields(Container $container): Fields
+	public function getFields(Container $container): Fields
 	{
 		return new Fields(
 			$container->get('Config'),
@@ -639,14 +675,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the update sql Model
+	 * Get The Updatesql Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Updatesql
 	 * @since 3.2.0
 	 */
-	public function getModelUpdatesql(Container $container): Updatesql
+	public function getUpdatesql(Container $container): Updatesql
 	{
 		return new Updatesql(
 			$container->get('Registry')
@@ -654,29 +690,47 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the tabs Model
+	 * Get The Tabs Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Updatesql
+	 * @return  Tabs
 	 * @since 3.2.0
 	 */
-	public function getModelTabs(Container $container): Tabs
+	public function getTabs(Container $container): Tabs
 	{
 		return new Tabs();
 	}
 
 	/**
-	 * Get the custom tabs Model
+	 * Get The Customtabs Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Customtabs
 	 * @since 3.2.0
 	 */
-	public function getModelCustomtabs(Container $container): Customtabs
+	public function getCustomtabs(Container $container): Customtabs
 	{
-		return new Customtabs(
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		return $container->get('Model.J' . $this->targetVersion . '.Customtabs');
+	}
+
+	/**
+	 * Get The CustomtabsJ3 Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomtabsJ3
+	 * @since 3.2.0
+	 */
+	public function getCustomtabsJ3(Container $container): CustomtabsJ3
+	{
+		return new CustomtabsJ3(
 			$container->get('Config'),
 			$container->get('Compiler.Builder.Custom.Tabs'),
 			$container->get('Language'),
@@ -686,14 +740,33 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the admin views Model
+	 * Get The CustomtabsJ4 Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomtabsJ4
+	 * @since 3.2.0
+	 */
+	public function getCustomtabsJ4(Container $container): CustomtabsJ4
+	{
+		return new CustomtabsJ4(
+			$container->get('Config'),
+			$container->get('Compiler.Builder.Custom.Tabs'),
+			$container->get('Language'),
+			$container->get('Placeholder'),
+			$container->get('Customcode')
+		);
+	}
+
+	/**
+	 * Get The Adminviews Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Adminviews
 	 * @since 3.2.0
 	 */
-	public function getModelAdminviews(Container $container): Adminviews
+	public function getAdminviews(Container $container): Adminviews
 	{
 		return new Adminviews(
 			$container->get('Config'),
@@ -704,14 +777,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the SQL tweaking Model
+	 * Get The Sqltweaking Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Sqltweaking
 	 * @since 3.2.0
 	 */
-	public function getModelSqltweaking(Container $container): Sqltweaking
+	public function getSqltweaking(Container $container): Sqltweaking
 	{
 		return new Sqltweaking(
 			$container->get('Registry')
@@ -719,14 +792,14 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the SQL dump Model
+	 * Get The Sqldump Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Sqldump
 	 * @since 3.2.0
 	 */
-	public function getModelSqldump(Container $container): Sqldump
+	public function getSqldump(Container $container): Sqldump
 	{
 		return new Sqldump(
 			$container->get('Registry')
@@ -734,20 +807,33 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the whmcs Model
+	 * Get The Whmcs Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Whmcs
 	 * @since 3.2.0
 	 */
-	public function getModelWhmcs(Container $container): Whmcs
+	public function getWhmcs(Container $container): Whmcs
 	{
 		return new Whmcs();
 	}
 
 	/**
-	 * Get the modified date Model
+	 * Get The Filesfolders Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Filesfolders
+	 * @since 3.2.0
+	 */
+	public function getFilesfolders(Container $container): Filesfolders
+	{
+		return new Filesfolders();
+	}
+
+	/**
+	 * Get The Modifieddate Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -760,7 +846,7 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the create date Model
+	 * Get The Createdate Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -773,7 +859,24 @@ class Model implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the update server Model
+	 * Get The Router Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Router
+	 * @since 3.2.0
+	 */
+	public function getRouter(Container $container): Router
+	{
+		return new Router(
+			$container->get('Config'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Router')
+		);
+	}
+
+	/**
+	 * Get The Updateserver Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -783,35 +886,6 @@ class Model implements ServiceProviderInterface
 	public function getUpdateserver(Container $container): Updateserver
 	{
 		return new Updateserver();
-	}
-
-	/**
-	 * Get the files folders Model
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Filesfolders
-	 * @since 3.2.0
-	 */
-	public function getModelFilesfolders(Container $container): Filesfolders
-	{
-		return new Filesfolders();
-	}
-
-	/**
-	 * Get the Server Model Server Loader class
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  ServerLoad
-	 * @since 3.2.0
-	 */
-	public function getServerLoad(Container $container): ServerLoad
-	{
-		return new ServerLoad(
-			$container->get('Crypt'),
-			$container->get('Table')
-		);
 	}
 }
 

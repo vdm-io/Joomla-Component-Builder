@@ -12,8 +12,15 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use VDM\Joomla\Utilities\GetHelper;
 
 /**
  * Admin_view Form Controller
@@ -36,13 +43,13 @@ class ComponentbuilderControllerAdmin_view extends FormController
 	 *
 	 * @since   1.6
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		$this->view_list = 'Admin_views'; // safeguard for setting the return view listing to the main view.
 		parent::__construct($config);
 	}
 
-        /**
+	/**
 	 * Method override to check if you can add a new record.
 	 *
 	 * @param   array  $data  An array of input data.
@@ -51,10 +58,10 @@ class ComponentbuilderControllerAdmin_view extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowAdd($data = array())
+	protected function allowAdd($data = [])
 	{
 		// Get user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Access check.
 		$access = $user->authorise('admin_view.access', 'com_componentbuilder');
 		if (!$access)
@@ -76,10 +83,10 @@ class ComponentbuilderControllerAdmin_view extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// get user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// get record id.
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 
@@ -150,12 +157,12 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 		// set the referral options
 		if ($refid && $ref)
-                {
-			$append = '&ref=' . (string)$ref . '&refid='. (int)$refid . $append;
+		{
+			$append = '&ref=' . (string) $ref . '&refid='. (int) $refid . $append;
 		}
 		elseif ($ref)
 		{
-			$append = '&ref='. (string)$ref . $append;
+			$append = '&ref='. (string) $ref . $append;
 		}
 
 		return $append;
@@ -172,13 +179,13 @@ class ComponentbuilderControllerAdmin_view extends FormController
 	 */
 	public function batch($model = null)
 	{
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('Admin_view', '', array());
+		$model = $this->getModel('Admin_view', '', []);
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=admin_views' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=admin_views' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}
@@ -203,13 +210,13 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 		$cancel = parent::cancel($key);
 
-		if (!is_null($return) && JUri::isInternal(base64_decode($return)))
+		if (!is_null($return) && Uri::isInternal(base64_decode($return)))
 		{
 			$redirect = base64_decode($return);
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
@@ -220,7 +227,7 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -231,7 +238,7 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -257,7 +264,7 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 		// Check if there is a return value
 		$return = $this->input->get('return', null, 'base64');
-		$canReturn = (!is_null($return) && JUri::isInternal(base64_decode($return)));
+		$canReturn = (!is_null($return) && Uri::isInternal(base64_decode($return)));
 
 		if ($this->ref || $this->refid || $canReturn)
 		{
@@ -275,29 +282,29 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
 		}
 		elseif ($this->refid && $this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+			$redirect = '&view=' . (string) $this->ref . '&layout=edit&id=' . (int) $this->refid;
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
 		}
 		elseif ($this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref;
+			$redirect = '&view=' . (string) $this->ref;
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -309,14 +316,14 @@ class ComponentbuilderControllerAdmin_view extends FormController
 	 * Function that allows child controller access to model data
 	 * after the data has been saved.
 	 *
-	 * @param   JModel  &$model     The data model object.
-	 * @param   array   $validData  The validated data.
+	 * @param   BaseDatabaseModel  &$model     The data model object.
+	 * @param   array              $validData  The validated data.
 	 *
 	 * @return  void
 	 *
 	 * @since   11.1
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
 		// get the state object (Joomla\CMS\Object\CMSObject)
 		$state = $model->get('state');		
@@ -337,7 +344,7 @@ class ComponentbuilderControllerAdmin_view extends FormController
 			foreach($_tablesArray as $_updateTable)
 			{
 				// get the linked ID
-				if ($_value = ComponentbuilderHelper::getVar($_updateTable, $oldID, 'admin_view', 'id'))
+				if ($_value = GetHelper::var($_updateTable, $oldID, 'admin_view', 'id'))
 				{
 					// copy fields to new admin view
 					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array('admin_view' => $newID));
@@ -347,5 +354,4 @@ class ComponentbuilderControllerAdmin_view extends FormController
 
 		return;
 	}
-
 }

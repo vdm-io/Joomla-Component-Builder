@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -232,7 +233,7 @@
 		<!-- Note_on_conditions Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_on_conditions" label="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NOTE_ON_CONDITIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_conditions" close="true" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

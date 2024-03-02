@@ -96,9 +96,13 @@ class Historycomponent
 	 */
 	private function setAdminView(object $item)
 	{
-		$old_admin_views = $this->history->get(
-			'component_admin_views', $item->addadmin_views_id
-		);
+		$old_admin_views = null;
+		if (isset($item->addadmin_views_id))
+		{
+			$old_admin_views = $this->history->get(
+				'component_admin_views', $item->addadmin_views_id
+			);
+		}
 
 		// add new views if found
 		if ($old_admin_views && ObjectHelper::check($old_admin_views))
@@ -126,9 +130,13 @@ class Historycomponent
 	 */
 	private function setComponent(object &$item)
 	{
-		$old_component = $this->history->get(
-			'joomla_component', $this->config->component_id
-		);
+		$old_component = null;
+		if (isset($this->config->component_id))
+		{
+			$old_component = $this->history->get(
+				'joomla_component', $this->config->component_id
+			);
+		}
 
 		// check if a new version was manually set
 		if ($old_component && ObjectHelper::check($old_component))

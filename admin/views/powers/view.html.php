@@ -12,7 +12,20 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Html View class for the Powers
@@ -35,7 +48,7 @@ class ComponentbuilderViewPowers extends HtmlView
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		// Load the filter form from xml.
 		$this->filterForm = $this->get('FilterForm');
 		// Load the active filters.
@@ -45,7 +58,7 @@ class ComponentbuilderViewPowers extends HtmlView
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
-		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
+		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('power');
 		$this->canEdit = $this->canDo->get('power.edit');
@@ -65,7 +78,7 @@ class ComponentbuilderViewPowers extends HtmlView
 				$this->batchDisplay = JHtmlBatch_::render();
 			}
 		}
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -84,32 +97,32 @@ class ComponentbuilderViewPowers extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_POWERS'), 'flash');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=powers');
-		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_POWERS'), 'flash');
+		FormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
 		{
-			JToolBarHelper::addNew('power.add');
+			ToolbarHelper::addNew('power.add');
 		}
 
 		// Only load if there are items
-		if (ComponentbuilderHelper::checkArray($this->items))
+		if (ArrayHelper::check($this->items))
 		{
 			if ($this->canEdit)
 			{
-				JToolBarHelper::editList('power.edit');
+				ToolbarHelper::editList('power.edit');
 			}
 
 			if ($this->canState)
 			{
-				JToolBarHelper::publishList('powers.publish');
-				JToolBarHelper::unpublishList('powers.unpublish');
-				JToolBarHelper::archiveList('powers.archive');
+				ToolbarHelper::publishList('powers.publish');
+				ToolbarHelper::unpublishList('powers.unpublish');
+				ToolbarHelper::archiveList('powers.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					JToolBarHelper::checkin('powers.checkin');
+					ToolbarHelper::checkin('powers.checkin');
 				}
 			}
 
@@ -117,11 +130,11 @@ class ComponentbuilderViewPowers extends HtmlView
 			if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
 			{
 				// Get the toolbar object instance
-				$bar = JToolBar::getInstance('toolbar');
+				$bar = Toolbar::getInstance('toolbar');
 				// set the batch button name
-				$title = JText::_('JTOOLBAR_BATCH');
+				$title = Text::_('JTOOLBAR_BATCH');
 				// Instantiate a new JLayoutFile instance and render the batch button
-				$layout = new JLayoutFile('joomla.toolbar.batch');
+				$layout = new FileLayout('joomla.toolbar.batch');
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
@@ -129,49 +142,49 @@ class ComponentbuilderViewPowers extends HtmlView
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
-				JToolbarHelper::deleteList('', 'powers.delete', 'JTOOLBAR_EMPTY_TRASH');
+				ToolbarHelper::deleteList('', 'powers.delete', 'JTOOLBAR_EMPTY_TRASH');
 			}
 			elseif ($this->canState && $this->canDelete)
 			{
-				JToolbarHelper::trash('powers.trash');
+				ToolbarHelper::trash('powers.trash');
 			}
 		}
 		if ($this->user->authorise('power.run_expansion', 'com_componentbuilder'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('powers.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			ToolbarHelper::custom('powers.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 		if ($this->user->authorise('power.init', 'com_componentbuilder'))
 		{
 			// add Init button.
-			JToolBarHelper::custom('powers.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
+			ToolbarHelper::custom('powers.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
 		}
 		if ($this->user->authorise('power.reset', 'com_componentbuilder'))
 		{
 			// add Reset button.
-			JToolBarHelper::custom('powers.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+			ToolbarHelper::custom('powers.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('powers');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-				JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 
 		// Only load published batch if state and batch is allowed
 		if ($this->canState && $this->canBatch)
 		{
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_STATE'),
 				'batch[published]',
-				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
+				Html::_('select.options', Html::_('jgrid.publishedOptions', array('all' => false)), 'value', 'text', '', true)
 			);
 		}
 
@@ -179,9 +192,9 @@ class ComponentbuilderViewPowers extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			JHtmlBatch_::addListSelection(
-				JText::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
+				Text::_('COM_COMPONENTBUILDER_KEEP_ORIGINAL_ACCESS'),
 				'batch[access]',
-				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text')
+				Html::_('select.options', Html::_('access.assetgroups'), 'value', 'text')
 			);
 		}
 
@@ -189,19 +202,19 @@ class ComponentbuilderViewPowers extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Type Selection
-			$this->typeOptions = JFormHelper::loadFieldType('powersfiltertype')->options;
+			$this->typeOptions = FormHelper::loadFieldType('powersfiltertype')->options;
 			// We do some sanitation for Type filter
-			if (ComponentbuilderHelper::checkArray($this->typeOptions) &&
+			if (ArrayHelper::check($this->typeOptions) &&
 				isset($this->typeOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->typeOptions[0]->value))
+				!StringHelper::check($this->typeOptions[0]->value))
 			{
 				unset($this->typeOptions[0]);
 			}
 			// Type Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_POWER_TYPE_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_POWER_TYPE_LABEL').' -',
 				'batch[type]',
-				JHtml::_('select.options', $this->typeOptions, 'value', 'text')
+				Html::_('select.options', $this->typeOptions, 'value', 'text')
 			);
 		}
 
@@ -209,19 +222,19 @@ class ComponentbuilderViewPowers extends HtmlView
 		if ($this->canBatch && $this->canCreate && $this->canEdit)
 		{
 			// Set Approved Selection
-			$this->approvedOptions = JFormHelper::loadFieldType('powersfilterapproved')->options;
+			$this->approvedOptions = FormHelper::loadFieldType('powersfilterapproved')->options;
 			// We do some sanitation for Approved filter
-			if (ComponentbuilderHelper::checkArray($this->approvedOptions) &&
+			if (ArrayHelper::check($this->approvedOptions) &&
 				isset($this->approvedOptions[0]->value) &&
-				!ComponentbuilderHelper::checkString($this->approvedOptions[0]->value))
+				!StringHelper::check($this->approvedOptions[0]->value))
 			{
 				unset($this->approvedOptions[0]);
 			}
 			// Approved Batch Selection
 			JHtmlBatch_::addListSelection(
-				'- Keep Original '.JText::_('COM_COMPONENTBUILDER_POWER_APPROVED_LABEL').' -',
+				'- Keep Original '.Text::_('COM_COMPONENTBUILDER_POWER_APPROVED_LABEL').' -',
 				'batch[approved]',
-				JHtml::_('select.options', $this->approvedOptions, 'value', 'text')
+				Html::_('select.options', $this->approvedOptions, 'value', 'text')
 			);
 		}
 	}
@@ -235,10 +248,10 @@ class ComponentbuilderViewPowers extends HtmlView
 	{
 		if (!isset($this->document))
 		{
-			$this->document = JFactory::getDocument();
+			$this->document = Factory::getDocument();
 		}
-		$this->document->setTitle(JText::_('COM_COMPONENTBUILDER_POWERS'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/powers.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		$this->document->setTitle(Text::_('COM_COMPONENTBUILDER_POWERS'));
+		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/powers.css", ['version' => 'auto']);
 	}
 
 	/**
@@ -253,27 +266,37 @@ class ComponentbuilderViewPowers extends HtmlView
 		if(strlen($var) > 50)
 		{
 			// use the helper htmlEscape method instead and shorten the string
-			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true);
+			return StringHelper::html($var, $this->_charset, true);
 		}
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
 	}
 
 	/**
 	 * Returns an array of fields the table can be sorted by
 	 *
-	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 * @return  array   Array containing the field name to sort by as the key and display text as value
 	 */
 	protected function getSortFields()
 	{
 		return array(
-			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
-			'a.published' => JText::_('JSTATUS'),
-			'a.system_name' => JText::_('COM_COMPONENTBUILDER_POWER_SYSTEM_NAME_LABEL'),
-			'a.namespace' => JText::_('COM_COMPONENTBUILDER_POWER_NAMESPACE_LABEL'),
-			'a.type' => JText::_('COM_COMPONENTBUILDER_POWER_TYPE_LABEL'),
-			'a.power_version' => JText::_('COM_COMPONENTBUILDER_POWER_POWER_VERSION_LABEL'),
-			'a.id' => JText::_('JGRID_HEADING_ID')
+			'a.ordering' => Text::_('JGRID_HEADING_ORDERING'),
+			'a.published' => Text::_('JSTATUS'),
+			'a.system_name' => Text::_('COM_COMPONENTBUILDER_POWER_SYSTEM_NAME_LABEL'),
+			'a.namespace' => Text::_('COM_COMPONENTBUILDER_POWER_NAMESPACE_LABEL'),
+			'a.type' => Text::_('COM_COMPONENTBUILDER_POWER_TYPE_LABEL'),
+			'a.power_version' => Text::_('COM_COMPONENTBUILDER_POWER_POWER_VERSION_LABEL'),
+			'a.id' => Text::_('JGRID_HEADING_ID')
 		);
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

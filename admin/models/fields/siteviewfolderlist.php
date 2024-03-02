@@ -12,6 +12,11 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use VDM\Joomla\Utilities\StringHelper;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,33 +29,36 @@ class JFormFieldSiteviewfolderlist extends JFormFieldList
 	/**
 	 * The siteviewfolderlist field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'siteviewfolderlist';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
 		// get custom folder files
-		$localfolder = JPATH_COMPONENT_SITE.'/views';
+		$localfolders = [];
+		$localfolders[] = JPATH_SITE . '/components/com_componentbuilder/views';
+		$localfolders[] = JPATH_SITE . '/components/com_componentbuilder/src/View';
 		// set the default
-		$options = array();
-		// import all needed classes
-		jimport('joomla.filesystem.folder');
+		$options = [];
 		// now check if there are files in the folder
-		if (JFolder::exists($localfolder) && $folders = JFolder::folders($localfolder))
+		foreach ($localfolders as $localfolder)
 		{
-			if ($this->multiple === false)
+			if (is_dir($localfolder) && $folders = \Joomla\Filesystem\Folder::folders($localfolder))
 			{
-				$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_SELECT_A_SITE_VIEW'));
-			}
-			foreach ($folders as $folder)
-			{
-				$options[] = JHtml::_('select.option', $folder, ComponentbuilderHelper::safeString($folder, 'W'));
+				if ($this->multiple === false)
+				{
+					$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_A_SITE_VIEW'));
+				}
+				foreach ($folders as $folder)
+				{
+					$options[] = Html::_('select.option', $folder, StringHelper::safe($folder, 'W'));
+				}
 			}
 		}
 		return $options;

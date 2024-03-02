@@ -144,18 +144,16 @@ class Power implements PowerInterface
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    CMSApplication
 	 * @since 3.2.0
 	 **/
-	protected CMSApplication $app;
+	protected $app;
 
 	/**
 	 * Constructor.
@@ -165,23 +163,20 @@ class Power implements PowerInterface
 	 * @param Customcode|null         $customcode   The compiler customcode object.
 	 * @param Gui|null                $gui          The compiler customcode gui object.
 	 * @param Superpower|null         $superpower   The JCB superpower object.
-	 * @param \JDatabaseDriver|null   $db           The Database Driver object.
-	 * @param CMSApplication|null     $app          The CMS Application object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?Customcode $customcode = null, ?Gui $gui = null, ?Superpower $superpower = null,
-		?\JDatabaseDriver $db = null, ?CMSApplication $app = null)
+		?Customcode $customcode = null, ?Gui $gui = null, ?Superpower $superpower = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
 		$this->customcode = $customcode ?: Compiler::_('Customcode');
 		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
 		$this->superpower = $superpower ?: Compiler::_('Superpower');
-		$this->db = $db ?: Factory::getDbo();
-		$this->app = $app ?: Factory::getApplication();
+		$this->db = Factory::getDbo();
+		$this->app = Factory::getApplication();
 	}
 
 	/**

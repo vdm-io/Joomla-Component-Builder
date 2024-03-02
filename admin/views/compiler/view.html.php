@@ -12,10 +12,20 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Form\Form;
+use Joomla\CMS\Layout\LayoutHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\FormHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Html View class for the Compiler
@@ -26,11 +36,11 @@ class ComponentbuilderViewCompiler extends HtmlView
 	function display($tpl = null)
 	{
 		// get component params
-		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// get the application
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		// get the user object
-		$this->user	= JFactory::getUser();
+		$this->user    = Factory::getUser();
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('compiler');
 		// Initialise variables.
@@ -102,15 +112,15 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			throw new Exception(implode(PHP_EOL, $errors), 500);
+			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
 		parent::display($tpl);
 	}
 
 	// These are subform layouts used in JCB
-	// JLayoutHelper::render('sectionjcb', [?]); // added to ensure the layout are loaded
-	// JLayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout are loaded
+	// LayoutHelper::render('sectionjcb', [?]); // added to ensure the layout are loaded
+	// LayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout are loaded
 
 	/**
 	 * Get the dynamic build form fields needed on the page
@@ -147,7 +157,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -167,7 +177,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -188,7 +198,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -208,7 +218,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -228,7 +238,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -248,7 +258,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -272,7 +282,58 @@ class ComponentbuilderViewCompiler extends HtmlView
 			}
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'builder');
+			}
+
+			// Joomla Versions attributes
+			$attributes = [
+				'type' => 'list',
+				'name' => 'joomla_version',
+				'label' => 'COM_COMPONENTBUILDER_JOOMLA_VERSION',
+				'class' => 'list_class',
+				'description' => 'COM_COMPONENTBUILDER_WHAT_VERSION_OF_JOOMLA_WOULD_YOU_LIKE_TO_TARGET',
+				'default' => '3'];
+			// start the joomla versions options
+			$options = [
+				'3' => 'COM_COMPONENTBUILDER_JOOMLA_THREE',
+				'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR_AND_FIVE'
+			];
+
+			// add to form
+			$xml = FormHelper::xml($attributes, $options);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'builder');
+			}
+
+			// Joomla Version 3 attributes
+			$attributes = [
+				'type' => 'note',
+				'name' => 'joomla_version_note_three',
+				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_THREE',
+				'class' => 'alert alert-success',
+				'showon' => 'joomla_version:3'];
+
+			// add to form
+			$xml = FormHelper::xml($attributes);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'builder');
+			}
+
+			// Joomla Version 4 and five attributes
+			$attributes = [
+				'type' => 'note',
+				'name' => 'joomla_version_note_four_five',
+				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_FOUR_AND_JOOMLA_FIVE',
+				'class' => 'alert alert-success',
+				'showon' => 'joomla_version:4'];
+
+			// add to form
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -292,7 +353,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -307,58 +368,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
-			if ($xml instanceof SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Joomla Versions attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'joomla_version_donations',
-				'label' => 'COM_COMPONENTBUILDER_JOOMLA_VERSION',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_WHAT_VERSION_OF_JOOMLA_WOULD_YOU_LIKE_TO_TARGET',
-				'default' => '3',
-				'showon' => 'show_advanced_options:1'];
-			// start the joomla versions options
-			$options = [
-				'3' => 'COM_COMPONENTBUILDER_JOOMLA_THREE',
-				'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR'];
-
-			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
-			if ($xml instanceof SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Joomla Version 3 attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'joomla_version_note_three',
-				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_THREE',
-				'class' => 'alert alert-success',
-				'showon' => 'show_advanced_options:1[AND]joomla_version_donations:3'];
-
-			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
-			if ($xml instanceof SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Joomla Version 4 attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'joomla_version_note_four',
-				'description' => 'COM_COMPONENTBUILDER_JCB_IS_NOT_YET_FULLY_READY_FOR_JOOMLA_FOUR_BUT_WITH_YOUR_HELP_WE_CAN_MAKE_THE_TRANSITION_FASTER_SHOW_YOUR_SUPPORT_BY_MAKING_A_DONATION_TODAY_AND_HELP_US_BRING_JCB_TO_THE_NEXT_LEVELBR_BR_BYOUR_COMPONENT_WILL_STILL_ONLY_BE_COMPILED_FOR_JOOMLA_THREEB',
-				'class' => 'alert alert-info',
-				'showon' => 'show_advanced_options:1[AND]joomla_version_donations:4'];
-
-			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -380,7 +390,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'0' => 'COM_COMPONENTBUILDER_NO'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -397,7 +407,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1[AND]powers_repository:1'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -420,7 +430,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'4' => 'COM_COMPONENTBUILDER_FOUR_SPACES'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -442,7 +452,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'3' => 'COM_COMPONENTBUILDER_COMPONENT'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -457,7 +467,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1[AND]add_build_date:2'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -472,7 +482,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1[AND]add_build_date:3'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -490,7 +500,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1[AND]add_build_date:2'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -507,7 +517,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -521,7 +531,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 				'showon' => 'show_advanced_options:1'];
 
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'advanced');
@@ -543,7 +553,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 	 */
 	protected function getSupportMessage(): string
 	{
-		return JLayoutHelper::render('jcbsupportmessage', []);
+		return LayoutHelper::render('jcbsupportmessage', []);
 	}
 
 
@@ -556,12 +566,12 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// Only load jQuery if needed. (default is true)
 		if ($this->params->get('add_jquery_framework', 1) == 1)
 		{
-			JHtml::_('jquery.framework');
+			Html::_('jquery.framework');
 		}
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
-		$HeaderCheck = new componentbuilderHeaderCheck;
+		$HeaderCheck = new componentbuilderHeaderCheck();
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -573,26 +583,26 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// The uikit css.
 		if ((!$HeaderCheck->css_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
+			Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
 		}
 		// The uikit js.
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
+			Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
 		}
 
 		// Load the script to find all uikit components needed.
 		if ($uikit != 2)
 		{
 			// Set the default uikit components in this view.
-			$uikitComp = array();
+			$uikitComp = [];
 			$uikitComp[] = 'data-uk-grid';
 
 			// Get field uikit components needed in this view.
 			$uikitFieldComp = $this->get('UikitComp');
-			if (isset($uikitFieldComp) && ComponentbuilderHelper::checkArray($uikitFieldComp))
+			if (isset($uikitFieldComp) && ArrayHelper::check($uikitFieldComp))
 			{
-				if (isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
+				if (isset($uikitComp) && ArrayHelper::check($uikitComp))
 				{
 					$uikitComp = array_merge($uikitComp, $uikitFieldComp);
 					$uikitComp = array_unique($uikitComp);
@@ -605,10 +615,8 @@ class ComponentbuilderViewCompiler extends HtmlView
 		}
 
 		// Load the needed uikit components in this view.
-		if ($uikit != 2 && isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
+		if ($uikit != 2 && isset($uikitComp) && ArrayHelper::check($uikitComp))
 		{
-			// load just in case.
-			jimport('joomla.filesystem.file');
 			// loading...
 			foreach ($uikitComp as $class)
 			{
@@ -618,95 +626,108 @@ class ComponentbuilderViewCompiler extends HtmlView
 					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css'))
 					{
 						// load the css.
-						JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
+						Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
 					}
 					// check if the JavaScript file exists.
 					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js'))
 					{
 						// load the js.
-						JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
+						Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
 					}
 				}
 			}
 		}
 		// add marked library
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/custom/marked.js");
+		Html::_('script', 'administrator/components/com_componentbuilder/custom/marked.js', ['version' => 'auto']);
 		// add the document default css file
-		JHtml::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/compiler.css', ['version' => 'auto']);
+		Html::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/compiler.css', ['version' => 'auto']);
 		// Set the Custom JS script to view
 		$this->document->addScriptDeclaration("
-			function getComponentDetails_server(id){
-				var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json&raw=true\");
-				if(token.length > 0 && id > 0){
-					var request = token+'=1&id='+id;
+			function getComponentDetails_server(id) {
+				let getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json&raw=true\");
+				let request = new URLSearchParams();
+				if (token.length > 0 && id > 0) {
+					request.append(token, '1');
+					request.append('id', id);
 				}
-				return jQuery.ajax({
-					type: 'GET',
-					url: getUrl,
-					dataType: 'json',
-					data: request,
-					jsonp: false
-				});
+				return fetch(getUrl + '&'  + request.toString(), {
+					method: 'GET',
+					headers: {
+						'Accept': 'application/json'
+					}
+				}).then(response => response.json());
 			}
 			function getComponentDetails(id) {
-				getComponentDetails_server(id).done(function(result) {
-					if(result.html) {
-						jQuery('#component-details').html(result.html);
+				getComponentDetails_server(id).then(function(result) {
+					if (result.html) {
+						document.getElementById('component-details').innerHTML = result.html;
 					}
 				});
 			}
 			
-			var noticeboard = \"https://vdm.bz/componentbuilder-noticeboard-md\";
-			var proboard = \"https://vdm.bz/componentbuilder-pro-noticeboard-md\";
-			jQuery(document).ready(function () {
-				jQuery.get(noticeboard)
-				.success(function(board) { 
-					if (board.length > 5) {
-						jQuery(\".noticeboard-md\").html(marked.parse(board));
-						getIS(1,board).done(function(result) {
-							if (result){
-								jQuery(\".vdm-new-notice\").show();
-								getIS(2,board);
-							}
-						});
-					} else {
-						jQuery(\".noticeboard-md\").html(all_is_good);
-					}
-				})
-				.error(function(jqXHR, textStatus, errorThrown) { 
-					jQuery(\".noticeboard-md\").html(all_is_good);
-				});
-				jQuery.get(proboard)
-				.success(function(board) { 
-					if (board.length > 5) {
-						jQuery(\".proboard-md\").html(marked.parse(board));
-					} else {
-						jQuery(\".proboard-md\").html(all_is_good);
-					}
-				})
-				.error(function(jqXHR, textStatus, errorThrown) { 
-					jQuery(\".proboard-md\").html(all_is_good);
-				});
+			document.addEventListener('DOMContentLoaded', function() {
+				fetchNoticeboard(\"https://vdm.bz/componentbuilder-noticeboard-md\", \".noticeboard-md\", true);
+				fetchNoticeboard(\"https://vdm.bz/componentbuilder-pro-noticeboard-md\", \".proboard-md\", false);
 			});
-			// to check is READ/NEW
-			function getIS(type,notice){
-				if (type == 1) {
-					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true\");
-				} else if (type == 2) {
-					var getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true\");
-				}	
-				if(token.length > 0 && notice.length){
-					var request = token+\"=1&notice=\"+notice;
-				}
-				return jQuery.ajax({
-					type: \"POST\",
-					url: getUrl,
-					dataType: 'json',
-					data: request,
-					jsonp: false
+			function fetchNoticeboard(url, selector, processGetIS) {
+				fetch(url)
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.text();
+				})
+				.then(board => {
+					var elements = document.querySelectorAll(selector);
+					if (board.length > 5) {
+						let html_board = marked.parse(board);
+						elements.forEach(element => {
+							element.innerHTML = html_board;
+						});
+						if (processGetIS) {
+							getIS(1, board).then(result => {
+								if (result) {
+									document.querySelectorAll(\".vdm-new-notice\").forEach(element => {
+										element.style.display = 'block';
+									});
+									getIS(2, board);
+								}
+							});
+						}
+					} else {
+						elements.forEach(element => {
+							element.innerHTML = all_is_good;
+						});
+					}
+				})
+				.catch(error => {
+					console.error('There was an error!', error);
+					document.querySelectorAll(selector).forEach(element => {
+						element.innerHTML = all_is_good;
+					});
 				});
 			}
-			
+			// to check is READ/NEW
+			function getIS(type, notice) {
+				let getUrl = \"\";
+				if (type === 1) {
+					getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true\");
+				} else if (type === 2) {
+					getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true\");
+				}
+				let request = new URLSearchParams();
+				if (token.length > 0 && notice.length) {
+					request.append(token, \"1\");
+					request.append(\"notice\", notice);
+				}
+				return fetch(getUrl, {
+					method: \"POST\",
+					headers: {
+						\"Content-Type\": \"application/x-www-form-urlencoded;charset=UTF-8\"
+					},
+					body: request
+				}).then(response => response.json());
+			}
 		");
 	}
 
@@ -718,41 +739,41 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// hide the main menu
 		$this->app->input->set('hidemainmenu', true);
 		// add title to the page
-		JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
 		// add cpanel button
-		JToolBarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('compiler.run_expansion'))
 		{
 			// add Run Expansion button.
-			JToolBarHelper::custom('compiler.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
+			ToolbarHelper::custom('compiler.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
 		}
 		if ($this->canDo->get('compiler.translate'))
 		{
 			// add Translate button.
-			JToolBarHelper::custom('compiler.runTranslator', 'comments-2 custom-button-runtranslator', '', 'COM_COMPONENTBUILDER_TRANSLATE', false);
+			ToolbarHelper::custom('compiler.runTranslator', 'comments-2 custom-button-runtranslator', '', 'COM_COMPONENTBUILDER_TRANSLATE', false);
 		}
 		if ($this->canDo->get('compiler.compiler_animations'))
 		{
 			// add Compiler Animations button.
-			JToolBarHelper::custom('compiler.getDynamicContent', 'download custom-button-getdynamiccontent', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
+			ToolbarHelper::custom('compiler.getDynamicContent', 'download custom-button-getdynamiccontent', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
 		}
 		if ($this->canDo->get('compiler.clear_tmp'))
 		{
 			// add Clear tmp button.
-			JToolBarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
+			ToolbarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('compiler');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 
@@ -766,6 +787,16 @@ class ComponentbuilderViewCompiler extends HtmlView
 	public function escape($var)
 	{
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

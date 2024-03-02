@@ -12,14 +12,22 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\UCM\UCMType;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
-use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
 /**
@@ -59,6 +67,16 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				'not_required'
 			)
 		),
+		'abacus' => array(
+			'left' => array(
+				'addcalculation'
+			),
+			'fullwidth' => array(
+				'note_calculation_item',
+				'note_calculation_items',
+				'php_calculation'
+			)
+		),
 		'custom_script' => array(
 			'fullwidth' => array(
 				'add_php_before_getitem',
@@ -72,17 +90,8 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				'add_php_after_getitems',
 				'php_after_getitems',
 				'add_php_router_parse',
+				'php_router_parse_notice',
 				'php_router_parse'
-			)
-		),
-		'abacus' => array(
-			'left' => array(
-				'addcalculation'
-			),
-			'fullwidth' => array(
-				'note_calculation_item',
-				'note_calculation_items',
-				'php_calculation'
 			)
 		),
 		'joint' => array(
@@ -123,16 +132,16 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A database object
+	 * @return  Table  A database object
 	 *
 	 * @since   1.6
 	 */
-	public function getTable($type = 'dynamic_get', $prefix = 'ComponentbuilderTable', $config = array())
+	public function getTable($type = 'dynamic_get', $prefix = 'ComponentbuilderTable', $config = [])
 	{
 		// add table path for when model gets used from other component
 		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/tables');
 		// get instance of the table
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 
@@ -168,13 +177,12 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'dynamic_get__'.$id);
 				ComponentbuilderHelper::set('dynamic_get__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
@@ -183,7 +191,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		return $this->vastDevMod;
 	}
 
-    
+
 	/**
 	 * Method to get a single record.
 	 *
@@ -213,22 +221,28 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->php_calculation))
+			{
+				// base64 Decode php_calculation.
+				$item->php_calculation = base64_decode($item->php_calculation);
+			}
+
 			if (!empty($item->php_router_parse))
 			{
 				// base64 Decode php_router_parse.
 				$item->php_router_parse = base64_decode($item->php_router_parse);
 			}
 
-			if (!empty($item->php_before_getitems))
+			if (!empty($item->php_custom_get))
 			{
-				// base64 Decode php_before_getitems.
-				$item->php_before_getitems = base64_decode($item->php_before_getitems);
+				// base64 Decode php_custom_get.
+				$item->php_custom_get = base64_decode($item->php_custom_get);
 			}
 
-			if (!empty($item->php_after_getitems))
+			if (!empty($item->php_before_getitem))
 			{
-				// base64 Decode php_after_getitems.
-				$item->php_after_getitems = base64_decode($item->php_after_getitems);
+				// base64 Decode php_before_getitem.
+				$item->php_before_getitem = base64_decode($item->php_before_getitem);
 			}
 
 			if (!empty($item->php_after_getitem))
@@ -243,22 +257,16 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				$item->php_getlistquery = base64_decode($item->php_getlistquery);
 			}
 
-			if (!empty($item->php_custom_get))
+			if (!empty($item->php_before_getitems))
 			{
-				// base64 Decode php_custom_get.
-				$item->php_custom_get = base64_decode($item->php_custom_get);
+				// base64 Decode php_before_getitems.
+				$item->php_before_getitems = base64_decode($item->php_before_getitems);
 			}
 
-			if (!empty($item->php_calculation))
+			if (!empty($item->php_after_getitems))
 			{
-				// base64 Decode php_calculation.
-				$item->php_calculation = base64_decode($item->php_calculation);
-			}
-
-			if (!empty($item->php_before_getitem))
-			{
-				// base64 Decode php_before_getitem.
-				$item->php_before_getitem = base64_decode($item->php_before_getitem);
+				// base64 Decode php_after_getitems.
+				$item->php_after_getitems = base64_decode($item->php_after_getitems);
 			}
 
 			if (!empty($item->join_db_table))
@@ -344,20 +352,19 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				ComponentbuilderHelper::set($this->vastDevMod, 'dynamic_get__'.$id);
 				ComponentbuilderHelper::set('dynamic_get__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = JFactory::getApplication()->input;
+				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
 				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& method_exists('ComponentbuilderHelper', 'validGUID')
-					&& ComponentbuilderHelper::validGUID($item->guid))
+					&& GuidHelper::valid($item->guid))
 				{
 					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 
 			// update the fields
-			$objectUpdate = new stdClass();
+			$objectUpdate = new \stdClass();
 			$objectUpdate->id = (int) $item->id;
 			// repeatable values to check
 			$arrayChecker = array(
@@ -407,7 +414,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	public function getForm($data = array(), $loadData = true, $options = array('control' => 'jform'))
+	public function getForm($data = [], $loadData = true, $options = array('control' => 'jform'))
 	{
 		// set load data option
 		$options['load_data'] = $loadData;
@@ -434,7 +441,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -447,7 +454,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			$id = $jinput->get('id', 0, 'INT');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing item.
 		// Modify the form based on Edit State access controls.
@@ -504,7 +511,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		}
 
 		// update all editors to use this components global editor
-		$global_editor = JComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
+		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
 		// now get all the editor fields
 		$editors = $form->getXml()->xpath("//field[@type='editor']");
 		// check if we found any
@@ -538,13 +545,13 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	/**
 	 * Method to get the script that have to be included on the form
 	 *
-	 * @return string	script files
+	 * @return string    script files
 	 */
 	public function getScript()
 	{
 		return 'media/com_componentbuilder/js/dynamic_get.js';
 	}
-    
+
 	/**
 	 * Method to test whether a record can be deleted.
 	 *
@@ -563,7 +570,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				return;
 			}
 
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// The record has been set. Check the record permissions.
 			return $user->authorise('dynamic_get.delete', 'com_componentbuilder.dynamic_get.' . (int) $record->id);
 		}
@@ -581,8 +588,8 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
-		$recordId = (!empty($record->id)) ? $record->id : 0;
+		$user = Factory::getUser();
+		$recordId = $record->id ??  0;
 
 		if ($recordId)
 		{
@@ -596,28 +603,28 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// In the absence of better information, revert to the component permissions.
 		return $user->authorise('dynamic_get.edit.state', 'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Method override to check if you can edit an existing record.
 	 *
-	 * @param	array	$data	An array of input data.
-	 * @param	string	$key	The name of the key for the primary key.
+	 * @param    array    $data   An array of input data.
+	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return	boolean
-	 * @since	2.5
+	 * @return    boolean
+	 * @since    2.5
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// Check specific edit permission then general edit permission.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		return $user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('dynamic_get.edit',  'com_componentbuilder');
 	}
-    
+
 	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   JTable  $table  A JTable object.
+	 * @param   Table  $table  A Table object.
 	 *
 	 * @return  void
 	 *
@@ -625,19 +632,19 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		$date = JFactory::getDate();
-		$user = JFactory::getUser();
-		
+		$date = Factory::getDate();
+		$user = Factory::getUser();
+
 		if (isset($table->name))
 		{
 			$table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
 		}
-		
+
 		if (isset($table->alias) && empty($table->alias))
 		{
 			$table->generateAlias();
 		}
-		
+
 		if (empty($table->id))
 		{
 			$table->created = $date->toSql();
@@ -649,7 +656,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			// Set ordering to the last item if not set
 			if (empty($table->ordering))
 			{
-				$db = JFactory::getDbo();
+				$db = Factory::getDbo();
 				$query = $db->getQuery(true)
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_dynamic_get'));
@@ -664,7 +671,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			$table->modified = $date->toSql();
 			$table->modified_by = $user->id;
 		}
-        
+
 		if (!empty($table->id))
 		{
 			// Increment the items version number.
@@ -679,10 +686,10 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 *
 	 * @since   1.6
 	 */
-	protected function loadFormData() 
+	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_componentbuilder.edit.dynamic_get.data', array());
+		$data = Factory::getApplication()->getUserState('com_componentbuilder.edit.dynamic_get.data', []);
 
 		if (empty($data))
 		{
@@ -710,7 +717,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	public function validate($form, $data, $group = null)
 	{
 		// check if the not_required field is set
-		if (isset($data['not_required']) && ComponentbuilderHelper::checkString($data['not_required']))
+		if (isset($data['not_required']) && UtilitiesStringHelper::check($data['not_required']))
 		{
 			$requiredFields = (array) explode(',',(string) $data['not_required']);
 			$requiredFields = array_unique($requiredFields);
@@ -718,7 +725,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			foreach ($requiredFields as $requiredField)
 			{
 				// make sure there is a string value
-				if (ComponentbuilderHelper::checkString($requiredField))
+				if (UtilitiesStringHelper::check($requiredField))
 				{
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
@@ -741,7 +748,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	{
 		return array('guid');
 	}
-	
+
 	/**
 	 * Method to delete one or more records.
 	 *
@@ -757,7 +764,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -777,10 +784,10 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		{
 			return false;
 		}
-		
+
 		return true;
-        }
-    
+	}
+
 	/**
 	 * Method to perform batch operations on an item or a set of items.
 	 *
@@ -806,30 +813,30 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
 		$done = false;
 
 		// Set some needed variables.
-		$this->user			= JFactory::getUser();
-		$this->table			= $this->getTable();
-		$this->tableClassName		= get_class($this->table);
-		$this->contentType		= new JUcmType;
-		$this->type			= $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo			= ComponentbuilderHelper::getActions('dynamic_get');
-		$this->batchSet			= true;
+		$this->user = Factory::getUser();
+		$this->table = $this->getTable();
+		$this->tableClassName = get_class($this->table);
+		$this->contentType = new UCMType;
+		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
+		$this->canDo = ComponentbuilderHelper::getActions('dynamic_get');
+		$this->batchSet = true;
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
-        
+
 		if ($this->type == false)
 		{
-			$type = new JUcmType;
+			$type = new UCMType;
 			$this->type = $type->getTypeByAlias($this->typeAlias);
 		}
 
@@ -866,8 +873,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -893,7 +899,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user 		= JFactory::getUser();
+			$this->user 		= Factory::getUser();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
@@ -919,7 +925,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				$values['published'] = 0;
 		}
 
-		$newIds = array();
+		$newIds = [];
 		// Parent exists so let's proceed
 		while (!empty($pks))
 		{
@@ -932,7 +938,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			if (!$this->user->authorise('dynamic_get.edit', $contexts[$pk]))
 			{
 				// Not fatal error
-				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 				continue;
 			}
 
@@ -948,19 +954,19 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// Only for strings
-			if (ComponentbuilderHelper::checkString($this->table->name) && !is_numeric($this->table->name))
+			if (UtilitiesStringHelper::check($this->table->name) && !is_numeric($this->table->name))
 			{
 				$this->table->name = $this->generateUnique('name',$this->table->name);
 			}
 
 			// insert all set values
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -972,7 +978,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			}
 
 			// update all unique fields
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -1036,7 +1042,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user		= JFactory::getUser();
+			$this->user		= Factory::getUser();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
 			$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
@@ -1044,7 +1050,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 
 		if (!$this->canDo->get('dynamic_get.edit') && !$this->canDo->get('dynamic_get.batch'))
 		{
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 			return false;
 		}
 
@@ -1061,7 +1067,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		{
 			if (!$this->user->authorise('dynamic_get.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 				return false;
 			}
 
@@ -1077,13 +1083,13 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
 
 			// insert all set values.
-			if (ComponentbuilderHelper::checkArray($values))
+			if (UtilitiesArrayHelper::check($values))
 			{
 				foreach ($values as $key => $value)
 				{
@@ -1127,7 +1133,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 
 		return true;
 	}
-	
+
 	/**
 	 * Method to save the form data.
 	 *
@@ -1139,15 +1145,15 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input	= JFactory::getApplication()->input;
-		$filter	= JFilterInput::getInstance();
-        
+		$input    = Factory::getApplication()->input;
+		$filter   = InputFilter::getInstance();
+
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-            
-			$metadata = new JRegistry;
+
+			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
@@ -1170,7 +1176,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the join_db_table items to data.
 		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
 		{
-			$join_db_table = new JRegistry;
+			$join_db_table = new Registry;
 			$join_db_table->loadArray($data['join_db_table']);
 			$data['join_db_table'] = (string) $join_db_table;
 		}
@@ -1183,7 +1189,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the filter items to data.
 		if (isset($data['filter']) && is_array($data['filter']))
 		{
-			$filter = new JRegistry;
+			$filter = new Registry;
 			$filter->loadArray($data['filter']);
 			$data['filter'] = (string) $filter;
 		}
@@ -1196,7 +1202,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the where items to data.
 		if (isset($data['where']) && is_array($data['where']))
 		{
-			$where = new JRegistry;
+			$where = new Registry;
 			$where->loadArray($data['where']);
 			$data['where'] = (string) $where;
 		}
@@ -1209,7 +1215,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the order items to data.
 		if (isset($data['order']) && is_array($data['order']))
 		{
-			$order = new JRegistry;
+			$order = new Registry;
 			$order->loadArray($data['order']);
 			$data['order'] = (string) $order;
 		}
@@ -1222,7 +1228,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the group items to data.
 		if (isset($data['group']) && is_array($data['group']))
 		{
-			$group = new JRegistry;
+			$group = new Registry;
 			$group->loadArray($data['group']);
 			$data['group'] = (string) $group;
 		}
@@ -1235,7 +1241,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the global items to data.
 		if (isset($data['global']) && is_array($data['global']))
 		{
-			$global = new JRegistry;
+			$global = new Registry;
 			$global->loadArray($data['global']);
 			$data['global'] = (string) $global;
 		}
@@ -1248,7 +1254,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Set the join_view_table items to data.
 		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
 		{
-			$join_view_table = new JRegistry;
+			$join_view_table = new Registry;
 			$join_view_table->loadArray($data['join_view_table']);
 			$data['join_view_table'] = (string) $join_view_table;
 		}
@@ -1264,22 +1270,28 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			$data['plugin_events'] = (string) json_encode($data['plugin_events']);
 		}
 
+		// Set the php_calculation string to base64 string.
+		if (isset($data['php_calculation']))
+		{
+			$data['php_calculation'] = base64_encode($data['php_calculation']);
+		}
+
 		// Set the php_router_parse string to base64 string.
 		if (isset($data['php_router_parse']))
 		{
 			$data['php_router_parse'] = base64_encode($data['php_router_parse']);
 		}
 
-		// Set the php_before_getitems string to base64 string.
-		if (isset($data['php_before_getitems']))
+		// Set the php_custom_get string to base64 string.
+		if (isset($data['php_custom_get']))
 		{
-			$data['php_before_getitems'] = base64_encode($data['php_before_getitems']);
+			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
 		}
 
-		// Set the php_after_getitems string to base64 string.
-		if (isset($data['php_after_getitems']))
+		// Set the php_before_getitem string to base64 string.
+		if (isset($data['php_before_getitem']))
 		{
-			$data['php_after_getitems'] = base64_encode($data['php_after_getitems']);
+			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
 		}
 
 		// Set the php_after_getitem string to base64 string.
@@ -1294,28 +1306,22 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
 		}
 
-		// Set the php_custom_get string to base64 string.
-		if (isset($data['php_custom_get']))
+		// Set the php_before_getitems string to base64 string.
+		if (isset($data['php_before_getitems']))
 		{
-			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
+			$data['php_before_getitems'] = base64_encode($data['php_before_getitems']);
 		}
 
-		// Set the php_calculation string to base64 string.
-		if (isset($data['php_calculation']))
+		// Set the php_after_getitems string to base64 string.
+		if (isset($data['php_after_getitems']))
 		{
-			$data['php_calculation'] = base64_encode($data['php_calculation']);
+			$data['php_after_getitems'] = base64_encode($data['php_after_getitems']);
 		}
 
-		// Set the php_before_getitem string to base64 string.
-		if (isset($data['php_before_getitem']))
-		{
-			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
-		}
-        
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new JRegistry;
+			$params = new Registry;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}
@@ -1325,7 +1331,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		{
 			// Automatic handling of other unique fields
 			$uniqueFields = $this->getUniqueFields();
-			if (ComponentbuilderHelper::checkArray($uniqueFields))
+			if (UtilitiesArrayHelper::check($uniqueFields))
 			{
 				foreach ($uniqueFields as $uniqueField)
 				{
@@ -1333,14 +1339,14 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 				}
 			}
 		}
-		
+
 		if (parent::save($data))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to generate a unique value.
 	 *
@@ -1353,7 +1359,6 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 	 */
 	protected function generateUnique($field,$value)
 	{
-
 		// set field value unique
 		$table = $this->getTable();
 
@@ -1379,7 +1384,7 @@ class ComponentbuilderModelDynamic_get extends AdminModel
 		// Alter the title
 		$table = $this->getTable();
 
-		while ($table->load(array('title' => $title)))
+		while ($table->load(['title' => $title]))
 		{
 			$title = StringHelper::increment($title);
 		}

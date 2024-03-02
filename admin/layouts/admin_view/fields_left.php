@@ -35,7 +35,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'add_category_submenu'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+$hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>

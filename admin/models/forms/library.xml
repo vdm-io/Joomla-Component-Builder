@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_LIBRARY_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_LIBRARY_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -358,7 +359,7 @@
 		<!-- Note_library_instruction Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_library_instruction" label="COM_COMPONENTBUILDER_LIBRARY_NOTE_LIBRARY_INSTRUCTION_LABEL" description="COM_COMPONENTBUILDER_LIBRARY_NOTE_LIBRARY_INSTRUCTION_DESCRIPTION" heading="h4" class="alert alert-info note_library_instruction" />
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

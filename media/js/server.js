@@ -20,7 +20,7 @@ jform_vvvvwedvyk_required = false;
 jform_vvvvwefvyl_required = false;
 
 // Initial Script
-jQuery(document).ready(function()
+document.addEventListener('DOMContentLoaded', function()
 {
 	var protocol_vvvvwdz = jQuery("#jform_protocol").val();
 	vvvvwdz(protocol_vvvvwdz);
@@ -542,7 +542,7 @@ function authentication_vvvvweh_SomeFunc(authentication_vvvvweh)
 // update fields required
 function updateFieldRequired(name, status) {
 	// check if not_required exist
-	if (jQuery('#jform_not_required').length > 0) {
+	if (document.getElementById('jform_not_required')) {
 		var not_required = jQuery('#jform_not_required').val().split(",");
 
 		if(status == 1)
@@ -588,4 +588,4 @@ function isSet(val)
 		return true;
 	}
 	return false;
-} 
+}

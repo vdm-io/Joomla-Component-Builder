@@ -15,7 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
-use VDM\Joomla\Componentbuilder\Compiler\Component\Settings;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Createdate;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Modifieddate;

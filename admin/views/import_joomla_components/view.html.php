@@ -12,7 +12,14 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use VDM\Joomla\Utilities\FormHelper as UtilitiesFormHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
@@ -39,9 +46,9 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 			ComponentbuilderHelper::addSubmenu('import');
 		}
 		// get component params
-		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		$this->params = ComponentHelper::getParams('com_componentbuilder');
 
-		$paths = new stdClass;
+		$paths = new \stdClass;
 		$paths->first = '';
 		$state = $this->get('state');
 
@@ -50,7 +57,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('import');
 		// load the application
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -58,12 +65,12 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
 			// add title to the page
-			JToolbarHelper::title(JText::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'), 'upload');
+			ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_JCB_PACKAGE_IMPORT'), 'upload');
 			// add refesh button.
-			JToolBarHelper::custom('joomla_component.refresh', 'refresh', '', 'COM_COMPONENTBUILDER_REFRESH', false);
+			ToolbarHelper::custom('joomla_component.refresh', 'refresh', '', 'COM_COMPONENTBUILDER_REFRESH', false);
 		}
 		// get the session object
-		$session = JFactory::getSession();
+		$session = Factory::getSession();
 		// check if it has package
 		$this->hasPackage = $session->get('hasPackage', false);
 		$this->dataType = $session->get('dataType', false);
@@ -116,14 +123,14 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 	protected function setDocument()
 	{
 		// always make sure jquery is loaded.
-		JHtml::_('jquery.framework');
+		Html::_('jquery.framework');
 
 		// Add the JavaScript for JStore
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jquery.json.min.js');
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/jstorage.min.js');
-		$this->document->addScript(JURI::root() .'media/com_componentbuilder/js/strtotime.js');
+		Html::_('script', 'media/com_componentbuilder/js/jquery.json.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/js/jstorage.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/js/strtotime.js', ['version' => 'auto']);
 		// add marked library
-		$this->document->addScript(JURI::root() . "media/com_componentbuilder/js/marked.js");
+		Html::_('script', "media/com_componentbuilder/js/marked.js", ['version' => 'auto']);
 		// check if we should use browser storage
 		$setBrowserStorage = $this->params->get('set_browser_storage', null);
 		if ($setBrowserStorage)
@@ -133,7 +140,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 			if ('global' == $storageTimeToLive)
 			{
 				// use the global session time
-				$session = JFactory::getSession();
+				$session = Factory::getSession();
 				// must have itin milliseconds
 				$expire = ($session->getExpire()*60)* 1000;
 			}
@@ -156,21 +163,21 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 
 		// Set the Time To Live To JavaScript
 		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
-		$this->document->addScriptDeclaration("var all_is_good = '".JText::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME')."';"); 
+		$this->document->addScriptDeclaration("var all_is_good = '".Text::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME')."';"); 
 		// add a token on the page for javascript
 		$this->document->addScriptDeclaration("var token = '".JSession::getFormToken()."';"); 
 
 
 		// add the Uikit v2 style sheets
-		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css', ['version' => 'auto']);
 		// add Uikit v2 JavaScripts
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit.min.js', ['version' => 'auto']);
 
 		// add the Uikit v2 extra style sheets
-		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css', ['version' => 'auto']);
 		// add Uikit v2 extra JavaScripts
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
 	}
 
 	public function _getForm($type)
@@ -179,9 +186,9 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 		if ('smart_package' === $type)
 		{
 			// get the force_update radio field
-			$force_update = JFormHelper::loadFieldType('radio',true);
-			// start force_update xml
-			$force_updateXML = new SimpleXMLElement('<field/>');
+			$force_update = FormHelper::loadFieldType('radio',true);
+			// start force_update xl
+			$force_updateXML = new \SimpleXMLElement('<field/>');
 			// force_update attributes
 			$force_updateAttributes = array(
 				'type' => 'radio',
@@ -191,22 +198,22 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_FORCE_THE_UPDATE_OF_ALL_LOCAL_DATA_EVEN_IF_IT_IS_NEWER_THEN_THE_DATA_BEING_IMPORTED',
 				'default' => '0');
 			// load the force_update attributes
-			ComponentbuilderHelper::xmlAddAttributes($force_updateXML, $force_updateAttributes);
+			UtilitiesFormHelper::attributes($force_updateXML, $force_updateAttributes);
 			// set the force_update options
 			$force_updateOptions = array(
 				'1' => 'COM_COMPONENTBUILDER_YES',
 				'0' => 'COM_COMPONENTBUILDER_NO');
 			// load the force_update options
-			ComponentbuilderHelper::xmlAddOptions($force_updateXML, $force_updateOptions);
+			UtilitiesFormHelper::options($force_updateXML, $force_updateOptions);
 			// setup the force_update radio field
 			$force_update->setup($force_updateXML,0);
 			// add to form
 			$form[] = $force_update;
 
 			// get the more_info radio field
-			$more_info = JFormHelper::loadFieldType('radio',true);
+			$more_info = FormHelper::loadFieldType('radio',true);
 			// start more_info xml
-			$more_infoXML = new SimpleXMLElement('<field/>');
+			$more_infoXML = new \SimpleXMLElement('<field/>');
 			// more_info attributes
 			$more_infoAttributes = array(
 				'type' => 'radio',
@@ -216,22 +223,22 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_BE_SHOWING_MORE_ELABORATE_INFORMATION_DURING_IMPORT',
 				'default' => '0');
 			// load the more_info attributes
-			ComponentbuilderHelper::xmlAddAttributes($more_infoXML, $more_infoAttributes);
+			UtilitiesFormHelper::attributes($more_infoXML, $more_infoAttributes);
 			// set the more_info options
 			$more_infoOptions = array(
 				'1' => 'COM_COMPONENTBUILDER_YES',
 				'0' => 'COM_COMPONENTBUILDER_NO');
 			// load the more_info options
-			ComponentbuilderHelper::xmlAddOptions($more_infoXML, $more_infoOptions);
+			UtilitiesFormHelper::options($more_infoXML, $more_infoOptions);
 			// setup the more_info radio field
 			$more_info->setup($more_infoXML,0);
 			// add to form
 			$form[] = $more_info;
 
 			// get the merge radio field
-			$merge = JFormHelper::loadFieldType('radio',true);
+			$merge = FormHelper::loadFieldType('radio',true);
 			// start merge xml
-			$mergeXML = new SimpleXMLElement('<field/>');
+			$mergeXML = new \SimpleXMLElement('<field/>');
 			// merge attributes
 			$mergeAttributes = array(
 				'type' => 'radio',
@@ -241,22 +248,22 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				'description' => 'COM_COMPONENTBUILDER_SHOULD_WE_MERGE_THE_COMPONENTS_WITH_SIMILAR_LOCAL_COMPONENTS_MERGING_THE_COMPONENTS_USE_TO_BE_THE_DEFAULT_BEHAVIOUR_BUT_NOW_YOU_CAN_IMPORT_THE_COMPONENTS_AND_FORCE_IT_NOT_TO_MERGE_THE_FOLLOWING_AREAS_VALIDATION_RULE_FIELDTYPE_SNIPPET_LANGUAGE_LANGUAGE_TRANSLATION_JOOMLA_PLUGIN_GROUP_CLASS_EXTENDS_CLASS_PROPERTY_CLASS_METHOD_BMUST_AND_WILL_STILLB_MERGE_EVEN_OF_YOUR_SELECTION_IS_BNOB_BECAUSE_OF_THE_SINGULAR_NATURE_OF_THOSE_AREAS',
 				'default' => '1');
 			// load the merge attributes
-			ComponentbuilderHelper::xmlAddAttributes($mergeXML, $mergeAttributes);
+			UtilitiesFormHelper::attributes($mergeXML, $mergeAttributes);
 			// set the merge options
 			$mergeOptions = array(
 				'1' => 'COM_COMPONENTBUILDER_YES',
 				'0' => 'COM_COMPONENTBUILDER_NO');
 			// load the merge options
-			ComponentbuilderHelper::xmlAddOptions($mergeXML, $mergeOptions);
+			UtilitiesFormHelper::options($mergeXML, $mergeOptions);
 			// setup the merge radio field
 			$merge->setup($mergeXML,1);
 			// add to form
 			$form[] = $merge;
 
 			// get the import_guid_only radio field
-			$import_guid_only = JFormHelper::loadFieldType('radio',true);
+			$import_guid_only = FormHelper::loadFieldType('radio',true);
 			// start import_guid_only xml
-			$import_guid_onlyXML = new SimpleXMLElement('<field/>');
+			$import_guid_onlyXML = new \SimpleXMLElement('<field/>');
 			// import_guid_only attributes
 			$import_guid_onlyAttributes = array(
 				'type' => 'radio',
@@ -266,13 +273,13 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				'description' => 'COM_COMPONENTBUILDER_FORCE_THAT_THIS_JCB_PACKAGE_IMPORT_SEARCH_FOR_LOCAL_ITEMS_TO_BE_DONE_WITH_GUID_VALUE_ONLY_IF_BMERGEB_IS_SET_TO_YES_ABOVE',
 				'default' => '1');
 			// load the import_guid_only attributes
-			ComponentbuilderHelper::xmlAddAttributes($import_guid_onlyXML, $import_guid_onlyAttributes);
+			UtilitiesFormHelper::attributes($import_guid_onlyXML, $import_guid_onlyAttributes);
 			// set the import_guid_only options
 			$import_guid_onlyOptions = array(
 				'1' => 'COM_COMPONENTBUILDER_YES',
 				'0' => 'COM_COMPONENTBUILDER_NO');
 			// load the import_guid_only options
-			ComponentbuilderHelper::xmlAddOptions($import_guid_onlyXML, $import_guid_onlyOptions);
+			UtilitiesFormHelper::options($import_guid_onlyXML, $import_guid_onlyOptions);
 			// setup the import_guid_only radio field
 			$import_guid_only->setup($import_guid_onlyXML, $this->params->get('import_guid_only', 0));
 			// add to form
@@ -286,9 +293,9 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				if (!$this->packageInfo)
 				{
 					// get the haskey radio field
-					$haskey = JFormHelper::loadFieldType('radio',true);
+					$haskey = FormHelper::loadFieldType('radio',true);
 					// start haskey xml
-					$haskeyXML = new SimpleXMLElement('<field/>');
+					$haskeyXML = new \SimpleXMLElement('<field/>');
 					// haskey attributes
 					$haskeyAttributes = array(
 						'type' => 'radio',
@@ -299,13 +306,13 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 						'default' => '1',
 						'filter' => 'INT');
 					// load the haskey attributes
-					ComponentbuilderHelper::xmlAddAttributes($haskeyXML, $haskeyAttributes);
+					UtilitiesFormHelper::attributes($haskeyXML, $haskeyAttributes);
 					// set the haskey options
 					$haskeyOptions = array(
 						'1' => 'COM_COMPONENTBUILDER_YES',
 						'0' => 'COM_COMPONENTBUILDER_NO');
 					// load the haskey options
-					ComponentbuilderHelper::xmlAddOptions($haskeyXML, $haskeyOptions);
+					UtilitiesFormHelper::options($haskeyXML, $haskeyOptions);
 					// setup the haskey radio field
 					$haskey->setup($haskeyXML,1);
 					// add to form
@@ -316,9 +323,9 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				}
 
 				// get the sleutle password field
-				$sleutle = JFormHelper::loadFieldType('password',true);
+				$sleutle = FormHelper::loadFieldType('password',true);
 				// start sleutle xml
-				$sleutleXML = new SimpleXMLElement('<field/>');
+				$sleutleXML = new \SimpleXMLElement('<field/>');
 				// sleutle attributes
 				$sleutleAttributes = array(
 					'type' => 'password',
@@ -335,7 +342,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 					$sleutleAttributes['required'] = 'true';
 				}
 				// load the sleutle attributes
-				ComponentbuilderHelper::xmlAddAttributes($sleutleXML, $sleutleAttributes);
+				UtilitiesFormHelper::attributes($sleutleXML, $sleutleAttributes);
 				// setup the sleutle password field
 				$sleutle->setup($sleutleXML,'');
 				// add to form
@@ -347,9 +354,9 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 			if (ArrayHelper::check($vdmListObjects))
 			{
 				// get the vdm_package list field
-				$vdm_package = JFormHelper::loadFieldType('list',true);
+				$vdm_package = FormHelper::loadFieldType('list',true);
 				// start vdm_package xml
-				$vdm_packageXML = new SimpleXMLElement('<field/>');
+				$vdm_packageXML = new \SimpleXMLElement('<field/>');
 				// vdm_package attributes
 				$vdm_packageAttributes = array(
 					'type' => 'list',
@@ -361,7 +368,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				// load the list
 				$load = false;
 				// load the vdm_package attributes
-				ComponentbuilderHelper::xmlAddAttributes($vdm_packageXML, $vdm_packageAttributes);
+				UtilitiesFormHelper::attributes($vdm_packageXML, $vdm_packageAttributes);
 				// start the vdm_package options
 				$vdm_packageOptions = array();
 				$vdm_packageOptions[''] = 'COM_COMPONENTBUILDER__SELECT_PACKAGE_';
@@ -378,7 +385,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				if ($load)
 				{
 					// load the vdm_package options
-					ComponentbuilderHelper::xmlAddOptions($vdm_packageXML, $vdm_packageOptions);
+					UtilitiesFormHelper::options($vdm_packageXML, $vdm_packageOptions);
 					// setup the vdm_package radio field
 					$vdm_package->setup($vdm_packageXML,'');
 					// add to form
@@ -391,9 +398,9 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 			if (ArrayHelper::check($jcbListObjects))
 			{
 				// get the jcb_package list field
-				$jcb_package = JFormHelper::loadFieldType('list',true);
+				$jcb_package = FormHelper::loadFieldType('list',true);
 				// start jcb_package xml
-				$jcb_packageXML = new SimpleXMLElement('<field/>');
+				$jcb_packageXML = new \SimpleXMLElement('<field/>');
 				// jcb_package attributes
 				$jcb_packageAttributes = array(
 					'type' => 'list',
@@ -405,7 +412,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				// load the list
 				$load = false;
 				// load the jcb_package attributes
-				ComponentbuilderHelper::xmlAddAttributes($jcb_packageXML, $jcb_packageAttributes);
+				UtilitiesFormHelper::attributes($jcb_packageXML, $jcb_packageAttributes);
 				// start the jcb_package options
 				$jcb_packageOptions = array();
 				$jcb_packageOptions[''] = 'COM_COMPONENTBUILDER__SELECT_PACKAGE_';
@@ -422,7 +429,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 				if ($load)
 				{
 					// load the jcb_package options
-					ComponentbuilderHelper::xmlAddOptions($jcb_packageXML, $jcb_packageOptions);
+					UtilitiesFormHelper::options($jcb_packageXML, $jcb_packageOptions);
 					// setup the jcb_package radio field
 					$jcb_package->setup($jcb_packageXML,'');
 					// add to form
@@ -444,19 +451,19 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_COMPONENTBUILDER_IMPORT_TITLE'), 'upload');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_IMPORT_TITLE'), 'upload');
 		JHtmlSidebar::setAction('index.php?option=com_componentbuilder&view=import_joomla_components');
 
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('import_joomla_components');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-			   JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 }

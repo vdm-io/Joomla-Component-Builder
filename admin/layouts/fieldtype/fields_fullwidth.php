@@ -12,22 +12,28 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+
 // set the defaults
 $items = $displayData->vycfields;
-$user = JFactory::getUser();
+$user = Factory::getUser();
 $id = $displayData->item->id;
 // set the edit URL
 $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 // set a return value
 $return = ($id) ? "index.php?option=com_componentbuilder&view=fieldtype&layout=edit&id=" . $id : "";
 // check for a return value
-$jinput = JFactory::getApplication()->input;
+$jinput = Factory::getApplication()->input;
 if ($_return = $jinput->get('return', null, 'base64'))
 {
 	$return .= "&return=" . $_return;
 }
 // check if return value was set
-if (ComponentbuilderHelper::checkString($return))
+if (StringHelper::check($return))
 {
 	// set the referral values
 	$ref = ($id) ? "&ref=fieldtype&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));
@@ -47,40 +53,40 @@ $can = ComponentbuilderHelper::getActions('field');
 <div class="form-vertical">
 <?php if ($can->get('field.create')): ?>
 	<div class="btn-group">
-		<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo JText::_('COM_COMPONENTBUILDER_NEW'); ?></a>
-		<a class="btn btn-small" onclick="Joomla.submitbutton('fieldtype.cancel');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo JText::_('COM_COMPONENTBUILDER_CLOSE_NEW'); ?></a>
+		<a class="btn btn-small btn-success" href="<?php echo $new; ?>"><span class="icon-new icon-white"></span> <?php echo Text::_('COM_COMPONENTBUILDER_NEW'); ?></a>
+		<a class="btn btn-small" onclick="Joomla.submitbutton('fieldtype.cancel');" href="<?php echo $close_new; ?>"><span class="icon-new"></span> <?php echo Text::_('COM_COMPONENTBUILDER_CLOSE_NEW'); ?></a>
 	</div><br /><br />
 <?php endif; ?>
-<?php if (ComponentbuilderHelper::checkArray($items)): ?>
+<?php if (ArrayHelper::check($items)): ?>
 <table class="footable table data fields" data-show-toggle="true" data-toggle-column="first" data-sorting="true" data-paging="true" data-paging-size="20" data-filtering="true">
 <thead>
 	<tr>
 		<th data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_NAME_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_NULL_SWITCH_LABEL'); ?>
 		</th>
 		<th data-breakpoints="xs sm md" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_STORE_LABEL'); ?>
 		</th>
 		<th data-breakpoints="all" data-type="html" data-sort-use="text">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'); ?>
 		</th>
 		<th width="10" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_STATUS'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_STATUS'); ?>
 		</th>
 		<th width="5" data-type="number" data-breakpoints="xs sm md">
-			<?php echo JText::_('COM_COMPONENTBUILDER_FIELD_ID'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_FIELD_ID'); ?>
 		</th>
 	</tr>
 </thead>
@@ -88,7 +94,7 @@ $can = ComponentbuilderHelper::getActions('field');
 <?php foreach ($items as $i => $item): ?>
 	<?php
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->id || $item->checked_out == 0;
-		$userChkOut = JFactory::getUser($item->checked_out);
+		$userChkOut = Factory::getUser($item->checked_out);
 		$canDo = ComponentbuilderHelper::getActions('field',$item,'fields');
 	?>
 	<tr>
@@ -96,7 +102,7 @@ $can = ComponentbuilderHelper::getActions('field');
 			<?php if ($canDo->get('field.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?><?php echo $ref; ?>"><?php echo $displayData->escape($item->name); ?></a>
 				<?php if ($item->checked_out): ?>
-					<?php echo JHtml::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
+					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php echo $displayData->escape($item->name); ?>
@@ -106,16 +112,16 @@ $can = ComponentbuilderHelper::getActions('field');
 			<?php echo $displayData->escape($item->fieldtype_name); ?>
 		</td>
 		<td>
-			<?php echo JText::_($item->datatype); ?>
+			<?php echo Text::_($item->datatype); ?>
 		</td>
 		<td>
-			<?php echo JText::_($item->indexes); ?>
+			<?php echo Text::_($item->indexes); ?>
 		</td>
 		<td>
-			<?php echo JText::_($item->null_switch); ?>
+			<?php echo Text::_($item->null_switch); ?>
 		</td>
 		<td>
-			<?php echo JText::_($item->store); ?>
+			<?php echo Text::_($item->store); ?>
 		</td>
 		<td>
 			<?php if ($user->authorise('core.edit', 'com_componentbuilder.field.category.' . (int)$item->catid)): ?>
@@ -126,26 +132,26 @@ $can = ComponentbuilderHelper::getActions('field');
 		</td>
 		<?php if ($item->published == 1): ?>
 			<td class="center"  data-sort-value="1">
-				<span class="status-metro status-published" title="<?php echo JText::_('COM_COMPONENTBUILDER_PUBLISHED');  ?>">
-					<?php echo JText::_('COM_COMPONENTBUILDER_PUBLISHED'); ?>
+				<span class="status-metro status-published" title="<?php echo Text::_('COM_COMPONENTBUILDER_PUBLISHED');  ?>">
+					<?php echo Text::_('COM_COMPONENTBUILDER_PUBLISHED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 0): ?>
 			<td class="center"  data-sort-value="2">
-				<span class="status-metro status-inactive" title="<?php echo JText::_('COM_COMPONENTBUILDER_INACTIVE');  ?>">
-					<?php echo JText::_('COM_COMPONENTBUILDER_INACTIVE'); ?>
+				<span class="status-metro status-inactive" title="<?php echo Text::_('COM_COMPONENTBUILDER_INACTIVE');  ?>">
+					<?php echo Text::_('COM_COMPONENTBUILDER_INACTIVE'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == 2): ?>
 			<td class="center"  data-sort-value="3">
-				<span class="status-metro status-archived" title="<?php echo JText::_('COM_COMPONENTBUILDER_ARCHIVED');  ?>">
-					<?php echo JText::_('COM_COMPONENTBUILDER_ARCHIVED'); ?>
+				<span class="status-metro status-archived" title="<?php echo Text::_('COM_COMPONENTBUILDER_ARCHIVED');  ?>">
+					<?php echo Text::_('COM_COMPONENTBUILDER_ARCHIVED'); ?>
 				</span>
 			</td>
 		<?php elseif ($item->published == -2): ?>
 			<td class="center"  data-sort-value="4">
-				<span class="status-metro status-trashed" title="<?php echo JText::_('COM_COMPONENTBUILDER_TRASHED');  ?>">
-					<?php echo JText::_('COM_COMPONENTBUILDER_TRASHED'); ?>
+				<span class="status-metro status-trashed" title="<?php echo Text::_('COM_COMPONENTBUILDER_TRASHED');  ?>">
+					<?php echo Text::_('COM_COMPONENTBUILDER_TRASHED'); ?>
 				</span>
 			</td>
 		<?php endif; ?>
@@ -158,7 +164,7 @@ $can = ComponentbuilderHelper::getActions('field');
 </table>
 <?php else: ?>
 	<div class="alert alert-no-items">
-		<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+		<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 	</div>
 <?php endif; ?>
 </div>

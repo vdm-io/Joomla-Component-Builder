@@ -12,18 +12,25 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::_('behavior.multiselect');
-JHtml::_('dropdown.init');
-JHtml::_('formbehavior.chosen', '.multipleAdminviewsfiltertype', null, array('placeholder_text_multiple' => '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -'));
-JHtml::_('formbehavior.chosen', '.multipleAccessLevels', null, array('placeholder_text_multiple' => '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_ACCESS') . ' -'));
-JHtml::_('formbehavior.chosen', 'select');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Router\Route;
+Html::_('behavior.multiselect');
+Html::_('dropdown.init');
+Html::_('formbehavior.chosen', 'select');
+Html::_('formbehavior.chosen', '.multipleAdminviewsfiltertype', null, ['placeholder_text_multiple' => '- ' . Text::_('COM_COMPONENTBUILDER_FILTER_SELECT_TYPE') . ' -']);
+Html::_('formbehavior.chosen', '.multipleAccessLevels', null, ['placeholder_text_multiple' => '- ' . Text::_('COM_COMPONENTBUILDER_FILTER_SELECT_ACCESS') . ' -']);
+
 if ($this->saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_componentbuilder&task=admin_views.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'admin_viewList', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
+	Html::_('sortablelist.sortable', 'admin_viewList', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
 }
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_componentbuilder&view=admin_views'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=admin_views'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if(!empty( $this->sidebar)): ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -34,13 +41,13 @@ if ($this->saveOrder)
 <?php endif; ?>
 <?php
 	// Add the trash helper layout
-	echo JLayoutHelper::render('trashhelper', $this);
+	echo LayoutHelper::render('trashhelper', $this);
 	// Add the searchtools
-	echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+	echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 ?>
 <?php if (empty($this->items)): ?>
 	<div class="alert alert-no-items">
-		<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+		<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 	</div>
 <?php else : ?>
 	<table class="table table-striped" id="admin_viewList">
@@ -50,11 +57,11 @@ if ($this->saveOrder)
 	</table>
 	<?php // Load the batch processing form. ?>
 	<?php if ($this->canCreate && $this->canEdit) : ?>
-		<?php echo JHtml::_(
+		<?php echo Html::_(
 			'bootstrap.renderModal',
 			'collapseModal',
 			array(
-				'title' => JText::_('COM_COMPONENTBUILDER_ADMIN_VIEWS_BATCH_OPTIONS'),
+				'title' => Text::_('COM_COMPONENTBUILDER_ADMIN_VIEWS_BATCH_OPTIONS'),
 				'footer' => $this->loadTemplate('batch_footer')
 			),
 			$this->loadTemplate('batch_body')
@@ -64,27 +71,34 @@ if ($this->saveOrder)
 	</div>
 <?php endif; ?>
 	<input type="hidden" name="task" value="" />
-	<?php echo JHtml::_('form.token'); ?>
+	<?php echo Html::_('form.token'); ?>
 </form>
 <script type="text/javascript">
 // admin_views footer script
 
-// waiting spinner
-var outerDiv = jQuery('body');
-jQuery('<div id="loading"></div>')
-	.css("background", "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat")
-	.css("top", outerDiv.position().top - jQuery(window).scrollTop())
-	.css("left", outerDiv.position().left - jQuery(window).scrollLeft())
-	.css("width", outerDiv.width())
-	.css("height", outerDiv.height())
-	.css("position", "fixed")
-	.css("opacity", "0.80")
-	.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
-	.css("filter", "alpha(opacity = 80)")
-	.css("display", "none")
-	.appendTo(outerDiv);
+	// get page body
+	var outerBodyDiv = document.querySelector('body');
+
+	// start loading spinner
+	var loadingDiv = document.createElement('div');
+	loadingDiv.id = 'loading';
+
+	// Set CSS properties individually
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat";
+	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
+	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
+	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
+	loadingDiv.style.height = outerBodyDiv.offsetHeight + "px";
+	loadingDiv.style.position = 'fixed';
+	loadingDiv.style.opacity = '0.80';
+	loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	loadingDiv.style.filter = "alpha(opacity=80)";
+	loadingDiv.style.display = 'none';
+
+	// add to page body
+	outerBodyDiv.appendChild(loadingDiv);
 // when the expand button is clicked
 jQuery('#toolbar').on('click',"button.button-expand-2", function(e){
-	jQuery('#loading').show();
+	loadingDiv.style.display = 'block';
 });
 </script>

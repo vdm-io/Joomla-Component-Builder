@@ -37,10 +37,11 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'add_php_after_getitems',
 	'php_after_getitems',
 	'add_php_router_parse',
+	'php_router_parse_notice',
 	'php_router_parse'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+$hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>

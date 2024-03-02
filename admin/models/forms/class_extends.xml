@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_CLASS_EXTENDS_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_CLASS_EXTENDS_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -161,7 +162,7 @@
 			required="false"
 		/>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

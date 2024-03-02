@@ -81,6 +81,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_VERSION_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_CODE_VERSION_DESC"
 			size="6"
+			default="1"
 			readonly="true"
 			filter="unset"
 		/>
@@ -161,6 +162,18 @@
 			<option value="2">
 				COM_COMPONENTBUILDER_CUSTOM_CODE_HTML</option>
 		</field>
+		<!-- Joomla_version Field. Type: Number. (joomla) -->
+		<field
+			type="number"
+			name="joomla_version"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_JOOMLA_VERSION_LABEL"
+			default="3"
+			class="text_area"
+			min="3"
+			max="5"
+			step="1"
+			showon="target:1"
+		/>
 		<!-- Not_required Field. Type: Hidden. (joomla) -->
 		<field
 			type="hidden"
@@ -270,7 +283,7 @@
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_HINT"
 		/>
 	</fieldset>
-	
+
 	<!-- Access Control Fields. -->
 	<fieldset name="accesscontrol">
 		<!-- Asset Id Field. Type: Hidden (joomla) -->

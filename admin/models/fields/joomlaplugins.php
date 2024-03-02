@@ -12,6 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,7 +28,7 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 	/**
 	 * The joomlaplugins field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'joomlaplugins';
 
@@ -48,7 +52,7 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 			$script = array();
 			$button_code_name = $this->getAttribute('name');
 			// get the input from url
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 			$jinput = $app->input;
 			// get the view name & id
 			$values = $jinput->getArray(array(
@@ -64,7 +68,7 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
 				// get the return value.
-				$_uri = (string) JUri::getInstance();
+				$_uri = (string) \Joomla\CMS\Uri\Uri::getInstance();
 				$_return = urlencode(base64_encode($_uri));
 				// load return value.
 				$ref .= '&amp;return=' . $_return;
@@ -77,20 +81,20 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 			$button_label = preg_replace("/[^A-Za-z ]/", '', $button_label);
 			$button_label = ucfirst(strtolower($button_label));
 			// get user object
-			$user = JFactory::getUser();
+			$user = Factory::getUser();
 			// only add if user allowed to create joomla_plugin
-			if ($user->authorise('joomla_plugin.create', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if ($user->authorise('joomla_plugin.create', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
 			{
 				// build Create button
-				$button[] = '<a id="'.$button_code_name.'Create" class="btn btn-small btn-success hasTooltip" title="'.JText::sprintf('PLG_EXTENSION_COMPONENTBUILDERPOWERSAUTOLOADERCOMPILER_CREATE_NEW_S', $button_label).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
+				$button[] = '<a id="'.$button_code_name.'Create" class="btn btn-small btn-success hasTooltip" title="'.Text::sprintf('PLG_EXTENSION_COMPONENTBUILDERPOWERSAUTOLOADERCOMPILER_CREATE_NEW_S', $button_label).'" style="border-radius: 0px 4px 4px 0px; padding: 4px 4px 4px 7px;"
 					href="index.php?option=com_componentbuilder&amp;view=joomla_plugin&amp;layout=edit'.$ref.'" >
 					<span class="icon-new icon-white"></span></a>';
 			}
 			// only add if user allowed to edit joomla_plugin
-			if ($user->authorise('joomla_plugin.edit', 'com_componentbuilder') && $app->isAdmin()) // TODO for now only in admin area.
+			if ($user->authorise('joomla_plugin.edit', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
 			{
 				// build edit button
-				$button[] = '<a id="'.$button_code_name.'Edit" class="btn btn-small hasTooltip" title="'.JText::sprintf('PLG_EXTENSION_COMPONENTBUILDERPOWERSAUTOLOADERCOMPILER_EDIT_S', $button_label).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
+				$button[] = '<a id="'.$button_code_name.'Edit" class="btn btn-small hasTooltip" title="'.Text::sprintf('PLG_EXTENSION_COMPONENTBUILDERPOWERSAUTOLOADERCOMPILER_EDIT_S', $button_label).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
 					<span class="icon-edit"></span></a>';
 				// build script
 				$script[] = "
@@ -123,7 +127,7 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 			if (is_array($button) && count($button) > 0)
 			{
 				// Load the needed script.
-				$document = JFactory::getDocument();
+				$document = Factory::getDocument();
 				$document->addScriptDeclaration(implode(' ',$script));
 				// return the button attached to input field.
 				return '<div class="input-append">' .$html . implode('',$button).'</div>';
@@ -135,7 +139,7 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{

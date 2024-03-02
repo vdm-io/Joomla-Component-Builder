@@ -12,6 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -24,19 +28,19 @@ class JFormFieldClasspropertiesfiltervisibility extends JFormFieldList
 	/**
 	 * The classpropertiesfiltervisibility field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	public $type = 'classpropertiesfiltervisibility';
 
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array    An array of JHtml options.
+	 * @return    array    An array of Html options.
 	 */
 	protected function getOptions()
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -50,8 +54,8 @@ class JFormFieldClasspropertiesfiltervisibility extends JFormFieldList
 		$db->setQuery($query);
 
 		$_results = $db->loadColumn();
-		$_filter = array();
-		$_filter[] = JHtml::_('select.option', '', '- ' . JText::_('COM_COMPONENTBUILDER_FILTER_SELECT_VISIBILITY') . ' -');
+		$_filter = [];
+		$_filter[] = Html::_('select.option', '', '- ' . Text::_('COM_COMPONENTBUILDER_FILTER_SELECT_VISIBILITY') . ' -');
 
 		if ($_results)
 		{
@@ -63,7 +67,7 @@ class JFormFieldClasspropertiesfiltervisibility extends JFormFieldList
 				// Translate the visibility selection
 				$_text = $_model->selectionTranslation($visibility,'visibility');
 				// Now add the visibility and its text to the options array
-				$_filter[] = JHtml::_('select.option', $visibility, JText::_($_text));
+				$_filter[] = Html::_('select.option', $visibility, Text::_($_text));
 			}
 		}
 		return $_filter;

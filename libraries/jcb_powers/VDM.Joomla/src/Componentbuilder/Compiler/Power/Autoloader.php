@@ -282,8 +282,8 @@ class Autoloader
 			// we start building the spl_autoload_register function call
 			$autoload_method = [];
 			$autoload_method[] = Indent::_($tabSpace) . '//'
-				. Line::_(__Line__, __Class__) . ' register this component namespace';
-			$autoload_method[] = Indent::_($tabSpace) . 'spl_autoload_register(function ($class) {';
+				. Line::_(__Line__, __Class__) . ' register additional namespace';
+			$autoload_method[] = Indent::_($tabSpace) . '\spl_autoload_register(function ($class) {';
 			$autoload_method[] = Indent::_($tabSpace) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' project-specific base directories and namespace prefix';
 			$autoload_method[] = Indent::_($tabSpace) . Indent::_(1) . '$search = [';

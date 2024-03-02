@@ -13,6 +13,8 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use VDM\Joomla\Utilities\StringHelper;
@@ -85,7 +87,7 @@ class Compiler extends Infusion
 		if (parent::__construct())
 		{
 			// set temp directory
-			$comConfig      = JFactory::getConfig();
+			$comConfig      = Factory::getConfig();
 			$this->tempPath = $comConfig->get('tmp_path');
 			// set some folder paths in relation to distribution
 			if (CFactory::_('Config')->backup)
@@ -133,13 +135,12 @@ class Compiler extends Infusion
 				);
 				CFactory::_('Utilities.File')->write($xmlPath, $componentXML);
 			}
-			// for plugin event TODO change event api signatures
-			$component_context = CFactory::_('Config')->component_context;
+
 			// Trigger Event: jcb_ce_onBeforeUpdateFiles
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeUpdateFiles',
-				array(&$component_context, &$this)
+				'jcb_ce_onBeforeUpdateFiles', [$this] // TODO move setGetItemsModelMethod to its own class
 			);
+
 			// now update the files
 			if (!$this->updateFiles())
 			{
@@ -147,88 +148,96 @@ class Compiler extends Infusion
 			}
 			// Trigger Event: jcb_ce_onBeforeGetCustomCode
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeGetCustomCode',
-				array(&$component_context, &$this)
+				'jcb_ce_onBeforeGetCustomCode'
 			);
 			// now insert into the new files
 			if (CFactory::_('Customcode')->get())
 			{
 				// Trigger Event: jcb_ce_onBeforeAddCustomCode
 				CFactory::_('Event')->trigger(
-					'jcb_ce_onBeforeAddCustomCode',
-					array(&$component_context, &$this)
+					'jcb_ce_onBeforeAddCustomCode'
 				);
 
 				$this->addCustomCode();
 			}
 			// Trigger Event: jcb_ce_onBeforeSetLangFileData
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeSetLangFileData',
-				array(&$component_context, &$this)
+				'jcb_ce_onBeforeSetLangFileData'
 			);
 			// set the lang data now
 			$this->setLangFileData();
 			// set the language notice if it was set
-			if (ArrayHelper::check($this->langNot)
-				|| ArrayHelper::check($this->langSet))
+			if (CFactory::_('Compiler.Builder.Language.Messages')->isActive())
 			{
-				if (ArrayHelper::check($this->langNot))
+				if (CFactory::_('Compiler.Builder.Language.Messages')->isArray('exclude'))
 				{
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Language Warning</h3>'), 'Warning'
+						Text::_('<hr /><h3>Language Warning</h3>'), 'Warning'
 					);
-					foreach ($this->langNot as $tag => $percentage)
+					foreach (CFactory::_('Compiler.Builder.Language.Messages')->get('exclude') as $tag => $targets)
 					{
-						$this->app->enqueueMessage(
-							JText::sprintf(
-								'The <b>%s</b> language has %s&#37; translated, you will need to translate %s&#37; of the language strings before it will be added.',
-								$tag, $percentage, $this->percentageLanguageAdd
-							), 'Warning'
-						);
+						foreach ($targets as $extention => $files)
+						{
+							foreach ($files as $file => $percentage)
+							{
+								$this->app->enqueueMessage(
+									Text::sprintf(
+										'The [%s].%s <b>%s</b> language has %s&#37; translated, you will need to translate %s&#37; of the language strings before it will be added.',
+										$extention, $file, $tag, $percentage, CFactory::_('Config')->percentage_language_add
+									), 'Warning'
+								);
+							}
+						}
 					}
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Language Notice</h3>'), 'Notice'
+						Text::_('<hr /><h3>Language Notice</h3>'), 'Notice'
 					);
 					$this->app->enqueueMessage(
-						JText::sprintf(
+						Text::sprintf(
 							'<b>You can change this percentage of translated strings required in the global options of JCB.</b><br />Please watch this <a href=%s>tutorial for more help surrounding the JCB translations manager</a>.',
 							'"https://youtu.be/zzAcVkn_cWU?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE" target="_blank" title="JCB Tutorial surrounding Translation Manager"'
 						), 'Notice'
 					);
 				}
 				// set why the strings were added
-				$whyAddedLang = JText::sprintf(
+				$whyAddedLang = Text::sprintf(
 					'because more then %s&#37; of the strings have been translated.',
-					$this->percentageLanguageAdd
+					CFactory::_('Config')->percentage_language_add
 				);
 				if (CFactory::_('Config')->get('debug_line_nr', false))
 				{
-					$whyAddedLang = JText::_(
+					$whyAddedLang = Text::_(
 						'because the debugging mode is on. (debug line numbers)'
 					);
 				}
 				// show languages that were added
-				if (ArrayHelper::check($this->langSet))
+				if (CFactory::_('Compiler.Builder.Language.Messages')->isArray('include'))
 				{
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Language Notice</h3>'), 'Notice'
+						Text::_('<hr /><h3>Language Notice</h3>'), 'Notice'
 					);
-					foreach ($this->langSet as $tag => $percentage)
+					foreach (CFactory::_('Compiler.Builder.Language.Messages')->get('include') as $tag => $targets)
 					{
-						$this->app->enqueueMessage(
-							JText::sprintf(
-								'The <b>%s</b> language has %s&#37; translated. Was added %s',
-								$tag, $percentage, $whyAddedLang
-							), 'Notice'
-						);
+						foreach ($targets as $extention => $files)
+						{
+							foreach ($files as $file => $percentage)
+							{
+								$this->app->enqueueMessage(
+									Text::sprintf(
+										'The [%s].%s <b>%s</b> language has %s&#37; translated. Was added %s',
+										$extention, $file, $tag, $percentage, $whyAddedLang
+									), 'Notice'
+								);
+							}
+						}
 					}
 				}
 			}
 			// set assets table column fix type messages
-			$message_fix['intelligent'] = JText::_(
+			$message_fix['intelligent'] = Text::_(
 				'The <b>intelligent</b> fix only updates the #__assets table\'s column when it detects that it is too small for the worse case. The intelligent fix also only reverse the #__assets table\'s update on uninstall of the component if it detects that no other component needs the rules column to be larger any longer. This options also shows a notice to the end user of all that it does to the #__assets table on installation and uninstalling of the component.'
 			);
-			$message_fix['sql']         = JText::_(
+			$message_fix['sql']         = Text::_(
 				'The <b>SQL</b> fix updates the #__assets table\'s column size on installation of the component and reverses it back to the Joomla default on uninstall of the component.'
 			);
 			// get the asset table fix switch
@@ -237,12 +246,12 @@ class Compiler extends Infusion
 			if ($add_assets_table_fix)
 			{
 				$this->app->enqueueMessage(
-					JText::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
+					Text::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
 				);
 				$asset_table_fix_type = ($add_assets_table_fix == 2)
 					? 'intelligent' : 'sql';
 				$this->app->enqueueMessage(
-					JText::sprintf(
+					Text::sprintf(
 						'The #__assets table <b>%s</b> fix has been added to this component. %s',
 						$asset_table_fix_type,
 						$message_fix[$asset_table_fix_type]
@@ -253,10 +262,10 @@ class Compiler extends Infusion
 			elseif (CFactory::_('Utilities.Counter')->accessSize >= 30)
 			{
 				$this->app->enqueueMessage(
-					JText::_('<hr /><h3>Assets Table Warning</h3>'), 'Warning'
+					Text::_('<hr /><h3>Assets Table Warning</h3>'), 'Warning'
 				);
 				$this->app->enqueueMessage(
-					JText::sprintf(
+					Text::sprintf(
 						'The Joomla #__assets table\'s rules column has to be fixed for this component to work coherently. JCB has detected that in worse case the rules column in the #__assets table may require <b>%s</b> characters, and yet the Joomla default is only <b>varchar(5120)</b>. JCB has three option to resolve this issue, first <b>use less permissions</b> in your component, second use the <b>SQL</b> fix, or the <b>intelligent</b> fix. %s %s',
 						CFactory::_('Config')->access_worse_case, $message_fix['intelligent'],
 						$message_fix['sql']
@@ -270,12 +279,12 @@ class Compiler extends Infusion
 				if (CFactory::_('Utilities.Counter')->accessSize < 30)
 				{
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Assets Table Warning</h3>'),
+						Text::_('<hr /><h3>Assets Table Warning</h3>'),
 						'Warning'
 					);
 				}
 				$this->app->enqueueMessage(
-					JText::sprintf(
+					Text::sprintf(
 						'The Joomla #__assets table\'s name column has to be fixed for this component to work correctly. JCB has detected that the #__assets table name column will need to be enlarged because this component\'s own naming convention is larger than varchar(50) which is the Joomla default. JCB has three option to resolve this issue, first <b>shorter names</b> for your component and/or its admin views, second use the <b>SQL</b> fix, or the <b>intelligent</b> fix. %s %s',
 						$message_fix['intelligent'],
 						$message_fix['sql']
@@ -319,12 +328,12 @@ class Compiler extends Infusion
 					))
 				{
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Language Warning</h3>'), 'Warning'
+						Text::_('<hr /><h3>Language Warning</h3>'), 'Warning'
 					);
 					if (count((array) $mismatch) > 1)
 					{
 						$this->app->enqueueMessage(
-							JText::_(
+							Text::_(
 								'<h3>Please check the following mismatching Joomla.JText language constants.</h3>'
 							), 'Warning'
 						);
@@ -332,7 +341,7 @@ class Compiler extends Infusion
 					else
 					{
 						$this->app->enqueueMessage(
-							JText::_(
+							Text::_(
 								'<h3>Please check the following mismatch Joomla.JText language constant.</h3>'
 							), 'Warning'
 						);
@@ -343,8 +352,8 @@ class Compiler extends Infusion
 						$constant = CFactory::_('Config')->lang_prefix . '_'
 							. StringHelper::safe($string, 'U');
 						$this->app->enqueueMessage(
-							JText::sprintf(
-								'The <b>Joomla.JText._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>JText::script(&apos;%s&apos;)</code> decalaration, please add it.',
+							Text::sprintf(
+								'The <b>Joomla.JText._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>Text::script(&apos;%s&apos;)</code> decalaration, please add it.',
 								$constant, $string, $string
 							), 'Warning'
 						);
@@ -357,15 +366,15 @@ class Compiler extends Infusion
 				// number of external code strings
 				$externalCount = count($this->externalCodeString);
 				// the correct string
-				$externalCodeString = ($externalCount == 1) ? JText::_(
+				$externalCodeString = ($externalCount == 1) ? Text::_(
 					'code/string'
-				) : JText::_('code/strings');
+				) : Text::_('code/strings');
 				// the notice
 				$this->app->enqueueMessage(
-					JText::_('<hr /><h3>External Code Notice</h3>'), 'Notice'
+					Text::_('<hr /><h3>External Code Notice</h3>'), 'Notice'
 				);
 				$this->app->enqueueMessage(
-					JText::sprintf(
+					Text::sprintf(
 						'There has been <b>%s - %s</b> added to this component as EXTERNALCODE. To avoid shipping your component with malicious %s always make sure that the correct <b>code/string values</b> were used.',
 						$externalCount, $externalCodeString, $externalCodeString
 					), 'Notice'
@@ -384,7 +393,7 @@ class Compiler extends Infusion
 	}
 
 	/**
-	 * Set the dynamic data to the created fils
+	 * Set the dynamic data to the created files
 	 *
 	 * @return  bool true on success
 	 *
@@ -394,6 +403,13 @@ class Compiler extends Infusion
 		if (CFactory::_('Utilities.Files')->exists('static')
 			&& CFactory::_('Utilities.Files')->exists('dynamic'))
 		{
+			// load any other super powers that was already found
+			if (($super_powers = CFactory::_('Power.Extractor')->get_()) !== null)
+			{
+				CFactory::_('Power')->load($super_powers);
+			}
+			// set the autoloader for Powers
+			CFactory::_('Power.Autoloader')->set();
 			// get the bom file
 			$bom = FileHelper::getContent(CFactory::_('Config')->bom_path);
 			// first we do the static files
@@ -586,6 +602,15 @@ class Compiler extends Infusion
 					}
 				}
 			}
+			// load any other super powers that was found
+			if (($super_powers = CFactory::_('Power.Extractor')->get_()) !== null)
+			{
+				CFactory::_('Power')->load($super_powers);
+			}
+			// load the powers files/folders
+			CFactory::_('Power.Structure')->build();
+			// Infuse POWERS
+			CFactory::_('Power.Infusion')->set();
 			// do powers if found
 			if (ArrayHelper::check(CFactory::_('Power')->active))
 			{
@@ -651,13 +676,9 @@ class Compiler extends Infusion
 	 */
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
-		// for plugin event TODO change event api signatures
-		$component_context = CFactory::_('Config')->component_context;
-
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeSetFileContent',
-			array(&$component_context, &$name, &$path, &$bom, &$view)
+			'jcb_ce_onBeforeSetFileContent', [&$name, &$path, &$bom, &$view]
 		);
 
 		// set the file name
@@ -675,9 +696,7 @@ class Compiler extends Infusion
 
 		// Trigger Event: jcb_ce_onGetFileContents
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onGetFileContents',
-			array(&$component_context, &$string, &$name, &$path, &$bom,
-			      &$view)
+			'jcb_ce_onGetFileContents', [&$string, &$name, &$path, &$bom,  &$view]
 		);
 
 		// see if we should add a BOM
@@ -719,9 +738,7 @@ class Compiler extends Infusion
 
 		// Trigger Event: jcb_ce_onBeforeSetFileContent
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeWriteFileContent',
-			array(&$component_context, &$answer, &$name, &$path, &$bom,
-			      &$view)
+			'jcb_ce_onBeforeWriteFileContent', [&$answer, &$name, &$path, &$bom, &$view]
 		);
 
 		// inject any super powers found
@@ -763,7 +780,7 @@ class Compiler extends Infusion
 				))
 				{
 					$this->app->enqueueMessage(
-						JText::sprintf(
+						Text::sprintf(
 							'Upload of component (%s) update server XML failed.',
 							CFactory::_('Component')->get('system_name')
 						), 'Error'
@@ -802,7 +819,7 @@ class Compiler extends Infusion
 					))
 					{
 						$this->app->enqueueMessage(
-							JText::sprintf(
+							Text::sprintf(
 								'Upload of module (%s) update server XML failed.',
 								$module->name
 							), 'Error'
@@ -843,7 +860,7 @@ class Compiler extends Infusion
 					))
 					{
 						$this->app->enqueueMessage(
-							JText::sprintf(
+							Text::sprintf(
 								'Upload of plugin (%s) update server XML failed.',
 								$plugin->name
 							), 'Error'
@@ -903,10 +920,10 @@ class Compiler extends Infusion
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -961,10 +978,10 @@ class Compiler extends Infusion
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			JText::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
-			JText::sprintf(
+			Text::sprintf(
 				'Use of a deprecated method (%s)!', __METHOD__
 			), 'Error'
 		);
@@ -981,7 +998,7 @@ class Compiler extends Infusion
 			// set the repo path
 			$repoFullPath = $this->repoPath . '/com_'
 				. CFactory::_('Component')->get('sales_name') . '__joomla_'
-				. CFactory::_('Config')->get('version', 3);
+				. CFactory::_('Config')->get('joomla_version', 3);
 			// for plugin event TODO change event api signatures
 			$component_context = CFactory::_('Config')->component_context;
 			$component_path = CFactory::_('Utilities.Paths')->component_path;
@@ -998,7 +1015,7 @@ class Compiler extends Infusion
 				Folder::copy(CFactory::_('Utilities.Paths')->component_path, $repoFullPath, '', true);
 			} catch (\RuntimeException $e) {
 				$this->app->enqueueMessage(
-					JText::_('We where was unable to transfer the component to the git repository:') . ' ' . $e->getMessage()
+					Text::_('We where was unable to transfer the component to the git repository:') . ' ' . $e->getMessage()
 					, 'Error'
 				);
 			}
@@ -1022,7 +1039,7 @@ class Compiler extends Infusion
 						// set the repo path
 						$repoFullPath = $this->repoPath . '/'
 							. $module->folder_name . '__joomla_'
-							. CFactory::_('Config')->get('version', 3);
+							. CFactory::_('Config')->get('joomla_version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeUpdateRepo',
@@ -1040,7 +1057,7 @@ class Compiler extends Infusion
 							);
 						} catch (\RuntimeException $e) {
 							$this->app->enqueueMessage(
-								JText::sprintf('We where was unable to transfer the (%s) module to the git repository:', $module->name) . ' ' . $e->getMessage()
+								Text::sprintf('We where was unable to transfer the (%s) module to the git repository:', $module->name) . ' ' . $e->getMessage()
 								, 'Error'
 							);
 						}
@@ -1066,7 +1083,7 @@ class Compiler extends Infusion
 						// set the repo path
 						$repoFullPath = $this->repoPath . '/'
 							. $plugin->folder_name . '__joomla_'
-							. CFactory::_('Config')->get('version', 3);
+							. CFactory::_('Config')->get('joomla_version', 3);
 						// Trigger Event: jcb_ce_onBeforeUpdateRepo
 						CFactory::_('Event')->trigger(
 							'jcb_ce_onBeforeUpdateRepo',
@@ -1084,7 +1101,7 @@ class Compiler extends Infusion
 							);
 						} catch (\RuntimeException $e) {
 							$this->app->enqueueMessage(
-								JText::sprintf('We where was unable to transfer the (%s) plugin to the git repository:', $plugin->name) . ' ' . $e->getMessage()
+								Text::sprintf('We where was unable to transfer the (%s) plugin to the git repository:', $plugin->name) . ' ' . $e->getMessage()
 								, 'Error'
 							);
 						}
@@ -1114,10 +1131,8 @@ class Compiler extends Infusion
 		$component_folder_name = CFactory::_('Utilities.Paths')->component_folder_name;
 		// Trigger Event: jcb_ce_onBeforeZipComponent
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeZipComponent',
-			array(&$component_context, &$component_path,
-			      &$this->filepath['component'], &$this->tempPath,
-			      &$component_folder_name, &$this->componentData)
+			'jcb_ce_onBeforeZipComponent', [&$component_path, &$this->filepath['component'],
+				&$this->tempPath,  &$component_folder_name]
 		);
 		//create the zip file
 		if (FileHelper::zip(
@@ -1130,13 +1145,8 @@ class Compiler extends Infusion
 			{
 				// Trigger Event: jcb_ce_onBeforeBackupZip
 				CFactory::_('Event')->trigger(
-					'jcb_ce_onBeforeBackupZip',[
-						&$component_context,
-						&$this->filepath['component'],
-						&$this->tempPath,
-						&$this->backupPath,
-						&$this->componentData
-				]);
+					'jcb_ce_onBeforeBackupZip', [&$this->filepath['component'], &$this->tempPath, &$this->backupPath]
+				);
 				// copy the zip to backup path
 				try {
 					File::copy(
@@ -1146,7 +1156,7 @@ class Compiler extends Infusion
 					);
 				} catch (\RuntimeException $e) {
 					$this->app->enqueueMessage(
-						JText::_('We where was unable to transfer the component ZIP file to the backup folder:') . ' ' . $e->getMessage()
+						Text::_('We where was unable to transfer the component ZIP file to the backup folder:') . ' ' . $e->getMessage()
 						, 'Error'
 					);
 				}
@@ -1160,10 +1170,7 @@ class Compiler extends Infusion
 				{
 					// Trigger Event: jcb_ce_onBeforeMoveToServer
 					CFactory::_('Event')->trigger(
-						'jcb_ce_onBeforeMoveToServer',
-						array(&$component_context,
-						      &$this->filepath['component'], &$this->tempPath,
-						      &$component_sales_name, &$this->componentData)
+						'jcb_ce_onBeforeMoveToServer', [&$this->filepath['component'], &$this->tempPath, &$component_sales_name]
 					);
 					// move to server
 					if (!CFactory::_('Server')->legacyMove(
@@ -1174,7 +1181,7 @@ class Compiler extends Infusion
 					))
 					{
 						$this->app->enqueueMessage(
-							JText::sprintf(
+							Text::sprintf(
 								'Upload of component (%s) zip file failed.',
 								CFactory::_('Component')->get('system_name')
 							), 'Error'
@@ -1184,10 +1191,7 @@ class Compiler extends Infusion
 			}
 			// Trigger Event: jcb_ce_onAfterZipComponent
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onAfterZipComponent',
-				array(&$component_context, &$this->filepath['component'],
-				      &$this->tempPath, &$component_folder_name,
-				      &$this->componentData)
+				'jcb_ce_onAfterZipComponent', [&$this->filepath['component'],  &$this->tempPath, &$component_folder_name]
 			);
 			// remove the component folder since we are done
 			if (CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path))
@@ -1255,7 +1259,7 @@ class Compiler extends Infusion
 								);
 							} catch (\RuntimeException $e) {
 								$this->app->enqueueMessage(
-									JText::sprintf('We where was unable to transfer the (%s) module zip file to the backup folder:', $module->name) . ' ' . $e->getMessage()
+									Text::sprintf('We where was unable to transfer the (%s) module zip file to the backup folder:', $module->name) . ' ' . $e->getMessage()
 									, 'Error'
 								);
 							}
@@ -1283,7 +1287,7 @@ class Compiler extends Infusion
 								))
 								{
 									$this->app->enqueueMessage(
-										JText::sprintf(
+										Text::sprintf(
 											'Upload of module (%s) zip file failed.',
 											$module->name
 										), 'Error'
@@ -1363,7 +1367,7 @@ class Compiler extends Infusion
 								);
 							} catch (\RuntimeException $e) {
 								$this->app->enqueueMessage(
-									JText::sprintf('We where was unable to transfer the (%s) plugin zip file to the backup folder:', $plugin->name) . ' ' . $e->getMessage()
+									Text::sprintf('We where was unable to transfer the (%s) plugin zip file to the backup folder:', $plugin->name) . ' ' . $e->getMessage()
 									, 'Error'
 								);
 							}
@@ -1392,7 +1396,7 @@ class Compiler extends Infusion
 								))
 								{
 									$this->app->enqueueMessage(
-										JText::sprintf(
+										Text::sprintf(
 											'Upload of plugin (%s) zip file failed.',
 											$plugin->name
 										), 'Error'
@@ -1543,12 +1547,12 @@ class Compiler extends Infusion
 						if ($target['type'] == 2)
 						{
 							// found it now add code from the next line
-							$this->addDataToFile($file, $data, $bites);
+							CFactory::_('Utilities.FileInjector')->add($file, $data, $bites);
 						}
 						elseif ($target['type'] == 1 && $foundEnd)
 						{
 							// found it now add code from the next line
-							$this->addDataToFile(
+							CFactory::_('Utilities.FileInjector')->add(
 								$file, $data, $bites, (int) array_sum($replace)
 							);
 						}
@@ -1557,11 +1561,11 @@ class Compiler extends Infusion
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
 							$this->app->enqueueMessage(
-								JText::_('<hr /><h3>Custom Code Warning</h3>'),
+								Text::_('<hr /><h3>Custom Code Warning</h3>'),
 								'Warning'
 							);
 							$this->app->enqueueMessage(
-								JText::sprintf(
+								Text::sprintf(
 									'Custom code %s could not be added to <b>%s</b> please review the file after install at <b>line %s</b> and reposition the code, remove the comments and recompile to fix the issue. The issue could be due to a change to <b>lines below</b> the custom code.',
 									'<a href="index.php?option=com_componentbuilder&view=custom_codes&task=custom_code.edit&id='
 									. $target['id'] . '" target="_blank">#'
@@ -1576,11 +1580,11 @@ class Compiler extends Infusion
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
 						$this->app->enqueueMessage(
-							JText::_('<hr /><h3>Custom Code Warning</h3>'),
+							Text::_('<hr /><h3>Custom Code Warning</h3>'),
 							'Warning'
 						);
 						$this->app->enqueueMessage(
-							JText::sprintf(
+							Text::sprintf(
 								'Custom code %s could not be added to <b>%s</b> please review the file after install at <b>line %s</b> and reposition the code, remove the comments and recompile to fix the issue. The issue could be due to a change to <b>lines above</b> the custom code.',
 								'<a href="index.php?option=com_componentbuilder&view=custom_codes&task=custom_code.edit&id='
 								. $target['id'] . '" target="_blank">#'
@@ -1594,11 +1598,11 @@ class Compiler extends Infusion
 				{
 					// Give developer a notice that file is not found.
 					$this->app->enqueueMessage(
-						JText::_('<hr /><h3>Custom Code Warning</h3>'),
+						Text::_('<hr /><h3>Custom Code Warning</h3>'),
 						'Warning'
 					);
 					$this->app->enqueueMessage(
-						JText::sprintf(
+						Text::sprintf(
 							'File <b>%s</b> could not be found, so the custom code for this file could not be addded.',
 							$target['path']
 						), 'Warning'
@@ -1642,7 +1646,7 @@ class Compiler extends Infusion
 			}
 		}
 		// add to the file
-		$this->addDataToFile($file, $data, (int) array_sum($bitBucket));
+		CFactory::_('Utilities.FileInjector')->add($file, $data, (int) array_sum($bitBucket));
 	}
 
 	/**
@@ -1656,46 +1660,11 @@ class Compiler extends Infusion
 	 *
 	 * @return void
 	 * @throws RuntimeException if unable to open the file
+	 * @deprecated 3.3 Use CFactory::_('Utilities.FileInjector')->add($file, $data, $position, $replace);
 	 */
 	protected function addDataToFile(string $file, string $data, int $position, ?int $replace = null)
 	{
-		// Open the file and a temporary stream
-		$actual_file = fopen($file, "rw+");
-		if ($actual_file === false)
-		{
-			throw new RuntimeException("Unable to open the file: {$file}");
-		}
-
-		$temp_file = fopen('php://temp', "rw+");
-
-		// Make a copy of the file in the temporary stream
-		stream_copy_to_stream($actual_file, $temp_file);
-
-		// Move to the position where the data should be added
-		fseek($actual_file, $position);
-
-		// Add the data
-		fwrite($actual_file, $data);
-
-		// Truncate the file at the end of the added data if replacing
-		$data_length = mb_strlen($data, '8bit');
-		$remove = MathHelper::bc('add', $position, $data_length);
-		ftruncate($actual_file, $remove);
-
-		// check if this was a replacement of data
-		$position = MathHelper::bc('add', $position, $replace ?: 0);
-
-		// Move to the position of the remaining data in the temporary stream
-		fseek($temp_file, $position);
-
-		// Copy the remaining data from the temporary stream to the file
-		stream_copy_to_stream($temp_file, $actual_file);
-
-		// Close both file handles
-		fclose($actual_file);
-		fclose($temp_file);
-
-		// any help to improve this is welcome...
+		CFactory::_('Utilities.FileInjector')->add($file, $data, $position, $replace);
 	}
 
 }

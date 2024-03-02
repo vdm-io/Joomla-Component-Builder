@@ -12,11 +12,16 @@
 // No direct access to this file
 defined('JPATH_BASE') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+
 
 
 ?>
 <div  class="well well-small">
-	<h2 class="module-title nav-header"><?= JText::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD') ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?= JText::_('COM_COMPONENTBUILDER_NEW_NOTICE') ?>)</span></h2>
-	<div class="noticeboard-md"><small><?= JText::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING') ?><span class="loading-dots">.</span></small></div>
+	<h2 class="module-title nav-header"><?= Text::_('COM_COMPONENTBUILDER_VDM_NOTICE_BOARD') ?><span class="vdm-new-notice" style="display:none; color:red;"> (<?= Text::_('COM_COMPONENTBUILDER_NEW_NOTICE') ?>)</span></h2>
+	<div class="noticeboard-md"><small><?= Text::_('COM_COMPONENTBUILDER_THE_NOTICE_BOARD_IS_LOADING') ?><span class="loading-dots">.</span></small></div>
 	<div style="text-align:right;"><small><a href="https://github.com/Llewellynvdm" target="_blank" style="color:gray">&lt;&lt;ewe&gt;&gt;yn</a></small></div>
 </div>

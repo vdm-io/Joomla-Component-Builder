@@ -52,7 +52,7 @@ final class Http extends JoomlaHttp
 		// add the token if given
 		if (is_string($token))
 		{
-			$config['headers']['Authorization'] = 'token ' . $token;
+			$config['headers']['Authorization'] = $token;
 			$this->_token_ = $token;
 		}
 
@@ -78,7 +78,7 @@ final class Http extends JoomlaHttp
 		);
 
 		// add the token
-		$headers['Authorization'] = 'token ' . $token;
+		$headers['Authorization'] = $token;
 		$this->_token_ = $token;
 
 		$this->setOption('headers', $headers);

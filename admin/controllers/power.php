@@ -12,9 +12,15 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Componentbuilder\Power\Factory;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
 
 /**
  * Power Form Controller
@@ -37,7 +43,7 @@ class ComponentbuilderControllerPower extends FormController
 	 *
 	 * @since   1.6
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		$this->view_list = 'Powers'; // safeguard for setting the return view listing to the main view.
 		parent::__construct($config);
@@ -46,17 +52,17 @@ class ComponentbuilderControllerPower extends FormController
 	public function resetPowers()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 
 		// get Item posted
 		$item = $this->input->post->get('jform', array(), 'array');
 
 		// check if user has the right
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// set default error message
-		$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
-		$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RESET_THIS_POWER') . '</p>';
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RESET_THIS_POWER') . '</p>';
 		$status = 'error';
 		$success = false;
 
@@ -68,28 +74,28 @@ class ComponentbuilderControllerPower extends FormController
 		if ($id === null || $guid === null)
 		{
 			// set error message
-			$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
-			$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
+			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
 		}
 		elseif($user->authorise('power.reset', 'com_componentbuilder'))
 		{
-			if (Factory::_('Superpower')->reset([$guid]))
+			if (PowerFactory::_('Superpower')->reset([$guid]))
 			{
 				// set success message
-				$message = '<h1>'.JText::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
-				$message .= '<p>'.JText::_('COM_COMPONENTBUILDER_THE_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
+				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+				$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THE_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
 				$status = 'success';
 				$success = true;
 			}
 			else
 			{
-				$message = '<h1>' . JText::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
-				$message .= '<p>' . JText::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_POWER_HAS_FAILED') . '</p>';
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_POWER_HAS_FAILED') . '</p>';
 			}
 		}
 
 		// set redirect
-		$redirect_url = \JRoute::_(
+		$redirect_url = Route::_(
 			'index.php?option=com_componentbuilder&view=power'
 			. $this->getRedirectToItemAppend($id), $success
 		);
@@ -99,7 +105,7 @@ class ComponentbuilderControllerPower extends FormController
 		return $success;
 	}
 
-        /**
+	/**
 	 * Method override to check if you can add a new record.
 	 *
 	 * @param   array  $data  An array of input data.
@@ -108,10 +114,10 @@ class ComponentbuilderControllerPower extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowAdd($data = array())
+	protected function allowAdd($data = [])
 	{
 		// Get user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Access check.
 		$access = $user->authorise('power.access', 'com_componentbuilder');
 		if (!$access)
@@ -133,10 +139,10 @@ class ComponentbuilderControllerPower extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{
 		// get user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// get record id.
 		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 
@@ -207,12 +213,12 @@ class ComponentbuilderControllerPower extends FormController
 
 		// set the referral options
 		if ($refid && $ref)
-                {
-			$append = '&ref=' . (string)$ref . '&refid='. (int)$refid . $append;
+		{
+			$append = '&ref=' . (string) $ref . '&refid='. (int) $refid . $append;
 		}
 		elseif ($ref)
 		{
-			$append = '&ref='. (string)$ref . $append;
+			$append = '&ref='. (string) $ref . $append;
 		}
 
 		return $append;
@@ -229,13 +235,13 @@ class ComponentbuilderControllerPower extends FormController
 	 */
 	public function batch($model = null)
 	{
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('Power', '', array());
+		$model = $this->getModel('Power', '', []);
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_componentbuilder&view=powers' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=powers' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}
@@ -260,13 +266,13 @@ class ComponentbuilderControllerPower extends FormController
 
 		$cancel = parent::cancel($key);
 
-		if (!is_null($return) && JUri::isInternal(base64_decode($return)))
+		if (!is_null($return) && Uri::isInternal(base64_decode($return)))
 		{
 			$redirect = base64_decode($return);
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
@@ -277,7 +283,7 @@ class ComponentbuilderControllerPower extends FormController
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -288,7 +294,7 @@ class ComponentbuilderControllerPower extends FormController
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -314,7 +320,7 @@ class ComponentbuilderControllerPower extends FormController
 
 		// Check if there is a return value
 		$return = $this->input->get('return', null, 'base64');
-		$canReturn = (!is_null($return) && JUri::isInternal(base64_decode($return)));
+		$canReturn = (!is_null($return) && Uri::isInternal(base64_decode($return)));
 
 		if ($this->ref || $this->refid || $canReturn)
 		{
@@ -332,29 +338,29 @@ class ComponentbuilderControllerPower extends FormController
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
 		}
 		elseif ($this->refid && $this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+			$redirect = '&view=' . (string) $this->ref . '&layout=edit&id=' . (int) $this->refid;
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
 		}
 		elseif ($this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref;
+			$redirect = '&view=' . (string) $this->ref;
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -366,16 +372,15 @@ class ComponentbuilderControllerPower extends FormController
 	 * Function that allows child controller access to model data
 	 * after the data has been saved.
 	 *
-	 * @param   JModel  &$model     The data model object.
-	 * @param   array   $validData  The validated data.
+	 * @param   BaseDatabaseModel  &$model     The data model object.
+	 * @param   array              $validData  The validated data.
 	 *
 	 * @return  void
 	 *
 	 * @since   11.1
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
 		return;
 	}
-
 }

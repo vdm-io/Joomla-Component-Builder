@@ -23,7 +23,7 @@ class ComponentbuilderFieldCategories extends JCategories
 	 * @param   array  $options  Array of options
 	 *
 	 */
-	public function __construct($options = array())
+	public function __construct($options = [])
 	{
 		$options['table'] = '#__componentbuilder_field';
 		$options['extension'] = 'com_componentbuilder.field';

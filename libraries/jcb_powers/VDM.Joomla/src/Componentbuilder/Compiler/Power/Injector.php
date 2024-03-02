@@ -82,6 +82,22 @@ final class Injector
 	protected array $traits = [];
 
 	/**
+	 * Other Statements
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 */
+	protected array $other = [];
+
+	/**
+	 * Duplicate Statements
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 */
+	protected array $duplicate = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Power|null         $power        The power object.
@@ -138,6 +154,8 @@ final class Injector
 		$this->map = [];
 		$this->useStatements = [];
 		$this->traits = [];
+		$this->other = [];
+		$this->duplicate = [];
 
 		foreach ($guids as $key => $guid)
 		{
@@ -165,168 +183,200 @@ final class Injector
 	}
 
 	/**
-	 * inspect the super power
+	 * Inspect the super power to determine the necessary class name based on use statements and traits.
+	 * It checks if the given power (class, trait, etc.) already has a corresponding use statement
+	 * and handles the naming accordingly to avoid conflicts.
 	 *
-	 * @param object|null  $power          The power object.
-	 * @param array|null   $useStatements  The code use statments
-	 * @param array|null   $traits         The code traits use statments
+	 * @param object      $power           The power object containing type, namespace, and class name.
+	 * @param array|null  $useStatements   Array of existing use statements in the code.
+	 * @param array|null  $traits          Array of existing traits used in the code.
 	 *
-	 * @return string|null   The class name (or as name)
+	 * @return string|null The determined class name, or null if the type is not valid.
 	 * @since 3.2.0
 	 */
 	protected function inspect(object $power, ?array $useStatements, ?array $traits): ?string
 	{
-		if (isset($power->type) && in_array($power->type, ['class', 'abstract class', 'final class', 'trait']))
-		{
-			$statement = 'use ' . $power->_namespace . '\\' . $power->class_name;
-			// other class names
-			$use_other = [];
-			$trait_other = [];
-			// some tracker globals
-			$has_use_statement = false; // add if not found
-			$has_trait_statement = !('trait' === $power->type); // don't add if not trait
-			$name = null;
-			$trait_name = null;
+		$namespaceStatement = $this->buildNamespaceStatment($power);
 
-			// check if the name space is loaded
-			if ($useStatements !== null)
+		$use_extracted = $this->extractUseStatements($namespaceStatement, $power->class_name, $useStatements);
+
+		$name = $use_extracted['found'] ?? $power->class_name;
+
+		$name = $this->getUniqueName($name, $power);
+
+		$this->handleTraitLogic($name, $power, $traits);
+
+		if (!$use_extracted['hasStatement'])
+		{
+			$this->addUseStatement($name, $power->class_name, $namespaceStatement);
+		}
+
+		return $name;
+	}
+
+	/**
+	 * Builds the namespace statement from the power object's namespace and class name.
+	 *
+	 * @param object $power  The power object.
+	 *
+	 * @return string The constructed use statement.
+	 * @since 3.2.0
+	 */
+	protected function buildNamespaceStatment(object $power): string
+	{
+		return $power->_namespace . '\\' . $power->class_name;
+	}
+
+	/**
+	 * Extracts and processes use statements to find if the current class name is already used.
+	 * It identifies any potential naming conflicts.
+	 *
+	 * @param string      $useStatement     The search statement of the current class.
+	 * @param string      $className         The class name of the power object.
+	 * @param array|null  $useStatements     The existing use statements.
+	 *
+	 * @return array  An array with keys 'found' and 'hasStatement'.
+	 * @since 3.2.0
+	 */
+	protected function extractUseStatements(string $useStatement, string $className, ?array $useStatements): array
+	{
+		$results = ['found' => null, 'hasStatement' => false];
+
+		if ($useStatements !== null)
+		{
+			foreach ($useStatements as $use_statement)
 			{
-				foreach ($useStatements as $use_statement)
+				$class_name = $this->extractClassNameOrAlias($use_statement);
+
+				if ($this->isUseStatementEqual($use_statement, $useStatement))
 				{
-					if ($use_statement === $statement . ';' || strpos($use_statement, $statement . ' as ') !== false)
+					if ($results['found'] === null)
 					{
-						$name = $this->getName($use_statement);
-						$has_use_statement = true;
+						$results['found'] = $class_name;
+						$results['hasStatement'] = true;
 					}
 					else
 					{
-						$tmp = $this->getName($use_statement);
-						if ($power->class_name === $tmp)
-						{
-							$use_other[$tmp] = $tmp;
-						}
+						// TODO we need to backport fix these
+						$this->duplicate[$use_statement] = $class_name;
 					}
 				}
-			}
-
-			// check if the trait is loaded
-			if (!$has_trait_statement && $traits !== null)
-			{
-				$trait_statement = $name ??  $power->class_name;
-
-				foreach ($traits as $trait)
+				elseif ($className === $class_name)
 				{
-					if ($trait === $trait_statement)
-					{
-						$trait_name = $trait;
-						$has_trait_statement = true;
-					}
+					$this->other[$className] = $class_name;
 				}
 			}
-
-			// build the name
-			$name = $trait_name ?? $name ?? $power->class_name;
-
-			// if we have a trait we may need to add use and trait
-			if ('trait' === $power->type)
-			{
-				if (!$has_trait_statement)
-				{
-					$this->traits[$name] = 'use ' . $name . ';';
-				}
-			}
-
-			// check if we need to update the name
-			if ($use_other !== [])
-			{
-				// set search namespace
-				$namespace = ($name !== $power->class_name) ? $power->_namespace . '\\' . $power->class_name : $power->_namespace;
-
-				// get the unique name
-				$name = $this->getUniqueName($name, $namespace, $use_other);
-			}
-
-			if (!$has_use_statement)
-			{
-				// if the name is not the same as class name
-				if ($name !== $power->class_name)
-				{
-					$statement .= ' as ' . $name . ';';
-				}
-				else
-				{
-					$statement .= ';';
-				}
-
-				$this->useStatements[$name] = $statement;
-			}
-
-			return $name;
 		}
 
-		return null;
+		return $results;
 	}
 
 	/**
-	 * Extracts the class name from a use statement.
+	 * Checks if the namespace statement is already declared in the current use statements.
 	 *
-	 * @param string $useStatement The use statement from which to extract the class name
+	 * This method uses a regular expression to check for an exact match of the full statement,
+	 * taking into account the possibility of an alias being used.
 	 *
-	 * @return string|null The class name or null if not found
+	 * @param string  $useStatement     The existing use statement to check against.
+	 * @param string  $namespaceStatement  The search statement to search for (without the trailing semicolon, or use prefix).
+	 *
+	 * @return bool True if the full statement is found, false otherwise.
+	 */
+	protected function isUseStatementEqual(string $useStatement, string $namespaceStatement): bool
+	{
+		// Create a regular expression pattern to match the full statement
+		// The pattern checks for the start of the statement, optional whitespace,
+		// and an optional alias after the full statement.
+		$pattern = '/^use\s+' . preg_quote($namespaceStatement, '/') . '(?:\s+as\s+\w+)?;$/';
+
+		// Perform the regex match to check if the use statement is equal to the search statment
+		return (bool) preg_match($pattern, $useStatement);
+	}
+
+	/**
+	 * Extracts the class name or alias from a use statement.
+	 *
+	 * This method parses a PHP 'use' statement and extracts either the class name or its alias.
+	 * If the statement doesn't match the expected format, or if no class name or alias is found,
+	 * the method returns null.
+	 *
+	 * Example: 
+	 * - 'use Namespace\ClassName;' -> returns 'ClassName'
+	 * - 'use Namespace\ClassName as Alias;' -> returns 'Alias'
+	 *
+	 * @param string  $useStatement  The use statement from which to extract the class name or alias.
+	 *
+	 * @return string|null The class name or alias if found, null otherwise.
 	 * @since 3.2.0
 	 */
-	protected function getName(string $useStatement): ?string
+	protected function extractClassNameOrAlias(string $useStatement): ?string
 	{
-		// If the input doesn't start with 'use ', assume it's a class name without a use statement
+		// If the input doesn't start with 'use ', assume it's just the namespace without a use statement
 		if (strpos($useStatement, 'use ') !== 0)
 		{
-			$parts = explode('\\', $useStatement);
-			$result = end($parts);
-
-			// Remove '\\' from the beginning and end of the resulting string
-			$result = trim($result, '\\');
-
-			// If the resulting string is empty, return null
-			return empty($result) ? null : $result;
+			return $this->extractLastNameFromNamespace($useStatement);
 		}
 
-		$pattern = '/use\s+([\w\\\\]+)(?:\s+as\s+)?([\w]+)?;/';
+		// Regular expression to extract the class name and alias from the use statement
+		$pattern = '/use\s+(?P<namespace>[\w\\\\]+?)(?:\s+as\s+(?P<alias>\w+))?;/';
 
 		if (preg_match($pattern, $useStatement, $matches))
 		{
-			// If there's an alias, return it
-			if (!empty($matches[2]))
-			{
-				return $matches[2];
-			}
-
-			// If there's no alias, extract the class name from the namespace
-			$parts = explode('\\', $matches[1]);
-			return end($parts);
+			// Return the alias if it exists; otherwise, return the last part of the namespace (class name)
+			return $matches['alias'] ?? $this->extractLastNameFromNamespace($matches['namespace']);
 		}
 
+		// Return null if no match is found
 		return null;
 	}
 
 	/**
-	 * Removes the last space from the namespace.
+	 * Ensures the name for the use statement is unique, avoiding conflicts with other classes.
 	 *
-	 * @param string $name      The current name
-	 * @param string $namespace The namespace
-	 * @param array $useOther   The other use names
+	 * @param string  $name       The current name
+	 * @param object  $power      The power object containing type, namespace, and class name.
 	 *
-	 * @return string The namespace shortened
+	 * @return string  The unique name
 	 * @since 3.2.0
 	 */
-	protected function getUniqueName(string $name, string $namespace, array $useOther): string
+	protected function getUniqueName(string $name, object $power): string
 	{
-		// if the name is already used
-		while (isset($useOther[$name]))
+		// set search namespace
+		$namespace = ($name !== $power->class_name) ? $this->buildNamespaceStatment($power) : $power->_namespace;
+
+		// check if we need to update the name
+		if (isset($this->other[$name]))
 		{
-			if (($tmp = $this->getName($namespace)) !== null)
+			// if the name is already used
+			while (isset($this->other[$name]))
 			{
-				$name = ucfirst($tmp) . $name;
-				$namespace = $this->removeLastSpace($namespace);
+				if (($tmp = $this->extractClassNameOrAlias($namespace)) !== null)
+				{
+					$name = ucfirst($tmp) . $name;
+					$namespace = $this->removeLastNameFromNamespace($namespace);
+				}
+				else
+				{
+					$name = 'Unique' . $name;
+				}
+			}
+		}
+
+		// also loop new found use statements
+		if (isset($this->useStatements[$name]))
+		{
+			// if the name is already used
+			while (isset($this->useStatements[$name]))
+			{
+				if (($tmp = $this->extractClassNameOrAlias($namespace)) !== null)
+				{
+					$name = ucfirst($tmp) . $name;
+					$namespace = $this->removeLastNameFromNamespace($namespace);
+				}
+				else
+				{
+					$name = 'Unique' . $name;
+				}
 			}
 		}
 
@@ -334,14 +384,34 @@ final class Injector
 	}
 
 	/**
-	 * Removes the last space from the namespace.
+	 * Extracts the last part of a namespace string, which is typically the class name.
+	 *
+	 * @param string $namespace  The namespace string to extract from.
+	 *
+	 * @return string|null The extracted class name.
+	 * @since 3.2.0
+	 */
+	protected function extractLastNameFromNamespace(string $namespace): ?string
+	{
+		$parts = explode('\\', $namespace);
+		$result = end($parts);
+
+		// Remove '\\' from the beginning and end of the resulting string
+		$result = trim($result, '\\');
+
+		// If the resulting string is empty, return null
+		return empty($result) ? null : $result;
+	}
+
+	/**
+	 * Removes the last name from the namespace.
 	 *
 	 * @param string $namespace The namespace
 	 *
 	 * @return string The namespace shortened
 	 * @since 3.2.0
 	 */
-	protected function removeLastSpace(string $namespace): string
+	protected function removeLastNameFromNamespace(string $namespace): string
 	{
 		// Remove '\\' from the beginning and end of the resulting string
 		$namespace = trim($namespace, '\\');
@@ -353,6 +423,69 @@ final class Injector
 
 		// Reassemble the namespace without the class name
 		return implode('\\', $parts);
+	}
+
+	/**
+	 * Determines whether a trait statement should be added.
+	 *
+	 * @param object $power The power object.
+	 *
+	 * @return bool True if a trait statement should be added, false otherwise.
+	 * @since 3.2.0
+	 */
+	protected function shouldAddTraitStatement(object $power): bool
+	{
+		return $power->type === 'trait';
+	}
+
+	/**
+	 * Handles specific logic for traits, such as checking if the trait is already used.
+	 *
+	 * @param string      $name    The current name.
+	 * @param object      $power   The power object containing type, namespace, and class name.
+	 * @param array|null  $traits  The traits used in the code.
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	protected function handleTraitLogic(string $name, object $power, ?array $traits): void
+	{
+		if ($this->shouldAddTraitStatement($power) && $traits !== null)
+		{
+			foreach ($traits as $trait)
+			{
+				if ($trait === $name)
+				{
+					return;
+				}
+			}
+		}
+
+		// add the trait
+		$this->traits[$name] = 'use ' . $name . ';';
+	}
+
+	/**
+	 * Adds a use statement to the class if it's not already present.
+	 *
+	 * @param string  $name                The name to use.
+	 * @param string  $className           The class name of the power object.
+	 * @param string  $namespaceStatement  The search statement to search for (without the trailing semicolon, or use prefix).
+	 *
+	 * @since 3.2.0
+	 */
+	protected function addUseStatement(string &$name, string $className, string $namespaceStatement): void
+	{
+		if ($name !== $className)
+		{
+			$statement = 'use ' . $namespaceStatement . ' as ' . $name . ';';
+		}
+		else
+		{
+			$statement = 'use ' . $namespaceStatement . ';';
+		}
+
+		$this->useStatements[$name] = $statement;
 	}
 
 	/**
@@ -405,7 +538,7 @@ final class Injector
 			// Find the position of the comment block right before the class declaration
 			$comment_pattern = '/\s*\*\/\s*$/m';
 			$insert_pos = null;
-			if (preg_match($comment_pattern, $code, $comment_matches, PREG_OFFSET_CAPTURE, 0, $last_newline_pos))
+			if (preg_match($comment_pattern, $code, $comment_matches, PREG_OFFSET_CAPTURE, $last_newline_pos))
 			{
 				$insert_pos = (int) $comment_matches[0][1] + strlen($comment_matches[0][0]);
 			}
@@ -413,7 +546,7 @@ final class Injector
 			{
 				// Find the last empty line before the class declaration
 				$empty_line_pattern = '/(^|\r\n|\r|\n)[\s]*($|\r\n|\r|\n)/';
-				if (preg_match($empty_line_pattern, $code, $empty_line_matches, PREG_OFFSET_CAPTURE, 0, $last_newline_pos))
+				if (preg_match($empty_line_pattern, $code, $empty_line_matches, PREG_OFFSET_CAPTURE, $last_newline_pos))
 				{
 					$insert_pos = (int) $empty_line_matches[0][1] + strlen($empty_line_matches[0][0]);
 				}
@@ -444,7 +577,9 @@ final class Injector
 		// Patterns to match the defined('_JEXEC') and defined('JPATH_BASE') lines
 		$patterns = [
 			"/defined\('_JEXEC'\)(.*?)\s*;/",
+			"/\\defined\('_JEXEC'\)(.*?)\s*;/",
 			"/defined\('JPATH_BASE'\)(.*?)\s*;/",
+			"/\\defined\('JPATH_BASE'\)(.*?)\s*;/",
 		];
 
 		$insert_pos = null;

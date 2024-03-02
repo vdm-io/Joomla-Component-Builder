@@ -12,11 +12,19 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access'); 
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use Joomla\CMS\Form\Form;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Componentbuilder Html View class for the Search
@@ -27,11 +35,11 @@ class ComponentbuilderViewSearch extends HtmlView
 	function display($tpl = null)
 	{
 		// get component params
-		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// get the application
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		// get the user object
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('search');
 		// Initialise variables.
@@ -51,37 +59,37 @@ class ComponentbuilderViewSearch extends HtmlView
 		// build our table headers
 		$this->table_headers = array(
 			'edit' => 'E',
-			'code' => JText::_('COM_COMPONENTBUILDER_FOUND_TEXT'),
-			'table' => JText::_('COM_COMPONENTBUILDER_TABLE'),
-			'field' => JText::_('COM_COMPONENTBUILDER_FIELD'),
-			'id' => JText::_('ID'),
-			'line' => JText::_('COM_COMPONENTBUILDER_LINE')
+			'code' => Text::_('COM_COMPONENTBUILDER_FOUND_TEXT'),
+			'table' => Text::_('COM_COMPONENTBUILDER_TABLE'),
+			'field' => Text::_('COM_COMPONENTBUILDER_FIELD'),
+			'id' => Text::_('ID'),
+			'line' => Text::_('COM_COMPONENTBUILDER_LINE')
 		);
 		
 		// set some JavaScript Language
-		JText::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_ROW');
-		JText::script('COM_COMPONENTBUILDER_FIELD_IN_THE');
-		JText::script('COM_COMPONENTBUILDER_TABLE');
-		JText::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
-		JText::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_BALLB_VALUES_THAT_CAN_BE_FOUND_IN_THE_DATABASE');
-		JText::script('COM_COMPONENTBUILDER_YOU_WILL_REPLACE');
-		JText::script('COM_COMPONENTBUILDER_WITH');
-		JText::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB');
-		JText::script('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
-		JText::script('COM_COMPONENTBUILDER_THE_SEARCH_PROCESS_HAD_AN_ERROR_WITH_TABLE');
-		JText::script('COM_COMPONENTBUILDER_THE_REPLACE_PROCESS_HAD_AN_ERROR_WITH_TABLE');
-		JText::script('COM_COMPONENTBUILDER_REPLACE_PROCESS_COMPLETE');
-		JText::script('COM_COMPONENTBUILDER_SEARCHING');
-		JText::script('COM_COMPONENTBUILDER_TABLES_WITH');
-		JText::script('COM_COMPONENTBUILDER_FIELDS_THAT_HAD');
-		JText::script('COM_COMPONENTBUILDER_LINES');
-		JText::script('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN');
-		JText::script('COM_COMPONENTBUILDER_SECONDS');
-		JText::script('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_DO_A_REVERSE_SEARCH');
-		JText::script('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH');
-		JText::script('COM_COMPONENTBUILDER_YES_UPDATE_ALL');
-		JText::script('COM_COMPONENTBUILDER_NO');
-		JText::script('COM_COMPONENTBUILDER_YES');
+		Text::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_ROW');
+		Text::script('COM_COMPONENTBUILDER_FIELD_IN_THE');
+		Text::script('COM_COMPONENTBUILDER_TABLE');
+		Text::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
+		Text::script('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_BALLB_VALUES_THAT_CAN_BE_FOUND_IN_THE_DATABASE');
+		Text::script('COM_COMPONENTBUILDER_YOU_WILL_REPLACE');
+		Text::script('COM_COMPONENTBUILDER_WITH');
+		Text::script('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB');
+		Text::script('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
+		Text::script('COM_COMPONENTBUILDER_THE_SEARCH_PROCESS_HAD_AN_ERROR_WITH_TABLE');
+		Text::script('COM_COMPONENTBUILDER_THE_REPLACE_PROCESS_HAD_AN_ERROR_WITH_TABLE');
+		Text::script('COM_COMPONENTBUILDER_REPLACE_PROCESS_COMPLETE');
+		Text::script('COM_COMPONENTBUILDER_SEARCHING');
+		Text::script('COM_COMPONENTBUILDER_TABLES_WITH');
+		Text::script('COM_COMPONENTBUILDER_FIELDS_THAT_HAD');
+		Text::script('COM_COMPONENTBUILDER_LINES');
+		Text::script('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN');
+		Text::script('COM_COMPONENTBUILDER_SECONDS');
+		Text::script('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_DO_A_REVERSE_SEARCH');
+		Text::script('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH');
+		Text::script('COM_COMPONENTBUILDER_YES_UPDATE_ALL');
+		Text::script('COM_COMPONENTBUILDER_NO');
+		Text::script('COM_COMPONENTBUILDER_YES');
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -96,7 +104,7 @@ class ComponentbuilderViewSearch extends HtmlView
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			throw new Exception(implode(PHP_EOL, $errors), 500);
+			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
 		parent::display($tpl);
@@ -311,21 +319,21 @@ class ComponentbuilderViewSearch extends HtmlView
 		// Only load jQuery if needed. (default is true)
 		if ($this->params->get('add_jquery_framework', 1) == 1)
 		{
-			JHtml::_('jquery.framework');
+			Html::_('jquery.framework');
 		}
 		// Load the header checker class.
 		require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );
 		// Initialize the header checker.
-		$HeaderCheck = new componentbuilderHeaderCheck;
+		$HeaderCheck = new componentbuilderHeaderCheck();
 
 		// always load these files.
-		JHtml::_('stylesheet', "media/com_componentbuilder/datatable/css/datatables.min.css", ['version' => 'auto']);
-		JHtml::_('script', "media/com_componentbuilder/datatable/js/pdfmake.min.js", ['version' => 'auto']);
-		JHtml::_('script', "media/com_componentbuilder/datatable/js/vfs_fonts.js", ['version' => 'auto']);
-		JHtml::_('script', "media/com_componentbuilder/datatable/js/datatables.min.js", ['version' => 'auto']);
+		Html::_('stylesheet', "media/com_componentbuilder/datatable/css/datatables.min.css", ['version' => 'auto']);
+		Html::_('script', "media/com_componentbuilder/datatable/js/pdfmake.min.js", ['version' => 'auto']);
+		Html::_('script', "media/com_componentbuilder/datatable/js/vfs_fonts.js", ['version' => 'auto']);
+		Html::_('script', "media/com_componentbuilder/datatable/js/datatables.min.js", ['version' => 'auto']);
 
 		// Add View JavaScript File
-		JHtml::_('script', "administrator/components/com_componentbuilder/assets/js/search.js", ['version' => 'auto']);
+		Html::_('script', "administrator/components/com_componentbuilder/assets/js/search.js", ['version' => 'auto']);
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -337,28 +345,26 @@ class ComponentbuilderViewSearch extends HtmlView
 		// The uikit css.
 		if ((!$HeaderCheck->css_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
+			Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit'.$style.$size.'.css', ['version' => 'auto']);
 		}
 		// The uikit js.
 		if ((!$HeaderCheck->js_loaded('uikit.min') || $uikit == 1) && $uikit != 2 && $uikit != 3)
 		{
-			JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
+			Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit'.$size.'.js', ['version' => 'auto']);
 		}
 
 		// Load the script to find all uikit components needed.
 		if ($uikit != 2)
 		{
 			// Set the default uikit components in this view.
-			$uikitComp = array();
+			$uikitComp = [];
 			$uikitComp[] = 'UIkit.notify';
 			$uikitComp[] = 'uk-progress';
 		}
 
 		// Load the needed uikit components in this view.
-		if ($uikit != 2 && isset($uikitComp) && ComponentbuilderHelper::checkArray($uikitComp))
+		if ($uikit != 2 && isset($uikitComp) && ArrayHelper::check($uikitComp))
 		{
-			// load just in case.
-			jimport('joomla.filesystem.file');
 			// loading...
 			foreach ($uikitComp as $class)
 			{
@@ -368,19 +374,19 @@ class ComponentbuilderViewSearch extends HtmlView
 					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css'))
 					{
 						// load the css.
-						JHtml::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
+						Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/'.$name.$style.$size.'.css', ['version' => 'auto']);
 					}
 					// check if the JavaScript file exists.
 					if (File::exists(JPATH_ROOT.'/media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js'))
 					{
 						// load the js.
-						JHtml::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
+						Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/'.$name.$size.'.js', ['version' => 'auto'], ['type' => 'text/javascript', 'async' => 'async']);
 					}
 				}
 			}
 		}
 		// add the document default css file
-		JHtml::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/search.css', ['version' => 'auto']);
+		Html::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/search.css', ['version' => 'auto']);
 	}
 
 	/**
@@ -398,29 +404,29 @@ class ComponentbuilderViewSearch extends HtmlView
 		// Check for empty title and add view name if param is set
 		if (empty($title))
 		{
-			$title = JText::_('COM_COMPONENTBUILDER_SEARCH');
+			$title = Text::_('COM_COMPONENTBUILDER_SEARCH');
 		}
 		// add title to the page
-		JToolbarHelper::title($title,'search');
+		ToolbarHelper::title($title,'search');
 		// add cpanel button
-		JToolBarHelper::custom('search.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+		ToolbarHelper::custom('search.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('search.compiler'))
 		{
 			// add Compiler button.
-			JToolBarHelper::custom('search.openCompiler', 'cogs custom-button-opencompiler', '', 'COM_COMPONENTBUILDER_COMPILER', false);
+			ToolbarHelper::custom('search.openCompiler', 'cogs custom-button-opencompiler', '', 'COM_COMPONENTBUILDER_COMPILER', false);
 		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('search');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 
@@ -434,7 +440,17 @@ class ComponentbuilderViewSearch extends HtmlView
 	public function escape($var)
 	{
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }
 ?>

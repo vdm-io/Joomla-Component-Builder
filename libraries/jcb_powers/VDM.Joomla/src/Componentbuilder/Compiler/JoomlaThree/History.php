@@ -46,23 +46,21 @@ class History implements HistoryInterface
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 */
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null                 $config               The compiler config object.
-	 * @param \JDatabaseDriver|null       $db                   The Database Driver object.
+	 * @param Config|null      $config      The compiler config object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?\JDatabaseDriver $db = null)
+	public function __construct(?Config $config = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**

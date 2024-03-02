@@ -12,7 +12,10 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -29,12 +32,12 @@ class ComponentbuilderControllerHelp extends BaseController
 
 	public function help()
 	{
-		$user 		= JFactory::getUser();
-		$jinput 	= JFactory::getApplication()->input;
+		$user       = Factory::getUser();
+		$jinput     = Factory::getApplication()->input;
 		// Check Token!
-		$token 		= JSession::getFormToken();
-		$call_token	= $jinput->get('token', 0, 'ALNUM');
-		if($user->id != 0 && $token == $call_token)
+		$token         = Session::getFormToken();
+		$call_token    = $jinput->get('token', 0, 'ALNUM');
+		if($user->id != 0 && ($jinput->get($token, 0, 'ALNUM') || $token === $call_token))
 		{
 			$task = $this->getTask();
 			switch($task){
@@ -62,7 +65,7 @@ class ComponentbuilderControllerHelp extends BaseController
 				break;
 			}
 		}
- 		else
+		 else
 		{
 			// stop execution gracefully
 			jexit();
@@ -71,8 +74,8 @@ class ComponentbuilderControllerHelp extends BaseController
 
 	protected function getHelpDocumentText($id)
 	{
-		$db		= JFactory::getDbo();
-		$query	= $db->getQuery(true);
+		$db       = Factory::getDbo();
+		$query    = $db->getQuery(true);
 		$query->select(array('a.title','a.content'));
 		$query->from('#__componentbuilder_help_document AS a');
 		$query->where('a.id = '.(int) $id);
@@ -81,21 +84,21 @@ class ComponentbuilderControllerHelp extends BaseController
 		$db->execute();
 		if($db->getNumRows())
 		{
-			$text = array();
+			$text = [];
 			$document = $db->loadObject();
 			// fix image issue
-			$images['src="images'] = 'src="'.JURI::root().'images';
-			$images["src='images"] = "src='".JURI::root()."images";
-			$images['src="/images'] = 'src="'.JURI::root().'images';
-			$images["src='/images"] = "src='".JURI::root()."images";
+			$images['src="images'] = 'src="'.Uri::root().'images';
+			$images["src='images"] = "src='".Uri::root()."images";
+			$images['src="/images'] = 'src="'.Uri::root().'images';
+			$images["src='/images"] = "src='".Uri::root()."images";
 			// set document template
 			$text[] = "<!doctype html>";
 			$text[] = '<html>';
 			$text[] = "<head>";
 			$text[] = '<meta charset="utf-8">';
 			$text[] = "<title>".$document->title."</title>";
-			$text[] = '<link type="text/css" href="'.JURI::root().'media/com_componentbuilder/uikit/css/uikit.gradient.min.css" rel="stylesheet"></link>';
-			$text[] = '<script type="text/javascript" src="'.JURI::root().'media/com_componentbuilder/uikit/js/uikit.min.js"></script>';
+			$text[] = '<link type="text/css" href="'.Uri::root().'media/com_componentbuilder/uikit/css/uikit.gradient.min.css" rel="stylesheet"></link>';
+			$text[] = '<script type="text/javascript" src="'.Uri::root().'media/com_componentbuilder/uikit/js/uikit.min.js"></script>';
 			$text[] = "</head>";
 			$text[] = '<body><br />';
 			$text[] = '<div class="uk-container uk-container-center uk-grid-collapse">';

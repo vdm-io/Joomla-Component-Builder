@@ -12,9 +12,15 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
 /**
@@ -22,10 +28,10 @@ use VDM\Joomla\Utilities\StringHelper;
  */
 class ComponentbuilderModelCustom_codes extends ListModel
 {
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (empty($config['filter_fields']))
-        {
+		{
 			$config['filter_fields'] = array(
 				'a.id','id',
 				'a.published','published',
@@ -37,7 +43,8 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				'a.target','target',
 				'a.type','type',
 				'a.comment_type','comment_type',
-				'a.path','path'
+				'a.path','path',
+				'a.joomla_version','joomla_version'
 			);
 		}
 
@@ -57,7 +64,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -125,10 +132,17 @@ class ComponentbuilderModelCustom_codes extends ListModel
 			$this->setState('filter.path', $path);
 		}
 
+		$joomla_version = $this->getUserStateFromRequest($this->context . '.filter.joomla_version', 'filter_joomla_version');
+		if ($formSubmited)
+		{
+			$joomla_version = $app->input->post->get('joomla_version');
+			$this->setState('filter.joomla_version', $joomla_version);
+		}
+
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}
-	
+
 	/**
 	 * Method to get an array of data items.
 	 *
@@ -143,12 +157,12 @@ class ComponentbuilderModelCustom_codes extends ListModel
 		$items = parent::getItems();
 
 		// Set values to display correctly.
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			foreach ($items as $nr => &$item)
 			{
@@ -160,6 +174,8 @@ class ComponentbuilderModelCustom_codes extends ListModel
 					continue;
 				}
 
+				// [1641]=> Target (code action)
+				$item->target_code = $item->target;
 			}
 		}
 
@@ -181,7 +197,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 		}
 
 		// set selection value to a translatable value
-		if (ComponentbuilderHelper::checkArray($items))
+		if (UtilitiesArrayHelper::check($items))
 		{
 			foreach ($items as $nr => &$item)
 			{
@@ -194,7 +210,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 			}
 		}
 
-        
+
 		// return items
 		return $items;
 	}
@@ -202,7 +218,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 	/**
 	 * Method to convert selection values to translatable string.
 	 *
-	 * @return translatable string
+	 * @return  string   The translatable string.
 	 */
 	public function selectionTranslation($value,$name)
 	{
@@ -214,7 +230,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				1 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_HASH_AUTOMATION'
 			);
 			// Now check if value is found in this array
-			if (isset($targetArray[$value]) && ComponentbuilderHelper::checkString($targetArray[$value]))
+			if (isset($targetArray[$value]) && StringHelper::check($targetArray[$value]))
 			{
 				return $targetArray[$value];
 			}
@@ -227,7 +243,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				2 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_INSERTION'
 			);
 			// Now check if value is found in this array
-			if (isset($typeArray[$value]) && ComponentbuilderHelper::checkString($typeArray[$value]))
+			if (isset($typeArray[$value]) && StringHelper::check($typeArray[$value]))
 			{
 				return $typeArray[$value];
 			}
@@ -240,25 +256,25 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				2 => 'COM_COMPONENTBUILDER_CUSTOM_CODE_HTML'
 			);
 			// Now check if value is found in this array
-			if (isset($comment_typeArray[$value]) && ComponentbuilderHelper::checkString($comment_typeArray[$value]))
+			if (isset($comment_typeArray[$value]) && StringHelper::check($comment_typeArray[$value]))
 			{
 				return $comment_typeArray[$value];
 			}
 		}
 		return $value;
 	}
-	
+
 	/**
 	 * Method to build an SQL query to load the list data.
 	 *
-	 * @return	string	An SQL query
+	 * @return    string    An SQL query
 	 */
 	protected function getListQuery()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Create a new query object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 
 		// Select some fields
@@ -291,7 +307,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 		{
 			$query->where('a.access = ' . (int) $_access);
 		}
-		elseif (ComponentbuilderHelper::checkArray($_access))
+		elseif (UtilitiesArrayHelper::check($_access))
 		{
 			// Secure the array for the query
 			$_access = ArrayHelper::toInteger($_access);
@@ -315,7 +331,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.component LIKE '.$search.' OR g.system_name LIKE '.$search.' OR a.path LIKE '.$search.' OR a.comment_type LIKE '.$search.' OR a.function_name LIKE '.$search.' OR a.system_name LIKE '.$search.')');
+				$query->where('(a.component LIKE '.$search.' OR g.system_name LIKE '.$search.' OR a.path LIKE '.$search.' OR a.comment_type LIKE '.$search.' OR a.joomla_version LIKE '.$search.' OR a.function_name LIKE '.$search.' OR a.system_name LIKE '.$search.')');
 			}
 		}
 
@@ -332,7 +348,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				$query->where('a.component = ' . (int) $_component);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_component))
+		elseif (StringHelper::check($_component))
 		{
 			$query->where('a.component = ' . $db->quote($db->escape($_component)));
 		}
@@ -349,7 +365,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				$query->where('a.target = ' . (int) $_target);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_target))
+		elseif (StringHelper::check($_target))
 		{
 			$query->where('a.target = ' . $db->quote($db->escape($_target)));
 		}
@@ -366,7 +382,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				$query->where('a.type = ' . (int) $_type);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_type))
+		elseif (StringHelper::check($_type))
 		{
 			$query->where('a.type = ' . $db->quote($db->escape($_type)));
 		}
@@ -383,16 +399,18 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				$query->where('a.comment_type = ' . (int) $_comment_type);
 			}
 		}
-		elseif (ComponentbuilderHelper::checkString($_comment_type))
+		elseif (StringHelper::check($_comment_type))
 		{
 			$query->where('a.comment_type = ' . $db->quote($db->escape($_comment_type)));
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->state->get('list.ordering', 'a.id');
-		$orderDirn = $this->state->get('list.direction', 'desc');
+		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{
+			// Check that the order direction is valid encase we have a field called direction as part of filers.
+			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'desc';
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 
@@ -410,17 +428,17 @@ class ComponentbuilderModelCustom_codes extends ListModel
 	public function getExportData($pks, $user = null)
 	{
 		// setup the query
-		if (($pks_size = ComponentbuilderHelper::checkArray($pks)) !== false || 'bulk' === $pks)
+		if (($pks_size = UtilitiesArrayHelper::check($pks)) !== false || 'bulk' === $pks)
 		{
 			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
 			$_export = true;
 			// Get the user object if not set.
-			if (!isset($user) || !ComponentbuilderHelper::checkObject($user))
+			if (!isset($user) || !ObjectHelper::check($user))
 			{
-				$user = JFactory::getUser();
+				$user = Factory::getUser();
 			}
 			// Create a new query object.
-			$db = JFactory::getDBO();
+			$db = Factory::getDBO();
 			$query = $db->getQuery(true);
 
 			// Select some fields
@@ -464,7 +482,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				$items = $db->loadObjectList();
 
 				// Set values to display correctly.
-				if (ComponentbuilderHelper::checkArray($items))
+				if (UtilitiesArrayHelper::check($items))
 				{
 					foreach ($items as $nr => &$item)
 					{
@@ -476,6 +494,8 @@ class ComponentbuilderModelCustom_codes extends ListModel
 							continue;
 						}
 
+						// [1641]=> Target (code action)
+						$item->target_code = $item->target;
 						// decode code
 						$item->code = base64_decode($item->code);
 						// unset the values we don't want exported.
@@ -486,7 +506,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 				}
 				// Add headers to items array.
 				$headers = $this->getExImPortHeaders();
-				if (ComponentbuilderHelper::checkObject($headers))
+				if (ObjectHelper::check($headers))
 				{
 					array_unshift($items,$headers);
 				}
@@ -521,16 +541,16 @@ class ComponentbuilderModelCustom_codes extends ListModel
 	public function getExImPortHeaders()
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// get the columns
 		$columns = $db->getTableColumns("#__componentbuilder_custom_code");
-		if (ComponentbuilderHelper::checkArray($columns))
+		if (UtilitiesArrayHelper::check($columns))
 		{
 			// remove the headers you don't import/export.
 			unset($columns['asset_id']);
 			unset($columns['checked_out']);
 			unset($columns['checked_out_time']);
-			$headers = new stdClass();
+			$headers = new \stdClass();
 			foreach ($columns as $column => $type)
 			{
 				$headers->{$column} = $column;
@@ -539,7 +559,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -554,13 +574,13 @@ class ComponentbuilderModelCustom_codes extends ListModel
 		$id .= ':' . $this->getState('filter.published');
 		// Check if the value is an array
 		$_access = $this->getState('filter.access');
-		if (ComponentbuilderHelper::checkArray($_access))
+		if (UtilitiesArrayHelper::check($_access))
 		{
 			$id .= ':' . implode(':', $_access);
 		}
 		// Check if this is only an number or string
 		elseif (is_numeric($_access)
-		 || ComponentbuilderHelper::checkString($_access))
+		 || StringHelper::check($_access))
 		{
 			$id .= ':' . $_access;
 		}
@@ -572,6 +592,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.comment_type');
 		$id .= ':' . $this->getState('filter.path');
+		$id .= ':' . $this->getState('filter.joomla_version');
 
 		return parent::getStoreId($id);
 	}
@@ -579,19 +600,18 @@ class ComponentbuilderModelCustom_codes extends ListModel
 	/**
 	 * Build an SQL query to checkin all items left checked out longer then a set time.
 	 *
-	 * @return  a bool
-	 *
+	 * @return bool
+	 * @since 3.2.0
 	 */
-	protected function checkInNow()
+	protected function checkInNow(): bool
 	{
 		// Get set check in time
-		$time = JComponentHelper::getParams('com_componentbuilder')->get('check_in');
+		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
 
 		if ($time)
 		{
-
 			// Get a db connection.
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			// Reset query.
 			$query = $db->getQuery(true);
 			$query->select('*');
@@ -603,7 +623,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 			if ($db->getNumRows())
 			{
 				// Get Yesterdays date.
-				$date = JFactory::getDate()->modify($time)->toSql();
+				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
@@ -624,7 +644,7 @@ class ComponentbuilderModelCustom_codes extends ListModel
 
 				$db->setQuery($query);
 
-				$db->execute();
+				return $db->execute();
 			}
 		}
 

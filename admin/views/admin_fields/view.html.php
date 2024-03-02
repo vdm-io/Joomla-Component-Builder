@@ -12,7 +12,19 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 /**
  * Admin_fields Html View class
@@ -26,7 +38,7 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 	public function display($tpl = null)
 	{
 		// set params
-		$this->params = JComponentHelper::getParams('com_componentbuilder');
+		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
@@ -35,7 +47,7 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 		// get action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('admin_fields', $this->item);
 		// get input
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
 		$this->refid = $jinput->get('refid', 0, 'int');
 		$return = $jinput->get('return', null, 'base64');
@@ -60,7 +72,7 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 
 		// Set the toolbar
 		$this->addToolBar();
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -80,34 +92,34 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
-		$user = JFactory::getUser();
+		Factory::getApplication()->input->set('hidemainmenu', true);
+		$user = Factory::getUser();
 		$userId	= $user->id;
 		$isNew = $this->item->id == 0;
 
-		JToolbarHelper::title( JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'), 'pencil-2 article-add');
+		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'), 'pencil-2 article-add');
 		// Built the actions for new and existing records.
-		if (ComponentbuilderHelper::checkString($this->referral))
+		if (StringHelper::check($this->referral))
 		{
 			if ($this->canDo->get('admin_fields.create') && $isNew)
 			{
 				// We can create the record.
-				JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
+				ToolbarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
 			}
 			elseif ($this->canDo->get('admin_fields.edit'))
 			{
 				// We can save the record.
-				JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
+				ToolbarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
 			}
 			if ($isNew)
 			{
 				// Do not creat but cancel.
-				JToolBarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CANCEL');
+				ToolbarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
 				// We can close it.
-				JToolBarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CLOSE');
+				ToolbarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
 		else
@@ -117,44 +129,44 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 				// For new records, check the create permission.
 				if ($this->canDo->get('admin_fields.create'))
 				{
-					JToolBarHelper::apply('admin_fields.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
-					JToolBarHelper::custom('admin_fields.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+					ToolbarHelper::apply('admin_fields.apply', 'JTOOLBAR_APPLY');
+					ToolbarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
+					ToolbarHelper::custom('admin_fields.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 				};
-				JToolBarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CANCEL');
+				ToolbarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
 			{
 				if ($this->canDo->get('admin_fields.edit'))
 				{
 					// We can save the new record
-					JToolBarHelper::apply('admin_fields.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
+					ToolbarHelper::apply('admin_fields.apply', 'JTOOLBAR_APPLY');
+					ToolbarHelper::save('admin_fields.save', 'JTOOLBAR_SAVE');
 					// We can save this record, but check the create permission to see
 					// if we can return to make a new one.
 					if ($this->canDo->get('admin_fields.create'))
 					{
-						JToolBarHelper::custom('admin_fields.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+						ToolbarHelper::custom('admin_fields.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
 				$canVersion = ($this->canDo->get('core.version') && $this->canDo->get('admin_fields.version'));
 				if ($this->state->params->get('save_history', 1) && $this->canDo->get('admin_fields.edit') && $canVersion)
 				{
-					JToolbarHelper::versions('com_componentbuilder.admin_fields', $this->item->id);
+					ToolbarHelper::versions('com_componentbuilder.admin_fields', $this->item->id);
 				}
 				if ($this->canDo->get('admin_fields.create'))
 				{
-					JToolBarHelper::custom('admin_fields.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+					ToolbarHelper::custom('admin_fields.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
-				JToolBarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CLOSE');
+				ToolbarHelper::cancel('admin_fields.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}
-		JToolbarHelper::divider();
+		ToolbarHelper::divider();
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('admin_fields');
-		if (ComponentbuilderHelper::checkString($this->help_url))
+		if (StringHelper::check($this->help_url))
 		{
-			JToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 
@@ -169,11 +181,11 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 	{
 		if(strlen($var) > 30)
 		{
-    		// use the helper htmlEscape method instead and shorten the string
-			return ComponentbuilderHelper::htmlEscape($var, $this->_charset, true, 30);
+			// use the helper htmlEscape method instead and shorten the string
+			return StringHelper::html($var, $this->_charset, true, 30);
 		}
 		// use the helper htmlEscape method instead.
-		return ComponentbuilderHelper::htmlEscape($var, $this->_charset);
+		return StringHelper::html($var, $this->_charset);
 	}
 
 	/**
@@ -184,35 +196,41 @@ class ComponentbuilderViewAdmin_fields extends HtmlView
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		if (!isset($this->document))
-		{
-			$this->document = JFactory::getDocument();
-		}
-		$this->document->setTitle(JText::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_componentbuilder/assets/css/admin_fields.css", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
-		$this->document->addScript(JURI::root() . $this->script, (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-		$this->document->addScript(JURI::root() . "administrator/components/com_componentbuilder/views/admin_fields/submitbutton.js", (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); 
+		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'));
+		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/admin_fields.css", ['version' => 'auto']);
+		Html::_('script', $this->script, ['version' => 'auto']);
+		Html::_('script', "administrator/components/com_componentbuilder/views/admin_fields/submitbutton.js", ['version' => 'auto']);
 
 
 		// add the Uikit v2 style sheets
-		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css', ['version' => 'auto']);
 		// add Uikit v2 JavaScripts
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/uikit.min.js' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit.min.js', ['version' => 'auto']);
 
 		// add the Uikit v2 extra style sheets
-		$this->document->addStyleSheet( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css' , (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css', ['version' => 'auto']);
 		// add Uikit v2 extra JavaScripts
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
-		$this->document->addScript( JURI::root(true) .'/media/com_componentbuilder/uikit-v2/js/components/notify.min.js', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript', (ComponentbuilderHelper::jVersion()->isCompatible('3.8.0')) ? array('type' => 'text/javascript', 'async' => 'async') : true);
-		JText::script('COM_COMPONENTBUILDER_THE_BNONE_DBB_OPTION_WILL_REMOVE_THIS_FIELD_FROM_BEING_SAVED_IN_THE_DATABASE');
-		JText::script('COM_COMPONENTBUILDER_ONLY_USE_THE_BNONE_DBB_OPTION_IF_YOU_ARE_PLANNING_ON_TARGETING_THIS_FIELD_WITH_JAVASCRIPTCUSTOM_PHP_TO_MOVE_ITS_VALUE_INTO_ANOTHER_FIELD_THAT_DOES_GET_SAVED_TO_THE_DATABASE');
-		JText::script('COM_COMPONENTBUILDER_THE_BSHOW_IN_ALL_LIST_VIEWSB_OPTION_WILL_ADD_THIS_FIELD_TO_ALL_LIST_VIEWS_ADMIN_AMP_LINKED');
-		JText::script('COM_COMPONENTBUILDER_THE_BONLY_IN_ADMIN_LIST_VIEWB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_ADMIN_LIST_VIEW_NOT_TO_ANY_LINKED_VIEWS');
-		JText::script('COM_COMPONENTBUILDER_THE_BONLY_IN_LINKED_LIST_VIEWSB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_LINKED_LIST_VIEW_IF_THIS_VIEW_GETS_LINKED_TO_OTHER_VIEW_NOT_TO_THIS_ADMIN_LIST_VIEW');
-		JText::script('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_NOT_AVAILABLE_TO_THE_FIELD_IF_BNONE_DBB_OPTION_IS_SELECTED');
-		JText::script('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_ONLY_AVAILABLE_TO_THE_FIELD_IF_BSHOW_IN_LIST_VIEWB_OPTION_IS_SELECTED');
-		JText::script('COM_COMPONENTBUILDER_THE_BMULTI_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_MORE_THEN_ONE_VALUE_IN_THIS_FILTERFIELD_PLEASE_NOTE_THAT_THIS_OPTION_BONLY_WORKSB_WITH_THE_BNEWB_FILTERS_THAT_LOAD_ABOVE_THE_ADMIN_LIST_VIEW_YOU_CAN_SELECT_THE_NEW_FILTER_OPTION_WHENWHERE_YOU_ADD_THE_VIEW_TO_THE_COMPONENT');
-		JText::script('COM_COMPONENTBUILDER_THE_BSINGLE_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_JUST_ONE_VALUE_IN_THIS_FILTERFIELD');
-		JText::script('view not acceptable. Error');
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
+		Text::script('COM_COMPONENTBUILDER_THE_BNONE_DBB_OPTION_WILL_REMOVE_THIS_FIELD_FROM_BEING_SAVED_IN_THE_DATABASE');
+		Text::script('COM_COMPONENTBUILDER_ONLY_USE_THE_BNONE_DBB_OPTION_IF_YOU_ARE_PLANNING_ON_TARGETING_THIS_FIELD_WITH_JAVASCRIPTCUSTOM_PHP_TO_MOVE_ITS_VALUE_INTO_ANOTHER_FIELD_THAT_DOES_GET_SAVED_TO_THE_DATABASE');
+		Text::script('COM_COMPONENTBUILDER_THE_BSHOW_IN_ALL_LIST_VIEWSB_OPTION_WILL_ADD_THIS_FIELD_TO_ALL_LIST_VIEWS_ADMIN_AMP_LINKED');
+		Text::script('COM_COMPONENTBUILDER_THE_BONLY_IN_ADMIN_LIST_VIEWB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_ADMIN_LIST_VIEW_NOT_TO_ANY_LINKED_VIEWS');
+		Text::script('COM_COMPONENTBUILDER_THE_BONLY_IN_LINKED_LIST_VIEWSB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_LINKED_LIST_VIEW_IF_THIS_VIEW_GETS_LINKED_TO_OTHER_VIEW_NOT_TO_THIS_ADMIN_LIST_VIEW');
+		Text::script('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_NOT_AVAILABLE_TO_THE_FIELD_IF_BNONE_DBB_OPTION_IS_SELECTED');
+		Text::script('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_ONLY_AVAILABLE_TO_THE_FIELD_IF_BSHOW_IN_LIST_VIEWB_OPTION_IS_SELECTED');
+		Text::script('COM_COMPONENTBUILDER_THE_BMULTI_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_MORE_THEN_ONE_VALUE_IN_THIS_FILTERFIELD_PLEASE_NOTE_THAT_THIS_OPTION_BONLY_WORKSB_WITH_THE_BNEWB_FILTERS_THAT_LOAD_ABOVE_THE_ADMIN_LIST_VIEW_YOU_CAN_SELECT_THE_NEW_FILTER_OPTION_WHENWHERE_YOU_ADD_THE_VIEW_TO_THE_COMPONENT');
+		Text::script('COM_COMPONENTBUILDER_THE_BSINGLE_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_JUST_ONE_VALUE_IN_THIS_FILTERFIELD');
+		Text::script('view not acceptable. Error');
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }
