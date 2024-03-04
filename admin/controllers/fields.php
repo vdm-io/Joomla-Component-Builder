@@ -127,7 +127,7 @@ class ComponentbuilderControllerFields extends AdminController
 		// check if user has the right
 		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = JRoute::_('index.php?option=com_componentbuilder&view=fields', false);
+		$redirect_url = \JRoute::_('index.php?option=com_componentbuilder&view=fields', false);
 		// set massage
 		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion

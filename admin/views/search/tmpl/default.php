@@ -58,7 +58,7 @@ $search_value = $this->form->getField('search_value');
 <div id="j-main-container">
 <?php endif; ?>
 	<?php if ($this->form): ?>
-	<form action="<?php echo JRoute::_($url_search); ?>" method="post"
+	<form action="<?php echo \JRoute::_($url_search); ?>" method="post"
 		name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 		<div class="form-horizontal">
 			<div class="row-fluid" id="search_progress_block" style="display: none">

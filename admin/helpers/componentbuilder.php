@@ -2161,7 +2161,7 @@ abstract class ComponentbuilderHelper
 					}
 				}
 				// return found content
-				return str_replace('[[[ROOT-URL]]]', JURI::root(), $target['html']);
+				return str_replace('[[[ROOT-URL]]]', Uri::root(), $target['html']);
 			}
 		}
 		return $default;
@@ -3311,7 +3311,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = PHP_EOL . "</script>";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . "<div id=\"installer-import\" class=\"clearfix\">";
-			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo JRoute::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
+			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo \JRoute::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . self::_t(1) . "<?php if (!empty( \$this->sidebar)) : ?>";
 			$script['view'][] = self::_t(2) . "<div id=\"j-sidebar-container\" class=\"span2\">";
@@ -5161,7 +5161,7 @@ abstract class ComponentbuilderHelper
 			// set the edit link
 			if ($jRoute)
 			{
-				return JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
+				return \JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
 			}
 			return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
 		}
