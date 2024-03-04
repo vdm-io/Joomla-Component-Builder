@@ -226,7 +226,7 @@ class ComponentbuilderViewPower extends HtmlView
 		// add var key
 		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');

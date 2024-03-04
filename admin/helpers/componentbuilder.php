@@ -2808,7 +2808,7 @@ abstract class ComponentbuilderHelper
 				// get the global settings
 				if (!ObjectHelper::check(self::$params))
 				{
-					self::$params = JComponentHelper::getParams('com_componentbuilder');
+					self::$params = \JComponentHelper::getParams('com_componentbuilder');
 				}
 				self::$gitHubAccessToken = self::$params->get('github_access_token', null);
 			}
@@ -3714,7 +3714,7 @@ abstract class ComponentbuilderHelper
 		// get the global settings
 		if (!ObjectHelper::check(self::$params))
 		{
-			self::$params = JComponentHelper::getParams('com_componentbuilder');
+			self::$params = \JComponentHelper::getParams('com_componentbuilder');
 		}
 		$folderPath = self::$params->get($target, $default);
 		// create the folder if it does not exist
@@ -4943,7 +4943,7 @@ abstract class ComponentbuilderHelper
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
-				self::$params = JComponentHelper::getParams('com_componentbuilder');
+				self::$params = \JComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
@@ -5055,7 +5055,7 @@ abstract class ComponentbuilderHelper
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
-				self::$params = JComponentHelper::getParams('com_componentbuilder');
+				self::$params = \JComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
@@ -5492,7 +5492,7 @@ abstract class ComponentbuilderHelper
 		// get global values
 		if (self::$subformLayouts === false)
 		{
-			self::$subformLayouts = JComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
+			self::$subformLayouts = \JComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
 		}
 		// check what we found (else) return default
 		if (ObjectHelper::check(self::$subformLayouts))

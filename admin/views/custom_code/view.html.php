@@ -217,7 +217,7 @@ class ComponentbuilderViewCustom_code extends HtmlView
 		// add var key
 		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) JUri::getInstance())) . "';");
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
 		// need to add some language strings
 		Text::script('COM_COMPONENTBUILDER_FUNCTION_NAME_ALREADY_TAKEN_PLEASE_TRY_AGAIN');
 		Text::script('COM_COMPONENTBUILDER_YOU_MUST_ADD_AN_UNIQUE_FUNCTION_NAME');

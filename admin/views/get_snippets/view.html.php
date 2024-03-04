@@ -180,7 +180,7 @@ class ComponentbuilderViewGet_snippets extends HtmlView
 		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
 		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
 		// token
-		$this->document->addScriptDeclaration("var token = '". JSession::getFormToken() ."';");
+		$this->document->addScriptDeclaration("var token = '". \JSession::getFormToken() ."';");
 		// add some global items buckets for bulk updating
 		$this->document->addScriptDeclaration("var bulkItems = {};");
 		$this->document->addScriptDeclaration("bulkItems.new = [];");

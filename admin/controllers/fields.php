@@ -136,7 +136,7 @@ class ComponentbuilderControllerFields extends AdminController
 			// set massage
 			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
-			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
+			$result = ComponentbuilderHelper::getFileContents(\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
 			if (!is_numeric($result) && StringHelper::check($result))
 			{

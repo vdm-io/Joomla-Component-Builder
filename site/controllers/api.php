@@ -68,7 +68,7 @@ class ComponentbuilderControllerApi extends FormController
 		// get params first
 		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
-			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			$this->params = \JComponentHelper::getParams('com_componentbuilder');
 		}
 		// get model
 		$model = $this->getModel('api');
@@ -146,7 +146,7 @@ class ComponentbuilderControllerApi extends FormController
 		// get params first
 		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
-			$this->params = JComponentHelper::getParams('com_componentbuilder');
+			$this->params = \JComponentHelper::getParams('com_componentbuilder');
 		}
 		// check if expansion is enabled
 		$method = $this->params->get('development_method', 1);

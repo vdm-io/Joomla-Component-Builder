@@ -129,7 +129,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 				$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
 				if (($pos = strpos($model->compiler->filepath['component'], "/tmp/")) !== FALSE)
 				{
-				    $url = JURI::root() . substr($model->compiler->filepath['component'], $pos + 1);
+				    $url = \JUri::root() . substr($model->compiler->filepath['component'], $pos + 1);
 				}
 				// check if we have plugins
 				$add_plugin_install = UtilitiesArrayHelper::check($model->compiler->filepath['plugins'], true);
@@ -212,7 +212,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 							$message[] = '<b>Module Path:</b> <code>' . $module_path . '</code><br />';
 							if (($pos = strpos($module_path, "/tmp/")) !== FALSE)
 							{
-								$module_urls[$module_id] = JURI::root() . substr($module_path, $pos + 1);
+								$module_urls[$module_id] = \JUri::root() . substr($module_path, $pos + 1);
 								$message[] = '<b>Module URL:</b> <code>' . $module_urls[$module_id] . '</code><br />';
 							}
 						}
@@ -228,7 +228,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 							$message[] = '<b>Plugin Path:</b> <code>' . $plugin_path . '</code><br />';
 							if (($pos = strpos($plugin_path, "/tmp/")) !== FALSE)
 							{
-								$plugin_urls[$plugin_id] = JURI::root() . substr($plugin_path, $pos + 1);
+								$plugin_urls[$plugin_id] = \JUri::root() . substr($plugin_path, $pos + 1);
 								$message[] = '<b>Plugin URL:</b> <code>' . $plugin_urls[$plugin_id] . '</code><br />';
 							}
 						}
@@ -543,7 +543,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			// set massage
 			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
-			$result = ComponentbuilderHelper::getFileContents(JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand');
+			$result = ComponentbuilderHelper::getFileContents(\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
 			if (!is_numeric($result) && StringHelper::check($result))
 			{

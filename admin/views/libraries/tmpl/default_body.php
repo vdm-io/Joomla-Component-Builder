@@ -77,7 +77,7 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 			<?php	// setup the return path
 				if (!isset($returnpath))
 				{
-					$returnpath = urlencode(base64_encode((string) JUri::getInstance()));
+					$returnpath = urlencode(base64_encode((string) \JUri::getInstance()));
 				}
 				// setup the buttons
 				if (!isset($_buttons) || !ArrayHelper::check($_buttons))

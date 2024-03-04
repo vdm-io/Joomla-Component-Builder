@@ -27,7 +27,7 @@ Html::_('behavior.keepalive');
 $this->app->input->set('hidemainmenu', false);
 
 // set the basu URL
-$url_base = JUri::base() . 'index.php?option=com_componentbuilder';
+$url_base = \JUri::base() . 'index.php?option=com_componentbuilder';
 $url_search = $url_base . '&view=search';
 
 // get main search input field
@@ -159,7 +159,7 @@ $search_value = $this->form->getField('search_value');
 const searchTables = <?php echo json_encode($this->item['tables']); ?>;
 
 // the search Ajax URLs
-const UrlAjax = '<?php echo $url_base; ?>&format=json&raw=true&<?php echo JSession::getFormToken(); ?>=1&task=ajax.';
+const UrlAjax = '<?php echo $url_base; ?>&format=json&raw=true&<?php echo \JSession::getFormToken(); ?>=1&task=ajax.';
 
 // the search URL
 const UrlSearch = '<?php echo $url_search; ?>';

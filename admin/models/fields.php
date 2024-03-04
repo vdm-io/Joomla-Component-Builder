@@ -72,7 +72,7 @@ class ComponentbuilderModelFields extends ListModel
 		$form = parent::getFilterForm($data, $loadData);
 
 		// Create the "extension" filter
-		$form->setField(new SimpleXMLElement(
+		$form->setField(new \SimpleXMLElement(
 			JCBFilterHelper::extensions()
 			),'filter');
 		$form->setValue(

@@ -165,7 +165,7 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function componentDetailsDisplay($object)
 	{
 		// set some vars
-		$image = (StringHelper::check($object->image)) ? '<img alt="Joomla Component Image" src="'. JURI::root() . $object->image . '" style="float: right;">': '';
+		$image = (StringHelper::check($object->image)) ? '<img alt="Joomla Component Image" src="'. \JUri::root() . $object->image . '" style="float: right;">': '';
 		$desc = (StringHelper::check($object->description)) ? $object->description : $object->short_description;
 		$placeholder = ($object->add_placeholders == 1) ? '<span class="btn btn-small btn-success"> ' . Text::_('COM_COMPONENTBUILDER_YES') . ' </span>' : '<span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
 		$debug = ($object->debug_linenr == 1) ? '<span class="btn btn-small btn-success"> ' .Text::_('COM_COMPONENTBUILDER_YES') . '</span>'  : ' <span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
@@ -203,11 +203,11 @@ class ComponentbuilderModelAjax extends ListModel
 			$result['error'] = '<span style="color: red;">' . Text::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
 			if ($this->hasCurl())
 			{
-				$path = '*/5 * * * * curl -s "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
+				$path = '*/5 * * * * curl -s "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
 			}
 			else
 			{
-				$path = '*/5 * * * * wget "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
+				$path = '*/5 * * * * wget "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
 			}
 			$result['path'] =  '<code>' . $path . '</code>';
 		}
@@ -216,11 +216,11 @@ class ComponentbuilderModelAjax extends ListModel
 			$result['error'] = '<span style="color: red;">' . Text::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
 			if ($this->hasCurl())
 			{
-				$path = '* * * * * curl -s "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
+				$path = '* * * * * curl -s "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
 			}
 			else
 			{
-				$path = '* * * * * wget "' .JURI::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
+				$path = '* * * * * wget "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
 			}
 			$result['path'] =  '<code>' . $path . '</code>';
 		}
@@ -3349,7 +3349,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// get the textarea
 		$textarea = JFormHelper::loadFieldType('textarea', true);
 		// start building the name field XML
-		$textareaXML = new SimpleXMLElement('<field/>');
+		$textareaXML = new \SimpleXMLElement('<field/>');
 		// textarea attributes
 		$textareaAttribute = array(
 			'type' => 'textarea',
@@ -3375,7 +3375,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// get the subform
 		$subform = JFormHelper::loadFieldType('subform', true);
 		// start building the subform field XML
-		$subformXML = new SimpleXMLElement('<field/>');
+		$subformXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
 		$subformAttribute = array(
 			'type' => 'subform',
@@ -3398,7 +3398,7 @@ class ComponentbuilderModelAjax extends ListModel
 		ComponentbuilderHelper::xmlAddAttributes($childForm, $childFormAttribute);
 
 		// start building the name field XML
-		$nameXML = new SimpleXMLElement('<field/>');
+		$nameXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
 		$nameAttribute = array(
 			'type' => (UtilitiesArrayHelper::check($nameListOptions)) ? 'list' : 'text',
@@ -3430,7 +3430,7 @@ class ComponentbuilderModelAjax extends ListModel
 		ComponentbuilderHelper::xmlAppend($childForm, $nameXML);
 
 		// start building the name field XML
-		$valueXML = new SimpleXMLElement('<field/>');
+		$valueXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
 		$valueAttribute = array(
 			'type' => 'textarea',
@@ -3447,7 +3447,7 @@ class ComponentbuilderModelAjax extends ListModel
 		ComponentbuilderHelper::xmlAppend($childForm, $valueXML);
 
 		// start building the desc field XML
-		$descXML = new SimpleXMLElement('<field/>');
+		$descXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
 		$descAttribute = array(
 			'type' => 'textarea',

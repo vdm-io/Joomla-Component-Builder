@@ -551,6 +551,7 @@ final class CustomFieldTypeFile
 			$placeholders['JHtml::'] = 'Html::';
 			$placeholders['JText::'] = 'Text::';
 			$placeholders['JComponentHelper::'] = 'ComponentHelper::';
+			$placeholders['\JComponentHelper::'] = 'ComponentHelper::';
 		}
 
 		$this->placeholders = $placeholders;
