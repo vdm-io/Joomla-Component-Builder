@@ -2,16 +2,15 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
- * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
+
 
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Language\Text;
@@ -19,14 +18,16 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
+use VDM\Joomla\Componentbuilder\Compiler\Helper\Get;
+
 
 /**
  * Structure class
+ * 
  * @deprecated 3.3
  */
 class Structure extends Get
 {
-
 	/**
 	 * The folder counter
 	 *
@@ -475,7 +476,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -494,7 +495,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -513,7 +514,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -532,7 +533,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -551,7 +552,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -570,7 +571,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -600,7 +601,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -619,7 +620,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -638,7 +639,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -815,7 +816,7 @@ class Structure extends Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -896,5 +897,5 @@ class Structure extends Get
 	{
 		return CFactory::_('Utilities.Folder')->remove($dir, $ignore);
 	}
-
 }
+

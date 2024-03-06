@@ -15,10 +15,9 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
-jimport('joomla.form.helper');
-JFormHelper::loadFieldClass('checkboxes');
-JFormHelper::loadFieldClass('checkboxes');
 use VDM\Joomla\Utilities\Component\Helper;
+jimport('joomla.form.helper');
+\JFormHelper::loadFieldClass('checkboxes');
 
 /**
  * Superpowerpaths Form Field class for the Componentbuilder component
@@ -63,7 +62,7 @@ class JFormFieldSuperpowerpaths extends JFormFieldCheckboxes
 		// must have one / in the path
 		if (strpos($default, '/') !== false)
 		{
-			$tmp = new stdClass;
+			$tmp = new \stdClass;
 			$tmp->text = $tmp->value = trim($default);
 			$tmp->checked = false;
 			$options[$tmp->value] = $tmp;
@@ -81,7 +80,7 @@ class JFormFieldSuperpowerpaths extends JFormFieldCheckboxes
 					if (isset($value->owner) && strlen($value->owner) > 1 &&
 						isset($value->repo) && strlen($value->repo) > 1)
 					{
-						$tmp = new stdClass;
+						$tmp = new \stdClass;
 						$tmp->text = $tmp->value = trim($value->owner) . '/' . trim($value->repo);
 						$tmp->checked = false;
 

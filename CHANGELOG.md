@@ -1,3 +1,8 @@
+# v3.2.0-beta3
+
+- Move the old helper compiler files to powers
+- Move the old helper extrusion files to powers
+
 # v3.2.0-beta1
 
 - Move beta to main repo

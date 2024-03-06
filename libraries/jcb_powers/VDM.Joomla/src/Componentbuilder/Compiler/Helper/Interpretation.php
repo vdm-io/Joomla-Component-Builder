@@ -2,22 +2,20 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
- * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
 
-use Joomla\CMS\Factory;
+
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
-use Joomla\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
+// use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper; (for Joomla 4 and above)
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -30,14 +28,16 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
+use VDM\Joomla\Componentbuilder\Compiler\Helper\Fields;
+
 
 /**
- * Compiler class
+ * Interpretation class
+ * 
  * @deprecated 3.3
  */
 class Interpretation extends Fields
 {
-
 	/**
 	 * The global config Field Sets
 	 *
@@ -311,7 +311,7 @@ class Interpretation extends Fields
 				// the text for the file BAKING
 				CFactory::_('Compiler.Builder.Content.Multi')->set('emailer_' . $component . '|BAKING', ''); // <<-- to insure it gets updated
 				// return the code need to load the abstract class
-				return PHP_EOL . "JLoader::register('" . $Component
+				return PHP_EOL . "\JLoader::register('" . $Component
 					. "Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/"
 					. $component . "email.php'); ";
 			}
@@ -448,7 +448,7 @@ class Interpretation extends Fields
 		$bool[] = Indent::_(3)
 			. "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_"
 			. CFactory::_('Config')->component_code_name . "');";
-		$bool[] = Indent::_(3) . "\$the = new WHMCS(\$whmcs_key);";
+		$bool[] = Indent::_(3) . "\$the = new \WHMCS(\$whmcs_key);";
 		$bool[] = Indent::_(3) . "\$this->" . $globalbool . " = \$the->_is;";
 		$bool[] = Indent::_(3) . "return \$this->" . $globalbool . ";";
 		$bool[] = Indent::_(2) . "}";
@@ -488,7 +488,7 @@ class Interpretation extends Fields
 		$helper[] = Indent::_(3)
 			. "JLoader::import( 'whmcs', JPATH_ADMINISTRATOR .'/components/com_"
 			. CFactory::_('Config')->component_code_name . "');";
-		$helper[] = Indent::_(3) . "\$the = new WHMCS(\$whmcs_key);";
+		$helper[] = Indent::_(3) . "\$the = new \WHMCS(\$whmcs_key);";
 		$helper[] = Indent::_(3) . "return \$the->_is;";
 		$helper[] = Indent::_(2) . "}";
 		$helper[] = Indent::_(2) . "return false;";
@@ -533,7 +533,7 @@ class Interpretation extends Fields
 		if (CFactory::_('Component')->isString('whmcs_key'))
 		{
 			// Get the basic encryption.
-			$basickey = ComponentbuilderHelper::getCryptKey('basic');
+			$basickey = \ComponentbuilderHelper::getCryptKey('basic');
 			$key = CFactory::_('Component')->get('whmcs_key');
 
 			// Get the encryption object.
@@ -808,7 +808,7 @@ class Interpretation extends Fields
 		}
 		// give notice of this issue
 		$this->app->enqueueMessage(
-			Text::_('<hr /><h3>WHMCS Error</h3>'), 'Error'
+			Text::_('COM_COMPONENTBUILDER_HR_HTHREEWHMCS_ERRORHTHREE'), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::_(
@@ -882,7 +882,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3)
 					. "\$basic_key = \$params->get('basic_key', \$default);";
 				$function[] = Indent::_(3)
-					. "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$basic_key))";
+					. "if (Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$basic_key))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4) . "return \$basic_key;";
 				$function[] = Indent::_(3) . "}";
@@ -898,7 +898,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " check if medium key is already loaded.";
 				$function[] = Indent::_(3)
-					. "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(self::\$mediumCryptKey))";
+					. "if (Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(self::\$mediumCryptKey))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4)
 					. "return (self::\$mediumCryptKey !== 'none') ? trim(self::\$mediumCryptKey) : \$default;";
@@ -908,7 +908,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3)
 					. "\$medium_key_path = \$params->get('medium_key_path', null);";
 				$function[] = Indent::_(3)
-					. "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$medium_key_path))";
+					. "if (Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$medium_key_path))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " load the key from the file.";
@@ -932,14 +932,14 @@ class Interpretation extends Fields
 				$function[] = Indent::_(2) . "{";
 				$function[] = Indent::_(3)
 					. "\$key = \$params->get('whmcs_key', \$default);";
-				$function[] = Indent::_(3) . "if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$key))";
+				$function[] = Indent::_(3) . "if (Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$key))";
 				$function[] = Indent::_(3) . "{";
 				$function[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " load the file";
 				$function[] = Indent::_(4)
 					. "JLoader::import( 'whmcs', JPATH_COMPONENT_ADMINISTRATOR);";
 				$function[] = PHP_EOL . Indent::_(4)
-					. "\$the = new WHMCS(\$key);";
+					. "\$the = new \WHMCS(\$key);";
 				$function[] = PHP_EOL . Indent::_(4) . "return \$the->_key;";
 				$function[] = Indent::_(3) . "}";
 				$function[] = Indent::_(2) . "}";
@@ -1160,7 +1160,7 @@ class Interpretation extends Fields
 			$newJ['component_version']
 				= CFactory::_('Component')->get('component_version');
 			// update the component with the new dynamic SQL
-			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
+			$modelJ = \ComponentbuilderHelper::getModel('joomla_component');
 			$modelJ->save($newJ); // <-- to insure the history is also updated
 			// reset the watch here
 			CFactory::_('History')->get('joomla_component', CFactory::_('Config')->component_id);
@@ -1177,7 +1177,7 @@ class Interpretation extends Fields
 			}
 			$newU['version_update'] = json_encode($buket);
 			// update the component with the new dynamic SQL
-			$modelU = ComponentbuilderHelper::getModel('component_updates');
+			$modelU = \ComponentbuilderHelper::getModel('component_updates');
 			$modelU->save($newU); // <-- to insure the history is also updated
 		}
 	}
@@ -1463,7 +1463,7 @@ class Interpretation extends Fields
 		$help[] = Indent::_(2) . "if(\$db->getNumRows())";
 		$help[] = Indent::_(2) . "{";
 		$help[] = Indent::_(3) . "\$helps = \$db->loadObjectList();";
-		$help[] = Indent::_(3) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$helps))";
+		$help[] = Indent::_(3) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$helps))";
 		$help[] = Indent::_(3) . "{";
 		$help[] = Indent::_(4) . "foreach (\$helps as \$nr => \$help)";
 		$help[] = Indent::_(4) . "{";
@@ -1643,7 +1643,7 @@ class Interpretation extends Fields
 			$exel[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add some data";
 			$exel[] = Indent::_(2)
-				. "if ((\$size = Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$rows)) !== false)";
+				. "if ((\$size = Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$rows)) !== false)";
 			$exel[] = Indent::_(2) . "{";
 			$exel[] = Indent::_(3) . "\$i = 1;";
 			$exel[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -1907,7 +1907,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if we have params/config";
-			$method[] = Indent::_(2) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$params))";
+			$method[] = Indent::_(2) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$params))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Make changes to user config";
@@ -1923,7 +1923,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Set username to email if not set";
 			$method[] = Indent::_(2)
-				. "if (!isset(\$credentials['username']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['username']))";
+				. "if (!isset(\$credentials['username']) || !Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['username']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3)
 				. "\$credentials['username'] = \$credentials['email'];";
@@ -1957,7 +1957,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if password was set";
 			$method[] = Indent::_(2)
-				. "if (\$mode == 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password2'])))";
+				. "if (\$mode == 1 && (!isset(\$credentials['password']) || !isset(\$credentials['password2']) || !Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password']) || !Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password2'])))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Set random password when empty password was submitted,";
@@ -1972,7 +1972,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Now Add password if set";
 			$method[] = Indent::_(2)
-				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password']) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password2']))";
+				. "if (isset(\$credentials['password']) && isset(\$credentials['password2'])  && Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password']) && Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$credentials['password2']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "if (\$mode == 1) //" . Line::_(
 					__LINE__,__CLASS__
@@ -1994,7 +1994,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Load the group/s value if set, only for Admin Registration (\$mode == 0)";
 			$method[] = Indent::_(2)
-				. "if (\$mode == 0 && isset(\$credentials['groups']) && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$credentials['groups']))";
+				. "if (\$mode == 0 && isset(\$credentials['groups']) && Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$credentials['groups']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3)
 				. "\$data['groups'] = \$credentials['groups'];";
@@ -2018,7 +2018,7 @@ class Interpretation extends Fields
 
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if we have params";
-			$method[] = Indent::_(2) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$params))";
+			$method[] = Indent::_(2) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$params))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Change user params/config back";
@@ -2118,7 +2118,7 @@ class Interpretation extends Fields
 				. "\$model = self::getModel('user', JPATH_ADMINISTRATOR . '/components/com_users', 'Users');";
 			$method[] = Indent::_(2) . "// Check if password was set";
 			$method[] = Indent::_(2)
-				. "if (isset(\$new['password']) && isset(\$new['password2']) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['password']) && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['password2']))";
+				. "if (isset(\$new['password']) && isset(\$new['password2']) && Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['password']) && Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['password2']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "// Use the users passwords";
 			$method[] = Indent::_(3) . "\$password = \$new['password'];";
@@ -2126,7 +2126,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "// set username";
 			$method[] = Indent::_(2)
-				. "if (!isset(\$new['username']) || !Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['username']))";
+				. "if (!isset(\$new['username']) || !Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$new['username']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3)
 				. "\$new['username'] = \$new['email'];";
@@ -2144,7 +2144,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3) . "'block' => 0 );";
 			$method[] = Indent::_(2) . "// set groups if found";
 			$method[] = Indent::_(2)
-				. "if (isset(\$new['groups']) && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$new['groups']))";
+				. "if (isset(\$new['groups']) && Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$new['groups']))";
 			$method[] = Indent::_(2) . "{";
 			$method[] = Indent::_(3) . "\$data['groups'] = \$new['groups'];";
 			$method[] = Indent::_(2) . "}";
@@ -2598,7 +2598,7 @@ class Interpretation extends Fields
 
 								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
 									. $tab . Indent::_(1) . "if ("
-									. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(" . $string . "->"
+									. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "{";
@@ -2650,7 +2650,7 @@ class Interpretation extends Fields
 									. $as . " based on repeatable value";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "if ("
-									. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(" . $string . "->"
+									. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(" . $string . "->"
 									. $field . "))";
 								$filter .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(1) . "{";
@@ -2660,7 +2660,7 @@ class Interpretation extends Fields
 									. $string . "->" . $field . ",true);";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "if ("
-									. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
+									. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
 								$filter .= PHP_EOL . Indent::_(2) . $tab
 									. Indent::_(1) . "{";
 
@@ -2778,7 +2778,7 @@ class Interpretation extends Fields
 					{
 						$if = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 							. "if (isset(" . $string . "->" . $field . ") && "
-							. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check("
+							. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check("
 							. $string . "->" . $field . "))" . PHP_EOL
 							. Indent::_(1) . $tab . Indent::_(1) . "{";
 						// json_decode
@@ -2915,7 +2915,7 @@ class Interpretation extends Fields
 					$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(
 							1
 						) . "\$params = (isset(" . $string . "->params) && "
-						. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(" . $string
+						. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(" . $string
 						. "->params)) ? json_decode(" . $string . "->params) : "
 						. $string . ";";
 					$params       = true;
@@ -3155,7 +3155,7 @@ class Interpretation extends Fields
 								. "\$array = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$array) && "
-								. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
+								. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. Indent::_(1) . "\$query->where('"
@@ -3183,7 +3183,7 @@ class Interpretation extends Fields
 								. "\$checkValue = " . $ter['state_key'] . ";";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. "if (isset(\$checkValue) && "
-								. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$checkValue))";
+								. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$checkValue))";
 							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
 							$string .= PHP_EOL . Indent::_(2) . $tab
 								. Indent::_(1) . "\$query->where('"
@@ -3389,7 +3389,7 @@ class Interpretation extends Fields
 						|| $whe['operator'] === 'NOT IN')
 					{
 						$string = "if (isset(" . $whe['value_key'] . ") && "
-							. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check("
+							. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check("
 							. $whe['value_key'] . "))";
 						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
 							. "{";
@@ -3813,7 +3813,7 @@ class Interpretation extends Fields
 							. "//" . Line::_(__Line__, __Class__)
 							. " Get the encryption object.";
 						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$" . $cryptionType . " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
+							. "\$" . $cryptionType . " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
 							. $cryptionType . "key);";
 					}
 					elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
@@ -4166,11 +4166,11 @@ class Interpretation extends Fields
 			$ukit[] = Indent::_(3) . "}";
 			$ukit[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " sorter";
-			$ukit[] = Indent::_(3) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$temp))";
+			$ukit[] = Indent::_(3) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$temp))";
 			$ukit[] = Indent::_(3) . "{";
 			$ukit[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " merger";
-			$ukit[] = Indent::_(4) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$classes))";
+			$ukit[] = Indent::_(4) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$classes))";
 			$ukit[] = Indent::_(4) . "{";
 			$ukit[] = Indent::_(5)
 				. "\$newTemp = array_merge(\$temp,\$classes);";
@@ -4179,7 +4179,7 @@ class Interpretation extends Fields
 			$ukit[] = Indent::_(4) . "return \$temp;";
 			$ukit[] = Indent::_(3) . "}";
 			$ukit[] = Indent::_(2) . "}";
-			$ukit[] = Indent::_(2) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$classes))";
+			$ukit[] = Indent::_(2) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$classes))";
 			$ukit[] = Indent::_(2) . "{";
 			$ukit[] = Indent::_(3) . "return \$classes;";
 			$ukit[] = Indent::_(2) . "}";
@@ -4213,7 +4213,7 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . Indent::_(1) . "{";
 			$method .= PHP_EOL . Indent::_(2)
 				. "if (isset(\$this->uikitComp) && "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->uikitComp))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->uikitComp))";
 			$method .= PHP_EOL . Indent::_(2) . "{";
 			$method .= PHP_EOL . Indent::_(3) . "return \$this->uikitComp;";
 			$method .= PHP_EOL . Indent::_(2) . "}";
@@ -4316,14 +4316,14 @@ class Interpretation extends Fields
 								. $default['on_field']
 								. " is an array with values.";
 							$methods .= PHP_EOL . Indent::_(2) . "\$array = ("
-								. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$"
+								. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$"
 								. $default['on_field']
 								. ", true)) ? json_decode(\$"
 								. $default['on_field'] . ",true) : \$"
 								. $default['on_field'] . ";";
 							$methods .= PHP_EOL . Indent::_(2)
 								. "if (isset(\$array) && "
-								. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array, true))";
+								. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array, true))";
 							$methods .= PHP_EOL . Indent::_(2) . "{";
 							$methods .= PHP_EOL . Indent::_(3)
 								. "\$query->where('" . $get['join_field'] . " "
@@ -4533,7 +4533,7 @@ class Interpretation extends Fields
 										. " Get the encryption object.";
 									$script .= PHP_EOL . Indent::_(2) . "\$"
 										. $cryptionType
-										. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
+										. " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
 										. $cryptionType . "key);" . PHP_EOL;
 								}
 								elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
@@ -4729,7 +4729,7 @@ class Interpretation extends Fields
 				. Line::_(__Line__, __Class__)
 				. " Insure all item fields are adapted where needed.";
 			$getItem .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
 			$getItem .= PHP_EOL . Indent::_(2) . "{";
 			$getItem .= Placefix::_h("DISPATCHER") ;
 			$getItem .= PHP_EOL . Indent::_(3)
@@ -4862,7 +4862,7 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Get the encryption object.";
 					$script .= PHP_EOL . Indent::_(2) . "\$" . $cryptionType
-						. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
+						. " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
 				}
 				elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
 					exists("{$code}.get"))
@@ -5054,7 +5054,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Process the content plugins.";
 				$method .= PHP_EOL . Indent::_(2) . "if ("
-					. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$this->item))";
+					. "Super_" . "__91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$this->item))";
 				$method .= PHP_EOL . Indent::_(2) . "{";
 				$method .= PHP_EOL . Indent::_(3)
 					. "PluginHelper::importPlugin('content');";
@@ -5062,13 +5062,13 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Setup Event Object.";
 				$method .= PHP_EOL . Indent::_(3)
-					. "\$this->item->event = new stdClass;";
+					. "\$this->item->event = new \stdClass;";
 				$method .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Check if item has params, or pass global params";
 				$method .= PHP_EOL . Indent::_(3)
 					. "\$params = (isset(\$this->item->params) && "
-					. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
+					. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
 				foreach (
 					$view['settings']->main_get->plugin_events as $plugin_event
@@ -5218,7 +5218,7 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(3)
 				. "\$modules = ModuleHelper::getModules(\$position);";
 			$addModule[] = Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$modules, true))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$modules, true))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " set the place holder";
@@ -5236,12 +5236,12 @@ class Interpretation extends Fields
 				. " check if modules were found";
 			$addModule[] = Indent::_(2)
 				. "if (\$found && isset(\$this->setModules[\$position]) && "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->setModules[\$position]))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->setModules[\$position]))";
 			$addModule[] = Indent::_(2) . "{";
 			$addModule[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " set class";
 			$addModule[] = Indent::_(3) . "if ("
-				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$class))";
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$class))";
 			$addModule[] = Indent::_(3) . "{";
 			$addModule[] = Indent::_(4)
 				. "\$class = ' class=\"'.\$class.'\" ';";
@@ -6246,7 +6246,7 @@ class Interpretation extends Fields
 			$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
 
 			$this->app->enqueueMessage(
-				Text::_('<hr /><h3>Conditional Script Warning</h3>'), 'Warning'
+				Text::_('COM_COMPONENTBUILDER_HR_HTHREECONDITIONAL_SCRIPT_WARNINGHTHREE'), 'Warning'
 			);
 
 			// message with name
@@ -6577,11 +6577,11 @@ class Interpretation extends Fields
 					. "\$uikitFieldComp = \$this->get('UikitComp');";
 				$setter .= PHP_EOL . $tabV . Indent::_(3)
 					. "if (isset(\$uikitFieldComp) && "
-					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitFieldComp))";
+					. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitFieldComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(3) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(4)
 					. "if (isset(\$uikitComp) && "
-					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
+					. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
 				$setter .= PHP_EOL . $tabV . Indent::_(4) . "{";
 				$setter .= PHP_EOL . $tabV . Indent::_(5)
 					. "\$uikitComp = array_merge(\$uikitComp, \$uikitFieldComp);";
@@ -6601,7 +6601,7 @@ class Interpretation extends Fields
 				. " Load the needed uikit components in this view.";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -6658,7 +6658,7 @@ class Interpretation extends Fields
 				. "\$uikitComp = \$this->get('UikitComp');";
 			$setter .= PHP_EOL . $tabV . Indent::_(2)
 				. "if (\$uikit != 2 && isset(\$uikitComp) && "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uikitComp))";
 			$setter .= PHP_EOL . $tabV . Indent::_(2) . "{";
 			$setter .= PHP_EOL . $tabV . Indent::_(3) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -7254,7 +7254,7 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Get the encryption object.";
 					$script .= PHP_EOL . Indent::_(3) . "\$" . $cryptionType
-						. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
+						. " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
 					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->get($view) as $baseString)
 					{
 						$script .= PHP_EOL . PHP_EOL . Indent::_(3)
@@ -7519,7 +7519,7 @@ class Interpretation extends Fields
 							__LINE__,__CLASS__
 						) . " Get the encryption object";
 					$script .= PHP_EOL . Indent::_(2) . "\$" . $cryptionType
-						. " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
+						. " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
 					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
 						get($view) as $baseString)
 					{
@@ -8657,7 +8657,7 @@ class Interpretation extends Fields
 			$codeA    = implode(PHP_EOL, $script);
 			// reverted message
 			$messageA = Indent::_(4)
-				. "\$app->enqueueMessage(Text::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));";
+				. "\$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_REVERTED_THE_B_ASSETSB_TABLE_RULES_COLUMN_BACK_TO_ITS_DEFAULT_SIZE_OF_VARCHARFIVE_THOUSAND_ONE_HUNDRED_AND_TWENTY'));";
 			// do nothing
 			$codeB = "";
 			// not reverted message
@@ -9425,7 +9425,7 @@ class Interpretation extends Fields
 		$batchmove[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " insert all set values.";
 		$batchmove[] = Indent::_(3) . "if ("
-			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$values))";
+			. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$values))";
 		$batchmove[] = Indent::_(3) . "{";
 		$batchmove[] = Indent::_(4) . "foreach (\$values as \$key => \$value)";
 		$batchmove[] = Indent::_(4) . "{";
@@ -9728,7 +9728,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Only for strings";
 			$batchcopy[] = Indent::_(3) . "if ("
-				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->table->" . implode('', $titles)
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->table->" . implode('', $titles)
 				. ") && !is_numeric(\$this->table->" . implode('', $titles)
 				. "))";
 			$batchcopy[] = Indent::_(3) . "{";
@@ -9742,7 +9742,7 @@ class Interpretation extends Fields
 		$batchcopy[] = PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " insert all set values";
 		$batchcopy[] = Indent::_(3) . "if ("
-			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$values))";
+			. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$values))";
 		$batchcopy[] = Indent::_(3) . "{";
 		$batchcopy[] = Indent::_(4) . "foreach (\$values as \$key => \$value)";
 		$batchcopy[] = Indent::_(4) . "{";
@@ -9757,7 +9757,7 @@ class Interpretation extends Fields
 		$batchcopy[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 			. " update all unique fields";
 		$batchcopy[] = Indent::_(3) . "if ("
-			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uniqueFields))";
+			. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uniqueFields))";
 		$batchcopy[] = Indent::_(3) . "{";
 		$batchcopy[] = Indent::_(4)
 			. "foreach (\$uniqueFields as \$uniqueField)";
@@ -10006,7 +10006,7 @@ class Interpretation extends Fields
 		$fixUnique[] = Indent::_(3)
 			. "\$uniqueFields = \$this->getUniqueFields();";
 		$fixUnique[] = Indent::_(3) . "if ("
-			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uniqueFields))";
+			. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$uniqueFields))";
 		$fixUnique[] = Indent::_(3) . "{";
 		$fixUnique[] = Indent::_(4)
 			. "foreach (\$uniqueFields as \$uniqueField)";
@@ -10057,7 +10057,7 @@ class Interpretation extends Fields
 			$newFunction[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Check if this is an array of titles";
 			$newFunction[] = Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$title))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$title))";
 			$newFunction[] = Indent::_(3) . "{";
 			$newFunction[] = Indent::_(4)
 				. "foreach(\$title as \$nr => &\$_title)";
@@ -10079,7 +10079,7 @@ class Interpretation extends Fields
 			$newFunction[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check if this is an array of titles";
 			$newFunction[] = Indent::_(2) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$title))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$title))";
 			$newFunction[] = Indent::_(2) . "{";
 			$newFunction[] = Indent::_(3) . "\$title[] = \$alias;";
 			$newFunction[] = Indent::_(3) . "return \$title;";
@@ -13059,7 +13059,7 @@ class Interpretation extends Fields
 					else
 					{
 						$this->app->enqueueMessage(
-							Text::_('<hr /><h3>Field Warning</h3>'), 'Warning'
+							Text::_('COM_COMPONENTBUILDER_HR_HTHREEFIELD_WARNINGHTHREE'), 'Warning'
 						);
 						$this->app->enqueueMessage(
 							Text::sprintf(
@@ -13145,7 +13145,7 @@ class Interpretation extends Fields
 				if ($fieldsAddedRight)
 				{
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Field Notice</h3>'), 'Notice'
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREEFIELD_NOTICEHTHREE'), 'Notice'
 					);
 					$this->app->enqueueMessage(
 						Text::sprintf(
@@ -13648,7 +13648,7 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check if return value was set';
 			$headerscript .= PHP_EOL . 'if ('
-				. 'Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
+				. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
 					__LINE__,__CLASS__
@@ -14137,7 +14137,7 @@ class Interpretation extends Fields
 				}
 				$head .= PHP_EOL . '<?php endif; ?>' . PHP_EOL;
 			}
-			$head .= '<?php if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($items)): ?>';
+			$head .= '<?php if (Super_' . '__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($items)): ?>';
 			// set the style for V2
 			$metro_blue = (2 == $footable_version) ? ' metro-blue' : '';
 			// set the toggle for V3
@@ -14451,7 +14451,7 @@ class Interpretation extends Fields
 					. "\$query->where('a.access = ' . (int) \$_access);";
 				$query .= PHP_EOL . Indent::_(2) . "}";
 				$query .= PHP_EOL . Indent::_(2) . "elseif ("
-					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_access))";
+					. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_access))";
 				$query .= PHP_EOL . Indent::_(2) . "{";
 				$query .= PHP_EOL . Indent::_(3) . "//"
 					. Line::_(__Line__, __Class__)
@@ -14545,19 +14545,19 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Filter by " . $globalKey . " in this Repetable Field";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && isset(\$this->"
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && isset(\$this->"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $field
-				. ") && Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $field . "))";
+				. ") && Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $field . "))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6)
 				. "\$tmpArray = json_decode(\$item->" . $field . ",true);";
 			$query .= PHP_EOL . Indent::_(6) . "if (!isset(\$tmpArray['"
-				. $target . "']) || !Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$tmpArray['"
+				. $target . "']) || !Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$tmpArray['"
 				. $target . "']) || !in_array(\$this->" . $globalKey
 				. ", \$tmpArray['" . $target . "']))";
 			$query .= PHP_EOL . Indent::_(6) . "{";
@@ -14590,7 +14590,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && \$" . $globalKey
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && \$" . $globalKey
 				. ")";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14600,13 +14600,13 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $target
-					. ") && Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $target . "))";
+					. ") && Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $target
 					. " = json_decode(\$item->" . $target . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $target . ") || !Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$item->"
+					. $target . ") || !Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$item->"
 					. $target . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14618,13 +14618,13 @@ class Interpretation extends Fields
 			else
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (isset(\$item->" . $_key . ") && "
-					. "Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $_key . "))";
+					. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$item->" . $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "\$item->" . $_key
 					. " = json_decode(\$item->" . $_key . ", true);";
 				$query .= PHP_EOL . Indent::_(5) . "}";
 				$query .= PHP_EOL . Indent::_(5) . "elseif (!isset(\$item->"
-					. $_key . ") || !Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$item->"
+					. $_key . ") || !Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$item->"
 					. $_key . "))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "unset(\$items[\$nr]);";
@@ -14658,8 +14658,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey
 				. " = json_decode(\$this->" . $globalKey . ",true);";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && isset(\$"
-				. $globalKey . ") && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && isset(\$"
+				. $globalKey . ") && Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 				. $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
@@ -14667,7 +14667,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(4) . "{";
 			$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
 				. " && isset(\$" . $globalKey . "['" . $target . "']) && "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "['"
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "['"
 				. $target . "']))";
 			$query .= PHP_EOL . Indent::_(5) . "{";
 			$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->" . $_key
@@ -14702,8 +14702,8 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "\$" . $globalKey . " = \$this->"
 				. $globalKey . ";";
 			$query .= PHP_EOL . Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items) && "
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			$query .= PHP_EOL . Indent::_(4)
 				. "foreach (\$items as \$nr => &\$item)";
@@ -14712,7 +14712,7 @@ class Interpretation extends Fields
 			if (StringHelper::check($target))
 			{
 				$query .= PHP_EOL . Indent::_(5) . "if (\$item->" . $_key
-					. " && Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "['"
+					. " && Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$" . $globalKey . "['"
 					. $target . "']))";
 				$query .= PHP_EOL . Indent::_(5) . "{";
 				$query .= PHP_EOL . Indent::_(6) . "if (!in_array(\$item->"
@@ -14948,7 +14948,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " setup the query";
 			$query .= PHP_EOL . Indent::_(2) . "if ((\$pks_size = "
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$pks)) !== false || 'bulk' === \$pks)";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$pks)) !== false || 'bulk' === \$pks)";
 			$query .= PHP_EOL . Indent::_(2) . "{";
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Set a value to know this is " . $config['type']
@@ -14958,7 +14958,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get the user object if not set.";
 			$query .= PHP_EOL . Indent::_(3) . "if (!isset(\$user) || !"
-				. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$user))";
+				. "Super_" . "__91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$user))";
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
@@ -15166,7 +15166,7 @@ class Interpretation extends Fields
 			// get the header script
 			if ($isExport)
 			{
-				$header = ComponentbuilderHelper::getDynamicScripts('headers');
+				$header = \ComponentbuilderHelper::getDynamicScripts('headers');
 
 				// add getExImPortHeaders
 				$query .= CFactory::_('Customcode.Dispenser')->get(
@@ -15236,7 +15236,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$data = \$model->getExportData(\$pks);";
 			$method[] = Indent::_(3) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$data))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$data))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " now set the data to the spreadsheet";
@@ -15295,7 +15295,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3)
 				. "\$headers = \$model->getExImPortHeaders();";
 			$method[] = Indent::_(3) . "if ("
-				. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$headers))";
+				. "Super_" . "__91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$headers))";
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load headers to session.";
@@ -15583,7 +15583,7 @@ class Interpretation extends Fields
 					. "\$query->where('a.access = ' . (int) \$_access);";
 				$query .= PHP_EOL . Indent::_(2) . "}";
 				$query .= PHP_EOL . Indent::_(2) . "elseif ("
-					. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_access))";
+					. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_access))";
 				$query .= PHP_EOL . Indent::_(2) . "{";
 				$query .= PHP_EOL . Indent::_(3) . "//"
 					. Line::_(__Line__, __Class__)
@@ -15963,7 +15963,7 @@ class Interpretation extends Fields
 		$filterQuery .= PHP_EOL . Indent::_(3) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "elseif ("
-			. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $filter['code'] . "))";
+			. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "{";
 		$filterQuery .= PHP_EOL . Indent::_(3)
 			. "\$query->where('" . $a . "." . $filter['code']
@@ -16007,7 +16007,7 @@ class Interpretation extends Fields
 		$filterQuery .= PHP_EOL . Indent::_(3) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "elseif ("
-			. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $filter['code'] . "))";
+			. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "{";
 		$filterQuery .= PHP_EOL . Indent::_(3)
 			. "\$query->where('" . $a . "." . $filter['code']
@@ -16015,7 +16015,7 @@ class Interpretation extends Fields
 			. ")));";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "elseif ("
-			. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_" . $filter['code'] . "))";
+			. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_" . $filter['code'] . "))";
 		$filterQuery .= PHP_EOL . Indent::_(2) . "{";
 
 		$filterQuery .= PHP_EOL . Indent::_(3) . "//"
@@ -16035,7 +16035,7 @@ class Interpretation extends Fields
 		$filterQuery .= PHP_EOL . Indent::_(5) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(4) . "}";
 		$filterQuery .= PHP_EOL . Indent::_(4) . "elseif ("
-			. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$val))";
+			. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$val))";
 		$filterQuery .= PHP_EOL . Indent::_(4) . "{";
 		$filterQuery .= PHP_EOL . Indent::_(5)
 			. "return \$db->quote(\$db->escape(\$val));";
@@ -17487,7 +17487,7 @@ class Interpretation extends Fields
 				. " check if the not_required field is set";
 			$fix .= PHP_EOL . Indent::_(2)
 				. "if (isset(\$data['not_required']) && "
-				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$data['not_required']))";
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$data['not_required']))";
 			$fix .= PHP_EOL . Indent::_(2) . "{";
 			$fix .= PHP_EOL . Indent::_(3)
 				. "\$requiredFields = (array) explode(',',(string) \$data['not_required']);";
@@ -17501,7 +17501,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " make sure there is a string value";
 			$fix .= PHP_EOL . Indent::_(4) . "if ("
-				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$requiredField))";
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$requiredField))";
 			$fix .= PHP_EOL . Indent::_(4) . "{";
 			$fix .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " change to false";
@@ -18137,7 +18137,7 @@ class Interpretation extends Fields
 					{
 						// for now we just give an error message (don't fix it)
 						$this->app->enqueueMessage(
-							Text::_('<hr /><h3>Multi Filter Error</h3>'),
+							Text::_('COM_COMPONENTBUILDER_HR_HTHREEMULTI_FILTER_ERRORHTHREE'),
 							'Error'
 						);
 						$field_url
@@ -18283,13 +18283,13 @@ class Interpretation extends Fields
 						) . " We do some sanitation for " . $CodeName
 						. " filter";
 					$fieldFilters[] = Indent::_(2) . "if ("
-						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
+						. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
 						. "Options) &&";
 					$fieldFilters[] = Indent::_(3) . "isset(\$this->"
 						. $codeName
 						. "Options[0]->value) &&";
 					$fieldFilters[] = Indent::_(3) . "!"
-						. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $codeName
+						. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $codeName
 						. "Options[0]->value))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "unset(\$this->"
@@ -18301,7 +18301,7 @@ class Interpretation extends Fields
 						) . " Only load " . $CodeName
 						. " filter if it has values";
 					$fieldFilters[] = Indent::_(2) . "if ("
-						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
+						. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
 						. "Options))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
@@ -18350,12 +18350,12 @@ class Interpretation extends Fields
 						) . " We do some sanitation for " . $Codename
 						. " filter";
 					$fieldFilters[] = Indent::_(2) . "if ("
-						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
+						. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
 						. "Options) &&";
 					$fieldFilters[] = Indent::_(3) . "isset(\$this->"
 						. $filter['code'] . "Options[0]->value) &&";
 					$fieldFilters[] = Indent::_(3) . "!"
-						. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $filter['code']
+						. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $filter['code']
 						. "Options[0]->value))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "unset(\$this->"
@@ -18366,7 +18366,7 @@ class Interpretation extends Fields
 						) . " Only load " . $Codename
 						. " filter if it has values";
 					$fieldFilters[] = Indent::_(2) . "if ("
-						. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
+						. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
 						. "Options))";
 					$fieldFilters[] = Indent::_(2) . "{";
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
@@ -18550,13 +18550,13 @@ class Interpretation extends Fields
 							) . " We do some sanitation for " . $CodeName
 							. " filter";
 						$fieldBatch[] = Indent::_(3) . "if ("
-							. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
+							. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $codeName
 							. "Options) &&";
 						$fieldBatch[] = Indent::_(4) . "isset(\$this->"
 							. $codeName
 							. "Options[0]->value) &&";
 						$fieldBatch[] = Indent::_(4) . "!"
-							. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $codeName
+							. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $codeName
 							. "Options[0]->value))";
 						$fieldBatch[] = Indent::_(3) . "{";
 						$fieldBatch[] = Indent::_(4) . "unset(\$this->"
@@ -18608,12 +18608,12 @@ class Interpretation extends Fields
 							) . " We do some sanitation for " . $CodeName
 							. " filter";
 						$fieldBatch[] = Indent::_(3) . "if ("
-							. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
+							. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->" . $filter['code']
 							. "Options) &&";
 						$fieldBatch[] = Indent::_(4) . "isset(\$this->"
 							. $filter['code'] . "Options[0]->value) &&";
 						$fieldBatch[] = Indent::_(4) . "!"
-							. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $filter['code']
+							. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->" . $filter['code']
 							. "Options[0]->value))";
 						$fieldBatch[] = Indent::_(3) . "{";
 						$fieldBatch[] = Indent::_(4) . "unset(\$this->"
@@ -19338,7 +19338,7 @@ class Interpretation extends Fields
 				. "', null, '');";
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(3) . "elseif ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$val))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$val))";
 			$allow[] = Indent::_(3) . "{";
 			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We have to unset then (TODO)";
@@ -19821,7 +19821,7 @@ class Interpretation extends Fields
 			. "\$_" . $key . " = \$this->getState('filter."
 			. $key . "');";
 		$stored .= PHP_EOL . Indent::_(2)
-			. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_"
+			. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$_"
 			. $key . "))";
 		$stored .= PHP_EOL . Indent::_(2)
 			. "{";
@@ -19835,7 +19835,7 @@ class Interpretation extends Fields
 		$stored .= PHP_EOL . Indent::_(2)
 			. "elseif (is_numeric(\$_" . $key . ")";
 		$stored .= PHP_EOL . Indent::_(2)
-			. " || Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $key . "))";
+			. " || Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$_" . $key . "))";
 		$stored .= PHP_EOL . Indent::_(2)
 			. "{";
 		$stored .= PHP_EOL . Indent::_(3)
@@ -19943,7 +19943,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Built the actions for new and existing records.";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->referral))";
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->referral))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
 			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && \$isNew)";
@@ -20082,7 +20082,7 @@ class Interpretation extends Fields
 				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::getHelpUrl('" . $nameSingleCode
 				. "');";
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->help_url))";
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->help_url))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
 			$toolBar .= PHP_EOL . Indent::_(3) . "ToolbarHelper::help('"
 				. CFactory::_('Config')->lang_prefix . "_HELP_MANAGER', false, \$this->help_url);";
@@ -20575,7 +20575,7 @@ class Interpretation extends Fields
 						. $item['name'] . "Array = " . $decode . "(\$item->"
 						. $item['name'] . $suffix_decode . ");";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-						. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
+						. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 						. $item['name'] . "Array))";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "{";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4) . "\$"
@@ -20597,7 +20597,7 @@ class Interpretation extends Fields
 				{
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "//".Line::_(__Line__, __Class__)." decode ".$item['name'];
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
-					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$".$item['name']."Array))";
+					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$".$item['name']."Array))";
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "{";
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(4) . "\$item->".$item['name']." = implode('|',\$".$item['name']."Array);";
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "}";
@@ -20611,7 +20611,7 @@ class Interpretation extends Fields
 						. $item['name'] . "Array = " . $decode . "(\$item->"
 						. $item['name'] . $suffix_decode . ");";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-						. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
+						. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 						. $item['name'] . "Array))";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "{";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4) . "\$"
@@ -20731,7 +20731,7 @@ class Interpretation extends Fields
 								. "(\$item->" . $item['name'] . $suffix_decode
 								. ");";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-								. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
+								. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 								. $item['name'] . "Array))";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
 								. "{";
@@ -20744,7 +20744,7 @@ class Interpretation extends Fields
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 								. "{";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(5)
-								. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
+								. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$"
 								. $item['name'] . "))";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(5)
 								. "{";
@@ -20761,7 +20761,7 @@ class Interpretation extends Fields
 								. "//" . Line::_(__Line__, __Class__)
 								. " make sure the bucket has values.";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
-								. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$bucket"
+								. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$bucket"
 								. $item['name'] . "))";
 							$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(4)
 								. "{";
@@ -20812,7 +20812,7 @@ class Interpretation extends Fields
 								}
 								$fix .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(3) . "\$item->" . $item['name']
-									. " = Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
+									. " = Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
 									. $item['name'] . ", ', ', '"
 									. $keyTableNAme . "', '"
 									. $item['custom']['id'] . "', '"
@@ -20822,7 +20822,7 @@ class Interpretation extends Fields
 							{
 								$fix .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(3) . "\$item->" . $item['name']
-									. " = Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
+									. " = Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
 									. $item['name'] . ", ', ', '"
 									. $item['name'] . "');";
 							}
@@ -20838,7 +20838,7 @@ class Interpretation extends Fields
 									) . " convert " . $item['name'];
 								$fix .= PHP_EOL . Indent::_(1) . $tab
 									. Indent::_(3) . "\$item->" . $item['name']
-									. " = Super___4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
+									. " = Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::string(\$item->"
 									. $item['name'] . ");";
 							}
 						}
@@ -20881,7 +20881,7 @@ class Interpretation extends Fields
 				) . "//" . Line::_(__Line__, __Class__)
 				. " Set values to display correctly.";
 			$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-				. "if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
+				. "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
 			$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
 			// do not add to export since it is already done
 			if (!$export)
@@ -20891,7 +20891,7 @@ class Interpretation extends Fields
 					. " Get the user object if not set.";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "if (!isset(\$user) || !"
-					. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$user))";
+					. "Super_" . "__91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$user))";
 				$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "{";
 				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
@@ -21034,7 +21034,7 @@ class Interpretation extends Fields
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 					. "\$headers = \$this->getExImPortHeaders();";
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "if ("
-					. "Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$headers))";
+					. "Super_" . "__91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$headers))";
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
 				$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 					. "array_unshift(\$items,\$headers);";
@@ -21065,7 +21065,7 @@ class Interpretation extends Fields
 						. "//" . Line::_(__Line__, __Class__)
 						. " Get the encryption object.";
 					$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-						. "\$" . $cryptionType . " = new Super___99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
+						. "\$" . $cryptionType . " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
 						. $cryptionType . "key);";
 				}
 				elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
@@ -21114,7 +21114,7 @@ class Interpretation extends Fields
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -21136,7 +21136,7 @@ class Interpretation extends Fields
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -21203,7 +21203,7 @@ class Interpretation extends Fields
 				. "//" . Line::_(__Line__, __Class__)
 				. " set selection value to a translatable value";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "if ("
-				. "Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
+				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 				. "foreach (\$items as \$nr => &\$item)";
@@ -21288,7 +21288,7 @@ class Interpretation extends Fields
 						) . " Now check if value is found in this array";
 					$fix .= PHP_EOL . Indent::_(3) . "if (isset(\$" . $name
 						. "Array[\$value]) && "
-						. "Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$" . $name . "Array[\$value]))";
+						. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$" . $name . "Array[\$value]))";
 					$fix .= PHP_EOL . Indent::_(3) . "{";
 					$fix .= PHP_EOL . Indent::_(4) . "return \$" . $name
 						. "Array[\$value];";
@@ -21324,7 +21324,7 @@ class Interpretation extends Fields
 
 	public function setComponentImageType($path)
 	{
-		$type = ComponentbuilderHelper::imageInfo($path);
+		$type = \ComponentbuilderHelper::imageInfo($path);
 		if ($type)
 		{
 			$imagePath = CFactory::_('Utilities.Paths')->component_path . '/admin/assets/images';
@@ -21369,7 +21369,7 @@ class Interpretation extends Fields
 				if (isset($view['dashboard_add'])
 					&& $view['dashboard_add'] == 1)
 				{
-					$type = ComponentbuilderHelper::imageInfo(
+					$type = \ComponentbuilderHelper::imageInfo(
 						$view['settings']->icon_add
 					);
 					if ($type)
@@ -21407,7 +21407,7 @@ class Interpretation extends Fields
 				if (isset($view['dashboard_list'])
 					&& $view['dashboard_list'] == 1)
 				{
-					$type = ComponentbuilderHelper::imageInfo(
+					$type = \ComponentbuilderHelper::imageInfo(
 						$view['settings']->icon
 					);
 					if ($type)
@@ -21484,7 +21484,7 @@ class Interpretation extends Fields
 							);
 						CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $langKey, $langName);
 						// get image type
-						$type = ComponentbuilderHelper::imageInfo(
+						$type = \ComponentbuilderHelper::imageInfo(
 							$view['settings']->icon_category
 						);
 						if ($type)
@@ -21779,7 +21779,7 @@ class Interpretation extends Fields
 					&& $menu['dashboard_list'] == 1
 					&& $menu['before'] == $view['adminview'])
 				{
-					$type = ComponentbuilderHelper::imageInfo(
+					$type = \ComponentbuilderHelper::imageInfo(
 						$menu['settings']->icon
 					);
 					if ($type)
@@ -21816,7 +21816,7 @@ class Interpretation extends Fields
 					&& $menu['dashboard_list'] == 1
 					&& empty($menu['before']))
 				{
-					$type = ComponentbuilderHelper::imageInfo(
+					$type = \ComponentbuilderHelper::imageInfo(
 						$menu['settings']->icon
 					);
 					if ($type)
@@ -21858,7 +21858,7 @@ class Interpretation extends Fields
 					&& $menu['dashboard_list'] == 1
 					&& $view['adminview'] == $menu['before'])
 				{
-					$type = ComponentbuilderHelper::imageInfo(
+					$type = \ComponentbuilderHelper::imageInfo(
 						'images/' . $menu['icon']
 					);
 					if ($type)
@@ -21914,7 +21914,7 @@ class Interpretation extends Fields
 					&& $menu['dashboard_list'] == 1
 					&& empty($menu['before']))
 				{
-					$type = ComponentbuilderHelper::imageInfo(
+					$type = \ComponentbuilderHelper::imageInfo(
 						'images/' . $menu['icon']
 					);
 					if ($type)
@@ -23791,5 +23791,5 @@ class Interpretation extends Fields
 
 		return true;
 	}
-
 }
+

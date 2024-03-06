@@ -59,7 +59,7 @@ class ComponentbuilderControllerPowers extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
 		$user = Factory::getUser();
 		// set page redirect

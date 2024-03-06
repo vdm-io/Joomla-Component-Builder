@@ -2,20 +2,20 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
- * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
+
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Component\ComponentHelper;
+// use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper; (for Joomla 4 and above)
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -24,13 +24,14 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
 
+
 /**
  * Get class as the main compilers class
+ * 
  * @deprecated 3.3
  */
 class Get
 {
-
 	/**
 	 * The Joomla Version
 	 *
@@ -1047,7 +1048,7 @@ class Get
 		// set the global language @deprecated
 		$this->langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// also set the helper class langTag (for safeStrings)
-		ComponentbuilderHelper::$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
+		\ComponentbuilderHelper::$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// setup the main language array
 		$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
 		// check if we have Tidy enabled @deprecated
@@ -1061,7 +1062,7 @@ class Get
 			$this->fieldBuilderType = 1;
 			// load the sugestion to use string manipulation
 			$this->app->enqueueMessage(
-				Text::_('<hr /><h3>Field Notice</h3>'), 'Notice'
+				Text::_('COM_COMPONENTBUILDER_HR_HTHREEFIELD_NOTICEHTHREE'), 'Notice'
 			);
 			$this->app->enqueueMessage(
 				Text::_(
@@ -1420,7 +1421,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1509,7 +1510,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1600,7 +1601,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1655,7 +1656,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1775,7 +1776,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1909,7 +1910,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1932,7 +1933,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1970,7 +1971,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1994,7 +1995,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2579,7 +2580,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2620,7 +2621,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2641,7 +2642,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2662,7 +2663,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2694,7 +2695,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2713,7 +2714,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2732,7 +2733,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2753,7 +2754,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2817,7 +2818,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2838,7 +2839,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2880,7 +2881,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2944,7 +2945,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -2986,7 +2987,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -3012,7 +3013,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -3038,7 +3039,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -3086,7 +3087,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -3142,7 +3143,7 @@ class Get
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -3152,5 +3153,5 @@ class Get
 
 		return [];
 	}
-
 }
+

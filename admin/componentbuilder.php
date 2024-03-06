@@ -85,7 +85,7 @@ Html::_('script', 'components/com_componentbuilder/assets/js/admin.js', ['versio
 
 // require helper files
 JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php');
-JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
+\JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
 JLoader::register('JHtmlBatch_', __DIR__ . '/helpers/html/batch_.php');
 
 // Trigger the Global Admin Event

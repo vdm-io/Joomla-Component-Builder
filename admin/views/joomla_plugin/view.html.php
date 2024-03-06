@@ -262,8 +262,8 @@ class ComponentbuilderViewJoomla_plugin extends HtmlView
 		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		$this->document->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
 		// add a few field options via PHP
-		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
-		$tmp_ = JFormHelper::loadFieldType('joomlaplugingroups')->options;
+		\JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		$tmp_ = \JFormHelper::loadFieldType('joomlaplugingroups')->options;
 		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
@@ -274,7 +274,7 @@ class ComponentbuilderViewJoomla_plugin extends HtmlView
 			// Set the values to JavaScript
 			$this->document->addScriptDeclaration("selectionArray['joomla_plugin_group'] = ". json_encode($_tmp) . ";");
 		}
-		$tmp_ = JFormHelper::loadFieldType('pluginsclassproperties')->options;
+		$tmp_ = \JFormHelper::loadFieldType('pluginsclassproperties')->options;
 		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
@@ -285,7 +285,7 @@ class ComponentbuilderViewJoomla_plugin extends HtmlView
 			// Set the values to JavaScript
 			$this->document->addScriptDeclaration("selectionArray['property'] = ". json_encode($_tmp) . ";");
 		}
-		$tmp_ = JFormHelper::loadFieldType('pluginsclassmethods')->options;
+		$tmp_ = \JFormHelper::loadFieldType('pluginsclassmethods')->options;
 		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();

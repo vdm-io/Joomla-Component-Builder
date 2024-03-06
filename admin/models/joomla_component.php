@@ -30,6 +30,7 @@ use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Componentbuilder\Extrusion\Helper\Extrusion;
 
 /**
  * Componentbuilder Joomla_component Admin Model
@@ -1569,7 +1570,7 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 		// we check if component should be build from sql file
 		if (isset($data['buildcomp']) && 1 == $data['buildcomp'])
 		{
-			ComponentbuilderHelper::dynamicBuilder($data, 1);
+			$extruder__ = new Extrusion($data);
 		}
 
 		// Set the Params Items to data

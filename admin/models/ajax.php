@@ -3347,7 +3347,7 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function buildFieldTextarea($name, $desc, $default, $rows)
 	{
 		// get the textarea
-		$textarea = JFormHelper::loadFieldType('textarea', true);
+		$textarea = \JFormHelper::loadFieldType('textarea', true);
 		// start building the name field XML
 		$textareaXML = new \SimpleXMLElement('<field/>');
 		// textarea attributes
@@ -3373,7 +3373,7 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function buildFieldOptionsSubform($values, $nameListOptions = null, $name = 'properties', $label = 'COM_COMPONENTBUILDER_PROPERTIESBR_SMALLHERE_YOU_CAN_SET_THE_PROPERTIES_FOR_THIS_FIELDSMALL')
 	{
 		// get the subform
-		$subform = JFormHelper::loadFieldType('subform', true);
+		$subform = \JFormHelper::loadFieldType('subform', true);
 		// start building the subform field XML
 		$subformXML = new \SimpleXMLElement('<field/>');
 		// subform attributes

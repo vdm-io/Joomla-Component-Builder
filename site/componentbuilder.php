@@ -78,7 +78,7 @@ Html::_('script', 'components/com_componentbuilder/assets/js/site.js', ['version
 
 // Require helper files
 JLoader::register('ComponentbuilderHelper', __DIR__ . '/helpers/componentbuilder.php');
-JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
+\JLoader::register('ComponentbuilderEmail', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/componentbuilderemail.php'); 
 JLoader::register('ComponentbuilderHelperRoute', __DIR__ . '/helpers/route.php');
 
 //Trigger the Global Site Event

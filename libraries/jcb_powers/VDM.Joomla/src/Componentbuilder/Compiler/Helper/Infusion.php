@@ -2,21 +2,21 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
- * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
+
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\Filter\OutputFilter;
+// use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper; (for Joomla 4 and above)
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
@@ -27,14 +27,16 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
+use VDM\Joomla\Componentbuilder\Compiler\Helper\Interpretation;
+
 
 /**
  * Infusion class
+ * 
  * @deprecated 3.3
  */
 class Infusion extends Interpretation
 {
-
 	public $langFiles = [];
 
 	/**
@@ -107,7 +109,7 @@ class Infusion extends Interpretation
 			// COMPANYNAME
 			$companyname = CFactory::_('Component')->get('companyname');
 			CFactory::_('Compiler.Builder.Content.One')->set('COMPANYNAME', trim(
-				(string) JFilterOutput::cleanText($companyname)
+				(string) \JFilterOutput::cleanText($companyname)
 			));
 
 			// POWER_LIBRARY_FOLDER
@@ -1581,19 +1583,19 @@ class Infusion extends Interpretation
 				// IMPORT_EXT_METHOD <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_EXT_METHOD',
 					PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-						ComponentbuilderHelper::getDynamicScripts('ext')
+						\ComponentbuilderHelper::getDynamicScripts('ext')
 					)
 				);
 				// IMPORT_SETDATA_METHOD <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_SETDATA_METHOD',
 					PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-						ComponentbuilderHelper::getDynamicScripts('setdata')
+						\ComponentbuilderHelper::getDynamicScripts('setdata')
 					)
 				);
 				// IMPORT_SAVE_METHOD <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set('import' . '|IMPORT_SAVE_METHOD',
 					PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-						ComponentbuilderHelper::getDynamicScripts('save')
+						\ComponentbuilderHelper::getDynamicScripts('save')
 					)
 				);
 				// IMPORT_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
@@ -2546,3 +2548,4 @@ class Infusion extends Interpretation
 		}
 	}
 }
+

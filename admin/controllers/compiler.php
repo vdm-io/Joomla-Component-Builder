@@ -97,8 +97,6 @@ class ComponentbuilderControllerCompiler extends AdminController
 		// currently only those with admin access can compile a component
 		if($user->authorise('core.manage', 'com_componentbuilder'))
 		{
-			// include component compiler
-			require_once JPATH_ADMINISTRATOR.'/components/com_componentbuilder/helpers/compiler.php';
 			$model = $this->getModel('compiler');
 			if ($model->builder())
 			{
@@ -530,7 +528,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
 		$user = Factory::getUser();
 		// set page redirect
@@ -570,7 +568,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function clearTmp()
 	{
 		// Check for request forgeries
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
 		$user = Factory::getUser();
 		// set page redirect
@@ -611,7 +609,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 	public function runTranslator()
 	{
 		// Check for request forgeries
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
 		$user = Factory::getUser();
 		// set page redirect

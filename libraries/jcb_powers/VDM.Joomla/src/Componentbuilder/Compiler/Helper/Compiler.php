@@ -2,21 +2,21 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    30th April, 2015
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
- * @gitea      Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
+
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+// use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper; (for Joomla 4 and above)
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
@@ -25,19 +25,16 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
-use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
-use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Helper\Infusion;
 
-// Use the component builder autoloader
-ComponentbuilderHelper::autoLoader();
 
 /**
  * Compiler class
+ * 
  * @deprecated 3.3
  */
 class Compiler extends Infusion
 {
-
 	/**
 	 * The Temp path
 	 *
@@ -172,7 +169,7 @@ class Compiler extends Infusion
 				if (CFactory::_('Compiler.Builder.Language.Messages')->isArray('exclude'))
 				{
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Language Warning</h3>'), 'Warning'
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREELANGUAGE_WARNINGHTHREE'), 'Warning'
 					);
 					foreach (CFactory::_('Compiler.Builder.Language.Messages')->get('exclude') as $tag => $targets)
 					{
@@ -190,7 +187,7 @@ class Compiler extends Infusion
 						}
 					}
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Language Notice</h3>'), 'Notice'
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREELANGUAGE_NOTICEHTHREE'), 'Notice'
 					);
 					$this->app->enqueueMessage(
 						Text::sprintf(
@@ -214,7 +211,7 @@ class Compiler extends Infusion
 				if (CFactory::_('Compiler.Builder.Language.Messages')->isArray('include'))
 				{
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Language Notice</h3>'), 'Notice'
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREELANGUAGE_NOTICEHTHREE'), 'Notice'
 					);
 					foreach (CFactory::_('Compiler.Builder.Language.Messages')->get('include') as $tag => $targets)
 					{
@@ -246,7 +243,7 @@ class Compiler extends Infusion
 			if ($add_assets_table_fix)
 			{
 				$this->app->enqueueMessage(
-					Text::_('<hr /><h3>Assets Table Notice</h3>'), 'Notice'
+					Text::_('COM_COMPONENTBUILDER_HR_HTHREEASSETS_TABLE_NOTICEHTHREE'), 'Notice'
 				);
 				$asset_table_fix_type = ($add_assets_table_fix == 2)
 					? 'intelligent' : 'sql';
@@ -262,7 +259,7 @@ class Compiler extends Infusion
 			elseif (CFactory::_('Utilities.Counter')->accessSize >= 30)
 			{
 				$this->app->enqueueMessage(
-					Text::_('<hr /><h3>Assets Table Warning</h3>'), 'Warning'
+					Text::_('COM_COMPONENTBUILDER_HR_HTHREEASSETS_TABLE_WARNINGHTHREE'), 'Warning'
 				);
 				$this->app->enqueueMessage(
 					Text::sprintf(
@@ -279,7 +276,7 @@ class Compiler extends Infusion
 				if (CFactory::_('Utilities.Counter')->accessSize < 30)
 				{
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Assets Table Warning</h3>'),
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREEASSETS_TABLE_WARNINGHTHREE'),
 						'Warning'
 					);
 				}
@@ -328,7 +325,7 @@ class Compiler extends Infusion
 					))
 				{
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Language Warning</h3>'), 'Warning'
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREELANGUAGE_WARNINGHTHREE'), 'Warning'
 					);
 					if (count((array) $mismatch) > 1)
 					{
@@ -368,10 +365,10 @@ class Compiler extends Infusion
 				// the correct string
 				$externalCodeString = ($externalCount == 1) ? Text::_(
 					'code/string'
-				) : Text::_('code/strings');
+				) : Text::_('COM_COMPONENTBUILDER_CODESTRINGS');
 				// the notice
 				$this->app->enqueueMessage(
-					Text::_('<hr /><h3>External Code Notice</h3>'), 'Notice'
+					Text::_('COM_COMPONENTBUILDER_HR_HTHREEEXTERNAL_CODE_NOTICEHTHREE'), 'Notice'
 				);
 				$this->app->enqueueMessage(
 					Text::sprintf(
@@ -686,7 +683,7 @@ class Compiler extends Infusion
 
 		// check if the file should get PHP opening
 		$php = '';
-		if (ComponentbuilderHelper::checkFileType($name, 'php'))
+		if (\ComponentbuilderHelper::checkFileType($name, 'php'))
 		{
 			$php = "<?php\n";
 		}
@@ -920,7 +917,7 @@ class Compiler extends Infusion
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -978,7 +975,7 @@ class Compiler extends Infusion
 	{
 		// set notice that we could not get a valid string from the target
 		$this->app->enqueueMessage(
-			Text::sprintf('<hr /><h3>%s Warning</h3>', __CLASS__), 'Error'
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
 		$this->app->enqueueMessage(
 			Text::sprintf(
@@ -1015,7 +1012,7 @@ class Compiler extends Infusion
 				Folder::copy(CFactory::_('Utilities.Paths')->component_path, $repoFullPath, '', true);
 			} catch (\RuntimeException $e) {
 				$this->app->enqueueMessage(
-					Text::_('We where was unable to transfer the component to the git repository:') . ' ' . $e->getMessage()
+					Text::_('COM_COMPONENTBUILDER_WE_WHERE_WAS_UNABLE_TO_TRANSFER_THE_COMPONENT_TO_THE_GIT_REPOSITORY') . ' ' . $e->getMessage()
 					, 'Error'
 				);
 			}
@@ -1057,7 +1054,7 @@ class Compiler extends Infusion
 							);
 						} catch (\RuntimeException $e) {
 							$this->app->enqueueMessage(
-								Text::sprintf('We where was unable to transfer the (%s) module to the git repository:', $module->name) . ' ' . $e->getMessage()
+								Text::sprintf('COM_COMPONENTBUILDER_WE_WHERE_WAS_UNABLE_TO_TRANSFER_THE_S_MODULE_TO_THE_GIT_REPOSITORY', $module->name) . ' ' . $e->getMessage()
 								, 'Error'
 							);
 						}
@@ -1101,7 +1098,7 @@ class Compiler extends Infusion
 							);
 						} catch (\RuntimeException $e) {
 							$this->app->enqueueMessage(
-								Text::sprintf('We where was unable to transfer the (%s) plugin to the git repository:', $plugin->name) . ' ' . $e->getMessage()
+								Text::sprintf('COM_COMPONENTBUILDER_WE_WHERE_WAS_UNABLE_TO_TRANSFER_THE_S_PLUGIN_TO_THE_GIT_REPOSITORY', $plugin->name) . ' ' . $e->getMessage()
 								, 'Error'
 							);
 						}
@@ -1156,7 +1153,7 @@ class Compiler extends Infusion
 					);
 				} catch (\RuntimeException $e) {
 					$this->app->enqueueMessage(
-						Text::_('We where was unable to transfer the component ZIP file to the backup folder:') . ' ' . $e->getMessage()
+						Text::_('COM_COMPONENTBUILDER_WE_WHERE_WAS_UNABLE_TO_TRANSFER_THE_COMPONENT_ZIP_FILE_TO_THE_BACKUP_FOLDER') . ' ' . $e->getMessage()
 						, 'Error'
 					);
 				}
@@ -1259,7 +1256,7 @@ class Compiler extends Infusion
 								);
 							} catch (\RuntimeException $e) {
 								$this->app->enqueueMessage(
-									Text::sprintf('We where was unable to transfer the (%s) module zip file to the backup folder:', $module->name) . ' ' . $e->getMessage()
+									Text::sprintf('COM_COMPONENTBUILDER_WE_WHERE_WAS_UNABLE_TO_TRANSFER_THE_S_MODULE_ZIP_FILE_TO_THE_BACKUP_FOLDER', $module->name) . ' ' . $e->getMessage()
 									, 'Error'
 								);
 							}
@@ -1367,7 +1364,7 @@ class Compiler extends Infusion
 								);
 							} catch (\RuntimeException $e) {
 								$this->app->enqueueMessage(
-									Text::sprintf('We where was unable to transfer the (%s) plugin zip file to the backup folder:', $plugin->name) . ' ' . $e->getMessage()
+									Text::sprintf('COM_COMPONENTBUILDER_WE_WHERE_WAS_UNABLE_TO_TRANSFER_THE_S_PLUGIN_ZIP_FILE_TO_THE_BACKUP_FOLDER', $plugin->name) . ' ' . $e->getMessage()
 									, 'Error'
 								);
 							}
@@ -1463,7 +1460,7 @@ class Compiler extends Infusion
 				if (File::exists($file))
 				{
 					foreach (
-						new SplFileObject($file) as $lineNumber => $lineContent
+						new \SplFileObject($file) as $lineNumber => $lineContent
 					)
 					{
 						// if not found we need to load line bites per line
@@ -1561,7 +1558,7 @@ class Compiler extends Infusion
 							// Load escaped code since the target endhash has changed
 							$this->loadEscapedCode($file, $target, $lineBites);
 							$this->app->enqueueMessage(
-								Text::_('<hr /><h3>Custom Code Warning</h3>'),
+								Text::_('COM_COMPONENTBUILDER_HR_HTHREECUSTOM_CODE_WARNINGHTHREE'),
 								'Warning'
 							);
 							$this->app->enqueueMessage(
@@ -1580,7 +1577,7 @@ class Compiler extends Infusion
 						// Load escaped code since the target hash has changed
 						$this->loadEscapedCode($file, $target, $lineBites);
 						$this->app->enqueueMessage(
-							Text::_('<hr /><h3>Custom Code Warning</h3>'),
+							Text::_('COM_COMPONENTBUILDER_HR_HTHREECUSTOM_CODE_WARNINGHTHREE'),
 							'Warning'
 						);
 						$this->app->enqueueMessage(
@@ -1598,7 +1595,7 @@ class Compiler extends Infusion
 				{
 					// Give developer a notice that file is not found.
 					$this->app->enqueueMessage(
-						Text::_('<hr /><h3>Custom Code Warning</h3>'),
+						Text::_('COM_COMPONENTBUILDER_HR_HTHREECUSTOM_CODE_WARNINGHTHREE'),
 						'Warning'
 					);
 					$this->app->enqueueMessage(
@@ -1666,5 +1663,5 @@ class Compiler extends Infusion
 	{
 		CFactory::_('Utilities.FileInjector')->add($file, $data, $position, $replace);
 	}
-
 }
+

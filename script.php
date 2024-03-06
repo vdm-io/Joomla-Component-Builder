@@ -4478,7 +4478,7 @@ class Com_ComponentbuilderInstallerScript
 				$revert_rule = "ALTER TABLE `#__assets` CHANGE `rules` `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.';";
 				$db->setQuery($revert_rule);
 				$db->execute();
-				$app->enqueueMessage(Text::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120)'));
+				$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_REVERTED_THE_B_ASSETSB_TABLE_RULES_COLUMN_BACK_TO_ITS_DEFAULT_SIZE_OF_VARCHARFIVE_THOUSAND_ONE_HUNDRED_AND_TWENTY'));
 			}
 			else
 			{
@@ -6215,10 +6215,15 @@ class Com_ComponentbuilderInstallerScript
 					}
 				}
 			}
-			// path to the new compiler
-			$jcb_powers = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
-			// we always remove all the old files to avoid mismatching
-			ComponentbuilderHelper::removeFolder($jcb_powers);
+			// all things to clear out
+			$jcb_cleaner = [];
+			$jcb_cleaner[] = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/compiler';
+			$jcb_cleaner[] = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/extrusion';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
+			foreach ($jcb_cleaner as $cleaner)
+			{
+				ComponentbuilderHelper::removeFolder($cleaner);
+			}
 		}
 		// do any install needed
 		if ($type === 'install')
@@ -9613,7 +9618,7 @@ class Com_ComponentbuilderInstallerScript
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.2.0-beta2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 3.2.0-beta3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))

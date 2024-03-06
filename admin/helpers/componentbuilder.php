@@ -1123,15 +1123,6 @@ abstract class ComponentbuilderHelper
 		jimport('joomla.application');
 	}
 
-	/**
-	* 	The dynamic builder of views, tables and fields
-	**/
-	public static function dynamicBuilder(&$data, $type)
-	{
-		self::autoLoader('extrusion');
-		$extruder = new Extrusion($data);
-	}
-
 	/*
 	 * Convert repeatable field to subform
 	 * 
