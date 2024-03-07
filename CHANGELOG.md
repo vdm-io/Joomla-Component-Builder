@@ -1,3 +1,7 @@
+# v3.2.0-beta4
+
+- Add Preferred Joomla Version to Components
+
 # v3.2.0-beta3
 
 - Move the old helper compiler files to powers
@@ -8,11 +12,11 @@
 - Move beta to main repo
 - Fix #1053 so that the right and left tabs display correctly in Joomla 4&5
 
-# v3.1.42-beta
+# v3.1.42
 
 - Fix #1055 to add the style and scripts to all views.
 
-# v3.1.40-beta
+# v3.1.40
 
 - Fix #1052 so that tabs last opened is remembered and opened again on save, refresh or reopening of an item.
 - Fix #1057 so that the datetime fields will be set correctly in mysql.

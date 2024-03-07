@@ -108,7 +108,7 @@ class ComponentbuilderModelAjax extends ListModel
 		$query = $db->getQuery(true)
 			->select($db->quoteName(array(
 				'id','companyname','component_version','copyright','debug_linenr',
-				'description','email','image','license','name',
+				'description','email','image','license','name','preferred_joomla_version',
 				'short_description','website','author','add_placeholders',
 				'system_name','mvc_versiondate')))
 			->from($db->quoteName('#__componentbuilder_joomla_component'))
@@ -117,7 +117,9 @@ class ComponentbuilderModelAjax extends ListModel
 		$db->execute();
 		if ($db->loadRowList())
 		{
-			return ['html' => $this->componentDetailsDisplay($db->loadObject())];
+			$object = $db->loadObject();
+
+			return ['html' => $this->componentDetailsDisplay($object), 'preferred_joomla_version' => $object->preferred_joomla_version ?? 0];
 		}
 		return false;
 	}

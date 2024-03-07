@@ -25,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\GetScriptInterface;
  * 
  * @since 3.2.0
  */
-class InstallScript implements GetScriptInterface
+final class InstallScript implements GetScriptInterface
 {
 	/**
 	 * The extension

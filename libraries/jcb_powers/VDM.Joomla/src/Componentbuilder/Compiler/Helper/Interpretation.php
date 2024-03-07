@@ -1259,7 +1259,7 @@ class Interpretation extends Fields
 	public function setUpdateXMLSQL(&$update, &$updateXML, &$addDynamicSQL)
 	{
 		// ensure version naming is correct
-		$update['version'] = preg_replace('/[^0-9\.]+/', '', (string) $update['version']);
+		$update['version'] = preg_replace('/^v/i', '', (string) $update['version']);
 		// setup SQL
 		if (StringHelper::check($update['mysql']))
 		{

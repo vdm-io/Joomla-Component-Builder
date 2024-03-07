@@ -25,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
  * 
  * @since 3.2.0
  */
-class History implements HistoryInterface
+final class History implements HistoryInterface
 {
 	/**
 	 * History Item Object
@@ -80,18 +80,9 @@ class History implements HistoryInterface
 		$query = $this->db->getQuery(true);
 
 		$query->select('h.*');
-		$query->from('#__ucm_history AS h');
+		$query->from('#__history AS h');
 		$query->where(
-			$this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id
-		);
-		// Join over the content type for the type id
-		$query->join(
-			'LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id'
-		);
-		$query->where(
-			'ct.type_alias = ' . $this->db->quote(
-				'com_componentbuilder.' . $type
-			)
+			$this->db->quoteName('h.item_id') . ' = ' . $this->db->quote('com_componentbuilder.' . $type . '.' . (int) $id)
 		);
 		$query->order('h.save_date DESC');
 		$this->db->setQuery($query, 0, 1);
@@ -108,9 +99,9 @@ class History implements HistoryInterface
 		$query = $this->db->getQuery(true);
 
 		$query->select('h.*');
-		$query->from('#__ucm_history AS h');
+		$query->from('#__history AS h');
 		$query->where(
-			$this->db->quoteName('h.ucm_item_id') . ' = ' . (int) $id
+			$this->db->quoteName('h.item_id') . ' = ' . $this->db->quote('com_componentbuilder.' . $type . '.' . (int) $id)
 		);
 		$query->where('h.keep_forever = 1');
 		$query->where('h.version_note LIKE ' . $this->db->quote('%component%'));
@@ -119,15 +110,6 @@ class History implements HistoryInterface
 		{
 			$query->where('h.version_id != ' . (int) $newActive->version_id);
 		}
-		// Join over the content type for the type id
-		$query->join(
-			'LEFT', '#__content_types AS ct ON ct.type_id = h.ucm_type_id'
-		);
-		$query->where(
-			'ct.type_alias = ' . $this->db->quote(
-				'com_componentbuilder.' . $type
-			)
-		);
 		$query->order('h.save_date DESC');
 		$this->db->setQuery($query);
 		$this->db->execute();
@@ -223,8 +205,7 @@ class History implements HistoryInterface
 		}
 
 		// run the update
-		return $this->db->updateObject('#__ucm_history', $object, 'version_id');
+		return $this->db->updateObject('#__history', $object, 'version_id');
 	}
-
 }
 

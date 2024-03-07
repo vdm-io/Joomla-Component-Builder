@@ -76,34 +76,18 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			),
 			'above' => array(
 				'system_name',
+				'preferred_joomla_version',
 				'add_powers'
 			),
 			'under' => array(
 				'not_required'
 			)
 		),
-		'libs_helpers' => array(
+		'dynamic_build_beta' => array(
 			'fullwidth' => array(
-				'creatuserhelper',
-				'adduikit',
-				'addfootable',
-				'add_email_helper',
-				'add_php_helper_both',
-				'php_helper_both',
-				'add_php_helper_admin',
-				'php_helper_admin',
-				'add_admin_event',
-				'php_admin_event',
-				'add_php_helper_site',
-				'php_helper_site',
-				'add_site_event',
-				'php_site_event',
-				'add_javascript',
-				'javascript',
-				'add_css_admin',
-				'css_admin',
-				'add_css_site',
-				'css_site'
+				'note_buildcomp_dynamic_mysql',
+				'buildcomp',
+				'buildcompsql'
 			)
 		),
 		'dynamic_integration' => array(
@@ -131,13 +115,6 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				'crowdin_project_api_key',
 				'crowdin_username',
 				'crowdin_account_api_key'
-			)
-		),
-		'dynamic_build_beta' => array(
-			'fullwidth' => array(
-				'note_buildcomp_dynamic_mysql',
-				'buildcomp',
-				'buildcompsql'
 			)
 		),
 		'readme' => array(
@@ -169,6 +146,30 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				'php_postflight_update',
 				'add_php_method_uninstall',
 				'php_method_uninstall'
+			)
+		),
+		'libs_helpers' => array(
+			'fullwidth' => array(
+				'creatuserhelper',
+				'adduikit',
+				'addfootable',
+				'add_email_helper',
+				'add_php_helper_both',
+				'php_helper_both',
+				'add_php_helper_admin',
+				'php_helper_admin',
+				'add_admin_event',
+				'php_admin_event',
+				'add_php_helper_site',
+				'php_helper_site',
+				'add_site_event',
+				'php_site_event',
+				'add_javascript',
+				'javascript',
+				'add_css_admin',
+				'css_admin',
+				'add_css_site',
+				'css_site'
 			)
 		),
 		'mysql' => array(
@@ -365,22 +366,10 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
-			if (!empty($item->php_site_event))
-			{
-				// base64 Decode php_site_event.
-				$item->php_site_event = base64_decode($item->php_site_event);
-			}
-
 			if (!empty($item->buildcompsql))
 			{
 				// base64 Decode buildcompsql.
 				$item->buildcompsql = base64_decode($item->buildcompsql);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
 			}
 
 			if (!empty($item->php_method_uninstall))
@@ -389,10 +378,22 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
 			}
 
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
 			if (!empty($item->css_admin))
 			{
 				// base64 Decode css_admin.
 				$item->css_admin = base64_decode($item->css_admin);
+			}
+
+			if (!empty($item->php_site_event))
+			{
+				// base64 Decode php_site_event.
+				$item->php_site_event = base64_decode($item->php_site_event);
 			}
 
 			if (!empty($item->php_postflight_install))
@@ -1430,22 +1431,10 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$data['addcontributors'] = '';
 		}
 
-		// Set the php_site_event string to base64 string.
-		if (isset($data['php_site_event']))
-		{
-			$data['php_site_event'] = base64_encode($data['php_site_event']);
-		}
-
 		// Set the buildcompsql string to base64 string.
 		if (isset($data['buildcompsql']))
 		{
 			$data['buildcompsql'] = base64_encode($data['buildcompsql']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
 		}
 
 		// Set the php_method_uninstall string to base64 string.
@@ -1454,10 +1443,22 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
 		// Set the css_admin string to base64 string.
 		if (isset($data['css_admin']))
 		{
 			$data['css_admin'] = base64_encode($data['css_admin']);
+		}
+
+		// Set the php_site_event string to base64 string.
+		if (isset($data['php_site_event']))
+		{
+			$data['php_site_event'] = base64_encode($data['php_site_event']);
 		}
 
 		// Set the php_postflight_install string to base64 string.

@@ -25,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
  * 
  * @since 3.2.0
  */
-class History implements HistoryInterface
+final class History implements HistoryInterface
 {
 	/**
 	 * History Item Object

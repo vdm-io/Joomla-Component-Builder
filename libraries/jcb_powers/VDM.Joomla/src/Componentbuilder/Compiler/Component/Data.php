@@ -400,7 +400,7 @@ final class Data
 
 		// ensure version naming is correct
 		$this->config->set('component_version', preg_replace(
-				'/[^0-9.]+/', '', (string) $component->component_version
+				'/^v/i', '', (string) $component->component_version
 			)
 		);
 

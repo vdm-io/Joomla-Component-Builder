@@ -542,8 +542,8 @@ final class CustomFieldTypeFile
 		$placeholders[Placefix::_('view')] = $this->getViewName();
 		$placeholders[Placefix::_('views')] = $this->getViewsName();
 
-		// Gymnastics to help with transition to Joomla 4
-		if ($this->config->get('joomla_version', 3) == 4)
+		// Gymnastics to help with transition to Joomla 4 and above
+		if ($this->config->get('joomla_version', 3) != 3)
 		{
 			$placeholders['JFactory::getUser()'] = 'Factory::getApplication()->getIdentity()';
 			$placeholders['Factory::getUser()'] = 'Factory::getApplication()->getIdentity()';

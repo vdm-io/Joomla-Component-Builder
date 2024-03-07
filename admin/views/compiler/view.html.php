@@ -299,7 +299,8 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// start the joomla versions options
 			$options = [
 				'3' => 'COM_COMPONENTBUILDER_JOOMLA_THREE',
-				'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR_AND_FIVE'
+				'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR',
+				'5' => 'COM_COMPONENTBUILDER_JOOMLA_FIVE'
 			];
 
 			// add to form
@@ -327,10 +328,25 @@ class ComponentbuilderViewCompiler extends HtmlView
 			// Joomla Version 4 and five attributes
 			$attributes = [
 				'type' => 'note',
-				'name' => 'joomla_version_note_four_five',
-				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_FOUR_AND_JOOMLA_FIVE',
+				'name' => 'joomla_version_note_four',
+				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_FOUR',
 				'class' => 'alert alert-success',
 				'showon' => 'joomla_version:4'];
+
+			// add to form
+			$xml = FormHelper::xml($attributes);
+			if ($xml instanceof SimpleXMLElement)
+			{
+				$form->setField($xml, null, true, 'builder');
+			}
+
+			// Joomla Version 5 and five attributes
+			$attributes = [
+				'type' => 'note',
+				'name' => 'joomla_version_note_five',
+				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_FIVE',
+				'class' => 'alert alert-success',
+				'showon' => 'joomla_version:5'];
 
 			// add to form
 			$xml = FormHelper::xml($attributes);
@@ -556,7 +572,6 @@ class ComponentbuilderViewCompiler extends HtmlView
 		return LayoutHelper::render('jcbsupportmessage', []);
 	}
 
-
 	/**
 	 * Prepares the document
 	 */
@@ -661,6 +676,11 @@ class ComponentbuilderViewCompiler extends HtmlView
 				getComponentDetails_server(id).then(function(result) {
 					if (result.html) {
 						document.getElementById('component-details').innerHTML = result.html;
+						if (result.preferred_joomla_version) {
+							jQuery('#joomla_version').val(result.preferred_joomla_version);
+							jQuery('#joomla_version').trigger('liszt:updated');
+							jQuery('#joomla_version').trigger('change');
+						}
 					}
 				});
 			}

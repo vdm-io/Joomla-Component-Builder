@@ -22,7 +22,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreRuleInterface;
  * 
  * @since 3.2.0
  */
-class CoreRule implements CoreRuleInterface
+final class CoreRule implements CoreRuleInterface
 {
 	/**
 	 * Local Core Joomla Rules

@@ -22,7 +22,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreFieldInterface;
  * 
  * @since 3.2.0
  */
-class CoreField implements CoreFieldInterface
+final class CoreField implements CoreFieldInterface
 {
 	/**
 	 * Local Core Joomla Fields

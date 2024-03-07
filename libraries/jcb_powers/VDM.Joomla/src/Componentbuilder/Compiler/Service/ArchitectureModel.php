@@ -15,9 +15,11 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Model\CanDeleteInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Model\CanDelete as J5ModelCanDelete;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Model\CanDelete as J4ModelCanDelete;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Model\CanDelete as J3ModelCanDelete;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Model\CanEditStateInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Model\CanEditState as J5ModelCanEditState;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Model\CanEditState as J4ModelCanEditState;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Model\CanEditState as J3ModelCanEditState;
 
@@ -53,6 +55,9 @@ class ArchitectureModel implements ServiceProviderInterface
 		$container->alias(J4ModelCanDelete::class, 'Architecture.Model.J4.CanDelete')
 			->share('Architecture.Model.J4.CanDelete', [$this, 'getJ4ModelCanDelete'], true);
 
+		$container->alias(J5ModelCanDelete::class, 'Architecture.Model.J5.CanDelete')
+			->share('Architecture.Model.J5.CanDelete', [$this, 'getJ5ModelCanDelete'], true);
+
 		$container->alias(CanDeleteInterface::class, 'Architecture.Model.CanDelete')
 			->share('Architecture.Model.CanDelete', [$this, 'getModelCanDelete'], true);
 
@@ -61,6 +66,9 @@ class ArchitectureModel implements ServiceProviderInterface
 
 		$container->alias(J4ModelCanEditState::class, 'Architecture.Model.J4.CanEditState')
 			->share('Architecture.Model.J4.CanEditState', [$this, 'getJ4ModelCanEditState'], true);
+
+		$container->alias(J5ModelCanEditState::class, 'Architecture.Model.J5.CanEditState')
+			->share('Architecture.Model.J5.CanEditState', [$this, 'getJ5ModelCanEditState'], true);
 
 		$container->alias(CanEditStateInterface::class, 'Architecture.Model.CanEditState')
 			->share('Architecture.Model.CanEditState', [$this, 'getModelCanEditState'], true);
@@ -82,6 +90,22 @@ class ArchitectureModel implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.Model.J' . $this->targetVersion . '.CanDelete');
+	}
+
+	/**
+	 * Get The Model CanDelete Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5ModelCanDelete
+	 * @since 3.2.0
+	 */
+	public function getJ5ModelCanDelete(Container $container): J5ModelCanDelete
+	{
+		return new J5ModelCanDelete(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission')
+		);
 	}
 
 	/**
@@ -132,6 +156,22 @@ class ArchitectureModel implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.Model.J' . $this->targetVersion . '.CanEditState');
+	}
+
+	/**
+	 * Get The Model Can Edit State Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5ModelCanEditState
+	 * @since 3.2.0
+	 */
+	public function getJ5ModelCanEditState(Container $container): J5ModelCanEditState
+	{
+		return new J5ModelCanEditState(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission')
+		);
 	}
 
 	/**

@@ -350,7 +350,8 @@ class Config extends BaseConfig
 	{
 		return [
 			3 => ['folder_key' => 3, 'xml_version' => '3.10'],
-			4 => ['folder_key' => 4, 'xml_version' => '4.0']
+			4 => ['folder_key' => 4, 'xml_version' => '4.0'],
+			5 => ['folder_key' => 4, 'xml_version' => '5.0'] // for now we build 4 and 5 from same templates ;)
 		];
 	}
 

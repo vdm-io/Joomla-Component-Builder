@@ -142,7 +142,7 @@ class Historycomponent
 		if ($old_component && ObjectHelper::check($old_component))
 		{
 			$old_component_version = preg_replace(
-				'/[^0-9.]+/', '', (string) $old_component->component_version
+				'/^v/i', '', (string) $old_component->component_version
 			);
 			if ($old_component_version != $this->config->component_version)
 			{
