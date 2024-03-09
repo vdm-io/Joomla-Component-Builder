@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -32,21 +32,21 @@ class ###Component###ControllerImport extends BaseController
 	public function import()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('import');
 		if ($model->import())
 		{
-			$cache = JFactory::getCache('mod_menu');
+			$cache = Factory::getCache('mod_menu');
 			$cache->clean();
 			// TODO: Reset the users acl here as well to kill off any missing bits
 		}
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$redirect_url = $app->getUserState('com_###component###.redirect_url');
 		if (empty($redirect_url))
 		{
-			$redirect_url = JRoute::_('index.php?option=com_###component###&view=import', false);
+			$redirect_url = Route::_('index.php?option=com_###component###&view=import', false);
 		}
 		else
 		{

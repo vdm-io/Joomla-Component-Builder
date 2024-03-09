@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="4" method="upgrade">
+<extension type="component" version="5.0" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>24th October, 2023</creationDate>
+	<creationDate>9th March, 2024</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>3.1.28</version>
+	<version>5.0.0-alpha1</version>
 	<description><![CDATA[
-		<h1>Component Builder (v.3.1.28)</h1>
+		<h1>Component Builder (v.5.0.0-alpha1)</h1>
 		<div style="clear: both;"></div>
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!</p>
 		<p>Created by <a href="https://dev.vdm.io" target="_blank">Llewellyn van der Merwe</a><br /><small>Development started 30th April, 2015</small></p>
 	]]></description>
+	<namespace path="src">VDM\Component\Componentbuilder</namespace>
 
-	<!-- Runs on install; New in Joomla 1.5 -->
+	<!-- Runs on install -->
 	<install>
 		<sql>
 			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
 		</sql>
 	</install>
 
-	<!-- Runs on uninstall; New in Joomla 1.5 -->
+	<!-- Runs on uninstall -->
 	<uninstall>
 		<sql>
 			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
 		</sql>
 	</uninstall>
 
-	<!-- Runs on install/uninstall/update; New in Joomla 2.5 -->
-	<scriptfile>script.php</scriptfile>
+	<!-- Runs on install/uninstall/update -->
+	<scriptfile>ComponentbuilderInstallerScript.php</scriptfile>
 
 	<media destination="com_componentbuilder" folder="media">
 		<filename>index.html</filename>
@@ -44,36 +45,22 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<folder>footable-v3</folder>
 	</media>
 
-	<!-- Update Schema; New in Joomla 2.5 -->
+	<!-- Update Schema -->
 	<update>
 		<schemas>
 			<schemapath type="mysql">sql/updates/mysql/</schemapath>
 		</schemas>
 	</update>
 
-	<files folder="site">
-		<filename>controller.php</filename>
-		<filename>index.html</filename>
-		<filename>router.php</filename>
-		<filename>componentbuilder.php</filename>
-		<filename>router.php</filename>
-		<folder>assets</folder>
-		<folder>helpers</folder>
-		<folder>controllers</folder>
-		<folder>models</folder>
-		<folder>views</folder>
-		<folder>layouts</folder>
-	</files>
+	
 
-	<languages folder="site">
-		<language tag="en-GB">language/en-GB/en-GB.com_componentbuilder.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.com_componentbuilder.sys.ini</language>
-	</languages>
+	
 
 	<administration>
 		<menu>COM_COMPONENTBUILDER_MENU</menu>
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
+			<menu option="com_componentbuilder" view="componentbuilder">COM_COMPONENTBUILDER_MENU_DASHBOARD</menu>
 			<menu option="com_componentbuilder" view="compiler">COM_COMPONENTBUILDER_MENU_COMPILER</menu>
 			<menu option="com_componentbuilder" view="joomla_components">COM_COMPONENTBUILDER_MENU_JOOMLA_COMPONENTS</menu>
 			<menu option="com_componentbuilder" view="joomla_modules">COM_COMPONENTBUILDER_MENU_JOOMLA_MODULES</menu>
@@ -99,18 +86,16 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
-			<filename>controller.php</filename>
 			<filename>index.html</filename>
-			<filename>componentbuilder.php</filename>
 			<filename>README.txt</filename>
 			<folder>assets</folder>
-			<folder>controllers</folder>
-			<folder>helpers</folder>
-			<folder>models</folder>
-			<folder>sql</folder>
-			<folder>tables</folder>
-			<folder>views</folder>
+			<folder>forms</folder>
 			<folder>layouts</folder>
+			<folder>presets</folder>
+			<folder>services</folder>
+			<folder>sql</folder>
+			<folder>src</folder>
+			<folder>tmpl</folder>
 			<folder>custom</folder>
 			<folder>compiler</folder>
 		</files>
@@ -122,6 +107,6 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 
 	</administration>
 	<updateservers>
-		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://git.vdm.dev/joomla/Component-Builder/raw/branch/master/componentbuilder_update_server.xml</server>
+		<server type="extension" enabled="1" element="com_componentbuilder" name="Component Builder">https://git.vdm.dev/joomla/Component-Builder/raw/branch/5.x/componentbuilder_update_server.xml</server>
 	</updateservers>
 </extension>

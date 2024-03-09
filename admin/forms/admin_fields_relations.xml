@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addruleprefix="VDM\Component\Componentbuilder\Administrator\Rule"
+	addfieldprefix="VDM\Component\Componentbuilder\Administrator\Field"
+>
+	<config>
+		<inlinehelp button="show"/>
+	</config>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_VERSION_DESC"
+			size="6"
+			default="1"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Was added due to Permissions JS needing a Title field -->
+		<!-- Let us know at gh-629 should this change -->
+		<!-- https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235 -->
+		<field
+			name="title"
+			type="hidden"
+			default="componentbuilder admin_fields_relations"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Admin_view Field. Type: Adminviewsreadonly. (custom) -->
+		<field
+			type="adminviewsreadonly"
+			name="admin_view"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ADMIN_VIEW_LABEL"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ADMIN_VIEW_DESCRIPTION"
+			class="list_class"
+			multiple="false"
+			default=""
+			required="true"
+			readonly="true"
+			button="false"
+		/>
+		<!-- Addrelations Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addrelations"
+			label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ADDRELATIONS_LABEL"
+			layout="repeatablejcb"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_ADDRELATIONS_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addrelations_modal" repeat="true">
+				<!-- Listfield Field. Type: Listfields. (custom) -->
+				<field
+					type="listfields"
+					name="listfield"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_LISTFIELD_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_LISTFIELD_DESCRIPTION"
+					class="fieldLarge"
+					multiple="false"
+					default=""
+					required="true"
+					onchange="getCodeGlueOptions(this)"
+					button="false"
+				/>
+				<!-- Column_name Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="column_name"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_LABEL"
+					size="50"
+					maxlength="50"
+					default="Default"
+					class="text_area fieldLarge"
+					filter="STRING"
+					message="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_MESSAGE"
+					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_COLUMN_NAME_HINT"
+					autocomplete="on"
+				/>
+				<!-- Joinfields Field. Type: Joinfields. (custom) -->
+				<field
+					type="joinfields"
+					name="joinfields"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOINFIELDS_LABEL"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOINFIELDS_DESCRIPTION"
+					class="fieldLarge"
+					multiple="true"
+					onchange="getCodeGlueOptions(this)"
+					button="false"
+				/>
+				<!-- Area Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="area"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_AREA_LABEL"
+					class="list_class fieldLarge"
+					multiple="false"
+					validate="int"
+					default="1"
+					onchange="getCodeGlueOptions(this)">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODEL_BEFORE_MODELLING</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_MODEL_AFTER_MODELLING</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_VIEW</option>
+				</field>
+				<!-- Join_type Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="join_type"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_JOIN_TYPE_LABEL"
+					class="list_class fieldLarge"
+					multiple="false"
+					validate="int"
+					default="1"
+					onchange="getCodeGlueOptions(this)">
+					<!-- Option Set. -->
+					<option value="1">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CONCATENATE_RAQUO_GLUE</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_CUSTOM_RAQUO_CODE</option>
+				</field>
+				<!-- Set Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="set"
+					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_LABEL"
+					rows="4"
+					cols="5"
+					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_DESCRIPTION"
+					class="text_area codefield"
+					filter="raw"
+					hint="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_SET_HINT"
+				/>
+			</form>
+		</field>
+		<!-- Note_on_relations Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_on_relations" label="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_NOTE_ON_RELATIONS_LABEL" description="COM_COMPONENTBUILDER_ADMIN_FIELDS_RELATIONS_NOTE_ON_RELATIONS_DESCRIPTION" heading="h4" class="alert alert-info note_on_relations" />
+	</fieldset>
+
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this admin_fields_relations"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="admin_fields_relations"
+		/>
+	</fieldset>
+</form>

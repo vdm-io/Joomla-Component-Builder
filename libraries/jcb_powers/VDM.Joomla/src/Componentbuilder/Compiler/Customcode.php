@@ -13,9 +13,6 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
@@ -23,6 +20,9 @@ use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\CustomcodeInterface;
 
 
@@ -122,7 +122,6 @@ class Customcode implements CustomcodeInterface
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
 	protected $db;
@@ -140,14 +139,14 @@ class Customcode implements CustomcodeInterface
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?Extractor $extractor = null, ?Power $power = null, ?External $external = null, ?\JDatabaseDriver $db = null)
+		?Extractor $extractor = null, ?Power $power = null, ?External $external = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
 		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
 		$this->power = $power ?: Compiler::_('Power.Extractor');
 		$this->external = $external ?: Compiler::_('Customcode.External');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -423,6 +422,10 @@ class Customcode implements CustomcodeInterface
 			$query->where(
 				$this->db->quoteName('a.target') . ' = 1'
 			); // <--- to load the correct target
+			$query->where(
+				$this->db->quoteName('a.joomla_version') . ' = ' 
+				. (int) $this->config->get('joomla_version', 3)
+			); // <--- to load the correct joomla target
 			$query->order(
 				$this->db->quoteName('a.from_line') . ' ASC'
 			); // <--- insure we always add code from top of file

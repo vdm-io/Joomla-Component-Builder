@@ -239,18 +239,16 @@ final class FieldsetXML implements Fieldsetinterface
 		$dynamic_fields_xml = [];
 		// set the custom table key
 		$dbkey = 'g';
-		// for plugin event TODO change event api signatures
-		$placeholders = $this->placeholder->active;
-		$component_context = $this->config->component_context;
+
 		// Trigger Event: jcb_ce_onBeforeBuildFields
 		$this->event->trigger(
 			'jcb_ce_onBeforeBuildFields',
-			array(&$component_context, &$dynamic_fields_xml, &$read_only_xml,
+			[&$dynamic_fields_xml, &$read_only_xml,
 				&$dbkey, &$view, &$component, &$nameSingleCode,
-				&$nameListCode, &$placeholders, &$lang_view,
-				&$lang_views)
+				&$nameListCode, &$lang_view,
+				&$lang_views]
 		);
-		unset($placeholders);
+
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
@@ -260,17 +258,16 @@ final class FieldsetXML implements Fieldsetinterface
 				true
 			);
 		}
-		// for plugin event TODO change event api signatures
-		$placeholders = $this->placeholder->active;
+
 		// Trigger Event: jcb_ce_onAfterBuildFields
 		$this->event->trigger(
 			'jcb_ce_onAfterBuildFields',
-			array(&$component_context, &$dynamic_fields_xml, &$read_only_xml,
+			[&$dynamic_fields_xml, &$read_only_xml,
 				&$dbkey, &$view, &$component, &$nameSingleCode,
-				&$nameListCode, &$placeholders, &$lang_view,
-				&$lang_views)
+				&$nameListCode, &$lang_view,
+				&$lang_views]
 		);
-		unset($placeholders);
+
 		// set the default fields
 		$main_xml         = new \simpleXMLElement('<a/>');
 		$field_set_xml = $main_xml->addChild('fieldset');
@@ -466,6 +463,7 @@ final class FieldsetXML implements Fieldsetinterface
 				'label'       => $lang_view . '_VERSION_LABEL',
 				'description' => $lang_view . '_VERSION_DESC',
 				'size'        => 6,
+				'default'    => 1,
 				'readonly'    => "true",
 				'filter'      => 'unset'
 			];

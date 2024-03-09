@@ -28,6 +28,6 @@ interface EventInterface
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function trigger(string $event, $data);
+	public function trigger(string $event, $data = null);
 }
 

@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Application\CMSApplication;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\Layout;
@@ -81,6 +82,14 @@ final class Builders
 	 * @since 3.2.0
 	 */
 	protected Config $config;
+
+	/**
+	 * The Power Class.
+	 *
+	 * @var   Power
+	 * @since 3.2.0
+	 */
+	protected Power $power;
 
 	/**
 	 * The Language Class.
@@ -454,6 +463,7 @@ final class Builders
 	 * Constructor.
 	 *
 	 * @param Config                      $config                      The Config Class.
+	 * @param Power                       $power                       The Power Class.
 	 * @param Language                    $language                    The Language Class.
 	 * @param Placeholder                 $placeholder                 The Placeholder Class.
 	 * @param Layout                      $layout                      The Layout Class.
@@ -503,7 +513,7 @@ final class Builders
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config, Language $language,
+	public function __construct(Config $config, Power $power, Language $language,
 		Placeholder $placeholder, Layout $layout,
 		SiteFieldData $sitefielddata, Tags $tags,
 		DatabaseTables $databasetables,
@@ -536,6 +546,7 @@ final class Builders
 		ComponentFields $componentfields, ?CMSApplication $app = null)
 	{
 		$this->config = $config;
+		$this->power = $power;
 		$this->language = $language;
 		$this->placeholder = $placeholder;
 		$this->layout = $layout;
@@ -789,6 +800,8 @@ final class Builders
 				);
 			}
 		}
+		// extends value
+		$extends_field = $custom['extends'] ?? '';
 		// build the list values
 		if (($listSwitch || $listJoin) && $typeName != 'repeatable'
 			&& $typeName != 'subform')
@@ -914,7 +927,7 @@ final class Builders
 				);
 			}
 			// build script switch for user
-			if ($custom['extends'] === 'user')
+			if ($extends_field === 'user')
 			{
 				$this->scriptuserswitch->set($typeName, $typeName);
 			}
@@ -986,7 +999,7 @@ final class Builders
 		}
 		// setup checkbox for this view
 		if ($dbSwitch && ($typeName === 'checkbox' ||
-				(ArrayHelper::check($custom) && isset($custom['extends']) && $custom['extends'] === 'checkboxes')))
+				(ArrayHelper::check($custom) && $extends_field === 'checkboxes')))
 		{
 			$this->checkbox->add($nameSingleCode, $name, true);
 		}
@@ -1029,6 +1042,8 @@ final class Builders
 					$this->sitefielddata->set(
 						$nameSingleCode, $name, 'basic_encryption', $typeName
 					);
+					// make sure to load FOF encryption (power)
+					$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
 					// add open close method to field data
 					$field['store'] = 'basic_encryption';
 					break;
@@ -1039,6 +1054,8 @@ final class Builders
 					$this->sitefielddata->set(
 						$nameSingleCode, $name, 'whmcs_encryption', $typeName
 					);
+					// make sure to load FOF encryption (power)
+					$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
 					// add open close method to field data
 					$field['store'] = 'whmcs_encryption';
 					break;
@@ -1049,6 +1066,8 @@ final class Builders
 					$this->sitefielddata->set(
 						$nameSingleCode, $name, 'medium_encryption', $typeName
 					);
+					// make sure to load FOF encryption (power)
+					$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
 					// add open close method to field data
 					$field['store'] = 'medium_encryption';
 					break;

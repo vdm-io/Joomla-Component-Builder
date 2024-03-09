@@ -325,7 +325,7 @@ class Structure
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	protected function setMainXmlFile(mixed $plugin): void
+	protected function setMainXmlFile(object $plugin): void
 	{
 		$file_details = [
 			'path' => $plugin->folder_path . '/' . $plugin->file_name . '.xml',
@@ -459,14 +459,30 @@ class Structure
 				if ($add_component_path)
 				{
 					$xml .= PHP_EOL . '<form';
-					$xml .= PHP_EOL . Indent::_(1)
-						. 'addrulepath="/administrator/components/com_'
-						. $this->config->component_code_name
-						. '/models/rules"';
-					$xml .= PHP_EOL . Indent::_(1)
-						. 'addfieldpath="/administrator/components/com_'
-						. $this->config->component_code_name
-						. '/models/fields"';
+
+					if ($this->config->get('joomla_version', 3) == 3)
+					{
+						$xml .= PHP_EOL . Indent::_(1)
+							. 'addrulepath="/administrator/components/com_'
+							. $this->config->component_code_name
+							. '/models/rules"';
+						$xml .= PHP_EOL . Indent::_(1)
+							. 'addfieldpath="/administrator/components/com_'
+							. $this->config->component_code_name
+							. '/models/fields"';
+					}
+					else
+					{
+						$xml .= PHP_EOL . Indent::_(1)
+							. 'addruleprefix="' . $this->config->namespace_prefix
+							. '\Component\\' . StringHelper::safe($this->config->component_code_name, 'F')
+							. '\Administrator\Rule"';
+						$xml .= PHP_EOL . Indent::_(1)
+							.'addfieldprefix="' . $this->config->namespace_prefix
+							. '\Component\\' . StringHelper::safe($this->config->component_code_name, 'F')
+							. '\Administrator\Field"';
+					}
+
 					$xml .= PHP_EOL . '>';
 				}
 				else

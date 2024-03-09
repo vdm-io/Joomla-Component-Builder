@@ -51,15 +51,17 @@ interface Activeregistryinterface
 	 * Adds content into the registry. If a key exists,
 	 * it either appends or concatenates based on the value's type.
 	 *
-	 * @param mixed   $value     The value to set.
-	 * @param bool    $asArray   Determines if the new value should be treated as an array.
-	 * @param string  ...$keys   The keys to determine the location.
+	 * @param mixed       $value     The value to set.
+	 * @param bool|null   $asArray   Determines if the new value should be treated as an array.
+	 *                                Default is $addAsArray = false (if null) in base class.
+	 *                                Override in child class allowed set class property $addAsArray = true.
+	 * @param string      ...$keys   The keys to determine the location.
 	 *
 	 * @throws \InvalidArgumentException If any of the keys are not a number or string.
 	 * @return void
 	 * @since 3.2.0
 	 */
-	public function addActive($value, bool $asArray, string ...$keys): void;
+	public function addActive($value, ?bool $asArray, string ...$keys): void;
 
 	/**
 	 * Retrieves a value (or sub-array) from the registry using multiple keys.

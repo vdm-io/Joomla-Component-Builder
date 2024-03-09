@@ -178,7 +178,6 @@ class Power implements ServiceProviderInterface
 			$container->get('Power'),
 			$container->get('Compiler.Builder.Content.One'),
 			$container->get('Compiler.Builder.Content.Multi'),
-			$container->get('Power.Autoloader'),
 			$container->get('Power.Parser'),
 			$container->get('Power.Repo.Readme'),
 			$container->get('Power.Repos.Readme'),

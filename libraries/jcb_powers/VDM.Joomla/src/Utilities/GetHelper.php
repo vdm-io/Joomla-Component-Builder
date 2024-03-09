@@ -113,14 +113,14 @@ abstract class GetHelper
 			$where = Factory::getUser()->id;
 		}
 
-		if(is_null($main))
+		if($main === null)
 		{
 			$main = Helper::getCode();
 		}
 
 		if (!ArrayHelper::check($where) && $where > 0)
 		{
-			$where = array($where);
+			$where = [$where];
 		}
 
 		if (ArrayHelper::check($where))

@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -31,7 +31,7 @@ class ###Component###View###View### extends HtmlView
 	public function display($tpl = null)
 	{
 		// set params
-		$this->params = JComponentHelper::getParams('com_###component###');
+		$this->params = ComponentHelper::getParams('com_###component###');
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
@@ -40,7 +40,7 @@ class ###Component###View###View### extends HtmlView
 		// get action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
 		// get input
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
 		$this->refid = $jinput->get('refid', 0, 'int');
 		$return = $jinput->get('return', null, 'base64');
@@ -65,7 +65,7 @@ class ###Component###View###View### extends HtmlView
 
 		// Set the toolbar
 		$this->addToolBar();
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -86,7 +86,7 @@ class ###Component###View###View### extends HtmlView
 	protected function addToolBar()
 	{###ADDTOOLBAR###
 		// now initiate the toolbar
-		$this->toolbar = JToolbar::getInstance();
+		$this->toolbar = Toolbar::getInstance();
 	}
 
 	/**
@@ -100,11 +100,11 @@ class ###Component###View###View### extends HtmlView
 	{
 		if(strlen($var) > 30)
 		{
-    			// use the helper htmlEscape method instead and shorten the string
-			return ###Component###Helper::htmlEscape($var, $this->_charset, true, 30);
+				// use the helper htmlEscape method instead and shorten the string
+			return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset, true, 30);
 		}
 		// use the helper htmlEscape method instead.
-		return ###Component###Helper::htmlEscape($var, $this->_charset);
+		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset);
 	}
 
 	/**
@@ -115,11 +115,7 @@ class ###Component###View###View### extends HtmlView
 	protected function setDocument()
 	{
 		$isNew = ($this->item->id < 1);
-		if (!isset($this->document))
-		{
-			$this->document = JFactory::getDocument();
-		}
-		$this->document->setTitle(JText::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
+		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
 		// only add the ISIS template css & js if needed (default is 1 = true)
 		// you can override this in the global component options
 		// just add a (radio yes/no field) with a name called add_isis_template
@@ -127,14 +123,24 @@ class ###Component###View###View### extends HtmlView
 		if ($this->params->get('add_isis_template', 1))
 		{
 			// we need this to fix the form display (TODO)
-			$this->document->addStyleSheet(JURI::root() . "administrator/templates/isis/css/template.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');
-			$this->document->addScript(JURI::root() . "administrator/templates/isis/js/template.js", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
+			Html::_('stylesheet', "administrator/templates/isis/css/template.css", ['version' => 'auto']);
+			Html::_('script', "administrator/templates/isis/js/template.js", ['version' => 'auto']);
 		}
 		// the default style of this view
-		$this->document->addStyleSheet(JURI::root()."components/com_###component###/assets/css/###view###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
+		Html::_('stylesheet', "components/com_###component###/assets/css/###view###.css", ['version' => 'auto']);###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
 		// default javascript of this view
-		$this->document->addScript(JURI::root(). $this->script, (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript');
-		$this->document->addScript(JURI::root(). "components/com_###component###/views/###view###/submitbutton.js", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/javascript'); ###DOCUMENT_CUSTOM_PHP###
-		JText::script('view not acceptable. Error');
+		Html::_('script', $this->script, ['version' => 'auto']);
+		Html::_('script', "components/com_###component###/views/###view###/submitbutton.js", ['version' => 'auto']);###DOCUMENT_CUSTOM_PHP###
+		Text::script('view not acceptable. Error');
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

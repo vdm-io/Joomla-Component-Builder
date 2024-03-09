@@ -82,10 +82,9 @@ class Data
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -102,8 +101,7 @@ class Data
 	 */
 	public function __construct(?Config $config = null, ?Registry $registry = null,
 		?Customcode $customcode = null, ?Gui $gui = null,
-		?Loader $loader = null, ?Libraries $libraries = null,
-		?\JDatabaseDriver $db = null)
+		?Loader $loader = null, ?Libraries $libraries = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->registry = $registry ?: Compiler::_('Registry');
@@ -111,7 +109,7 @@ class Data
 		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
 		$this->loader = $loader ?: Compiler::_('Model.Loader');
 		$this->libraries = $libraries ?: Compiler::_('Model.Libraries');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**

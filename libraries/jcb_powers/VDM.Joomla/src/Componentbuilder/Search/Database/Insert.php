@@ -55,10 +55,9 @@ class Insert implements InsertInterface
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -66,17 +65,16 @@ class Insert implements InsertInterface
 	 * @param Config|null              $config      The search config object.
 	 * @param Table|null               $table       The search table object.
 	 * @param Model|null               $model       The search get model object.
-	 * @param \JDatabaseDriver|null    $db          The database object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Table $table = null,
-		?Model $model = null, ?\JDatabaseDriver $db = null)
+		?Model $model = null)
 	{
 		$this->config = $config ?: Factory::_('Config');
 		$this->table = $table ?: Factory::_('Table');
 		$this->model = $model ?: Factory::_('Insert.Model');
-		$this->db = $db ?: JoomlaFactory::getDbo();
+		$this->db = JoomlaFactory::getDbo();
 	}
 
 	/**

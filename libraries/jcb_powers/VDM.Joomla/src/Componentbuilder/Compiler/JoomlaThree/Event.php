@@ -22,7 +22,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
  * 
  * @since 3.2.0
  */
-class Event implements EventInterface
+final class Event implements EventInterface
 {
 	/**
 	 * event plugin trigger switch
@@ -62,7 +62,7 @@ class Event implements EventInterface
 	}
 
 	/**
-	 * Trigger and event
+	 * Trigger an event
 	 *
 	 * @param   string  $event  The event to trigger
 	 * @param   mixed   $data   The values to pass to the event/plugin
@@ -71,7 +71,7 @@ class Event implements EventInterface
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function trigger(string $event, $data)
+	public function trigger(string $event, $data = null)
 	{
 		// only execute if plugins were loaded (active)
 		if ($this->activePlugins)

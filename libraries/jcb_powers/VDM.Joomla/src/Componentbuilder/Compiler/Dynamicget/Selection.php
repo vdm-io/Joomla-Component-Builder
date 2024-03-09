@@ -65,10 +65,9 @@ class Selection
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor.
@@ -76,17 +75,15 @@ class Selection
 	 * @param Config                 $config        The Config Class.
 	 * @param GetAsLookup            $getaslookup   The GetAsLookup Class.
 	 * @param SiteFields             $sitefields    The SiteFields Class.
-	 * @param \JDatabaseDriver|null  $db            The database object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config, GetAsLookup $getaslookup, SiteFields $sitefields,
-		?\JDatabaseDriver $db = null)
+	public function __construct(Config $config, GetAsLookup $getaslookup, SiteFields $sitefields)
 	{
 		$this->config = $config;
 		$this->getaslookup = $getaslookup;
 		$this->sitefields = $sitefields;
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -251,6 +248,7 @@ class Selection
 					return [
 						'select'      => $querySelect,
 						'from'        => $queryFrom,
+						'view'        => $viewCode,
 						'name'        => $queryName,
 						'table'       => $table,
 						'type'        => $type,

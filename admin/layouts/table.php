@@ -9,18 +9,27 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access to this file
-defined('JPATH_BASE') or die('Restricted access');
+
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+
+// No direct access to this file
+defined('JPATH_BASE') or die;
 
 $table_id = (isset($displayData['id'])) ? $displayData['id'] : StringHelper::random(7);
 $name = (isset($displayData['name'])) ? $displayData['name'] : false;
 $table_class = (isset($displayData['table_class'])) ? $displayData['table_class'] : 'uk-table';
-$headers = (isset($displayData['headers'])) ? $displayData['headers'] : [JText::_('COM_COMPONENTBUILDER_NO'), JText::_('COM_COMPONENTBUILDER_HEADERS'), JText::_('COM_COMPONENTBUILDER_FOUND')];
+$table_container_class = (isset($displayData['table_container_class'])) ? $displayData['table_container_class'] : 'uk-overflow-auto';
+$headers = (isset($displayData['headers'])) ? $displayData['headers'] : [Text::_('COM_COMPONENTBUILDER_NO'), Text::_('COM_COMPONENTBUILDER_HEADERS'), Text::_('COM_COMPONENTBUILDER_FOUND')];
 $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 
 ?>
-<div class="uk-overflow-auto">
+<div class="<?php echo $$table_container_class; ?>">
 	<table id="<?php echo $table_id; ?>" class="<?php echo $table_class; ?>">
 		<thead>
 			<?php if (is_array($headers)): ?>
@@ -54,7 +63,7 @@ $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 			<?php endif; ?>
 		</thead>
 		<tbody>
-			<?php echo JLayoutHelper::render('rows', ['headers' => $headers, 'items' => $items]); ?>
+			<?php echo LayoutHelper::render('rows', ['headers' => $headers, 'items' => $items]); ?>
 		</tbody>
 	</table>
 </div>
@@ -64,8 +73,8 @@ $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 if (!isset($displayData['init']) || $displayData['init']) :
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	var <?php echo $table_id; ?> = jQuery('#<?php echo $table_id; ?>').DataTable({
+document.addEventListener('DOMContentLoaded', function() {
+	var <?php echo $table_id; ?> = new DataTable('#<?php echo $table_id; ?>', {
 		paging: false,
 		select: true
 	});

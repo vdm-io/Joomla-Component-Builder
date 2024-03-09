@@ -212,6 +212,11 @@ class Fieldset
 			. " has the same alias."
 		);
 		$this->language->set(
+			$langTarget, $langView . '_ERROR_UNIQUE_ALIAS_TRASHED',
+			"A trashed " . $nameSingle
+			. " has the same alias ."
+		);
+		$this->language->set(
 			$langTarget, $langView . '_CREATED_DATE_LABEL', "Created Date"
 		);
 		$this->language->set(

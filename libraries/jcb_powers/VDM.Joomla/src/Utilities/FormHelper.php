@@ -75,24 +75,24 @@ abstract class FormHelper
 			// element was not returned
 			return;
 		}
-		switch (get_class($node))
+
+		if ($node instanceof \stdClass)
 		{
-			case 'stdClass':
-				if (property_exists($node, 'comment'))
-				{
-					self::comment($xml, $node->comment);
-				}
-				if (property_exists($node, 'fieldXML'))
-				{
-					self::append($xml, $node->fieldXML);
-				}
-				break;
-			case 'SimpleXMLElement':
-				$domXML = \dom_import_simplexml($xml);
-				$domNode = \dom_import_simplexml($node);
-				$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
-				$xml = \simplexml_import_dom($domXML);
-				break;
+			if (property_exists($node, 'comment'))
+			{
+				self::comment($xml, $node->comment);
+			}
+			if (property_exists($node, 'fieldXML'))
+			{
+				self::append($xml, $node->fieldXML);
+			}
+		}
+		elseif ($node instanceof \SimpleXMLElement)
+		{
+			$domXML = \dom_import_simplexml($xml);
+			$domNode = \dom_import_simplexml($node);
+			$domXML->appendChild($domXML->ownerDocument->importNode($domNode, true));
+			$xml = \simplexml_import_dom($domXML);
 		}
 	}
 
@@ -127,7 +127,7 @@ abstract class FormHelper
 	{
 		foreach ($attributes as $key => $value)
 		{
-			$xml->addAttribute($key, $value);
+			$xml->addAttribute($key, $value ?? '');
 		}
 	}
 
@@ -145,7 +145,7 @@ abstract class FormHelper
 		foreach ($options as $key => $value)
 		{
 			$addOption = $xml->addChild('option');
-			$addOption->addAttribute('value', $key);
+			$addOption->addAttribute('value', $key ?? '');
 			$addOption[] = $value;
 		}
 	}

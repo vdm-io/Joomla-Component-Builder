@@ -4,6 +4,6 @@
 	addfieldpath="/administrator/components/com_###component###/models/fields"
 >
 	###FIELDSETS###
-	
+
 	###ACCESSCONTROL###
 </form>

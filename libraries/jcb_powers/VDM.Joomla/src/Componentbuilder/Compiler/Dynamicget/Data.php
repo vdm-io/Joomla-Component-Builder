@@ -104,10 +104,9 @@ class Data
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -119,14 +118,13 @@ class Data
 	 * @param Dispenser|null            $dispenser       The compiler customcode dispenser object.
 	 * @param Gui|null                  $gui             The compiler customcode gui.
 	 * @param Dynamicget|null           $dynamic         The compiler dynamicget modeller object.
-	 * @param \JDatabaseDriver|null     $db              The database object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Registry $registry = null,
 		?EventInterface $event = null, ?Customcode $customcode = null,
 		?Dispenser $dispenser = null, ?Gui $gui = null,
-		?Dynamicget $dynamic = null, ?\JDatabaseDriver $db = null)
+		?Dynamicget $dynamic = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->registry = $registry ?: Compiler::_('Registry');
@@ -135,7 +133,7 @@ class Data
 		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
 		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
 		$this->dynamic = $dynamic ?: Compiler::_('Model.Dynamicget');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**
@@ -157,9 +155,6 @@ class Data
 
 		$ids = implode(',', $ids);
 
-		// for plugin event TODO change event api signatures
-		$component_context = $this->config->component_context;
-
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
 		$query->select('a.*');
@@ -176,8 +171,7 @@ class Data
 			{
 				// Trigger Event: jcb_ce_onBeforeModelDynamicGetData
 				$this->event->trigger(
-					'jcb_ce_onBeforeModelDynamicGetData',
-					array(&$component_context, &$result, &$result->id, &$view_code, &$context)
+					'jcb_ce_onBeforeModelDynamicGetData', [&$result, &$result->id, &$view_code, &$context]
 				);
 
 				// set GUI mapper id
@@ -310,8 +304,7 @@ class Data
 
 				// Trigger Event: jcb_ce_onAfterModelDynamicGetData
 				$this->event->trigger(
-					'jcb_ce_onAfterModelDynamicGetData',
-					array(&$component_context, &$result, &$result->id, &$view_code, &$context)
+					'jcb_ce_onAfterModelDynamicGetData', [&$result, &$result->id, &$view_code, &$context]
 				);
 			}
 

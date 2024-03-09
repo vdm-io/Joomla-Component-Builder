@@ -16,7 +16,7 @@ jform_vvvvwemvyq_required = false;
 jform_vvvvweovyr_required = false;
 
 // Initial Script
-jQuery(document).ready(function()
+document.addEventListener('DOMContentLoaded', function()
 {
 	var location_vvvvwej = jQuery("#jform_location input[type='radio']:checked").val();
 	vvvvwej(location_vvvvwej);
@@ -286,7 +286,7 @@ function vvvvweo(target_vvvvweo)
 // update fields required
 function updateFieldRequired(name, status) {
 	// check if not_required exist
-	if (jQuery('#jform_not_required').length > 0) {
+	if (document.getElementById('jform_not_required')) {
 		var not_required = jQuery('#jform_not_required').val().split(",");
 
 		if(status == 1)
@@ -332,4 +332,4 @@ function isSet(val)
 		return true;
 	}
 	return false;
-} 
+}

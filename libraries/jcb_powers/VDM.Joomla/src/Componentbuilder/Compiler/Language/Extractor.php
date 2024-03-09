@@ -118,13 +118,19 @@ class Extractor
 			$js_text      = [];
 			$sc_text      = [];
 			// first get the Joomla .JText._()
-			if (in_array('Joomla' . '.JText._(', $lang_string_targets))
+			if (in_array('Joomla' . '.JText._(', $lang_string_targets) || in_array('Joomla' . '.Text._(', $lang_string_targets))
 			{
 				$js_text[] = GetHelper::allBetween(
 					$content, "Joomla" . ".JText._('", "'"
 				);
 				$js_text[] = GetHelper::allBetween(
 					$content, 'Joomla' . '.JText._("', '"'
+				);
+				$js_text[] = GetHelper::allBetween(
+					$content, "Joomla" . ".Text._('", "'"
+				);
+				$js_text[] = GetHelper::allBetween(
+					$content, 'Joomla' . '.Text._("', '"'
 				);
 				// combine into one array
 				$js_text = ArrayHelper::merge($js_text);
@@ -141,13 +147,19 @@ class Extractor
 				}
 			}
 			// now get the JText: :script()
-			if (in_array('JText:' . ':script(', $lang_string_targets))
+			if (in_array('JText:' . ':script(', $lang_string_targets) || in_array('Text:' . ':script(', $lang_string_targets))
 			{
 				$sc_text[] = GetHelper::allBetween(
 					$content, "JText:" . ":script('", "'"
 				);
 				$sc_text[] = GetHelper::allBetween(
 					$content, 'JText:' . ':script("', '"'
+				);
+				$sc_text[] = GetHelper::allBetween(
+					$content, "Text:" . ":script('", "'"
+				);
+				$sc_text[] = GetHelper::allBetween(
+					$content, 'Text:' . ':script("', '"'
 				);
 				// combine into one array
 				$sc_text = ArrayHelper::merge($sc_text);
@@ -179,6 +191,7 @@ class Extractor
 				// need some special treatment here
 				if ($lang_string_target === 'Joomla' . '.JText._('
 					|| $lang_string_target === 'JText:' . ':script('
+					|| $lang_string_target === 'Text:' . ':script('
 					|| $lang_string_target === 'JustTEXT:' . ':_(')
 				{
 					continue;

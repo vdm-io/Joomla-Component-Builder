@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -46,15 +46,15 @@ class ###Component###Model###SViews### extends ListModel
 	protected function getListQuery()
 	{
 		// Get the current user for authorisation checks
-		$this->user = JFactory::getUser();
+		$this->user = Factory::getUser();
 		$this->userId = $this->user->get('id');
 		$this->guest = $this->user->get('guest');
 		$this->groups = $this->user->get('groups');
-		$this->authorisedGroups	= $this->user->getAuthorisedGroups();
+		$this->authorisedGroups    = $this->user->getAuthorisedGroups();
 		$this->levels = $this->user->getAuthorisedViewLevels();
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		$this->input = $this->app->input;
-		$this->initSet = true; ###CUSTOM_ADMIN_GET_LIST_QUERY###
+		$this->initSet = true;###CUSTOM_ADMIN_GET_LIST_QUERY###
 	}
 
 	/**
@@ -64,12 +64,12 @@ class ###Component###Model###SViews### extends ListModel
 	 */
 	public function getItems()
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// check if this user has permission to access items
 		if (!$user->authorise('###sviews###.access', 'com_###component###'))
 		{
-			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('Not authorised!'), 'error');
+			$app = Factory::getApplication();
+			$app->enqueueMessage(Text::_('Not authorised!'), 'error');
 			// redirect away if not a correct (TODO for now we go to default view)
 			$app->redirect('index.php?option=com_###component###');
 			return false;
@@ -78,7 +78,7 @@ class ###Component###Model###SViews### extends ListModel
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = JComponentHelper::getParams('com_###component###', true);###CUSTOM_ADMIN_GET_ITEMS######CUSTOM_ADMIN_AFTER_GET_ITEMS###
+		$globalParams = ComponentHelper::getParams('com_###component###', true);###CUSTOM_ADMIN_GET_ITEMS######CUSTOM_ADMIN_AFTER_GET_ITEMS###
 
 		// return items
 		return $items;

@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -15,9 +15,9 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED######CUSTOM_ADMIN_GET_MODULE_JIMPORT###
+defined('_JEXEC') or die('Restricted access');###LICENSE_LOCKED_DEFINED###
 
-###CUSTOM_ADMIN_VIEWS_HTML_HEADER###
+###CUSTOM_ADMIN_VIEWS_HTML_HEADER######CUSTOM_ADMIN_GET_MODULE_JIMPORT###
 
 /**
  * ###Component### Html View class for the ###SViews###
@@ -28,11 +28,11 @@ class ###Component###View###SViews### extends HtmlView
 	function display($tpl = null)
 	{
 		// get component params
-		$this->params = JComponentHelper::getParams('com_###component###');
+		$this->params = ComponentHelper::getParams('com_###component###');
 		// get the application
-		$this->app = JFactory::getApplication();
+		$this->app = Factory::getApplication();
 		// get the user object
-		$this->user	= JFactory::getUser();
+		$this->user    = Factory::getUser();
 		// get global action permissions
 		$this->canDo = ###Component###Helper::getActions('###sview###');###CUSTOM_ADMIN_DIPLAY_METHOD###
 	}###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS###
@@ -43,7 +43,7 @@ class ###Component###View###SViews### extends HtmlView
 	protected function setDocument()
 	{###CUSTOM_ADMIN_LIBRARIES_LOADER######CUSTOM_ADMIN_UIKIT_LOADER######CUSTOM_ADMIN_GOOGLECHART_LOADER######CUSTOM_ADMIN_FOOTABLE_LOADER######CUSTOM_ADMIN_DOCUMENT_CUSTOM_PHP###
 		// add the document default css file
-		JHtml::_('stylesheet', 'administrator/components/com_###component###/assets/css/###sviews###.css', ['version' => 'auto']);###CUSTOM_ADMIN_DOCUMENT_CUSTOM_CSS######CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
+		Html::_('stylesheet', 'administrator/components/com_###component###/assets/css/###sviews###.css', ['version' => 'auto']);###CUSTOM_ADMIN_DOCUMENT_CUSTOM_CSS######CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
 	}
 
 	/**
@@ -52,19 +52,19 @@ class ###Component###View###SViews### extends HtmlView
 	protected function addToolBar()
 	{###HIDEMAINMENU###
 		// add title to the page
-		JToolbarHelper::title(JText::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
+		ToolbarHelper::title(Text::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
 		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
-		if (###Component###Helper::checkString($this->help_url))
+		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_###component###');
+			ToolbarHelper::preferences('com_###component###');
 		}
 	}###CUSTOM_ADMIN_GET_MODULE###
 
@@ -78,6 +78,16 @@ class ###Component###View###SViews### extends HtmlView
 	public function escape($var)
 	{
 		// use the helper htmlEscape method instead.
-		return ###Component###Helper::htmlEscape($var, $this->_charset);
+		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset);
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}
 }

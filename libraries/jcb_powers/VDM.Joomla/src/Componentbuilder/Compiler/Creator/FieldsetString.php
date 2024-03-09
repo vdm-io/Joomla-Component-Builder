@@ -231,18 +231,16 @@ final class FieldsetString implements Fieldsetinterface
 		$dynamic_fields = '';
 		// set the custom table key
 		$dbkey = 'g';
-		// for plugin event TODO change event api signatures
-		$placeholders = $this->placeholder->active;
-		$component_context = $this->config->component_context;
+
 		// Trigger Event: jcb_ce_onBeforeBuildFields
 		$this->event->trigger(
 			'jcb_ce_onBeforeBuildFields',
-			array(&$component_context, &$dynamic_fields, &$read_only,
+			[&$dynamic_fields, &$read_only,
 				&$dbkey, &$view, &$component, &$nameSingleCode,
-				&$nameListCode, &$placeholders, &$lang_view,
-				&$lang_views)
+				&$nameListCode, &$lang_view,
+				&$lang_views]
 		);
-		unset($placeholders);
+
 		// TODO we should add the global and local view switch if field for front end
 		foreach ($view['settings']->fields as $field)
 		{
@@ -252,17 +250,16 @@ final class FieldsetString implements Fieldsetinterface
 				true
 			);
 		}
-		// for plugin event TODO change event api signatures
-		$placeholders = $this->placeholder->active;
+
 		// Trigger Event: jcb_ce_onAfterBuildFields
 		$this->event->trigger(
 			'jcb_ce_onAfterBuildFields',
-			array(&$component_context, &$dynamic_fields, &$read_only,
+			[&$dynamic_fields, &$read_only,
 				&$dbkey, &$view, &$component, &$nameSingleCode,
-				&$nameListCode, &$placeholders, &$lang_view,
-				&$lang_views)
+				&$nameListCode, &$lang_view,
+				&$lang_views]
 		);
-		unset($placeholders);
+
 		// set the default fields
 		$field_set   = array();
 		$field_set[] = '<fieldset name="details">';
@@ -444,6 +441,7 @@ final class FieldsetString implements Fieldsetinterface
 			$field_set[] = Indent::_(3) . 'description="' . $lang_view
 				. '_VERSION_DESC"';
 			$field_set[] = Indent::_(3) . 'size="6"';
+			$field_set[] = Indent::_(3) . 'default="1"';
 			$field_set[] = Indent::_(3) . 'readonly="true"';
 			$field_set[] = Indent::_(3) . 'filter="unset"';
 			$field_set[] = Indent::_(2) . "/>";

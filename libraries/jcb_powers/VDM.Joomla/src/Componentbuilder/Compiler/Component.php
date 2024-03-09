@@ -45,7 +45,7 @@ final class Component extends BaseRegistry
 	 *
 	 * @since 3.2.0
 	 */
-	public function __get(string $path)
+	public function __get($path)
 	{
 		// check if it has been set
 		if (($value = $this->get($path, '__N0T_S3T_Y3T_')) !== '__N0T_S3T_Y3T_')

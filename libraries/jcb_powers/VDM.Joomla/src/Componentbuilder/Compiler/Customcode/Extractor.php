@@ -17,6 +17,7 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Version;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
@@ -82,6 +83,14 @@ class Extractor implements ExtractorInterface
 			3 => 'REPLACED<>$$$$]',
 			4 => 'INSERTED<>$$$$]'
 		];
+
+	/**
+	 * Current Joomla Version We are IN
+	 *
+	 * @var     int
+	 * @since 3.2.0
+	 **/
+	protected int $currentVersion;
 
 	/**
 	 * The custom code in local files that already exist in system
@@ -190,26 +199,23 @@ class Extractor implements ExtractorInterface
 	/**
 	 * Current User Object
 	 *
-	 * @var    User
 	 * @since 3.2.0
 	 **/
-	protected User $user;
+	protected $user;
 
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    CMSApplication
 	 * @since 3.2.0
 	 **/
-	protected CMSApplication $app;
+	protected $app;
 
 	/**
 	 * Constructor.
@@ -220,16 +226,12 @@ class Extractor implements ExtractorInterface
 	 * @param Reverse|null            $reverse     The compiler placeholder reverse object.
 	 * @param Placeholder|null        $placeholder The compiler component placeholder object.
 	 * @param Pathfix|null            $pathfix     The compiler path fixing object.
-	 * @param User|null               $user        The current User object.
-	 * @param \JDatabaseDriver|null   $db          The Database Driver object.
-	 * @param CMSApplication|null     $app         The CMS Application object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Gui $gui = null, ?Paths $paths = null,
-		?Reverse $reverse = null, ?Placeholder $placeholder = null, ?Pathfix $pathfix = null,
-		?User $user = null, ?\JDatabaseDriver $db = null, ?CMSApplication $app = null)
+		?Reverse $reverse = null, ?Placeholder $placeholder = null, ?Pathfix $pathfix = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
@@ -237,9 +239,9 @@ class Extractor implements ExtractorInterface
 		$this->reverse = $reverse ?: Compiler::_('Placeholder.Reverse');
 		$this->componentPlaceholder = $placeholder ?: Compiler::_('Component.Placeholder');
 		$this->pathfix = $pathfix ?: Compiler::_('Utilities.Pathfix');
-		$this->user = $user ?: Factory::getUser();
-		$this->db = $db ?: Factory::getDbo();
-		$this->app = $app ?: Factory::getApplication();
+		$this->user = Factory::getUser();
+		$this->db = Factory::getDbo();
+		$this->app = Factory::getApplication();
 
 		// set today's date
 		$this->today = Factory::getDate()->toSql();
@@ -261,6 +263,9 @@ class Extractor implements ExtractorInterface
 
 		// set the local placeholders
 		$this->placeholders = array_reverse($placeholders, true);
+
+		// set the current version
+		$this->currentVersion = (int) Version::MAJOR_VERSION;
 	}
 
 	/**
@@ -615,6 +620,11 @@ class Extractor implements ExtractorInterface
 
 							$this->new[$pointer[$targetKey]][]
 								= $this->db->quote(
+								$this->currentVersion
+							); // 'joomla_version'
+
+							$this->new[$pointer[$targetKey]][]
+								= $this->db->quote(
 								$commentType
 							);  // 'comment_type'
 
@@ -766,7 +776,7 @@ class Extractor implements ExtractorInterface
 			$query    = $this->db->getQuery(true);
 			$continue = false;
 			// Insert columns.
-			$columns = array('path', 'type', 'target', 'comment_type',
+			$columns = array('path', 'type', 'target', 'joomla_version', 'comment_type',
 				'component', 'published', 'created', 'created_by',
 				'version', 'access', 'hashtarget', 'from_line',
 				'to_line', 'code', 'hashendtarget');

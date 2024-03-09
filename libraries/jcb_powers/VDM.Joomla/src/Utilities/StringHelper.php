@@ -50,18 +50,18 @@ abstract class StringHelper
 	/**
 	 * Shorten a string
 	 *
-	 * @input	string   The you would like to shorten
+	 * @input	string   The sting that you would like to shorten
 	 *
 	 * @returns string on success
 	 * 
-	 * @since  3.0.9
+	 * @since  3.2.0
 	 */
 	public static function shorten($string, $length = 40, $addTip = true)
 	{
 		if (self::check($string))
 		{
 			$initial = strlen((string) $string);
-			$words = preg_split('/([\s\n\r]+)/', (string) $string, null, PREG_SPLIT_DELIM_CAPTURE);
+			$words = preg_split('/([\s\n\r]+)/', (string) $string, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$words_count = count((array)$words);
 
 			$word_length = 0;

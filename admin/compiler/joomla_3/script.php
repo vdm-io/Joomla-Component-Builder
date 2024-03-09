@@ -17,20 +17,24 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Installer\Adapter\ComponentAdapter;
-JHTML::_('bootstrap.renderModal');
+use Joomla\CMS\Version;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+HTML::_('bootstrap.renderModal');
 
 /**
  * Script File of ###Component### Component
  */
-class com_###component###InstallerScript
+class Com_###Component###InstallerScript
 {
 	/**
 	 * Constructor
 	 *
-	 * @param   JAdapterInstance  $parent  The object responsible for running this script
+	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 */
 	public function __construct(ComponentAdapter $parent) {}
 
@@ -78,14 +82,14 @@ class com_###component###InstallerScript
 	public function preflight($type, ComponentAdapter $parent)
 	{
 		// get application
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		// is redundant or so it seems ...hmmm let me know if it works again
 		if ($type === 'uninstall')
 		{
 			return true;
 		}
 		// the default for both install and update
-		$jversion = new JVersion();
+		$jversion = new Version();
 		if (!$jversion->isCompatible('3.8.0'))
 		{
 			$app->enqueueMessage('Please upgrade to at least Joomla! 3.8.0 before continuing!', 'error');
@@ -121,7 +125,7 @@ class com_###component###InstallerScript
 	public function postflight($type, ComponentAdapter $parent)
 	{
 		// get application
-		$app = JFactory::getApplication();###MOVEFOLDERSSCRIPT###
+		$app = Factory::getApplication();###MOVEFOLDERSSCRIPT###
 		// set the default component settings
 		if ($type === 'install')
 		{###POSTINSTALLSCRIPT###
@@ -135,12 +139,12 @@ class com_###component###InstallerScript
 
 	/**
 	 * Remove folders with files
-	 * 
+	 *
 	 * @param   string   $dir     The path to folder to remove
 	 * @param   boolean  $ignore  The folders and files to ignore and not remove
 	 *
 	 * @return  boolean   True in all is removed
-	 * 
+	 *
 	 */
 	protected function removeFolder($dir, $ignore = false)
 	{
@@ -209,7 +213,7 @@ class com_###component###InstallerScript
 	/**
 	 * Check if have an array with a length
 	 *
-	 * @input	array   The array to check
+	 * @input    array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
 	 */

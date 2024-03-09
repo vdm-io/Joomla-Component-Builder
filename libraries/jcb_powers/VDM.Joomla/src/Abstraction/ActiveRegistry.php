@@ -33,6 +33,14 @@ abstract class ActiveRegistry implements Activeregistryinterface
 	protected array $active = [];
 
 	/**
+	 * Base switch to add values as string or array
+	 *
+	 * @var    boolean
+	 * @since 3.2.0
+	 **/
+	protected bool $addAsArray = false;
+
+	/**
 	 * Check if the registry has any content.
 	 *
 	 * @return bool  Returns true if the active array is not empty, false otherwise.
@@ -95,19 +103,27 @@ abstract class ActiveRegistry implements Activeregistryinterface
 	 * Adds content into the registry. If a key exists,
 	 * it either appends or concatenates based on the value's type.
 	 *
-	 * @param mixed   $value     The value to set.
-	 * @param bool    $asArray   Determines if the new value should be treated as an array.
-	 * @param string  ...$keys   The keys to determine the location.
+	 * @param mixed       $value     The value to set.
+	 * @param bool|null   $asArray   Determines if the new value should be treated as an array.
+	 *                                Default is $addAsArray = false (if null) in base class.
+	 *                                Override in child class allowed set class property $addAsArray = true.
+	 * @param string      ...$keys   The keys to determine the location.
 	 *
 	 * @throws \InvalidArgumentException If any of the keys are not a number or string.
 	 * @return void
 	 * @since 3.2.0
 	 */
-	public function addActive($value, bool $asArray, string ...$keys): void
+	public function addActive($value, ?bool $asArray, string ...$keys): void
 	{
 		if (!$this->validActiveKeys($keys))
 		{
 			throw new \InvalidArgumentException("Keys must only be strings or numbers to add any value.");
+		}
+
+		// null fallback to class value
+		if ($asArray === null)
+		{
+			$asArray = $this->addAsArray;
 		}
 
 		$array = &$this->active;

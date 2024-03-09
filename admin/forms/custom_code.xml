@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addruleprefix="VDM\Component\Componentbuilder\Administrator\Rule"
+	addfieldprefix="VDM\Component\Componentbuilder\Administrator\Field"
+>
+	<config>
+		<inlinehelp button="show"/>
+	</config>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_VERSION_DESC"
+			size="6"
+			default="1"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Was added due to Permissions JS needing a Title field -->
+		<!-- Let us know at gh-629 should this change -->
+		<!-- https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235 -->
+		<field
+			name="title"
+			type="hidden"
+			default="componentbuilder custom_code"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- Component Field. Type: Joomlacomponent. (custom) -->
+		<field
+			type="joomlacomponent"
+			name="component"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
+			class="list_class"
+			multiple="false"
+			default="0"
+			required="true"
+			button="true"
+		/>
+		<!-- Path Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="path"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_LABEL"
+			size="100"
+			maxlength="250"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_DESCRIPTION"
+			class="text_area span12"
+			required="true"
+			filter="PATH"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_HINT"
+		/>
+		<!-- Target Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="target"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="2">
+			<!-- Option Set. -->
+			<option value="2">
+				COM_COMPONENTBUILDER_CUSTOM_CODE_JCB_MANUAL</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_CUSTOM_CODE_HASH_AUTOMATION</option>
+		</field>
+		<!-- Type Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="type"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CUSTOM_CODE_REPLACEMENT</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CUSTOM_CODE_INSERTION</option>
+		</field>
+		<!-- Comment_type Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="comment_type"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_CUSTOM_CODE_PHPJS</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_CUSTOM_CODE_HTML</option>
+		</field>
+		<!-- Joomla_version Field. Type: Number. (joomla) -->
+		<field
+			type="number"
+			name="joomla_version"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_JOOMLA_VERSION_LABEL"
+			default="3"
+			class="text_area"
+			min="3"
+			max="5"
+			step="1"
+			showon="target:1"
+		/>
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="一_一"
+		/>
+		<!-- Function_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="function_name"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_FUNCTION_NAME_LABEL"
+			size="40"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_FUNCTION_NAME_DESCRIPTION"
+			class="input-large-text"
+			required="true"
+		/>
+		<!-- System_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="system_name"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL"
+			size="10"
+			maxlength="50"
+			default=""
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_HINT"
+		/>
+		<!-- Note_placeholders_explained Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_placeholders_explained" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_PLACEHOLDERS_EXPLAINED_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_PLACEHOLDERS_EXPLAINED_DESCRIPTION" heading="h4" class="note_placeholders_explained" />
+		<!-- Code Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="code"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_CODE_LABEL"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_CODE_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
+		<!-- Note_jcb_placeholder Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_jcb_placeholder" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_JCB_PLACEHOLDER_DESCRIPTION" heading="h4" class="alert alert-info note_jcb_placeholder" />
+		<!-- Hashendtarget Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="hashendtarget"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHENDTARGET_LABEL"
+			size="50"
+			maxlength="150"
+			default=""
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHENDTARGET_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHENDTARGET_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHENDTARGET_HINT"
+		/>
+		<!-- To_line Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="to_line"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_DESCRIPTION"
+			class="text_area"
+			filter="FLOAT"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_TO_LINE_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- From_line Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="from_line"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_LABEL"
+			size="10"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_DESCRIPTION"
+			class="text_area"
+			filter="FLOAT"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_FROM_LINE_HINT"
+			onchange="if(!jQuery(this).val().match(/^\d+$/)){jQuery(this).val('')};"
+		/>
+		<!-- Hashtarget Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="hashtarget"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_LABEL"
+			size="50"
+			maxlength="150"
+			default=""
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_HINT"
+		/>
+	</fieldset>
+
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this custom_code"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="custom_code"
+		/>
+	</fieldset>
+</form>

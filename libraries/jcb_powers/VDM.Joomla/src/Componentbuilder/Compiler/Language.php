@@ -65,16 +65,13 @@ class Language implements LanguageInterface
 	public function key($string): string
 	{
 		// this is there to insure we don't break already added Language strings
-		if (StringHelper::safe($string, 'U', '_', false, false)
-			=== $string)
+		if (StringHelper::safe($string, 'U', '_', false, false) === $string)
 		{
 			return false;
 		}
 
 		// build language key
-		$key_lang = $this->config->lang_prefix . '_' . StringHelper::safe(
-				$string, 'U'
-			);
+		$key_lang = $this->config->lang_prefix . '_' . StringHelper::safe($string, 'U');
 
 		// set the language string
 		$this->set($this->config->lang_target, $key_lang, $string);
@@ -97,7 +94,7 @@ class Language implements LanguageInterface
 		{
 			return isset($this->content[$target][$language]);
 		}
-		
+
 		return isset($this->content[$target]);
 	}
 
@@ -165,38 +162,42 @@ class Language implements LanguageInterface
 	 */
 	public function set(string $target, string $language, string $string, bool $addPrefix = false)
 	{
-		if ($addPrefix && empty(
-				$this->content[$target][$this->config->lang_prefix . '_' . $language]
-			))
+		if ($addPrefix && empty($this->content[$target][$this->config->lang_prefix . '_' . $language]))
 		{
 			$this->content[$target][$this->config->lang_prefix . '_' . $language]
 				= $this->fix($string);
 		}
 		elseif (empty($this->content[$target][$language]))
 		{
-			$this->content[$target][$language] = $this->fix(
-				$string
-			);
+			$this->content[$target][$language] = $this->fix($string);
 		}
 	}
 
 	/**
-	 * We need to remove all text breaks from all language strings
+	 * Removes all types of line breaks from a given string.
 	 *
-	 * @param   string  $string  The language string
+	 * This method is designed to strip out all kinds of new line characters from the input string
+	 * to ensure a single-line output. It takes into consideration different operating systems'
+	 * line endings, including the combination of Carriage Return and Line Feed.
 	 *
-	 * @return  string
+	 * @param string $string The input string possibly containing line breaks.
+	 *
+	 * @return string The modified string with all line breaks removed.
 	 * @since 3.2.0
 	 */
-	protected function fix(string $string): string
+	public function fix(string $string): string
 	{
 		if ($this->config->remove_line_breaks)
 		{
-			return trim(str_replace(array(PHP_EOL, "\r", "\n"), '', $string));
+			// Using a single str_replace call to handle all variations of line breaks.
+			// The array includes \r\n (CR+LF used in Windows), \n (LF used in Unix/Linux),
+			// and \r (CR used in old Macs) to cover all bases.
+			$search = [PHP_EOL, "\r\n", "\n", "\r"];
+			$string = str_replace($search, '', $string);
 		}
 
+		// Trim the string to remove any leading or trailing whitespace.
 		return trim($string);
 	}
-
 }
 

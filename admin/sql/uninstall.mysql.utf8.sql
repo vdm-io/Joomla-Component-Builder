@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS `#__componentbuilder_component_custom_admin_views`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_updates`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_mysql_tweaks`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_custom_admin_menus`;
+DROP TABLE IF EXISTS `#__componentbuilder_component_router`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_config`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_dashboard`;
 DROP TABLE IF EXISTS `#__componentbuilder_component_files_folders`;
@@ -46,6 +47,4 @@ DROP TABLE IF EXISTS `#__componentbuilder_joomla_module_files_folders_urls`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_group`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_updates`;
 DROP TABLE IF EXISTS `#__componentbuilder_joomla_plugin_files_folders_urls`;
-
-DROP TABLE IF EXISTS `#__componentbuilder_external_code`;
 

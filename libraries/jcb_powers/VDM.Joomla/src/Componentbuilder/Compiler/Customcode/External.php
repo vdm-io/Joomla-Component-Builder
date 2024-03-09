@@ -60,45 +60,38 @@ class External implements ExternalInterface
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * User object
 	 *
-	 * @var    User
 	 * @since 3.2.0
 	 **/
-	protected User $user;
+	protected $user;
 
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    CMSApplication
 	 * @since 3.2.0
 	 **/
-	protected CMSApplication $app;
+	protected $app;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param Placeholder|null        $placeholder   The compiler placeholder object.
-	 * @param \JDatabaseDriver|null   $db            The Database Driver object.
-	 * @param User|null               $user          The User object.
-	 * @param CMSApplication|null     $app           The CMS Application object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Placeholder $placeholder = null,
-		?\JDatabaseDriver $db = null, ?User $user = null, ?CMSApplication $app = null)
+	public function __construct(?Placeholder $placeholder = null)
 	{
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->db = $db ?: Factory::getDbo();
-		$this->user = $user ?: Factory::getUser();
-		$this->app = $app ?: Factory::getApplication();
+		$this->db = Factory::getDbo();
+		$this->user = Factory::getUser();
+		$this->app = Factory::getApplication();
 	}
 
 	/**
