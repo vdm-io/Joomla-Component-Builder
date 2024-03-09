@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -40,10 +40,10 @@ class ###Component###View###Views### extends HtmlView
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
-		$this->user = JFactory::getUser();###ADMIN_DIPLAY_METHOD###
+		$this->user = Factory::getUser();###ADMIN_DIPLAY_METHOD###
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
-		$this->return_here = urlencode(base64_encode((string) JUri::getInstance()));
+		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
 		// get global action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
 
@@ -58,7 +58,7 @@ class ###Component###View###Views### extends HtmlView
 				$this->batchDisplay = JHtmlBatch_::render();
 			}
 		}
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -77,32 +77,32 @@ class ###Component###View###Views### extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_###COMPONENT###_###VIEWS###'), '###ICOMOON###');
 		JHtmlSidebar::setAction('index.php?option=com_###component###&view=###views###');
-		JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		ToolbarHelper::title(Text::_('COM_###COMPONENT###_###VIEWS###'), '###ICOMOON###');
+		FormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		if ($this->canCreate)
 		{
-			JToolBarHelper::addNew('###view###.add');
+			ToolbarHelper::addNew('###view###.add');
 		}
 
 		// Only load if there are items
-		if (###Component###Helper::checkArray($this->items))
+		if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($this->items))
 		{
 			if ($this->canEdit)
 			{
-				JToolBarHelper::editList('###view###.edit');
+				ToolbarHelper::editList('###view###.edit');
 			}
 
 			if ($this->canState)
 			{
-				JToolBarHelper::publishList('###views###.publish');
-				JToolBarHelper::unpublishList('###views###.unpublish');
-				JToolBarHelper::archiveList('###views###.archive');
+				ToolbarHelper::publishList('###views###.publish');
+				ToolbarHelper::unpublishList('###views###.unpublish');
+				ToolbarHelper::archiveList('###views###.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					JToolBarHelper::checkin('###views###.checkin');
+					ToolbarHelper::checkin('###views###.checkin');
 				}
 			}
 
@@ -110,11 +110,11 @@ class ###Component###View###Views### extends HtmlView
 			if ($this->canBatch && $this->canCreate && $this->canEdit && $this->canState)
 			{
 				// Get the toolbar object instance
-				$bar = JToolBar::getInstance('toolbar');
+				$bar = Toolbar::getInstance('toolbar');
 				// set the batch button name
-				$title = JText::_('JTOOLBAR_BATCH');
+				$title = Text::_('JTOOLBAR_BATCH');
 				// Instantiate a new JLayoutFile instance and render the batch button
-				$layout = new JLayoutFile('joomla.toolbar.batch');
+				$layout = new FileLayout('joomla.toolbar.batch');
 				// add the button to the page
 				$dhtml = $layout->render(array('title' => $title));
 				$bar->appendButton('Custom', $dhtml, 'batch');
@@ -122,25 +122,25 @@ class ###Component###View###Views### extends HtmlView
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
-				JToolbarHelper::deleteList('', '###views###.delete', 'JTOOLBAR_EMPTY_TRASH');
+				ToolbarHelper::deleteList('', '###views###.delete', 'JTOOLBAR_EMPTY_TRASH');
 			}
 			elseif ($this->canState && $this->canDelete)
 			{
-				JToolbarHelper::trash('###views###.trash');
+				ToolbarHelper::trash('###views###.trash');
 			}###EXPORTBUTTON###
 		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST######IMPORTBUTTON###
 
 		// set help url for this view if found
 		$this->help_url = ###Component###Helper::getHelpUrl('###views###');
-		if (###Component###Helper::checkString($this->help_url))
+		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-				JToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			JToolBarHelper::preferences('com_###component###');
+			ToolbarHelper::preferences('com_###component###');
 		}###FILTERFIELDDISPLAYHELPER######BATCHDISPLAYHELPER###
 	}
 
@@ -153,10 +153,10 @@ class ###Component###View###Views### extends HtmlView
 	{
 		if (!isset($this->document))
 		{
-			$this->document = JFactory::getDocument();
+			$this->document = Factory::getDocument();
 		}
-		$this->document->setTitle(JText::_('COM_###COMPONENT###_###VIEWS###'));
-		$this->document->addStyleSheet(JURI::root() . "administrator/components/com_###component###/assets/css/###views###.css", (###Component###Helper::jVersion()->isCompatible('3.8.0')) ? array('version' => 'auto') : 'text/css');###ADMIN_ADD_JAVASCRIPT_FILE###
+		$this->document->setTitle(Text::_('COM_###COMPONENT###_###VIEWS###'));
+		Html::_('stylesheet', "administrator/components/com_###component###/assets/css/###views###.css", ['version' => 'auto']);###ADMIN_ADD_JAVASCRIPT_FILE###
 	}
 
 	/**
@@ -171,19 +171,29 @@ class ###Component###View###Views### extends HtmlView
 		if(strlen($var) > 50)
 		{
 			// use the helper htmlEscape method instead and shorten the string
-			return ###Component###Helper::htmlEscape($var, $this->_charset, true);
+			return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset, true);
 		}
 		// use the helper htmlEscape method instead.
-		return ###Component###Helper::htmlEscape($var, $this->_charset);
+		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset);
 	}
 
 	/**
 	 * Returns an array of fields the table can be sorted by
 	 *
-	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 * @return  array   Array containing the field name to sort by as the key and display text as value
 	 */
 	protected function getSortFields()
 	{
 		###SORTFIELDS###
+	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= JFactory::getDocument();
+
+		return $this->document;
 	}###FILTERFUNCTIONS###
 }

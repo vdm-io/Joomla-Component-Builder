@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use Joomla\CMS\Version;
 use VDM\Joomla\Componentbuilder\Compiler\Field as CompilerField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Data;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Groups;
@@ -21,12 +22,21 @@ use VDM\Joomla\Componentbuilder\Compiler\Field\Attributes;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name;
 use VDM\Joomla\Componentbuilder\Compiler\Field\TypeName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\UniqueName;
-use VDM\Joomla\Componentbuilder\Compiler\Field\Validation;
+use VDM\Joomla\Componentbuilder\Compiler\Field\Rule;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field\DatabaseName;
-use VDM\Joomla\Componentbuilder\Compiler\Field\InputButton;
-use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreValidation as J3CoreValidation;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreValidationInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreRule as J3CoreRule;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\CoreRule as J4CoreRule;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\CoreRule as J5CoreRule;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreField as J3CoreField;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\CoreField as J4CoreField;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\CoreField as J5CoreField;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\InputButton as J3InputButton;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\InputButton as J4InputButton;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\InputButton as J5InputButton;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreFieldInterface as CoreField;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreRuleInterface as CoreRule;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\InputButtonInterface as InputButton;
 
 
 /**
@@ -45,6 +55,14 @@ class Field implements ServiceProviderInterface
 	protected $targetVersion;
 
 	/**
+	 * Current Joomla Version We are IN
+	 *
+	 * @var     int
+	 * @since 3.2.0
+	 **/
+	protected $currentVersion;
+
+	/**
 	 * Registers the service provider with a DI container.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -55,7 +73,7 @@ class Field implements ServiceProviderInterface
 	public function register(Container $container)
 	{
 		$container->alias(CompilerField::class, 'Field')
-			->share('Field', [$this, 'getField'], true);
+			->share('Field', [$this, 'getCompilerField'], true);
 
 		$container->alias(Data::class, 'Field.Data')
 			->share('Field.Data', [$this, 'getData'], true);
@@ -66,43 +84,70 @@ class Field implements ServiceProviderInterface
 		$container->alias(Attributes::class, 'Field.Attributes')
 			->share('Field.Attributes', [$this, 'getAttributes'], true);
 
-		$container->alias(Validation::class, 'Field.Validation')
-			->share('Field.Validation', [$this, 'getValidation'], true);
+		$container->alias(Name::class, 'Field.Name')
+			->share('Field.Name', [$this, 'getName'], true);
 
-		$container->alias(J3CoreValidation::class, 'J3.Field.Core.Validation')
-			->share('J3.Field.Core.Validation', [$this, 'getJ3CoreValidation'], true);
+		$container->alias(TypeName::class, 'Field.Type.Name')
+			->share('Field.Type.Name', [$this, 'getTypeName'], true);
 
-		$container->alias(CoreValidationInterface::class, 'Field.Core.Validation')
-			->share('Field.Core.Validation', [$this, 'getCoreValidation'], true);
+		$container->alias(UniqueName::class, 'Field.Unique.Name')
+			->share('Field.Unique.Name', [$this, 'getUniqueName'], true);
+
+		$container->alias(Rule::class, 'Field.Rule')
+			->share('Field.Rule', [$this, 'getRule'], true);
 
 		$container->alias(Customcode::class, 'Field.Customcode')
 			->share('Field.Customcode', [$this, 'getCustomcode'], true);
 
-		$container->alias(Name::class, 'Field.Name')
-			->share('Field.Name', [$this, 'getFieldName'], true);
-
-		$container->alias(TypeName::class, 'Field.Type.Name')
-			->share('Field.Type.Name', [$this, 'getFieldTypeName'], true);
-
-		$container->alias(UniqueName::class, 'Field.Unique.Name')
-			->share('Field.Unique.Name', [$this, 'getFieldUniqueName'], true);
-
 		$container->alias(DatabaseName::class, 'Field.Database.Name')
-			->share('Field.Database.Name', [$this, 'getFieldDatabaseName'], true);
+			->share('Field.Database.Name', [$this, 'getDatabaseName'], true);
+
+		$container->alias(J3CoreRule::class, 'J3.Field.Core.Rule')
+			->share('J3.Field.Core.Rule', [$this, 'getJ3CoreRule'], true);
+
+		$container->alias(J4CoreRule::class, 'J4.Field.Core.Rule')
+			->share('J4.Field.Core.Rule', [$this, 'getJ4CoreRule'], true);
+
+		$container->alias(J5CoreRule::class, 'J5.Field.Core.Rule')
+			->share('J5.Field.Core.Rule', [$this, 'getJ5CoreRule'], true);
+
+		$container->alias(J3CoreField::class, 'J3.Field.Core.Field')
+			->share('J3.Field.Core.Field', [$this, 'getJ3CoreField'], true);
+
+		$container->alias(J4CoreField::class, 'J4.Field.Core.Field')
+			->share('J4.Field.Core.Field', [$this, 'getJ4CoreField'], true);
+
+		$container->alias(J5CoreField::class, 'J5.Field.Core.Field')
+			->share('J5.Field.Core.Field', [$this, 'getJ5CoreField'], true);
+
+		$container->alias(J3InputButton::class, 'J3.Field.Input.Button')
+			->share('J3.Field.Input.Button', [$this, 'getJ3InputButton'], true);
+
+		$container->alias(J4InputButton::class, 'J4.Field.Input.Button')
+			->share('J4.Field.Input.Button', [$this, 'getJ4InputButton'], true);
+
+		$container->alias(J5InputButton::class, 'J5.Field.Input.Button')
+			->share('J5.Field.Input.Button', [$this, 'getJ5InputButton'], true);
+
+		$container->alias(CoreField::class, 'Field.Core.Field')
+			->share('Field.Core.Field', [$this, 'getCoreField'], true);
+
+		$container->alias(CoreRule::class, 'Field.Core.Rule')
+			->share('Field.Core.Rule', [$this, 'getCoreRule'], true);
 
 		$container->alias(InputButton::class, 'Field.Input.Button')
 			->share('Field.Input.Button', [$this, 'getInputButton'], true);
 	}
 
 	/**
-	 * Get the Compiler Field
+	 * Get The Field Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  CompilerField
 	 * @since 3.2.0
 	 */
-	public function getField(Container $container): CompilerField
+	public function getCompilerField(Container $container): CompilerField
 	{
 		return new CompilerField(
 			$container->get('Field.Data'),
@@ -113,7 +158,7 @@ class Field implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Field Data
+	 * Get The Data Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -129,12 +174,12 @@ class Field implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Field.Customcode'),
-			$container->get('Field.Validation')
+			$container->get('Field.Rule')
 		);
 	}
 
 	/**
-	 * Get the Compiler Field Groups
+	 * Get The Groups Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -147,7 +192,7 @@ class Field implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Field Attributes
+	 * Get The Attributes Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -169,57 +214,71 @@ class Field implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Field Validation
+	 * Get The Name Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Validation
+	 * @return  Name
 	 * @since 3.2.0
 	 */
-	public function getValidation(Container $container): Validation
+	public function getName(Container $container): Name
 	{
-		return new Validation(
-			$container->get('Registry'),
-			$container->get('Customcode.Gui'),
+		return new Name(
 			$container->get('Placeholder'),
-			$container->get('Customcode'),
-			$container->get('Field.Core.Validation')
+			$container->get('Field.Unique.Name'),
+			$container->get('Compiler.Builder.Category.Other.Name')
 		);
 	}
 
 	/**
-	 * Get the Compiler Field Joomla 3 Validation
+	 * Get The TypeName Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  J3CoreValidation
+	 * @return  TypeName
 	 * @since 3.2.0
 	 */
-	public function getJ3CoreValidation(Container $container): J3CoreValidation
+	public function getTypeName(Container $container): TypeName
 	{
-		return new J3CoreValidation();
+		return new TypeName();
 	}
 
 	/**
-	 * Get the Compiler Field Core Validation
+	 * Get The UniqueName Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  CoreValidationInterface
+	 * @return  UniqueName
 	 * @since 3.2.0
 	 */
-	public function getCoreValidation(Container $container): CoreValidationInterface
+	public function getUniqueName(Container $container): UniqueName
 	{
-		if (empty($this->targetVersion))
-		{
-			$this->targetVersion = $container->get('Config')->joomla_version;
-		}
-
-		return $container->get('J' . $this->targetVersion . '.Field.Core.Validation');
+		return new UniqueName(
+			$container->get('Registry')
+		);
 	}
 
 	/**
-	 * Get the Compiler Field Customcode
+	 * Get The Rule Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Rule
+	 * @since 3.2.0
+	 */
+	public function getRule(Container $container): Rule
+	{
+		return new Rule(
+			$container->get('Registry'),
+			$container->get('Customcode'),
+			$container->get('Customcode.Gui'),
+			$container->get('Placeholder'),
+			$container->get('Field.Core.Rule')
+		);
+	}
+
+	/**
+	 * Get The Customcode Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -234,64 +293,184 @@ class Field implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Field Name
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Name
-	 * @since 3.2.0
-	 */
-	public function getFieldName(Container $container): Name
-	{
-		return new Name(
-			$container->get('Placeholder'),
-			$container->get('Field.Unique.Name'),
-			$container->get('Compiler.Builder.Category.Other.Name')
-		);
-	}
-
-	/**
-	 * Get the Compiler Field Type Name
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  TypeName
-	 * @since 3.2.0
-	 */
-	public function getFieldTypeName(Container $container): TypeName
-	{
-		return new TypeName();
-	}
-
-	/**
-	 * Get the Compiler Field Unique Name
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  UniqueName
-	 * @since 3.2.0
-	 */
-	public function getFieldUniqueName(Container $container): UniqueName
-	{
-		return new UniqueName(
-			$container->get('Registry')
-		);
-	}
-
-	/**
-	 * Get the Compiler Field Database Name
+	 * Get The DatabaseName Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  DatabaseName
 	 * @since 3.2.0
 	 */
-	public function getFieldDatabaseName(Container $container): DatabaseName
+	public function getDatabaseName(Container $container): DatabaseName
 	{
 		return new DatabaseName(
 			$container->get('Compiler.Builder.Lists'),
 			$container->get('Registry')
 		);
+	}
+
+	/**
+	 * Get The CoreRule Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3CoreRule
+	 * @since 3.2.0
+	 */
+	public function getJ3CoreRule(Container $container): J3CoreRule
+	{
+		return new J3CoreRule();
+	}
+
+	/**
+	 * Get The CoreRule Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J4CoreRule
+	 * @since 3.2.0
+	 */
+	public function getJ4CoreRule(Container $container): J4CoreRule
+	{
+		return new J4CoreRule();
+	}
+
+	/**
+	 * Get The CoreRule Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5CoreRule
+	 * @since 3.2.0
+	 */
+	public function getJ5CoreRule(Container $container): J5CoreRule
+	{
+		return new J5CoreRule();
+	}
+
+	/**
+	 * Get The CoreField Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3CoreField
+	 * @since 3.2.0
+	 */
+	public function getJ3CoreField(Container $container): J3CoreField
+	{
+		return new J3CoreField();
+	}
+
+	/**
+	 * Get The CoreField Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J4CoreField
+	 * @since 3.2.0
+	 */
+	public function getJ4CoreField(Container $container): J4CoreField
+	{
+		return new J4CoreField();
+	}
+
+	/**
+	 * Get The CoreField Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5CoreField
+	 * @since 3.2.0
+	 */
+	public function getJ5CoreField(Container $container): J5CoreField
+	{
+		return new J5CoreField();
+	}
+
+	/**
+	 * Get The J3InputButton Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3InputButton
+	 * @since 3.2.0
+	 */
+	public function getJ3InputButton(Container $container): J3InputButton
+	{
+		return new J3InputButton(
+			$container->get('Config'),
+			$container->get('Placeholder'),
+			$container->get('Compiler.Creator.Permission')
+		);
+	}
+
+	/**
+	 * Get The J4InputButton Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J4InputButton
+	 * @since 3.2.0
+	 */
+	public function getJ4InputButton(Container $container): J4InputButton
+	{
+		return new J4InputButton(
+			$container->get('Config'),
+			$container->get('Placeholder'),
+			$container->get('Compiler.Creator.Permission')
+		);
+	}
+
+	/**
+	 * Get The J5InputButton Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5InputButton
+	 * @since 3.2.0
+	 */
+	public function getJ5InputButton(Container $container): J5InputButton
+	{
+		return new J5InputButton(
+			$container->get('Config'),
+			$container->get('Placeholder'),
+			$container->get('Compiler.Creator.Permission')
+		);
+	}
+
+	/**
+	 * Get The CoreFieldInterface Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CoreField
+	 * @since 3.2.0
+	 */
+	public function getCoreField(Container $container): CoreField
+	{
+		if (empty($this->currentVersion))
+		{
+			$this->currentVersion = Version::MAJOR_VERSION;
+		}
+
+		return $container->get('J' . $this->currentVersion . '.Field.Core.Field');
+	}
+
+	/**
+	 * Get The CoreRuleInterface Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CoreRule
+	 * @since 3.2.0
+	 */
+	public function getCoreRule(Container $container): CoreRule
+	{
+		if (empty($this->currentVersion))
+		{
+			$this->currentVersion = Version::MAJOR_VERSION;
+		}
+
+		return $container->get('J' . $this->currentVersion . '.Field.Core.Rule');
 	}
 
 	/**
@@ -304,11 +483,12 @@ class Field implements ServiceProviderInterface
 	 */
 	public function getInputButton(Container $container): InputButton
 	{
-		return new InputButton(
-			$container->get('Config'),
-			$container->get('Placeholder'),
-			$container->get('Compiler.Creator.Permission')
-		);
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		return $container->get('J' . $this->targetVersion . '.Field.Input.Button');
 	}
 }
 

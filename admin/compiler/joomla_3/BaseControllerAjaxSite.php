@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,7 +17,9 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -29,9 +31,9 @@ class ###Component###ControllerAjax extends BaseController
 	{
 		parent::__construct($config);
 		// make sure all json stuff are set
-		JFactory::getDocument()->setMimeEncoding( 'application/json' );
+		Factory::getDocument()->setMimeEncoding( 'application/json' );
 		// get the application
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$app->setHeader('Content-Disposition','attachment;filename="getajax.json"');
 		$app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks ###REGISTER_SITE_AJAX_TASK###
@@ -40,16 +42,16 @@ class ###Component###ControllerAjax extends BaseController
 	public function ajax()
 	{
 		// get the user for later use
-		$user 		= JFactory::getUser();
+		$user         = Factory::getUser();
 		// get the input values
-		$jinput 	= JFactory::getApplication()->input;
+		$jinput       = Factory::getApplication()->input;
 		// check if we should return raw
-		$returnRaw	= $jinput->get('raw', false, 'BOOLEAN');
+		$returnRaw    = $jinput->get('raw', false, 'BOOLEAN');
 		// return to a callback function
-		$callback	= $jinput->get('callback', null, 'CMD');
+		$callback     = $jinput->get('callback', null, 'CMD');
 		// Check Token!
-		$token 		= JSession::getFormToken();
-		$call_token	= $jinput->get('token', 0, 'ALNUM');
+		$token        = Session::getFormToken();
+		$call_token   = $jinput->get('token', 0, 'ALNUM');
 		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{
 			// get the task
@@ -71,7 +73,7 @@ class ###Component###ControllerAjax extends BaseController
 				echo json_encode(false);
 			}
 			else
-  			{
+			  {
 				echo "(".json_encode(false).");";
 			}
 		}

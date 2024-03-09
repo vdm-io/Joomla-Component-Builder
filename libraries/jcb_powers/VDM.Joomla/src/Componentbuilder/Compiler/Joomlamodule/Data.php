@@ -136,6 +136,13 @@ class Data
 	protected Templatelayout $templatelayout;
 
 	/**
+	 * The Database Class.
+	 *
+	 * @since 3.2.0
+	 */
+	protected $db;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config           $config           The Config Class.
@@ -149,7 +156,6 @@ class Data
 	 * @param Libraries        $libraries        The Libraries Class.
 	 * @param Dynamicget       $dynamicget       The Data Class.
 	 * @param Templatelayout   $templatelayout   The Data Class.
-	 * @param \JDatabaseDriver|null     $db               The database object.
 	 *
 	 * @since 3.2.0
 	 */
@@ -157,8 +163,7 @@ class Data
 		Placeholder $placeholder, Language $language,
 		Field $field, Fieldname $fieldname,
 		Filesfolders $filesfolders, Libraries $libraries,
-		Dynamicget $dynamicget, Templatelayout $templatelayout,
-		?\JDatabaseDriver $db = null)
+		Dynamicget $dynamicget, Templatelayout $templatelayout)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -171,7 +176,7 @@ class Data
 		$this->libraries = $libraries;
 		$this->dynamicget = $dynamicget;
 		$this->templatelayout = $templatelayout;
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**

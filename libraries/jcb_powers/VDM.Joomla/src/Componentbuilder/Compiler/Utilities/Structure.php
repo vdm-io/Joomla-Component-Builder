@@ -17,8 +17,8 @@ use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File as JoomlaFile;
 use Joomla\CMS\Filesystem\Folder;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Component\Settings;
+use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
@@ -35,41 +35,49 @@ use VDM\Joomla\Utilities\StringHelper;
 class Structure
 {
 	/**
-	 * Compiler Component Joomla Version Settings
+	 * The Placeholder Class.
 	 *
-	 * @var    Settings
+	 * @var   Placeholder
+	 * @since 3.2.0
+	 */
+	protected Placeholder $placeholder;
+
+	/**
+	 * The SettingsInterface Class.
+	 *
+	 * @var   Settings
 	 * @since 3.2.0
 	 */
 	protected Settings $settings;
 
 	/**
-	 * Compiler Utilities Paths
+	 * The Paths Class.
 	 *
-	 * @var    Paths
+	 * @var   Paths
 	 * @since 3.2.0
 	 */
 	protected Paths $paths;
 
 	/**
-	 * Compiler Counter
+	 * The Counter Class.
 	 *
-	 * @var    Counter
+	 * @var   Counter
 	 * @since 3.2.0
 	 */
 	protected Counter $counter;
 
 	/**
-	 * Compiler Utilities File
+	 * The File Class.
 	 *
-	 * @var    File
+	 * @var   File
 	 * @since 3.2.0
 	 */
 	protected File $file;
 
 	/**
-	 * Compiler Utilities Files
+	 * The Files Class.
 	 *
-	 * @var    Files
+	 * @var   Files
 	 * @since 3.2.0
 	 */
 	protected Files $files;
@@ -85,25 +93,25 @@ class Structure
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings|null         $settings    The compiler component joomla version settings object.
-	 * @param Paths|null            $paths       The compiler paths object.
-	 * @param Counter|null          $counter     The compiler counter object.
-	 * @param File|null             $file        The compiler file object.
-	 * @param Files|null            $files       The compiler files object.
-	 * @param CMSApplication|null   $app         The CMS Application object.
+	 * @param Placeholder           $placeholder   The Placeholder Class.
+	 * @param Settings              $settings      The SettingsInterface Class.
+	 * @param Paths                 $paths         The Paths Class.
+	 * @param Counter               $counter       The Counter Class.
+	 * @param File                  $file          The File Class.
+	 * @param Files                 $files         The Files Class.
+	 * @param CMSApplication|null   $app           The CMS Application object.
 	 *
 	 * @since 3.2.0
-	 * @throws \Exception
 	 */
-	public function __construct(?Settings $settings = null, ?Paths $paths = null,
-		?Counter $counter = null, ?File $file = null, ?Files $files = null,
-		?CMSApplication $app = null)
+	public function __construct(Placeholder $placeholder, Settings $settings, Paths $paths,
+		Counter $counter, File $file, Files $files, ?CMSApplication $app = null)
 	{
-		$this->settings = $settings ?: Compiler::_('Component.Settings');
-		$this->paths = $paths ?: Compiler::_('Utilities.Paths');
-		$this->counter = $counter ?: Compiler::_('Utilities.Counter');
-		$this->file = $file ?: Compiler::_('Utilities.File');
-		$this->files = $files ?: Compiler::_('Utilities.Files');
+		$this->placeholder = $placeholder;
+		$this->settings = $settings;
+		$this->paths = $paths;
+		$this->counter = $counter;
+		$this->file = $file;
+		$this->files = $files;
 		$this->app = $app ?: Factory::getApplication();
 	}
 
@@ -130,6 +138,15 @@ class Structure
 			// search the target
 			foreach ($target as $main => $name)
 			{
+				// get the key name (either file name or name)
+				$key = $fileName ?? $name;
+
+				// add to placeholders as Name and name
+				$this->placeholder->set('Name', StringHelper::safe($name, 'F'));
+				$this->placeholder->set('name', StringHelper::safe($name));
+				$this->placeholder->set('Key', StringHelper::safe($key, 'F'));
+				$this->placeholder->set('key', StringHelper::safe($key));
+
 				// make sure it is lower case
 				$name = StringHelper::safe($name);
 
@@ -157,6 +174,12 @@ class Structure
 						}
 					}
 				}
+
+				// remove the name from placeholders
+				$this->placeholder->remove('Name');
+				$this->placeholder->remove('name');
+				$this->placeholder->remove('Key');
+				$this->placeholder->remove('key');
 			}
 		}
 
@@ -251,6 +274,8 @@ class Structure
 		{
 			$path = $details->path;
 		}
+		
+		$path = $this->placeholder->update_($path);
 
 		// make sure we have component to replace
 		if (strpos((string) $path, 'c0mp0n3nt') !== false)
@@ -291,23 +316,27 @@ class Structure
 			if (!empty($fileName))
 			{
 				$name = $name . '_' . $fileName;
+			}
 
-				return str_replace(
+			if ($details->rename === 'new')
+			{
+				$item = $details->newName;
+			}
+			elseif (!empty($fileName))
+			{
+				$item = str_replace(
 					$details->rename, $fileName, $item
 				);
 			}
-			elseif ($details->rename === 'new')
+			else
 			{
-				return $details->newName;
+				$item = str_replace(
+					$details->rename, $name, $item
+				);
 			}
-
-			return str_replace(
-				$details->rename, $name, $item
-			);
 		}
 
-		return $item;
+		return $this->placeholder->update_($item);
 	}
-
 }
 

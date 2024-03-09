@@ -19,7 +19,8 @@ use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
-use VDM\Joomla\Componentbuilder\Compiler\Component\Settings;
+use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
@@ -85,7 +86,15 @@ final class Structuresingle
 	protected Registry $registry;
 
 	/**
-	 * The Settings Class.
+	 * The Placeholder Class.
+	 *
+	 * @var   Placeholder
+	 * @since 3.2.0
+	 */
+	protected Placeholder $placeholder;
+
+	/**
+	 * The SettingsInterface Class.
 	 *
 	 * @var   Settings
 	 * @since 3.2.0
@@ -143,24 +152,27 @@ final class Structuresingle
 	/**
 	 * Constructor.
 	 *
-	 * @param Config                $config      The Config Class.
-	 * @param Registry              $registry    The Registry Class.
-	 * @param Settings              $settings    The Settings Class.
-	 * @param Component             $component   The Component Class.
-	 * @param Content               $content     The ContentOne Class.
-	 * @param Counter               $counter     The Counter Class.
-	 * @param Paths                 $paths       The Paths Class.
-	 * @param Files                 $files       The Files Class.
-	 * @param CMSApplication|null   $app         The CMS Application object.
+	 * @param Config                $config        The Config Class.
+	 * @param Registry              $registry      The Registry Class.
+	 * @param Placeholder           $placeholder   The Placeholder Class.
+	 * @param Settings              $settings      The SettingsInterface Class.
+	 * @param Component             $component     The Component Class.
+	 * @param Content               $content       The ContentOne Class.
+	 * @param Counter               $counter       The Counter Class.
+	 * @param Paths                 $paths         The Paths Class.
+	 * @param Files                 $files         The Files Class.
+	 * @param CMSApplication|null   $app           The CMS Application object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config, Registry $registry, Settings $settings,
+	public function __construct(Config $config, Registry $registry,
+		Placeholder $placeholder, Settings $settings,
 		Component $component, Content $content, Counter $counter,
 		Paths $paths, Files $files, ?CMSApplication $app = null)
 	{
 		$this->config = $config;
 		$this->registry = $registry;
+		$this->placeholder = $placeholder;
 		$this->settings = $settings;
 		$this->component = $component;
 		$this->content = $content;
@@ -299,21 +311,24 @@ final class Structuresingle
 		{
 			if ($details->rename === 'new')
 			{
-				$this->newName = $details->newName;
+				$newName = $details->newName;
 			}
 			else
 			{
-				$this->newName = str_replace(
+				$naam = $details->naam ?? 'error';
+				$newName = str_replace(
 					$details->rename,
 					$this->config->component_code_name,
-					(string) $details->naam
+					(string) $naam
 				);
 			}
 		}
 		else
 		{
-			$this->newName = $details->naam;
+			$newName = $details->naam ?? 'error';
 		}
+
+		$this->newName = $this->placeholder->update_($newName);
 	}
 
 	/**
@@ -605,13 +620,24 @@ final class Structuresingle
 			// add the setDynamicF0ld3rs() method to the install scipt.php file
 			$this->registry->set('set_move_folders_install_script', true);
 
+			$function = 'setDynamicF0ld3rs';
+			$script = 'script.php';
+			if ($this->config->get('joomla_version', 3) != 3)
+			{
+				$function = 'moveFolders';
+				$script = 'ComponentnameInstallerScript.php';
+			}
+
 			// set message that this was done (will still add a tutorial link later)
 			$this->app->enqueueMessage(
 				Text::_('COM_COMPONENTBUILDER_HR_HTHREEDYNAMIC_FOLDERS_WERE_DETECTEDHTHREE'),
 				'Notice'
 			);
+
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_A_METHOD_SETDYNAMICFZEROLDTHREERS_WAS_ADDED_TO_THE_INSTALL_BSCRIPTPHPB_OF_THIS_PACKAGE_TO_INSURE_THAT_THE_FOLDERS_ARE_COPIED_INTO_THE_CORRECT_PLACE_WHEN_THIS_COMPONENT_IS_INSTALLED'),
+				Text::sprintf('COM_COMPONENTBUILDER_A_METHOD_S_WAS_ADDED_TO_THE_INSTALL_BSB_OF_THIS_PACKAGE_TO_INSURE_THAT_THE_FOLDERS_ARE_COPIED_INTO_THE_CORRECT_PLACE_WHEN_THIS_COMPONENT_IS_INSTALLED',
+					$function, $script
+				),
 				'Notice'
 			);
 		}

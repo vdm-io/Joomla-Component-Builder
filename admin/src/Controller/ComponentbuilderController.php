@@ -1,0 +1,32 @@
+<?php
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    30th April, 2015
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
+ * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+namespace VDM\Component\Componentbuilder\Administrator\Controller;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+
+// No direct access to this file
+\defined('_JEXEC') or die;
+
+/**
+ * Componentbuilder Admin Controller
+ *
+ * @since  1.6
+ */
+class ComponentbuilderController extends AdminController
+{
+
+}

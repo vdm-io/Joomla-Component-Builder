@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -27,8 +27,8 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	// set uploading values
 	protected $use_streams = false;
 	protected $allow_unsafe = false;
-	protected $safeFileOptions = array();
-	
+	protected $safeFileOptions = [];
+
 	/**
 	 * @var object JTable object
 	 */
@@ -45,13 +45,13 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	 * @var        string
 	 */
 	protected $_context = 'com_###component###.import';
-	
+
 	/**
 	 * Import Settings
 	 */
-	protected $getType 	= NULL;
-	protected $dataType	= NULL;
-	
+	protected $getType   = NULL;
+	protected $dataType  = NULL;
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -62,7 +62,7 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	 */
 	protected function populateState()
 	{
-		$app = JFactory::getApplication('administrator');
+		$app = Factory::getApplication('administrator');
 
 		$this->setState('message', $app->getUserState('com_###component###.message'));
 		$app->setUserState('com_###component###.message', '');
@@ -82,14 +82,14 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	public function import()
 	{
 		$this->setState('action', 'import');
-		$app = JFactory::getApplication();
-		$session = JFactory::getSession();
+		$app = Factory::getApplication();
+		$session = Factory::getSession();
 		$package = null;
 		$continue = false;
 		// get import type
 		$this->getType = $app->input->getString('gettype', NULL);
 		// get import type
-		$this->dataType	= $session->get('dataType_VDM_IMPORTINTO', NULL);
+		$this->dataType = $session->get('dataType_VDM_IMPORTINTO', NULL);
 
 		if ($package === null)
 		{
@@ -110,9 +110,9 @@ class ###Component###ModelImport extends BaseDatabaseModel
 					break;
 
 				case 'continue':
-					$continue 	= true;
-					$package	= $session->get('package', null);
-					$package	= json_decode($package, true);
+					$continue   = true;
+					$package    = $session->get('package', null);
+					$package    = json_decode($package, true);
 					// clear session
 					$session->clear('package');
 					$session->clear('dataType');
@@ -120,7 +120,7 @@ class ###Component###ModelImport extends BaseDatabaseModel
 					break;
 
 				default:
-					$app->setUserState('com_###component###.message', JText::_('COM_###COMPONENT###_IMPORT_NO_IMPORT_TYPE_FOUND'));
+					$app->setUserState('com_###component###.message', Text::_('COM_###COMPONENT###_IMPORT_NO_IMPORT_TYPE_FOUND'));
 
 					return false;
 					break;
@@ -134,10 +134,10 @@ class ###Component###ModelImport extends BaseDatabaseModel
 				$this->remove($package['packagename']);
 			}
 
-			$app->setUserState('com_###component###.message', JText::_('COM_###COMPONENT###_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
+			$app->setUserState('com_###component###.message', Text::_('COM_###COMPONENT###_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
 			return false;
 		}
-		
+
 		// first link data to table headers
 		if(!$continue){
 			$package = json_encode($package);
@@ -146,13 +146,13 @@ class ###Component###ModelImport extends BaseDatabaseModel
 			$session->set('hasPackage', true);
 			return true;
 		}
-        
+
 		// set the data
 		$headerList = json_decode($session->get($this->dataType.'_VDM_IMPORTHEADERS', false), true);
 		if (!$this->setData($package,$this->dataType,$headerList))
 		{
 			// There was an error importing the package
-			$msg = JText::_('COM_###COMPONENT###_IMPORT_ERROR');
+			$msg = Text::_('COM_###COMPONENT###_IMPORT_ERROR');
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
@@ -164,12 +164,12 @@ class ###Component###ModelImport extends BaseDatabaseModel
 		else
 		{
 			// Package imported sucessfully
-			$msg = JText::sprintf('COM_###COMPONENT###_IMPORT_SUCCESS', $package['packagename']);
+			$msg = Text::sprintf('COM_###COMPONENT###_IMPORT_SUCCESS', $package['packagename']);
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
-			    $app->setUserState('com_###component###.redirect_url', 'index.php?option=com_###component###&view='.$back);
-			    $session->clear('backto_VDM_IMPORT');
+				$app->setUserState('com_###component###.redirect_url', 'index.php?option=com_###component###&view='.$back);
+				$session->clear('backto_VDM_IMPORT');
 			}
 			$result = true;
 		}
@@ -180,7 +180,7 @@ class ###Component###ModelImport extends BaseDatabaseModel
 		// remove file after import
 		$this->remove($package['packagename']);
 		$session->clear($this->getType.'_VDM_IMPORTHEADERS');
-        
+
 		return $result;
 	}
 
@@ -190,48 +190,47 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	 * @return spreadsheet definition or false on failure
 	 */
 	protected function _getPackageFromUpload()
-	{		
+	{
 		// Get the uploaded file information
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
 		$userfile = $input->files->get('import_package', null, 'raw');
-		
+
 		// Make sure that file uploads are enabled in php
 		if (!(bool) ini_get('file_uploads'))
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
 			return false;
 		}
 
 		// If there is no uploaded file, we have a problem...
 		if (!is_array($userfile))
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
 			return false;
 		}
 
 		// Check if there was a problem uploading the file.
 		if ($userfile['error'] || $userfile['size'] < 1)
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
 			return false;
 		}
 
 		// Build the appropriate paths
-		$config = JFactory::getConfig();
+		$config = Factory::getConfig();
 		$tmp_dest = $config->get('tmp_path') . '/' . $userfile['name'];
 		$tmp_src = $userfile['tmp_name'];
 
 		// Move uploaded file
-		jimport('joomla.filesystem.file');
 		$p_file = File::upload($tmp_src, $tmp_dest, $this->use_streams, $this->allow_unsafe, $this->safeFileOptions);
 
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			$session = JFactory::getSession();
+			$session = Factory::getSession();
 			$session->clear('package');
 			$session->clear('dataType');
 			$session->clear('hasPackage');
@@ -253,16 +252,16 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	 */
 	protected function _getPackageFromFolder()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 
 		// Get the path to the package to import
 		$p_dir = $input->getString('import_directory');
-		$p_dir = JPath::clean($p_dir);
+		$p_dir = Path::clean($p_dir);
 		// Did you give us a valid path?
 		if (!file_exists($p_dir))
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
 			return false;
 		}
 
@@ -272,17 +271,17 @@ class ###Component###ModelImport extends BaseDatabaseModel
 		// Did you give us a valid package?
 		if (!$type)
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
 		}
-		
+
 		// check the extention
 		if(!$this->checkExtension($p_dir))
 		{
 			// set error message
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
 		}
-		
+
 		$package['packagename'] = null;
 		$package['dir'] = $p_dir;
 		$package['type'] = $type;
@@ -298,26 +297,26 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	 */
 	protected function _getPackageFromUrl()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
-		
+
 		// Get the URL of the package to import
 		$url = $input->getString('import_url');
 
 		// Did you give us a URL?
 		if (!$url)
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_ENTER_A_URL'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_ENTER_A_URL'), 'warning');
 			return false;
 		}
 
 		// Download the package at the URL given
-		$p_file = JInstallerHelper::downloadPackage($url);
+		$p_file = InstallerHelper::downloadPackage($url);
 
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_INVALID_URL'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_INVALID_URL'), 'warning');
 			return false;
 		}
 
@@ -326,7 +325,7 @@ class ###Component###ModelImport extends BaseDatabaseModel
 
 		return $package;
 	}
-	
+
 	/**
 	 * Check a file and verifies it as a spreadsheet file
 	 * Supports .csv .xlsx .xls and .ods
@@ -338,29 +337,29 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	 */
 	protected function check($archivename)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		// Clean the name
-		$archivename = JPath::clean($archivename);
-		
+		$archivename = Path::clean($archivename);
+
 		// check the extention
 		if(!$this->checkExtension($archivename))
 		{
 			// Cleanup the import files
 			$this->remove($archivename);
-			$app->enqueueMessage(JText::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
 		}
-		
-		$config = JFactory::getConfig();
+
+		$config = Factory::getConfig();
 		// set Package Name
 		$check['packagename'] = $archivename;
-		
+
 		// set directory
 		$check['dir'] = $config->get('tmp_path'). '/' .$archivename;
-		
+
 		// set type
 		$check['type'] = $this->getType;
-		
+
 		return $check;
 	}###IMPORT_EXT_METHOD###
 
@@ -375,8 +374,8 @@ class ###Component###ModelImport extends BaseDatabaseModel
 	protected function remove($package)
 	{
 		jimport('joomla.filesystem.file');
-		
-		$config = JFactory::getConfig();
+
+		$config = Factory::getConfig();
 		$package = $config->get('tmp_path'). '/' .$package;
 
 		// Is the package file a valid file?
@@ -384,23 +383,23 @@ class ###Component###ModelImport extends BaseDatabaseModel
 		{
 			File::delete($package);
 		}
-		elseif (is_file(JPath::clean($package)))
+		elseif (is_file(Path::clean($package)))
 		{
 			// It might also be just a base filename
-			File::delete(JPath::clean($package));
+			File::delete(Path::clean($package));
 		}
 	}###IMPORT_SETDATA_METHOD######IMPORT_SAVE_METHOD###
 
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias
-		if (JFactory::getConfig()->get('unicodeslugs') == 1)
+		if (Factory::getConfig()->get('unicodeslugs') == 1)
 		{
-			$alias = JFilterOutput::stringURLUnicodeSlug($name);
+			$alias = OutputFilter::stringURLUnicodeSlug($name);
 		}
 		else
 		{
-			$alias = JFilterOutput::stringURLSafe($name);
+			$alias = OutputFilter::stringURLSafe($name);
 		}
 		// must be a uniqe alias
 		if ($type)
@@ -409,7 +408,7 @@ class ###Component###ModelImport extends BaseDatabaseModel
 		}
 		return $alias;
 	}
-	
+
 	/**
 	 * Method to generate a uniqe value.
 	 *
@@ -424,16 +423,16 @@ class ###Component###ModelImport extends BaseDatabaseModel
 		// insure the filed is always uniqe
 		while (isset($this->uniqeValueArray[$type][$field][$value]))
 		{
-			$value = JString::increment($value, 'dash');
+			$value = StringHelper::increment($value, 'dash');
 		}
 		$this->uniqeValueArray[$type][$field][$value] = $value;
 		return $value;
 	}
-	
+
 	protected function getAliasesUsed($table)
 	{
 		// Get a db connection.
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		// first we check if there is a alias column
 		$columns = $db->getTableColumns('#__###component###_'.$table);
 		if(isset($columns['alias'])){

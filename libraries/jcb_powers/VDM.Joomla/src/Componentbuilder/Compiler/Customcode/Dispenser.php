@@ -196,9 +196,7 @@ class Dispenser implements DispenserInterface
 				$script .= $note;
 			}
 			// load the actual script
-			$script .= $prefix . str_replace(
-				array_keys($this->placeholder->active),
-				array_values($this->placeholder->active),
+			$script .= $prefix . $this->placeholder->update_(
 				(string) $this->hub[$first][$second]
 			) . $suffix;
 			// clear some memory

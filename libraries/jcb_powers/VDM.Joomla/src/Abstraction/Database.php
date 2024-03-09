@@ -26,10 +26,9 @@ abstract class Database
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var   \JDatabaseDriver
 	 * @since 3.2.0
 	 */
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Core Component Table Name
@@ -42,14 +41,12 @@ abstract class Database
 	/**
 	 * Constructor
 	 *
-	 * @param \JDatabaseDriver|null   $db  The database driver
-	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?\JDatabaseDriver $db = null)
+	public function __construct()
 	{
-		$this->db = $db ?: JoomlaFactory::getDbo();
+		$this->db = JoomlaFactory::getDbo();
 
 		// set the component table
 		$this->table = '#__' . Helper::getCode();

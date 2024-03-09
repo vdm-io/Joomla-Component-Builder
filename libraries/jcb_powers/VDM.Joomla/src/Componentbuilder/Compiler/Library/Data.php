@@ -83,10 +83,9 @@ class Data
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
@@ -97,14 +96,12 @@ class Data
 	 * @param Gui|null                  $gui              The compiler customcode gui.
 	 * @param FieldData|null            $field            The compiler field data object.
 	 * @param Filesfolders|null         $filesFolders     The compiler files folders object.
-	 * @param \JDatabaseDriver|null     $db               The database object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Registry $registry = null,
 		?Customcode $customcode = null, ?Gui $gui = null,
-		?FieldData $field = null, ?Filesfolders $filesFolders = null,
-		?\JDatabaseDriver $db = null)
+		?FieldData $field = null, ?Filesfolders $filesFolders = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->registry = $registry ?: Compiler::_('Registry');
@@ -112,7 +109,7 @@ class Data
 		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
 		$this->field = $field ?: Compiler::_('Field.Data');
 		$this->filesFolders = $filesFolders ?: Compiler::_('Model.Filesfolders');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**

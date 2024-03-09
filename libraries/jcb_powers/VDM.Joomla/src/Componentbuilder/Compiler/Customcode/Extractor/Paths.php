@@ -84,10 +84,9 @@ class Paths
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor.
@@ -97,14 +96,13 @@ class Paths
 	 * @param ComponentPlaceholder|null   $componentPlaceholder The compiler component placeholder object.
 	 * @param Customcode|null   	      $customcode           The compiler customcode object.
 	 * @param Extractor|null              $extractor            The compiler language extractor object.
-	 * @param \JDatabaseDriver|null       $db                   The Database Driver object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
 	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
 		?ComponentPlaceholder $componentPlaceholder = null, ?Customcode $customcode = null,
-		?Extractor $extractor = null, ?\JDatabaseDriver $db = null)
+		?Extractor $extractor = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
@@ -112,7 +110,7 @@ class Paths
 		$componentPlaceholder = $componentPlaceholder ?: Compiler::_('Component.Placeholder');
 		$this->customcode = $customcode ?: Compiler::_('Customcode');
 		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 
 		// load the placeholders to local array
 		$this->componentPlaceholder = $componentPlaceholder->get();

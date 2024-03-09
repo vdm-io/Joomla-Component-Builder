@@ -14,11 +14,30 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\AccessSections;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\AccessSectionsCategory;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\AccessSectionsJoomlaFields;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\Builders;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\CustomFieldTypeFile;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\CustomButtonPermissions;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsets;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsCustomfield;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsEmailHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsEncryption;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsGlobal;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsGooglechart;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsGroupControl;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsSiteControl;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\ConfigFieldsetsUikit;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\Layout;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\Permission;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\SiteFieldData;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\Request;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\Router;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterConstructorDefault;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterConstructorManual;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterMethodsDefault;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterMethodsManual;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetString;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetXML;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetDynamic;
@@ -47,11 +66,50 @@ class Creator implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(AccessSections::class, 'Compiler.Creator.Access.Sections')
+			->share('Compiler.Creator.Access.Sections', [$this, 'getAccessSections'], true);
+
+		$container->alias(AccessSectionsCategory::class, 'Compiler.Creator.Access.Sections.Category')
+			->share('Compiler.Creator.Access.Sections.Category', [$this, 'getAccessSectionsCategory'], true);
+
+		$container->alias(AccessSectionsJoomlaFields::class, 'Compiler.Creator.Access.Sections.Joomla.Fields')
+			->share('Compiler.Creator.Access.Sections.Joomla.Fields', [$this, 'getAccessSectionsJoomlaFields'], true);
+
 		$container->alias(Builders::class, 'Compiler.Creator.Builders')
 			->share('Compiler.Creator.Builders', [$this, 'getBuilders'], true);
 
 		$container->alias(CustomFieldTypeFile::class, 'Compiler.Creator.Custom.Field.Type.File')
 			->share('Compiler.Creator.Custom.Field.Type.File', [$this, 'getCustomFieldTypeFile'], true);
+
+		$container->alias(CustomButtonPermissions::class, 'Compiler.Creator.Custom.Button.Permissions')
+			->share('Compiler.Creator.Custom.Button.Permissions', [$this, 'getCustomButtonPermissions'], true);
+
+		$container->alias(ConfigFieldsets::class, 'Compiler.Creator.Config.Fieldsets')
+			->share('Compiler.Creator.Config.Fieldsets', [$this, 'getConfigFieldsets'], true);
+
+		$container->alias(ConfigFieldsetsCustomfield::class, 'Compiler.Creator.Config.Fieldsets.Customfield')
+			->share('Compiler.Creator.Config.Fieldsets.Customfield', [$this, 'getConfigFieldsetsCustomfield'], true);
+
+		$container->alias(ConfigFieldsetsEmailHelper::class, 'Compiler.Creator.Config.Fieldsets.Email.Helper')
+			->share('Compiler.Creator.Config.Fieldsets.Email.Helper', [$this, 'getConfigFieldsetsEmailHelper'], true);
+
+		$container->alias(ConfigFieldsetsEncryption::class, 'Compiler.Creator.Config.Fieldsets.Encryption')
+			->share('Compiler.Creator.Config.Fieldsets.Encryption', [$this, 'getConfigFieldsetsEncryption'], true);
+
+		$container->alias(ConfigFieldsetsGlobal::class, 'Compiler.Creator.Config.Fieldsets.Global')
+			->share('Compiler.Creator.Config.Fieldsets.Global', [$this, 'getConfigFieldsetsGlobal'], true);
+
+		$container->alias(ConfigFieldsetsGooglechart::class, 'Compiler.Creator.Config.Fieldsets.Googlechart')
+			->share('Compiler.Creator.Config.Fieldsets.Googlechart', [$this, 'getConfigFieldsetsGooglechart'], true);
+
+		$container->alias(ConfigFieldsetsGroupControl::class, 'Compiler.Creator.Config.Fieldsets.Group.Control')
+			->share('Compiler.Creator.Config.Fieldsets.Group.Control', [$this, 'getConfigFieldsetsGroupControl'], true);
+
+		$container->alias(ConfigFieldsetsSiteControl::class, 'Compiler.Creator.Config.Fieldsets.Site.Control')
+			->share('Compiler.Creator.Config.Fieldsets.Site.Control', [$this, 'getConfigFieldsetsSiteControl'], true);
+
+		$container->alias(ConfigFieldsetsUikit::class, 'Compiler.Creator.Config.Fieldsets.Uikit')
+			->share('Compiler.Creator.Config.Fieldsets.Uikit', [$this, 'getConfigFieldsetsUikit'], true);
 
 		$container->alias(Layout::class, 'Compiler.Creator.Layout')
 			->share('Compiler.Creator.Layout', [$this, 'getLayout'], true);
@@ -61,6 +119,24 @@ class Creator implements ServiceProviderInterface
 
 		$container->alias(SiteFieldData::class, 'Compiler.Creator.Site.Field.Data')
 			->share('Compiler.Creator.Site.Field.Data', [$this, 'getSiteFieldData'], true);
+
+		$container->alias(Request::class, 'Compiler.Creator.Request')
+			->share('Compiler.Creator.Request', [$this, 'getRequest'], true);
+
+		$container->alias(Router::class, 'Compiler.Creator.Router')
+			->share('Compiler.Creator.Router', [$this, 'getRouter'], true);
+
+		$container->alias(RouterConstructorDefault::class, 'Compiler.Creator.Router.Constructor.Default')
+			->share('Compiler.Creator.Router.Constructor.Default', [$this, 'getRouterConstructorDefault'], true);
+
+		$container->alias(RouterConstructorManual::class, 'Compiler.Creator.Router.Constructor.Manual')
+			->share('Compiler.Creator.Router.Constructor.Manual', [$this, 'getRouterConstructorManual'], true);
+
+		$container->alias(RouterMethodsDefault::class, 'Compiler.Creator.Router.Methods.Default')
+			->share('Compiler.Creator.Router.Methods.Default', [$this, 'getRouterMethodsDefault'], true);
+
+		$container->alias(RouterMethodsManual::class, 'Compiler.Creator.Router.Methods.Manual')
+			->share('Compiler.Creator.Router.Methods.Manual', [$this, 'getRouterMethodsManual'], true);
 
 		$container->alias(FieldsetString::class, 'Compiler.Creator.Fieldset.String')
 			->share('Compiler.Creator.Fieldset.String', [$this, 'getFieldsetString'], true);
@@ -91,6 +167,62 @@ class Creator implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The AccessSections Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  AccessSections
+	 * @since 3.2.0
+	 */
+	public function getAccessSections(Container $container): AccessSections
+	{
+		return new AccessSections(
+			$container->get('Config'),
+			$container->get('Event'),
+			$container->get('Language'),
+			$container->get('Component'),
+			$container->get('Field.Name'),
+			$container->get('Field.Type.Name'),
+			$container->get('Utilities.Counter'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Compiler.Builder.Assets.Rules'),
+			$container->get('Compiler.Builder.Custom.Tabs'),
+			$container->get('Compiler.Builder.Permission.Views'),
+			$container->get('Compiler.Builder.Permission.Fields'),
+			$container->get('Compiler.Builder.Permission.Component'),
+			$container->get('Compiler.Creator.Custom.Button.Permissions')
+		);
+	}
+
+	/**
+	 * Get The AccessSectionsCategory Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  AccessSectionsCategory
+	 * @since 3.2.0
+	 */
+	public function getAccessSectionsCategory(Container $container): AccessSectionsCategory
+	{
+		return new AccessSectionsCategory(
+			$container->get('Compiler.Builder.Category.Code')
+		);
+	}
+
+	/**
+	 * Get The AccessSectionsJoomlaFields Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  AccessSectionsJoomlaFields
+	 * @since 3.2.0
+	 */
+	public function getAccessSectionsJoomlaFields(Container $container): AccessSectionsJoomlaFields
+	{
+		return new AccessSectionsJoomlaFields();
+	}
+
+	/**
 	 * Get The Builders Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -102,6 +234,7 @@ class Creator implements ServiceProviderInterface
 	{
 		return new Builders(
 			$container->get('Config'),
+			$container->get('Power'),
 			$container->get('Language'),
 			$container->get('Placeholder'),
 			$container->get('Compiler.Creator.Layout'),
@@ -171,7 +304,212 @@ class Creator implements ServiceProviderInterface
 			$container->get('Utilities.Structure'),
 			$container->get('Field.Input.Button'),
 			$container->get('Compiler.Builder.Field.Group.Control'),
-			$container->get('Compiler.Builder.Extension.Custom.Fields')
+			$container->get('Compiler.Builder.Extension.Custom.Fields'),
+			$container->get('Header'),
+			$container->get('Field.Core.Field')
+		);
+	}
+
+	/**
+	 * Get The CustomButtonPermissions Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomButtonPermissions
+	 * @since 3.2.0
+	 */
+	public function getCustomButtonPermissions(Container $container): CustomButtonPermissions
+	{
+		return new CustomButtonPermissions(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Permission.Component'),
+			$container->get('Utilities.Counter')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsets Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsets
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsets(Container $container): ConfigFieldsets
+	{
+		return new ConfigFieldsets(
+			$container->get('Config'),
+			$container->get('Component'),
+			$container->get('Event'),
+			$container->get('Placeholder'),
+			$container->get('Component.Placeholder'),
+			$container->get('Compiler.Builder.Extensions.Params'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield'),
+			$container->get('Compiler.Creator.Field.As.String'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Global'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Site.Control'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Group.Control'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Uikit'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Googlechart'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Email.Helper'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Encryption'),
+			$container->get('Compiler.Creator.Config.Fieldsets.Customfield')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsCustomfield Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsCustomfield
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsCustomfield(Container $container): ConfigFieldsetsCustomfield
+	{
+		return new ConfigFieldsetsCustomfield(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield'),
+			$container->get('Compiler.Builder.Config.Fieldsets')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsEmailHelper Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsEmailHelper
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsEmailHelper(Container $container): ConfigFieldsetsEmailHelper
+	{
+		return new ConfigFieldsetsEmailHelper(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Component'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsEncryption Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsEncryption
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsEncryption(Container $container): ConfigFieldsetsEncryption
+	{
+		return new ConfigFieldsetsEncryption(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Component'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsGlobal Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsGlobal
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsGlobal(Container $container): ConfigFieldsetsGlobal
+	{
+		return new ConfigFieldsetsGlobal(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Component'),
+			$container->get('Compiler.Builder.Contributors'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Extensions.Params'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsGooglechart Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsGooglechart
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsGooglechart(Container $container): ConfigFieldsetsGooglechart
+	{
+		return new ConfigFieldsetsGooglechart(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield'),
+			$container->get('Compiler.Builder.Extensions.Params')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsGroupControl Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsGroupControl
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsGroupControl(Container $container): ConfigFieldsetsGroupControl
+	{
+		return new ConfigFieldsetsGroupControl(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Field.Group.Control'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Extensions.Params'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsSiteControl Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsSiteControl
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsSiteControl(Container $container): ConfigFieldsetsSiteControl
+	{
+		return new ConfigFieldsetsSiteControl(
+			$container->get('Component'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield'),
+			$container->get('Compiler.Builder.Has.Menu.Global'),
+			$container->get('Compiler.Builder.Frontend.Params'),
+			$container->get('Compiler.Creator.Request')
+		);
+	}
+
+	/**
+	 * Get The ConfigFieldsetsUikit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ConfigFieldsetsUikit
+	 * @since 3.2.0
+	 */
+	public function getConfigFieldsetsUikit(Container $container): ConfigFieldsetsUikit
+	{
+		return new ConfigFieldsetsUikit(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Config.Fieldsets'),
+			$container->get('Compiler.Builder.Extensions.Params'),
+			$container->get('Compiler.Builder.Config.Fieldsets.Customfield')
 		);
 	}
 
@@ -232,6 +570,102 @@ class Creator implements ServiceProviderInterface
 			$container->get('Config'),
 			$container->get('Compiler.Builder.Site.Fields'),
 			$container->get('Compiler.Builder.Site.Field.Data')
+		);
+	}
+
+	/**
+	 * Get The Request Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Request
+	 * @since 3.2.0
+	 */
+	public function getRequest(Container $container): Request
+	{
+		return new Request(
+			$container->get('Compiler.Builder.Request')
+		);
+	}
+
+	/**
+	 * Get The Router Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Router
+	 * @since 3.2.0
+	 */
+	public function getRouter(Container $container): Router
+	{
+		return new Router(
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Request'),
+			$container->get('Compiler.Builder.Router'),
+			$container->get('Compiler.Creator.Router.Constructor.Default'),
+			$container->get('Compiler.Creator.Router.Constructor.Manual'),
+			$container->get('Compiler.Creator.Router.Methods.Default'),
+			$container->get('Compiler.Creator.Router.Methods.Manual')
+		);
+	}
+
+	/**
+	 * Get The RouterConstructorDefault Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  RouterConstructorDefault
+	 * @since 3.2.0
+	 */
+	public function getRouterConstructorDefault(Container $container): RouterConstructorDefault
+	{
+		return new RouterConstructorDefault(
+			$container->get('Compiler.Builder.Router')
+		);
+	}
+
+	/**
+	 * Get The RouterConstructorManual Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  RouterConstructorManual
+	 * @since 3.2.0
+	 */
+	public function getRouterConstructorManual(Container $container): RouterConstructorManual
+	{
+		return new RouterConstructorManual(
+			$container->get('Compiler.Builder.Router')
+		);
+	}
+
+	/**
+	 * Get The RouterMethodsDefault Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  RouterMethodsDefault
+	 * @since 3.2.0
+	 */
+	public function getRouterMethodsDefault(Container $container): RouterMethodsDefault
+	{
+		return new RouterMethodsDefault(
+			$container->get('Compiler.Builder.Router')
+		);
+	}
+
+	/**
+	 * Get The RouterMethodsManual Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  RouterMethodsManual
+	 * @since 3.2.0
+	 */
+	public function getRouterMethodsManual(Container $container): RouterMethodsManual
+	{
+		return new RouterMethodsManual(
+			$container->get('Compiler.Builder.Router')
 		);
 	}
 

@@ -10,7 +10,7 @@
  */
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
 // get the form
 $form = $displayData->getForm();
@@ -29,7 +29,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'class_extends'
 );
 
-$hiddenFields = $displayData->get('hidden_fields') ?: array();
+$hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>

@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -24,10 +24,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class ###Component###Model###Views### extends ListModel
 {
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (empty($config['filter_fields']))
-        {
+		{
 			$config['filter_fields'] = array(
 				###FILTER_FIELDS###
 			);
@@ -49,7 +49,7 @@ class ###Component###Model###Views### extends ListModel
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -60,7 +60,7 @@ class ###Component###Model###Views### extends ListModel
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}
-	
+
 	/**
 	 * Method to get an array of data items.
 	 *
@@ -70,21 +70,21 @@ class ###Component###Model###Views### extends ListModel
 	{###LICENSE_LOCKED_CHECK######CHECKINCALL###
 		// load parent items
 		$items = parent::getItems();###GET_ITEMS_METHOD_STRING_FIX######SELECTIONTRANSLATIONFIX######GET_ITEMS_METHOD_AFTER_ALL###
-        
+
 		// return items
 		return $items;
 	}###SELECTIONTRANSLATIONFIXFUNC###
-	
+
 	/**
 	 * Method to build an SQL query to load the list data.
 	 *
-	 * @return	string	An SQL query
+	 * @return    string    An SQL query
 	 */
 	protected function getListQuery()
 	{###LICENSE_LOCKED_CHECK###
 		###LISTQUERY###
 	}###MODELEXPORTMETHOD######LICENSE_LOCKED_SET_BOOL###
-	
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *

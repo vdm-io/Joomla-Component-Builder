@@ -9,21 +9,29 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+
 // No direct access to this file
-defined('JPATH_BASE') or die('Restricted access');
+defined('JPATH_BASE') or die;
 
 
 
 ?>
-<div id="<?= $displayData['id'] ?>">
-	<?= JHtml::_('bootstrap.startTabSet', $displayData['id'] . '_tab', array('active' => $displayData['active'] . '-noticeboard')) ?>
-		<?= JHtml::_('bootstrap.addTab', $displayData['id'] . '_tab', 'vdm-noticeboard', JText::_('COM_COMPONENTBUILDER_VDM_BOARD', true)) ?>
-			<?= JLayoutHelper::render('jcbnoticeboardvdm', null) ?>
-			<div><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
-		<?= JHtml::_('bootstrap.endTab'); ?>
-		<?= JHtml::_('bootstrap.addTab', $displayData['id'] . '_tab', 'pro-noticeboard', JText::_('COM_COMPONENTBUILDER_JCB_PRO_BOARD', true)) ?>
-			<?= JLayoutHelper::render('jcbnoticeboardpro', null) ?>
-			<div><?= ComponentbuilderHelper::getDynamicContent('banner', '728-90') ?></div>
-		<?= JHtml::_('bootstrap.endTab') ?>
-	<?= JHtml::_('bootstrap.endTabSet') ?>
+<div id="<?php echo  $displayData['id']; ?>">
+	<?php echo Html::_('bootstrap.startTabSet', $displayData['id'] . '_tab', array('active' => $displayData['active'] . '-noticeboard')); ?>
+		<?php echo Html::_('bootstrap.addTab', $displayData['id'] . '_tab', 'vdm-noticeboard', Text::_('COM_COMPONENTBUILDER_VDM_BOARD', true)); ?>
+			<?php echo LayoutHelper::render('jcbnoticeboardvdm', null); ?>
+			<div class="p-md-3"><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+		<?php echo Html::_('bootstrap.endTab'); ?>
+		<?php echo Html::_('bootstrap.addTab', $displayData['id'] . '_tab', 'pro-noticeboard', Text::_('COM_COMPONENTBUILDER_JCB_PRO_BOARD', true)); ?>
+			<?php echo LayoutHelper::render('jcbnoticeboardpro', null); ?>
+			<div class="p-md-3"><?php echo  ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+		<?php echo Html::_('bootstrap.endTab'); ?>
+	<?php echo Html::_('bootstrap.endTabSet'); ?>
 </div>

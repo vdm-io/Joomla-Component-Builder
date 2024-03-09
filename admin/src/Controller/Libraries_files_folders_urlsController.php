@@ -1,0 +1,54 @@
+<?php
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    30th April, 2015
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
+ * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+namespace VDM\Component\Componentbuilder\Administrator\Controller;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+
+// No direct access to this file
+\defined('_JEXEC') or die;
+
+/**
+ * Libraries_files_folders_urls Admin Controller
+ *
+ * @since  1.6
+ */
+class Libraries_files_folders_urlsController extends AdminController
+{
+	/**
+	 * The prefix to use with controller messages.
+	 *
+	 * @var    string
+	 * @since  1.6
+	 */
+	protected $text_prefix = 'COM_COMPONENTBUILDER_LIBRARIES_FILES_FOLDERS_URLS';
+
+	/**
+	 * Proxy for getModel.
+	 *
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  \Joomla\CMS\MVC\Model\BaseDatabaseModel
+	 *
+	 * @since   1.6
+	 */
+	public function getModel($name = 'Library_files_folders_urls', $prefix = 'Administrator', $config = ['ignore_request' => true])
+	{
+		return parent::getModel($name, $prefix, $config);
+	}
+}

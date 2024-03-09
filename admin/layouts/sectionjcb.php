@@ -9,8 +9,16 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+
 // No direct access to this file
-defined('JPATH_BASE') or die('Restricted access');
+defined('JPATH_BASE') or die;
 
 /**
  * Make thing clear
@@ -32,17 +40,17 @@ extract($displayData);
 	<div class="btn-toolbar text-right">
 		<div class="btn-group">
 			<?php if (!empty($buttons['add'])) : ?>
-				<a class="btn btn-mini button btn-success group-add group-add-<?php echo $unique_subform_id; ?>" aria-label="<?php echo JText::_('COM_COMPONENTBUILDER_ADD'); ?>">
+				<a class="btn btn-mini button btn-success group-add group-add-<?php echo $unique_subform_id; ?>" aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_ADD'); ?>">
 					<span class="icon-plus" aria-hidden="true"></span>
 				</a>
 			<?php endif; ?>
 			<?php if (!empty($buttons['remove'])) : ?>
-				<a class="btn btn-mini button btn-danger group-remove group-remove-<?php echo $unique_subform_id; ?>" aria-label="<?php echo JText::_('COM_COMPONENTBUILDER_REMOVE'); ?>">
+				<a class="btn btn-mini button btn-danger group-remove group-remove-<?php echo $unique_subform_id; ?>" aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_REMOVE'); ?>">
 					<span class="icon-minus" aria-hidden="true"></span>
 				</a>
 			<?php endif; ?>
 			<?php if (!empty($buttons['move'])) : ?>
-				<a class="btn btn-mini button btn-primary group-move group-move-<?php echo $unique_subform_id; ?>" aria-label="<?php echo JText::_('COM_COMPONENTBUILDER_MOVE'); ?>">
+				<a class="btn btn-mini button btn-primary group-move group-move-<?php echo $unique_subform_id; ?>" aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_MOVE'); ?>">
 					<span class="icon-move" aria-hidden="true"></span>
 				</a>
 			<?php endif; ?>

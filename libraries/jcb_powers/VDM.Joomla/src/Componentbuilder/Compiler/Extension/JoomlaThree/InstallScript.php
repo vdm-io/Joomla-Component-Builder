@@ -25,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\GetScriptInterface;
  * 
  * @since 3.2.0
  */
-class InstallScript implements GetScriptInterface
+final class InstallScript implements GetScriptInterface
 {
 	/**
 	 * The extension
@@ -207,7 +207,11 @@ class InstallScript implements GetScriptInterface
 		$extension = $this->extension;
 
 		// start build
-		$script = PHP_EOL . '/**';
+		$script = PHP_EOL . 'use Joomla\CMS\Factory;';
+		$script .= PHP_EOL . 'use Joomla\CMS\Language\Text;';
+		$script .= PHP_EOL . 'use Joomla\CMS\Filesystem\File;';
+		$script .= PHP_EOL . 'use Joomla\CMS\Filesystem\Folder;' . PHP_EOL;
+		$script .= PHP_EOL . '/**';
 		$script .= PHP_EOL . ' * ' . $extension->official_name
 			. ' script file.';
 		$script .= PHP_EOL . ' *';
@@ -325,7 +329,7 @@ class InstallScript implements GetScriptInterface
 		$script .= PHP_EOL . Indent::_(2) . '//' . Line::_(__Line__, __Class__)
 			. ' get application';
 		$script .= PHP_EOL . Indent::_(2)
-			. '$app = JFactory::getApplication();' . PHP_EOL;
+			. '$app = Factory::getApplication();' . PHP_EOL;
 
 		// add the default version check (TODO) must make this dynamic
 		if ('preflight' === $name)

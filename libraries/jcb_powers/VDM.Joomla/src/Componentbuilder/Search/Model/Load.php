@@ -119,13 +119,35 @@ class Load extends Model implements ModelInterface
 	 */
 	protected function validateAfter(&$value, ?string $field = null, ?string $table = null): bool
 	{
+		// Start note to self
+		// Yes we don't search in the field->xml (field) PHP because the xml is messy
+		//    first of all we need to change that storage method :((( seriously
+		//    and the actual PHP is stored in the xml as base64 with a [__.o0=base64=Oo.__] key in front of it
+		//    if I can go back and drag you around by your ear... I will, but okay you did not know better.
+		//  Listen you have tried to fix this a few times already (I lost count) and by the time you realize how it works
+		//    two hours have been wasted, and you usually only then realize why it's not fixed in the first place... o boy... just walk now!
+		//    since unless you have three days don't even look further, this is a huge issue/mess
+		//    and while I agree it needs fixing, it will not take a few hours... but days
+		// End note to self
+
 		// check values
 		if (StringHelper::check($value) || ArrayHelper::check($value, true))
 		{
 			return true;
 		}
+
 		// remove empty values
 		return false;
+
+		// Start another note to self
+		// If you're still here
+		//    the problem is not opening the PHP in the xml,
+		//    it is storing it with the updated changes... if any are made via the search-update methods
+		//    so the only way to fix this is to change the whole way the xml values in the field table is stored.
+		//  Yes, that is right... all the way back to the field view... and then to update all places you open that xml values
+		//    and get the values out of the xml string and use them, and if you've forgotten, that is nearly everywhere,
+		//    and so let the refactoring of the foundation begin... there I saved you another 3 hours.
+		// End another note to self
 	}
 
 	/**

@@ -9,8 +9,16 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+
 // No direct access to this file
-defined('JPATH_BASE') or die('Restricted access');
+defined('JPATH_BASE') or die;
 
 $headers = $displayData['headers'];
 $items = $displayData['items'];

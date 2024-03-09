@@ -61,18 +61,16 @@ class Gui implements GuiInterface
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    CMSApplication
 	 * @since 3.2.0
 	 **/
-	protected CMSApplication $app;
+	protected $app;
 
 	/**
 	 * Constructor.
@@ -80,20 +78,17 @@ class Gui implements GuiInterface
 	 * @param Config|null             $config  The compiler config object.
 	 * @param Reverse|null            $reverse The compiler placeholder reverse object.
 	 * @param Parser|null             $parser  The powers parser object.
-	 * @param \JDatabaseDriver|null   $db      The Database Driver object.
-	 * @param CMSApplication|null     $app     The CMS Application object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Reverse $reverse = null, ?Parser $parser = null,
-		?\JDatabaseDriver $db = null, ?CMSApplication $app = null)
+	public function __construct(?Config $config = null, ?Reverse $reverse = null, ?Parser $parser = null)
 	{
 		$this->config = $config ?: Compiler::_('Config');
 		$this->reverse = $reverse ?: Compiler::_('Placeholder.Reverse');
 		$this->parser = $parser ?: Compiler::_('Power.Parser');
-		$this->db = $db ?: Factory::getDbo();
-		$this->app = $app ?: Factory::getApplication();
+		$this->db = Factory::getDbo();
+		$this->app = Factory::getApplication();
 	}
 
 	/**

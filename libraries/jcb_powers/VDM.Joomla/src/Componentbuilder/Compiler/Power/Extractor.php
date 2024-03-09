@@ -41,20 +41,18 @@ final class Extractor
 	/**
 	 * Database object to query local DB
 	 *
-	 * @var    \JDatabaseDriver
 	 * @since 3.2.0
 	 **/
-	protected \JDatabaseDriver $db;
+	protected $db;
 
 	/**
 	 * Constructor
 	 *
-	 * @param \JDatabaseDriver|null    $db   The database object.
 	 * @since 3.2.0
 	 */
-	public function __construct(?\JDatabaseDriver $db = null)
+	public function __construct()
 	{
-		$this->db = $db ?: Factory::getDbo();
+		$this->db = Factory::getDbo();
 	}
 
 	/**

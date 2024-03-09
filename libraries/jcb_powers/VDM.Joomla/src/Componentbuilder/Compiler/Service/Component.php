@@ -15,13 +15,16 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Component as CompilerComponent;
-use VDM\Joomla\Componentbuilder\Compiler\Component\Settings;
+use VDM\Joomla\Componentbuilder\Compiler\Component\JoomlaThree\Settings as J3Settings;
+use VDM\Joomla\Componentbuilder\Compiler\Component\JoomlaFour\Settings as J4Settings;
+use VDM\Joomla\Componentbuilder\Compiler\Component\JoomlaFive\Settings as J5Settings;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Dashboard;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Data;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Structure;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Structuresingle;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Structuremultiple;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
 
 
 /**
@@ -31,6 +34,14 @@ use VDM\Joomla\Componentbuilder\Compiler\Component\Structuremultiple;
  */
 class Component implements ServiceProviderInterface
 {
+	/**
+	 * Current Joomla Version Being Build
+	 *
+	 * @var     int
+	 * @since 3.2.0
+	 **/
+	protected $targetVersion;
+
 	/**
 	 * Registers the service provider with a DI container.
 	 *
@@ -42,10 +53,16 @@ class Component implements ServiceProviderInterface
 	public function register(Container $container)
 	{
 		$container->alias(CompilerComponent::class, 'Component')
-			->share('Component', [$this, 'getComponent'], true);
+			->share('Component', [$this, 'getCompilerComponent'], true);
 
-		$container->alias(Settings::class, 'Component.Settings')
-			->share('Component.Settings', [$this, 'getSettings'], true);
+		$container->alias(J3Settings::class, 'Component.J3.Settings')
+			->share('Component.J3.Settings', [$this, 'getJ3Settings'], true);
+
+		$container->alias(J4Settings::class, 'Component.J4.Settings')
+			->share('Component.J4.Settings', [$this, 'getJ4Settings'], true);
+
+		$container->alias(J5Settings::class, 'Component.J5.Settings')
+			->share('Component.J5.Settings', [$this, 'getJ5Settings'], true);
 
 		$container->alias(Dashboard::class, 'Component.Dashboard')
 			->share('Component.Dashboard', [$this, 'getDashboard'], true);
@@ -64,17 +81,20 @@ class Component implements ServiceProviderInterface
 
 		$container->alias(Structuremultiple::class, 'Component.Structure.Multiple')
 			->share('Component.Structure.Multiple', [$this, 'getStructuremultiple'], true);
+
+		$container->alias(Settings::class, 'Component.Settings')
+			->share('Component.Settings', [$this, 'getSettings'], true);
 	}
 
 	/**
-	 * Get the Component
+	 * Get The Component Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  CompilerComponent
 	 * @since 3.2.0
 	 */
-	public function getComponent(Container $container): CompilerComponent
+	public function getCompilerComponent(Container $container): CompilerComponent
 	{
 		return new CompilerComponent(
 			$container->get('Component.Data')
@@ -82,16 +102,16 @@ class Component implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Component (version) Settings
+	 * Get The Settings Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Settings
+	 * @return  J3Settings
 	 * @since 3.2.0
 	 */
-	public function getSettings(Container $container): Settings
+	public function getJ3Settings(Container $container): J3Settings
 	{
-		return new Settings(
+		return new J3Settings(
 			$container->get('Config'),
 			$container->get('Registry'),
 			$container->get('Event'),
@@ -104,7 +124,51 @@ class Component implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Component Dynamic Dashboard
+	 * Get The Settings Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J4Settings
+	 * @since 3.2.0
+	 */
+	public function getJ4Settings(Container $container): J4Settings
+	{
+		return new J4Settings(
+			$container->get('Config'),
+			$container->get('Registry'),
+			$container->get('Event'),
+			$container->get('Placeholder'),
+			$container->get('Component'),
+			$container->get('Utilities.Paths'),
+			$container->get('Utilities.Dynamicpath'),
+			$container->get('Utilities.Pathfix')
+		);
+	}
+
+	/**
+	 * Get The Settings Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5Settings
+	 * @since 3.2.0
+	 */
+	public function getJ5Settings(Container $container): J5Settings
+	{
+		return new J5Settings(
+			$container->get('Config'),
+			$container->get('Registry'),
+			$container->get('Event'),
+			$container->get('Placeholder'),
+			$container->get('Component'),
+			$container->get('Utilities.Paths'),
+			$container->get('Utilities.Dynamicpath'),
+			$container->get('Utilities.Pathfix')
+		);
+	}
+
+	/**
+	 * Get The Dashboard Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -120,7 +184,7 @@ class Component implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Component Placeholders
+	 * Get The Placeholder Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -135,7 +199,7 @@ class Component implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Component Data
+	 * Get The Data Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -164,12 +228,13 @@ class Component implements ServiceProviderInterface
 			$container->get('Model.Customadminviews'),
 			$container->get('Model.Updateserver'),
 			$container->get('Model.Joomlamodules'),
-			$container->get('Model.Joomlaplugins')
+			$container->get('Model.Joomlaplugins'),
+			$container->get('Model.Router')
 		);
 	}
 
 	/**
-	 * Get the Compiler Structure
+	 * Get The Structure Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -186,7 +251,7 @@ class Component implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Structure Single
+	 * Get The Structuresingle Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -198,6 +263,7 @@ class Component implements ServiceProviderInterface
 		return new Structuresingle(
 			$container->get('Config'),
 			$container->get('Registry'),
+			$container->get('Placeholder'),
 			$container->get('Component.Settings'),
 			$container->get('Component'),
 			$container->get('Compiler.Builder.Content.One'),
@@ -208,7 +274,7 @@ class Component implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Structure Multiple
+	 * Get The Structuremultiple Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -228,5 +294,22 @@ class Component implements ServiceProviderInterface
 		);
 	}
 
+	/**
+	 * Get The Settings Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Settings
+	 * @since 3.2.0
+	 */
+	public function getSettings(Container $container): Settings
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		return $container->get('Component.J' . $this->targetVersion . '.Settings');
+	}
 }
 

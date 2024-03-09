@@ -89,8 +89,8 @@ abstract class FileHelper
 	/**
 	 * get the content of a file
 	 *
-	 * @param  string        $path   The path to the file
-	 * @param  string/bool   $none   The return value if no content was found
+	 * @param  string    $path   The path to the file
+	 * @param  mixed     $none   The return value if no content was found
 	 *
 	 * @return  string   On success
 	 *
@@ -150,7 +150,7 @@ abstract class FileHelper
 	 *
 	 * @since  3.0.9
 	 */
-	public static function write($path, $data)
+	public static function write($path, $data): bool
 	{
 		$klaar = false;
 		if (StringHelper::check($data))
@@ -179,11 +179,11 @@ abstract class FileHelper
 	 * @param   string  $folder     The local path to parse
 	 * @param   array   $fileTypes  The type of files to get
 	 *
-	 * @return  void
+	 * @return  array|null
 	 *
 	 * @since  3.0.9
 	 */
-	public static function getPaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true)
+	public static function getPaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true): ?array
 	{
 		if (Folder::exists($folder))
 		{
@@ -219,7 +219,7 @@ abstract class FileHelper
 			// return array of files
 			return array_map( fn($file) => str_replace('./', '/', (string) $file), (array) ArrayHelper::merge($files));
 		}
-		return false;
+		return null;
 	}
 
 	/**
@@ -236,7 +236,7 @@ abstract class FileHelper
 	 *
 	 * @since  3.0.9
 	 */
-	public static function getPath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = '', $createIfNotSet = true)
+	public static function getPath($type = 'path', $target = 'filepath', $fileType = null, $key = '', $default = '', $createIfNotSet = true): string
 	{
 		// make sure to always have a string/path
 		if(!StringHelper::check($default))
@@ -316,7 +316,7 @@ abstract class FileHelper
 	 *
 	 * @since  3.0.9
 	 */
-	public static function exists($path)
+	public static function exists($path): bool
 	{
 		$exists = false;
 		// if this is a local path

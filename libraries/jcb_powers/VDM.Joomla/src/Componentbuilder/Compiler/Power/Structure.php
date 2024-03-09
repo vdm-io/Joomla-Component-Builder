@@ -49,6 +49,22 @@ class Structure
 	protected array $htaccess = [];
 
 	/**
+	 * Power Build Tracker
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	protected array $done = [];
+
+	/**
+	 * Path Build Tracker
+	 *
+	 * @var    array
+	 * @since 3.2.0
+	 **/
+	protected array $path_done = [];
+
+	/**
 	 * Power Objects
 	 *
 	 * @var    Power
@@ -172,22 +188,21 @@ class Structure
 	{
 		if (ArrayHelper::check($this->power->active))
 		{
-			// for plugin event TODO change event api signatures
-			$powers = $this->power->active;
-			$component_context = $this->config->component_context;
 			// Trigger Event: jcb_ce_onBeforeSetModules
 			$this->event->trigger(
-				'jcb_ce_onBeforeBuildPowers',
-				array(&$component_context, &$powers)
+				'jcb_ce_onBeforeBuildPowers'
 			);
-			// for plugin event TODO change event api signatures
-			$this->power->active = $powers;
 
 			// set super power details
 			$this->setSuperPowerDetails();
 
-			foreach ($this->power->active as $power)
+			foreach ($this->power->active as $guid => $power)
 			{
+				if (isset($this->done[$guid]))
+				{
+					continue;
+				}
+
 				if (ObjectHelper::check($power)
 					&& isset($power->path)
 					&& StringHelper::check(
@@ -232,6 +247,9 @@ class Structure
 
 					// set htaccess once per path
 					$this->setHtaccess($power);
+
+					// do each power just once
+					$this->done[$guid] = true;
 				}
 			}
 		}
@@ -347,6 +365,14 @@ class Structure
 		// check if we should add the dynamic folder moving script to the installer script
 		if (!$this->registry->get('set_move_folders_install_script'))
 		{
+			$function = 'setDynamicF0ld3rs';
+			$script = 'script.php';
+			if ($this->config->get('joomla_version', 3) != 3)
+			{
+				$function = 'moveFolders';
+				$script = 'ComponentnameInstallerScript.php';
+			}
+
 			// add the setDynamicF0ld3rs() method to the install script.php file
 			$this->registry->set('set_move_folders_install_script', true);
 
@@ -356,7 +382,9 @@ class Structure
 				'Notice'
 			);
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_A_METHOD_SETDYNAMICFZEROLDTHREERS_WAS_ADDED_TO_THE_INSTALL_BSCRIPTPHPB_OF_THIS_PACKAGE_TO_INSURE_THAT_THE_FOLDERS_ARE_COPIED_INTO_THE_CORRECT_PLACE_WHEN_THIS_COMPONENT_IS_INSTALLED'),
+				Text::sprintf('COM_COMPONENTBUILDER_A_METHOD_S_WAS_ADDED_TO_THE_INSTALL_BSB_OF_THIS_PACKAGE_TO_INSURE_THAT_THE_FOLDERS_ARE_COPIED_INTO_THE_CORRECT_PLACE_WHEN_THIS_COMPONENT_IS_INSTALLED',
+					$function, $script
+				),
 				'Notice'
 			);
 		}
@@ -374,6 +402,11 @@ class Structure
 		{
 			foreach ($this->power->superpowers as $path => $powers)
 			{
+				if (isset($this->path_done[$path]))
+				{
+					continue;
+				}
+
 				// get existing files
 				$this->loadExistingSuperPower($path);
 
@@ -389,6 +422,9 @@ class Structure
 				// set the super power index file
 				$this->createFile(Placefix::_h('POWERINDEX'), $path,
 					'super-powers.json', $key);
+
+				// do each path just once
+				$this->path_done[$path] = true;
 			}
 		}
 	}
@@ -440,7 +476,7 @@ class Structure
 	 */
 	private function loadExistingSuperPower(string $repository)
 	{
-		if (($content = FileHelper::getContent($repository . '/super-powers.json', null)) !== null &&
+		if (!isset($this->power->old_superpowers[$repository]) && ($content = FileHelper::getContent($repository . '/super-powers.json', null)) !== null &&
 			JsonHelper::check($content))
 		{
 			$this->power->old_superpowers[$repository] = json_decode($content, true);

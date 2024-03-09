@@ -58,15 +58,17 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 	 * Adds content into the registry. If a key exists,
 	 * it either appends or concatenates based on $asArray switch.
 	 *
-	 * @param  string  $path      Registry path (e.g. vdm.content.builder)
-	 * @param  mixed   $value     Value of entry
-	 * @param  bool    $asArray   Determines if the new value should be treated as an array. Default is false.
+	 * @param  string      $path      Registry path (e.g. vdm.content.builder)
+	 * @param  mixed       $value     Value of entry
+	 * @param  bool|null   $asArray   Determines if the new value should be treated as an array.
+	 *                                Default is $addAsArray = false (if null) in base class.
+	 *                                Override in child class allowed set class property $addAsArray = true.
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
 	 * @return void
 	 * @since 3.2.0
 	 */
-	public function add(string $path, $value, bool $asArray = false): void
+	public function add(string $path, $value, ?bool $asArray = null): void
 	{
 		if (($keys = $this->getActiveKeys($path)) === null)
 		{

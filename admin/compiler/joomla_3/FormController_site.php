@@ -3,8 +3,8 @@
  * @package    Joomla.Component.Builder
  *
  * @created    30th April, 2015
- * @author     Llewellyn van der Merwe <http://www.joomlacomponentbuilder.com>
- * @github     Joomla Component Builder <https://github.com/vdm-io/Joomla-Component-Builder>
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -40,13 +40,13 @@ class ###Component###Controller###View### extends FormController
 	 *
 	 * @since   1.6
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		$this->view_list = '###SITE_DEFAULT_VIEW###'; // safeguard for setting the return view listing to the default site view.
 		parent::__construct($config);
 	}###ADMIN_CUSTOM_BUTTONS_CONTROLLER###
 
-        /**
+	/**
 	 * Method override to check if you can add a new record.
 	 *
 	 * @param   array  $data  An array of input data.
@@ -55,7 +55,7 @@ class ###Component###Controller###View### extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowAdd($data = array())
+	protected function allowAdd($data = [])
 	{###JCONTROLLERFORM_ALLOWADD###
 	}
 
@@ -69,7 +69,7 @@ class ###Component###Controller###View### extends FormController
 	 *
 	 * @since   1.6
 	 */
-	protected function allowEdit($data = array(), $key = 'id')
+	protected function allowEdit($data = [], $key = 'id')
 	{###JCONTROLLERFORM_ALLOWEDIT###
 	}
 
@@ -94,12 +94,12 @@ class ###Component###Controller###View### extends FormController
 
 		// set the referral options
 		if ($refid && $ref)
-                {
-			$append = '&ref=' . (string)$ref . '&refid='. (int)$refid . $append;
+		{
+			$append = '&ref=' . (string) $ref . '&refid='. (int) $refid . $append;
 		}
 		elseif ($ref)
 		{
-			$append = '&ref='. (string)$ref . $append;
+			$append = '&ref='. (string) $ref . $append;
 		}
 
 		return $append;
@@ -116,13 +116,13 @@ class ###Component###Controller###View### extends FormController
 	 */
 	public function batch($model = null)
 	{
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
-		$model = $this->getModel('###View###', '', array());
+		$model = $this->getModel('###View###', '', []);
 
 		// Preset the redirect
-		$this->setRedirect(JRoute::_('index.php?option=com_###component###&view=###views###' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(Route::_('index.php?option=com_###component###&view=###views###' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}
@@ -147,35 +147,35 @@ class ###Component###Controller###View### extends FormController
 
 		$cancel = parent::cancel($key);
 
-		if (!is_null($return) && JUri::isInternal(base64_decode($return)))
+		if (!is_null($return) && Uri::isInternal(base64_decode($return)))
 		{
 			$redirect = base64_decode($return);
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
 		}
 		elseif ($this->refid && $this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+			$redirect = '&view=' . (string) $this->ref . '&layout=edit&id=' . (int) $this->refid;
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
 		}
 		elseif ($this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref;
+			$redirect = '&view=' . (string) $this->ref;
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -201,7 +201,7 @@ class ###Component###Controller###View### extends FormController
 
 		// Check if there is a return value
 		$return = $this->input->get('return', null, 'base64');
-		$canReturn = (!is_null($return) && JUri::isInternal(base64_decode($return)));
+		$canReturn = (!is_null($return) && Uri::isInternal(base64_decode($return)));
 
 		if ($this->ref || $this->refid || $canReturn)
 		{
@@ -219,29 +219,29 @@ class ###Component###Controller###View### extends FormController
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					$redirect, false
 				)
 			);
 		}
 		elseif ($this->refid && $this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref . '&layout=edit&id=' . (int)$this->refid;
+			$redirect = '&view=' . (string) $this->ref . '&layout=edit&id=' . (int) $this->refid;
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
 		}
 		elseif ($this->ref)
 		{
-			$redirect = '&view=' . (string)$this->ref;
+			$redirect = '&view=' . (string) $this->ref;
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				JRoute::_(
+				Route::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -253,14 +253,14 @@ class ###Component###Controller###View### extends FormController
 	 * Function that allows child controller access to model data
 	 * after the data has been saved.
 	 *
-	 * @param   JModel  &$model     The data model object.
-	 * @param   array   $validData  The validated data.
+	 * @param   BaseDatabaseModel  &$model     The data model object.
+	 * @param   array              $validData  The validated data.
 	 *
 	 * @return  void
 	 *
 	 * @since   11.1
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{###POSTSAVEHOOK###
 	}
 

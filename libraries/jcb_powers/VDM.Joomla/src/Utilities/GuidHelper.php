@@ -138,7 +138,7 @@ abstract class GuidHelper
 	 * @param string|array  $what
 	 * @param string|null    $component
 	 *
-	 * @return mix
+	 * @return mixed
 	 *
 	 * @since  3.0.9
 	 */
