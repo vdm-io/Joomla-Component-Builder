@@ -1,3 +1,7 @@
+# v3.2.0-beta5
+
+- Add custom file file mapping for Joomla 4 and 5
+
 # v3.2.0-beta4
 
 - Add Preferred Joomla Version to Components

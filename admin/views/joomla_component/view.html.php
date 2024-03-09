@@ -215,9 +215,9 @@ class ComponentbuilderViewJoomla_component extends HtmlView
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
 		Text::script('view not acceptable. Error');
 	}
 

@@ -600,6 +600,13 @@ class Infusion extends Interpretation
 						)
 					);
 
+					// AJAXTOKE <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|AJAXTOKE',
+						$this->setAjaxToke(
+							$nameSingleCode
+						)
+					);
+
 					// add css to front end
 					if (isset($view['edit_create_site_view'])
 						&& is_numeric($view['edit_create_site_view'])
@@ -678,6 +685,13 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_HEADER',
 						CFactory::_('Header')->get(
 							'admin.view', $nameSingleCode
+						)
+					);
+
+					// JQUERY <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JQUERY',
+						$this->setJquery(
+							$nameSingleCode
 						)
 					);
 
@@ -1012,6 +1026,13 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_HEADER',
 						CFactory::_('Header')->get(
 							'admin.views', $nameListCode
+						)
+					);
+
+					// JQUERY <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|JQUERY',
+						$this->setJquery(
+							$nameSingleCode
 						)
 					);
 

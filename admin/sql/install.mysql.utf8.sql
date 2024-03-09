@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_power` (
 	`add_head` TINYINT(1) NOT NULL DEFAULT 0,
 	`add_licensing_template` TINYINT(1) NOT NULL DEFAULT 1,
 	`approved` TINYINT(1) NOT NULL DEFAULT 0,
-	`approved_paths` TEXT NOT NULL,
+	`approved_paths` TEXT NULL,
 	`composer` TEXT NULL,
 	`description` TEXT NULL,
 	`extends` VARCHAR(36) NOT NULL DEFAULT '',
@@ -1177,11 +1177,11 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_fieldtype` (
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_language_translation` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
-	`components` TEXT NOT NULL,
-	`modules` TEXT NOT NULL,
-	`plugins` TEXT NOT NULL,
+	`components` TEXT NULL,
+	`modules` TEXT NULL,
+	`plugins` TEXT NULL,
 	`source` MEDIUMTEXT NOT NULL,
-	`translation` TEXT NOT NULL,
+	`translation` TEXT NULL,
 	`params` text NULL,
 	`published` TINYINT(3) NOT NULL DEFAULT 1,
 	`created_by` INT(10) unsigned NOT NULL DEFAULT 0,
@@ -2528,7 +2528,8 @@ INSERT INTO `#__componentbuilder_library_files_folders_urls` (`id`, `addfiles`, 
 (8, '{}', '{}', '{\"addurls2\":{\"url\":\"https:\\/\\/cdn.datatables.net\\/1.10.21\\/js\\/jquery.dataTables.min.js\",\"type\":2},\"addurls1\":{\"url\":\"https:\\/\\/cdn.datatables.net\\/1.10.21\\/css\\/dataTables.uikit.min.css\",\"type\":2}}', 11, '', 1, '2020-06-27 21:34:44', '0000-00-00 00:00:00', 1, '', 7),
 (9, '{}', '{}', '{\"addurls3\":{\"url\":\"http:\\/\\/code.jquery.com\\/ui\\/1.11.1\\/themes\\/smoothness\\/jquery-ui.css\",\"type\":2},\"addurls0\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/jquery-ui-timepicker-addon\\/1.6.3\\/jquery-ui-timepicker-addon.min.css\",\"type\":2},\"addurls1\":{\"url\":\"http:\\/\\/code.jquery.com\\/ui\\/1.11.1\\/jquery-ui.min.js\",\"type\":2},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/jquery-ui-timepicker-addon\\/1.6.3\\/jquery-ui-timepicker-addon.min.js\",\"type\":2}}', 12, '', 1, '2020-06-29 00:00:44', '2020-06-29 04:32:57', 4, '', 8),
 (10, '{}', '{}', '{\"addurls0\":{\"url\":\"https:\\/\\/cdn.datatables.net\\/v\\/dt\\/jszip-2.5.0\\/dt-1.11.5\\/b-2.2.2\\/b-colvis-2.2.2\\/b-html5-2.2.2\\/b-print-2.2.2\\/cr-1.5.5\\/date-1.1.2\\/fc-4.0.2\\/fh-3.2.2\\/kt-2.6.4\\/r-2.2.9\\/rg-1.1.4\\/rr-1.2.8\\/sc-2.0.5\\/sb-1.3.2\\/sp-2.0.0\\/sl-1.3.4\\/sr-1.1.0\\/datatables.min.css\",\"type\":3},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/pdfmake\\/0.1.36\\/pdfmake.min.js\",\"type\":3},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/pdfmake\\/0.1.36\\/vfs_fonts.js\",\"type\":3},\"addurls3\":{\"url\":\"https:\\/\\/cdn.datatables.net\\/v\\/dt\\/jszip-2.5.0\\/dt-1.11.5\\/b-2.2.2\\/b-colvis-2.2.2\\/b-html5-2.2.2\\/b-print-2.2.2\\/cr-1.5.5\\/date-1.1.2\\/fc-4.0.2\\/fh-3.2.2\\/kt-2.6.4\\/r-2.2.9\\/rg-1.1.4\\/rr-1.2.8\\/sc-2.0.5\\/sb-1.3.2\\/sp-2.0.0\\/sl-1.3.4\\/sr-1.1.0\\/datatables.min.js\",\"type\":3}}', 13, '', 1, '2022-10-17 20:56:24', '0000-00-00 00:00:00', 1, '', 9),
-(11, '{}', '{}', '{\"addurls0\":{\"url\":\"https:\\/\\/cdn.jsdelivr.net\\/npm\\/nouislider\\/dist\\/nouislider.min.css\",\"type\":2},\"addurls1\":{\"url\":\"https:\\/\\/cdn.jsdelivr.net\\/npm\\/nouislider\\/dist\\/nouislider.min.js\",\"type\":2}}', 14, '', 1, '2023-06-26 15:02:42', '2023-07-24 18:11:41', 3, '', 10);
+(11, '{}', '{}', '{\"addurls0\":{\"url\":\"https:\\/\\/cdn.jsdelivr.net\\/npm\\/nouislider\\/dist\\/nouislider.min.css\",\"type\":2},\"addurls1\":{\"url\":\"https:\\/\\/cdn.jsdelivr.net\\/npm\\/nouislider\\/dist\\/nouislider.min.js\",\"type\":2}}', 14, '', 1, '2023-06-26 15:02:42', '2023-07-24 18:11:41', 3, '', 10),
+(12, '{}', '{}', '{\"addurls4\":{\"url\":\"https:\\/\\/cdn.datatables.net\\/v\\/bs5\\/jszip-3.10.1\\/dt-2.0.2\\/b-3.0.1\\/b-colvis-3.0.1\\/b-html5-3.0.1\\/b-print-3.0.1\\/cr-2.0.0\\/date-1.5.2\\/fc-5.0.0\\/fh-4.0.1\\/kt-2.12.0\\/r-3.0.0\\/rg-1.5.0\\/rr-1.5.0\\/sc-2.4.1\\/sb-1.7.0\\/sp-2.3.0\\/sl-2.0.0\\/sr-1.4.0\\/datatables.min.css\",\"type\":3},\"addurls1\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/pdfmake\\/0.2.7\\/pdfmake.min.js\",\"type\":3},\"addurls2\":{\"url\":\"https:\\/\\/cdnjs.cloudflare.com\\/ajax\\/libs\\/pdfmake\\/0.2.7\\/vfs_fonts.js\",\"type\":3},\"addurls3\":{\"url\":\"https:\\/\\/cdn.datatables.net\\/v\\/bs5\\/jszip-3.10.1\\/dt-2.0.2\\/b-3.0.1\\/b-colvis-3.0.1\\/b-html5-3.0.1\\/b-print-3.0.1\\/cr-2.0.0\\/date-1.5.2\\/fc-5.0.0\\/fh-4.0.1\\/kt-2.12.0\\/r-3.0.0\\/rg-1.5.0\\/rr-1.5.0\\/sc-2.4.1\\/sb-1.7.0\\/sp-2.3.0\\/sl-2.0.0\\/sr-1.4.0\\/datatables.min.js\",\"type\":3}}', 15, '', 1, '2024-03-09 16:27:28', '2024-03-09 16:29:30', 2, '', 9);
 
 
 CREATE TABLE IF NOT EXISTS `#__componentbuilder_external_code` (

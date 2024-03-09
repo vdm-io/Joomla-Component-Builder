@@ -657,7 +657,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// add the document default css file
 		Html::_('stylesheet', 'administrator/components/com_componentbuilder/assets/css/compiler.css', ['version' => 'auto']);
 		// Set the Custom JS script to view
-		$this->document->addScriptDeclaration("
+		$this->getDocument()->addScriptDeclaration("
 			function getComponentDetails_server(id) {
 				let getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json&raw=true\");
 				let request = new URLSearchParams();

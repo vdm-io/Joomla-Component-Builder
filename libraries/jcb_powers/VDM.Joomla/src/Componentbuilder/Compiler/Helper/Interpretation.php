@@ -5654,7 +5654,7 @@ class Interpretation extends Fields
 			. " Add the needed Javascript to insure that the buttons work.";
 		$script[] = Indent::_(2) . "Html::_('behavior.framework', true);";
 		$script[] = Indent::_(2)
-			. "\$this->document->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
+			. "\$this->getDocument()->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
 
 		// return the script
 		return PHP_EOL . implode(PHP_EOL, $script);
@@ -5780,7 +5780,7 @@ class Interpretation extends Fields
 				$script     = PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Set the Custom JS script to view" . PHP_EOL
-					. Indent::_(2) . '$this->document->addScriptDeclaration("';
+					. Indent::_(2) . '$this->getDocument()->addScriptDeclaration("';
 				$jsDocument = PHP_EOL . Indent::_(3) . str_replace(
 						'"', '\"', implode(
 							PHP_EOL . Indent::_(3),
@@ -17758,6 +17758,19 @@ class Interpretation extends Fields
 		}
 
 		return $methods;
+	}
+
+	public function setJquery(&$view)
+	{
+		$addJQuery = '';
+		if (true) // TODO we just add it everywhere for now.
+		{
+			$addJQuery .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+				. " Load jQuery";
+			$addJQuery .= PHP_EOL . Indent::_(2) . "Html::_('jquery.framework');";
+		}
+
+		return $addJQuery;
 	}
 
 	/**

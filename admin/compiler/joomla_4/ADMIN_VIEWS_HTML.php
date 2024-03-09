@@ -141,7 +141,7 @@ class HtmlView extends BaseHtmlView
 	 * @since   1.6
 	 */
 	protected function _prepareDocument(): void
-	{
+	{###JQUERY###
 		$this->getDocument()->setTitle(Text::_('COM_###COMPONENT###_###VIEWS###'));
 		// add styles
 		foreach ($this->styles as $style)

@@ -21,11 +21,12 @@ use VDM\Joomla\Utilities\StringHelper;
 $table_id = (isset($displayData['id'])) ? $displayData['id'] : StringHelper::random(7);
 $name = (isset($displayData['name'])) ? $displayData['name'] : false;
 $table_class = (isset($displayData['table_class'])) ? $displayData['table_class'] : 'uk-table';
+$table_container_class = (isset($displayData['table_container_class'])) ? $displayData['table_container_class'] : 'uk-overflow-auto';
 $headers = (isset($displayData['headers'])) ? $displayData['headers'] : [Text::_('COM_COMPONENTBUILDER_NO'), Text::_('COM_COMPONENTBUILDER_HEADERS'), Text::_('COM_COMPONENTBUILDER_FOUND')];
 $items = (isset($displayData['items'])) ? $displayData['items'] : 6;
 
 ?>
-<div class="uk-overflow-auto">
+<div class="<?php echo $$table_container_class; ?>">
 	<table id="<?php echo $table_id; ?>" class="<?php echo $table_class; ?>">
 		<thead>
 			<?php if (is_array($headers)): ?>

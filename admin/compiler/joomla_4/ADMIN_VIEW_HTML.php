@@ -126,7 +126,7 @@ class HtmlView extends BaseHtmlView
 	 * @since   1.6
 	 */
 	protected function _prepareDocument(): void
-	{
+	{###JQUERY###
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
 		// add styles

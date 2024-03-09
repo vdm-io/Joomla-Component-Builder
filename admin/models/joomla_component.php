@@ -961,7 +961,8 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				'component_dashboard' => 'joomla_component',
 				'component_files_folders' => 'joomla_component',
 				'component_placeholders' => 'joomla_component',
-				'custom_code' => 'component'
+				'custom_code' => 'component',
+				'component_router' => 'joomla_component'
 			);
 			foreach($_tablesArray as $_updateTable => $_key)
 			{
@@ -1010,7 +1011,8 @@ class ComponentbuilderModelJoomla_component extends AdminModel
 				'component_dashboard' => 'joomla_component',
 				'component_files_folders' => 'joomla_component',
 				'component_placeholders' => 'joomla_component',
-				'custom_code' => 'component'
+				'custom_code' => 'component',
+				'component_router' => 'joomla_component'
 			);
 			foreach($_tablesArray as $_updateTable => $_key)
 			{

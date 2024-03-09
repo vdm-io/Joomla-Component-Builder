@@ -645,21 +645,48 @@ final class CustomFieldTypeFile
 
 		$core_fields = $this->corefield->get();
 		$extends = $this->extends;
-
+		$found = null;
 		foreach ($core_fields as $core_field)
 		{
 			$field = strtolower((string) $core_field);
 			if ($extends === $field)
 			{
-				$this->fieldmap[$extends] = $core_field;
-
-				return $core_field;
+				$found = $core_field;
+				break;
 			}
 		}
 
-		$this->fieldmap[$extends] = StringHelper::safe($extends, 'F');
+		$extends = $found ?? StringHelper::safe($extends, 'F');
 
-		return $this->fieldmap[$extends];
+		if ($this->config->get('joomla_version', 3) != 3)
+		{
+			$fix = strtolower($extends);
+
+			if ('checkboxes' === $fix)
+			{
+				$extends = 'CheckboxesField';
+			}
+			elseif ('list' === $fix)
+			{
+				$extends = 'FormField';
+			}
+			elseif ('radio' === $fix)
+			{
+				$extends = 'RadioField';
+			}
+			elseif ('combo' === $fix)
+			{
+				$extends = 'ComboField';
+			}
+			elseif (strpos($extends, 'Field') === false)
+			{
+				$extends = StringHelper::safe($extends, 'F') . 'Field';
+			}
+		}
+
+		$this->fieldmap[$this->extends] = $extends;
+
+		return $extends;
 	}
 
 	/**

@@ -17,11 +17,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
-use VDM\Joomla\Utilities\ArrayHelper;
 Html::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 Html::_('behavior.formvalidator');
 Html::_('formbehavior.chosen', 'select');
 Html::_('behavior.keepalive');
+use Joomla\CMS\Session\Session;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 // allow main menu selection
 $this->app->input->set('hidemainmenu', false);
@@ -159,7 +160,7 @@ $search_value = $this->form->getField('search_value');
 const searchTables = <?php echo json_encode($this->item['tables']); ?>;
 
 // the search Ajax URLs
-const UrlAjax = '<?php echo $url_base; ?>&format=json&raw=true&<?php echo \JSession::getFormToken(); ?>=1&task=ajax.';
+const UrlAjax = '<?php echo $url_base; ?>&format=json&raw=true&<?php echo Session::getFormToken(); ?>=1&task=ajax.';
 
 // the search URL
 const UrlSearch = '<?php echo $url_search; ?>';

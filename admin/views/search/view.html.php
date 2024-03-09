@@ -24,6 +24,7 @@ use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use Joomla\CMS\Form\Form;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
 /**
@@ -149,7 +150,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				2 => 'COM_COMPONENTBUILDER_REPLACE',
 				0 => 'COM_COMPONENTBUILDER_CLEAR'];
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'search');
@@ -170,7 +171,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'autocomplete' => true,
 				'default' => $this->urlvalues['search_value']];
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'search');
@@ -192,7 +193,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'showon' => 'type_search:2',
 				'default' => $this->urlvalues['replace_value']];
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes);
+			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'search');
@@ -227,7 +228,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'whole_word' => 'COM_COMPONENTBUILDER_WHOLE_WORD',
 				'regex_search' => 'COM_COMPONENTBUILDER_REGEX_SEARCH'];
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'settings');
@@ -253,7 +254,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				$options[(int) $component->id] = $this->escape($component->name);
 			}
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'settings');
@@ -277,7 +278,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				$options[$table] = $this->escape($table);
 			}
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'settings');
@@ -296,7 +297,7 @@ class ComponentbuilderViewSearch extends HtmlView
 				'filter' => 'raw',
 				'editor' => 'codemirror|none'];
 			// add to form
-			$xml = ComponentbuilderHelper::getFieldXML($attributes, $options);
+			$xml = FormHelper::xml($attributes, $options);
 			if ($xml instanceof SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'view');

@@ -24,11 +24,11 @@ use Joomla\CMS\Layout\LayoutHelper;
 	<?php echo Html::_('bootstrap.startTabSet', $displayData['id'] . '_tab', array('active' => $displayData['active'] . '-noticeboard')); ?>
 		<?php echo Html::_('bootstrap.addTab', $displayData['id'] . '_tab', 'vdm-noticeboard', Text::_('COM_COMPONENTBUILDER_VDM_BOARD', true)); ?>
 			<?php echo LayoutHelper::render('jcbnoticeboardvdm', null); ?>
-			<div><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+			<div class="p-md-3"><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
 		<?php echo Html::_('bootstrap.endTab'); ?>
 		<?php echo Html::_('bootstrap.addTab', $displayData['id'] . '_tab', 'pro-noticeboard', Text::_('COM_COMPONENTBUILDER_JCB_PRO_BOARD', true)); ?>
 			<?php echo LayoutHelper::render('jcbnoticeboardpro', null); ?>
-			<div><?php echo  ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+			<div class="p-md-3"><?php echo  ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
 		<?php echo Html::_('bootstrap.endTab'); ?>
 	<?php echo Html::_('bootstrap.endTabSet'); ?>
 </div>

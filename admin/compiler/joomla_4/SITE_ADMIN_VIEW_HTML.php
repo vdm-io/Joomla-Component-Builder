@@ -28,7 +28,7 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\View\###
 class HtmlView extends BaseHtmlView
 {
 	/**
-	 * Display the view
+	 * ###View### view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
@@ -42,8 +42,9 @@ class HtmlView extends BaseHtmlView
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
-		$this->script = $this->get('Script');
 		$this->state = $this->get('State');
+		$this->styles = $this->get('Styles');
+		$this->scripts = $this->get('Scripts');
 		// get action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
 		// get input
@@ -93,9 +94,8 @@ class HtmlView extends BaseHtmlView
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
-	{###ADDTOOLBAR###
-		// now initiate the toolbar
-		$this->toolbar = Toolbar::getInstance();
+	{
+		###ADDTOOLBAR###
 	}
 
 	/**
@@ -125,14 +125,18 @@ class HtmlView extends BaseHtmlView
 	 * @since   1.6
 	 */
 	protected function _prepareDocument(): void
-	{
+	{###JQUERY###
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
-		// the default style of this view
-		Html::_('stylesheet', "components/com_###component###/assets/css/###view###.css", ['version' => 'auto']);###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
-		// default javascript of this view
-		Html::_('script', $this->script, ['version' => 'auto']);
-		Html::_('script', "components/com_###component###/views/###view###/submitbutton.js", ['version' => 'auto']);###DOCUMENT_CUSTOM_PHP###
-		Text::script('view not acceptable. Error');
+		// add styles
+		foreach ($this->styles as $style)
+		{
+			Html::_('stylesheet', $style, ['version' => 'auto']);
+		}###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
+		// add scripts
+		foreach ($this->scripts as $script)
+		{
+			Html::_('script', $script, ['version' => 'auto']);
+		}###DOCUMENT_CUSTOM_PHP###
 	}
 }
