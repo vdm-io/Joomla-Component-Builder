@@ -13,14 +13,14 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Field;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Field;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\CheckboxesField;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
-use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Helper\###Component###Helper;
+use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper\###Component###Helper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;

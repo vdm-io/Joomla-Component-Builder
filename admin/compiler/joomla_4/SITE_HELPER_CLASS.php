@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\Helper;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Helper;
 
 ###SITE_POWER_HELPER###
 

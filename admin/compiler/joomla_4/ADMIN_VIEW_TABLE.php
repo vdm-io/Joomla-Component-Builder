@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Table;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Table;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Table\Table;
@@ -33,7 +33,7 @@ use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
-use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Helper\###Component###Helper;
+use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper\###Component###Helper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;

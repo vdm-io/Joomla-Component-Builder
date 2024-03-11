@@ -101,9 +101,9 @@ class Infusion extends Interpretation
 				CFactory::_('Placeholder')->get('component')
 			);
 
-			// ComponentNameSpace
-			CFactory::_('Compiler.Builder.Content.One')->set('ComponentNameSpace',
-				NamespaceHelper::safeSegment(CFactory::_('Placeholder')->get('Component'))
+			// ComponentNamespace
+			CFactory::_('Compiler.Builder.Content.One')->set('ComponentNamespace',
+				CFactory::_('Placeholder')->get('ComponentNamespace')
 			);
 
 			// COMPANYNAME
@@ -197,7 +197,7 @@ class Infusion extends Interpretation
 
 			// set the namespace prefix
 			CFactory::_('Compiler.Builder.Content.One')->set('NAMESPACEPREFIX',
-				CFactory::_('Config')->namespace_prefix
+				CFactory::_('Placeholder')->get('NAMESPACEPREFIX')
 			);
 
 			// set the global version in case

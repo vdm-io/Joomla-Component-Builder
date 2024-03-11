@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\Rule;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Rule;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -22,7 +22,7 @@ use Joomla\CMS\Form\FormRule;
 use Joomla\Registry\Registry;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
-use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\Helper\###Component###Helper;
+use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Helper\###Component###Helper;
 
 // No direct access to this file
 \defined('JPATH_PLATFORM') or die;

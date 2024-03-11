@@ -13,13 +13,13 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\View\Import;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\View\Import;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Helper\###Component###Helper;
+use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper\###Component###Helper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;###LICENSE_LOCKED_DEFINED###

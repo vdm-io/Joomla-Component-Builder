@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\View\###SView###;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\View\###SView###;
 
 ###SITE_VIEW_HTML_HEADER######SITE_GET_MODULE_JIMPORT###
 
