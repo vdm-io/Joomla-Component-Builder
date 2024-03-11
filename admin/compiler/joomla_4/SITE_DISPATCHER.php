@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\Dispatcher;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Dispatcher;
 
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
 

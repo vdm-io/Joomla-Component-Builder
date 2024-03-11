@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Extension;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Extension;
 
 use Joomla\CMS\Association\AssociationServiceInterface;
 use Joomla\CMS\Association\AssociationServiceTrait;
@@ -31,7 +31,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Tag\TagServiceInterface;
 use Joomla\CMS\Tag\TagServiceTrait;
 use Joomla\CMS\User\UserFactoryInterface;
-// (soon) use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Service\HTML\AdministratorService;
+// (soon) use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Service\HTML\AdministratorService;
 use Psr\Container\ContainerInterface;
 
 // No direct access to this file

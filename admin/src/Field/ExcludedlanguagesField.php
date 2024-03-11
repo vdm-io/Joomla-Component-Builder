@@ -21,18 +21,18 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 \defined('_JEXEC') or die;
 
 /**
- * Joomlaplugins Form Field class for the Componentbuilder component
+ * Excludedlanguages Form Field class for the Componentbuilder component
  *
  * @since  1.6
  */
-class JoomlapluginsField extends ListField
+class ExcludedlanguagesField extends ListField
 {
 	/**
-	 * The joomlaplugins field type.
+	 * The excludedlanguages field type.
 	 *
 	 * @var        string
 	 */
-	public $type = 'Joomlaplugins';
+	public $type = 'Excludedlanguages';
 
 	/**
 	 * Override to add new button
@@ -84,19 +84,19 @@ class JoomlapluginsField extends ListField
 			$button_label = ucfirst(strtolower($button_label));
 			// get user object
 			$user = Factory::getApplication()->getIdentity();
-			// only add if user allowed to create joomla_plugin
-			if ($user->authorise('joomla_plugin.create', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
+			// only add if user allowed to create language
+			if ($user->authorise('language.create', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
 			{
 				// build Create button
-				$button[] = '<a id="'.$button_code_name.'Create" class="btn btn-small btn-success hasTooltip" title="'.Text::sprintf('PLG_EXTENSION_COMPONENTBUILDERPOWERSAUTOLOADERCOMPILER_CREATE_NEW_S', $button_label).'" style="border-radius: 0px 4px 4px 0px;"
-					href="index.php?option=com_componentbuilder&amp;view=joomla_plugin&amp;layout=edit'.$ref.'" >
+				$button[] = '<a id="'.$button_code_name.'Create" class="btn btn-small btn-success hasTooltip" title="'.Text::sprintf('PLG_CONTENT_COMPONENTBUILDERLANGUAGETABS_CREATE_NEW_S', $button_label).'" style="border-radius: 0px 4px 4px 0px;"
+					href="index.php?option=com_componentbuilder&amp;view=language&amp;layout=edit'.$ref.'" >
 					<span class="icon-new icon-white"></span></a>';
 			}
-			// only add if user allowed to edit joomla_plugin
-			if ($user->authorise('joomla_plugin.edit', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
+			// only add if user allowed to edit language
+			if ($user->authorise('language.edit', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
 			{
 				// build edit button
-				$button[] = '<a id="'.$button_code_name.'Edit" class="btn btn-small hasTooltip" title="'.Text::sprintf('PLG_EXTENSION_COMPONENTBUILDERPOWERSAUTOLOADERCOMPILER_EDIT_S', $button_label).'" style="display: none; border-radius: 0px 4px 4px 0px;" href="#" >
+				$button[] = '<a id="'.$button_code_name.'Edit" class="btn btn-small hasTooltip" title="'.Text::sprintf('PLG_CONTENT_COMPONENTBUILDERLANGUAGETABS_EDIT_S', $button_label).'" style="display: none; border-radius: 0px 4px 4px 0px;" href="#" >
 					<span class="icon-edit"></span></a>';
 				// build script
 				$script[] = "
@@ -117,7 +117,7 @@ class JoomlapluginsField extends ListField
 							createButton.style.display = 'none';
 							// show edit button
 							editButton.style.display = 'block';
-							let url = 'index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_plugin.edit&id='+value+'".$refJ."';
+							let url = 'index.php?option=com_componentbuilder&view=languages&task=language.edit&id='+value+'".$refJ."';
 							editButton.setAttribute('href', url);
 						} else {
 							// show the create button
@@ -127,7 +127,7 @@ class JoomlapluginsField extends ListField
 						}
 					}";
 			}
-			// check if button was created for joomla_plugin field.
+			// check if button was created for language field.
 			if (is_array($button) && count($button) > 0)
 			{
 				// Load the needed script.
@@ -148,38 +148,37 @@ class JoomlapluginsField extends ListField
 	 */
 	protected function getOptions()
 	{
-		// Get the user object.
-		$user = Factory::getApplication()->getIdentity();
-		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name','a.name','b.name','c.name'),array('id','plugin_system_name','name','class_extends_name','joomla_plugin_group_name')));
-		$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'b') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('b.id') . ')');
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'c') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('c.id') . ')');
+		$query->select($db->quoteName(array('a.langtag','a.name'),array('langtag','languages_name')));
+		$query->from($db->quoteName('#__componentbuilder_language', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.system_name ASC');
-		// Implement View Level Access (if set in table)
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$columns = $db->getTableColumns('#__componentbuilder_joomla_plugin');
-			if(isset($columns['access']))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
-		}
+		$query->order('a.langtag ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
+		// add the main language
+		$main_lang = trim(ComponentHelper::getParams('com_componentbuilder')->get('language', 'en-GB'));
+		// check if any language was added
+		$wasAdded = false;
 		$options = array();
 		if ($items)
 		{
-			$options[] = Html::_('select.option', '', 'Select a plugin');
+			$options[] = Html::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				// set a full class name
-				$options[] = Html::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . ucfirst($item->joomla_plugin_group_name) . $item->name . ' extends ' . $item->class_extends_name);
+				$item->langtag = trim($item->langtag);
+				// do not add main language
+				if ($main_lang !== $item->langtag)
+				{
+					$options[] = Html::_('select.option', $item->langtag, $item->languages_name . ' (' .$item->langtag.')');
+					$wasAdded = true;
+				}
 			}
+		}
+		// now if none was added give notice
+		if (!$wasAdded)
+		{
+			$options[] = Html::_('select.option', '', 'Add languages to select');
 		}
 		return $options;
 	}

@@ -42,7 +42,7 @@ class JoomlacomponentsField extends ListField
 	 */
 	protected function getOptions()
 	{
-		$db = Factory::getDBO();
+				$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','components_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));

@@ -2274,11 +2274,11 @@ class Interpretation extends Fields
 				{
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 						. '\\'. $target_area . '\Rule"';
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 						. '\\'. $target_area . '\Field">';
 				}
 
@@ -2331,11 +2331,11 @@ class Interpretation extends Fields
 					{
 						$xml .= PHP_EOL . Indent::_(3)
 							. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
-							. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+							. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 							. '\\'. $target_area . '\Rule"';
 						$xml .= PHP_EOL . Indent::_(3)
 							. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
-							. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+							. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 							. '\\'. $target_area . '\Field">';
 					}
 					$xml .= implode(Indent::_(3), $params);
@@ -8918,7 +8918,7 @@ class Interpretation extends Fields
 				// set the table
 				$array['table'] = '{"special": {"dbtable": "#__' . $component . '_'
 					. $view . '","key": "id","type": "' . $View . 'Table","prefix": "' . CFactory::_('Config')->namespace_prefix
-					. '\\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+					. '\\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 					. '\\Administrator\\Table"}}';
 
 				// set rules field
@@ -23182,11 +23182,11 @@ class Interpretation extends Fields
 				{
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 						. '\Administrator\Rule"';
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 						. '\Administrator\Field">';
 				}
 				$xml .= PHP_EOL . Indent::_(1) . '>';
@@ -23585,11 +23585,11 @@ class Interpretation extends Fields
 				{
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 						. '\Administrator\Rule"';
 					$xml .= PHP_EOL . Indent::_(3)
 						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNameSpace')
+						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
 						. '\Administrator\Field">';
 				}
 				$xml .= PHP_EOL . Indent::_(1) . '>';

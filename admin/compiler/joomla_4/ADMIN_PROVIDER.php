@@ -27,8 +27,8 @@ use Joomla\CMS\Extension\Service\Provider\MVCFactory;
 use Joomla\CMS\Extension\Service\Provider\RouterFactory;
 use Joomla\CMS\HTML\Registry;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
-use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Extension\###Component###Component;
-// (soon) use ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Helper\AssociationsHelper;
+use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Extension\###Component###Component;
+// (soon) use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper\AssociationsHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 

@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Field;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Field;
 
 ###FORM_CUSTOM_FIELD_HEADER###
 
