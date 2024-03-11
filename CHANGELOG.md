@@ -1,3 +1,8 @@
+# v3.2.0-beta6
+
+- Fix the plug-in installer script builder bug #1068
+- Fix Event triggers for Joomla 4 and 5 builds.
+
 # v3.2.0-beta5
 
 - Add custom file file mapping for Joomla 4 and 5
