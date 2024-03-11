@@ -26,12 +26,19 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
 class Event implements EventInterface
 {
 	/**
-	 * event plugin trigger switch
+	 * event plug-in trigger switch
 	 *
 	 * @var    boolean
 	 * @since 3.2.0
 	 */
 	protected $activePlugins = false;
+
+	/**
+	 * The application to trigger and event TODO
+	 *
+	 * @since 3.2.0
+	 */
+	protected $dispatcher;
 
 	/**
 	 * Constructor
@@ -60,6 +67,8 @@ class Event implements EventInterface
 				}
 			}
 		}
+
+		$this->dispatcher = Factory::getApplication();
 	}
 
 	/**
@@ -77,22 +86,14 @@ class Event implements EventInterface
 		// only execute if plugins were loaded (active)
 		if ($this->activePlugins)
 		{
-			// Get the dispatcher.
-			$dispatcher = \JEventDispatcher::getInstance();
-
-			// Trigger this compiler event.
-			$results = $dispatcher->trigger($event, $data);
-
-			// Check for errors encountered while trigger the event
-			if (count((array) $results) && in_array(false, $results, true))
+			try
 			{
-				// Get the last error.
-				$error = $dispatcher->getError();
-
-				if (!($error instanceof \Exception))
-				{
-					throw new \Exception($error);
-				}
+				// Trigger this compiler event.
+				$results = $this->dispatcher->triggerEvent($event, $data ?? []);
+			}
+			catch (\Exception $e)
+			{
+				throw new \Exception("Error processing event '$event': " . $e->getMessage());
 			}
 		}
 	}
