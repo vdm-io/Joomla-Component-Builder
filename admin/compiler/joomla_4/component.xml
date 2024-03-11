@@ -14,7 +14,7 @@
 		<p>###DESCRIPTION###</p>
 		<p>Created by <a href="###AUTHORWEBSITE###" target="_blank">###AUTHOR###</a><br /><small>Development started ###CREATIONDATE###</small></p>
 	]]></description>
-	<namespace path="src">###NAMESPACEPREFIX###\Component\###ComponentNameSpace###</namespace>
+	<namespace path="src">###NAMESPACEPREFIX###\Component\###ComponentNamespace###</namespace>
 
 	<!-- Runs on install -->
 	<install>

@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Model;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Model;
 
 ###CUSTOM_ADMIN_VIEW_MODEL_HEADER###
 

@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Helper;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;

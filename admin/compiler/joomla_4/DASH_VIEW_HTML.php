@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\View\###Component###;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\View\###Component###;
 
 ###DASH_VIEW_HTML_HEADER###
 

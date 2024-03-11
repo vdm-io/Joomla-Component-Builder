@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Controller;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Controller;
 
 ###CUSTOM_ADMIN_VIEWS_CONTROLLER_HEADER###
 

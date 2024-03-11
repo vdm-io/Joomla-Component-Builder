@@ -17,6 +17,7 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
@@ -117,6 +118,12 @@ final class Placeholder implements PlaceholderInterface
 		$bucket[Placefix::_('COMPONENT')]   = $bucket[Placefix::_h('COMPONENT')];
 		$bucket[Placefix::_h('LANG_PREFIX')] = $config->lang_prefix;
 		$bucket[Placefix::_('LANG_PREFIX')] = $bucket[Placefix::_h('LANG_PREFIX')];
+		$bucket[Placefix::_h('ComponentNamespace')] = NamespaceHelper::safeSegment(StringHelper::safe($config->component_code_name, 'F'));
+		$bucket[Placefix::_('ComponentNamespace')] = $bucket[Placefix::_h('ComponentNamespace')];
+		$bucket[Placefix::_h('NamespacePrefix')] = $config->namespace_prefix;
+		$bucket[Placefix::_('NamespacePrefix')] = $config->namespace_prefix;
+		$bucket[Placefix::_h('NAMESPACEPREFIX')] = $config->namespace_prefix;
+		$bucket[Placefix::_('NAMESPACEPREFIX')] = $config->namespace_prefix;
 
 		// get the current components overrides
 		if (($_placeholders = GetHelper::var(

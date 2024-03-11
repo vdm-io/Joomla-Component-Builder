@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form
-	addruleprefix="###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Rule"
-	addfieldprefix="###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Administrator\Field"
+	addruleprefix="###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Rule"
+	addfieldprefix="###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Field"
 >
 	<config>
 		<inlinehelp button="show"/>

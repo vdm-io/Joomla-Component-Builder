@@ -22,7 +22,6 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\Category;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\AccessSwitchList;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Filter;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Tags;
-use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HeaderInterface;
@@ -145,7 +144,7 @@ final class Header implements HeaderInterface
 	 * @var   string
 	 * @since 3.2.0
 	 */
-	protected string $ComponentNameSpace;
+	protected string $ComponentNamespace;
 
 	/**
 	 * Constructor.
@@ -181,9 +180,9 @@ final class Header implements HeaderInterface
 		$this->tags = $tags;
 
 		// set some global values
-		$this->NamespacePrefix = $this->config->get('namespace_prefix');
+		$this->NamespacePrefix = $this->placeholder->get('NamespacePrefix');
 		$this->ComponentName = $this->placeholder->get('Component');
-		$this->ComponentNameSpace = NamespaceHelper::safeSegment($this->ComponentName);
+		$this->ComponentNamespace = $this->placeholder->get('ComponentNamespace');
 	}
 
 	/**
@@ -209,7 +208,7 @@ final class Header implements HeaderInterface
 				$target = 'Site';
 			}
 
-			$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNameSpace}\\{$target}\\Helper\\{$this->ComponentName}Helper;";
+			$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNamespace}\\{$target}\\Helper\\{$this->ComponentName}Helper;";
 
 			// we will add more as needed
 			switch ($context)
@@ -218,7 +217,7 @@ final class Header implements HeaderInterface
 				case 'site.views.model':
 				case 'site.view.html':
 				case 'site.views.html':
-					$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNameSpace}\\Site\\Helper\\RouteHelper;";
+					$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNamespace}\\Site\\Helper\\RouteHelper;";
 				break;
 
 				default:
@@ -387,7 +386,7 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Plugin\PluginHelper;';
 				$headers[] = 'use Joomla\CMS\Toolbar\ToolbarHelper;';
 				$headers[] = 'use Joomla\CMS\Document\Document;';
-				$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNameSpace}\\Site\\Helper\\HeaderCheck;";
+				$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNamespace}\\Site\\Helper\\HeaderCheck;";
 				break;
 
 			case 'custom.admin.view.html':
@@ -404,7 +403,7 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Plugin\PluginHelper;';
 				$headers[] = 'use Joomla\CMS\Toolbar\ToolbarHelper;';
 				$headers[] = 'use Joomla\CMS\Document\Document;';
-				$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNameSpace}\\{$target}\\Helper\\HeaderCheck;";
+				$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNamespace}\\{$target}\\Helper\\HeaderCheck;";
 				break;
 
 			case 'admin.view.model':

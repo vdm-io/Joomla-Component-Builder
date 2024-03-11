@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\Model;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Model;
 
 ###AJAX_SITE_MODEL_HEADER###
 

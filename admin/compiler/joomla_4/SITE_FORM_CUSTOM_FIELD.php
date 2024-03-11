@@ -13,7 +13,7 @@
 defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
-namespace ###NAMESPACEPREFIX###\Component\###ComponentNameSpace###\Site\Field;
+namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Field;
 
 ###SITE_FORM_CUSTOM_FIELD_HEADER###
 
