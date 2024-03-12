@@ -455,7 +455,7 @@
 			name="source"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_SOURCE_LABEL"
 			class="btn-group btn-group-yesno"
-			default=""
+			default="0"
 			required="true">
 			<!-- Option Set. -->
 			<option value="1">

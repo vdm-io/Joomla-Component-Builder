@@ -144,9 +144,9 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 	protected function getOptions()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Get the databse object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name','a.name','b.name','c.name'),array('id','plugin_system_name','name','class_extends_name','joomla_plugin_group_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
@@ -169,11 +169,13 @@ class JFormFieldJoomlaplugins extends JFormFieldList
 		$options = array();
 		if ($items)
 		{
-			$options[] = JHtml::_('select.option', '', 'Select a plugin');
+			$options[] = Html::_('select.option', '', 'Select a plugin');
 			foreach($items as $item)
 			{
 				// set a full class name
-				$options[] = JHtml::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . ucfirst($item->joomla_plugin_group_name) . $item->name . ' extends ' . $item->class_extends_name);
+				$group_name = $item->joomla_plugin_group_name ?? '';
+				$name = $item->name ?? '';
+				$options[] = Html::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . $group_name . $name . ' extends ' . $item->class_extends_name);
 			}
 		}
 		return $options;
