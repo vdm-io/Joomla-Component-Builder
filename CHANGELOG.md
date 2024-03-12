@@ -1,3 +1,7 @@
+# v4.0.0-alpha3
+
+- Add fix to the update script, so that upgrading JCB from Joomla 3 to 4 will not fail.
+
 # v4.0.0-alpha2
 
 - Fix the plug-in installer script builder bug #1067
