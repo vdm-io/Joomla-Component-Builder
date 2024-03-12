@@ -545,10 +545,16 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 		// do any updates needed
 		if ($type === 'update')
 		{
-			// path to the new compiler
-			$jcb_powers = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
-			// we always remove all the old files to avoid mismatching
-			\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper::removeFolder($jcb_powers);
+
+			// Check if the class and method exist before attempting to call it.
+			if (class_exists('\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper') &&
+				method_exists('\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper', 'removeFolder'))
+			{
+				// path to the new compiler
+				$jcb_powers = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
+				// we always remove all the old files to avoid mismatching
+				\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper::removeFolder($jcb_powers);
+			}
 		}
 
 		// do any install needed
@@ -3140,7 +3146,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 5.0.0-alpha2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 5.0.0-alpha3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();

@@ -23,13 +23,13 @@
 		<element>pkg_component_builder</element>
 		<type>package</type>
 		<client>site</client>
-		<version>4.0.0-alpha2</version>
+		<version>4.0.0-alpha3</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v4.0.0-alpha2.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v4.0.0-alpha3.zip</downloadurl>
 		</downloads>
 		<tags>
-			<tag>stable</tag>
+			<tag>alpha</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
@@ -47,7 +47,7 @@
 			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.0-alpha1.zip</downloadurl>
 		</downloads>
 		<tags>
-			<tag>beta</tag>
+			<tag>alpha</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
@@ -62,13 +62,31 @@
 		<version>5.0.0-alpha2</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.0-alpha1.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.0-alpha2.zip</downloadurl>
 		</downloads>
 		<tags>
-			<tag>beta</tag>
+			<tag>alpha</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
-		<targetplatform name="joomla" version="3.*"/>
+		<targetplatform name="joomla" version="5\.[01]"/>
+	</update>
+	<update>
+		<name>Component Builder</name>
+		<description>Builds Complex Joomla Components</description>
+		<element>pkg_component_builder</element>
+		<type>package</type>
+		<client>site</client>
+		<version>5.0.0-alpha3</version>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.0-alpha3.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>alpha</tag>
+		</tags>
+		<maintainer>Llewellyn van der Merwe</maintainer>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
+		<targetplatform name="joomla" version="5\.[01]"/>
 	</update>
 </updates>
