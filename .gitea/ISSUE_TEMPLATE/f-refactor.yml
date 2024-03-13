@@ -1,0 +1,45 @@
+name: Refactoring Task
+about: Recommend or identify the necessity for code refactoring.
+title: "[REFACTOR]: "
+labels:
+  - refactor
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We appreciate your commitment to enhancing the maintainability and quality of our codebase! Code refactoring plays a crucial role in ensuring our system remains efficient and easy to manage. To assist us effectively, please share comprehensive details about the refactoring task you are suggesting or identifying.                
+  - type: textarea
+    id: refactoring-details
+    attributes:
+      label: Refactoring Details
+      description: Outline the refactoring task, specifying which code segment requires attention and the reasons behind this need. What improvements are expected from this refactoring?
+      placeholder: Provide an in-depth explanation of the refactoring task?
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Affected Components and Context        
+  - type: textarea
+    id: area
+    attributes:
+      label: Which file or area needs refactoring?
+      description: Where should the refactoring take place?
+      placeholder: Give a road map where the refactoring should take place.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-outcome
+    attributes:
+      label: Expected Outcome
+      description: What benefits do you anticipate from this refactoring? How will it enhance the codebase or overall system?
+      placeholder: Explain the expected results of this refactoring.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Share any further details or information, like code snippets, that could aid in comprehending or executing the refactoring task.
+    validations:
+      required: false
