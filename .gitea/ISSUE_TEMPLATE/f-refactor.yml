@@ -23,8 +23,8 @@ body:
   - type: textarea
     id: area
     attributes:
-      label: Which file or area needs refactoring?
-      description: Where should the refactoring take place?
+      label: Which file or area of JCB needs refactoring?
+      description: Which area in JCB should be refactored?
       placeholder: Give a road map where the refactoring should take place.
     validations:
       required: true
