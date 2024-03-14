@@ -1,0 +1,81 @@
+name: Enhancement Request
+about: Suggest an idea for JCB
+title: "[ENHANCEMENT]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an enhancement! Your input is crucial for our innovation and progress. To assist us better, please share detailed information about your idea.                
+  - type: textarea
+    id: enhancement-details
+    attributes:
+      label: Enhancement Details
+      description: Could you detail the enhancement you're suggesting? Explain the issue it addresses or the new feature it introduces.
+      placeholder: Please give an in-depth explanation of your proposed enhancement.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Context and Priority        
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the extension will be affected by this enhancement?
+      multiple: true
+      options:
+        - Compilation of component
+        - Installation of a component
+        - Installation JCB pkg
+        - Installation of JCB plugins
+        - Compiler(admin_view)
+        - Dashboard(admin_view)
+        - Joomla Components(admin_views)
+        - Joomla Component(admin_view)
+        - Joomla Modules(admin_views)
+        - Joomla Module(admin_view)
+        - Joomla Plugins(admin_views)
+        - Joomla Plugin(admin_view)
+        - Power(admin_view)
+        - Powers(admin_views)
+        - Search(admin_view)
+        - Admin View(admin_view)
+        - Admin Views(admin_views)
+        - Custom Admin Views(admin_views)
+        - Site View(admin_view)
+        - Site Views(admin_views)
+        - Template(admin_view)
+        - Templates(admin_views)
+        - Layout(admin_view)
+        - Layouts(admin_views)
+        - Dynamic Get(admin_view)
+        - Dynamic Gets(admin_views)
+        - Custom Code(admin_view)
+        - Custom Codes(admin_views)
+        - Placeholder(admin_view)
+        - Placeholders(admin_views)
+        - Library(admin_view)
+        - Libraries(admin_views)
+        - Snippet(admin_view)
+        - Snippets(admin_views)
+        - Validation Rule(admin_view)
+        - Validation Rules(admin_views)
+        - Field(admin_view)
+        - Fields(admin_views)
+        - Fieldtypes(admin_views)
+        - Language Translations(admin_views)
+        - Server(admin_view)
+        - Servers(admin_views)
+        - Help Documents(admin_views)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Supply additional context or screenshots related to the enhancement request in this space.
+    validations:
+      required: false
