@@ -1,0 +1,45 @@
+name: Task
+about: Create a task for project management
+title: "[TASK]: "
+labels:
+  - task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for setting up the task! Tasks assist us in arranging and ranking our work. Kindly provide comprehensive details about the task for clarity and efficient tracking.               
+  - type: textarea
+    id: task-details
+    attributes:
+      label: Task Details
+      description: Please describe the task. What are the specific actions required?
+      placeholder: Provide a detailed description of the task.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Task Context and Priority
+  - type: textarea
+    id: task-environment
+    attributes:
+      label: Task environment
+      description: Please provide the details of the environment in which this task will be completed.
+      placeholder: Describe the environment applicable to the task.
+    validations:
+      required: true
+  - type: textarea
+    id: task-objective
+    attributes:
+      label: Task Objective
+      description: What's the aim or purpose of this task? How will it contribute to the project or system's success?
+      placeholder: Describe the goal and anticipated result of the task.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Please share any extra context, files, or screenshots that could aid in comprehending or carrying out the task.
+    validations:
+      required: false
