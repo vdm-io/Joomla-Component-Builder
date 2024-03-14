@@ -1,0 +1,176 @@
+name: Bug Report
+about: Draft a report to aid in our Debugging efforts.
+title: "[BUG]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We value your effort in reporting an bug! Your feedback is essential for us to address and fix the problem.                
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What Happened?
+      description: Please provide a detailed description of the issue and explain what outcome you anticipate.
+      placeholder: Describe the issue you experienced.
+      value: ""
+    validations:
+      required: true
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce the Bug
+      description: Please provide a detailed description of the steps to reproduce the issue you experienced.
+      placeholder: Describe the steps to reproduce the issue.
+      value: ""
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Environment Details
+  - type: input
+    id: joomla_version_compiling
+    attributes:
+      label: Which Joomla version are you compiling in?
+      placeholder: e.g., v4.4.3, 
+    validations:
+      required: true
+  - type: input
+    id: php_version_compiling
+    attributes:
+      label: Which PHP version are you compiling in?
+      placeholder: e.g., v8.1,
+    validations:
+      required: true
+  - type: input
+    id: joomla_versions_targeting
+    attributes:
+      label: Which Joomla versions are you targeting?
+      placeholder: e.g., v5.0.3,
+    validations:
+      required: true
+  - type: input
+    id: php_version_targeting
+    attributes:
+      label: Which PHP version are you targeting?
+      placeholder: e.g., 8.2
+    validations:
+      required: true
+  - type: input
+    id: apache_version_using
+    attributes:
+      label: Which Web server is JCB running on?
+      description: Please provide the full name of the web server on which you are running JCB.
+      placeholder: e.g., Apache 2.4
+    validations:
+      required: true
+  - type: input
+    id: mysql_version_using
+    attributes:
+      label: Which Relational Database is JCB running on?
+      description: Please provide the full name of the database on which you are running JCB.
+      placeholder: e.g., Mysql 8.0, MariaDB 10.6,
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Which OS is JCB running on?
+      description: Please provide the full name of the OS on which you are running JCB.
+      placeholder: e.g. CentOS 8 sever,
+      value: ""
+    validations:
+      required: true
+  - type: input
+    id: jcb_version
+    attributes:
+      label: Which JCB version are you using?
+      description: Please provide the full name of the JCB version you are using.
+      placeholder: e.g., v5.0.0-alpha3
+    validations:
+      required: true
+  - type: dropdown
+    id: jcb_installed_on_joomla
+    attributes:
+      label: Which Joomla version is JCB installed on?
+      multiple: true
+      options:
+        - Joomla 5
+        - Joomla 4
+        - Joomla 3
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where in JCB did this issue occur?
+      multiple: true
+      options:
+        - Compilation of a component
+        - Installation of a component
+        - Installation JCB pkg
+        - Installation of JCB plugins
+        - Compiler(admin_view)
+        - Dashboard(admin_view)
+        - Joomla Components(admin_views)
+        - Joomla Component(admin_view)
+        - Joomla Modules(admin_views)
+        - Joomla Module(admin_view)
+        - Joomla Plugins(admin_views)
+        - Joomla Plugin(admin_view)
+        - Power(admin_view)
+        - Powers(admin_views)
+        - Search(admin_view)
+        - Admin View(admin_view)
+        - Admin Views(admin_views)
+        - Custom Admin Views(admin_views)
+        - Site View(admin_view)
+        - Site Views(admin_views)
+        - Template(admin_view)
+        - Templates(admin_views)
+        - Layout(admin_view)
+        - Layouts(admin_views)
+        - Dynamic Get(admin_view)
+        - Dynamic Gets(admin_views)
+        - Custom Code(admin_view)
+        - Custom Codes(admin_views)
+        - Placeholder(admin_view)
+        - Placeholders(admin_views)
+        - Library(admin_view)
+        - Libraries(admin_views)
+        - Snippet(admin_view)
+        - Snippets(admin_views)
+        - Validation Rule(admin_view)
+        - Validation Rules(admin_views)
+        - Field(admin_view)
+        - Fields(admin_views)
+        - Fieldtypes(admin_views)
+        - Language Translations(admin_views)
+        - Server(admin_view)
+        - Servers(admin_views)
+        - Help Documents(admin_views)
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: On which browsers did you encounter the issue?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Microsoft Edge
+        - Safari
+        - Opera
+        - Brave
+        - Vivaldi
+    validations:
+      required: true
+  - type: textarea
+    id: comments
+    attributes:
+      label: Additional Comments
+      description: Feel free to include any further comments or pertinent details that might assist us.
