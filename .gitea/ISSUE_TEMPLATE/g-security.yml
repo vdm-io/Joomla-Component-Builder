@@ -1,0 +1,38 @@
+name: Security Issue
+about: Identify a possible security risk.
+title: "[SECURITY]: "
+labels:
+  - security
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **⚠️ CRITICAL: Avoid sharing any sensitive or confidential details in this message.** Should you suspect a security flaw, please contact us directly at [joomla@vdm.io].               
+  - type: textarea
+    id: security-general-description
+    attributes:
+      label: General Description
+      description: Offer a broad overview of the security concern, ensuring not to disclose any sensitive information.
+      placeholder: Provide a general description of the security problem.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        # Affected Systems        
+  - type: textarea
+    id: security-environment
+    attributes:
+      label: Environment affected by security issue.
+      description: Give a general description of the environment affected by this security issue.
+      placeholder: Describe the affected environment.
+    validations:
+      required: true
+  - type: textarea
+    id: non-sensitive-details
+    attributes:
+      label: Non-Sensitive Details
+      description: If applicable, please offer further non-sensitive information or general observations regarding the security concern.
+      placeholder: Provide any relevant non-sensitive details or observations.
+    validations:
+      required: false
