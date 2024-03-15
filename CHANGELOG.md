@@ -1,3 +1,11 @@
+# v5.0.0-alpha4
+
+- Fix plugin field selection
+- Fix plugin params tab layout
+- Add issue templates
+- Force autoloader to always load
+- Fix repeatable layout #1076
+
 # v5.0.0-alpha3
 
 - Add fix to the update script, so that upgrading JCB from Joomla 4 to 5 will not fail.
@@ -11,10 +19,17 @@
 
 - First alpha release of Component Builder towards Joomla 5 (very unstable...)
 
-# v4.0.0-alpha3
+# v4.0.0-alpha4
 
-- Add fix to the update script, so that upgrading JCB from Joomla 3 to 4 will not fail.
+- Fix plugin field selection
+- Fix plugin params tab layout
+- Add issue templates
+- Force autoloader to always load
+- Fix repeatable layout #1076
 
-# v3.2.0-beta6
+# v3.2.0-beta7
 
-- Fix the plug-in installer script builder bug #1068
+- Fix plugin field selection
+- Fix plugin params tab layout
+- Add issue templates
+- Force autoloader to always load

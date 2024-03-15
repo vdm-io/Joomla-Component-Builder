@@ -5484,12 +5484,12 @@ abstract class ComponentbuilderHelper
 	*
 	* @returns string on success
 	**/
-	public static function getSubformLayout($view, $field, $default = 'repeatablejcb')
+	public static function getSubformLayout($view, $field, $default = 'joomla.form.field.subform.repeatable-table')
 	{
 		// get global values
 		if (self::$subformLayouts === false)
 		{
-			self::$subformLayouts = \JComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
+			self::$subformLayouts = ComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
 		}
 		// check what we found (else) return default
 		if (ObjectHelper::check(self::$subformLayouts))

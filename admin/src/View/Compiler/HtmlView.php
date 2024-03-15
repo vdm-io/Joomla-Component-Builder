@@ -128,8 +128,8 @@ class HtmlView extends BaseHtmlView
 	}
 
 	// These are subform layouts used in JCB
-	// LayoutHelper::render('sectionjcb', [?]); // added to ensure the layout are loaded
-	// LayoutHelper::render('repeatablejcb', [?]); // added to ensure the layout are loaded
+	// LayoutHelper::render('sectionjcbjfive', [?]); // added to ensure the layout are loaded
+	// LayoutHelper::render('repeatablejcbjfive', [?]); // added to ensure the layout are loaded
 
 	/**
 	 * Get the dynamic build form fields needed on the page

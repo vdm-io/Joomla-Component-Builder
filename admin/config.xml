@@ -119,7 +119,7 @@
 						COM_COMPONENTBUILDER_CONFIG_REPEATABLETABLE_JOOMLA</option>
 					<option value="joomla.form.field.subform.repeatable">
 						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_JOOMLA</option>
-					<option value="repeatablejcb">
+					<option value="repeatablejcbjfive">
 						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_UIKIT</option>
 				</field>
 			</form>
