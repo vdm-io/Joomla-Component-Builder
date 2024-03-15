@@ -150,7 +150,10 @@ class Autoloader
 		// for now we load it if the plugin is not loaded
 		// but we may want to add a switch that
 		// controls this behaviour.
-		return !$this->loadPluginAutoloader();
+		// return !$this->loadPluginAutoloader();
+		// lets load it anyway (can't break anything)
+		// but we will still like a switch for this
+		return true;
 	}
 
 	/**

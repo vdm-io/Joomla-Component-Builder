@@ -1,3 +1,10 @@
+# v3.2.0-beta7
+
+- Fix plugin field selection
+- Fix plugin params tab layout
+- Add issue templates
+- Force autoloader to always load
+
 # v3.2.0-beta6
 
 - Fix the plug-in installer script builder bug #1068

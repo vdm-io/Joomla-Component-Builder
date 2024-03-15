@@ -5480,7 +5480,7 @@ abstract class ComponentbuilderHelper
 		// get global values
 		if (self::$subformLayouts === false)
 		{
-			self::$subformLayouts = \JComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
+			self::$subformLayouts = ComponentHelper::getParams('com_componentbuilder')->get('subform_layouts', false);
 		}
 		// check what we found (else) return default
 		if (ObjectHelper::check(self::$subformLayouts))
