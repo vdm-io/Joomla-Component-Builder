@@ -178,7 +178,9 @@ class JoomlapluginsField extends ListField
 			foreach($items as $item)
 			{
 				// set a full class name
-				$options[] = Html::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . ucfirst($item->joomla_plugin_group_name) . $item->name . ' extends ' . $item->class_extends_name);
+				$group_name = $item->joomla_plugin_group_name ?? '';
+				$name = $item->name ?? '';
+				$options[] = Html::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . $group_name . $name . ' extends ' . $item->class_extends_name);
 			}
 		}
 		return $options;

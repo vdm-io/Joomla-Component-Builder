@@ -49,6 +49,7 @@ class HtmlView extends BaseHtmlView
 	{
 		// set params
 		$this->params = ComponentHelper::getParams('com_componentbuilder');
+		$this->useCoreUI = true;
 		// Assign the variables
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
