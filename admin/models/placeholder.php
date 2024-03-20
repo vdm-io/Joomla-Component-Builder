@@ -163,6 +163,12 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->value))
+			{
+				// base64 Decode value.
+				$item->value = base64_decode($item->value);
+			}
+
 
 			if (empty($item->id))
 			{
@@ -892,6 +898,12 @@ class ComponentbuilderModelPlaceholder extends AdminModel
 		$data['target'] = preg_replace("/[^A-Za-z0-9_]/", '', $data['target']);
 		// add the padding (needed)
 		$data['target'] = '[[[' . trim($data['target']) . ']]]';
+
+		// Set the value string to base64 string.
+		if (isset($data['value']))
+		{
+			$data['value'] = base64_encode($data['value']);
+		}
 
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))

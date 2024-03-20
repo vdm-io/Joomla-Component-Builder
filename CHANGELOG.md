@@ -1,3 +1,7 @@
+# v3.2.0-beta9
+
+- Fix [Set String Value] in placeholder table to store the value as a base64 string.
+
 # v3.2.0-beta8
 
 - Add Factory class to the J5 Event class. #1093

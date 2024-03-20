@@ -4059,7 +4059,7 @@ class Table extends BaseTable implements Tableinterface
 				'type' => 'textarea',
 				'title' => false,
 				'list' => 'placeholders',
-				'store' => NULL,
+				'store' => 'base64',
 				'tab_name' => 'Details',
 			],
 		],
