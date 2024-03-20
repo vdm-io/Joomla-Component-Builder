@@ -1,3 +1,7 @@
+# v3.2.0-beta8
+
+- Add Factory class to the J5 Event class. #1093
+
 # v3.2.0-beta7
 
 - Fix plugin field selection

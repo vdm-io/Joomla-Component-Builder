@@ -4056,10 +4056,10 @@ class Table extends BaseTable implements Tableinterface
 			'value' => [
 				'name' => 'value',
 				'label' => 'COM_COMPONENTBUILDER_PLACEHOLDER_VALUE_LABEL',
-				'type' => 'text',
+				'type' => 'textarea',
 				'title' => false,
 				'list' => 'placeholders',
-				'store' => 'base64',
+				'store' => NULL,
 				'tab_name' => 'Details',
 			],
 		],

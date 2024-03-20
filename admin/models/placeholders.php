@@ -142,8 +142,6 @@ class ComponentbuilderModelPlaceholders extends ListModel
 					continue;
 				}
 
-				// decode value
-				$item->value = base64_decode($item->value);
 			}
 		}
 
@@ -309,8 +307,6 @@ class ComponentbuilderModelPlaceholders extends ListModel
 							continue;
 						}
 
-						// decode value
-						$item->value = base64_decode($item->value);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);
