@@ -43,19 +43,16 @@ class CustomfilelistField extends ListField
 	protected function getOptions()
 	{
 		// get custom folder files
-		$localfolder = ComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+		$localfolder = ComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom');
 		// set the default
 		$options[] = Html::_('select.option', '', Text::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FILES_TO_S',$localfolder));
-		// inport all needed classes
-		jimport('joomla.filesystem.file');
-		jimport('joomla.filesystem.folder');
 		// setup the folder if it does not exist
-		if (!JFolder::exists($localfolder))
+		if (!\JFolder::exists($localfolder))
 		{
-			JFolder::create($localfolder);
+			\JFolder::create($localfolder);
 		}
 		// now check if there are files in the folder
-		if ($files = JFolder::files($localfolder))
+		if ($files = \JFolder::files($localfolder))
 		{
 			$options = array();
 			foreach ($files as $file)

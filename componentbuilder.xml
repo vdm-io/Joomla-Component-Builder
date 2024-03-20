@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="5.0" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>15th March, 2024</creationDate>
+	<creationDate>20th March, 2024</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>5.0.0-alpha4</version>
+	<version>5.0.0-alpha5</version>
 	<description><![CDATA[
-		<h1>Component Builder (v.5.0.0-alpha4)</h1>
+		<h1>Component Builder (v.5.0.0-alpha5)</h1>
 		<div style="clear: both;"></div>
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
@@ -77,10 +77,13 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 			<menu option="com_componentbuilder" view="placeholders">COM_COMPONENTBUILDER_MENU_PLACEHOLDERS</menu>
 			<menu option="com_componentbuilder" view="libraries">COM_COMPONENTBUILDER_MENU_LIBRARIES</menu>
 			<menu option="com_componentbuilder" view="snippets">COM_COMPONENTBUILDER_MENU_SNIPPETS</menu>
+			<menu option="com_componentbuilder" view="get_snippets">COM_COMPONENTBUILDER_MENU_GET_SNIPPETS</menu>
 			<menu option="com_componentbuilder" view="validation_rules">COM_COMPONENTBUILDER_MENU_VALIDATION_RULES</menu>
 			<menu option="com_componentbuilder" view="fields">COM_COMPONENTBUILDER_MENU_FIELDS</menu>
 			<menu option="com_componentbuilder" view="fieldtypes">COM_COMPONENTBUILDER_MENU_FIELDTYPES</menu>
 			<menu option="com_componentbuilder" view="language_translations">COM_COMPONENTBUILDER_MENU_LANGUAGE_TRANSLATIONS</menu>
+			<menu option="com_componentbuilder" view="languages">COM_COMPONENTBUILDER_MENU_LANGUAGES</menu>
+			<menu option="com_componentbuilder" view="servers">COM_COMPONENTBUILDER_MENU_SERVERS</menu>
 			<menu option="com_componentbuilder" view="help_documents">COM_COMPONENTBUILDER_MENU_HELP_DOCUMENTS</menu>
 		</submenu>
 		<files folder="admin">

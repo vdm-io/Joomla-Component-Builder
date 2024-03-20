@@ -1,3 +1,9 @@
+# v5.0.0-alpha5
+
+- Add Factory class to the J5 Event class. #1093
+- Fix customfilelist field to conform to the new namespacing conventions. #1094
+- Add menus for languages, servers, get snippets to J5 #1095
+
 # v5.0.0-alpha4
 
 - Fix plugin field selection
@@ -19,17 +25,12 @@
 
 - First alpha release of Component Builder towards Joomla 5 (very unstable...)
 
-# v4.0.0-alpha4
+# v4.0.0-alpha5
 
-- Fix plugin field selection
-- Fix plugin params tab layout
-- Add issue templates
-- Force autoloader to always load
-- Fix repeatable layout #1076
+- Add Factory class to the J5 Event class. #1093
+- Fix customfilelist field to conform to the new namespacing conventions. #1094
+- Add menus for languages, servers, get snippets to J4 #1095
 
-# v3.2.0-beta7
+# v3.2.0-beta8
 
-- Fix plugin field selection
-- Fix plugin params tab layout
-- Add issue templates
-- Force autoloader to always load
+- Add Factory class to the J5 Event class. #1093
