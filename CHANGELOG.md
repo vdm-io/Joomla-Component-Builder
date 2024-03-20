@@ -1,3 +1,7 @@
+# v4.0.0-alpha6
+
+- Fix [Set String Value] in placeholder table to store the value as a base64 string.
+
 # v4.0.0-alpha5
 
 - Add Factory class to the J5 Event class. #1093
@@ -25,6 +29,6 @@
 
 - First alpha release of Component Builder towards Joomla 4 (very unstable...)
 
-# v3.2.0-beta8
+# v3.2.0-beta9
 
-- Add Factory class to the J5 Event class. #1093
+- Fix [Set String Value] in placeholder table to store the value as a base64 string.
