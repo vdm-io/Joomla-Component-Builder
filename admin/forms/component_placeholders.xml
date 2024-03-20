@@ -148,19 +148,20 @@
 					hint="COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_TARGET_HINT"
 					autocomplete="off"
 				/>
-				<!-- Value Field. Type: Text. (joomla) -->
+				<!-- Value Field. Type: Textarea. (joomla) -->
 				<field
-					type="text"
+					type="textarea"
 					name="value"
 					label="COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_VALUE_LABEL"
-					size="150"
+					rows="1"
+					cols="5"
+					default="default text"
 					description="COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_VALUE_DESCRIPTION"
-					class="text_area"
-					required="true"
-					filter="RAW"
 					message="COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_VALUE_MESSAGE"
+					class="text_area span12"
+					filter="RAW"
 					hint="COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_VALUE_HINT"
-					autocomplete="on"
+					required="true"
 				/>
 			</form>
 		</field>

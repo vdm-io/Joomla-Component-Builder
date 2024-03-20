@@ -426,7 +426,7 @@ class FieldtypesModel extends ListModel
 		// Get a db connection.
 		$db = Factory::getDbo();
 		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_fieldtype");
+		$columns = $db->getTableColumns("#__componentbuilder_[[[view]]]");
 		if (UtilitiesArrayHelper::check($columns))
 		{
 			// remove the headers you don't import/export.

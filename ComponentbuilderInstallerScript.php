@@ -497,6 +497,9 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 		// Remove Joomla_plugin_files_folders_urls from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.joomla_plugin_files_folders_urls');
 
+		// Remove Field from action logs config table.
+		$this->removeActionLogConfig('com_componentbuilder.field');
+
 		// Remove Joomla_component from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.joomla_component');
 		// little notice as after service, in case of bad experience with component.
@@ -1454,7 +1457,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 
 			// Fix the assets table rules column size.
-			$this->setDatabaseAssetsRulesFix(99360, "MEDIUMTEXT");
+			$this->setDatabaseAssetsRulesFix(99520, "MEDIUMTEXT");
 			// Install the global extension params.
 			$this->setExtensionsParams(
 				'{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","approved_paths":"default","add_custom_gitea_url":"1","custom_gitea_url":"https://git.vdm.dev","super_powers_core_organisation":"joomla","super_powers_core":"joomla/super-powers","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","namespace_prefix":"JCB","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'
@@ -2248,6 +2251,22 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'joomla_plugin',
 				// tableName
 				'#__componentbuilder_joomla_plugin_files_folders_urls',
+				// textPrefix
+				'COM_COMPONENTBUILDER'
+			);
+
+			// Add Field to the action logs config table.
+			$this->setActionLogConfig(
+				// typeTitle
+				'FIELD',
+				// typeAlias
+				'com_componentbuilder.field',
+				// idHolder
+				'id',
+				// titleHolder
+				'name',
+				// tableName
+				'#__componentbuilder_field',
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);
@@ -3146,7 +3165,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.0.0-alpha4 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.0.0-alpha5 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -3931,6 +3950,22 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'joomla_plugin',
 				// tableName
 				'#__componentbuilder_joomla_plugin_files_folders_urls',
+				// textPrefix
+				'COM_COMPONENTBUILDER'
+			);
+
+			// Add/Update Field in the action logs config table.
+			$this->setActionLogConfig(
+				// typeTitle
+				'FIELD',
+				// typeAlias
+				'com_componentbuilder.field',
+				// idHolder
+				'id',
+				// titleHolder
+				'name',
+				// tableName
+				'#__componentbuilder_field',
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);

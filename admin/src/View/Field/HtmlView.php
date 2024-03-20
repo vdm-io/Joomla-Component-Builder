@@ -246,8 +246,10 @@ class HtmlView extends BaseHtmlView
 		// add return_here
 		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
 		// add the libs for subform (since not adding it via xml but ajax)
-		Html::_('jquery.ui', array('core', 'sortable'));
-		Html::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));
+		Factory::getApplication()
+			->getDocument()
+			->getWebAssetManager()
+			->useScript('webcomponent.field-subform');
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
