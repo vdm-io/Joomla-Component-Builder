@@ -453,13 +453,14 @@ const addSelectedItem = async (value, table, row, field, line) => {
 			// show and set the save button
 			buttonUpdateItemObject.style.display = '';
 			buttonUpdateItemObject.setAttribute('onclick',"setValueCheck(" + row + ", '" + field + "', '" + table + "');");
-
-			// get top of the code line
-			let top = editorObject.charCoords({line: line, ch: 0}, "local").top;
-			// scroll to the line
-			editorObject.scrollTo(null, top - 12);
-			// select the line
-			editorObject.setCursor(line - 1);
+			// Get line info from current state.
+			const line_info = editorObject.instance.state.doc.line(line);
+			editorObject.instance.dispatch({
+				// Set selection to that entire line.
+				selection: { head: line_info.from, anchor: line_info.to },
+				// Ensure the selection is shown in viewport
+				scrollIntoView: true
+			});
 		} else {
 			// no line so no data we can't save this data
 			buttonUpdateItemObject.setAttribute('onclick', "");

@@ -573,7 +573,8 @@ function getFieldTypeProperties(fieldtype, db){
 			// add the watcher
 			rowWatcher();
 			// initialize the new form
-			jQuery('div.subform-repeatable').subformRepeatable();
+			jQuery('div.subform-repeatable').trigger('update');
+			// jQuery('div.subform-repeatable').subformRepeatable();
 			// update all the list fields to only show items not selected already
 			propertyDynamicSet();
 			// set the field type info
@@ -691,7 +692,7 @@ function propertyDynamicSet() {
 		}
 	}
 	// trigger chosen on the list fields
-	jQuery('.field_list_name_options').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.JText._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.JText._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.JText._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
+	// jQuery('.field_list_name_options').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.JText._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.JText._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.JText._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
 	// now build the list to keep
 	jQuery.each( propertiesArray, function( prop, name ) {
 		if (!propertiesSelectedArray.hasOwnProperty(prop)) {

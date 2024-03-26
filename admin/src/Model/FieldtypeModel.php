@@ -279,8 +279,256 @@ class FieldtypeModel extends AdminModel
 				$this->db->updateObject('#__componentbuilder_fieldtype', $objectUpdate, 'id');
 			}
 		}
+		$this->fieldtypevvvv = $item->id;
 
 		return $item;
+	}
+
+	/**
+	 * Method to get list data.
+	 *
+	 * @return mixed  An array of data items on success, false on failure.
+	 */
+	public function getVycfields()
+	{
+		// Get the user object.
+		$user = Factory::getApplication()->getIdentity();
+		// Create a new query object.
+		$db = $this->getDatabase();
+		$query = $db->getQuery(true);
+
+		// Select some fields
+		$query->select('a.*');
+		$query->select($db->quoteName('c.title','category_title'));
+
+		// From the componentbuilder_field table
+		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
+
+		// do not use these filters in the export method
+		if (!isset($_export) || !$_export)
+		{
+			// Filtering "extension"
+			$filter_extension = $this->state->get("filter.extension");
+			$field_ids = array();
+			$get_ids = true;
+			if ($get_ids && $filter_extension !== null && !empty($filter_extension))
+			{
+				// column name, and id
+				$type_extension = explode('__', $filter_extension);
+				if (($ids = JCBFilterHelper::linked((int) $type_extension[1], (string) $type_extension[0])) !== null)
+				{
+					$field_ids = $ids;
+				}
+				else
+				{
+					// there is none
+					$query->where($db->quoteName('a.id') . ' = ' . 0);
+					$get_ids = false;
+				}
+			}
+
+			// Filtering "admin_view"
+			$filter_admin_view = $this->state->get("filter.admin_view");
+			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
+			{
+				if (($ids = JCBFilterHelper::linked((int) $filter_admin_view, 'admin_view')) !== null)
+				{
+					// view will return less fields, so we ignore the component
+					$field_ids = $ids;
+				}
+				else
+				{
+					// there is none
+					$query->where($db->quoteName('a.id') . ' = ' . 0);
+					$get_ids = false;
+				}
+			}
+			// now check if we have IDs
+			if ($get_ids && UtilitiesArrayHelper::check($field_ids))
+			{
+				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $field_ids) . ')');
+			}
+		}
+
+		// From the componentbuilder_fieldtype table.
+		$query->select($db->quoteName('g.name','fieldtype_name'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
+
+		// Filter by fieldtypevvvv global.
+		$fieldtypevvvv = $this->fieldtypevvvv;
+		if (is_numeric($fieldtypevvvv ))
+		{
+			$query->where('a.fieldtype = ' . (int) $fieldtypevvvv );
+		}
+		elseif (is_string($fieldtypevvvv))
+		{
+			$query->where('a.fieldtype = ' . $db->quote($fieldtypevvvv));
+		}
+		else
+		{
+			$query->where('a.fieldtype = -5');
+		}
+
+		// Join over the asset groups.
+		$query->select('ag.title AS access_level');
+		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+		// Filter by access level.
+		$_access = $this->getState('filter.access');
+		if ($_access && is_numeric($_access))
+		{
+			$query->where('a.access = ' . (int) $_access);
+		}
+		elseif (UtilitiesArrayHelper::check($_access))
+		{
+			// Secure the array for the query
+			$_access = ArrayHelper::toInteger($_access);
+			// Filter by the Access Array.
+			$query->where('a.access IN (' . implode(',', $_access) . ')');
+		}
+		// Implement View Level Access
+		if (!$user->authorise('core.options', 'com_componentbuilder'))
+		{
+			$groups = implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN (' . $groups . ')');
+		}
+
+		// Order the results by ordering
+		$query->order('a.published  ASC');
+		$query->order('a.ordering  ASC');
+
+		// Load the items
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
+		{
+			$items = $db->loadObjectList();
+
+			// Set values to display correctly.
+			if (UtilitiesArrayHelper::check($items))
+			{
+				// Get the user object if not set.
+				if (!isset($user) || !ObjectHelper::check($user))
+				{
+					$user = $this->getCurrentUser();
+				}
+				foreach ($items as $nr => &$item)
+				{
+					// Remove items the user can't access.
+					$access = ($user->authorise('field.access', 'com_componentbuilder.field.' . (int) $item->id) && $user->authorise('field.access', 'com_componentbuilder'));
+					if (!$access)
+					{
+						unset($items[$nr]);
+						continue;
+					}
+
+				}
+			}
+
+			// set selection value to a translatable value
+			if (UtilitiesArrayHelper::check($items))
+			{
+				foreach ($items as $nr => &$item)
+				{
+					// convert datatype
+					$item->datatype = $this->selectionTranslationVycfields($item->datatype, 'datatype');
+					// convert indexes
+					$item->indexes = $this->selectionTranslationVycfields($item->indexes, 'indexes');
+					// convert null_switch
+					$item->null_switch = $this->selectionTranslationVycfields($item->null_switch, 'null_switch');
+					// convert store
+					$item->store = $this->selectionTranslationVycfields($item->store, 'store');
+				}
+			}
+
+			return $items;
+		}
+		return false;
+	}
+
+	/**
+	 * Method to convert selection values to translatable string.
+	 *
+	 * @return  string   The translatable string.
+	 */
+	public function selectionTranslationVycfields($value,$name)
+	{
+		// Array of datatype language strings
+		if ($name === 'datatype')
+		{
+			$datatypeArray = array(
+				0 => 'COM_COMPONENTBUILDER_FIELD_SELECT_AN_OPTION',
+				'CHAR' => 'COM_COMPONENTBUILDER_FIELD_CHAR',
+				'VARCHAR' => 'COM_COMPONENTBUILDER_FIELD_VARCHAR',
+				'TEXT' => 'COM_COMPONENTBUILDER_FIELD_TEXT',
+				'MEDIUMTEXT' => 'COM_COMPONENTBUILDER_FIELD_MEDIUMTEXT',
+				'LONGTEXT' => 'COM_COMPONENTBUILDER_FIELD_LONGTEXT',
+				'BLOB' => 'COM_COMPONENTBUILDER_FIELD_BLOB',
+				'TINYBLOB' => 'COM_COMPONENTBUILDER_FIELD_TINYBLOB',
+				'MEDIUMBLOB' => 'COM_COMPONENTBUILDER_FIELD_MEDIUMBLOB',
+				'LONGBLOB' => 'COM_COMPONENTBUILDER_FIELD_LONGBLOB',
+				'DATETIME' => 'COM_COMPONENTBUILDER_FIELD_DATETIME',
+				'DATE' => 'COM_COMPONENTBUILDER_FIELD_DATE',
+				'TIME' => 'COM_COMPONENTBUILDER_FIELD_TIME',
+				'INT' => 'COM_COMPONENTBUILDER_FIELD_INT',
+				'TINYINT' => 'COM_COMPONENTBUILDER_FIELD_TINYINT',
+				'BIGINT' => 'COM_COMPONENTBUILDER_FIELD_BIGINT',
+				'FLOAT' => 'COM_COMPONENTBUILDER_FIELD_FLOAT',
+				'DECIMAL' => 'COM_COMPONENTBUILDER_FIELD_DECIMAL',
+				'DOUBLE' => 'COM_COMPONENTBUILDER_FIELD_DOUBLE'
+			);
+			// Now check if value is found in this array
+			if (isset($datatypeArray[$value]) && UtilitiesStringHelper::check($datatypeArray[$value]))
+			{
+				return $datatypeArray[$value];
+			}
+		}
+		// Array of indexes language strings
+		if ($name === 'indexes')
+		{
+			$indexesArray = array(
+				1 => 'COM_COMPONENTBUILDER_FIELD_UNIQUE_KEY',
+				2 => 'COM_COMPONENTBUILDER_FIELD_KEY',
+				0 => 'COM_COMPONENTBUILDER_FIELD_NONE'
+			);
+			// Now check if value is found in this array
+			if (isset($indexesArray[$value]) && UtilitiesStringHelper::check($indexesArray[$value]))
+			{
+				return $indexesArray[$value];
+			}
+		}
+		// Array of null_switch language strings
+		if ($name === 'null_switch')
+		{
+			$null_switchArray = array(
+				'NULL' => 'COM_COMPONENTBUILDER_FIELD_NULL',
+				'NOT NULL' => 'COM_COMPONENTBUILDER_FIELD_NOT_NULL'
+			);
+			// Now check if value is found in this array
+			if (isset($null_switchArray[$value]) && UtilitiesStringHelper::check($null_switchArray[$value]))
+			{
+				return $null_switchArray[$value];
+			}
+		}
+		// Array of store language strings
+		if ($name === 'store')
+		{
+			$storeArray = array(
+				0 => 'COM_COMPONENTBUILDER_FIELD_DEFAULT',
+				1 => 'COM_COMPONENTBUILDER_FIELD_JSON',
+				2 => 'COM_COMPONENTBUILDER_FIELD_BASE64',
+				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY',
+				5 => 'COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY',
+				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION',
+				6 => 'COM_COMPONENTBUILDER_FIELD_EXPERT_MODE_CUSTOM'
+			);
+			// Now check if value is found in this array
+			if (isset($storeArray[$value]) && UtilitiesStringHelper::check($storeArray[$value]))
+			{
+				return $storeArray[$value];
+			}
+		}
+		return $value;
 	}
 
 	/**

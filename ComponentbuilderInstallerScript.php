@@ -497,9 +497,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 		// Remove Joomla_plugin_files_folders_urls from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.joomla_plugin_files_folders_urls');
 
-		// Remove Field from action logs config table.
-		$this->removeActionLogConfig('com_componentbuilder.field');
-
 		// Remove Joomla_component from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.joomla_component');
 		// little notice as after service, in case of bad experience with component.
@@ -2255,22 +2252,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'COM_COMPONENTBUILDER'
 			);
 
-			// Add Field to the action logs config table.
-			$this->setActionLogConfig(
-				// typeTitle
-				'FIELD',
-				// typeAlias
-				'com_componentbuilder.field',
-				// idHolder
-				'id',
-				// titleHolder
-				'name',
-				// tableName
-				'#__componentbuilder_field',
-				// textPrefix
-				'COM_COMPONENTBUILDER'
-			);
-
 			// Add Joomla_component to the action logs config table.
 			$this->setActionLogConfig(
 				// typeTitle
@@ -3165,7 +3146,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.0.0-alpha6 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.0.0-alpha7 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -3950,22 +3931,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'joomla_plugin',
 				// tableName
 				'#__componentbuilder_joomla_plugin_files_folders_urls',
-				// textPrefix
-				'COM_COMPONENTBUILDER'
-			);
-
-			// Add/Update Field in the action logs config table.
-			$this->setActionLogConfig(
-				// typeTitle
-				'FIELD',
-				// typeAlias
-				'com_componentbuilder.field',
-				// idHolder
-				'id',
-				// titleHolder
-				'name',
-				// tableName
-				'#__componentbuilder_field',
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);

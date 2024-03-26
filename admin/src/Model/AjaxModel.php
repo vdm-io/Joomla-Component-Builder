@@ -35,8 +35,10 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
+use VDM\Joomla\Utilities\FormHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -541,16 +543,16 @@ class AjaxModel extends ListModel
 			// we get the plugin group, or the powers
 			if ($key == 1)
 			{
-				return ComponentbuilderHelper::getVars('class_' . $type, $id, 'joomla_plugin_group', 'id');
+				return GetHelper::vars('class_' . $type, $id, 'joomla_plugin_group', 'id');
 			}
 			elseif ($key == 2)
 			{
-				return ComponentbuilderHelper::getVars('class_' . $type, 'powers', 'extension_type', 'id');
+				return GetHelper::vars('class_' . $type, 'powers', 'extension_type', 'id');
 			}
 		}
 		elseif ('joomla_plugin_group' === $type)
 		{
-			return ComponentbuilderHelper::getVars($type, $id, 'class_extends', 'id');
+			return GetHelper::vars($type, $id, 'class_extends', 'id');
 		}
 		return false;
 	}
@@ -563,7 +565,6 @@ class AjaxModel extends ListModel
 		}
 		return false;
 	}
-
 
 	// Used in admin_view
 	protected $rowNumbers = array(
@@ -1597,9 +1598,9 @@ class AjaxModel extends ListModel
 	protected function linkedGuid($guid, $setGuid): bool
 	{
 		// check if GUID is valid
-		if ($guid && ComponentbuilderHelper::validGUID($guid))
+		if ($guid && GuidHelper::valid($guid))
 		{
-			if (is_string($setGuid) && ComponentbuilderHelper::validGUID($setGuid) && $guid === $setGuid)
+			if (is_string($setGuid) && GuidHelper::valid($setGuid) && $guid === $setGuid)
 			{
 				return true;
 			}
@@ -1617,7 +1618,7 @@ class AjaxModel extends ListModel
 	 * @var	array
 	 * @since 3.0.13
 	 */
-	protected $viewid = array();
+	protected $viewid = [];
 
 	/**
 	 * Get the view details via the session
@@ -1650,9 +1651,9 @@ class AjaxModel extends ListModel
 					}
 				}
 				// set GUID if found
-				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
+				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false)
 				{
-					if (ComponentbuilderHelper::validGUID($guid))
+					if (GuidHelper::valid($guid))
 					{
 						$this->viewid[$call]['a_guid'] = $guid;
 					}
@@ -3198,7 +3199,7 @@ class AjaxModel extends ListModel
 				// get the full path to rule file
 				$path = JPATH_LIBRARIES . '/src/Form/Rule/'.$name.'Rule.php';
 				// get all the code
-				if ($code = ComponentbuilderHelper::getFileContents($path))
+				if ($code = FileHelper::getContent($path))
 				{
 					// remove the class details and the ending }
 					$codeArray = (array) explode("FormRule\n{\n", $code);
@@ -3399,7 +3400,7 @@ class AjaxModel extends ListModel
 			'filter' => 'RAW',
 			'hint' => 'COM_COMPONENTBUILDER__ADD_YOUR_PHP_SCRIPT_HERE');
 		// load the textarea attributes
-		ComponentbuilderHelper::xmlAddAttributes($textareaXML, $textareaAttribute);
+		FormHelper::attributes($textareaXML, $textareaAttribute);
 
 		// setup subform with values
 		$textarea->setup($textareaXML, $default);
@@ -3424,7 +3425,7 @@ class AjaxModel extends ListModel
 			'icon' => 'list',
 			'max' =>  (UtilitiesArrayHelper::check($nameListOptions)) ? (int) count($nameListOptions) : 4);
 		// load the subform attributes
-		ComponentbuilderHelper::xmlAddAttributes($subformXML, $subformAttribute);
+		FormHelper::attributes($subformXML, $subformAttribute);
 		// now add the subform child form
 		$childForm = $subformXML->addChild('form');
 		// child form attributes
@@ -3433,7 +3434,7 @@ class AjaxModel extends ListModel
 			'name' => 'list_properties',
 			'repeat' => 'true');
 		// load the child form attributes
-		ComponentbuilderHelper::xmlAddAttributes($childForm, $childFormAttribute);
+		FormHelper::attributes($childForm, $childFormAttribute);
 
 		// start building the name field XML
 		$nameXML = new \SimpleXMLElement('<field/>');
@@ -3452,20 +3453,21 @@ class AjaxModel extends ListModel
 			$nameAttribute['description'] = 'COM_COMPONENTBUILDER_SELECTION';
 			$nameAttribute['multiple'] = 'false';
 			$nameAttribute['onchange'] = "getFieldPropertyDesc(this, '".$name."')";
+			$nameAttribute['layout'] = 'joomla.form.field.list-fancy-select';
 		}
 		else
 		{
 			$nameAttribute['hint'] = 'COM_COMPONENTBUILDER_PROPERTY_NAME';
 		}
 		// load the subform attributes
-		ComponentbuilderHelper::xmlAddAttributes($nameXML, $nameAttribute);
+		FormHelper::attributes($nameXML, $nameAttribute);
 		// add name list if found
 		if (UtilitiesArrayHelper::check($nameListOptions))
 		{
-			ComponentbuilderHelper::xmlAddOptions($nameXML, $nameListOptions);
+			FormHelper::options($nameXML, $nameListOptions);
 		}
 		// now add the fields to the child form
-		ComponentbuilderHelper::xmlAppend($childForm, $nameXML);
+		FormHelper::append($childForm, $nameXML);
 
 		// start building the name field XML
 		$valueXML = new \SimpleXMLElement('<field/>');
@@ -3480,9 +3482,9 @@ class AjaxModel extends ListModel
 			'filter' => 'STRING',
 			'hint' => 'COM_COMPONENTBUILDER_PROPERTY_VALUE');
 		// load the subform attributes
-		ComponentbuilderHelper::xmlAddAttributes($valueXML, $valueAttribute);
+		FormHelper::attributes($valueXML, $valueAttribute);
 		// now add the fields to the child form
-		ComponentbuilderHelper::xmlAppend($childForm, $valueXML);
+		FormHelper::append($childForm, $valueXML);
 
 		// start building the desc field XML
 		$descXML = new \SimpleXMLElement('<field/>');
@@ -3498,9 +3500,9 @@ class AjaxModel extends ListModel
 			'filter' => 'WORD',
 			'hint' => 'COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
 		// load the desc attributes
-		ComponentbuilderHelper::xmlAddAttributes($descXML, $descAttribute);
+		FormHelper::attributes($descXML, $descAttribute);
 		// now add the fields to the child form
-		ComponentbuilderHelper::xmlAppend($childForm, $descXML);
+		FormHelper::append($childForm, $descXML);
 
 		// setup subform with values
 		$subform->setup($subformXML, $values);
