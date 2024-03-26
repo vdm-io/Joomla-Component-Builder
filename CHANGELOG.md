@@ -1,3 +1,10 @@
+# v3.2.0-beta10
+
+- Fix the search area layout.
+- Fix the search area code line selection.
+- Fix the input edit button for custom fields.
+- Add the new layout to list fields (GUI UPDATE)
+
 # v3.2.0-beta9
 
 - Fix [Set String Value] in placeholder table to store the value as a base64 string.

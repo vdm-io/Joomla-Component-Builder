@@ -261,7 +261,7 @@ final class InputButton implements InputButtonInterface
 			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " build edit button";
 			$addButton[] = Indent::_(4)
-				. "\$button[] = '<a id=\"'.\$button_code_name.'Edit\" class=\"btn btn-small hasTooltip\" title=\"'.Text:"
+				. "\$button[] = '<a id=\"'.\$button_code_name.'Edit\" class=\"btn btn-small btn-outline-success button-select hasTooltip\" title=\"'.Text:"
 				. ":sprintf('" . $this->config->lang_prefix
 				. "_EDIT_S', \$button_label).'\" style=\"display: none; border-radius: 0px 4px 4px 0px;\" href=\"#\" >";
 			$addButton[] = Indent::_(5)

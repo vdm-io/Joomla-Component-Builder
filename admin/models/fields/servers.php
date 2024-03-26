@@ -94,7 +94,7 @@ class JFormFieldServers extends JFormFieldList
 			if ($user->authorise('server.edit', 'com_componentbuilder') && $app->isClient('administrator')) // TODO for now only in admin area.
 			{
 				// build edit button
-				$button[] = '<a id="'.$button_code_name.'Edit" class="btn btn-small hasTooltip" title="'.Text::sprintf('COM_COMPONENTBUILDER_EDIT_S', $button_label).'" style="display: none; padding: 4px 4px 4px 7px;" href="#" >
+				$button[] = '<a id="'.$button_code_name.'Edit" class="btn btn-small hasTooltip" title="'.Text::sprintf('COM_COMPONENTBUILDER_EDIT_S', $button_label).'" style="display: none; padding: 3px 4px 4px 7px;" href="#" >
 					<span class="icon-edit"></span></a>';
 				// build script
 				$script[] = "

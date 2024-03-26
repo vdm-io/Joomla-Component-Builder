@@ -27,6 +27,7 @@ use Joomla\Registry\Registry;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 
@@ -505,16 +506,16 @@ class ComponentbuilderModelAjax extends ListModel
 			// we get the plugin group, or the powers
 			if ($key == 1)
 			{
-				return ComponentbuilderHelper::getVars('class_' . $type, $id, 'joomla_plugin_group', 'id');
+				return GetHelper::vars('class_' . $type, $id, 'joomla_plugin_group', 'id');
 			}
 			elseif ($key == 2)
 			{
-				return ComponentbuilderHelper::getVars('class_' . $type, 'powers', 'extension_type', 'id');
+				return GetHelper::vars('class_' . $type, 'powers', 'extension_type', 'id');
 			}
 		}
 		elseif ('joomla_plugin_group' === $type)
 		{
-			return ComponentbuilderHelper::getVars($type, $id, 'class_extends', 'id');
+			return GetHelper::vars($type, $id, 'class_extends', 'id');
 		}
 		return false;
 	}
@@ -527,7 +528,6 @@ class ComponentbuilderModelAjax extends ListModel
 		}
 		return false;
 	}
-
 
 	// Used in admin_view
 	protected $rowNumbers = array(
@@ -1561,9 +1561,9 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function linkedGuid($guid, $setGuid): bool
 	{
 		// check if GUID is valid
-		if ($guid && ComponentbuilderHelper::validGUID($guid))
+		if ($guid && GuidHelper::valid($guid))
 		{
-			if (is_string($setGuid) && ComponentbuilderHelper::validGUID($setGuid) && $guid === $setGuid)
+			if (is_string($setGuid) && GuidHelper::valid($setGuid) && $guid === $setGuid)
 			{
 				return true;
 			}
@@ -1581,7 +1581,7 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @var	array
 	 * @since 3.0.13
 	 */
-	protected $viewid = array();
+	protected $viewid = [];
 
 	/**
 	 * Get the view details via the session
@@ -1614,9 +1614,9 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// set GUID if found
-				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false && method_exists('ComponentbuilderHelper', 'validGUID'))
+				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false)
 				{
-					if (ComponentbuilderHelper::validGUID($guid))
+					if (GuidHelper::valid($guid))
 					{
 						$this->viewid[$call]['a_guid'] = $guid;
 					}
@@ -3162,7 +3162,7 @@ class ComponentbuilderModelAjax extends ListModel
 				// get the full path to rule file
 				$path = JPATH_LIBRARIES . '/src/Form/Rule/'.$name.'Rule.php';
 				// get all the code
-				if ($code = ComponentbuilderHelper::getFileContents($path))
+				if ($code = FileHelper::getContent($path))
 				{
 					// remove the class details and the ending }
 					$codeArray = (array) explode("FormRule\n{\n", $code);

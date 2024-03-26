@@ -215,6 +215,7 @@
 			label="COM_COMPONENTBUILDER_TEMPLATE_LIBRARIES_LABEL"
 			description="COM_COMPONENTBUILDER_TEMPLATE_LIBRARIES_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
 			default="0"
 			required="false"

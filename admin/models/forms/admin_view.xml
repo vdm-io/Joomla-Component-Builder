@@ -871,6 +871,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ALIAS_BUILDER_DESCRIPTION"
 			class="list_class fieldFull"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
 			showon="alias_builder_type:2"
 		/>

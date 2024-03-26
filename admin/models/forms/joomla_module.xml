@@ -325,6 +325,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_LIBRARIES_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_LIBRARIES_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
 			default="0"
 			required="false"
@@ -364,8 +365,8 @@
 			name="custom_get"
 			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_CUSTOM_GET_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_CUSTOM_GET_DESCRIPTION"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
-			default=""
 		/>
 		<!-- Php_preflight_update Field. Type: Editor. (joomla) -->
 		<field

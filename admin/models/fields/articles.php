@@ -40,22 +40,23 @@ class JFormFieldArticles extends JFormFieldList
 	protected function getOptions()
 	{
 		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.title','a.alias'),array('id','article_title','alias')));
-		$query->from($db->quoteName('#__content', 'a'));
-		$query->where($db->quoteName('a.state') . ' = 1');
-		$query->order('a.title ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			$options[] = JHtml::_('select.option', '', 'Select an Article');
-			foreach($items as $item)
-			{
-				$options[] = JHtml::_('select.option', $item->id, $item->article_title . ' (' . $item->alias . ')');
-			}
-		}
-		return $options;
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.id','a.title','a.alias'),array('id','article_title','alias')));
+$query->from($db->quoteName('#__content', 'a'));
+$query->where($db->quoteName('a.state') . ' = 1');
+$query->order('a.title ASC');
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$options[] = JHtml::_('select.option', '', 'Select an Article');
+	foreach($items as $item)
+	{
+		$options[] = JHtml::_('select.option', $item->id, $item->article_title . ' (' . $item->alias . ')');
+	}
+}
+
+return $options;
 	}
 }

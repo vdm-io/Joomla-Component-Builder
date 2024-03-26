@@ -40,24 +40,25 @@ class JFormFieldCustomgets extends JFormFieldList
 	protected function getOptions()
 	{
 		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','custom_get_name','type')));
-		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
-		$query->where($db->quoteName('a.published') . ' = 1');
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','custom_get_name','type')));
+$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
+$query->where($db->quoteName('a.published') . ' = 1');
 		$query->where('( '.$db->quoteName('a.gettype') . ' = 3 OR ' . $db->quoteName('a.gettype') . ' = 4 )');
 		$query->order('a.name ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			$model = ComponentbuilderHelper::getModel('dynamic_gets');
-			foreach($items as $item)
-			{
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$model = ComponentbuilderHelper::getModel('dynamic_gets');
+	foreach($items as $item)
+	{
 				$type = $model->selectionTranslation($item->type,'gettype');
-				$options[] = JHtml::_('select.option', $item->id, $item->custom_get_name . ' (' . JText::_($type) . ')' );
-			}
-		}
-		return $options;
+		$options[] = JHtml::_('select.option', $item->id, $item->custom_get_name . ' (' . JText::_($type) . ')' );
+	}
+}
+
+return $options;
 	}
 }

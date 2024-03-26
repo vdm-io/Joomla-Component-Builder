@@ -313,8 +313,8 @@
 			name="custom_get"
 			label="COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_GET_LABEL"
 			description="COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_GET_DESCRIPTION"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
-			default=""
 		/>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
@@ -416,6 +416,7 @@
 			label="COM_COMPONENTBUILDER_SITE_VIEW_LIBRARIES_LABEL"
 			description="COM_COMPONENTBUILDER_SITE_VIEW_LIBRARIES_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
 			default="0"
 			required="false"

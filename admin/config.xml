@@ -1012,6 +1012,7 @@
 			name="language"
 			label="COM_COMPONENTBUILDER_CONFIG_LANGUAGE_LABEL"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="en-GB"
 			required="true"

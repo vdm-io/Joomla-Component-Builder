@@ -1069,6 +1069,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DASHBOARD_DESCRIPTION"
 			class="fieldMedium"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default=""
 		/>
