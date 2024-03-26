@@ -344,8 +344,8 @@
 			name="custom_get"
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_GET_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_CUSTOM_GET_DESCRIPTION"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
-			default=""
 		/>
 		<!-- Add_javascript_file Field. Type: Radio. (joomla) -->
 		<field
@@ -455,6 +455,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIBRARIES_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_LIBRARIES_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
 			default="0"
 			required="false"

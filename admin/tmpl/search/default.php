@@ -57,17 +57,17 @@ $search_value = $this->form->getField('search_value');
 	<form action="<?php echo Route::_($url_search); ?>" method="post"
 		name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 		<div class="row col-md-12">
-			<div class="row-fluid" id="search_progress_block" style="display: none">
+			<div class="row" id="search_progress_block" style="display: none">
 				<div class="uk-progress uk-progress-striped uk-active">
 					<div id="search_progress_bar" class="uk-progress-bar" style="width: 0%;">0%</div>
 				</div>
 			</div>
-			<div class="row-fluid" id="replace_progress_block" style="display: none">
+			<div class="row" id="replace_progress_block" style="display: none">
 				<div class="uk-progress uk-progress-small uk-progress-danger uk-progress-striped uk-active">
 					<div id="replace_progress_bar" class="uk-progress-bar" style="width: 0%;"></div>
 				</div>
 			</div>
-			<div class="row-fluid" id="search_details_block" style="display: none">
+			<div class="row" id="search_details_block" style="display: none">
 				<span id="search_details">
 					<span class="search_details_title"><?php echo Text::_('COM_COMPONENTBUILDER_SEARCHED_FOR'); ?></span>:
 					&nbsp;[<span id="searched" class="found_code">....</span>]&nbsp;&nbsp;&nbsp;&nbsp;
@@ -88,36 +88,40 @@ $search_value = $this->form->getField('search_value');
 					</button>
 				</div>
 			</div>
-			<div class="row-fluid" id="search_settings_block">
-				<div class="span7">
-					<?php echo $this->form->renderField('type_search'); ?>
-					<div class="btn-wrapper input-append">
-						<?php echo $search_value->input; ?>
-						<button id="start_search_button" onclick="startSearch(this, true);" type="button" class="btn hasTooltip"
-							title="<?php echo Html::_('tooltipText', 'COM_COMPONENTBUILDER_START_A_SEARCH'); ?>"
-							aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_START_A_SEARCH'); ?>">
-							<span class="icon-search" aria-hidden="true"></span>
-						</button>
-						<button id="stop_search_button" onclick="stopSearch();" type="button" class="btn btn-danger hasTooltip" style="display: none"
-							title="<?php echo Html::_('tooltipText', 'COM_COMPONENTBUILDER_STOP_A_SEARCH'); ?>"
-							aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_STOP_A_SEARCH'); ?>">
-							<span class="icon-stop" aria-hidden="true"></span>
-						</button>
+			<div class="row" id="search_settings_block">
+				<div class="col-md-7">
+					<div class="my-md-2">
+						<?php echo $this->form->renderField('type_search'); ?>
+						<div class="btn-wrapper input-group">
+							<?php echo $search_value->input; ?>
+							<button id="start_search_button" onclick="startSearch(this, true);" type="button" class="btn btn-outline-success button-select hasTooltip"
+								title="<?php echo Html::_('tooltipText', 'COM_COMPONENTBUILDER_START_A_SEARCH'); ?>"
+								aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_START_A_SEARCH'); ?>">
+								<span class="icon-search" aria-hidden="true"></span>
+							</button>
+							<button id="stop_search_button" onclick="stopSearch();" type="button" class="btn btn-danger button-select hasTooltip" style="display: none"
+								title="<?php echo Html::_('tooltipText', 'COM_COMPONENTBUILDER_STOP_A_SEARCH'); ?>"
+								aria-label="<?php echo Text::_('COM_COMPONENTBUILDER_STOP_A_SEARCH'); ?>">
+								<span class="icon-stop" aria-hidden="true"></span>
+							</button>
+						</div>
 					</div>
-					<?php echo $this->form->renderField('replace_value'); ?>
+					<div class="my-md-2">
+						<?php echo $this->form->renderField('replace_value'); ?>
+					</div>
 					<div class="update_all_block" style="display: none;">
-						<button type="button" onclick="replaceAllCheck();" class="hasTooltip btn btn-small button-new btn-danger span11"
+						<button type="button" onclick="replaceAllCheck();" class="hasTooltip btn btn-small button-new btn-danger col-md-12"
 							title="<?php echo Text::_('COM_COMPONENTBUILDER_UPDATE_ALL_ITEMS_FOUND_WITH_THIS_DATABASE_SEARCH_WITH_THE_REPLACE_VALUE'); ?>">
 							<span class="icon-database icon-white" aria-hidden="true"></span>
 							<?php echo Text::_('COM_COMPONENTBUILDER_UPDATE_ALL'); ?>
 						</button>
 					</div>
 				</div>
-				<div class="span4">
+				<div class="col-md-4">
 					<?php echo $this->form->renderFieldset('settings'); ?>
 				</div>
 			</div>
-			<div class="row-fluid" id="search_results_block">
+			<div class="row" id="search_results_block">
 				<hr>
 				<div id="search_results_table_block">
 					<?php echo LayoutHelper::render('table', [
@@ -130,7 +134,7 @@ $search_value = $this->form->getField('search_value');
 					]); ?>
 				</div>
 			</div>
-			<div class="row-fluid" id="item_view_block">
+			<div class="row" id="item_view_block">
 				<div id="item_notice_block" style="display: none">
 					<hr>
 					<span id="item_edit_button"></span>&nbsp;

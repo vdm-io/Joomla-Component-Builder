@@ -25,9 +25,6 @@ use VDM\Joomla\Componentbuilder\Compiler\Field\UniqueName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Rule;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field\DatabaseName;
-use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreRule as J3CoreRule;
-use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\CoreRule as J4CoreRule;
-use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\CoreRule as J5CoreRule;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreField as J3CoreField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\CoreField as J4CoreField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\CoreField as J5CoreField;
@@ -35,7 +32,6 @@ use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\InputButton as J3Inpu
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\InputButton as J4InputButton;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\InputButton as J5InputButton;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreFieldInterface as CoreField;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreRuleInterface as CoreRule;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\InputButtonInterface as InputButton;
 
 
@@ -102,15 +98,6 @@ class Field implements ServiceProviderInterface
 		$container->alias(DatabaseName::class, 'Field.Database.Name')
 			->share('Field.Database.Name', [$this, 'getDatabaseName'], true);
 
-		$container->alias(J3CoreRule::class, 'J3.Field.Core.Rule')
-			->share('J3.Field.Core.Rule', [$this, 'getJ3CoreRule'], true);
-
-		$container->alias(J4CoreRule::class, 'J4.Field.Core.Rule')
-			->share('J4.Field.Core.Rule', [$this, 'getJ4CoreRule'], true);
-
-		$container->alias(J5CoreRule::class, 'J5.Field.Core.Rule')
-			->share('J5.Field.Core.Rule', [$this, 'getJ5CoreRule'], true);
-
 		$container->alias(J3CoreField::class, 'J3.Field.Core.Field')
 			->share('J3.Field.Core.Field', [$this, 'getJ3CoreField'], true);
 
@@ -131,9 +118,6 @@ class Field implements ServiceProviderInterface
 
 		$container->alias(CoreField::class, 'Field.Core.Field')
 			->share('Field.Core.Field', [$this, 'getCoreField'], true);
-
-		$container->alias(CoreRule::class, 'Field.Core.Rule')
-			->share('Field.Core.Rule', [$this, 'getCoreRule'], true);
 
 		$container->alias(InputButton::class, 'Field.Input.Button')
 			->share('Field.Input.Button', [$this, 'getInputButton'], true);
@@ -309,45 +293,6 @@ class Field implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get The CoreRule Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  J3CoreRule
-	 * @since 3.2.0
-	 */
-	public function getJ3CoreRule(Container $container): J3CoreRule
-	{
-		return new J3CoreRule();
-	}
-
-	/**
-	 * Get The CoreRule Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  J4CoreRule
-	 * @since 3.2.0
-	 */
-	public function getJ4CoreRule(Container $container): J4CoreRule
-	{
-		return new J4CoreRule();
-	}
-
-	/**
-	 * Get The CoreRule Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  J5CoreRule
-	 * @since 3.2.0
-	 */
-	public function getJ5CoreRule(Container $container): J5CoreRule
-	{
-		return new J5CoreRule();
-	}
-
-	/**
 	 * Get The CoreField Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -453,24 +398,6 @@ class Field implements ServiceProviderInterface
 		}
 
 		return $container->get('J' . $this->currentVersion . '.Field.Core.Field');
-	}
-
-	/**
-	 * Get The CoreRuleInterface Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  CoreRule
-	 * @since 3.2.0
-	 */
-	public function getCoreRule(Container $container): CoreRule
-	{
-		if (empty($this->currentVersion))
-		{
-			$this->currentVersion = Version::MAJOR_VERSION;
-		}
-
-		return $container->get('J' . $this->currentVersion . '.Field.Core.Rule');
 	}
 
 	/**

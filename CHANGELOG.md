@@ -1,3 +1,11 @@
+# v5.0.0-alpha7
+
+- Fix the search area layout.
+- Fix the search area code line selection.
+- Fix the input edit button for custom fields.
+- Add the new layout to list fields (GUI UPDATE)
+- Start fixing the field view in Joomla 5. #1096
+
 # v5.0.0-alpha6
 
 - Fix [Set String Value] in placeholder table to store the value as a base64 string.
@@ -29,10 +37,18 @@
 
 - First alpha release of Component Builder towards Joomla 5 (very unstable...)
 
-# v4.0.0-alpha6
+# v4.0.0-alpha7
 
-- Fix [Set String Value] in placeholder table to store the value as a base64 string.
+- Fix the search area layout.
+- Fix the search area code line selection.
+- Fix the input edit button for custom fields.
+- Add the new layout to list fields (GUI UPDATE)
+- Start fixing the field view in Joomla 4. #1096
 
-# v3.2.0-beta9
+# v3.2.0-beta10
 
-- Fix [Set String Value] in placeholder table to store the value as a base64 string.
+- Fix the search area layout.
+- Fix the search area code line selection.
+- Fix the input edit button for custom fields.
+- Add the new layout to list fields (GUI UPDATE)
+- Start fixing the field view in Joomla 5.

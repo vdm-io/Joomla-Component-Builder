@@ -31,6 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Library;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Customview;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Templatelayout;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Extension;
+use VDM\Joomla\Componentbuilder\Service\CoreRules;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlamodule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Joomlaplugin;
@@ -162,6 +163,7 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Customview())
 			->registerServiceProvider(new Templatelayout())
 			->registerServiceProvider(new Extension())
+			->registerServiceProvider(new CoreRules())
 			->registerServiceProvider(new Field())
 			->registerServiceProvider(new Joomlamodule())
 			->registerServiceProvider(new Joomlaplugin())

@@ -242,14 +242,19 @@ class HtmlView extends BaseHtmlView
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
- 		// add the libs for subform (since not adding it via xml but ajax)
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
+		// add the libs for subform (since not adding it via xml but ajax)
 		Factory::getApplication()
 			->getDocument()
 			->getWebAssetManager()
-			->useScript('webcomponent.field-subform');
+			->useScript('webcomponent.field-subform')
+			->usePreset('choicesjs')
+			->useScript('webcomponent.field-fancy-select');
+		Factory::getApplication()
+			->getDocument()
+			->addStyleDeclaration('.subform-table-sublayout-section .controls { margin-left: 0px }');
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');

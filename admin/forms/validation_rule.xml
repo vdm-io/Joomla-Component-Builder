@@ -128,6 +128,7 @@
 			label="COM_COMPONENTBUILDER_VALIDATION_RULE_INHERIT_LABEL"
 			description="COM_COMPONENTBUILDER_VALIDATION_RULE_INHERIT_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="0"
 			required="false"
