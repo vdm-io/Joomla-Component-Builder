@@ -163,12 +163,12 @@ defined('_JEXEC') or die;
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>
 
-	<?php echo Html::_('uitab.addTab', 'joomla_componentTab', 'dynamic_build_beta', Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC_BUILD_BETA', true)); ?>
+	<?php echo Html::_('uitab.addTab', 'joomla_componentTab', 'dynamic_build', Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC_BUILD', true)); ?>
 		<div class="row">
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<?php echo LayoutHelper::render('joomla_component.dynamic_build_beta_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('joomla_component.dynamic_build_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>

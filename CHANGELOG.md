@@ -1,3 +1,8 @@
+# v5.0.0-alpha8
+
+- Add power path override option on component level.
+- Fix the sql build feature. #1032
+
 # v5.0.0-alpha7
 
 - Fix the search area layout.
@@ -37,18 +42,27 @@
 
 - First alpha release of Component Builder towards Joomla 5 (very unstable...)
 
-# v4.0.0-alpha7
+# v4.0.0-alpha8
 
+- Add power path override option on component level.
+- Fix the sql build feature. #1032
+
+# v3.2.0
+
+- Fix #1053 so that the right and left tabs display correctly in Joomla 4&5
+- Move the old helper compiler files to powers
+- Move the old helper extrusion files to powers
+- Add Preferred Joomla Version to Components
+- Add custom file file mapping for Joomla 4 and 5
+- Fix the plug-in installer script builder bug #1068
+- Fix Event triggers for Joomla 4 and 5 builds.
+- Fix plugin field selection
+- Fix plugin params tab layout
+- Add issue templates
+- Force autoloader to always load
+- Add Factory class to the J5 Event class. #1093
+- Fix [Set String Value] in placeholder table to store the value as a base64 string.
 - Fix the search area layout.
 - Fix the search area code line selection.
 - Fix the input edit button for custom fields.
 - Add the new layout to list fields (GUI UPDATE)
-- Start fixing the field view in Joomla 4. #1096
-
-# v3.2.0-beta10
-
-- Fix the search area layout.
-- Fix the search area code line selection.
-- Fix the input edit button for custom fields.
-- Add the new layout to list fields (GUI UPDATE)
-- Start fixing the field view in Joomla 5.

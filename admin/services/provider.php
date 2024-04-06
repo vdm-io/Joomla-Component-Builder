@@ -22,12 +22,12 @@ if (file_exists($composer_autoloader))
 \spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
-		'libraries/jcb_powers/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
-		'libraries/jcb_powers/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',
-		'libraries/jcb_powers/VDM.Joomla.FOF' => 'VDM\\Joomla\\FOF',
-		'libraries/jcb_powers/VDM.Joomla' => 'VDM\\Joomla',
-		'libraries/jcb_powers/VDM.Minify' => 'VDM\\Minify',
-		'libraries/jcb_powers/VDM.Psr' => 'VDM\\Psr'
+		'libraries/vendor_jcb/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
+		'libraries/vendor_jcb/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',
+		'libraries/vendor_jcb/VDM.Joomla.FOF' => 'VDM\\Joomla\\FOF',
+		'libraries/vendor_jcb/VDM.Joomla' => 'VDM\\Joomla',
+		'libraries/vendor_jcb/VDM.Minify' => 'VDM\\Minify',
+		'libraries/vendor_jcb/VDM.Psr' => 'VDM\\Psr'
 	];
 	// Start the search and load if found
 	$found = false;

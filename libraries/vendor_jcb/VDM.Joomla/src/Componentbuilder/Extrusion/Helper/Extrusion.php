@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Extrusion\Helper;
 
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GetHelperExtrusion as GetHelper;
 use VDM\Joomla\Componentbuilder\Extrusion\Helper\Builder;
 
 
