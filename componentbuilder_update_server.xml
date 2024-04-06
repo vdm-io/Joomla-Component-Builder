@@ -1559,4 +1559,22 @@
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
 	</update>
+	<update>
+		<name>Component Builder</name>
+		<description>Builds Complex Joomla Components</description>
+		<element>pkg_component_builder</element>
+		<type>component</type>
+		<client>site</client>
+		<version>3.2.1-alpha1</version>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v3.2.1-alpha1.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>alpha</tag>
+		</tags>
+		<maintainer>Llewellyn van der Merwe</maintainer>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
+		<targetplatform name="joomla" version="3.*"/>
+	</update>
 </updates>

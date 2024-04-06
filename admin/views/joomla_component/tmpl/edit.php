@@ -162,12 +162,12 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php echo Html::_('bootstrap.addTab', 'joomla_componentTab', 'dynamic_build_beta', Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC_BUILD_BETA', true)); ?>
+	<?php echo Html::_('bootstrap.addTab', 'joomla_componentTab', 'dynamic_build', Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_DYNAMIC_BUILD', true)); ?>
 		<div class="row-fluid form-horizontal-desktop">
 		</div>
 		<div class="row-fluid form-horizontal-desktop">
 			<div class="span12">
-				<?php echo LayoutHelper::render('joomla_component.dynamic_build_beta_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('joomla_component.dynamic_build_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo Html::_('bootstrap.endTab'); ?>

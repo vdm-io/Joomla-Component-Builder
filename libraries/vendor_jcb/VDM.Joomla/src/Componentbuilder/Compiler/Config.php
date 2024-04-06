@@ -704,6 +704,22 @@ class Config extends BaseConfig
 	 */
 	protected function getJcbpowerspath(): string
 	{
+		$add = GetHelper::var(
+			'joomla_component', $this->component_id, 'id', 'add_jcb_powers_path'
+		);
+
+		if ($add == 1)
+		{
+			$path = GetHelper::var(
+				'joomla_component', $this->component_id, 'id', 'jcb_powers_path'
+			);
+
+			if (StringHelper::check($path))
+			{
+				return $path;
+			}
+		}
+
 		// get jcb powers path
 		return $this->params->get('jcb_powers_path', 'libraries/jcb_powers');
 	}

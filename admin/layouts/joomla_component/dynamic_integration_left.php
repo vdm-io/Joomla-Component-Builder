@@ -40,7 +40,9 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'backup_folder_path',
 	'add_git_folder_path',
 	'note_git_folder_path',
-	'git_folder_path'
+	'git_folder_path',
+	'add_jcb_powers_path',
+	'jcb_powers_path'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: [];

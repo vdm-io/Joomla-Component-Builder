@@ -1,3 +1,8 @@
+# v3.2.1-alpha1
+
+- Add power path override option on component level.
+- Fix the sql build feature. #1032
+
 # v3.2.0
 
 - Fix #1053 so that the right and left tabs display correctly in Joomla 4&5
