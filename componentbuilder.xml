@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="4.0" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>26th March, 2024</creationDate>
+	<creationDate>6th April, 2024</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>4.0.0-alpha7</version>
+	<version>4.0.0-alpha8</version>
 	<description><![CDATA[
-		<h1>Component Builder (v.4.0.0-alpha7)</h1>
+		<h1>Component Builder (v.4.0.0-alpha8)</h1>
 		<div style="clear: both;"></div>
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
@@ -61,7 +61,6 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 		<submenu>
 			<!-- Instead of link you can specify individual link attributes -->
 			<menu option="com_componentbuilder" view="componentbuilder">COM_COMPONENTBUILDER_MENU_DASHBOARD</menu>
-			<menu option="com_componentbuilder" view="compiler">COM_COMPONENTBUILDER_MENU_COMPILER</menu>
 			<menu option="com_componentbuilder" view="joomla_components">COM_COMPONENTBUILDER_MENU_JOOMLA_COMPONENTS</menu>
 			<menu option="com_componentbuilder" view="joomla_modules">COM_COMPONENTBUILDER_MENU_JOOMLA_MODULES</menu>
 			<menu option="com_componentbuilder" view="joomla_plugins">COM_COMPONENTBUILDER_MENU_JOOMLA_PLUGINS</menu>
@@ -82,8 +81,6 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 			<menu option="com_componentbuilder" view="fields">COM_COMPONENTBUILDER_MENU_FIELDS</menu>
 			<menu option="com_componentbuilder" view="fieldtypes">COM_COMPONENTBUILDER_MENU_FIELDTYPES</menu>
 			<menu option="com_componentbuilder" view="language_translations">COM_COMPONENTBUILDER_MENU_LANGUAGE_TRANSLATIONS</menu>
-			<menu option="com_componentbuilder" view="languages">COM_COMPONENTBUILDER_MENU_LANGUAGES</menu>
-			<menu option="com_componentbuilder" view="servers">COM_COMPONENTBUILDER_MENU_SERVERS</menu>
 			<menu option="com_componentbuilder" view="help_documents">COM_COMPONENTBUILDER_MENU_HELP_DOCUMENTS</menu>
 		</submenu>
 		<files folder="admin">

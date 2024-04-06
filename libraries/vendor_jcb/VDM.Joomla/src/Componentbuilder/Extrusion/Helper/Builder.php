@@ -14,9 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Extrusion\Helper;
 
 use Joomla\CMS\Factory;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GetHelperExtrusion as GetHelper;
 use VDM\Joomla\Componentbuilder\Extrusion\Helper\Mapping;
 
 
@@ -32,7 +31,6 @@ class Builder extends Mapping
 	 */
 	public $user;
 	public $today;
-	public $db;
 	public array $views = [];
 	public array $admin_fields = [];
 	protected array $fields = [];
@@ -59,7 +57,6 @@ class Builder extends Mapping
 			$data['buildcomp'] = 0;
 			$data['buildcompsql'] = '';
 			// set some globals
-			$this->db = Factory::getDbo();
 			$this->user = Factory::getUser();
 			$this->today = Factory::getDate()->toSql();
 
@@ -94,11 +91,11 @@ class Builder extends Mapping
 	/**
 	 *	The building function for views
 	 */
-	protected function setView(&$name)
+	protected function setView(string $name): bool
 	{
 		// set the view object
 		$object = new \stdClass();
-		$object->system_name = StringHelper::check($name, 'W') . ' (dynamic build)';
+		$object->system_name = StringHelper::safe($name, 'W') . ' (dynamic build)';
 		$object->name_single = $name;
 		$object->name_list = $name. 's';
 		$object->short_description = $name. ' view (dynamic build)';
@@ -129,7 +126,7 @@ class Builder extends Mapping
 	/**
 	 *	Add the fields to the view
 	 */
-	protected function addFields(&$view, &$view_id)
+	protected function addFields(string $view, int $view_id): bool
 	{
 		if (isset($this->fields[$view]))
 		{
@@ -185,9 +182,9 @@ class Builder extends Mapping
 	/**
 	 *	The building function for fields
 	 */
-	protected function setField(&$view, &$field)
+	protected function setField(string $view, array $field): bool
 	{
-		if ($fieldType = CFactory::_('Field.Type.Name')->get($field['fieldType']))
+		if (($fieldType = $this->getFieldTypeId($field['fieldType'])) !== null)
 		{
 			// set the field object
 			$object = new \stdClass();
@@ -257,16 +254,20 @@ class Builder extends Mapping
 	/**
 	 *	get the field type id from system
 	 */
-	protected function getFieldType($fieldName)
+	protected function getFieldTypeId(string $fieldTypeName): ?int
 	{
 		// load the field settings
-		return GetHelper::var('fieldtype', $fieldName, 'name', 'id');
+		if (($id = GetHelper::var('fieldtype', $fieldTypeName, 'name', 'id')) !== null)
+		{
+			return (int) $id;
+		}
+		return null;
 	}
 
 	/**
 	 *	The building function for field xml
 	 */
-	protected function setFieldXML(&$field, $fieldId)
+	protected function setFieldXML(array $field, int $fieldId): string
 	{
 		// load the field settings
 		$settings = [];

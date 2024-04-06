@@ -506,7 +506,7 @@ class ServersModel extends ListModel
 		// Get a db connection.
 		$db = Factory::getDbo();
 		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_[[[view]]]");
+		$columns = $db->getTableColumns("#__componentbuilder_server");
 		if (UtilitiesArrayHelper::check($columns))
 		{
 			// remove the headers you don't import/export.
