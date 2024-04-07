@@ -6125,6 +6125,11 @@ abstract class ComponentbuilderHelper
 		$user = Factory::getApplication()->getIdentity();
 		// load the submenus to sidebar
 		\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
+		// Access control (compiler.submenu).
+		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
+		{
+			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
+		}
 		if ($user->authorise('joomla_component.access', 'com_componentbuilder') && $user->authorise('joomla_component.submenu', 'com_componentbuilder'))
 		{
 			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');
