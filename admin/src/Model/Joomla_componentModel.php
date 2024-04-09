@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\String\ComponentCodeNameHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Extrusion\Helper\Extrusion;
 
@@ -1460,6 +1461,9 @@ class Joomla_componentModel extends AdminModel
 		{
 			$data['system_name'] = $data['name'];
 		}
+
+		// make sure that the component code name is safe.
+		$data['name_code'] = ComponentCodeNameHelper::safe($data['name_code']);
 
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)

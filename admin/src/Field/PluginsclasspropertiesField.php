@@ -65,12 +65,17 @@ class PluginsclasspropertiesField extends ListField
 		}
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
 			$options[] = Html::_('select.option', '', 'Select a property');
 			foreach($items as $item)
 			{
+				if (!isset($item->visibility))
+				{
+					continue;
+				}
+
 				// we are using this code in more then one field JCB custom_code
 				if ('method' === 'property')
 				{
@@ -80,6 +85,7 @@ class PluginsclasspropertiesField extends ListField
 				{
 					$select = $item->visibility  . ' $' . $item->property_name;
 				}
+
 				$options[] = Html::_('select.option', $item->id, $select);
 			}
 		}

@@ -1,3 +1,9 @@
+# v4.0.0-beta2
+
+- Add view list and single name fix.
+- Add component code name fix.
+- Add reset list of powers.
+
 # v4.0.0-beta1
 
 - Add the compiler menu back.

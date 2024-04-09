@@ -131,18 +131,18 @@ defined('_JEXEC') or die;
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvwba function
+// #jform_add_php_view listeners for add_php_view_vvvvwaz function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvwba = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvwba(add_php_view_vvvvwba);
+	var add_php_view_vvvvwaz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwaz(add_php_view_vvvvwaz);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvwba = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvwba(add_php_view_vvvvwba);
+	var add_php_view_vvvvwaz = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvwaz(add_php_view_vvvvwaz);
 
 });
 

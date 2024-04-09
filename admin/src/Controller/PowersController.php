@@ -19,6 +19,7 @@ use Joomla\CMS\Session\Session;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
+use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -145,7 +146,7 @@ class PowersController extends AdminController
 		ArrayHelper::toInteger($pks);
 
 		// check if there is any selections
-		if ($pks == [])
+		if ($pks === [])
 		{
 			// set error message
 			$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED').'</h1>';
@@ -156,21 +157,39 @@ class PowersController extends AdminController
 			return false;
 		}
 
+		$status = 'error';
+		$success = false;
+
 		// check if user has the right
 		$user = Factory::getUser();
 		if($user->authorise('power.reset', 'com_componentbuilder'))
 		{
-			// set success message
-			$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_THIS_RESET_FEATURE_IS_STILL_UNDER_DEVELOPMENT').'</h1>';
-			$message .= '<p>'.Text::sprintf('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_SOON_ANDOR_FOLLOW_THE_PROGRESS_ON_SGITVDMDEVA', '<a href="https://git.vdm.dev/joomla/Component-Builder/issues/984" target="_blank">').'</p>';
+			$guids = GetHelper::vars('power', $pks, 'id', 'guid');
+
+			if (PowerFactory::_('Superpower')->reset($guids))
+			{
+				// set success message
+				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+				$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THESE_POWERS_HAVE_SUCCESSFULLY_BEEN_RESET').'</p>';
+				$status = 'success';
+				$success = true;
+			}
+			else
+			{
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THESE_POWERS_HAS_FAILED') . '</p>';
+			}
+
 			// set redirect
-			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', false);
-			$this->setRedirect($redirect_url, $message);
-			return true;
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', $success);
+			$this->setRedirect($redirect_url, $message, $status);
+
+			return $success;
 		}
+
 		// set redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=powers', false);
 		$this->setRedirect($redirect_url);
-		return false;
+		return $success;
 	}
 }
