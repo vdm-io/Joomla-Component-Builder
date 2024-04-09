@@ -1,3 +1,7 @@
+# v3.2.1-alpha3
+
+- Fix plugin code display when methods and properties are missing.
+
 # v3.2.1-alpha2
 
 - Add view list and single name fix.

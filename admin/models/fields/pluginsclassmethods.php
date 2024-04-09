@@ -62,12 +62,17 @@ class JFormFieldPluginsclassmethods extends JFormFieldList
 		}
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
 			$options[] = Html::_('select.option', '', 'Select a method');
 			foreach($items as $item)
 			{
+				if (!isset($item->visibility))
+				{
+					continue;
+				}
+
 				// we are using this code in more then one field JCB custom_code
 				if ('method' === 'method')
 				{
@@ -77,6 +82,7 @@ class JFormFieldPluginsclassmethods extends JFormFieldList
 				{
 					$select = $item->visibility  . ' $' . $item->method_name;
 				}
+
 				$options[] = Html::_('select.option', $item->id, $select);
 			}
 		}

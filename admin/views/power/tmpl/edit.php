@@ -142,18 +142,18 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <script type="text/javascript">
 
-// #jform_add_head listeners for add_head_vvvvvyv function
+// #jform_add_head listeners for add_head_vvvvvyu function
 jQuery('#jform_add_head').on('keyup',function()
 {
-	var add_head_vvvvvyv = jQuery("#jform_add_head input[type='radio']:checked").val();
-	vvvvvyv(add_head_vvvvvyv);
+	var add_head_vvvvvyu = jQuery("#jform_add_head input[type='radio']:checked").val();
+	vvvvvyu(add_head_vvvvvyu);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_head',function (e)
 {
 	e.preventDefault();
-	var add_head_vvvvvyv = jQuery("#jform_add_head input[type='radio']:checked").val();
-	vvvvvyv(add_head_vvvvvyv);
+	var add_head_vvvvvyu = jQuery("#jform_add_head input[type='radio']:checked").val();
+	vvvvvyu(add_head_vvvvvyu);
 
 });
 
