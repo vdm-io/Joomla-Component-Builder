@@ -1,3 +1,10 @@
+# v3.2.1-alpha2
+
+- Add view list and single name fix.
+- Add component code name fix.
+- Add reset list of powers.
+- Fix missing Factory class in plugin. #1102
+
 # v3.2.1-alpha1
 
 - Add power path override option on component level.

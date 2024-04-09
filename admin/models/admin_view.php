@@ -1497,6 +1497,12 @@ class ComponentbuilderModelAdmin_view extends AdminModel
 			$data['system_name'] = $data['name_single'];
 		}
 
+		// validate that the list and single view name are not the same
+		if ($data['name_single'] === $data['name_list'])
+		{
+			$data['name_list'] .= '_s';
+		}
+
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)
 		{

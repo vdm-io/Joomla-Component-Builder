@@ -40,24 +40,21 @@ class JFormFieldCustomfolderlist extends JFormFieldList
 	protected function getOptions()
 	{
 		// get custom folder folder
-		$localfolder = JComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
+		$localfolder = ComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom');
 		// set the default
-		$options[] = JHtml::_('select.option', '', JText::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FOLDERS_TO_S',$localfolder));
-		// import all needed classes
-		jimport('joomla.filesystem.file');
-		jimport('joomla.filesystem.folder');
+		$options[] = Html::_('select.option', '', Text::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FOLDERS_TO_S',$localfolder));
 		// setup the folder if it does not exist
-		if (!JFolder::exists($localfolder))
+		if (!\JFolder::exists($localfolder))
 		{
-			JFolder::create($localfolder);
+			\JFolder::create($localfolder);
 		}
 		// now check if there are files in the folder
-		if ($folders = JFolder::folders($localfolder))
+		if ($folders = \JFolder::folders($localfolder))
 		{
-			$options = array();
+			$options = [];
 			foreach ($folders as $folder)
 			{
-				$options[] = JHtml::_('select.option', $folder, $folder);
+				$options[] = Html::_('select.option', $folder, $folder);
 			}
 		}
 		return $options;
