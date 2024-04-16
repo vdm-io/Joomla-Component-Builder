@@ -24,7 +24,7 @@ use VDM\Joomla\Interfaces\ModelInterface;
  * 
  * @since 3.2.0
  */
-final class Load extends AbstractionModel implements ModelInterface
+class Load extends AbstractionModel implements ModelInterface
 {
 	/**
 	 * Model the value

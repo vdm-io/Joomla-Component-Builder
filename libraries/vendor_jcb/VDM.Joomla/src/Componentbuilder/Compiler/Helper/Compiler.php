@@ -405,7 +405,7 @@ class Compiler extends Infusion
 			{
 				CFactory::_('Power')->load($super_powers);
 			}
-			// set the autoloader for Powers
+			// set the autoloader for Powers (second time)
 			CFactory::_('Power.Autoloader')->set();
 			// get the bom file
 			$bom = FileHelper::getContent(CFactory::_('Config')->bom_path);
@@ -739,7 +739,11 @@ class Compiler extends Infusion
 		);
 
 		// inject any super powers found
-		$answer = CFactory::_('Power.Injector')->power($answer);
+		$answer = CFactory::_('Joomla.Power.Injector')->power(
+			CFactory::_('Power.Injector')->power(
+				$answer
+			)
+		);
 
 		// add answer back to file
 		CFactory::_('Utilities.File')->write($path, $answer);

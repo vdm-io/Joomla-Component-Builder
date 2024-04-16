@@ -1,3 +1,7 @@
+# v5.0.0-beta3
+
+- Add Joomla powers for namespace dynamic management.
+
 # v5.0.0-beta2
 
 - Add view list and single name fix.
@@ -32,11 +36,9 @@
 - Add power path override option on component level.
 - Fix the sql build feature. #1032
 
-# v4.0.0-beta2
+# v4.0.0-beta3
 
-- Add view list and single name fix.
-- Add component code name fix.
-- Add reset list of powers.
+- Add Joomla powers for namespace dynamic management.
 
 # v3.2.0
 

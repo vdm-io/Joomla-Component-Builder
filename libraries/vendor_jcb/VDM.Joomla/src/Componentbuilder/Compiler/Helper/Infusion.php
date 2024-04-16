@@ -2144,6 +2144,9 @@ class Infusion extends Interpretation
 				);
 			}
 
+			// set the autoloader for Powers (first time)
+			CFactory::_('Power.Autoloader')->set();
+
 			// tweak system to set stuff to the module domain
 			$_backup_target     = CFactory::_('Config')->build_target;
 			$_backup_lang       = CFactory::_('Config')->lang_target;

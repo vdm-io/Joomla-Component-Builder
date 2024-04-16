@@ -12,8 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Power\Database;
 
 
-use VDM\Joomla\Componentbuilder\Power\Model\Load as Model;
+use VDM\Joomla\Interfaces\ModelInterface as Model;
 use VDM\Joomla\Database\Load as Database;
+use VDM\Joomla\Componentbuilder\Power\Database\LoadInterface;
 
 
 /**
@@ -21,7 +22,7 @@ use VDM\Joomla\Database\Load as Database;
  * 
  * @since 2.0.1
  */
-final class Load
+class Load implements LoadInterface
 {
 	/**
 	 * Model Load
@@ -38,6 +39,14 @@ final class Load
 	 * @since 2.0.1
 	 */
 	protected Database $load;
+
+	/**
+	 * Table Name
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 */
+	protected string $table = 'power';
 
 	/**
 	 * Constructor
@@ -74,11 +83,11 @@ final class Load
 		return $this->model->value(
 			$this->load->value(
 				["a.{$field}" => $field],
-				['a' => 'power'],
+				['a' => $this->table],
 				$this->prefix($keys)
 			),
 			$field,
-			'power'
+			$this->table
 		);
 	}
 
@@ -101,10 +110,10 @@ final class Load
 		return $this->model->item(
 			$this->load->item(
 				['all' => 'a.*'],
-				['a' => 'power'],
+				['a' => $this->table],
 				$this->prefix($keys)
 			),
-			'power'
+			$this->table
 		);
 	}
  
@@ -130,9 +139,9 @@ final class Load
 	{
 		return $this->model->items(
 			$this->load->items(
-				['all' => 'a.*'], ['a' => 'power'], $this->prefix($keys)
+				['all' => 'a.*'], ['a' => $this->table], $this->prefix($keys)
 			),
-			'power'
+			$this->table
 		);
 	}
 
