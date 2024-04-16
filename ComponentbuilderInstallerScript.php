@@ -197,6 +197,9 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 		// Remove Joomla plugin Data
 		$this->removeViewData("com_componentbuilder.joomla_plugin");
 
+		// Remove Joomla power Data
+		$this->removeViewData("com_componentbuilder.joomla_power");
+
 		// Remove Power Data
 		$this->removeViewData("com_componentbuilder.power");
 
@@ -358,6 +361,9 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 		// Remove Joomla_plugin from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.joomla_plugin');
+
+		// Remove Joomla_power from action logs config table.
+		$this->removeActionLogConfig('com_componentbuilder.joomla_power');
 
 		// Remove Power from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.power');
@@ -564,6 +570,91 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 					\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper::removeFolder($jcb_power);
 				}
 			}
+			$app = $this->app;
+
+			// Define the required limits with specific messages for success and warning scenarios
+			$requiredConfigs = [
+				'upload_max_filesize' => [
+					'value'   => '128M',
+					'success' => 'The upload_max_filesize is appropriately set to handle large files, which is essential for uploading substantial components and media.',
+					'warning' => 'The current upload_max_filesize may not support large file uploads effectively, potentially causing failures during component installation.'
+				],
+				'post_max_size' => [
+					'value'   => '128M',
+					'success' => 'The post_max_size setting is sufficient to manage large data submissions, ensuring smooth data processing within forms and uploads.',
+					'warning' => 'An insufficient post_max_size can lead to truncated data submissions, affecting form functionality and data integrity.'
+				],
+				'max_execution_time' => [
+					'value'   => 60,
+					'success' => 'Max execution time is set high enough to execute complex operations without premature termination, which is crucial for lengthy operations.',
+					'warning' => 'A low max execution time could lead to script timeouts, especially during intensive operations, which might interrupt execution and cause failures during the compiling of a large extension.'
+				],
+				'max_input_vars' => [
+					'value'   => 7000,
+					'success' => 'The max_input_vars setting supports a high number of input variables, facilitating complex forms and detailed component configurations.',
+					'warning' => 'Too few max_input_vars may result in lost data during processing complex forms, which can lead to incomplete configurations and operational issues.'
+				],
+				'max_input_time' => [
+					'value'   => 60,
+					'success' => 'Max input time is adequate for processing inputs efficiently during high-load operations, ensuring no premature timeouts.',
+					'warning' => 'An insufficient max input time could result in incomplete data processing during input-heavy operations, potentially leading to errors and data loss.'
+				],
+				'memory_limit' => [
+					'value'   => '256M',
+					'success' => 'The memory limit is set high to accommodate extensive operations and data processing, which enhances overall performance and stability.',
+					'warning' => 'A low memory limit can lead to frequent crashes and performance issues, particularly when processing large amounts of data or complex calculations.'
+				]
+			];
+
+			// Helper function to convert PHP INI memory values to bytes
+			function convertToBytes($value) {
+				$value = trim($value);
+				$lastChar = strtolower($value[strlen($value) - 1]);
+				$numValue = substr($value, 0, -1);
+
+				switch ($lastChar)
+				{
+					case 'g':
+						return $numValue * 1024 * 1024 * 1024;
+					case 'm':
+						return $numValue * 1024 * 1024;
+					case 'k':
+						return $numValue * 1024;
+					default:
+						return (int) $value;
+				}
+			}
+
+			$showHelp = false;
+
+			// Check each configuration and provide detailed feedback
+			foreach ($requiredConfigs as $configName => $configDetails)
+			{
+				$currentValue = ini_get($configName);
+				if ($currentValue === false)
+				{
+					$app->enqueueMessage("Error: Unable to retrieve current setting for '{$configName}'.", 'error');
+					continue;
+				}
+
+				$isMemoryValue = strpbrk($configDetails['value'], 'KMG') !== false;
+				$requiredValueBytes = $isMemoryValue ? convertToBytes($configDetails['value']) : (int)$configDetails['value'];
+				$currentValueBytes = $isMemoryValue ? convertToBytes($currentValue) : (int)$currentValue;
+				$conditionMet = $currentValueBytes >= $requiredValueBytes;
+
+				$messageType = $conditionMet ? 'message' : 'warning';
+				$messageText = $conditionMet ? 
+					"Success: {$configName} is set to {$currentValue}. " . $configDetails['success'] :
+					"Warning: {$configName} configuration should be at least {$configDetails['value']} but is currently {$currentValue}. " . $configDetails['warning'];
+				$showHelp = ($showHelp || $messageType === 'warning') ? true : false;
+				$app->enqueueMessage($messageText, $messageType);
+			}
+
+			if ($showHelp)
+			{
+				$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced. These settings are crucial for ensuring the successful installation and compilation of extensions. We\'ve identified that certain configurations currently do not meet the recommended standards. To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
+', 'notice');
+			}
 		}
 
 		// do any install needed
@@ -643,6 +734,23 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'',
 				// contentHistoryOptions
 				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","class_extends","joomla_plugin_group","add_sql","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","sales_server","add_update_server","add_head","add_sql_uninstall","addreadme","update_server_target","update_server","add_php_script_construct","add_php_preflight_install","add_php_preflight_update","add_php_preflight_uninstall","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}'
+			);
+			// Install Joomla power Content Types.
+			$this->setContentType(
+				// typeTitle
+				'Componentbuilder Joomla_power',
+				// typeAlias
+				'com_componentbuilder.joomla_power',
+				// table
+				'{"special": {"dbtable": "#__componentbuilder_joomla_power","key": "id","type": "Joomla_powerTable","prefix": "VDM\Component\Componentbuilder\Administrator\Table"}}',
+				// rules
+				'',
+				// fieldMappings
+				'{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","guid":"guid","description":"description"}}',
+				// router
+				'',
+				// contentHistoryOptions
+				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_power.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}'
 			);
 			// Install Power Content Types.
 			$this->setContentType(
@@ -1463,7 +1571,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 
 			// Fix the assets table rules column size.
-			$this->setDatabaseAssetsRulesFix(99360, "MEDIUMTEXT");
+			$this->setDatabaseAssetsRulesFix(101600, "MEDIUMTEXT");
 			// Install the global extension params.
 			$this->setExtensionsParams(
 				'{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":"default","editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","approved_paths":"default","add_custom_gitea_url":"1","custom_gitea_url":"https://git.vdm.dev","super_powers_core_organisation":"joomla","super_powers_core":"joomla/super-powers","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","namespace_prefix":"JCB","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"1","type_name_builder":"1","import_guid_only":"1","export_language_strings":"1","development_method":"1","expansion":"0","return_options_build":"2","cronjob_backup_type":"1","cronjob_backup_server":"0","backup_package_name":"JCB_Backup_[YEAR]_[MONTH]_[DAY]","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'
@@ -1521,6 +1629,22 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'system_name',
 				// tableName
 				'#__componentbuilder_joomla_plugin',
+				// textPrefix
+				'COM_COMPONENTBUILDER'
+			);
+
+			// Add Joomla_power to the action logs config table.
+			$this->setActionLogConfig(
+				// typeTitle
+				'JOOMLA_POWER',
+				// typeAlias
+				'com_componentbuilder.joomla_power',
+				// idHolder
+				'id',
+				// titleHolder
+				'system_name',
+				// tableName
+				'#__componentbuilder_joomla_power',
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);
@@ -2316,6 +2440,23 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'',
 				// contentHistoryOptions
 				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_plugin.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","class_extends","joomla_plugin_group","add_sql","add_php_method_uninstall","add_php_postflight_update","add_php_postflight_install","sales_server","add_update_server","add_head","add_sql_uninstall","addreadme","update_server_target","update_server","add_php_script_construct","add_php_preflight_install","add_php_preflight_update","add_php_preflight_uninstall","add_sales_server"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "class_extends","targetTable": "#__componentbuilder_class_extends","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "joomla_plugin_group","targetTable": "#__componentbuilder_joomla_plugin_group","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}'
+			);
+			// Update Joomla power Content Types.
+			$this->setContentType(
+				// typeTitle
+				'Componentbuilder Joomla_power',
+				// typeAlias
+				'com_componentbuilder.joomla_power',
+				// table
+				'{"special": {"dbtable": "#__componentbuilder_joomla_power","key": "id","type": "Joomla_powerTable","prefix": "VDM\Component\Componentbuilder\Administrator\Table"}}',
+				// rules
+				'',
+				// fieldMappings
+				'{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","guid":"guid","description":"description"}}',
+				// router
+				'',
+				// contentHistoryOptions
+				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_power.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}'
 			);
 			// Update Power Content Types.
 			$this->setContentType(
@@ -3139,7 +3280,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.0.0-beta2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.0.0-beta3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -3188,6 +3329,22 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'system_name',
 				// tableName
 				'#__componentbuilder_joomla_plugin',
+				// textPrefix
+				'COM_COMPONENTBUILDER'
+			);
+
+			// Add/Update Joomla_power in the action logs config table.
+			$this->setActionLogConfig(
+				// typeTitle
+				'JOOMLA_POWER',
+				// typeAlias
+				'com_componentbuilder.joomla_power',
+				// idHolder
+				'id',
+				// titleHolder
+				'system_name',
+				// tableName
+				'#__componentbuilder_joomla_power',
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);

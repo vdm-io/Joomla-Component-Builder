@@ -25,6 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
+use VDM\Joomla\Componentbuilder\Compiler\Service\JoomlaPower;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Adminview;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Library;
@@ -157,6 +158,7 @@ abstract class Factory implements FactoryInterface
 			->registerServiceProvider(new Placeholder())
 			->registerServiceProvider(new Customcode())
 			->registerServiceProvider(new Power())
+			->registerServiceProvider(new JoomlaPower())
 			->registerServiceProvider(new Component())
 			->registerServiceProvider(new Adminview())
 			->registerServiceProvider(new Library())

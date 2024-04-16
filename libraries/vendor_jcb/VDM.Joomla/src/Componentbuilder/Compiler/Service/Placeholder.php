@@ -62,7 +62,7 @@ class Placeholder implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Worker
+	 * @return  Reverse
 	 * @since 3.2.0
 	 */
 	public function getPlaceholderReverse(Container $container): Reverse
@@ -72,7 +72,8 @@ class Placeholder implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Language'),
 			$container->get('Language.Extractor'),
-			$container->get('Power.Extractor')
+			$container->get('Power.Extractor'),
+			$container->get('Joomla.Power.Extractor')
 		);
 	}
 }

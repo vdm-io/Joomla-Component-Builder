@@ -695,8 +695,6 @@
 		name="super_power_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_SUPER_POWER">
 
-		<!-- Note_not_ready_super_powers Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_not_ready_super_powers" label="COM_COMPONENTBUILDER_CONFIG_NOTE_NOT_READY_SUPER_POWERS_LABEL" heading="h2" class="alert alert-error note_not_ready_super_powers" />
 		<!-- Super_powers_documentation Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"

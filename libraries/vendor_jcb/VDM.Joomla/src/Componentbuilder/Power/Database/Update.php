@@ -12,8 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Power\Database;
 
 
-use VDM\Joomla\Componentbuilder\Power\Model\Upsert as Model;
+use VDM\Joomla\Interfaces\ModelInterface as Model;
 use VDM\Joomla\Database\Update as Database;
+use VDM\Joomla\Componentbuilder\Interfaces\Database\UpdateInterface;
 
 
 /**
@@ -21,7 +22,7 @@ use VDM\Joomla\Database\Update as Database;
  * 
  * @since 3.2.0
  */
-final class Update
+class Update implements UpdateInterface
 {
 	/**
 	 * Model
@@ -38,6 +39,14 @@ final class Update
 	 * @since 3.2.0
 	 */
 	protected Database $database;
+
+	/**
+	 * Table Name
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 */
+	protected string $table = 'power';
 
 	/**
 	 * Constructor
@@ -88,10 +97,10 @@ final class Update
 	public function row(array $item): bool
 	{
 		// check if object could be modelled
-		if (($item = $this->model->row($item, 'power')) !== null)
+		if (($item = $this->model->row($item, $this->table)) !== null)
 		{
 			// Update the column of this table using guid as the primary key.
-			return $this->database->row($item, 'guid', 'power');
+			return $this->database->row($item, 'guid', $this->table);
 		}
 		return false;
 	}
@@ -108,10 +117,10 @@ final class Update
 	public function rows(?array $items): bool
 	{
 		// check if object could be modelled
-		if (($items = $this->model->rows($items, 'power')) !== null)
+		if (($items = $this->model->rows($items, $this->table)) !== null)
 		{
 			// Update the column of this table using guid as the primary key.
-			return $this->database->rows($items, 'guid', 'power');
+			return $this->database->rows($items, 'guid', $this->table);
 		}
 		return false;
 	}
@@ -128,10 +137,10 @@ final class Update
 	public function item(object $item): bool
 	{
 		// check if object could be modelled
-		if (($item = $this->model->item($item, 'power')) !== null)
+		if (($item = $this->model->item($item, $this->table)) !== null)
 		{
 			// Update the column of this table using guid as the primary key.
-			return $this->database->item($item, 'guid', 'power');
+			return $this->database->item($item, 'guid', $this->table);
 		}
 		return false;
 	}
@@ -148,10 +157,10 @@ final class Update
 	public function items(?array $items): bool
 	{
 		// check if object could be modelled
-		if (($items = $this->model->items($items, 'power')) !== null)
+		if (($items = $this->model->items($items, $this->table)) !== null)
 		{
 			// Update the column of this table using guid as the primary key.
-			return $this->database->items($items, 'guid', 'power');
+			return $this->database->items($items, 'guid', $this->table);
 		}
 		return false;
 	}

@@ -303,7 +303,7 @@ class Power implements PowerInterface
 				$this->setImplements($guid, $use);
 
 				// set extend class
-				$this->setExtend($guid, $use);
+				$this->setExtend($guid, $use, $as);
 
 				// set GUI mapper
 				$guiMapper = [
@@ -760,11 +760,12 @@ class Power implements PowerInterface
 	 *
 	 * @param string  $guid  The global unique id of the power
 	 * @param array   $use   The use array
+	 * @param array   $as    The use as array
 	 *
 	 * @return void
 	 * @since 3.2.0
 	 */
-	private function setExtend(string $guid, array &$use)
+	private function setExtend(string $guid, array &$use, array &$as)
 	{
 		// does this extend something
 		$this->active[$guid]->extends_name = null;
@@ -793,6 +794,13 @@ class Power implements PowerInterface
 				$this->active[$guid]->extends_name = $this->get($this->active[$guid]->extends, 1)->class_name;
 				// add to use
 				$use[] = $this->active[$guid]->extends;
+
+				// add padding if the two names are the same
+				if ($this->active[$guid]->extends_name === $this->active[$guid]->class_name)
+				{
+					$this->active[$guid]->extends_name = $as[$this->active[$guid]->extends]
+						= 'Extending' . $this->active[$guid]->class_name;
+				}
 			}
 		}
 	}

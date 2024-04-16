@@ -19,6 +19,7 @@ use Joomla\CMS\Language\Text;
 use VDM\Joomla\Gitea\Repository\Contents;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Componentbuilder\Interfaces\GrepInterface;
 
 
 /**
@@ -31,7 +32,7 @@ use VDM\Joomla\Utilities\JsonHelper;
  * 
  * @since 3.2.0
  */
-final class Grep
+class Grep implements GrepInterface
 {
 	/**
 	 * The local path

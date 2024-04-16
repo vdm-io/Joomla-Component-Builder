@@ -801,6 +801,62 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * Get super power core organisation
+	 *
+	 * @return  string   The super power core organisation
+	 * @since 3.2.0
+	 */
+	protected function getJoomlapowerscoreorganisation(): string
+	{
+		// the VDM default organisation is [joomla]
+		$organisation = 'joomla';
+
+		return $this->params->get('joomla_powers_core_organisation', $organisation);
+	}
+
+	/**
+	 * Get Joomla power init repos
+	 *
+	 * @return  array The init repositories on Gitea
+	 * @since 3.2.0
+	 */
+	protected function getJoomlapowersinitrepos(): array
+	{
+		// some defaults repos we need by JCB
+		$repos = [];
+		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) ['owner' => $this->joomla_powers_core_organisation, 'repo' => 'joomla-powers', 'branch' => 'master'];
+
+		return $repos;
+	}
+
+	/**
+	 * Get local joomla super powers repository path
+	 *
+	 * @return  string The path to the local repository
+	 * @since 3.2.0
+	 */
+	protected function getLocaljoomlapowersrepositorypath(): string
+	{
+		$default = $this->tmp_path . '/joomla_powers';
+
+		return $this->params->get('local_joomla_powers_repository_path', $default);
+	}
+
+	/**
+	 * Get joomla power approved paths
+	 *
+	 * @return  array The paths to the repositories on Gitea
+	 * @since 3.2.0
+	 */
+	protected function getApprovedjoomlapaths(): array
+	{
+		// some defaults repos we need by JCB
+		$approved = $this->joomla_powers_init_repos;
+
+		return array_values($approved);
+	}
+
+	/**
 	 * get bom path
 	 *
 	 * @return  string  The bom path

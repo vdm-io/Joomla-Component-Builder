@@ -14,13 +14,14 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 use Joomla\CMS\Factory;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface;
 
 
 /**
  * Compiler Power Extractor
  * @since 3.2.0
  */
-final class Extractor
+class Extractor implements ExtractorInterface
 {
 	/**
 	 * The pattern to get the powers
@@ -29,6 +30,30 @@ final class Extractor
 	 * @since 3.2.0
 	 **/
 	protected string $pattern = '/Super_'.'_'.'_[a-zA-Z0-9_]+_'.'_'.'_Power/';
+
+	/**
+	 * The pattern to get the Front
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 **/
+	protected string $_pattern = 'Super';
+
+	/**
+	 * The pattern to get the Back
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 **/
+	protected string $pattern_ = 'Power';
+
+	/**
+	 * The Table
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 **/
+	protected string $table = 'power';
 
 	/**
 	 * Powers GUID's
@@ -122,7 +147,7 @@ final class Extractor
 	 * @return void
 	 * @since 3.2.0
 	 */
-	public function search(string $code)
+	public function search(string $code): void
 	{
 		$matches = [];
 		preg_match_all($this->pattern, $code, $matches);
@@ -147,7 +172,7 @@ final class Extractor
 	{
 		foreach ($found as $super_power)
 		{
-			$guid = str_replace(['Super_'.'_'.'_', '_'.'_'.'_Power'], '', $super_power);
+			$guid = str_replace([], '', $super_power);
 			$guid = str_replace('_', '-', $guid);
 
 			if (GuidHelper::valid($guid))
@@ -171,7 +196,7 @@ final class Extractor
 
 		foreach ($found as $super_power)
 		{
-			$guid = str_replace(['Super_'.'_'.'_', '_'.'_'.'_Power'], '', $super_power);
+			$guid = str_replace([$this->_pattern . '___', '___' . $this->pattern_], '', $super_power);
 			$guid = str_replace('_', '-', $guid);
 
 			if (GuidHelper::valid($guid))
@@ -197,7 +222,7 @@ final class Extractor
 
 		foreach ($found as $super_power)
 		{
-			$guid = str_replace(['Super_'.'_'.'_', '_'.'_'.'_Power'], '', $super_power);
+			$guid = str_replace([$this->_pattern . '___', '___' . $this->pattern_], '', $super_power);
 			$guid = str_replace('_', '-', $guid);
 
 			if (GuidHelper::valid($guid))
@@ -226,7 +251,7 @@ final class Extractor
 			. ', ".", "\\\") AS full_namespace, '
 			. $this->db->quoteName('guid')
 			)
-			->from($this->db->quoteName('#__componentbuilder_power'))
+			->from($this->db->quoteName('#__componentbuilder_' . $this->table))
 			->where($this->db->quoteName('guid') . ' IN (' . implode(',', array_map([$this->db, 'quote'], $guids)) . ')');
 		$this->db->setQuery($query);
 		$this->db->execute();

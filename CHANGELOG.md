@@ -1,3 +1,7 @@
+# v4.0.0-beta3
+
+- Add Joomla powers for namespace dynamic management.
+
 # v4.0.0-beta2
 
 - Add view list and single name fix.
