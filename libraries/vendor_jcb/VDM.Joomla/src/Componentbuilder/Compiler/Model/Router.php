@@ -174,16 +174,18 @@ class Router
 
 			// We can only work with ID if the [main get]  is a [getItem] dynamicGet for this site view.
 			$key = ($view['settings']->main_get->gettype == 1) ? 'id' : null;
+			$view_selected = $selection['view'] ?? null;
+			$name_selected = $selection['name'] ?? null;
 
 			// Construct the enriched view object.
 			return (object) [
 				'view' => $view['settings']->code,
 				'View'  => $view['settings']->Code,
-				'stable' => ($selection['view'] === $view['settings']->code), // sanity check
-				'target_view' => $selection['view'],
-				'table' => $selection['table'],
-				'table_name' => $selection['name'],
-				'alias' => $this->getSiteViewAliasKey($selection['name'] ?? null, $adminViews),
+				'stable' => ($view_selected === $view['settings']->code), // sanity check
+				'target_view' => $view_selected,
+				'table' => $selection['table'] ?? null,
+				'table_name' => $name_selected,
+				'alias' => $this->getSiteViewAliasKey($name_selected, $adminViews),
 				'key' => $key,
 				'form' => false
 			];

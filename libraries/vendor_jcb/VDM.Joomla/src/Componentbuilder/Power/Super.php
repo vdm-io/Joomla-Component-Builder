@@ -12,9 +12,9 @@
 namespace VDM\Joomla\Componentbuilder\Power;
 
 
-use VDM\Joomla\Componentbuilder\Power\Grep;
-use VDM\Joomla\Componentbuilder\Power\Database\Insert;
-use VDM\Joomla\Componentbuilder\Power\Database\Update;
+use VDM\Joomla\Componentbuilder\Interfaces\GrepInterface as Grep;
+use VDM\Joomla\Componentbuilder\Interfaces\Database\InsertInterface as Insert;
+use VDM\Joomla\Componentbuilder\Interfaces\Database\UpdateInterface as Update;
 use VDM\Joomla\Utilities\GuidHelper;
 
 
@@ -23,7 +23,7 @@ use VDM\Joomla\Utilities\GuidHelper;
  * 
  * @since 3.2.0
  */
-final class Super
+class Super
 {
 	/**
 	 * The Power Search Tool
@@ -48,6 +48,14 @@ final class Super
 	 * @since 3.2.0
 	 **/
 	protected Update $update;
+
+	/**
+	 * Table Name
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 */
+	protected string $table = 'power';
 
 	/**
 	 * Constructor.
@@ -174,7 +182,7 @@ final class Super
 	 */
 	private function action(string $guid): string
 	{
-		if (($id = GuidHelper::item($guid, 'power')) !== null && $id > 0)
+		if (($id = GuidHelper::item($guid, $this->table)) !== null && $id > 0)
 		{
 			return 'update';
 		}

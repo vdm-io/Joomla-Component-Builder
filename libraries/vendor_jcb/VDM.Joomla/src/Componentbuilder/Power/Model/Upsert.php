@@ -12,11 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\Power\Model;
 
 
-use VDM\Joomla\Abstraction\Model as AbstractionModel;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Interfaces\ModelInterface;
+use VDM\Joomla\Abstraction\Model;
 
 
 /**
@@ -24,7 +24,7 @@ use VDM\Joomla\Interfaces\ModelInterface;
  * 
  * @since 3.2.0
  */
-final class Upsert extends AbstractionModel implements ModelInterface
+class Upsert extends Model implements ModelInterface
 {
 	/**
 	 * Model the value

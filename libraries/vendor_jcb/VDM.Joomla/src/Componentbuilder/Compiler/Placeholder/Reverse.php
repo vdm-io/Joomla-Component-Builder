@@ -21,6 +21,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Extractor as JoomlaPower;
 
 
 /**
@@ -71,26 +72,35 @@ class Reverse
 	protected Power $power;
 
 	/**
+	 * Joomla Power Extractor
+	 *
+	 * @var    Power
+	 * @since 3.2.1
+	 **/
+	protected JoomlaPower $joomla;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param Config|null          $config          The compiler config object.
-	 * @param Placeholder|null     $placeholder     The compiler placeholder object.
-	 * @param Language|null        $language        The compiler language object.
-	 * @param Extractor|null       $extractor       The compiler language extractor object.
-	 * @param Power|null           $power           The compiler power extractor object.
+	 * @param Config       $config       The compiler config object.
+	 * @param Placeholder  $placeholder  The compiler placeholder object.
+	 * @param Language     $language     The compiler language object.
+	 * @param Extractor    $extractor    The compiler language extractor object.
+	 * @param Power        $power        The compiler power extractor object.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(
-		?Config $config = null, ?Placeholder $placeholder = null,
-		?Language $language = null, ?Extractor $extractor = null,
-		?Power $power = null)
+		Config $config, Placeholder $placeholder,
+		Language $language, Extractor $extractor,
+		Power $power, JoomlaPower $joomla)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->language = $language ?: Compiler::_('Language');
-		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
-		$this->power = $power ?: Compiler::_('Power.Extractor');
+		$this->config = $config;
+		$this->placeholder = $placeholder;
+		$this->language = $language;
+		$this->extractor = $extractor;
+		$this->power = $power;
+		$this->joomla = $joomla;
 	}
 
 	/**
@@ -138,8 +148,9 @@ class Reverse
 	protected function setReverse(string $updateString, string $string,
 		string $target, ?array $useStatements): string
 	{
-		// we have to reverse engineer to super powers
+		// we have to reverse engineer of powers
 		$updateString = $this->reverseSuperPowers($updateString, $string, $useStatements);
+		$updateString = $this->reverseJoomlaPowers($updateString, $string, $useStatements);
 
 		// reverse engineer the language strings
 		$updateString = $this->reverseLanguage($updateString, $string, $target);
@@ -165,7 +176,30 @@ class Reverse
 	{
 		// only if we have use statements can we reverse engineer this
 		if ($useStatements !== null && ($powers = $this->power->reverse($string)) !== null &&
-			($reverse = $this->getReversePower($powers, $useStatements)) !== null)
+			($reverse = $this->getReversePower($powers, $useStatements, 'Super')) !== null)
+		{
+			return $this->placeholder->update($updateString, $reverse);
+		}
+
+		return $updateString;
+	}
+
+	/**
+	 * Set the joomla powers keys for the reveres process
+	 *
+	 * @param   string      $updateString   The string to update
+	 * @param   string      $string         The string to use for super power update
+	 * @param   array|null  $useStatements  The file use statements (needed for super powers)
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function reverseJoomlaPowers(string $updateString, string $string,
+		?array $useStatements): string
+	{
+		// only if we have use statements can we reverse engineer this
+		if ($useStatements !== null && ($powers = $this->joomla->reverse($string)) !== null &&
+			($reverse = $this->getReversePower($powers, $useStatements, 'Joomla')) !== null)
 		{
 			return $this->placeholder->update($updateString, $reverse);
 		}
@@ -178,11 +212,12 @@ class Reverse
 	 *
 	 * @param   array   $powers         The powers found in the database text
 	 * @param   array   $useStatements  The file use statements
+	 * @param   string  $target         The power target type
 	 *
 	 * @return  array|null
 	 * @since 3.2.0
 	 */
-	protected function getReversePower(array $powers, array $useStatements): ?array
+	protected function getReversePower(array $powers, array $useStatements, string $target): ?array
 	{
 		$matching_statements = [];
 		foreach ($useStatements as $use_statement)
@@ -211,7 +246,7 @@ class Reverse
 			{
 				$guid = array_search($namespace, $powers);
 				$matching_statements[$class_name] =
-					'Super_'.'_'.'_' . str_replace('-', '_', $guid) . '_'.'_'.'_Power';
+					$target . '_'.'_'.'_' . str_replace('-', '_', $guid) . '_'.'_'.'_Power';
 			}
 		}
 

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+	addrulepath="/administrator/components/com_componentbuilder/models/rules"
+	addfieldpath="/administrator/components/com_componentbuilder/models/fields"
+>
+	<fieldset name="details">
+		<!-- Default Fields. -->
+		<!-- Id Field. Type: Text (joomla) -->
+		<field
+			name="id"
+			type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+			description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+			readonly="true"
+		/>
+		<!-- Date Created Field. Type: Calendar (joomla) -->
+		<field
+			name="created"
+			type="calendar"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_CREATED_DATE_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_CREATED_DATE_DESC"
+			size="22"
+			format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc"
+		/>
+		<!-- User Created Field. Type: User (joomla) -->
+		<field
+			name="created_by"
+			type="user"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_CREATED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_CREATED_BY_DESC"
+		/>
+		<!-- Published Field. Type: List (joomla) -->
+		<field name="published" type="list" label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
+			filter="intval" size="1" default="1" >
+			<option value="1">
+				JPUBLISHED</option>
+			<option value="0">
+				JUNPUBLISHED</option>
+			<option value="2">
+				JARCHIVED</option>
+			<option value="-2">
+				JTRASHED</option>
+		</field>
+		<!-- Date Modified Field. Type: Calendar (joomla) -->
+		<field name="modified" type="calendar" class="readonly"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_MODIFIED_DATE_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_POWER_MODIFIED_DATE_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		<!-- User Modified Field. Type: User (joomla) -->
+		<field name="modified_by" type="user"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_MODIFIED_BY_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_MODIFIED_BY_DESC"
+			class="readonly"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Access Field. Type: Accesslevel (joomla) -->
+		<field name="access"
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL"
+			description="JFIELD_ACCESS_DESC"
+			default="1"
+			required="false"
+		/>
+		<!-- Ordering Field. Type: Numbers (joomla) -->
+		<field
+			name="ordering"
+			type="number"
+			class="inputbox validate-ordering"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_ORDERING_LABEL"
+			description=""
+			default="0"
+			size="6"
+			required="false"
+		/>
+		<!-- Version Field. Type: Text (joomla) -->
+		<field
+			name="version"
+			type="text"
+			class="readonly"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_VERSION_LABEL"
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_VERSION_DESC"
+			size="6"
+			default="1"
+			readonly="true"
+			filter="unset"
+		/>
+		<!-- Was added due to Permissions JS needing a Title field -->
+		<!-- Let us know at gh-629 should this change -->
+		<!-- https://github.com/vdm-io/Joomla-Component-Builder/issues/629#issuecomment-750117235 -->
+		<field
+			name="title"
+			type="hidden"
+			default="componentbuilder joomla_power"
+		/>
+		<!-- Dynamic Fields. -->
+		<!-- System_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="system_name"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_SYSTEM_NAME_LABEL"
+			size="10"
+			maxlength="50"
+			default=""
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_SYSTEM_NAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_JOOMLA_POWER_SYSTEM_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_JOOMLA_POWER_SYSTEM_NAME_HINT"
+		/>
+		<!-- Settings Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="settings"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_SETTINGS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			icon="list"
+			max="10"
+			min="1">
+			<form hidden="true" name="list_settings_modal" repeat="true">
+				<!-- Namespace Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="namespace"
+					label="COM_COMPONENTBUILDER_JOOMLA_POWER_NAMESPACE_LABEL"
+					size="250"
+					maxlength="250"
+					description="COM_COMPONENTBUILDER_JOOMLA_POWER_NAMESPACE_DESCRIPTION"
+					class="text_area span12"
+					required="true"
+					filter="STRING"
+					message="COM_COMPONENTBUILDER_JOOMLA_POWER_NAMESPACE_MESSAGE"
+					hint="COM_COMPONENTBUILDER_JOOMLA_POWER_NAMESPACE_HINT"
+					autocomplete="on"
+				/>
+				<!-- Joomla_version Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="joomla_version"
+					label="COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_VERSION_LABEL"
+					description="COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_VERSION_DESCRIPTION"
+					class="list_class"
+					layout="joomla.form.field.list-fancy-select"
+					multiple="false"
+					required="true"
+					default="0">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_ALL</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_3</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_4</option>
+					<option value="5">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_5</option>
+				</field>
+			</form>
+		</field>
+		<!-- Guid Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="guid"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_GUID_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_JOOMLA_POWER_GUID_HINT"
+		/>
+		<!-- Description Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="description"
+			label="COM_COMPONENTBUILDER_JOOMLA_POWER_DESCRIPTION_LABEL"
+			rows="11"
+			cols="10"
+			description="COM_COMPONENTBUILDER_JOOMLA_POWER_DESCRIPTION_DESCRIPTION"
+			class="text_area span12"
+			filter="HTML"
+			hint="COM_COMPONENTBUILDER_JOOMLA_POWER_DESCRIPTION_HINT"
+		/>
+	</fieldset>
+
+	<!-- Access Control Fields. -->
+	<fieldset name="accesscontrol">
+		<!-- Asset Id Field. Type: Hidden (joomla) -->
+		<field
+			name="asset_id"
+			type="hidden"
+			filter="unset"
+		/>
+		<!-- Rules Field. Type: Rules (joomla) -->
+		<field
+			name="rules"
+			type="rules"
+			label="Permissions in relation to this joomla_power"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_componentbuilder"
+			section="joomla_power"
+		/>
+	</fieldset>
+</form>

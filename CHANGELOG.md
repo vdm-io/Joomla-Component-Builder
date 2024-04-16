@@ -1,3 +1,7 @@
+# v3.2.1-alpha4
+
+- Add Joomla powers for namespace dynamic management.
+
 # v3.2.1-alpha3
 
 - Fix plugin code display when methods and properties are missing.

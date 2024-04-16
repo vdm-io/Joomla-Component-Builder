@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Extractor as JoomlaPower;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Utilities\StringHelper;
@@ -112,6 +113,14 @@ class Customcode implements CustomcodeInterface
 	protected Power $power;
 
 	/**
+	 * Joomla Power Extractor
+	 *
+	 * @var    Power
+	 * @since 3.2.0
+	 **/
+	protected JoomlaPower $joomla;
+
+	/**
 	 * Compiler Custom Code External
 	 *
 	 * @var    External
@@ -129,23 +138,25 @@ class Customcode implements CustomcodeInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null          $config          The compiler config object.
-	 * @param Placeholder|null     $placeholder     The compiler placeholder object.
-	 * @param Extractor|null       $extractor       The compiler language extractor object.
-	 * @param Power|null           $power           The compiler power extractor object.
-	 * @param External|null        $external        The compiler external custom code object.
-	 * @param \JDatabaseDriver     $db              The Database Driver object.
+	 * @param Config             $config          The compiler config object.
+	 * @param Placeholder        $placeholder     The compiler placeholder object.
+	 * @param Extractor          $extractor       The compiler language extractor object.
+	 * @param Power              $power           The compiler power extractor object.
+	 * @param JoomlaPower        $joomla          The compiler joomla power extractor object.
+	 * @param External           $external        The compiler external custom code object.
+	 * @param \JDatabaseDriver   $db              The Database Driver object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?Extractor $extractor = null, ?Power $power = null, ?External $external = null)
+	public function __construct(Config $config, Placeholder $placeholder,
+		Extractor $extractor, Power $power, JoomlaPower $joomla, External $external)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
-		$this->power = $power ?: Compiler::_('Power.Extractor');
-		$this->external = $external ?: Compiler::_('Customcode.External');
+		$this->config = $config;
+		$this->placeholder = $placeholder;
+		$this->extractor = $extractor;
+		$this->power = $power;
+		$this->joomla = $joomla;
+		$this->external = $external;
 		$this->db = Factory::getDbo();
 	}
 
@@ -170,8 +181,9 @@ class Customcode implements CustomcodeInterface
 				)
 			);
 
-			// extract any found super powers
+			// extract any found powers
 			$this->power->search($string);
+			$this->joomla->search($string);
 		}
 		// if debug
 		if ($debug)

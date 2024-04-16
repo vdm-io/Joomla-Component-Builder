@@ -12,18 +12,18 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Power;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface as Power;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface as Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\InjectorInterface;
 
 
 /**
  * Compiler Power Injector
  * @since 3.2.0
  */
-final class Injector
+class Injector implements InjectorInterface
 {
 	/**
 	 * Power Objects
@@ -107,13 +107,13 @@ final class Injector
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Power $power = null, ?Extractor $extractor = null,
-		?Parser $parser = null, ?Placeholder $placeholder = null)
+	public function __construct(Power $power = null, Extractor $extractor = null,
+		Parser $parser = null, Placeholder $placeholder = null)
 	{
-		$this->power = $power ?: Compiler::_('Power');
-		$this->extractor = $extractor ?: Compiler::_('Power.Extractor');
-		$this->parser = $parser ?: Compiler::_('Power.Parser');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
+		$this->power = $power;
+		$this->extractor = $extractor;
+		$this->parser = $parser;
+		$this->placeholder = $placeholder;
 	}
 
 	/**

@@ -100,6 +100,7 @@ class ComponentbuilderController extends BaseController
 				'joomla_component' => 'joomla_components',
 				'joomla_module' => 'joomla_modules',
 				'joomla_plugin' => 'joomla_plugins',
+				'joomla_power' => 'joomla_powers',
 				'power' => 'powers',
 				'admin_view' => 'admin_views',
 				'custom_admin_view' => 'custom_admin_views',

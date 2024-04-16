@@ -314,34 +314,47 @@ class ComponentbuilderModelAjax extends ListModel
 		// do we have tags returned
 		if (isset($tags[0]) && isset($tags[0]->name))
 		{
-			// get the version
+			// get the local version
 			$manifest = ComponentbuilderHelper::manifest();
 			$local_version = (string) $manifest->version;
-			$current_version = trim($tags[0]->name, 'vV');
+			$latest_version = '1.0.0';
+			$download_link = "https://git.vdm.dev/api/v1/joomla/Component-Builder";
+
+			// Filter tags by major version matching the local version's major number
+			$major_version = explode('.', $local_version)[0];
+			$filtered_tags = array_filter($tags, function($tag) use ($major_version) {
+				return strpos($tag->name, "v$major_version") === 0;
+			});
+
+			if (!empty($filtered_tags))
+			{
+				// Sort versions to find the latest one
+				usort($filtered_tags, function($a, $b) {
+					return \version_compare($b->name, $a->name);
+				});
+
+				$latest_version = trim($filtered_tags[0]->name, 'vV');
+
+				// download link of the latest version
+				$download_link = $filtered_tags[0]->zipball_url;
+			}
 
 			// now check if this version is out dated
-			if ($current_version === $local_version)
+			if (\version_compare($local_version, $latest_version) === 0)
 			{
 				return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>&nbsp;' . Text::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
 			}
 			else
 			{
 				// check if this is beta version
-				$current_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $current_version));
-				$local_array = array_map(function ($v) { return (int) $v; }, (array) explode('.', $local_version));
-				if (($local_array[0] > $current_array[0]) || 
-					($local_array[0] == $current_array[0] && $local_array[1] > $current_array[1]) || 
-					($local_array[0] == $current_array[0] && $local_array[1] == $current_array[1] && $local_array[2] > $current_array[2]))
+				if (\version_compare($local_version, $latest_version) > 0)
 				{
 					return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>&nbsp;' . Text::_('COM_COMPONENTBUILDER_PRE_RELEASE') . '</span></small>'];
 				}
 				else
 				{
-					// download link of the latest version
-					$download = "https://git.vdm.dev/api/v1/repos/joomla/Component-Builder/archive/" . $tags[0]->name . ".zip";
-
 					return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>&nbsp;' . Text::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
-						$download . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
+						$download_link . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
 				}
 			}
 		}

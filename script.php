@@ -323,6 +323,92 @@ class Com_ComponentbuilderInstallerScript
 		// Select id from content type table
 		$query->select($db->quoteName('type_id'));
 		$query->from($db->quoteName('#__content_types'));
+		// Where Joomla_power alias is found
+		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_power') );
+		$db->setQuery($query);
+		// Execute query to see if alias is found
+		$db->execute();
+		$joomla_power_found = $db->getNumRows();
+		// Now check if there were any rows
+		if ($joomla_power_found)
+		{
+			// Since there are load the needed  joomla_power type ids
+			$joomla_power_ids = $db->loadColumn();
+			// Remove Joomla_power from the content type table
+			$joomla_power_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_power') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__content_types'));
+			$query->where($joomla_power_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_power items
+			$joomla_power_done = $db->execute();
+			if ($joomla_power_done)
+			{
+				// If successfully remove Joomla_power add queued success message.
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_power) type alias was removed from the <b>#__content_type</b> table'));
+			}
+
+			// Remove Joomla_power items from the contentitem tag map table
+			$joomla_power_condition = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_power') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__contentitem_tag_map'));
+			$query->where($joomla_power_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_power items
+			$joomla_power_done = $db->execute();
+			if ($joomla_power_done)
+			{
+				// If successfully remove Joomla_power add queued success message.
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_power) type alias was removed from the <b>#__contentitem_tag_map</b> table'));
+			}
+
+			// Remove Joomla_power items from the ucm content table
+			$joomla_power_condition = array( $db->quoteName('core_type_alias') . ' = ' . $db->quote('com_componentbuilder.joomla_power') );
+			// Create a new query object.
+			$query = $db->getQuery(true);
+			$query->delete($db->quoteName('#__ucm_content'));
+			$query->where($joomla_power_condition);
+			$db->setQuery($query);
+			// Execute the query to remove Joomla_power items
+			$joomla_power_done = $db->execute();
+			if ($joomla_power_done)
+			{
+				// If successfully removed Joomla_power add queued success message.
+				$app->enqueueMessage(Text::_('The (com_componentbuilder.joomla_power) type alias was removed from the <b>#__ucm_content</b> table'));
+			}
+
+			// Make sure that all the Joomla_power items are cleared from DB
+			foreach ($joomla_power_ids as $joomla_power_id)
+			{
+				// Remove Joomla_power items from the ucm base table
+				$joomla_power_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_power_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_base'));
+				$query->where($joomla_power_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_power items
+				$db->execute();
+
+				// Remove Joomla_power items from the ucm history table
+				$joomla_power_condition = array( $db->quoteName('ucm_type_id') . ' = ' . $joomla_power_id);
+				// Create a new query object.
+				$query = $db->getQuery(true);
+				$query->delete($db->quoteName('#__ucm_history'));
+				$query->where($joomla_power_condition);
+				$db->setQuery($query);
+				// Execute the query to remove Joomla_power items
+				$db->execute();
+			}
+		}
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		// Select id from content type table
+		$query->select($db->quoteName('type_id'));
+		$query->from($db->quoteName('#__content_types'));
 		// Where Power alias is found
 		$query->where( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
 		$db->setQuery($query);
@@ -4597,6 +4683,31 @@ class Com_ComponentbuilderInstallerScript
 		{
 			$app = Factory::getApplication();
 		}
+		// Remove Componentbuilder Joomla_power from the action_log_config table
+		$joomla_power_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.joomla_power') );
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__action_log_config'));
+		$query->where($joomla_power_action_log_config);
+		$db->setQuery($query);
+		// Execute the query to remove com_componentbuilder.joomla_power
+		$joomla_power_action_log_config_done = $db->execute();
+		if ($joomla_power_action_log_config_done)
+		{
+			// If successfully removed Componentbuilder Joomla_power add queued success message.
+			$app->enqueueMessage(Text::_('The com_componentbuilder.joomla_power type alias was removed from the <b>#__action_log_config</b> table'));
+		}
+
+		// Set db if not set already.
+		if (!isset($db))
+		{
+			$db = Factory::getDbo();
+		}
+		// Set app if not set already.
+		if (!isset($app))
+		{
+			$app = Factory::getApplication();
+		}
 		// Remove Componentbuilder Power from the action_log_config table
 		$power_action_log_config = array( $db->quoteName('type_alias') . ' = '. $db->quote('com_componentbuilder.power') );
 		// Create a new query object.
@@ -6233,6 +6344,90 @@ class Com_ComponentbuilderInstallerScript
 			{
 				ComponentbuilderHelper::removeFolder($cleaner);
 			}
+
+			// Define the required limits with specific messages for success and warning scenarios
+			$requiredConfigs = [
+				'upload_max_filesize' => [
+					'value'   => '128M',
+					'success' => 'The upload_max_filesize is appropriately set to handle large files, which is essential for uploading substantial components and media.',
+					'warning' => 'The current upload_max_filesize may not support large file uploads effectively, potentially causing failures during component installation.'
+				],
+				'post_max_size' => [
+					'value'   => '128M',
+					'success' => 'The post_max_size setting is sufficient to manage large data submissions, ensuring smooth data processing within forms and uploads.',
+					'warning' => 'An insufficient post_max_size can lead to truncated data submissions, affecting form functionality and data integrity.'
+				],
+				'max_execution_time' => [
+					'value'   => 60,
+					'success' => 'Max execution time is set high enough to execute complex operations without premature termination, which is crucial for lengthy operations.',
+					'warning' => 'A low max execution time could lead to script timeouts, especially during intensive operations, which might interrupt execution and cause failures during the compiling of a large extension.'
+				],
+				'max_input_vars' => [
+					'value'   => 7000,
+					'success' => 'The max_input_vars setting supports a high number of input variables, facilitating complex forms and detailed component configurations.',
+					'warning' => 'Too few max_input_vars may result in lost data during processing complex forms, which can lead to incomplete configurations and operational issues.'
+				],
+				'max_input_time' => [
+					'value'   => 60,
+					'success' => 'Max input time is adequate for processing inputs efficiently during high-load operations, ensuring no premature timeouts.',
+					'warning' => 'An insufficient max input time could result in incomplete data processing during input-heavy operations, potentially leading to errors and data loss.'
+				],
+				'memory_limit' => [
+					'value'   => '256M',
+					'success' => 'The memory limit is set high to accommodate extensive operations and data processing, which enhances overall performance and stability.',
+					'warning' => 'A low memory limit can lead to frequent crashes and performance issues, particularly when processing large amounts of data or complex calculations.'
+				]
+			];
+
+			// Helper function to convert PHP INI memory values to bytes
+			function convertToBytes($value) {
+				$value = trim($value);
+				$lastChar = strtolower($value[strlen($value) - 1]);
+				$numValue = substr($value, 0, -1);
+
+				switch ($lastChar)
+				{
+					case 'g':
+						return $numValue * 1024 * 1024 * 1024;
+					case 'm':
+						return $numValue * 1024 * 1024;
+					case 'k':
+						return $numValue * 1024;
+					default:
+						return (int) $value;
+				}
+			}
+
+			$showHelp = false;
+
+			// Check each configuration and provide detailed feedback
+			foreach ($requiredConfigs as $configName => $configDetails)
+			{
+				$currentValue = ini_get($configName);
+				if ($currentValue === false)
+				{
+					$app->enqueueMessage("Error: Unable to retrieve current setting for '{$configName}'.", 'error');
+					continue;
+				}
+
+				$isMemoryValue = strpbrk($configDetails['value'], 'KMG') !== false;
+				$requiredValueBytes = $isMemoryValue ? convertToBytes($configDetails['value']) : (int)$configDetails['value'];
+				$currentValueBytes = $isMemoryValue ? convertToBytes($currentValue) : (int)$currentValue;
+				$conditionMet = $currentValueBytes >= $requiredValueBytes;
+
+				$messageType = $conditionMet ? 'message' : 'warning';
+				$messageText = $conditionMet ? 
+					"Success: {$configName} is set to {$currentValue}. " . $configDetails['success'] :
+					"Warning: {$configName} configuration should be at least {$configDetails['value']} but is currently {$currentValue}. " . $configDetails['warning'];
+				$showHelp = ($showHelp || $messageType === 'warning') ? true : false;
+				$app->enqueueMessage($messageText, $messageType);
+			}
+
+			if ($showHelp)
+			{
+				$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced. These settings are crucial for ensuring the successful installation and compilation of extensions. We\'ve identified that certain configurations currently do not meet the recommended standards. To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
+', 'notice');
+			}
 		}
 		// do any install needed
 		if ($type === 'install')
@@ -6305,6 +6500,18 @@ class Com_ComponentbuilderInstallerScript
 
 			// Set the object into the content types table.
 			$joomla_plugin_Inserted = $db->insertObject('#__content_types', $joomla_plugin);
+
+			// Create the joomla_power content type object.
+			$joomla_power = new \stdClass();
+			$joomla_power->type_title = 'Componentbuilder Joomla_power';
+			$joomla_power->type_alias = 'com_componentbuilder.joomla_power';
+			$joomla_power->table = '{"special": {"dbtable": "#__componentbuilder_joomla_power","key": "id","type": "Joomla_power","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_power->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","guid":"guid","description":"description"}}';
+			$joomla_power->router = 'ComponentbuilderHelperRoute::getJoomla_powerRoute';
+			$joomla_power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Set the object into the content types table.
+			$joomla_power_Inserted = $db->insertObject('#__content_types', $joomla_power);
 
 			// Create the power content type object.
 			$power = new \stdClass();
@@ -6890,7 +7097,7 @@ class Com_ComponentbuilderInstallerScript
 			{
 				$rule_length = $db->loadResult();
 				// Check the size of the rules column
-				if ($rule_length <= 99360)
+				if ($rule_length <= 101600)
 				{
 					// Fix the assets table rules column size
 					$fix_rules_size = "ALTER TABLE `#__assets` CHANGE `rules` `rules` MEDIUMTEXT NOT NULL COMMENT 'JSON encoded access control. Enlarged to MEDIUMTEXT by JCB';";
@@ -6981,6 +7188,23 @@ class Com_ComponentbuilderInstallerScript
 
 			// Set the object into the action log config table.
 			$joomla_plugin_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = Factory::getDbo();
+			}
+			// Create the joomla_power action log config object.
+			$joomla_power_action_log_config = new \stdClass();
+			$joomla_power_action_log_config->type_title = 'JOOMLA_POWER';
+			$joomla_power_action_log_config->type_alias = 'com_componentbuilder.joomla_power';
+			$joomla_power_action_log_config->id_holder = 'id';
+			$joomla_power_action_log_config->title_holder = 'system_name';
+			$joomla_power_action_log_config->table_name = '#__componentbuilder_joomla_power';
+			$joomla_power_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Set the object into the action log config table.
+			$joomla_power_Inserted = $db->insertObject('#__action_log_config', $joomla_power_action_log_config);
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -7856,6 +8080,35 @@ class Com_ComponentbuilderInstallerScript
 			else
 			{
 				$joomla_plugin_Inserted = $db->insertObject('#__content_types', $joomla_plugin);
+			}
+
+			// Create the joomla_power content type object.
+			$joomla_power = new \stdClass();
+			$joomla_power->type_title = 'Componentbuilder Joomla_power';
+			$joomla_power->type_alias = 'com_componentbuilder.joomla_power';
+			$joomla_power->table = '{"special": {"dbtable": "#__componentbuilder_joomla_power","key": "id","type": "Joomla_power","prefix": "componentbuilderTable","config": "array()"},"common": {"dbtable": "#__ucm_content","key": "ucm_id","type": "Corecontent","prefix": "JTable","config": "array()"}}';
+			$joomla_power->field_mappings = '{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "null","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "null","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "null","core_metadesc": "null","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","guid":"guid","description":"description"}}';
+			$joomla_power->router = 'ComponentbuilderHelperRoute::getJoomla_powerRoute';
+			$joomla_power->content_history_options = '{"formFile": "administrator/components/com_componentbuilder/models/forms/joomla_power.xml","hideFields": ["asset_id","checked_out","checked_out_time","version"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"}]}';
+
+			// Check if joomla_power type is already in content_type DB.
+			$joomla_power_id = null;
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('type_id')));
+			$query->from($db->quoteName('#__content_types'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_power->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_power->type_id = $db->loadResult();
+				$joomla_power_Updated = $db->updateObject('#__content_types', $joomla_power, 'type_id');
+			}
+			else
+			{
+				$joomla_power_Inserted = $db->insertObject('#__content_types', $joomla_power);
 			}
 
 			// Create the power content type object.
@@ -9627,7 +9880,7 @@ class Com_ComponentbuilderInstallerScript
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.2.1-alpha3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 3.2.1-alpha4 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -9752,6 +10005,40 @@ class Com_ComponentbuilderInstallerScript
 			else
 			{
 				$joomla_plugin_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_plugin_action_log_config);
+			}
+
+			// Set db if not set already.
+			if (!isset($db))
+			{
+				$db = Factory::getDbo();
+			}
+			// Create the joomla_power action log config object.
+			$joomla_power_action_log_config = new \stdClass();
+			$joomla_power_action_log_config->id = null;
+			$joomla_power_action_log_config->type_title = 'JOOMLA_POWER';
+			$joomla_power_action_log_config->type_alias = 'com_componentbuilder.joomla_power';
+			$joomla_power_action_log_config->id_holder = 'id';
+			$joomla_power_action_log_config->title_holder = 'system_name';
+			$joomla_power_action_log_config->table_name = '#__componentbuilder_joomla_power';
+			$joomla_power_action_log_config->text_prefix = 'COM_COMPONENTBUILDER';
+
+			// Check if joomla_power action log config is already in action_log_config DB.
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('id')));
+			$query->from($db->quoteName('#__action_log_config'));
+			$query->where($db->quoteName('type_alias') . ' LIKE '. $db->quote($joomla_power_action_log_config->type_alias));
+			$db->setQuery($query);
+			$db->execute();
+
+			// Set the object into the content types table.
+			if ($db->getNumRows())
+			{
+				$joomla_power_action_log_config->id = $db->loadResult();
+				$joomla_power_action_log_config_Updated = $db->updateObject('#__action_log_config', $joomla_power_action_log_config, 'id');
+			}
+			else
+			{
+				$joomla_power_action_log_config_Inserted = $db->insertObject('#__action_log_config', $joomla_power_action_log_config);
 			}
 
 			// Set db if not set already.
