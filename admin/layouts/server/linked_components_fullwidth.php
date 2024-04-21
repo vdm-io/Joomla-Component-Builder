@@ -20,7 +20,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
 // set the defaults
-$items = $displayData->vymlinked_components;
+$items = $displayData->vydlinked_components;
 $user = Factory::getUser();
 $id = $displayData->item->id;
 // set the edit URL

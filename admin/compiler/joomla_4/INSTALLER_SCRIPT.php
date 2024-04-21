@@ -1095,5 +1095,5 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 				);
 			}
 		}
-	}###MOVEFOLDERSMETHOD###
+	}###INSTALLERMETHODS###
 }

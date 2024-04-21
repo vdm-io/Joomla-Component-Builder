@@ -1,3 +1,8 @@
+# v3.2.1-beta1
+
+- Add fallback option to ensure that all JCB tables and fields exist.
+- Move the powers autoloader to its own file.
+
 # v3.2.1-alpha4
 
 - Add Joomla powers for namespace dynamic management.

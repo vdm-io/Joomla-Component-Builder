@@ -2097,7 +2097,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		// #__componentbuilder_joomla_component (a)
 		'joomla_component' => array(
 			'search' => array('id', 'system_name', 'php_preflight_install', 'php_postflight_install',
-				'php_preflight_update', 'php_postflight_update', 'php_method_uninstall',
+				'php_preflight_update', 'php_postflight_update', 'php_method_uninstall', 'php_method_install',
 				'php_helper_admin', 'php_admin_event', 'php_helper_both', 'php_helper_site',
 				'php_site_event', 'javascript', 'readme', 'sql', 'sql_uninstall'),
 			'views' => 'joomla_components',
@@ -2694,31 +2694,36 @@ class ComponentbuilderModelJoomla_components extends ListModel
 							continue;
 						}
 
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
 						// decode php_site_event
 						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// decode php_admin_event
 						$item->php_admin_event = base64_decode($item->php_admin_event);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
+						if ($basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
+						{
+							// decrypt crowdin_username
+							$item->crowdin_username = $basic->decryptString($item->crowdin_username);
+						}
 						// decode php_preflight_install
 						$item->php_preflight_install = base64_decode($item->php_preflight_install);
 						// decode php_method_uninstall
 						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode buildcompsql
+						$item->buildcompsql = base64_decode($item->buildcompsql);
+						// decode php_helper_admin
+						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
 						if ($basickey && !is_numeric($item->whmcs_key) && $item->whmcs_key === base64_encode(base64_decode($item->whmcs_key, true)))
 						{
 							// decrypt whmcs_key
 							$item->whmcs_key = $basic->decryptString($item->whmcs_key);
 						}
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
 						// decode javascript
 						$item->javascript = base64_decode($item->javascript);
 						// decode css_site
@@ -2727,15 +2732,10 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						$item->php_preflight_update = base64_decode($item->php_preflight_update);
 						// decode php_postflight_update
 						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
-						if ($basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
-						{
-							// decrypt crowdin_username
-							$item->crowdin_username = $basic->decryptString($item->crowdin_username);
-						}
-						// decode buildcompsql
-						$item->buildcompsql = base64_decode($item->buildcompsql);
+						// decode php_method_install
+						$item->php_method_install = base64_decode($item->php_method_install);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
 						if ($basickey && !is_numeric($item->export_key) && $item->export_key === base64_encode(base64_decode($item->export_key, true)))
 						{
 							// decrypt export_key
@@ -2753,6 +2753,8 @@ class ComponentbuilderModelJoomla_components extends ListModel
 							// decrypt crowdin_account_api_key
 							$item->crowdin_account_api_key = $basic->decryptString($item->crowdin_account_api_key);
 						}
+						// decode php_helper_both
+						$item->php_helper_both = base64_decode($item->php_helper_both);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

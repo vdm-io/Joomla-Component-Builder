@@ -198,7 +198,8 @@
 			name="addreadme"
 			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_ADDREADME_LABEL"
 			class="btn-group btn-group-yesno"
-			default="0">
+			default="0"
+			required="true">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_MODULE_YES</option>
@@ -357,6 +358,7 @@
 			class="list_class"
 			multiple="false"
 			default="0"
+			showon="add_sales_server:1"
 			button="true"
 		/>
 		<!-- Custom_get Field. Type: Customgets. (custom) -->
@@ -383,6 +385,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_preflight_update:1"
 		/>
 		<!-- Note_mod_file_options Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_mod_file_options" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_MOD_FILE_OPTIONS_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_MOD_FILE_OPTIONS_DESCRIPTION" heading="h4" class="alert alert-info note_mod_file_options" />
@@ -401,6 +404,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_preflight_uninstall:1"
 		/>
 		<!-- Mod_code Field. Type: Editor. (joomla) -->
 		<field
@@ -434,6 +438,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_postflight_install:1"
 		/>
 		<!-- Add_class_helper Field. Type: List. (joomla) -->
 		<field
@@ -468,6 +473,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_postflight_update:1"
 		/>
 		<!-- Add_class_helper_header Field. Type: Radio. (joomla) -->
 		<field
@@ -498,6 +504,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_method_uninstall:1"
 		/>
 		<!-- Class_helper_header Field. Type: Editor. (joomla) -->
 		<field
@@ -527,7 +534,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_JOOMLA_MODULE_SQL_HINT"
-			required="true"
+			showon="add_sql:1"
 		/>
 		<!-- Class_helper_code Field. Type: Editor. (joomla) -->
 		<field
@@ -556,7 +563,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_JOOMLA_MODULE_SQL_UNINSTALL_HINT"
-			required="true"
+			showon="add_sql_uninstall:1"
 		/>
 		<!-- Fields Field. Type: Subform. (joomla) -->
 		<field
@@ -761,6 +768,7 @@
 			buttons="false"
 			editor="none"
 			filter="raw"
+			showon="addreadme:1"
 		/>
 		<!-- Add_php_script_construct Field. Type: Radio. (joomla) -->
 		<field
@@ -783,13 +791,13 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_URL_LABEL"
 			size="60"
 			maxlength="150"
-			default=""
 			description="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_URL_DESCRIPTION"
 			class="text_area span12"
 			filter="url"
 			validated="url"
 			message="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATE_SERVER_URL_HINT"
+			showon="add_update_server:1"
 		/>
 		<!-- Php_script_construct Field. Type: Editor. (joomla) -->
 		<field
@@ -806,6 +814,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_script_construct:1"
 		/>
 		<!-- Note_update_server_note_ftp Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_update_server_note_ftp" label="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UPDATE_SERVER_NOTE_FTP_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_MODULE_NOTE_UPDATE_SERVER_NOTE_FTP_DESCRIPTION" heading="h4" class="alert alert-success note_update_server_note_ftp" />
@@ -840,6 +849,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_preflight_install:1"
 		/>
 		<!-- Add_sales_server Field. Type: Radio. (joomla) -->
 		<field

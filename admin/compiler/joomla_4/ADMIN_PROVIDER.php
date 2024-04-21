@@ -14,7 +14,12 @@ defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
 
-###ADMIN_POWER_HELPER###
+// The power autoloader for this project admin area.
+$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_###component###/src/Helper/PowerloaderHelper.php';
+if (file_exists($power_autoloader))
+{
+	require_once $power_autoloader;
+}
 
 // (soon) use Joomla\CMS\Association\AssociationExtensionInterface;
 use Joomla\CMS\Categories\CategoryFactoryInterface;

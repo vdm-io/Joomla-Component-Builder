@@ -71,7 +71,7 @@ class ComponentbuilderViewServer extends HtmlView
 		}
 
 		// Get Linked view data
-		$this->vymlinked_components = $this->get('Vymlinked_components');
+		$this->vydlinked_components = $this->get('Vydlinked_components');
 
 		// Set the toolbar
 		$this->addToolBar();

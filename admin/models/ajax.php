@@ -2814,7 +2814,7 @@ class ComponentbuilderModelAjax extends ListModel
 		// #__componentbuilder_joomla_component (a)
 		'joomla_component' => array(
 			'search' => array('id', 'system_name', 'php_preflight_install', 'php_postflight_install',
-				'php_preflight_update', 'php_postflight_update', 'php_method_uninstall',
+				'php_preflight_update', 'php_postflight_update', 'php_method_uninstall', 'php_method_install',
 				'php_helper_admin', 'php_admin_event', 'php_helper_both', 'php_helper_site',
 				'php_site_event', 'javascript', 'readme', 'sql', 'sql_uninstall'),
 			'views' => 'joomla_components',

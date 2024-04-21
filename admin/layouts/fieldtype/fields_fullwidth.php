@@ -19,7 +19,7 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 
 // set the defaults
-$items = $displayData->vycfields;
+$items = $displayData->vxtfields;
 $user = Factory::getUser();
 $id = $displayData->item->id;
 // set the edit URL

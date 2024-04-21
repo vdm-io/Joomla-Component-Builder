@@ -13,6 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Builder;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Abstraction\Registry\Traits\IsString;
 use VDM\Joomla\Interfaces\Registryinterface;
 use VDM\Joomla\Abstraction\Registry;
 
@@ -24,6 +25,13 @@ use VDM\Joomla\Abstraction\Registry;
  */
 class ContentOne extends Registry implements Registryinterface
 {
+	/**
+	 * Is String Values
+	 *
+	 * @since 3.2.0
+	 */
+	use IsString;
+
 	/**
 	 * Constructor.
 	 *
