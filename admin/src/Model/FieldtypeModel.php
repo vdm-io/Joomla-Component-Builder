@@ -289,7 +289,7 @@ class FieldtypeModel extends AdminModel
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getVycfields()
+	public function getVxtfields()
 	{
 		// Get the user object.
 		$user = Factory::getApplication()->getIdentity();
@@ -431,13 +431,13 @@ class FieldtypeModel extends AdminModel
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVycfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxtfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVycfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxtfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVycfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxtfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVycfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxtfields($item->store, 'store');
 				}
 			}
 
@@ -451,7 +451,7 @@ class FieldtypeModel extends AdminModel
 	 *
 	 * @return  string   The translatable string.
 	 */
-	public function selectionTranslationVycfields($value,$name)
+	public function selectionTranslationVxtfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')

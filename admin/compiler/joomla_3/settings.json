@@ -164,6 +164,20 @@
 				"newName": "category.php",
 				"type": "file"
 			},
+			"autoloader.php": {
+				"naam": "autoloader.php",
+				"path": "c0mp0n3nt/admin/helpers",
+				"rename": "new",
+				"newName": "powerloader.php",
+				"type": "file"
+			},
+			"autoloader_site.php": {
+				"naam": "autoloader_site.php",
+				"path": "c0mp0n3nt/site/helpers",
+				"rename": "new",
+				"newName": "powerloader.php",
+				"type": "file"
+			},
 			"script.php": {
 				"naam": "script.php",
 				"path": "c0mp0n3nt/",

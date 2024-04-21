@@ -1206,11 +1206,6 @@ class Infusion extends Interpretation
 				);
 			}
 
-			// all fields stored in database
-			CFactory::_('Compiler.Builder.Content.One')->set('ALL_COMPONENT_FIELDS',
-				CFactory::_('Compiler.Builder.Component.Fields')->varExport(null, 1)
-			);
-
 			// setup the layouts
 			$this->setCustomViewLayouts();
 
@@ -2082,11 +2077,16 @@ class Infusion extends Interpretation
 			// UNINSTALLSCRIPT
 			CFactory::_('Compiler.Builder.Content.One')->add('UNINSTALLSCRIPT', $this->setUninstallScript());
 
+			// INSTALLERMETHODS
+			CFactory::_('Compiler.Builder.Content.One')->add('INSTALLERMETHODS', CFactory::_('Customcode.Dispenser')->get(
+				'php_method', 'install', PHP_EOL
+			));
+
 			// MOVEFOLDERSSCRIPT
 			CFactory::_('Compiler.Builder.Content.One')->set('MOVEFOLDERSSCRIPT', $this->setMoveFolderScript());
 
-			// MOVEFOLDERSMETHOD
-			CFactory::_('Compiler.Builder.Content.One')->set('MOVEFOLDERSMETHOD', $this->setMoveFolderMethod());
+			// INSTALLERMETHODS2
+			CFactory::_('Compiler.Builder.Content.One')->add('INSTALLERMETHODS', $this->setMoveFolderMethod());
 
 			// HELPER_UIKIT
 			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_UIKIT', $this->setUikitHelperMethods());
@@ -2143,6 +2143,11 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Creator.Router')->getMethods()
 				);
 			}
+
+			// all fields stored in database
+			CFactory::_('Compiler.Builder.Content.One')->set('ALL_COMPONENT_FIELDS',
+				CFactory::_('Compiler.Builder.Component.Fields')->varExport(null, 1)
+			);
 
 			// set the autoloader for Powers (first time)
 			CFactory::_('Power.Autoloader')->set();

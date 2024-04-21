@@ -161,6 +161,20 @@
 				"newName": "[[[Component]]]Helper.php",
 				"type": "file"
 			},
+			"ADMIN_AUTOLOADER_CLASS.php": {
+				"naam": "ADMIN_AUTOLOADER_CLASS.php",
+				"path": "c0mp0n3nt/admin/src/Helper",
+				"rename": "new",
+				"newName": "PowerloaderHelper.php",
+				"type": "file"
+			},
+			"SITE_AUTOLOADER_CLASS.php": {
+				"naam": "SITE_AUTOLOADER_CLASS.php",
+				"path": "c0mp0n3nt/site/src/Helper",
+				"rename": "new",
+				"newName": "PowerloaderHelper.php",
+				"type": "file"
+			},
 			"INSTALLER_SCRIPT.php": {
 				"naam": "INSTALLER_SCRIPT.php",
 				"path": "c0mp0n3nt/",

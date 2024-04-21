@@ -26,15 +26,16 @@ interface Tableinterface
 	 *          Example: $this->get('table_name');
 	 * Get all areas/views/tables with all their item/field/column details
 	 *          Example: $this->get('All');
+	 *          Example: $this->get();
 	 *
-	 * @param   string       $table  The table
+	 * @param   string|null  $table  The table
 	 * @param   string|null  $field  The field
 	 * @param   string|null  $key    The value key
 	 *
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function get(string $table, ?string $field = null, ?string $key = null);
+	public function get(?string $table = null, ?string $field = null, ?string $key = null);
 
 	/**
 	 * Get title field from an area/view/table
@@ -80,10 +81,11 @@ interface Tableinterface
 	 *
 	 * @param   string  $table     The area
 	 * @param   bool    $default   Add the default fields
+	 * @param   bool    $details   Add/Leave fields the details
 	 *
 	 * @return  array|null   On success an array of fields
 	 * @since 3.2.0
 	 */
-	public function fields(string $table, bool $default = false): ?array;
+	public function fields(string $table, bool $default = false, bool $details = false): ?array;
 }
 

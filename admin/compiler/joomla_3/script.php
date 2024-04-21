@@ -236,5 +236,5 @@ class Com_###Component###InstallerScript
 			return $nr;
 		}
 		return false;
-	}###MOVEFOLDERSMETHOD###
+	}###INSTALLERMETHODS###
 }

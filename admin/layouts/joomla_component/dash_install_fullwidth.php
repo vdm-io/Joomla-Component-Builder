@@ -35,7 +35,9 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'add_php_postflight_update',
 	'php_postflight_update',
 	'add_php_method_uninstall',
-	'php_method_uninstall'
+	'php_method_uninstall',
+	'add_php_method_install',
+	'php_method_install'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: [];

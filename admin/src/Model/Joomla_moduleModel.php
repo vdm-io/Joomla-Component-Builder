@@ -747,42 +747,6 @@ class Joomla_moduleModel extends AdminModel
 	}
 
 	/**
-	 * Method to validate the form data.
-	 *
-	 * @param   JForm   $form   The form to validate against.
-	 * @param   array   $data   The data to validate.
-	 * @param   string  $group  The name of the field group to validate.
-	 *
-	 * @return  mixed  Array of filtered data if valid, false otherwise.
-	 *
-	 * @see     JFormRule
-	 * @see     JFilterInput
-	 * @since   12.2
-	 */
-	public function validate($form, $data, $group = null)
-	{
-		// check if the not_required field is set
-		if (isset($data['not_required']) && UtilitiesStringHelper::check($data['not_required']))
-		{
-			$requiredFields = (array) explode(',',(string) $data['not_required']);
-			$requiredFields = array_unique($requiredFields);
-			// now change the required field attributes value
-			foreach ($requiredFields as $requiredField)
-			{
-				// make sure there is a string value
-				if (UtilitiesStringHelper::check($requiredField))
-				{
-					// change to false
-					$form->setFieldAttribute($requiredField, 'required', 'false');
-					// also clear the data set
-					$data[$requiredField] = '';
-				}
-			}
-		}
-		return parent::validate($form, $data, $group);
-	}
-
-	/**
 	 * Method to get the unique fields of this table.
 	 *
 	 * @return  mixed  An array of field names, boolean false if none is set.

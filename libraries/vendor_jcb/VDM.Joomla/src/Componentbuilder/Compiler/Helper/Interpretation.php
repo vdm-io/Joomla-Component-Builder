@@ -10346,7 +10346,7 @@ class Interpretation extends Fields
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.params'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1) . "`params` text NULL,";
+					$db_ .= PHP_EOL . Indent::_(1) . "`params` TEXT NULL,";
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.published'))
@@ -10432,6 +10432,23 @@ class Interpretation extends Fields
 				{
 					$db_ .= PHP_EOL . Indent::_(1)
 						. "`access` INT(10) unsigned NOT NULL DEFAULT 0,";
+						// add to component dynamic fields
+						CFactory::_('Compiler.Builder.Component.Fields')->set($view . '.access',
+							[
+								'name' => 'access',
+								'label' => 'Access',
+								'type' => 'accesslevel',
+								'title' => false,
+								'store' => NULL,
+								'tab_name' => NULL,
+								'db' => [
+									'type' => 'INT(10) unsigned',
+									'default' => '0',
+									'key' => true,
+									'null_switch' => 'NOT NULL'
+								]
+							]
+						);
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.ordering'))
@@ -10468,6 +10485,49 @@ class Interpretation extends Fields
 						$db_ .= PHP_EOL . Indent::_(1)
 							. "`metadata` TEXT NOT NULL,";
 					}
+					// add to component dynamic fields
+					CFactory::_('Compiler.Builder.Component.Fields')->set($view . '.metakey',
+						[
+							'name' => 'metakey',
+							'label' => 'Meta Keywords',
+							'type' => 'textarea',
+							'title' => false,
+							'store' => NULL,
+							'tab_name' => 'publishing',
+							'db' => [
+								'type' => 'TEXT',
+								'default' => ''
+							]
+						]
+					);
+					CFactory::_('Compiler.Builder.Component.Fields')->set($view . '.metadesc',
+						[
+							'name' => 'metadesc',
+							'label' => 'Meta Description',
+							'type' => 'textarea',
+							'title' => false,
+							'store' => NULL,
+							'tab_name' => 'publishing',
+							'db' => [
+								'type' => 'TEXT',
+								'default' => ''
+							]
+						]
+					);
+					CFactory::_('Compiler.Builder.Component.Fields')->set($view . '.metadata',
+						[
+							'name' => 'metadata',
+							'label' => 'Meta Data',
+							'type' => NULL,
+							'title' => false,
+							'store' => 'json',
+							'tab_name' => 'publishing',
+							'db' => [
+								'type' => 'TEXT',
+								'default' => ''
+							]
+						]
+					);
 				}
 				// TODO (we may want this to be dynamicly set)
 				$db_ .= PHP_EOL . Indent::_(1) . "PRIMARY KEY  (`id`)";

@@ -889,7 +889,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_ADMIN_VIEW_SQL_HINT"
-			required="true"
+			showon="add_sql:1"
 		/>
 		<!-- Note_category_menu_switch Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_category_menu_switch" label="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CATEGORY_MENU_SWITCH_LABEL" description="COM_COMPONENTBUILDER_ADMIN_VIEW_NOTE_CATEGORY_MENU_SWITCH_DESCRIPTION" heading="h4" class="alert alert-info note_category_menu_switch" />

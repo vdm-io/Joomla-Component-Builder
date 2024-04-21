@@ -9,90 +9,90 @@
  */
 
 // Some Global Values
-jform_vvvvwcjvxl_required = false;
-jform_vvvvwcxvxm_required = false;
-jform_vvvvwcxvxn_required = false;
+jform_vvvvwarvxc_required = false;
+jform_vvvvwbfvxd_required = false;
+jform_vvvvwbfvxe_required = false;
 
 // Initial Script
 document.addEventListener('DOMContentLoaded', function()
 {
-	var how_vvvvwch = jQuery("#jform_how").val();
-	var target_vvvvwch = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwch(how_vvvvwch,target_vvvvwch);
+	var how_vvvvwap = jQuery("#jform_how").val();
+	var target_vvvvwap = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwap(how_vvvvwap,target_vvvvwap);
 
-	var how_vvvvwcj = jQuery("#jform_how").val();
-	var target_vvvvwcj = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcj(how_vvvvwcj,target_vvvvwcj);
+	var how_vvvvwar = jQuery("#jform_how").val();
+	var target_vvvvwar = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwar(how_vvvvwar,target_vvvvwar);
 
-	var how_vvvvwcl = jQuery("#jform_how").val();
-	var target_vvvvwcl = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcl(how_vvvvwcl,target_vvvvwcl);
+	var how_vvvvwat = jQuery("#jform_how").val();
+	var target_vvvvwat = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwat(how_vvvvwat,target_vvvvwat);
 
-	var how_vvvvwcn = jQuery("#jform_how").val();
-	var target_vvvvwcn = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcn(how_vvvvwcn,target_vvvvwcn);
+	var how_vvvvwav = jQuery("#jform_how").val();
+	var target_vvvvwav = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwav(how_vvvvwav,target_vvvvwav);
 
-	var how_vvvvwcp = jQuery("#jform_how").val();
-	var target_vvvvwcp = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcp(how_vvvvwcp,target_vvvvwcp);
+	var how_vvvvwax = jQuery("#jform_how").val();
+	var target_vvvvwax = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwax(how_vvvvwax,target_vvvvwax);
 
-	var target_vvvvwcq = jQuery("#jform_target input[type='radio']:checked").val();
-	var how_vvvvwcq = jQuery("#jform_how").val();
-	vvvvwcq(target_vvvvwcq,how_vvvvwcq);
+	var target_vvvvway = jQuery("#jform_target input[type='radio']:checked").val();
+	var how_vvvvway = jQuery("#jform_how").val();
+	vvvvway(target_vvvvway,how_vvvvway);
 
-	var how_vvvvwcr = jQuery("#jform_how").val();
-	var target_vvvvwcr = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcr(how_vvvvwcr,target_vvvvwcr);
+	var how_vvvvwaz = jQuery("#jform_how").val();
+	var target_vvvvwaz = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwaz(how_vvvvwaz,target_vvvvwaz);
 
-	var target_vvvvwcs = jQuery("#jform_target input[type='radio']:checked").val();
-	var how_vvvvwcs = jQuery("#jform_how").val();
-	vvvvwcs(target_vvvvwcs,how_vvvvwcs);
+	var target_vvvvwba = jQuery("#jform_target input[type='radio']:checked").val();
+	var how_vvvvwba = jQuery("#jform_how").val();
+	vvvvwba(target_vvvvwba,how_vvvvwba);
 
-	var how_vvvvwct = jQuery("#jform_how").val();
-	var target_vvvvwct = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwct(how_vvvvwct,target_vvvvwct);
+	var how_vvvvwbb = jQuery("#jform_how").val();
+	var target_vvvvwbb = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwbb(how_vvvvwbb,target_vvvvwbb);
 
-	var target_vvvvwcu = jQuery("#jform_target input[type='radio']:checked").val();
-	var how_vvvvwcu = jQuery("#jform_how").val();
-	vvvvwcu(target_vvvvwcu,how_vvvvwcu);
+	var target_vvvvwbc = jQuery("#jform_target input[type='radio']:checked").val();
+	var how_vvvvwbc = jQuery("#jform_how").val();
+	vvvvwbc(target_vvvvwbc,how_vvvvwbc);
 
-	var target_vvvvwcv = jQuery("#jform_target input[type='radio']:checked").val();
-	var type_vvvvwcv = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwcv(target_vvvvwcv,type_vvvvwcv);
+	var target_vvvvwbd = jQuery("#jform_target input[type='radio']:checked").val();
+	var type_vvvvwbd = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwbd(target_vvvvwbd,type_vvvvwbd);
 
-	var target_vvvvwcx = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcx(target_vvvvwcx);
+	var target_vvvvwbf = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwbf(target_vvvvwbf);
 
-	var target_vvvvwcy = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwcy(target_vvvvwcy);
+	var target_vvvvwbg = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwbg(target_vvvvwbg);
 });
 
-// the vvvvwch function
-function vvvvwch(how_vvvvwch,target_vvvvwch)
+// the vvvvwap function
+function vvvvwap(how_vvvvwap,target_vvvvwap)
 {
-	if (isSet(how_vvvvwch) && how_vvvvwch.constructor !== Array)
+	if (isSet(how_vvvvwap) && how_vvvvwap.constructor !== Array)
 	{
-		var temp_vvvvwch = how_vvvvwch;
-		var how_vvvvwch = [];
-		how_vvvvwch.push(temp_vvvvwch);
+		var temp_vvvvwap = how_vvvvwap;
+		var how_vvvvwap = [];
+		how_vvvvwap.push(temp_vvvvwap);
 	}
-	else if (!isSet(how_vvvvwch))
+	else if (!isSet(how_vvvvwap))
 	{
-		var how_vvvvwch = [];
+		var how_vvvvwap = [];
 	}
-	var how = how_vvvvwch.some(how_vvvvwch_SomeFunc);
+	var how = how_vvvvwap.some(how_vvvvwap_SomeFunc);
 
-	if (isSet(target_vvvvwch) && target_vvvvwch.constructor !== Array)
+	if (isSet(target_vvvvwap) && target_vvvvwap.constructor !== Array)
 	{
-		var temp_vvvvwch = target_vvvvwch;
-		var target_vvvvwch = [];
-		target_vvvvwch.push(temp_vvvvwch);
+		var temp_vvvvwap = target_vvvvwap;
+		var target_vvvvwap = [];
+		target_vvvvwap.push(temp_vvvvwap);
 	}
-	else if (!isSet(target_vvvvwch))
+	else if (!isSet(target_vvvvwap))
 	{
-		var target_vvvvwch = [];
+		var target_vvvvwap = [];
 	}
-	var target = target_vvvvwch.some(target_vvvvwch_SomeFunc);
+	var target = target_vvvvwap.some(target_vvvvwap_SomeFunc);
 
 
 	// set this function logic
@@ -106,54 +106,54 @@ function vvvvwch(how_vvvvwch,target_vvvvwch)
 	}
 }
 
-// the vvvvwch Some function
-function how_vvvvwch_SomeFunc(how_vvvvwch)
+// the vvvvwap Some function
+function how_vvvvwap_SomeFunc(how_vvvvwap)
 {
 	// set the function logic
-	if (how_vvvvwch == 2)
+	if (how_vvvvwap == 2)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwch Some function
-function target_vvvvwch_SomeFunc(target_vvvvwch)
+// the vvvvwap Some function
+function target_vvvvwap_SomeFunc(target_vvvvwap)
 {
 	// set the function logic
-	if (target_vvvvwch == 1)
+	if (target_vvvvwap == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcj function
-function vvvvwcj(how_vvvvwcj,target_vvvvwcj)
+// the vvvvwar function
+function vvvvwar(how_vvvvwar,target_vvvvwar)
 {
-	if (isSet(how_vvvvwcj) && how_vvvvwcj.constructor !== Array)
+	if (isSet(how_vvvvwar) && how_vvvvwar.constructor !== Array)
 	{
-		var temp_vvvvwcj = how_vvvvwcj;
-		var how_vvvvwcj = [];
-		how_vvvvwcj.push(temp_vvvvwcj);
+		var temp_vvvvwar = how_vvvvwar;
+		var how_vvvvwar = [];
+		how_vvvvwar.push(temp_vvvvwar);
 	}
-	else if (!isSet(how_vvvvwcj))
+	else if (!isSet(how_vvvvwar))
 	{
-		var how_vvvvwcj = [];
+		var how_vvvvwar = [];
 	}
-	var how = how_vvvvwcj.some(how_vvvvwcj_SomeFunc);
+	var how = how_vvvvwar.some(how_vvvvwar_SomeFunc);
 
-	if (isSet(target_vvvvwcj) && target_vvvvwcj.constructor !== Array)
+	if (isSet(target_vvvvwar) && target_vvvvwar.constructor !== Array)
 	{
-		var temp_vvvvwcj = target_vvvvwcj;
-		var target_vvvvwcj = [];
-		target_vvvvwcj.push(temp_vvvvwcj);
+		var temp_vvvvwar = target_vvvvwar;
+		var target_vvvvwar = [];
+		target_vvvvwar.push(temp_vvvvwar);
 	}
-	else if (!isSet(target_vvvvwcj))
+	else if (!isSet(target_vvvvwar))
 	{
-		var target_vvvvwcj = [];
+		var target_vvvvwar = [];
 	}
-	var target = target_vvvvwcj.some(target_vvvvwcj_SomeFunc);
+	var target = target_vvvvwar.some(target_vvvvwar_SomeFunc);
 
 
 	// set this function logic
@@ -161,78 +161,78 @@ function vvvvwcj(how_vvvvwcj,target_vvvvwcj)
 	{
 		jQuery('#jform_php_setdocument').closest('.control-group').show();
 		// add required attribute to php_setdocument field
-		if (jform_vvvvwcjvxl_required)
+		if (jform_vvvvwarvxc_required)
 		{
 			updateFieldRequired('php_setdocument',0);
 			jQuery('#jform_php_setdocument').prop('required','required');
 			jQuery('#jform_php_setdocument').attr('aria-required',true);
 			jQuery('#jform_php_setdocument').addClass('required');
-			jform_vvvvwcjvxl_required = false;
+			jform_vvvvwarvxc_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_php_setdocument').closest('.control-group').hide();
 		// remove required attribute from php_setdocument field
-		if (!jform_vvvvwcjvxl_required)
+		if (!jform_vvvvwarvxc_required)
 		{
 			updateFieldRequired('php_setdocument',1);
 			jQuery('#jform_php_setdocument').removeAttr('required');
 			jQuery('#jform_php_setdocument').removeAttr('aria-required');
 			jQuery('#jform_php_setdocument').removeClass('required');
-			jform_vvvvwcjvxl_required = true;
+			jform_vvvvwarvxc_required = true;
 		}
 	}
 }
 
-// the vvvvwcj Some function
-function how_vvvvwcj_SomeFunc(how_vvvvwcj)
+// the vvvvwar Some function
+function how_vvvvwar_SomeFunc(how_vvvvwar)
 {
 	// set the function logic
-	if (how_vvvvwcj == 3)
+	if (how_vvvvwar == 3)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcj Some function
-function target_vvvvwcj_SomeFunc(target_vvvvwcj)
+// the vvvvwar Some function
+function target_vvvvwar_SomeFunc(target_vvvvwar)
 {
 	// set the function logic
-	if (target_vvvvwcj == 1)
+	if (target_vvvvwar == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcl function
-function vvvvwcl(how_vvvvwcl,target_vvvvwcl)
+// the vvvvwat function
+function vvvvwat(how_vvvvwat,target_vvvvwat)
 {
-	if (isSet(how_vvvvwcl) && how_vvvvwcl.constructor !== Array)
+	if (isSet(how_vvvvwat) && how_vvvvwat.constructor !== Array)
 	{
-		var temp_vvvvwcl = how_vvvvwcl;
-		var how_vvvvwcl = [];
-		how_vvvvwcl.push(temp_vvvvwcl);
+		var temp_vvvvwat = how_vvvvwat;
+		var how_vvvvwat = [];
+		how_vvvvwat.push(temp_vvvvwat);
 	}
-	else if (!isSet(how_vvvvwcl))
+	else if (!isSet(how_vvvvwat))
 	{
-		var how_vvvvwcl = [];
+		var how_vvvvwat = [];
 	}
-	var how = how_vvvvwcl.some(how_vvvvwcl_SomeFunc);
+	var how = how_vvvvwat.some(how_vvvvwat_SomeFunc);
 
-	if (isSet(target_vvvvwcl) && target_vvvvwcl.constructor !== Array)
+	if (isSet(target_vvvvwat) && target_vvvvwat.constructor !== Array)
 	{
-		var temp_vvvvwcl = target_vvvvwcl;
-		var target_vvvvwcl = [];
-		target_vvvvwcl.push(temp_vvvvwcl);
+		var temp_vvvvwat = target_vvvvwat;
+		var target_vvvvwat = [];
+		target_vvvvwat.push(temp_vvvvwat);
 	}
-	else if (!isSet(target_vvvvwcl))
+	else if (!isSet(target_vvvvwat))
 	{
-		var target_vvvvwcl = [];
+		var target_vvvvwat = [];
 	}
-	var target = target_vvvvwcl.some(target_vvvvwcl_SomeFunc);
+	var target = target_vvvvwat.some(target_vvvvwat_SomeFunc);
 
 
 	// set this function logic
@@ -246,54 +246,54 @@ function vvvvwcl(how_vvvvwcl,target_vvvvwcl)
 	}
 }
 
-// the vvvvwcl Some function
-function how_vvvvwcl_SomeFunc(how_vvvvwcl)
+// the vvvvwat Some function
+function how_vvvvwat_SomeFunc(how_vvvvwat)
 {
 	// set the function logic
-	if (how_vvvvwcl == 2 || how_vvvvwcl == 3)
+	if (how_vvvvwat == 2 || how_vvvvwat == 3)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcl Some function
-function target_vvvvwcl_SomeFunc(target_vvvvwcl)
+// the vvvvwat Some function
+function target_vvvvwat_SomeFunc(target_vvvvwat)
 {
 	// set the function logic
-	if (target_vvvvwcl == 1)
+	if (target_vvvvwat == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcn function
-function vvvvwcn(how_vvvvwcn,target_vvvvwcn)
+// the vvvvwav function
+function vvvvwav(how_vvvvwav,target_vvvvwav)
 {
-	if (isSet(how_vvvvwcn) && how_vvvvwcn.constructor !== Array)
+	if (isSet(how_vvvvwav) && how_vvvvwav.constructor !== Array)
 	{
-		var temp_vvvvwcn = how_vvvvwcn;
-		var how_vvvvwcn = [];
-		how_vvvvwcn.push(temp_vvvvwcn);
+		var temp_vvvvwav = how_vvvvwav;
+		var how_vvvvwav = [];
+		how_vvvvwav.push(temp_vvvvwav);
 	}
-	else if (!isSet(how_vvvvwcn))
+	else if (!isSet(how_vvvvwav))
 	{
-		var how_vvvvwcn = [];
+		var how_vvvvwav = [];
 	}
-	var how = how_vvvvwcn.some(how_vvvvwcn_SomeFunc);
+	var how = how_vvvvwav.some(how_vvvvwav_SomeFunc);
 
-	if (isSet(target_vvvvwcn) && target_vvvvwcn.constructor !== Array)
+	if (isSet(target_vvvvwav) && target_vvvvwav.constructor !== Array)
 	{
-		var temp_vvvvwcn = target_vvvvwcn;
-		var target_vvvvwcn = [];
-		target_vvvvwcn.push(temp_vvvvwcn);
+		var temp_vvvvwav = target_vvvvwav;
+		var target_vvvvwav = [];
+		target_vvvvwav.push(temp_vvvvwav);
 	}
-	else if (!isSet(target_vvvvwcn))
+	else if (!isSet(target_vvvvwav))
 	{
-		var target_vvvvwcn = [];
+		var target_vvvvwav = [];
 	}
-	var target = target_vvvvwcn.some(target_vvvvwcn_SomeFunc);
+	var target = target_vvvvwav.some(target_vvvvwav_SomeFunc);
 
 
 	// set this function logic
@@ -307,54 +307,54 @@ function vvvvwcn(how_vvvvwcn,target_vvvvwcn)
 	}
 }
 
-// the vvvvwcn Some function
-function how_vvvvwcn_SomeFunc(how_vvvvwcn)
+// the vvvvwav Some function
+function how_vvvvwav_SomeFunc(how_vvvvwav)
 {
 	// set the function logic
-	if (how_vvvvwcn == 1 || how_vvvvwcn == 2 || how_vvvvwcn == 3)
+	if (how_vvvvwav == 1 || how_vvvvwav == 2 || how_vvvvwav == 3)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcn Some function
-function target_vvvvwcn_SomeFunc(target_vvvvwcn)
+// the vvvvwav Some function
+function target_vvvvwav_SomeFunc(target_vvvvwav)
 {
 	// set the function logic
-	if (target_vvvvwcn == 1)
+	if (target_vvvvwav == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcp function
-function vvvvwcp(how_vvvvwcp,target_vvvvwcp)
+// the vvvvwax function
+function vvvvwax(how_vvvvwax,target_vvvvwax)
 {
-	if (isSet(how_vvvvwcp) && how_vvvvwcp.constructor !== Array)
+	if (isSet(how_vvvvwax) && how_vvvvwax.constructor !== Array)
 	{
-		var temp_vvvvwcp = how_vvvvwcp;
-		var how_vvvvwcp = [];
-		how_vvvvwcp.push(temp_vvvvwcp);
+		var temp_vvvvwax = how_vvvvwax;
+		var how_vvvvwax = [];
+		how_vvvvwax.push(temp_vvvvwax);
 	}
-	else if (!isSet(how_vvvvwcp))
+	else if (!isSet(how_vvvvwax))
 	{
-		var how_vvvvwcp = [];
+		var how_vvvvwax = [];
 	}
-	var how = how_vvvvwcp.some(how_vvvvwcp_SomeFunc);
+	var how = how_vvvvwax.some(how_vvvvwax_SomeFunc);
 
-	if (isSet(target_vvvvwcp) && target_vvvvwcp.constructor !== Array)
+	if (isSet(target_vvvvwax) && target_vvvvwax.constructor !== Array)
 	{
-		var temp_vvvvwcp = target_vvvvwcp;
-		var target_vvvvwcp = [];
-		target_vvvvwcp.push(temp_vvvvwcp);
+		var temp_vvvvwax = target_vvvvwax;
+		var target_vvvvwax = [];
+		target_vvvvwax.push(temp_vvvvwax);
 	}
-	else if (!isSet(target_vvvvwcp))
+	else if (!isSet(target_vvvvwax))
 	{
-		var target_vvvvwcp = [];
+		var target_vvvvwax = [];
 	}
-	var target = target_vvvvwcp.some(target_vvvvwcp_SomeFunc);
+	var target = target_vvvvwax.some(target_vvvvwax_SomeFunc);
 
 
 	// set this function logic
@@ -372,54 +372,54 @@ function vvvvwcp(how_vvvvwcp,target_vvvvwcp)
 	}
 }
 
-// the vvvvwcp Some function
-function how_vvvvwcp_SomeFunc(how_vvvvwcp)
+// the vvvvwax Some function
+function how_vvvvwax_SomeFunc(how_vvvvwax)
 {
 	// set the function logic
-	if (how_vvvvwcp == 0)
+	if (how_vvvvwax == 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcp Some function
-function target_vvvvwcp_SomeFunc(target_vvvvwcp)
+// the vvvvwax Some function
+function target_vvvvwax_SomeFunc(target_vvvvwax)
 {
 	// set the function logic
-	if (target_vvvvwcp == 1)
+	if (target_vvvvwax == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcq function
-function vvvvwcq(target_vvvvwcq,how_vvvvwcq)
+// the vvvvway function
+function vvvvway(target_vvvvway,how_vvvvway)
 {
-	if (isSet(target_vvvvwcq) && target_vvvvwcq.constructor !== Array)
+	if (isSet(target_vvvvway) && target_vvvvway.constructor !== Array)
 	{
-		var temp_vvvvwcq = target_vvvvwcq;
-		var target_vvvvwcq = [];
-		target_vvvvwcq.push(temp_vvvvwcq);
+		var temp_vvvvway = target_vvvvway;
+		var target_vvvvway = [];
+		target_vvvvway.push(temp_vvvvway);
 	}
-	else if (!isSet(target_vvvvwcq))
+	else if (!isSet(target_vvvvway))
 	{
-		var target_vvvvwcq = [];
+		var target_vvvvway = [];
 	}
-	var target = target_vvvvwcq.some(target_vvvvwcq_SomeFunc);
+	var target = target_vvvvway.some(target_vvvvway_SomeFunc);
 
-	if (isSet(how_vvvvwcq) && how_vvvvwcq.constructor !== Array)
+	if (isSet(how_vvvvway) && how_vvvvway.constructor !== Array)
 	{
-		var temp_vvvvwcq = how_vvvvwcq;
-		var how_vvvvwcq = [];
-		how_vvvvwcq.push(temp_vvvvwcq);
+		var temp_vvvvway = how_vvvvway;
+		var how_vvvvway = [];
+		how_vvvvway.push(temp_vvvvway);
 	}
-	else if (!isSet(how_vvvvwcq))
+	else if (!isSet(how_vvvvway))
 	{
-		var how_vvvvwcq = [];
+		var how_vvvvway = [];
 	}
-	var how = how_vvvvwcq.some(how_vvvvwcq_SomeFunc);
+	var how = how_vvvvway.some(how_vvvvway_SomeFunc);
 
 
 	// set this function logic
@@ -437,54 +437,54 @@ function vvvvwcq(target_vvvvwcq,how_vvvvwcq)
 	}
 }
 
-// the vvvvwcq Some function
-function target_vvvvwcq_SomeFunc(target_vvvvwcq)
+// the vvvvway Some function
+function target_vvvvway_SomeFunc(target_vvvvway)
 {
 	// set the function logic
-	if (target_vvvvwcq == 1)
+	if (target_vvvvway == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcq Some function
-function how_vvvvwcq_SomeFunc(how_vvvvwcq)
+// the vvvvway Some function
+function how_vvvvway_SomeFunc(how_vvvvway)
 {
 	// set the function logic
-	if (how_vvvvwcq == 0)
+	if (how_vvvvway == 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcr function
-function vvvvwcr(how_vvvvwcr,target_vvvvwcr)
+// the vvvvwaz function
+function vvvvwaz(how_vvvvwaz,target_vvvvwaz)
 {
-	if (isSet(how_vvvvwcr) && how_vvvvwcr.constructor !== Array)
+	if (isSet(how_vvvvwaz) && how_vvvvwaz.constructor !== Array)
 	{
-		var temp_vvvvwcr = how_vvvvwcr;
-		var how_vvvvwcr = [];
-		how_vvvvwcr.push(temp_vvvvwcr);
+		var temp_vvvvwaz = how_vvvvwaz;
+		var how_vvvvwaz = [];
+		how_vvvvwaz.push(temp_vvvvwaz);
 	}
-	else if (!isSet(how_vvvvwcr))
+	else if (!isSet(how_vvvvwaz))
 	{
-		var how_vvvvwcr = [];
+		var how_vvvvwaz = [];
 	}
-	var how = how_vvvvwcr.some(how_vvvvwcr_SomeFunc);
+	var how = how_vvvvwaz.some(how_vvvvwaz_SomeFunc);
 
-	if (isSet(target_vvvvwcr) && target_vvvvwcr.constructor !== Array)
+	if (isSet(target_vvvvwaz) && target_vvvvwaz.constructor !== Array)
 	{
-		var temp_vvvvwcr = target_vvvvwcr;
-		var target_vvvvwcr = [];
-		target_vvvvwcr.push(temp_vvvvwcr);
+		var temp_vvvvwaz = target_vvvvwaz;
+		var target_vvvvwaz = [];
+		target_vvvvwaz.push(temp_vvvvwaz);
 	}
-	else if (!isSet(target_vvvvwcr))
+	else if (!isSet(target_vvvvwaz))
 	{
-		var target_vvvvwcr = [];
+		var target_vvvvwaz = [];
 	}
-	var target = target_vvvvwcr.some(target_vvvvwcr_SomeFunc);
+	var target = target_vvvvwaz.some(target_vvvvwaz_SomeFunc);
 
 
 	// set this function logic
@@ -500,54 +500,54 @@ function vvvvwcr(how_vvvvwcr,target_vvvvwcr)
 	}
 }
 
-// the vvvvwcr Some function
-function how_vvvvwcr_SomeFunc(how_vvvvwcr)
+// the vvvvwaz Some function
+function how_vvvvwaz_SomeFunc(how_vvvvwaz)
 {
 	// set the function logic
-	if (how_vvvvwcr == 1)
+	if (how_vvvvwaz == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcr Some function
-function target_vvvvwcr_SomeFunc(target_vvvvwcr)
+// the vvvvwaz Some function
+function target_vvvvwaz_SomeFunc(target_vvvvwaz)
 {
 	// set the function logic
-	if (target_vvvvwcr == 1)
+	if (target_vvvvwaz == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcs function
-function vvvvwcs(target_vvvvwcs,how_vvvvwcs)
+// the vvvvwba function
+function vvvvwba(target_vvvvwba,how_vvvvwba)
 {
-	if (isSet(target_vvvvwcs) && target_vvvvwcs.constructor !== Array)
+	if (isSet(target_vvvvwba) && target_vvvvwba.constructor !== Array)
 	{
-		var temp_vvvvwcs = target_vvvvwcs;
-		var target_vvvvwcs = [];
-		target_vvvvwcs.push(temp_vvvvwcs);
+		var temp_vvvvwba = target_vvvvwba;
+		var target_vvvvwba = [];
+		target_vvvvwba.push(temp_vvvvwba);
 	}
-	else if (!isSet(target_vvvvwcs))
+	else if (!isSet(target_vvvvwba))
 	{
-		var target_vvvvwcs = [];
+		var target_vvvvwba = [];
 	}
-	var target = target_vvvvwcs.some(target_vvvvwcs_SomeFunc);
+	var target = target_vvvvwba.some(target_vvvvwba_SomeFunc);
 
-	if (isSet(how_vvvvwcs) && how_vvvvwcs.constructor !== Array)
+	if (isSet(how_vvvvwba) && how_vvvvwba.constructor !== Array)
 	{
-		var temp_vvvvwcs = how_vvvvwcs;
-		var how_vvvvwcs = [];
-		how_vvvvwcs.push(temp_vvvvwcs);
+		var temp_vvvvwba = how_vvvvwba;
+		var how_vvvvwba = [];
+		how_vvvvwba.push(temp_vvvvwba);
 	}
-	else if (!isSet(how_vvvvwcs))
+	else if (!isSet(how_vvvvwba))
 	{
-		var how_vvvvwcs = [];
+		var how_vvvvwba = [];
 	}
-	var how = how_vvvvwcs.some(how_vvvvwcs_SomeFunc);
+	var how = how_vvvvwba.some(how_vvvvwba_SomeFunc);
 
 
 	// set this function logic
@@ -563,54 +563,54 @@ function vvvvwcs(target_vvvvwcs,how_vvvvwcs)
 	}
 }
 
-// the vvvvwcs Some function
-function target_vvvvwcs_SomeFunc(target_vvvvwcs)
+// the vvvvwba Some function
+function target_vvvvwba_SomeFunc(target_vvvvwba)
 {
 	// set the function logic
-	if (target_vvvvwcs == 1)
+	if (target_vvvvwba == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcs Some function
-function how_vvvvwcs_SomeFunc(how_vvvvwcs)
+// the vvvvwba Some function
+function how_vvvvwba_SomeFunc(how_vvvvwba)
 {
 	// set the function logic
-	if (how_vvvvwcs == 1)
+	if (how_vvvvwba == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwct function
-function vvvvwct(how_vvvvwct,target_vvvvwct)
+// the vvvvwbb function
+function vvvvwbb(how_vvvvwbb,target_vvvvwbb)
 {
-	if (isSet(how_vvvvwct) && how_vvvvwct.constructor !== Array)
+	if (isSet(how_vvvvwbb) && how_vvvvwbb.constructor !== Array)
 	{
-		var temp_vvvvwct = how_vvvvwct;
-		var how_vvvvwct = [];
-		how_vvvvwct.push(temp_vvvvwct);
+		var temp_vvvvwbb = how_vvvvwbb;
+		var how_vvvvwbb = [];
+		how_vvvvwbb.push(temp_vvvvwbb);
 	}
-	else if (!isSet(how_vvvvwct))
+	else if (!isSet(how_vvvvwbb))
 	{
-		var how_vvvvwct = [];
+		var how_vvvvwbb = [];
 	}
-	var how = how_vvvvwct.some(how_vvvvwct_SomeFunc);
+	var how = how_vvvvwbb.some(how_vvvvwbb_SomeFunc);
 
-	if (isSet(target_vvvvwct) && target_vvvvwct.constructor !== Array)
+	if (isSet(target_vvvvwbb) && target_vvvvwbb.constructor !== Array)
 	{
-		var temp_vvvvwct = target_vvvvwct;
-		var target_vvvvwct = [];
-		target_vvvvwct.push(temp_vvvvwct);
+		var temp_vvvvwbb = target_vvvvwbb;
+		var target_vvvvwbb = [];
+		target_vvvvwbb.push(temp_vvvvwbb);
 	}
-	else if (!isSet(target_vvvvwct))
+	else if (!isSet(target_vvvvwbb))
 	{
-		var target_vvvvwct = [];
+		var target_vvvvwbb = [];
 	}
-	var target = target_vvvvwct.some(target_vvvvwct_SomeFunc);
+	var target = target_vvvvwbb.some(target_vvvvwbb_SomeFunc);
 
 
 	// set this function logic
@@ -628,54 +628,54 @@ function vvvvwct(how_vvvvwct,target_vvvvwct)
 	}
 }
 
-// the vvvvwct Some function
-function how_vvvvwct_SomeFunc(how_vvvvwct)
+// the vvvvwbb Some function
+function how_vvvvwbb_SomeFunc(how_vvvvwbb)
 {
 	// set the function logic
-	if (how_vvvvwct == 4)
+	if (how_vvvvwbb == 4)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwct Some function
-function target_vvvvwct_SomeFunc(target_vvvvwct)
+// the vvvvwbb Some function
+function target_vvvvwbb_SomeFunc(target_vvvvwbb)
 {
 	// set the function logic
-	if (target_vvvvwct == 1)
+	if (target_vvvvwbb == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcu function
-function vvvvwcu(target_vvvvwcu,how_vvvvwcu)
+// the vvvvwbc function
+function vvvvwbc(target_vvvvwbc,how_vvvvwbc)
 {
-	if (isSet(target_vvvvwcu) && target_vvvvwcu.constructor !== Array)
+	if (isSet(target_vvvvwbc) && target_vvvvwbc.constructor !== Array)
 	{
-		var temp_vvvvwcu = target_vvvvwcu;
-		var target_vvvvwcu = [];
-		target_vvvvwcu.push(temp_vvvvwcu);
+		var temp_vvvvwbc = target_vvvvwbc;
+		var target_vvvvwbc = [];
+		target_vvvvwbc.push(temp_vvvvwbc);
 	}
-	else if (!isSet(target_vvvvwcu))
+	else if (!isSet(target_vvvvwbc))
 	{
-		var target_vvvvwcu = [];
+		var target_vvvvwbc = [];
 	}
-	var target = target_vvvvwcu.some(target_vvvvwcu_SomeFunc);
+	var target = target_vvvvwbc.some(target_vvvvwbc_SomeFunc);
 
-	if (isSet(how_vvvvwcu) && how_vvvvwcu.constructor !== Array)
+	if (isSet(how_vvvvwbc) && how_vvvvwbc.constructor !== Array)
 	{
-		var temp_vvvvwcu = how_vvvvwcu;
-		var how_vvvvwcu = [];
-		how_vvvvwcu.push(temp_vvvvwcu);
+		var temp_vvvvwbc = how_vvvvwbc;
+		var how_vvvvwbc = [];
+		how_vvvvwbc.push(temp_vvvvwbc);
 	}
-	else if (!isSet(how_vvvvwcu))
+	else if (!isSet(how_vvvvwbc))
 	{
-		var how_vvvvwcu = [];
+		var how_vvvvwbc = [];
 	}
-	var how = how_vvvvwcu.some(how_vvvvwcu_SomeFunc);
+	var how = how_vvvvwbc.some(how_vvvvwbc_SomeFunc);
 
 
 	// set this function logic
@@ -693,33 +693,33 @@ function vvvvwcu(target_vvvvwcu,how_vvvvwcu)
 	}
 }
 
-// the vvvvwcu Some function
-function target_vvvvwcu_SomeFunc(target_vvvvwcu)
+// the vvvvwbc Some function
+function target_vvvvwbc_SomeFunc(target_vvvvwbc)
 {
 	// set the function logic
-	if (target_vvvvwcu == 1)
+	if (target_vvvvwbc == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcu Some function
-function how_vvvvwcu_SomeFunc(how_vvvvwcu)
+// the vvvvwbc Some function
+function how_vvvvwbc_SomeFunc(how_vvvvwbc)
 {
 	// set the function logic
-	if (how_vvvvwcu == 4)
+	if (how_vvvvwbc == 4)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwcv function
-function vvvvwcv(target_vvvvwcv,type_vvvvwcv)
+// the vvvvwbd function
+function vvvvwbd(target_vvvvwbd,type_vvvvwbd)
 {
 	// set the function logic
-	if (target_vvvvwcv == 1 && type_vvvvwcv == 2)
+	if (target_vvvvwbd == 1 && type_vvvvwbd == 2)
 	{
 		jQuery('#jform_libraries').closest('.control-group').show();
 	}
@@ -729,63 +729,63 @@ function vvvvwcv(target_vvvvwcv,type_vvvvwcv)
 	}
 }
 
-// the vvvvwcx function
-function vvvvwcx(target_vvvvwcx)
+// the vvvvwbf function
+function vvvvwbf(target_vvvvwbf)
 {
 	// set the function logic
-	if (target_vvvvwcx == 1)
+	if (target_vvvvwbf == 1)
 	{
 		jQuery('#jform_how').closest('.control-group').show();
 		// add required attribute to how field
-		if (jform_vvvvwcxvxm_required)
+		if (jform_vvvvwbfvxd_required)
 		{
 			updateFieldRequired('how',0);
 			jQuery('#jform_how').prop('required','required');
 			jQuery('#jform_how').attr('aria-required',true);
 			jQuery('#jform_how').addClass('required');
-			jform_vvvvwcxvxm_required = false;
+			jform_vvvvwbfvxd_required = false;
 		}
 		jQuery('#jform_type').closest('.control-group').show();
 		// add required attribute to type field
-		if (jform_vvvvwcxvxn_required)
+		if (jform_vvvvwbfvxe_required)
 		{
 			updateFieldRequired('type',0);
 			jQuery('#jform_type').prop('required','required');
 			jQuery('#jform_type').attr('aria-required',true);
 			jQuery('#jform_type').addClass('required');
-			jform_vvvvwcxvxn_required = false;
+			jform_vvvvwbfvxe_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_how').closest('.control-group').hide();
 		// remove required attribute from how field
-		if (!jform_vvvvwcxvxm_required)
+		if (!jform_vvvvwbfvxd_required)
 		{
 			updateFieldRequired('how',1);
 			jQuery('#jform_how').removeAttr('required');
 			jQuery('#jform_how').removeAttr('aria-required');
 			jQuery('#jform_how').removeClass('required');
-			jform_vvvvwcxvxm_required = true;
+			jform_vvvvwbfvxd_required = true;
 		}
 		jQuery('#jform_type').closest('.control-group').hide();
 		// remove required attribute from type field
-		if (!jform_vvvvwcxvxn_required)
+		if (!jform_vvvvwbfvxe_required)
 		{
 			updateFieldRequired('type',1);
 			jQuery('#jform_type').removeAttr('required');
 			jQuery('#jform_type').removeAttr('aria-required');
 			jQuery('#jform_type').removeClass('required');
-			jform_vvvvwcxvxn_required = true;
+			jform_vvvvwbfvxe_required = true;
 		}
 	}
 }
 
-// the vvvvwcy function
-function vvvvwcy(target_vvvvwcy)
+// the vvvvwbg function
+function vvvvwbg(target_vvvvwbg)
 {
 	// set the function logic
-	if (target_vvvvwcy == 2)
+	if (target_vvvvwbg == 2)
 	{
 		jQuery('.note_yes_behaviour_library').closest('.control-group').show();
 	}

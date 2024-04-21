@@ -21,7 +21,7 @@ use VDM\Joomla\Utilities\GetHelper;
 defined('_JEXEC') or die;
 
 // set the defaults
-$items = $displayData->vymlinked_components;
+$items = $displayData->vydlinked_components;
 $user = Factory::getApplication()->getIdentity();
 $id = $displayData->item->id;
 // set the edit URL

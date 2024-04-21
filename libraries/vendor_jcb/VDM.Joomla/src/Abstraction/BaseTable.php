@@ -34,7 +34,7 @@ abstract class BaseTable implements Tableinterface
 	 * All default fields
 	 *
 	 * @var     array
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 **/
 	protected array $defaults = [
 		'id' => [
@@ -45,7 +45,29 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(11)',
+				'default' => '',
+				'auto_increment' => true,
+				'primary_key' => true,
+				'null_switch' => 'NOT NULL'
+			]
+		],
+		'asset_id' => [
+			'name' => 'asset_id',
+			'label' => NULL,
+			'type' => NULL,
+			'title' => false,
+			'list' => NULL,
+			'store' => NULL,
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(10) unsigned',
+				'default' => '0',
+				'null_switch' => 'NOT NULL',
+				'comment' => 'FK to the #__assets table.'
+			]
 		],
 		'ordering' => [
 			'name' => 'ordering',
@@ -54,7 +76,12 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(11)',
+				'default' => '0',
+				'null_switch' => 'NOT NULL'
+			]
 		],
 		'published' => [
 			'name' => 'published',
@@ -63,7 +90,14 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'TINYINT(3)',
+				'default' => '1',
+				'null_switch' => 'NOT NULL',
+				'key' => true,
+				'key_name' => 'state'
+			]
 		],
 		'modified_by' => [
 			'name' => 'modified_by',
@@ -72,7 +106,14 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(10) unsigned',
+				'default' => '0',
+				'null_switch' => 'NOT NULL',
+				'key' => true,
+				'key_name' => 'modifiedby'
+			]
 		],
 		'modified' => [
 			'name' => 'modified',
@@ -81,7 +122,12 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'DATETIME',
+				'default' => '0000-00-00 00:00:00',
+				'null_switch' => 'NOT NULL'
+			]
 		],
 		'created_by' => [
 			'name' => 'created_by',
@@ -90,7 +136,14 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(10) unsigned',
+				'default' => '0',
+				'null_switch' => 'NOT NULL',
+				'key' => true,
+				'key_name' => 'createdby'
+			]
 		],
 		'created' => [
 			'name' => 'created',
@@ -99,7 +152,42 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'DATETIME',
+				'default' => '0000-00-00 00:00:00',
+				'null_switch' => 'NOT NULL'
+			]
+		],
+		'checked_out' => [
+			'name' => 'checked_out',
+			'label' => NULL,
+			'type' => NULL,
+			'title' => false,
+			'list' => NULL,
+			'store' => NULL,
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(10) unsigned',
+				'default' => '0',
+				'null_switch' => 'NOT NULL',
+				'key' => true,
+				'key_name' => 'checkout'
+			]
+		],
+		'checked_out_time' => [
+			'name' => 'checked_out_time',
+			'label' => NULL,
+			'type' => NULL,
+			'title' => false,
+			'list' => NULL,
+			'store' => NULL,
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'DATETIME',
+				'default' => '0000-00-00 00:00:00',
+				'null_switch' => 'NOT NULL'
+			]
 		],
 		'hits' => [
 			'name' => 'hits',
@@ -108,7 +196,12 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(10) unsigned',
+				'default' => '0',
+				'null_switch' => 'NOT NULL'
+			]
 		],
 		'version' => [
 			'name' => 'version',
@@ -117,7 +210,26 @@ abstract class BaseTable implements Tableinterface
 			'title' => false,
 			'list' => NULL,
 			'store' => NULL,
-			'tab_name' => NULL
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'INT(10) unsigned',
+				'default' => '1',
+				'null_switch' => 'NOT NULL'
+			]
+		],
+		'params' => [
+			'name' => 'params',
+			'label' => NULL,
+			'type' => NULL,
+			'title' => false,
+			'list' => NULL,
+			'store' => 'json',
+			'tab_name' => NULL,
+			'db' => [
+				'type' => 'TEXT',
+				'default' => '',
+				'null_switch' => 'NULL'
+			]
 		]
 	];
 
@@ -130,48 +242,41 @@ abstract class BaseTable implements Tableinterface
 	 *          Example: $this->get('table_name');
 	 * Get all areas/views/tables with all their item/field/column details
 	 *          Example: $this->get('All');
+	 *          Example: $this->get();
 	 *
-	 * @param   string       $table  The table
+	 * @param   string|null  $table  The table
 	 * @param   string|null  $field  The field
 	 * @param   string|null  $key    The value key
 	 *
 	 * @return  mixed
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
-	public function get(string $table, ?string $field = null, ?string $key = null)
+	public function get(?string $table = null, ?string $field = null, ?string $key = null)
 	{
-		// return the item/field/column of an area/view/table 
-		if (is_string($field) && is_string($key))
+		// Return specific value
+		if ($table && $field && $key)
 		{
-			// return the value of a item/field/column of an area/view/table 
-			if (isset($this->tables[$table][$field][$key]))
-			{
-				return $this->tables[$table][$field][$key];
-			}
-
-			return $this->getDefaultKey($field, $key);
-		}
-		// return the item/field/column of an area/view/table 
-		elseif (is_string($field))
-		{
-			if (isset($this->tables[$table][$field]))
-			{
-				return $this->tables[$table][$field];
-			}
-
-			return  $this->getDefault($field);
-		}
-		// return an area/view/table
-		elseif ($table !== 'All')
-		{
-			if (isset($this->tables[$table]))
-			{
-				return $this->tables[$table];
-			}
-			return null;
+			return $this->tables[$table][$field][$key] ?? $this->getDefaultKey($field, $key);
 		}
 
-		// return all
+		// Return field within table
+		if ($table && $field)
+		{
+			return $this->tables[$table][$field] ?? $this->getDefault($field);
+		}
+
+		// Return all fields in a table or all tables if 'All' is passed
+		if ($table)
+		{
+			if (strtoupper($table) === 'ALL')
+			{
+				return $this->tables;
+			}
+
+			return $this->tables[$table] ?? null;
+		}
+
+		// Return all tables
 		return $this->tables;
 	}
 
@@ -268,27 +373,30 @@ abstract class BaseTable implements Tableinterface
 	 *
 	 * @param   string  $table     The area
 	 * @param   bool    $default   Add the default fields
+	 * @param   bool    $details   Add/Leave fields the details
 	 *
 	 * @return  array|null   On success an array of fields
 	 * @since 3.2.0
 	 */
-	public function fields(string $table, bool $default = false): ?array
+	public function fields(string $table, bool $default = false, bool $details = false): ?array
 	{
-		// return all fields of an area/view/table
-		if (($table = $this->get($table)) !== null)
+		// Retrieve fields from the specified table
+		$fields = $this->get($table);
+
+		if ($fields === null)
 		{
-			if ($default)
-			{
-				return $this->addDefault(array_keys($table));
-			}
-			else
-			{
-				return array_keys($table);
-			}
+			return null;
 		}
 
-		// none found
-		return null;
+		// Determine the fields output based on the $default and $details flags
+		if ($details)
+		{
+			return $default ? $this->addDefaultDetails($fields) : $fields;
+		}
+
+		$fieldKeys = array_keys($fields);
+
+		return $default ? $this->addDefault($fieldKeys) : $fieldKeys;
 	}
 
 	/**
@@ -304,6 +412,11 @@ abstract class BaseTable implements Tableinterface
 		// add default fields
 		foreach ($this->defaults as $default)
 		{
+			if (in_array($default['name'], $fields))
+			{
+				continue;
+			}
+
 			// used just for loading the fields
 			$order = $default['order'] ?? 1;
 			unset($default['order']);
@@ -315,6 +428,31 @@ abstract class BaseTable implements Tableinterface
 			else
 			{
 				$fields[] = $default['name'];
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Add the default fields
+	 *
+	 * @param   array  $fields   The table dynamic fields
+	 *
+	 * @return  array   Fields (with defaults details added)
+	 * @since 3.2.0
+	 */
+	protected function addDefaultDetails(array $fields): array
+	{
+		// add default fields
+		foreach ($this->defaults as $default)
+		{
+			// remove ordering for now
+			unset($default['order']);
+
+			if (!isset($fields[$default['name']]))
+			{
+				$fields[$default['name']] = $default;
 			}
 		}
 
@@ -353,10 +491,10 @@ abstract class BaseTable implements Tableinterface
 	 * @param   string  $field   The field to check
 	 * @param   string  $key     The field key/property to check
 	 *
-	 * @return  string|null   String value if a default field property exist
+	 * @return  mixed   String value if a default field property exist
 	 * @since 3.2.0
 	 */
-	protected function getDefaultKey(string $field, string $key): ?string
+	protected function getDefaultKey(string $field, string $key)
 	{
 		return $this->defaults[$field][$key] ?? null;
 	}
