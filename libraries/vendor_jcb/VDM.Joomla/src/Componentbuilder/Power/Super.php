@@ -16,6 +16,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Componentbuilder\Interfaces\Database\InsertInterface as Insert;
 use VDM\Joomla\Componentbuilder\Interfaces\Database\UpdateInterface as Update;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Interfaces\SuperInterface;
 
 
 /**
@@ -23,7 +24,7 @@ use VDM\Joomla\Utilities\GuidHelper;
  * 
  * @since 3.2.0
  */
-class Super
+class Super implements SuperInterface
 {
 	/**
 	 * The Power Search Tool

@@ -20,6 +20,7 @@ use Joomla\CMS\Version;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\Filesystem\Folder;
 use Joomla\Database\DatabaseInterface;
+use VDM\Joomla\Componentbuilder\Table\Schema;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -570,96 +571,17 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 					\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper::removeFolder($jcb_power);
 				}
 			}
-			$app = $this->app;
 
-			// Define the required limits with specific messages for success and warning scenarios
-			$requiredConfigs = [
-				'upload_max_filesize' => [
-					'value'   => '128M',
-					'success' => 'The upload_max_filesize is appropriately set to handle large files, which is essential for uploading substantial components and media.',
-					'warning' => 'The current upload_max_filesize may not support large file uploads effectively, potentially causing failures during component installation.'
-				],
-				'post_max_size' => [
-					'value'   => '128M',
-					'success' => 'The post_max_size setting is sufficient to manage large data submissions, ensuring smooth data processing within forms and uploads.',
-					'warning' => 'An insufficient post_max_size can lead to truncated data submissions, affecting form functionality and data integrity.'
-				],
-				'max_execution_time' => [
-					'value'   => 60,
-					'success' => 'Max execution time is set high enough to execute complex operations without premature termination, which is crucial for lengthy operations.',
-					'warning' => 'A low max execution time could lead to script timeouts, especially during intensive operations, which might interrupt execution and cause failures during the compiling of a large extension.'
-				],
-				'max_input_vars' => [
-					'value'   => 7000,
-					'success' => 'The max_input_vars setting supports a high number of input variables, facilitating complex forms and detailed component configurations.',
-					'warning' => 'Too few max_input_vars may result in lost data during processing complex forms, which can lead to incomplete configurations and operational issues.'
-				],
-				'max_input_time' => [
-					'value'   => 60,
-					'success' => 'Max input time is adequate for processing inputs efficiently during high-load operations, ensuring no premature timeouts.',
-					'warning' => 'An insufficient max input time could result in incomplete data processing during input-heavy operations, potentially leading to errors and data loss.'
-				],
-				'memory_limit' => [
-					'value'   => '256M',
-					'success' => 'The memory limit is set high to accommodate extensive operations and data processing, which enhances overall performance and stability.',
-					'warning' => 'A low memory limit can lead to frequent crashes and performance issues, particularly when processing large amounts of data or complex calculations.'
-				]
-			];
-
-			// Helper function to convert PHP INI memory values to bytes
-			function convertToBytes($value) {
-				$value = trim($value);
-				$lastChar = strtolower($value[strlen($value) - 1]);
-				$numValue = substr($value, 0, -1);
-
-				switch ($lastChar)
-				{
-					case 'g':
-						return $numValue * 1024 * 1024 * 1024;
-					case 'm':
-						return $numValue * 1024 * 1024;
-					case 'k':
-						return $numValue * 1024;
-					default:
-						return (int) $value;
-				}
-			}
-
-			$showHelp = false;
-
-			// Check each configuration and provide detailed feedback
-			foreach ($requiredConfigs as $configName => $configDetails)
-			{
-				$currentValue = ini_get($configName);
-				if ($currentValue === false)
-				{
-					$app->enqueueMessage("Error: Unable to retrieve current setting for '{$configName}'.", 'error');
-					continue;
-				}
-
-				$isMemoryValue = strpbrk($configDetails['value'], 'KMG') !== false;
-				$requiredValueBytes = $isMemoryValue ? convertToBytes($configDetails['value']) : (int)$configDetails['value'];
-				$currentValueBytes = $isMemoryValue ? convertToBytes($currentValue) : (int)$currentValue;
-				$conditionMet = $currentValueBytes >= $requiredValueBytes;
-
-				$messageType = $conditionMet ? 'message' : 'warning';
-				$messageText = $conditionMet ? 
-					"Success: {$configName} is set to {$currentValue}. " . $configDetails['success'] :
-					"Warning: {$configName} configuration should be at least {$configDetails['value']} but is currently {$currentValue}. " . $configDetails['warning'];
-				$showHelp = ($showHelp || $messageType === 'warning') ? true : false;
-				$app->enqueueMessage($messageText, $messageType);
-			}
-
-			if ($showHelp)
-			{
-				$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced. These settings are crucial for ensuring the successful installation and compilation of extensions. We\'ve identified that certain configurations currently do not meet the recommended standards. To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
-', 'notice');
-			}
+			// Check that the required configuration are set for PHP
+			$this->phpConfigurationCheck($this->app);
 		}
 
 		// do any install needed
 		if ($type === 'install')
 		{
+
+			// Check that the required configuration are set for PHP
+			$this->phpConfigurationCheck($this->app);
 		}
 
 		return true;
@@ -695,11 +617,11 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// rules
 				'',
 				// fieldMappings
-				'{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_postflight_install","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","add_jcb_powers_path":"add_jcb_powers_path","add_sales_server":"add_sales_server","sql_uninstall":"sql_uninstall","php_postflight_install":"php_postflight_install","php_site_event":"php_site_event","mvc_versiondate":"mvc_versiondate","remove_line_breaks":"remove_line_breaks","add_placeholders":"add_placeholders","php_helper_both":"php_helper_both","php_admin_event":"php_admin_event","description":"description","css_admin":"css_admin","author":"author","php_preflight_install":"php_preflight_install","email":"email","php_method_uninstall":"php_method_uninstall","website":"website","debug_linenr":"debug_linenr","add_license":"add_license","backup_folder_path":"backup_folder_path","license_type":"license_type","crowdin_project_identifier":"crowdin_project_identifier","whmcs_key":"whmcs_key","php_helper_admin":"php_helper_admin","whmcs_url":"whmcs_url","php_helper_site":"php_helper_site","whmcs_buy_link":"whmcs_buy_link","javascript":"javascript","license":"license","css_site":"css_site","bom":"bom","image":"image","php_preflight_update":"php_preflight_update","copyright":"copyright","php_postflight_update":"php_postflight_update","sql":"sql","addreadme":"addreadme","component_version":"component_version","update_server_url":"update_server_url","preferred_joomla_version":"preferred_joomla_version","add_powers":"add_powers","add_backup_folder_path":"add_backup_folder_path","translation_tool":"translation_tool","crowdin_username":"crowdin_username","buildcompsql":"buildcompsql","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_namespace_prefix":"add_namespace_prefix","add_javascript":"add_javascript","namespace_prefix":"namespace_prefix","add_css_admin":"add_css_admin","add_css_site":"add_css_site","add_menu_prefix":"add_menu_prefix","dashboard_type":"dashboard_type","menu_prefix":"menu_prefix","dashboard":"dashboard","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","toignore":"toignore","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","add_php_method_uninstall":"add_php_method_uninstall","export_key":"export_key","add_sql":"add_sql","joomla_source_link":"joomla_source_link","add_sql_uninstall":"add_sql_uninstall","export_buy_link":"export_buy_link","assets_table_fix":"assets_table_fix","readme":"readme","add_update_server":"add_update_server","update_server_target":"update_server_target","emptycontributors":"emptycontributors","number":"number","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","jcb_powers_path":"jcb_powers_path","creatuserhelper":"creatuserhelper","crowdin_project_api_key":"crowdin_project_api_key","adduikit":"adduikit","crowdin_account_api_key":"crowdin_account_api_key","addfootable":"addfootable","buildcomp":"buildcomp","add_email_helper":"add_email_helper","guid":"guid","add_php_helper_both":"add_php_helper_both","name":"name"}}',
+				'{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_site_event","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","php_site_event":"php_site_event","component_version":"component_version","php_admin_event":"php_admin_event","crowdin_username":"crowdin_username","php_preflight_install":"php_preflight_install","remove_line_breaks":"remove_line_breaks","description":"description","php_method_uninstall":"php_method_uninstall","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","css_admin":"css_admin","addreadme":"addreadme","php_postflight_install":"php_postflight_install","add_placeholders":"add_placeholders","sql":"sql","author":"author","update_server_url":"update_server_url","email":"email","add_backup_folder_path":"add_backup_folder_path","website":"website","translation_tool":"translation_tool","add_license":"add_license","buildcompsql":"buildcompsql","license_type":"license_type","php_helper_admin":"php_helper_admin","php_helper_site":"php_helper_site","whmcs_key":"whmcs_key","javascript":"javascript","whmcs_url":"whmcs_url","css_site":"css_site","whmcs_buy_link":"whmcs_buy_link","license":"license","php_preflight_update":"php_preflight_update","bom":"bom","php_postflight_update":"php_postflight_update","image":"image","php_method_install":"php_method_install","copyright":"copyright","sql_uninstall":"sql_uninstall","preferred_joomla_version":"preferred_joomla_version","add_powers":"add_powers","add_sales_server":"add_sales_server","backup_folder_path":"backup_folder_path","add_jcb_powers_path":"add_jcb_powers_path","crowdin_project_identifier":"crowdin_project_identifier","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_namespace_prefix":"add_namespace_prefix","add_javascript":"add_javascript","namespace_prefix":"namespace_prefix","add_css_admin":"add_css_admin","add_css_site":"add_css_site","add_menu_prefix":"add_menu_prefix","dashboard_type":"dashboard_type","menu_prefix":"menu_prefix","dashboard":"dashboard","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","toignore":"toignore","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","add_php_method_uninstall":"add_php_method_uninstall","export_key":"export_key","add_php_method_install":"add_php_method_install","joomla_source_link":"joomla_source_link","add_sql":"add_sql","export_buy_link":"export_buy_link","add_sql_uninstall":"add_sql_uninstall","assets_table_fix":"assets_table_fix","readme":"readme","add_update_server":"add_update_server","emptycontributors":"emptycontributors","update_server_target":"update_server_target","number":"number","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","jcb_powers_path":"jcb_powers_path","creatuserhelper":"creatuserhelper","adduikit":"adduikit","crowdin_project_api_key":"crowdin_project_api_key","addfootable":"addfootable","crowdin_account_api_key":"crowdin_account_api_key","add_email_helper":"add_email_helper","buildcomp":"buildcomp","add_php_helper_both":"add_php_helper_both","guid":"guid","php_helper_both":"php_helper_both","name":"name"}}',
 				// router
 				'',
 				// contentHistoryOptions
-				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_jcb_powers_path","add_sales_server","mvc_versiondate","remove_line_breaks","add_placeholders","debug_linenr","add_license","license_type","addreadme","preferred_joomla_version","add_powers","add_backup_folder_path","translation_tool","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","add_update_server","update_server_target","emptycontributors","number","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","addfootable","buildcomp","add_email_helper","add_php_helper_both"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}'
+				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","remove_line_breaks","debug_linenr","mvc_versiondate","addreadme","add_placeholders","add_backup_folder_path","translation_tool","add_license","license_type","preferred_joomla_version","add_powers","add_sales_server","add_jcb_powers_path","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_php_method_install","add_sql","add_sql_uninstall","assets_table_fix","add_update_server","emptycontributors","update_server_target","number","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","addfootable","add_email_helper","buildcomp","add_php_helper_both"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}'
 			);
 			// Install Joomla module Content Types.
 			$this->setContentType(
@@ -1578,6 +1500,10 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			);
 
 
+
+			// Check that the database is up-to date
+			$this->databaseSchemaCheck($this->app);
+
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a></div>';
@@ -2401,11 +2327,11 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// rules
 				'',
 				// fieldMappings
-				'{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_postflight_install","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","add_jcb_powers_path":"add_jcb_powers_path","add_sales_server":"add_sales_server","sql_uninstall":"sql_uninstall","php_postflight_install":"php_postflight_install","php_site_event":"php_site_event","mvc_versiondate":"mvc_versiondate","remove_line_breaks":"remove_line_breaks","add_placeholders":"add_placeholders","php_helper_both":"php_helper_both","php_admin_event":"php_admin_event","description":"description","css_admin":"css_admin","author":"author","php_preflight_install":"php_preflight_install","email":"email","php_method_uninstall":"php_method_uninstall","website":"website","debug_linenr":"debug_linenr","add_license":"add_license","backup_folder_path":"backup_folder_path","license_type":"license_type","crowdin_project_identifier":"crowdin_project_identifier","whmcs_key":"whmcs_key","php_helper_admin":"php_helper_admin","whmcs_url":"whmcs_url","php_helper_site":"php_helper_site","whmcs_buy_link":"whmcs_buy_link","javascript":"javascript","license":"license","css_site":"css_site","bom":"bom","image":"image","php_preflight_update":"php_preflight_update","copyright":"copyright","php_postflight_update":"php_postflight_update","sql":"sql","addreadme":"addreadme","component_version":"component_version","update_server_url":"update_server_url","preferred_joomla_version":"preferred_joomla_version","add_powers":"add_powers","add_backup_folder_path":"add_backup_folder_path","translation_tool":"translation_tool","crowdin_username":"crowdin_username","buildcompsql":"buildcompsql","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_namespace_prefix":"add_namespace_prefix","add_javascript":"add_javascript","namespace_prefix":"namespace_prefix","add_css_admin":"add_css_admin","add_css_site":"add_css_site","add_menu_prefix":"add_menu_prefix","dashboard_type":"dashboard_type","menu_prefix":"menu_prefix","dashboard":"dashboard","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","toignore":"toignore","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","add_php_method_uninstall":"add_php_method_uninstall","export_key":"export_key","add_sql":"add_sql","joomla_source_link":"joomla_source_link","add_sql_uninstall":"add_sql_uninstall","export_buy_link":"export_buy_link","assets_table_fix":"assets_table_fix","readme":"readme","add_update_server":"add_update_server","update_server_target":"update_server_target","emptycontributors":"emptycontributors","number":"number","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","jcb_powers_path":"jcb_powers_path","creatuserhelper":"creatuserhelper","crowdin_project_api_key":"crowdin_project_api_key","adduikit":"adduikit","crowdin_account_api_key":"crowdin_account_api_key","addfootable":"addfootable","buildcomp":"buildcomp","add_email_helper":"add_email_helper","guid":"guid","add_php_helper_both":"add_php_helper_both","name":"name"}}',
+				'{"common": {"core_content_item_id": "id","core_title": "system_name","core_state": "published","core_alias": "null","core_created_time": "created","core_modified_time": "modified","core_body": "php_site_event","core_hits": "hits","core_publish_up": "null","core_publish_down": "null","core_access": "access","core_params": "params","core_featured": "null","core_metadata": "metadata","core_language": "null","core_images": "null","core_urls": "null","core_version": "version","core_ordering": "ordering","core_metakey": "metakey","core_metadesc": "metadesc","core_catid": "null","core_xreference": "null","asset_id": "asset_id"},"special": {"system_name":"system_name","name_code":"name_code","short_description":"short_description","companyname":"companyname","php_site_event":"php_site_event","component_version":"component_version","php_admin_event":"php_admin_event","crowdin_username":"crowdin_username","php_preflight_install":"php_preflight_install","remove_line_breaks":"remove_line_breaks","description":"description","php_method_uninstall":"php_method_uninstall","debug_linenr":"debug_linenr","mvc_versiondate":"mvc_versiondate","css_admin":"css_admin","addreadme":"addreadme","php_postflight_install":"php_postflight_install","add_placeholders":"add_placeholders","sql":"sql","author":"author","update_server_url":"update_server_url","email":"email","add_backup_folder_path":"add_backup_folder_path","website":"website","translation_tool":"translation_tool","add_license":"add_license","buildcompsql":"buildcompsql","license_type":"license_type","php_helper_admin":"php_helper_admin","php_helper_site":"php_helper_site","whmcs_key":"whmcs_key","javascript":"javascript","whmcs_url":"whmcs_url","css_site":"css_site","whmcs_buy_link":"whmcs_buy_link","license":"license","php_preflight_update":"php_preflight_update","bom":"bom","php_postflight_update":"php_postflight_update","image":"image","php_method_install":"php_method_install","copyright":"copyright","sql_uninstall":"sql_uninstall","preferred_joomla_version":"preferred_joomla_version","add_powers":"add_powers","add_sales_server":"add_sales_server","backup_folder_path":"backup_folder_path","add_jcb_powers_path":"add_jcb_powers_path","crowdin_project_identifier":"crowdin_project_identifier","add_php_helper_admin":"add_php_helper_admin","add_admin_event":"add_admin_event","add_php_helper_site":"add_php_helper_site","add_site_event":"add_site_event","add_namespace_prefix":"add_namespace_prefix","add_javascript":"add_javascript","namespace_prefix":"namespace_prefix","add_css_admin":"add_css_admin","add_css_site":"add_css_site","add_menu_prefix":"add_menu_prefix","dashboard_type":"dashboard_type","menu_prefix":"menu_prefix","dashboard":"dashboard","add_php_preflight_install":"add_php_preflight_install","add_php_preflight_update":"add_php_preflight_update","toignore":"toignore","add_php_postflight_install":"add_php_postflight_install","add_php_postflight_update":"add_php_postflight_update","add_php_method_uninstall":"add_php_method_uninstall","export_key":"export_key","add_php_method_install":"add_php_method_install","joomla_source_link":"joomla_source_link","add_sql":"add_sql","export_buy_link":"export_buy_link","add_sql_uninstall":"add_sql_uninstall","assets_table_fix":"assets_table_fix","readme":"readme","add_update_server":"add_update_server","emptycontributors":"emptycontributors","update_server_target":"update_server_target","number":"number","update_server":"update_server","sales_server":"sales_server","add_git_folder_path":"add_git_folder_path","git_folder_path":"git_folder_path","jcb_powers_path":"jcb_powers_path","creatuserhelper":"creatuserhelper","adduikit":"adduikit","crowdin_project_api_key":"crowdin_project_api_key","addfootable":"addfootable","crowdin_account_api_key":"crowdin_account_api_key","add_email_helper":"add_email_helper","buildcomp":"buildcomp","add_php_helper_both":"add_php_helper_both","guid":"guid","php_helper_both":"php_helper_both","name":"name"}}',
 				// router
 				'',
 				// contentHistoryOptions
-				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_jcb_powers_path","add_sales_server","mvc_versiondate","remove_line_breaks","add_placeholders","debug_linenr","add_license","license_type","addreadme","preferred_joomla_version","add_powers","add_backup_folder_path","translation_tool","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_sql","add_sql_uninstall","assets_table_fix","add_update_server","update_server_target","emptycontributors","number","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","addfootable","buildcomp","add_email_helper","add_php_helper_both"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}'
+				'{"formFile": "administrator/components/com_componentbuilder/forms/joomla_component.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","remove_line_breaks","debug_linenr","mvc_versiondate","addreadme","add_placeholders","add_backup_folder_path","translation_tool","add_license","license_type","preferred_joomla_version","add_powers","add_sales_server","add_jcb_powers_path","add_php_helper_admin","add_admin_event","add_php_helper_site","add_site_event","add_javascript","add_css_admin","add_css_site","dashboard_type","add_php_preflight_install","add_php_preflight_update","add_php_postflight_install","add_php_postflight_update","add_php_method_uninstall","add_php_method_install","add_sql","add_sql_uninstall","assets_table_fix","add_update_server","emptycontributors","update_server_target","number","update_server","sales_server","add_git_folder_path","creatuserhelper","adduikit","addfootable","add_email_helper","buildcomp","add_php_helper_both"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "dashboard","targetTable": "#__componentbuilder_custom_admin_view","targetColumn": "","displayColumn": "system_name"},{"sourceColumn": "update_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "sales_server","targetTable": "#__componentbuilder_server","targetColumn": "id","displayColumn": "name"}]}'
 			);
 			// Update Joomla module Content Types.
 			$this->setContentType(
@@ -3277,10 +3203,14 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 
 
+
+			// Check that the database is up-to date
+			$this->databaseSchemaCheck($this->app);
+
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.0.0-beta3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.0.0-beta4 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -4909,6 +4839,173 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				$this->app->enqueueMessage(
 					Text::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.')
 				);
+			}
+		}
+	}
+
+	/**
+	 * Define the required limits with specific messages for success and warning scenarios
+	 *
+	 * @var array
+	 * @since 3.2.1
+	 */
+	protected array $requiredPHPConfigs = [
+		'upload_max_filesize' => [
+			'value'   => '128M',
+			'success' => 'The upload_max_filesize is appropriately set to handle large files, which is essential for uploading substantial components and media.',
+			'warning' => 'The current upload_max_filesize may not support large file uploads effectively, potentially causing failures during component installation.'
+		],
+		'post_max_size' => [
+			'value'   => '128M',
+			'success' => 'The post_max_size setting is sufficient to manage large data submissions, ensuring smooth data processing within forms and uploads.',
+			'warning' => 'An insufficient post_max_size can lead to truncated data submissions, affecting form functionality and data integrity.'
+		],
+		'max_execution_time' => [
+			'value'   => 60,
+			'success' => 'Max execution time is set high enough to execute complex operations without premature termination, which is crucial for lengthy operations.',
+			'warning' => 'A low max execution time could lead to script timeouts, especially during intensive operations, which might interrupt execution and cause failures during the compiling of a large extension.'
+		],
+		'max_input_vars' => [
+			'value'   => 7000,
+			'success' => 'The max_input_vars setting supports a high number of input variables, facilitating complex forms and detailed component configurations.',
+			'warning' => 'Too few max_input_vars may result in lost data during processing complex forms, which can lead to incomplete configurations and operational issues.'
+		],
+		'max_input_time' => [
+			'value'   => 60,
+			'success' => 'Max input time is adequate for processing inputs efficiently during high-load operations, ensuring no premature timeouts.',
+			'warning' => 'An insufficient max input time could result in incomplete data processing during input-heavy operations, potentially leading to errors and data loss.'
+		],
+		'memory_limit' => [
+			'value'   => '256M',
+			'success' => 'The memory limit is set high to accommodate extensive operations and data processing, which enhances overall performance and stability.',
+			'warning' => 'A low memory limit can lead to frequent crashes and performance issues, particularly when processing large amounts of data or complex calculations.'
+		]
+	];
+
+	/**
+	 * Helper function to convert PHP INI memory values to bytes
+	 *
+	 * @param  string  $value     The value to convert
+	 *
+	 * @return int   The bytes value
+	 * @since 3.2.1
+	 */
+	protected function convertToBytes(string $value): int
+	{
+		$value = trim($value);
+		$lastChar = strtolower($value[strlen($value) - 1]);
+		$numValue = substr($value, 0, -1);
+
+		switch ($lastChar)
+		{
+			case 'g':
+				return $numValue * 1024 * 1024 * 1024;
+			case 'm':
+				return $numValue * 1024 * 1024;
+			case 'k':
+				return $numValue * 1024;
+			default:
+				return (int) $value;
+		}
+	}
+
+	/**
+	 * Check that the required configurations are set for PHP
+	 *
+	 * @param  $app  The application
+	 *
+	 * @return void
+	 * @since 3.2.1
+	 */
+	protected function phpConfigurationCheck($app): void
+	{
+		$showHelp = false;
+
+		// Check each configuration and provide detailed feedback
+		foreach ($this->requiredPHPConfigs as $configName => $configDetails)
+		{
+			$currentValue = ini_get($configName);
+			if ($currentValue === false)
+			{
+				$app->enqueueMessage("Error: Unable to retrieve current setting for '{$configName}'.", 'error');
+				continue;
+			}
+
+			$isMemoryValue = strpbrk($configDetails['value'], 'KMG') !== false;
+			$requiredValueBytes = $isMemoryValue ? $this->convertToBytes($configDetails['value']) : (int) $configDetails['value'];
+			$currentValueBytes = $isMemoryValue ? $this->convertToBytes($currentValue) : (int) $currentValue;
+			$conditionMet = $currentValueBytes >= $requiredValueBytes;
+
+			$messageType = $conditionMet ? 'message' : 'warning';
+			$messageText = $conditionMet ? 
+				"Success: {$configName} is set to {$currentValue}. " . $configDetails['success'] :
+				"Warning: {$configName} configuration should be at least {$configDetails['value']} but is currently {$currentValue}. " . $configDetails['warning'];
+			$showHelp = ($showHelp || $messageType === 'warning') ? true : false;
+			$app->enqueueMessage($messageText, $messageType);
+		}
+
+		if ($showHelp)
+		{
+			$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced.<br>These settings are crucial for ensuring the successful installation and compilation of extensions.<br>We\'ve identified that certain configurations currently do not meet the recommended standards.<br>To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
+', 'notice');
+		}
+	}
+
+	/**
+	 * Make sure that the componentbuilder database schema is up to date.
+	 *
+	 * @return void
+	 * @since 3.2.1
+	 */
+	protected function databaseSchemaCheck($app): void
+	{
+		// try to load the schema class
+		try
+		{
+			// make sure the class is loaded
+			$this->ensureClassExists(
+				Schema::class
+			);
+
+			// instantiate the schema class and check/update the database
+			$messages = (new Schema())->update();
+		}
+		catch (\Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'warning');
+			return;
+		}
+
+		foreach ($messages as $message)
+		{
+			$app->enqueueMessage($message, 'message');
+		}
+	}
+
+	/**
+	 * Ensures that a class in the namespace is available.
+	 * If the class is not already loaded, it attempts to load it.
+	 *
+	 * @param mixed    $className         The class name to load.
+	 *
+	 * @return void
+	 * @since 3.2.1
+	 */
+	protected function ensureClassExists($className): void
+	{
+		if (!class_exists($className, true))
+		{
+			// The power autoloader for this project admin area.
+			$power_autoloader = JPATH_ADMINISTRATOR . '/componenents/com_componentbuilder/src/Helper/PowerloaderHelper.php';
+			if (file_exists($power_autoloader))
+			{
+				require_once $power_autoloader;
+			}
+
+			// Check again if the class now exists after requiring it
+			if (!class_exists($className, true))
+			{
+				throw new \Exception($errorMessage);
 			}
 		}
 	}

@@ -41,10 +41,10 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 	 * @param  mixed   $value     Value of entry
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function set(string $path, $value): void
+	public function set(string $path, $value): static
 	{
 		if (($keys = $this->getActiveKeys($path)) === null)
 		{
@@ -52,6 +52,8 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 		}
 
 		$this->setActive($value, ...$keys);
+
+		return $this;
 	}
 
 	/**
@@ -65,10 +67,10 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 	 *                                Override in child class allowed set class property $addAsArray = true.
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function add(string $path, $value, ?bool $asArray = null): void
+	public function add(string $path, $value, ?bool $asArray = null): static
 	{
 		if (($keys = $this->getActiveKeys($path)) === null)
 		{
@@ -76,6 +78,8 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 		}
 
 		$this->addActive($value, $asArray, ...$keys);
+
+		return $this;
 	}
 
 	/**
@@ -104,10 +108,10 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 	 * @param  string  $path  Registry path (e.g. vdm.content.builder)
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function remove(string $path): void
+	public function remove(string $path): static
 	{
 		if (($keys = $this->getActiveKeys($path)) === null)
 		{
@@ -115,6 +119,8 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 		}
 
 		$this->removeActive(...$keys);
+
+		return $this;
 	}
 
 	/**
@@ -141,12 +147,14 @@ abstract class Registry extends ActiveRegistry implements Activeregistryinterfac
 	 *
 	 * @param string|null   $value     The value to set.
 	 *
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function setSeparator(?string $value): void
+	public function setSeparator(?string $value): static
 	{
 		$this->separator = $value;
+
+		return $this;
 	}
 
 	/**

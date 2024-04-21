@@ -26,10 +26,10 @@ interface Registryinterface
 	 * @param  mixed   $value     Value of entry
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function set(string $path, $value): void;
+	public function set(string $path, $value): static;
 
 	/**
 	 * Adds content into the registry. If a key exists,
@@ -42,10 +42,10 @@ interface Registryinterface
 	 *                                Override in child class allowed set class property $addAsArray = true.
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function add(string $path, $value, ?bool $asArray = null): void;
+	public function add(string $path, $value, ?bool $asArray = null): static;
 
 	/**
 	 * Retrieves a value (or sub-array) from the registry using multiple keys.
@@ -65,10 +65,10 @@ interface Registryinterface
 	 * @param  string  $path  Registry path (e.g. vdm.content.builder)
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function remove(string $path): void;
+	public function remove(string $path): static;
 
 	/**
 	 * Checks the existence of a particular location in the registry using multiple keys.
@@ -86,9 +86,9 @@ interface Registryinterface
 	 *
 	 * @param string|null   $value     The value to set.
 	 *
-	 * @return void
+	 * @return $this
 	 * @since 3.2.0
 	 */
-	public function setSeparator(?string $value): void;
+	public function setSeparator(?string $value): static;
 }
 

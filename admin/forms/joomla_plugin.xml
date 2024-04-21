@@ -198,6 +198,7 @@
 			class="list_class"
 			multiple="false"
 			default="0"
+			showon="add_sales_server:1"
 			button="true"
 		/>
 		<!-- Note_update_server_note_zip Field. Type: Note. A None Database Field. (joomla) -->
@@ -304,7 +305,8 @@
 			name="addreadme"
 			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_ADDREADME_LABEL"
 			class="btn-group btn-group-yesno"
-			default="0">
+			default="0"
+			required="true">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_JOOMLA_PLUGIN_YES</option>
@@ -407,6 +409,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_postflight_install:1"
 		/>
 		<!-- Plugin_version Field. Type: Text. (joomla) -->
 		<field
@@ -438,6 +441,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_postflight_update:1"
 		/>
 		<!-- Fields Field. Type: Subform. (joomla) -->
 		<field
@@ -646,6 +650,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_method_uninstall:1"
 		/>
 		<!-- Add_php_script_construct Field. Type: Radio. (joomla) -->
 		<field
@@ -672,7 +677,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SQL_HINT"
-			required="true"
+			showon="add_sql:1"
 		/>
 		<!-- Php_script_construct Field. Type: Editor. (joomla) -->
 		<field
@@ -689,6 +694,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_script_construct:1"
 		/>
 		<!-- Sql_uninstall Field. Type: Textarea. (joomla) -->
 		<field
@@ -701,7 +707,7 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_SQL_UNINSTALL_HINT"
-			required="true"
+			showon="add_sql_uninstall:1"
 		/>
 		<!-- Add_php_preflight_install Field. Type: Radio. (joomla) -->
 		<field
@@ -728,6 +734,7 @@
 			buttons="false"
 			editor="none"
 			filter="raw"
+			showon="addreadme:1"
 		/>
 		<!-- Php_preflight_install Field. Type: Editor. (joomla) -->
 		<field
@@ -744,6 +751,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_preflight_install:1"
 		/>
 		<!-- Update_server_url Field. Type: Url. (joomla) -->
 		<field
@@ -752,13 +760,13 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATE_SERVER_URL_LABEL"
 			size="60"
 			maxlength="150"
-			default=""
 			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATE_SERVER_URL_DESCRIPTION"
 			class="text_area span12"
 			filter="url"
 			validated="url"
 			message="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATE_SERVER_URL_MESSAGE"
 			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATE_SERVER_URL_HINT"
+			showon="add_update_server:1"
 		/>
 		<!-- Add_php_preflight_update Field. Type: Radio. (joomla) -->
 		<field
@@ -791,6 +799,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_preflight_update:1"
 		/>
 		<!-- Note_update_server_note_other Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_update_server_note_other" label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_UPDATE_SERVER_NOTE_OTHER_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NOTE_UPDATE_SERVER_NOTE_OTHER_DESCRIPTION" heading="h4" class="alert alert-success note_update_server_note_other" />
@@ -837,6 +846,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_php_preflight_uninstall:1"
 		/>
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field

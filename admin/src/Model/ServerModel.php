@@ -230,7 +230,7 @@ class ServerModel extends AdminModel
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getVymlinked_components()
+	public function getVydlinked_components()
 	{
 		// Get the user object.
 		$user = Factory::getApplication()->getIdentity();

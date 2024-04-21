@@ -15,7 +15,14 @@ defined('_JEXEC') or die('Restricted access');
 ###BOM###
 
 // No direct access to this file
-defined('_JEXEC') or die('Restricted access');###ADMIN_POWER_HELPER###
+defined('_JEXEC') or die('Restricted access');
+
+// The power autoloader for this project admin area.
+$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_###component###/helpers/powerloader.php';
+if (file_exists($power_autoloader))
+{
+	require_once $power_autoloader;
+}
 
 ###ADMIN_COMPONENT_HEADER###
 

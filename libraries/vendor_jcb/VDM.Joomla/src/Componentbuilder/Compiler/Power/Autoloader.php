@@ -88,7 +88,8 @@ class Autoloader
 	 */
 	public function set()
 	{
-		if (ArrayHelper::check($this->power->namespace))
+		// make sure we only load this once
+		if (ArrayHelper::check($this->power->namespace) && !$this->content->isString('CUSTOM_POWER_AUTOLOADER'))
 		{
 			/************************* IMPORTANT SORT NOTICE ***********************************************
 			 *   make sure the name space values are sorted from the longest string to the shortest

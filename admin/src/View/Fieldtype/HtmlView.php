@@ -82,7 +82,7 @@ class HtmlView extends BaseHtmlView
 		}
 
 		// Get Linked view data
-		$this->vycfields = $this->get('Vycfields');
+		$this->vxtfields = $this->get('Vxtfields');
 
 		// Set the toolbar
 		$this->addToolBar();

@@ -15,15 +15,15 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
-use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Super as SuperPower;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface;
 
 
