@@ -72,6 +72,14 @@ abstract class Schema implements SchemaInterface
 	private array $keys;
 
 	/**
+	 * The current table columns
+	 *
+	 * @var   array
+	 * @since 3.2.1
+	 */
+	private array $columns;
+
+	/**
 	 * The success messages of the action
 	 *
 	 * @var   array
@@ -118,19 +126,18 @@ abstract class Schema implements SchemaInterface
 			$this->success = [
 				"Success: scan of the component tables started."
 			];
-
 			foreach ($this->table->tables() as $table)
 			{
 				$this->uniqueKeys = [];
 				$this->keys = [];
 
-				if (!$this->tableExists($table))
+				if ($this->tableExists($table))
 				{
-					$this->createTable($table);
+					$this->updateSchema($table);
 				}
 				else
 				{
-					$this->updateSchema($table);
+					$this->createTable($table);
 				}
 			}
 		} catch (\Exception $e) {
@@ -209,15 +216,18 @@ abstract class Schema implements SchemaInterface
 			{
 				$this->addMissingColumns($table, $missingColumns);
 			}
+
+			$this->checkColumnsDataType($table, $expectedColumns);
+
 		} catch (\Exception $e) {
 			throw new \Exception("Error: updating schema for $table table.", 0, $e);
 		}
 
 		if (!empty($missingColumns))
 		{
-			$columns = (count($missingColumns) == 1) ? 'column' : 'columns';
+			$column_s = (count($missingColumns) == 1) ? 'column' : 'columns';
 			$missingColumns = implode(', ', $missingColumns);
-			$this->success[] = "Success: added missing ($missingColumns) $columns to $table table.";
+			$this->success[] = "Success: added missing ($missingColumns) $column_s to $table table.";
 		}
 	}
 
@@ -232,14 +242,14 @@ abstract class Schema implements SchemaInterface
 	/**
 	 * Add missing columns to a table.
 	 *
-	 * @param string $table The table to update.
-	 * @param array  $fields List of missing columns/fields.
+	 * @param string $table   The table to update.
+	 * @param array  $columns List of missing columns/fields.
 	 *
 	 * @return void
 	 * @since  3.2.1
 	 * @throws \Exception If there is an error adding columns.
 	 */
-	protected function addMissingColumns(string $table, array $fields): void
+	protected function addMissingColumns(string $table, array $columns): void
 	{
 		try {
 			$query = $this->db->getQuery(true);
@@ -247,9 +257,9 @@ abstract class Schema implements SchemaInterface
 
 			// Start an ALTER TABLE query
 			$alterQueries = [];
-			foreach ($fields as $field)
+			foreach ($columns as $column)
 			{
-				if (($def = $this->getColumnDefinition($table, $field)) !== null)
+				if (($def = $this->getColumnDefinition($table, $column)) !== null)
 				{
 					$alterQueries[] = " ADD " . $def;
 				}
@@ -258,9 +268,99 @@ abstract class Schema implements SchemaInterface
 			$this->db->setQuery($alterTable . implode(', ', $alterQueries));
 			$this->db->execute();
 		} catch (\Exception $e) {
-			$columns = (count($fields) == 1) ? 'column' : 'columns';
-			$fields = implode(', ', $fields);
-			throw new \Exception("Error: failed to add ($fields) $columns to $table table.", 0, $e);
+			$column_s = (count($columns) == 1) ? 'column' : 'columns';
+			$columns = implode(', ', $columns);
+			throw new \Exception("Error: failed to add ($columns) $column_s to $table table.", 0, $e);
+		}
+	}
+
+	/**
+	 * Validate and update the data type of existing fields/columns
+	 *
+	 * @param string $table    The table to update.
+	 * @param array  $columns  List of columns/fields to check.
+	 *
+	 * @return void
+	 * @since  3.2.1
+	 */
+	protected function checkColumnsDataType(string $table, array $columns): void
+	{
+		$requireUpdate = [];
+		foreach ($columns as $column)
+		{
+			$current = $this->columns[$column] ?? null;
+			if ($current === null || ($expected = $this->table->get($table, $column, 'db')) === null)
+			{
+				// this field is no longer part of the component and can be ignored
+				continue;
+			}
+
+			// check if the data type and size match
+			if (strcasecmp($current->Type, $expected['type']) != 0)
+			{
+				$requireUpdate[$column] = [
+					'column' => $column,
+					'current' => $current->Type,
+					'expected' => $expected['type']
+				];
+			}
+		}
+
+		if (!empty($requireUpdate))
+		{
+			$this->updateColumnsDataType($table, $requireUpdate);
+		}
+	}
+
+	/**
+	 * Update the data type of the given fields.
+	 *
+	 * @param string $table   The table to update.
+	 * @param array  $columns List of columns/fields that must be updated.
+	 *
+	 * @return void
+	 * @since  3.2.1
+	 */
+	protected function updateColumnsDataType(string $table, array $columns): void
+	{
+		$alterTable = 'ALTER TABLE ' . $this->db->quoteName($this->getTable($table));
+		foreach ($columns as $column => $types)
+		{
+			if (($def = $this->getColumnDefinition($table, $column)) === null)
+			{
+				continue;
+			}
+
+			$dbField = $this->db->quoteName($column);
+			$alterQuery = "$alterTable CHANGE $dbField ". $def;
+
+			if ($this->updateColumnDataType($alterQuery, $table, $column))
+			{
+				$current = (string) $types['current'] ?? 'error';
+				$expected = (string) $types['expected'] ?? 'error';
+				$this->success[] = "Success: updated ($column) column datatype $current to $expected in $table table.";
+			}
+		}
+	}
+	
+	/**
+	 * Update the data type of the given field.
+	 *
+	 * @param string $updateString  The SQL command to update the column data type
+	 * @param string $table         The table to update.
+	 * @param string $field         Column/field that must be updated.
+	 *
+	 * @return bool  true on succes
+	 * @since  3.2.1
+	 * @throws \Exception If there is an error adding columns.
+	 */
+	protected function updateColumnDataType(string $updateString, string $table, string $field): bool
+	{
+		try {
+			$this->db->setQuery($updateString);
+			return $this->db->execute();
+		} catch (\Exception $e) {
+			throw new \Exception("Error: failed to update the datatype of ($field) column in $table table.", 0, $e);
 		}
 	}
 
@@ -358,9 +458,9 @@ abstract class Schema implements SchemaInterface
 	 */
 	private function getExistingColumns(string $table): array
 	{
-		$columns = $this->db->getTableColumns($this->getTable($table), false);
+		$this->columns = $this->db->getTableColumns($this->getTable($table), false);
 
-		return array_keys($columns);
+		return array_keys($this->columns);
 	}
 
 	/**

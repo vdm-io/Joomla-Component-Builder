@@ -1,3 +1,8 @@
+# v3.2.1-beta2
+
+- Fix the media field size limitation. #1109
+- Add dynamic datatype update to schema field check.
+
 # v3.2.1-beta1
 
 - Add fallback option to ensure that all JCB tables and fields exist.

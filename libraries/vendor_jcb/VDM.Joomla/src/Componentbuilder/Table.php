@@ -664,7 +664,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'CHAR(64)',
+					'type' => 'VARCHAR(255)',
 					'default' => '',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -3596,7 +3596,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'CHAR(64)',
+					'type' => 'VARCHAR(255)',
 					'default' => '',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -3660,7 +3660,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'CHAR(64)',
+					'type' => 'VARCHAR(255)',
 					'default' => '',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -3676,7 +3676,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'CHAR(64)',
+					'type' => 'VARCHAR(255)',
 					'default' => '',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -3964,8 +3964,8 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Fields',
 				'db' => [
-					'type' => 'CHAR',
-					'default' => '',
+					'type' => 'TINYINT(1)',
+					'default' => '0',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
@@ -5148,7 +5148,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'CHAR(64)',
+					'type' => 'VARCHAR(255)',
 					'default' => '',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -6924,8 +6924,8 @@ class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Abacus',
 				'db' => [
-					'type' => 'CHAR',
-					'default' => '',
+					'type' => 'TINYINT(1)',
+					'default' => '0',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
