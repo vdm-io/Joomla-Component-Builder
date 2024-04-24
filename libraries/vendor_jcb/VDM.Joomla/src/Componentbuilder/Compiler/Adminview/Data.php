@@ -433,6 +433,22 @@ class Data
 			}
 			unset($view->addtables);
 
+			// Make sure the icon is only an icon path
+			if (strpos($view->icon, '#') !== false)
+			{
+				$view->icon = strstr($view->icon, '#', true);
+			}
+			// Make sure the icon_add is only an icon_add path
+			if (strpos($view->icon_add, '#') !== false)
+			{
+				$view->icon_add = strstr($view->icon_add, '#', true);
+			}
+			// Make sure the icon_add is only an icon_add path
+			if (strpos($view->icon_category, '#') !== false)
+			{
+				$view->icon_category = strstr($view->icon_category, '#', true);
+			}
+
 			// set custom tabs
 			$this->customtabs->set($view);
 

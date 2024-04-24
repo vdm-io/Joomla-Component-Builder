@@ -1,3 +1,8 @@
+# v3.2.1-beta3
+
+- Fix version_update column size.
+- Improved the Schema Table update engine.
+
 # v3.2.1-beta2
 
 - Fix the media field size limitation. #1109

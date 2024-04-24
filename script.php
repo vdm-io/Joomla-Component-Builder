@@ -9810,7 +9810,7 @@ class Com_ComponentbuilderInstallerScript
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.2.1-beta2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 3.2.1-beta3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -11780,16 +11780,17 @@ class Com_ComponentbuilderInstallerScript
 
 	/**
 	 * Ensures that a class in the namespace is available.
-	 * If the class is not already loaded, it attempts to load it.
+	 * If the class is not already loaded, it attempts to load it via the power autoloader.
 	 *
-	 * @param mixed    $className         The class name to load.
+	 * @param mixed    $nameClass    The name::class we are looking for.
 	 *
 	 * @return void
 	 * @since 3.2.1
+	 * @throws \Exception If the class could not be loaded.
 	 */
-	protected function ensureClassExists($className): void
+	protected function ensureClassExists($nameClass): void
 	{
-		if (!class_exists($className, true))
+		if (!class_exists($nameClass, true))
 		{
 			// The power autoloader for this project admin area.
 			$power_autoloader = JPATH_ADMINISTRATOR . '/componenents/com_componentbuilder/helpers/powerload.php';
@@ -11799,9 +11800,9 @@ class Com_ComponentbuilderInstallerScript
 			}
 
 			// Check again if the class now exists after requiring it
-			if (!class_exists($className, true))
+			if (!class_exists($nameClass, true))
 			{
-				throw new \Exception($errorMessage);
+				throw new \Exception("We failed to find/load the $nameClass");
 			}
 		}
 	}

@@ -9598,7 +9598,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => 'json',
 				'tab_name' => 'Updates',
 				'db' => [
-					'type' => 'TEXT',
+					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -10526,7 +10526,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => 'json',
 				'tab_name' => 'Updates',
 				'db' => [
-					'type' => 'TEXT',
+					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
@@ -10734,7 +10734,7 @@ class Table extends BaseTable implements Tableinterface
 				'store' => 'json',
 				'tab_name' => 'Updates',
 				'db' => [
-					'type' => 'TEXT',
+					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
