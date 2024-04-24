@@ -706,7 +706,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// router
 				'',
 				// contentHistoryOptions
-				'{"formFile": "administrator/components/com_componentbuilder/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_fadein","type","source","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}'
+				'{"formFile": "administrator/components/com_componentbuilder/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_fadein","type","source","alias_builder_type","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}'
 			);
 			// Install Custom admin view Content Types.
 			$this->setContentType(
@@ -791,7 +791,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// router
 				'',
 				// contentHistoryOptions
-				'{"formFile": "administrator/components/com_componentbuilder/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_source","gettype","add_php_after_getitems","add_php_router_parse","add_php_before_getitems","add_php_before_getitem","add_php_after_getitem","view_table_main","add_php_getlistquery","select_all","pagination"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}'
+				'{"formFile": "administrator/components/com_componentbuilder/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_source","gettype","add_php_after_getitems","add_php_router_parse","add_php_before_getitems","add_php_before_getitem","add_php_after_getitem","view_table_main","add_php_getlistquery","select_all","pagination","addcalculation"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}'
 			);
 			// Install Custom code Content Types.
 			$this->setContentType(
@@ -2416,7 +2416,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// router
 				'',
 				// contentHistoryOptions
-				'{"formFile": "administrator/components/com_componentbuilder/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_fadein","type","source","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}'
+				'{"formFile": "administrator/components/com_componentbuilder/forms/admin_view.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","add_fadein","type","source","alias_builder_type","add_category_submenu","add_php_getlistquery","add_css_view","add_php_getform","add_php_before_save","add_css_views","add_php_save","add_php_postsavehook","add_javascript_view_file","add_php_allowadd","add_php_allowedit","add_javascript_view_footer","add_php_before_cancel","add_php_after_cancel","add_javascript_views_file","add_php_batchcopy","add_php_batchmove","add_javascript_views_footer","add_php_before_publish","add_php_after_publish","add_custom_button","add_php_before_delete","add_php_after_delete","add_php_document","add_sql","add_php_ajax","add_custom_import","add_php_getitem","add_php_getitems","add_php_getitems_after_all"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "alias_builder","targetTable": "#__componentbuilder_field","targetColumn": "id","displayColumn": "name"}]}'
 			);
 			// Update Custom admin view Content Types.
 			$this->setContentType(
@@ -2501,7 +2501,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// router
 				'',
 				// contentHistoryOptions
-				'{"formFile": "administrator/components/com_componentbuilder/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_source","gettype","add_php_after_getitems","add_php_router_parse","add_php_before_getitems","add_php_before_getitem","add_php_after_getitem","view_table_main","add_php_getlistquery","select_all","pagination"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}'
+				'{"formFile": "administrator/components/com_componentbuilder/forms/dynamic_get.xml","hideFields": ["asset_id","checked_out","checked_out_time"],"ignoreChanges": ["modified_by","modified","checked_out","checked_out_time","version","hits"],"convertToInt": ["published","ordering","version","hits","main_source","gettype","add_php_after_getitems","add_php_router_parse","add_php_before_getitems","add_php_before_getitem","add_php_after_getitem","view_table_main","add_php_getlistquery","select_all","pagination","addcalculation"],"displayLookup": [{"sourceColumn": "created_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "access","targetTable": "#__viewlevels","targetColumn": "id","displayColumn": "title"},{"sourceColumn": "modified_by","targetTable": "#__users","targetColumn": "id","displayColumn": "name"},{"sourceColumn": "view_table_main","targetTable": "#__componentbuilder_admin_view","targetColumn": "id","displayColumn": "system_name"}]}'
 			);
 			// Update Custom code Content Types.
 			$this->setContentType(
@@ -3210,7 +3210,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 5.0.0-beta4 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 5.0.0-beta5 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -4984,16 +4984,17 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 	/**
 	 * Ensures that a class in the namespace is available.
-	 * If the class is not already loaded, it attempts to load it.
+	 * If the class is not already loaded, it attempts to load it via the power autoloader.
 	 *
-	 * @param mixed    $className         The class name to load.
+	 * @param mixed    $nameClass    The name::class we are looking for.
 	 *
 	 * @return void
 	 * @since 3.2.1
+	 * @throws \Exception If the class could not be loaded.
 	 */
-	protected function ensureClassExists($className): void
+	protected function ensureClassExists($nameClass): void
 	{
-		if (!class_exists($className, true))
+		if (!class_exists($nameClass, true))
 		{
 			// The power autoloader for this project admin area.
 			$power_autoloader = JPATH_ADMINISTRATOR . '/componenents/com_componentbuilder/src/Helper/PowerloaderHelper.php';
@@ -5003,9 +5004,9 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			}
 
 			// Check again if the class now exists after requiring it
-			if (!class_exists($className, true))
+			if (!class_exists($nameClass, true))
 			{
-				throw new \Exception($errorMessage);
+				throw new \Exception("We failed to find/load the $nameClass");
 			}
 		}
 	}

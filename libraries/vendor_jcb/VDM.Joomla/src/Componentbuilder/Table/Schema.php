@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Table;
 
 
-use VDM\Joomla\Componentbuilder\Table as Table;
+use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Interfaces\SchemaInterface;
 use VDM\Joomla\Abstraction\Schema as ExtendingSchema;
 
