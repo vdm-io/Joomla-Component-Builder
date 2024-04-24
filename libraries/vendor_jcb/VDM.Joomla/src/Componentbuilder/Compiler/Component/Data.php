@@ -404,6 +404,12 @@ final class Data
 			)
 		);
 
+		// Make sure the image is only an image path
+		if (strpos($component->image, '#') !== false)
+		{
+			$component->image = strstr($component->image, '#', true);
+		}
+
 		// set the website and autor for global use (default to VDM if not found)
 		$this->config->set('project_website', $component->website ?? 'https://dev.vdm.io');
 		$this->config->set('project_author', $component->author ?? 'VDM');

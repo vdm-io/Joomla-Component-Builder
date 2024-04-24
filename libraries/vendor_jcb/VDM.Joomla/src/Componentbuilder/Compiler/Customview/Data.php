@@ -243,6 +243,12 @@ class Data
 				'jcb_ce_onBeforeModelCustomViewData', [&$item, &$id, &$table]
 			);
 
+			// Make sure the icon is only an icon path
+			if (strpos($item->icon, '#') !== false)
+			{
+				$item->icon = strstr($item->icon, '#', true);
+			}
+
 			// set GUI mapper
 			$guiMapper = [
 				'table' => $table,

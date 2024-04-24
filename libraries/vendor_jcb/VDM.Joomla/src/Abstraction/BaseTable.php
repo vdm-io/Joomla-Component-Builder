@@ -48,7 +48,7 @@ abstract class BaseTable implements Tableinterface
 			'tab_name' => NULL,
 			'db' => [
 				'type' => 'INT(11)',
-				'default' => '',
+				'default' => 'EMPTY',
 				'auto_increment' => true,
 				'primary_key' => true,
 				'null_switch' => 'NOT NULL'
@@ -227,7 +227,7 @@ abstract class BaseTable implements Tableinterface
 			'tab_name' => NULL,
 			'db' => [
 				'type' => 'TEXT',
-				'default' => '',
+				'default' => 'EMPTY',
 				'null_switch' => 'NULL'
 			]
 		]

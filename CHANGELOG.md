@@ -1,3 +1,10 @@
+# v4.0.0-beta5
+
+- Fix the media field size limitation. #1109
+- Add dynamic datatype update to schema field check.
+- Fix version_update column size.
+- Improved the Schema Table update engine.
+
 # v4.0.0-beta4
 
 - Add fallback option to ensure that all JCB tables and fields exist.
