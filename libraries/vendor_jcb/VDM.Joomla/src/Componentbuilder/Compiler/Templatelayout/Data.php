@@ -158,28 +158,38 @@ class Data
 		// check if layout keys were passed
 		if (!ArrayHelper::check($layouts))
 		{
+			$layout_bucket = [];
 			// set the Layout data
-			$lay1 = GetHelper::allBetween(
+			if (($layouts_found = GetHelper::allBetween(
 				$content, "LayoutHelper::render('", "',"
-			);
-			$lay2 = GetHelper::allBetween(
-				$content, 'LayoutHelper::render("', '",'
-			);
-			if (ArrayHelper::check($lay1)
-				&& ArrayHelper::check($lay2))
+			)) !== null)
 			{
-				$layouts = array_merge($lay1, $lay2);
+				$layout_bucket[] = $layouts_found;
 			}
-			else
+			if (($layouts_found = GetHelper::allBetween(
+				$content, 'LayoutHelper::render("', '",'
+			)) !== null)
 			{
-				if (ArrayHelper::check($lay1))
-				{
-					$layouts = $lay1;
-				}
-				elseif (ArrayHelper::check($lay2))
-				{
-					$layouts = $lay2;
-				}
+				$layout_bucket[] = $layouts_found;
+			}
+			// set the Layout data
+			if (($layouts_found = GetHelper::allBetween(
+				$content, "Joomla__" . "_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('", "',"
+			)) !== null)
+			{
+				$layout_bucket[] = $layouts_found;
+			}
+			if (($layouts_found = GetHelper::allBetween(
+				$content, 'Joomla__' . '_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render("', '",'
+			)) !== null)
+			{
+				$layout_bucket[] = $layouts_found;
+			}
+
+			// Flatten and merge all collected layouts if any
+			if ($layout_bucket !== [])
+			{
+				$layouts = array_merge($layouts, ...$layout_bucket);
 			}
 		}
 

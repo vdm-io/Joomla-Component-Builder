@@ -294,6 +294,24 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get component autoloader path
+	 *
+	 * @return  string  The component autoloader path
+	 * @since 3.2.0
+	 */
+	protected function getComponentautoloaderpath(): string
+	{
+		if ($this->joomla_version == 3)
+		{
+			return 'helpers/powerloader.php';
+		}
+		else
+		{
+			return 'src/Helper/PowerloaderHelper.php';
+		}
+	}
+
+	/**
 	 * get add namespace prefix
 	 *
 	 * @return  bool  The add namespace prefix switch
@@ -636,9 +654,12 @@ class Config extends BaseConfig
 		return [
 			'jjt' => 'Joomla' . '.JText._(',
 			'js' => 'Text:' . ':script(',
-			't' => 'Text:' . ':_(',        // namespace and J version will be found
+			't' => 'Text:' . ':_(',            // namespace and J version will be found
 			'ts' => 'Text:' . ':sprintf(',  // namespace and J version will be found
-			'jt' => 'JustTEXT:' . ':_('
+			'jt' => 'JustTEXT:' . ':_(',
+			'spjs' => 'Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':script(',    // the joomla power version
+			'spt' => 'Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':_(',            // the joomla power version
+			'spts' => 'Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':sprintf('   // the joomla power version
 		];
 	}
 

@@ -762,16 +762,6 @@ class HtmlView extends BaseHtmlView
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
 		// add cpanel button
 		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
-		if ($this->canDo->get('compiler.run_expansion'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('compiler.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
-		if ($this->canDo->get('compiler.translate'))
-		{
-			// add Translate button.
-			ToolbarHelper::custom('compiler.runTranslator', 'comments-2 custom-button-runtranslator', '', 'COM_COMPONENTBUILDER_TRANSLATE', false);
-		}
 		if ($this->canDo->get('compiler.compiler_animations'))
 		{
 			// add Compiler Animations button.

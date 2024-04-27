@@ -141,7 +141,7 @@ jQuery(document).ready(function($) {
 
 
 <div id="installer-import" class="clearfix">
-<form enctype="multipart/form-data" action="<?php echo \JRoute::_('index.php?option=com_componentbuilder&view=import_language_translations');?>" method="post" name="adminForm" id="adminForm" class="form-horizontal form-validate">
+<form enctype="multipart/form-data" action="<?php echo Route::_('index.php?option=com_componentbuilder&view=import_language_translations');?>" method="post" name="adminForm" id="adminForm" class="form-horizontal form-validate">
 
 
 	<?php if (!empty( $this->sidebar)) : ?>

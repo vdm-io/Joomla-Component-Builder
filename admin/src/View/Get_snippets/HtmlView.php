@@ -24,6 +24,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Session\Session;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -197,7 +198,7 @@ class HtmlView extends BaseHtmlView
 		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
 		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
 		// token
-		$this->document->addScriptDeclaration("var token = '". \JSession::getFormToken() ."';");
+		$this->document->addScriptDeclaration("var token = '". Session::getFormToken() ."';");
 		// add some global items buckets for bulk updating
 		$this->document->addScriptDeclaration("var bulkItems = {};");
 		$this->document->addScriptDeclaration("bulkItems.new = [];");

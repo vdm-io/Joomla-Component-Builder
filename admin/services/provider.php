@@ -9,7 +9,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// The power autoloader for this project admin area.
+// The power autoloader for this project (JPATH_ADMINISTRATOR) area.
 $power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/src/Helper/PowerloaderHelper.php';
 if (file_exists($power_autoloader))
 {

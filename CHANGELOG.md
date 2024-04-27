@@ -1,3 +1,9 @@
+# v4.0.0-rc1
+
+- Improved the Schema Table update engine (more).
+- Fix autoloader timing, and loading.
+- Implement the Joomla Powers in JCB code, to move away from JClasses.
+
 # v4.0.0-beta5
 
 - Fix the media field size limitation. #1109
