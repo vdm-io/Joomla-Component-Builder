@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use Joomla\CMS\Uri\Uri;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -80,7 +81,7 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 			<?php	// setup the return path
 				if (!isset($returnpath))
 				{
-					$returnpath = urlencode(base64_encode((string) \JUri::getInstance()));
+					$returnpath = urlencode(base64_encode((string) Uri::getInstance()));
 				}
 				// setup the buttons
 				if (!isset($_buttons) || !ArrayHelper::check($_buttons))

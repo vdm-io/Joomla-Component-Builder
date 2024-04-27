@@ -131,16 +131,6 @@ class HtmlView extends BaseHtmlView
 					ToolbarHelper::checkin('joomla_components.checkin');
 				}
 			}
-			if ($this->user->authorise('joomla_component.clone', 'com_componentbuilder'))
-			{
-				// add Clone button.
-				ToolbarHelper::custom('joomla_components.cloner', 'save-copy custom-button-cloner', '', 'COM_COMPONENTBUILDER_CLONE', 'true');
-			}
-			if ($this->user->authorise('joomla_component.export_jcb_packages', 'com_componentbuilder'))
-			{
-				// add Export JCB Packages button.
-				ToolbarHelper::custom('joomla_components.smartExport', 'download custom-button-smartexport', '', 'COM_COMPONENTBUILDER_EXPORT_JCB_PACKAGES', 'true');
-			}
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
@@ -150,21 +140,6 @@ class HtmlView extends BaseHtmlView
 			{
 				ToolbarHelper::trash('joomla_components.trash');
 			}
-		}
-		if ($this->user->authorise('joomla_component.import_jcb_packages', 'com_componentbuilder'))
-		{
-			// add Import JCB Packages button.
-			ToolbarHelper::custom('joomla_components.smartImport', 'upload custom-button-smartimport', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
-		}
-		if ($this->user->authorise('joomla_component.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('joomla_components.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
-		if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
-		{
-			// add Backup button.
-			ToolbarHelper::custom('joomla_components.backup', 'archive custom-button-backup', '', 'COM_COMPONENTBUILDER_BACKUP', false);
 		}
 		if ($this->user->authorise('joomla_component.clear_tmp', 'com_componentbuilder'))
 		{

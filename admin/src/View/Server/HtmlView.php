@@ -81,9 +81,6 @@ class HtmlView extends BaseHtmlView
 			$this->referral .= '&return=' . (string) $return;
 		}
 
-		// Get Linked view data
-		$this->vydlinked_components = $this->get('Vydlinked_components');
-
 		// Set the toolbar
 		$this->addToolBar();
 
@@ -225,16 +222,6 @@ class HtmlView extends BaseHtmlView
 		{
 			Html::_('stylesheet', $style, ['version' => 'auto']);
 		}
-
-		// Add the CSS for Footable
-		Html::_('stylesheet', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', ['version' => 'auto']);
-		Html::_('stylesheet', 'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);
-		// Add the JavaScript for Footable (adding all functions)
-		Html::_('script', 'media/com_componentbuilder/footable-v3/js/footable.min.js', ['version' => 'auto']);
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$this->getDocument()->addScriptDeclaration($footable);
-
 		// add scripts
 		foreach ($this->scripts as $script)
 		{

@@ -20,7 +20,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 defined('_JEXEC') or die;
 
 // set the defaults
-$items = $displayData->vxtfields;
+$items = $displayData->vxsfields;
 $user = Factory::getApplication()->getIdentity();
 $id = $displayData->item->id;
 // set the edit URL

@@ -16,6 +16,7 @@ use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Uri\Uri;
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
@@ -30,7 +31,7 @@ defined('_JEXEC') or die;
 $this->app->input->set('hidemainmenu', false);
 
 // set the basu URL
-$url_base = \JUri::base() . 'index.php?option=com_componentbuilder';
+$url_base = Uri::base() . 'index.php?option=com_componentbuilder';
 $url_search = $url_base . '&view=search';
 
 // get main search input field

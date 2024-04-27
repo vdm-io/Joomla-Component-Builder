@@ -1,3 +1,9 @@
+# v5.0.0-rc1
+
+- Improved the Schema Table update engine (more).
+- Fix autoloader timing, and loading.
+- Implement the Joomla Powers in JCB code, to move away from JClasses.
+
 # v5.0.0-beta5
 
 - Fix the media field size limitation. #1109
@@ -48,9 +54,9 @@
 - Add power path override option on component level.
 - Fix the sql build feature. #1032
 
-# v4.0.0-beta3
+# v4.0.0-rc1
 
-- Add Joomla powers for namespace dynamic management.
+- Improved the Schema Table update engine (more).
 
 # v3.2.0
 

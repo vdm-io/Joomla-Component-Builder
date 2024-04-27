@@ -39,7 +39,7 @@ defined('_JEXEC') or die;
 	}
 </script>
 
-<form action="<?php echo \JRoute::_('index.php?option=com_componentbuilder'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 	<input type="hidden" name="task" value="" />
 	<?php echo Html::_('form.token'); ?>
 </form>

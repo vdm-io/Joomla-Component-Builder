@@ -2149,8 +2149,8 @@ class Infusion extends Interpretation
 				CFactory::_('Compiler.Builder.Component.Fields')->varExport(null, 1)
 			);
 
-			// set the autoloader for Powers (first time)
-			CFactory::_('Power.Autoloader')->set();
+			// set the autoloader for Powers
+			CFactory::_('Power.Autoloader')->setFiles();
 
 			// tweak system to set stuff to the module domain
 			$_backup_target     = CFactory::_('Config')->build_target;

@@ -486,56 +486,52 @@ abstract class Schema implements SchemaInterface
 	 *
 	 * This function checks if there's a significant difference between the current
 	 * data type and the expected data type that would require updating the database schema.
-	 * It ignores size and other modifiers for certain data types where MySQL considers
-	 * these attributes irrelevant for storage.
+	 * It ignores display width for numeric types where MySQL considers these attributes
+	 * irrelevant for storage but considers size and other modifiers for types like VARCHAR.
 	 *
-	 * @param string $currentType   The current data type from the database schema.
-	 * @param string $expectedType  The expected data type to validate against.
+	 * @param string  $currentType    The current data type from the database schema.
+	 * @param string  $expectedType   The expected data type to validate against.
 	 *
-	 * @return bool Returns true if the data type change is significant, otherwise false.
+	 * @return bool  Returns true if the data type change is significant, otherwise false.
 	 * @since  3.2.1
 	 */
-	function isDataTypeChangeSignificant(string $currentType, string $expectedType): bool
+	protected function isDataTypeChangeSignificant(string $currentType, string $expectedType): bool
 	{
-		// we only do this for Joomla 4+
-		if ($this->currentVersion != 3)
+		// Normalize both input types to lowercase for case-insensitive comparison
+		$currentType = strtolower($currentType);
+		$expectedType = strtolower($expectedType);
+
+		// Regex to extract the base data type and numeric parameters with named groups
+		$typePattern = '/^(?<datatype>\w+)(\((?<params>\d+(,\d+)?)\))?/';
+
+		// Match types and parameters
+		preg_match($typePattern, $currentType, $currentMatches);
+		preg_match($typePattern, $expectedType, $expectedMatches);
+
+		// Compare base types
+		if ($currentMatches['datatype'] !== $expectedMatches['datatype'])
 		{
-			// Normalize both input types to lowercase for case-insensitive comparison
-			$currentType = strtolower($currentType);
-			$expectedType = strtolower($expectedType);
-
-			// Define types where size or other modifiers are irrelevant
-			$sizeIrrelevantTypes = [
-				'int', 'tinyint', 'smallint', 'mediumint', 'bigint', // Standard integer types
-				'int unsigned', 'tinyint unsigned', 'smallint unsigned', 'mediumint unsigned', 'bigint unsigned', // Unsigned integer types
-			];
-
-			// Check if the type involves size-irrelevant types
-			foreach ($sizeIrrelevantTypes as $type)
-			{
-				if (strpos($expectedType, $type) !== false)
-				{
-					// Remove any numeric sizes and modifiers for comparison
-					$pattern = '/\(\d+\)|unsigned|\s*/';
-					$cleanCurrentType = preg_replace($pattern, '', $currentType);
-					$cleanExpectedType = preg_replace($pattern, '', $expectedType);
-
-					// Compare the cleaned types
-					if ($cleanCurrentType === $cleanExpectedType)
-					{
-						return false; // No significant change
-					}
-				}
-			}
+			return true; // Base types differ
 		}
 
-		// Perform a standard case-insensitive comparison for other types
-		if (strcasecmp($currentType, $expectedType) == 0)
+		// Define types where size and other modifiers are irrelevant
+		$sizeIrrelevantTypes = [
+			'int', 'tinyint', 'smallint', 'mediumint', 'bigint',
+			'float', 'double', 'decimal', 'numeric' // Numeric types where display width is irrelevant
+		];
+
+		// If the type is not in the size irrelevant list, compare full definitions
+		if (!in_array($currentMatches['datatype'], $sizeIrrelevantTypes))
 		{
-			return false; // No significant change
+			return $currentType !== $expectedType; // Use full definition for types where size matters
 		}
 
-		return true; // Significant datatype change detected
+		// For size irrelevant types, only compare base type, ignoring size and unsigned
+		$currentBaseType = preg_replace('/\(\d+(,\d+)?\)|unsigned/', '', $currentType);
+		$expectedBaseType = preg_replace('/\(\d+(,\d+)?\)|unsigned/', '', $expectedType);
+
+		// Perform a final comparison for numeric types ignoring size
+		return $currentBaseType !== $expectedBaseType;
 	}
 
 	/**

@@ -206,8 +206,8 @@
 			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
-			required="add_admin_event:1"
 			validate="code"
+			showon="add_admin_event:1"
 		/>
 		<!-- Note_git_folder_path Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_git_folder_path" label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_GIT_FOLDER_PATH_LABEL" description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NOTE_GIT_FOLDER_PATH_DESCRIPTION" heading="h4" class="alert alert-info note_git_folder_path" showon="add_git_folder_path:1" />
@@ -643,6 +643,7 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+			showon="add_css_site:1"
 		/>
 		<!-- Whmcs_buy_link Field. Type: Url. (joomla) -->
 		<field

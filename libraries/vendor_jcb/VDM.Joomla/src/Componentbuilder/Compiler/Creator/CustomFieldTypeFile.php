@@ -546,10 +546,14 @@ final class CustomFieldTypeFile
 		if ($this->config->get('joomla_version', 3) != 3)
 		{
 			$placeholders['JFactory::getUser()'] = 'Factory::getApplication()->getIdentity()';
+			$placeholders['\JFactory::getUser()'] = 'Factory::getApplication()->getIdentity()';
 			$placeholders['Factory::getUser()'] = 'Factory::getApplication()->getIdentity()';
 			$placeholders['JFactory::'] = 'Factory::';
+			$placeholders['\JFactory::'] = 'Factory::';
 			$placeholders['JHtml::'] = 'Html::';
+			$placeholders['\JHtml::'] = 'Html::';
 			$placeholders['JText::'] = 'Text::';
+			$placeholders['\JText::'] = 'Text::';
 			$placeholders['JComponentHelper::'] = 'ComponentHelper::';
 			$placeholders['\JComponentHelper::'] = 'ComponentHelper::';
 		}

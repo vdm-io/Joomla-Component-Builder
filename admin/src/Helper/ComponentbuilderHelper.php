@@ -10,7 +10,7 @@
  */
 namespace VDM\Component\Componentbuilder\Administrator\Helper;
 
-// The power autoloader for this project admin area.
+// The power autoloader for this project (JPATH_ADMINISTRATOR) area.
 $power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/src/Helper/PowerloaderHelper.php';
 if (file_exists($power_autoloader))
 {
@@ -34,9 +34,6 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Joomla\Archive\Archive;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
@@ -60,6 +57,7 @@ use VDM\Joomla\Utilities\String\PluginHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Utilities\FormHelper;
+use Joomla\CMS\Router\Route;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -2755,7 +2753,7 @@ abstract class ComponentbuilderHelper
 				// get the global settings
 				if (!ObjectHelper::check(self::$params))
 				{
-					self::$params = \JComponentHelper::getParams('com_componentbuilder');
+					self::$params = ComponentHelper::getParams('com_componentbuilder');
 				}
 				self::$gitHubAccessToken = self::$params->get('github_access_token', null);
 			}
@@ -3258,7 +3256,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = PHP_EOL . "</script>";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . "<div id=\"installer-import\" class=\"clearfix\">";
-			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo \JRoute::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
+			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo Route::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . self::_t(1) . "<?php if (!empty( \$this->sidebar)) : ?>";
 			$script['view'][] = self::_t(2) . "<div id=\"j-sidebar-container\" class=\"span2\">";
@@ -3661,7 +3659,7 @@ abstract class ComponentbuilderHelper
 		// get the global settings
 		if (!ObjectHelper::check(self::$params))
 		{
-			self::$params = \JComponentHelper::getParams('com_componentbuilder');
+			self::$params = ComponentHelper::getParams('com_componentbuilder');
 		}
 		$folderPath = self::$params->get($target, $default);
 		// create the folder if it does not exist
@@ -4890,7 +4888,7 @@ abstract class ComponentbuilderHelper
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
-				self::$params = \JComponentHelper::getParams('com_componentbuilder');
+				self::$params = ComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
@@ -5002,7 +5000,7 @@ abstract class ComponentbuilderHelper
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
-				self::$params = \JComponentHelper::getParams('com_componentbuilder');
+				self::$params = ComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
@@ -5108,7 +5106,7 @@ abstract class ComponentbuilderHelper
 			// set the edit link
 			if ($jRoute)
 			{
-				return \JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
+				return Route::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
 			}
 			return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
 		}
@@ -6145,11 +6143,6 @@ abstract class ComponentbuilderHelper
 		{
 			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SNIPPETS'), 'index.php?option=com_componentbuilder&view=snippets', $submenu === 'snippets');
 		}
-		// Access control (get_snippets.submenu).
-		if ($user->authorise('get_snippets.submenu', 'com_componentbuilder'))
-		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_GET_SNIPPETS'), 'index.php?option=com_componentbuilder&view=get_snippets', $submenu === 'get_snippets');
-		}
 		if ($user->authorise('validation_rule.access', 'com_componentbuilder') && $user->authorise('validation_rule.submenu', 'com_componentbuilder'))
 		{
 			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_VALIDATION_RULES'), 'index.php?option=com_componentbuilder&view=validation_rules', $submenu === 'validation_rules');
@@ -6282,224 +6275,6 @@ abstract class ComponentbuilderHelper
 			return $classes;
 		}
 		return false;
-	}
-
-	/**
-	* Prepares the xml document
-	*/
-	public static function xls($rows, $fileName = null, $title = null, $subjectTab = null, $creator = 'Vast Development Method', $description = null, $category = null,$keywords = null, $modified = null)
-	{
-		// set the user
-		// set fileName if not set
-		if (!$fileName)
-		{
-			$fileName = 'exported_'.Factory::getDate()->format('jS_F_Y');
-		}
-		// set modified if not set
-		if (!$modified)
-		{
-			$modified = $user->name;
-		}
-		// set title if not set
-		if (!$title)
-		{
-			$title = 'Book1';
-		}
-		// set tab name if not set
-		if (!$subjectTab)
-		{
-			$subjectTab = 'Sheet1';
-		}
-
-		// make sure we have the composer classes loaded
-		self::composerAutoload('phpspreadsheet');
-
-		// Create new Spreadsheet object
-		$spreadsheet = new Spreadsheet();
-
-		// Set document properties
-		$spreadsheet->getProperties()
-			->setCreator($creator)
-			->setCompany('Vast Development Method')
-			->setLastModifiedBy($modified)
-			->setTitle($title)
-			->setSubject($subjectTab);
-		// The file type
-		$file_type = 'Xls';
-		// set description
-		if ($description)
-		{
-			$spreadsheet->getProperties()->setDescription($description);
-		}
-		// set keywords
-		if ($keywords)
-		{
-			$spreadsheet->getProperties()->setKeywords($keywords);
-		}
-		// set category
-		if ($category)
-		{
-			$spreadsheet->getProperties()->setCategory($category);
-		}
-
-		// Some styles
-		$headerStyles = array(
-			'font'  => array(
-				'bold'  => true,
-				'color' => array('rgb' => '1171A3'),
-				'size'  => 12,
-				'name'  => 'Verdana'
-		));
-		$sideStyles = array(
-			'font'  => array(
-				'bold'  => true,
-				'color' => array('rgb' => '444444'),
-				'size'  => 11,
-				'name'  => 'Verdana'
-		));
-		$normalStyles = array(
-			'font'  => array(
-				'color' => array('rgb' => '444444'),
-				'size'  => 11,
-				'name'  => 'Verdana'
-		));
-
-		// Add some data
-		if (($size = UtilitiesArrayHelper::check($rows)) !== false)
-		{
-			$i = 1;
-
-			// Based on data size we adapt the behaviour.
-			$xls_mode = 1;
-			if ($size > 3000)
-			{
-				$xls_mode = 3;
-				$file_type = 'Csv';
-			}
-			elseif ($size > 2000)
-			{
-				$xls_mode = 2;
-			}
-
-			// Set active sheet and get it.
-			$active_sheet = $spreadsheet->setActiveSheetIndex(0);
-			foreach ($rows as $array)
-			{
-				$a = 'A';
-				foreach ($array as $value)
-				{
-					$active_sheet->setCellValue($a.$i, $value);
-					if ($xls_mode != 3)
-					{
-						if ($i == 1)
-						{
-							$active_sheet->getColumnDimension($a)->setAutoSize(true);
-							$active_sheet->getStyle($a.$i)->applyFromArray($headerStyles);
-							$active_sheet->getStyle($a.$i)->getAlignment()->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-						}
-						elseif ($a === 'A')
-						{
-							$active_sheet->getStyle($a.$i)->applyFromArray($sideStyles);
-						}
-						elseif ($xls_mode == 1)
-						{
-							$active_sheet->getStyle($a.$i)->applyFromArray($normalStyles);
-						}
-					}
-					$a++;
-				}
-				$i++;
-			}
-		}
-		else
-		{
-			return false;
-		}
-
-		// Rename worksheet
-		$spreadsheet->getActiveSheet()->setTitle($subjectTab);
-
-		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
-		$spreadsheet->setActiveSheetIndex(0);
-
-		// Redirect output to a client's web browser (Excel5)
-		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="' . $fileName . '.' . strtolower($file_type) .'"');
-		header('Cache-Control: max-age=0');
-		// If you're serving to IE 9, then the following may be needed
-		header('Cache-Control: max-age=1');
-
-		// If you're serving to IE over SSL, then the following may be needed
-		header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-		header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-		header ('Pragma: public'); // HTTP/1.0
-
-		$writer = IOFactory::createWriter($spreadsheet, $file_type);
-		$writer->save('php://output');
-		jexit();
-	}
-
-	/**
-	* Get CSV Headers
-	*/
-	public static function getFileHeaders($dataType)
-	{
-		// make sure we have the composer classes loaded
-		self::composerAutoload('phpspreadsheet');
-		// get session object
-		$session = Factory::getSession();
-		$package = $session->get('package', null);
-		$package = json_decode($package, true);
-		// set the headers
-		if(isset($package['dir']))
-		{
-			// only load first three rows
-			$chunkFilter = new PhpOffice\PhpSpreadsheet\Reader\chunkReadFilter(2,1);
-			// identify the file type
-			$inputFileType = IOFactory::identify($package['dir']);
-			// create the reader for this file type
-			$excelReader = IOFactory::createReader($inputFileType);
-			// load the limiting filter
-			$excelReader->setReadFilter($chunkFilter);
-			$excelReader->setReadDataOnly(true);
-			// load the rows (only first three)
-			$excelObj = $excelReader->load($package['dir']);
-			$headers = [];
-			foreach ($excelObj->getActiveSheet()->getRowIterator() as $row)
-			{
-				if($row->getRowIndex() == 1)
-				{
-					$cellIterator = $row->getCellIterator();
-					$cellIterator->setIterateOnlyExistingCells(false);
-					foreach ($cellIterator as $cell)
-					{
-						if (!is_null($cell))
-						{
-							$headers[$cell->getColumn()] = $cell->getValue();
-						}
-					}
-					$excelObj->disconnectWorksheets();
-					unset($excelObj);
-					break;
-				}
-			}
-			return $headers;
-		}
-		return false;
-	}
-
-	/**
-	* Load the Composer Vendor phpspreadsheet
-	*/
-	protected static function composephpspreadsheet()
-	{
-		// load the autoloader for phpspreadsheet
-		require_once JPATH_SITE . '/libraries/phpspreadsheet/vendor/autoload.php';
-		// do not load again
-		self::$composer['phpspreadsheet'] = true;
-
-		return  true;
 	}
 
 	/**

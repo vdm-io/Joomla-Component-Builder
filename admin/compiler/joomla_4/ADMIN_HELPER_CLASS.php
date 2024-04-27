@@ -15,12 +15,7 @@ defined('_JCB_TEMPLATE') or die;
 ###BOM###
 namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper;
 
-// The power autoloader for this project admin area.
-$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_###component###/src/Helper/PowerloaderHelper.php';
-if (file_exists($power_autoloader))
-{
-	require_once $power_autoloader;
-}
+###CUSTOM_POWER_AUTOLOADER###
 
 ###ADMIN_HELPER_CLASS_HEADER###
 

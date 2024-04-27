@@ -147,7 +147,9 @@ class Extractor
 				}
 			}
 			// now get the JText: :script()
-			if (in_array('JText:' . ':script(', $lang_string_targets) || in_array('Text:' . ':script(', $lang_string_targets))
+			if (in_array('JText:' . ':script(', $lang_string_targets)
+				|| in_array('Text:' . ':script(', $lang_string_targets)
+				|| in_array('Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':script(', $lang_string_targets))
 			{
 				$sc_text[] = GetHelper::allBetween(
 					$content, "JText:" . ":script('", "'"
@@ -160,6 +162,12 @@ class Extractor
 				);
 				$sc_text[] = GetHelper::allBetween(
 					$content, 'Text:' . ':script("', '"'
+				);
+				$sc_text[] = GetHelper::allBetween(
+					$content, "Joomla__" ."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:" . ":script('", "'"
+				);
+				$sc_text[] = GetHelper::allBetween(
+					$content, 'Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':script("', '"'
 				);
 				// combine into one array
 				$sc_text = ArrayHelper::merge($sc_text);
@@ -192,6 +200,7 @@ class Extractor
 				if ($lang_string_target === 'Joomla' . '.JText._('
 					|| $lang_string_target === 'JText:' . ':script('
 					|| $lang_string_target === 'Text:' . ':script('
+					|| $lang_string_target === 'Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':script('
 					|| $lang_string_target === 'JustTEXT:' . ':_(')
 				{
 					continue;
