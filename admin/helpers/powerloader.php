@@ -20,7 +20,7 @@ if (file_exists($composer_autoloader))
 }
 
 // register additional namespace
-\spl_autoload_register(function ($class) {
+spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
 		'libraries/vendor_jcb/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',

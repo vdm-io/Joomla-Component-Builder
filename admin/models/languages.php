@@ -23,6 +23,7 @@ use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Http\Http;
 
 /**
  * Languages List Model
@@ -101,7 +102,7 @@ class ComponentbuilderModelLanguages extends ListModel
 	{
 		$updateSite = $this->getUpdateSite();
 
-		$http = new JHttp;
+		$http = new Http;
 
 		try
 		{

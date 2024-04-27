@@ -23,12 +23,13 @@ Html::_('formbehavior.chosen', 'select');
 Html::_('behavior.keepalive');
 use Joomla\CMS\Session\Session;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Uri\Uri;
 
 // allow main menu selection
 $this->app->input->set('hidemainmenu', false);
 
 // set the basu URL
-$url_base = \JUri::base() . 'index.php?option=com_componentbuilder';
+$url_base = Uri::base() . 'index.php?option=com_componentbuilder';
 $url_search = $url_base . '&view=search';
 
 // get main search input field
@@ -59,7 +60,7 @@ $search_value = $this->form->getField('search_value');
 <div id="j-main-container">
 <?php endif; ?>
 	<?php if ($this->form): ?>
-	<form action="<?php echo \JRoute::_($url_search); ?>" method="post"
+	<form action="<?php echo Route::_($url_search); ?>" method="post"
 		name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 		<div class="form-horizontal">
 			<div class="row-fluid" id="search_progress_block" style="display: none">

@@ -22,6 +22,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\Utilities\FormHelper as UtilitiesFormHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Session\Session;
 
 /**
  * Componentbuilder Import_joomla_components Html View
@@ -165,7 +166,7 @@ class ComponentbuilderViewImport_joomla_components extends HtmlView
 		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
 		$this->document->addScriptDeclaration("var all_is_good = '".Text::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME')."';"); 
 		// add a token on the page for javascript
-		$this->document->addScriptDeclaration("var token = '".\JSession::getFormToken()."';"); 
+		$this->document->addScriptDeclaration("var token = '".Session::getFormToken()."';"); 
 
 
 		// add the Uikit v2 style sheets

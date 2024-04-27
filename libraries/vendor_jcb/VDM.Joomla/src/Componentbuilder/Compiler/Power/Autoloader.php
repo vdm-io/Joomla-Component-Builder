@@ -77,7 +77,27 @@ class Autoloader
 		// reset all autoloaders power placeholders
 		$this->content->set('ADMIN_POWER_HELPER', '');
 		$this->content->set('SITE_POWER_HELPER', '');
+		$this->content->set('PLUGIN_POWER_AUTOLOADER', '');
 		$this->content->set('CUSTOM_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_PLUGIN_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_CUSTOM_POWER_AUTOLOADER', '');
+	}
+
+	/**
+	 * Set the autoloader into the active content array
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	public function setFiles()
+	{
+		// check if we are using a plugin
+		$this->content->set('PLUGIN_POWER_AUTOLOADER', PHP_EOL . PHP_EOL . $this->getAutoloaderFile(2));
+		$this->content->set('SITE_PLUGIN_POWER_AUTOLOADER', PHP_EOL . PHP_EOL . $this->getAutoloaderFile(2, 'JPATH_SITE'));
+
+		// to add to custom files
+		$this->content->add('CUSTOM_POWER_AUTOLOADER', $this->getAutoloaderFile(0));
+		$this->content->add('SITE_CUSTOM_POWER_AUTOLOADER', $this->getAutoloaderFile(0, 'JPATH_SITE'));
 	}
 
 	/**
@@ -89,9 +109,9 @@ class Autoloader
 	public function set()
 	{
 		// make sure we only load this once
-		if (ArrayHelper::check($this->power->namespace) && !$this->content->isString('CUSTOM_POWER_AUTOLOADER'))
+		if (ArrayHelper::check($this->power->namespace) && !$this->content->isString('ADMIN_POWER_HELPER'))
 		{
-			/************************* IMPORTANT SORT NOTICE ***********************************************
+			/* ********************** IMPORTANT SORT NOTICE *****************************************
 			 *   make sure the name space values are sorted from the longest string to the shortest
 			 *   so that the search do not mistakenly match a shorter namespace before a longer one
 			 *   that has the same short namespace for example:
@@ -102,108 +122,16 @@ class Autoloader
 			 *        ^^^^^^^^^^^^^^^^^^^^^^
 			 *        NameSpace\SubName\SubSubName\ClassName
 			 *        ^^^^^^^^^^^^^^^^^^^^^^
-			 ***********************************************************************************************/
+			 ** *********************************************************************************************/
+
 			uksort($this->power->namespace, fn($a, $b) => strlen((string) $b) - strlen((string) $a));
 
-			// check if we are using a plugin
-			if ($this->loadPluginAutoloader())
-			{
-				$this->content->set('PLUGIN_POWER_AUTOLOADER', $this->getPluginAutoloader());
-			}
+			// load to admin helper class
+			$this->content->add('ADMIN_POWER_HELPER', $this->getHelperAutoloader());
 
-			// load to the helper class
-			if ($this->loadHelperAutoloader())
-			{
-				// load to admin helper class
-				$this->content->add('ADMIN_POWER_HELPER', $this->getHelperAutoloader());
-
-				// load to site helper class if needed
-				if ($this->loadSiteAutoloader())
-				{
-					$this->content->add('SITE_POWER_HELPER', $this->getHelperAutoloader());
-				}
-			}
-
-			// to add to custom files
-			$this->content->add('CUSTOM_POWER_AUTOLOADER', $this->getHelperAutoloader());
+			// load to site helper class if needed
+			$this->content->add('SITE_POWER_HELPER', $this->getHelperAutoloader());
 		}
-	}
-
-	/**
-	 * Should we load the plugin autoloader
-	 *
-	 * @return bool
-	 * @since 3.2.0
-	 */
-	private function loadPluginAutoloader(): bool
-	{
-		return $this->content->exists('PLUGIN_POWER_AUTOLOADER');
-	}
-
-	/**
-	 * Should we load the helper class autoloader
-	 *
-	 * @return bool
-	 * @since 3.2.0
-	 */
-	private function loadHelperAutoloader(): bool
-	{
-		// for now we load it if the plugin is not loaded
-		// but we may want to add a switch that
-		// controls this behaviour.
-		// return !$this->loadPluginAutoloader();
-		// lets load it anyway (can't break anything)
-		// but we will still like a switch for this
-		return true;
-	}
-
-	/**
-	 * Should we load the autoloader in site area
-	 *
-	 * @return bool
-	 * @since 3.2.0
-	 */
-	private function loadSiteAutoloader(): bool
-	{
-		return (!$this->config->remove_site_folder || !$this->config->remove_site_edit_folder);
-	}
-
-	/**
-	 * Get helper autoloader code
-	 *
-	 * @return string
-	 * @since 3.2.0
-	 */
-	private function getPluginAutoloader(): string
-	{
-		// load the code
-		$code = [];
-
-		// if we should not load in the site are
-		if (($script = $this->getBLockSiteLoading()) !== null)
-		{
-			$code[] = $script;
-		}
-
-		// add the composer stuff here
-		if (($script = $this->getComposer(2)) !== null)
-		{
-			$code[] = $script;
-		}
-
-		// get the helper autoloader
-		if (($script = $this->getAutoloader(2)) !== null)
-		{
-			$code[] = $script;
-		}
-
-		// if we have any
-		if (!empty($code))
-		{
-			return PHP_EOL . PHP_EOL . implode(PHP_EOL . PHP_EOL, $code);
-		}
-
-		return '';
 	}
 
 	/**
@@ -245,30 +173,29 @@ class Autoloader
 	}
 
 	/**
-	 * Get code that will block the plugin from loading
-	 *   the autoloader in the site area
+	 * Get autoloader file
+	 *
+	 * @param int     $tabSpace   The dynamic tab spacer
+	 * @param string  $area       The target area
 	 *
 	 * @return string|null
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
-	private function getBLockSiteLoading(): ?string
+	private function getAutoloaderFile(int $tabSpace, string $area = 'JPATH_ADMINISTRATOR'): ?string
 	{
-		// if we should not load in the site are
-		if (!$this->loadSiteAutoloader())
-		{
-			// we add code to prevent this plugin from triggering on the site area
-			$not_site = [];
-			$not_site[] = Indent::_(2) . '//'
-				. Line::_(__Line__, __Class__) . ' do not run the autoloader in the site area';
-			$not_site[] = Indent::_(2) . 'if ($this->app->isClient(\'site\'))';
-			$not_site[] = Indent::_(2) . '{';
-			$not_site[] = Indent::_(3) . 'return;';
-			$not_site[] = Indent::_(2) . '}';
+		// we start building the autoloaded file loader
+		$autoload_file = [];
+		$autoload_file[] = Indent::_($tabSpace) . '//'
+			. Line::_(__Line__, __Class__) . " The power autoloader for this project ($area) area.";
+		$autoload_file[] = Indent::_($tabSpace) . "\$power_autoloader = $area . '/components/com_"
+			. $this->config->get('component_code_name', 'ERROR') . '/'
+			. $this->config->get('component_autoloader_path', 'ERROR') . "';";
+		$autoload_file[] = Indent::_($tabSpace) . 'if (file_exists($power_autoloader))';
+		$autoload_file[] = Indent::_($tabSpace) . '{';
+		$autoload_file[] = Indent::_($tabSpace) . Indent::_(1) . 'require_once $power_autoloader;';
+		$autoload_file[] = Indent::_($tabSpace) . '}';
 
-			return implode(PHP_EOL, $not_site);
-		}
-
-		return null;
+		return implode(PHP_EOL, $autoload_file);
 	}
 
 	/**
@@ -287,7 +214,7 @@ class Autoloader
 			$autoload_method = [];
 			$autoload_method[] = Indent::_($tabSpace) . '//'
 				. Line::_(__Line__, __Class__) . ' register additional namespace';
-			$autoload_method[] = Indent::_($tabSpace) . '\spl_autoload_register(function ($class) {';
+			$autoload_method[] = Indent::_($tabSpace) . 'spl_autoload_register(function ($class) {';
 			$autoload_method[] = Indent::_($tabSpace) . Indent::_(1) . '//'
 				. Line::_(__Line__, __Class__) . ' project-specific base directories and namespace prefix';
 			$autoload_method[] = Indent::_($tabSpace) . Indent::_(1) . '$search = [';

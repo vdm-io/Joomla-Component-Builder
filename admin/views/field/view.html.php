@@ -217,7 +217,7 @@ class ComponentbuilderViewField extends HtmlView
 		// add var key
 		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
+		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// add the libs for subform (since not adding it via xml but ajax)
  		Html::_('jquery.ui', array('core', 'sortable'));
  		Html::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));

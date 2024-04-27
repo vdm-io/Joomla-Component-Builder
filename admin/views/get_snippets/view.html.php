@@ -23,6 +23,7 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Session\Session;
 
 /**
  * Componentbuilder Html View class for the Get_snippets
@@ -180,7 +181,7 @@ class ComponentbuilderViewGet_snippets extends HtmlView
 		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
 		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
 		// token
-		$this->document->addScriptDeclaration("var token = '". \JSession::getFormToken() ."';");
+		$this->document->addScriptDeclaration("var token = '". Session::getFormToken() ."';");
 		// add some global items buckets for bulk updating
 		$this->document->addScriptDeclaration("var bulkItems = {};");
 		$this->document->addScriptDeclaration("bulkItems.new = [];");

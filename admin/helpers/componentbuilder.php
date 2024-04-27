@@ -12,7 +12,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// The power autoloader for this project admin area.
+// The power autoloader for this project (JPATH_ADMINISTRATOR) area.
 $power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/powerloader.php';
 if (file_exists($power_autoloader))
 {
@@ -61,6 +61,7 @@ use VDM\Joomla\Utilities\String\PluginHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Utilities\FormHelper;
+use Joomla\CMS\Router\Route;
 
 /**
  * Componentbuilder component helper.
@@ -2751,7 +2752,7 @@ abstract class ComponentbuilderHelper
 				// get the global settings
 				if (!ObjectHelper::check(self::$params))
 				{
-					self::$params = \JComponentHelper::getParams('com_componentbuilder');
+					self::$params = ComponentHelper::getParams('com_componentbuilder');
 				}
 				self::$gitHubAccessToken = self::$params->get('github_access_token', null);
 			}
@@ -3254,7 +3255,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = PHP_EOL . "</script>";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . "<div id=\"installer-import\" class=\"clearfix\">";
-			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo \JRoute::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
+			$script['view'][] = "<form enctype=\"multipart/form-data\" action=\"<?php echo Route::_('index.php?option=com_[[[-#-#-component]]]&view=import_[[[-#-#-views]]]');?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\" class=\"form-horizontal form-validate\">";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . self::_t(1) . "<?php if (!empty( \$this->sidebar)) : ?>";
 			$script['view'][] = self::_t(2) . "<div id=\"j-sidebar-container\" class=\"span2\">";
@@ -3657,7 +3658,7 @@ abstract class ComponentbuilderHelper
 		// get the global settings
 		if (!ObjectHelper::check(self::$params))
 		{
-			self::$params = \JComponentHelper::getParams('com_componentbuilder');
+			self::$params = ComponentHelper::getParams('com_componentbuilder');
 		}
 		$folderPath = self::$params->get($target, $default);
 		// create the folder if it does not exist
@@ -4886,7 +4887,7 @@ abstract class ComponentbuilderHelper
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
-				self::$params = \JComponentHelper::getParams('com_componentbuilder');
+				self::$params = ComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
@@ -4998,7 +4999,7 @@ abstract class ComponentbuilderHelper
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
-				self::$params = \JComponentHelper::getParams('com_componentbuilder');
+				self::$params = ComponentHelper::getParams('com_componentbuilder');
 			}
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
@@ -5104,7 +5105,7 @@ abstract class ComponentbuilderHelper
 			// set the edit link
 			if ($jRoute)
 			{
-				return \JRoute::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
+				return Route::_("index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref);
 			}
 			return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
 		}

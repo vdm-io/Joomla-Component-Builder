@@ -9810,7 +9810,7 @@ class Com_ComponentbuilderInstallerScript
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.2.1-beta3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 3.2.1-rc1 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -11793,7 +11793,7 @@ class Com_ComponentbuilderInstallerScript
 		if (!class_exists($nameClass, true))
 		{
 			// The power autoloader for this project admin area.
-			$power_autoloader = JPATH_ADMINISTRATOR . '/componenents/com_componentbuilder/helpers/powerload.php';
+			$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/powerloader.php';
 			if (file_exists($power_autoloader))
 			{
 				require_once $power_autoloader;

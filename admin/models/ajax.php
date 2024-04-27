@@ -30,6 +30,7 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Componentbuilder Ajax List Model
@@ -168,7 +169,7 @@ class ComponentbuilderModelAjax extends ListModel
 	protected function componentDetailsDisplay($object)
 	{
 		// set some vars
-		$image = (StringHelper::check($object->image)) ? '<img alt="Joomla Component Image" src="'. \JUri::root() . $object->image . '" style="float: right;">': '';
+		$image = (StringHelper::check($object->image)) ? '<img alt="Joomla Component Image" src="'. Uri::root() . $object->image . '" style="float: right;">': '';
 		$desc = (StringHelper::check($object->description)) ? $object->description : $object->short_description;
 		$placeholder = ($object->add_placeholders == 1) ? '<span class="btn btn-small btn-success"> ' . Text::_('COM_COMPONENTBUILDER_YES') . ' </span>' : '<span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
 		$debug = ($object->debug_linenr == 1) ? '<span class="btn btn-small btn-success"> ' .Text::_('COM_COMPONENTBUILDER_YES') . '</span>'  : ' <span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
@@ -206,11 +207,11 @@ class ComponentbuilderModelAjax extends ListModel
 			$result['error'] = '<span style="color: red;">' . Text::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
 			if ($this->hasCurl())
 			{
-				$path = '*/5 * * * * curl -s "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
+				$path = '*/5 * * * * curl -s "' .Uri::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
 			}
 			else
 			{
-				$path = '*/5 * * * * wget "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
+				$path = '*/5 * * * * wget "' .Uri::root() . 'index.php?option=com_componentbuilder&task=api.backup" >/dev/null 2>&1';
 			}
 			$result['path'] =  '<code>' . $path . '</code>';
 		}
@@ -219,11 +220,11 @@ class ComponentbuilderModelAjax extends ListModel
 			$result['error'] = '<span style="color: red;">' . Text::sprintf('COM_COMPONENTBUILDER_NO_CRONJOB_PATH_FOUND_FOR_S', $type) . '</span>';
 			if ($this->hasCurl())
 			{
-				$path = '* * * * * curl -s "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
+				$path = '* * * * * curl -s "' .Uri::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
 			}
 			else
 			{
-				$path = '* * * * * wget "' .\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
+				$path = '* * * * * wget "' .Uri::root() . 'index.php?option=com_componentbuilder&task=api.expand" >/dev/null 2>&1';
 			}
 			$result['path'] =  '<code>' . $path . '</code>';
 		}

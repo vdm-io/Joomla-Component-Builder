@@ -1,3 +1,9 @@
+# v3.2.1-rc1
+
+- Improved the Schema Table update engine (more)
+- Fix autoloader timing, and loading.
+- Implement the Joomla Powers in JCB code, to move away from JClasses.
+
 # v3.2.1-beta3
 
 - Fix version_update column size.

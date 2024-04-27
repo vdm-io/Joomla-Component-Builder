@@ -23,6 +23,7 @@ use Joomla\CMS\Uri\Uri;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Component\ComponentHelper;
 
 /**
  * Componentbuilder Api Form Controller
@@ -68,7 +69,7 @@ class ComponentbuilderControllerApi extends FormController
 		// get params first
 		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
-			$this->params = \JComponentHelper::getParams('com_componentbuilder');
+			$this->params = ComponentHelper::getParams('com_componentbuilder');
 		}
 		// get model
 		$model = $this->getModel('api');
@@ -146,7 +147,7 @@ class ComponentbuilderControllerApi extends FormController
 		// get params first
 		if (!isset($this->params) || !ObjectHelper::check($this->params))
 		{
-			$this->params = \JComponentHelper::getParams('com_componentbuilder');
+			$this->params = ComponentHelper::getParams('com_componentbuilder');
 		}
 		// check if expansion is enabled
 		$method = $this->params->get('development_method', 1);

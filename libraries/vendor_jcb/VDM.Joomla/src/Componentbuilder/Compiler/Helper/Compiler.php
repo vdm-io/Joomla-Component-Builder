@@ -405,7 +405,7 @@ class Compiler extends Infusion
 			{
 				CFactory::_('Power')->load($super_powers);
 			}
-			// set the autoloader for Powers (second time)
+			// set the autoloader for Powers
 			CFactory::_('Power.Autoloader')->set();
 			// get the bom file
 			$bom = FileHelper::getContent(CFactory::_('Config')->bom_path);

@@ -12,7 +12,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// The power autoloader for this project site area.
+// The power autoloader for this project (JPATH_SITE) area.
 $power_autoloader = JPATH_SITE . '/components/com_componentbuilder/helpers/powerloader.php';
 if (file_exists($power_autoloader))
 {

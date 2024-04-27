@@ -217,7 +217,7 @@ class ComponentbuilderViewJoomla_component extends HtmlView
 		// add var key
 		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		Text::script('view not acceptable. Error');
 	}
 

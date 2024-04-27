@@ -21,6 +21,7 @@ use Joomla\CMS\Session\Session;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Dynamic_gets Admin Controller
@@ -127,7 +128,7 @@ class ComponentbuilderControllerDynamic_gets extends AdminController
 		// check if user has the right
 		$user = Factory::getUser();
 		// set page redirect
-		$redirect_url = \JRoute::_('index.php?option=com_componentbuilder&view=dynamic_gets', false);
+		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=dynamic_gets', false);
 		// set massage
 		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
 		// check if this user has the right to run expansion
@@ -136,7 +137,7 @@ class ComponentbuilderControllerDynamic_gets extends AdminController
 			// set massage
 			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
 			// run expansion via API
-			$result = ComponentbuilderHelper::getFileContents(\JUri::root() . 'index.php?option=com_componentbuilder&task=api.expand');
+			$result = ComponentbuilderHelper::getFileContents(Uri::root() . 'index.php?option=com_componentbuilder&task=api.expand');
 			// is there a message returned
 			if (!is_numeric($result) && StringHelper::check($result))
 			{
