@@ -503,9 +503,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 		// Remove Joomla_plugin_files_folders_urls from action logs config table.
 		$this->removeActionLogConfig('com_componentbuilder.joomla_plugin_files_folders_urls');
-
-		// Remove Joomla_component from action logs config table.
-		$this->removeActionLogConfig('com_componentbuilder.joomla_component');
 		// little notice as after service, in case of bad experience with component.
 		echo '<div style="background-color: #fff;" class="alert alert-info">
 		<h2>Did something go wrong? Are you disappointed?</h2>
@@ -2313,22 +2310,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);
-
-			// Add Joomla_component to the action logs config table.
-			$this->setActionLogConfig(
-				// typeTitle
-				'JOOMLA_COMPONENT',
-				// typeAlias
-				'com_componentbuilder.joomla_component',
-				// idHolder
-				'id',
-				// titleHolder
-				'system_name',
-				// tableName
-				'#__componentbuilder_joomla_component',
-				// textPrefix
-				'COM_COMPONENTBUILDER'
-			);
 		}
 
 		// do any updates needed
@@ -3229,7 +3210,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.0.0-rc1 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.0.0-rc2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -4030,22 +4011,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				'joomla_plugin',
 				// tableName
 				'#__componentbuilder_joomla_plugin_files_folders_urls',
-				// textPrefix
-				'COM_COMPONENTBUILDER'
-			);
-
-			// Add/Update Joomla_component in the action logs config table.
-			$this->setActionLogConfig(
-				// typeTitle
-				'JOOMLA_COMPONENT',
-				// typeAlias
-				'com_componentbuilder.joomla_component',
-				// idHolder
-				'id',
-				// titleHolder
-				'system_name',
-				// tableName
-				'#__componentbuilder_joomla_component',
 				// textPrefix
 				'COM_COMPONENTBUILDER'
 			);
