@@ -342,9 +342,16 @@ abstract class Schema implements SchemaInterface
 					'current' => $current->Type,
 					'expected' => $expected['type']
 				];
+			}
 
-				// check if update of default values is needed
-				$this->checkDefault($table, $column);
+			// check if update of default values is needed
+			if ($this->checkDefault($table, $column) && !isset($requireUpdate[$column]))
+			{
+				$requireUpdate[$column] = [
+					'column' => $column,
+					'current' => $current->Type,
+					'expected' => $expected['type']
+				];
 			}
 		}
 
@@ -402,28 +409,22 @@ abstract class Schema implements SchemaInterface
 	 * @param string $table   The table to update.
 	 * @param string $column  The column/field to check.
 	 *
-	 * @return void
+	 * @return bool
 	 * @since  3.2.1
 	 */
-	protected function checkDefault(string $table, string $column): void
+	protected function checkDefault(string $table, string $column): bool
 	{
 		// Retrieve the expected column configuration
 		$expected = $this->table->get($table, $column, 'db');
 
 		// Skip updates if the column is auto_increment
-		if (isset($expected['auto_increment']) && $expected['auto_increment'])
+		if (isset($expected['auto_increment']) && $expected['auto_increment'] === true)
 		{
-			return;
+			return false;
 		}
 
 		// Retrieve the current column configuration
 		$current = $this->columns[$column];
-
-		// Check if default should be empty and current default is null, skip processing
-		if (strtoupper($expected['default']) === 'EMPTY' && $current->Default === NULL)
-		{
-			return;
-		}
 
 		// Determine the new default value based on the expected settings
 		$type = $expected['type'] ??  'TEXT';
@@ -434,7 +435,17 @@ abstract class Schema implements SchemaInterface
 		if (is_numeric($newDefault) && $this->adjustExistingDefaults($table, $column, $current->Default, $newDefault))
 		{
 			$this->success[] = "Success: updated the ($column) defaults in $table table.";
+
+			return true;
 		}
+
+		if (is_string($expected['default']) && strtoupper($expected['default']) === 'EMPTY' &&
+			is_string($current->Default) && strpos($current->Default, 'EMPTY') !== false)
+		{
+			return true; // little fix
+		}
+
+		return false;
 	}
 
 	/**
@@ -680,7 +691,7 @@ abstract class Schema implements SchemaInterface
 	 */
 	protected function getDefaultValue(string $type, ?string $defaultValue, bool $pure = false): string
 	{
-		if ($defaultValue === null || strtoupper($defaultValue) === 'EMPTY')
+		if ($defaultValue === null)
 		{
 			return '';
 		}
@@ -692,7 +703,52 @@ abstract class Schema implements SchemaInterface
 		}
 
 		// Apply and quote the default value
-		return $pure ? $defaultValue : " DEFAULT " . $this->db->quote($defaultValue);
+		$sql_default = $this->quote($defaultValue);
+		return $pure ? $defaultValue : " DEFAULT $sql_default";
+	}
+
+	/**
+	 * Set a value based on data type
+	 *
+	 * @param   mixed  $value   The value to set
+	 *
+	 * @return  mixed
+	 * @since   3.2.0
+	 **/
+	protected function quote($value)
+	{
+		if ($value === null) // hmm the null does pose an issue (will keep an eye on this)
+		{
+			return 'NULL';
+		}
+
+		if (is_string($value) && strtoupper($value) === 'EMPTY')
+		{
+			return "''";
+		}
+		elseif (is_numeric($value))
+		{
+			if (filter_var($value, FILTER_VALIDATE_INT))
+			{
+				return (int) $value;
+			}
+			elseif (filter_var($value, FILTER_VALIDATE_FLOAT))
+			{
+				return (float) $value;
+			}
+		}
+		elseif (is_bool($value)) // not sure if this will work well (but its correct)
+		{
+			return $value ? 'TRUE' : 'FALSE';
+		}
+		// For date and datetime values
+		elseif ($value instanceof \DateTime)
+		{
+			return $this->db->quote($value->format('Y-m-d H:i:s'));
+		}
+
+		// For other data types, just escape it
+		return $this->db->quote($value);
 	}
 }
 
