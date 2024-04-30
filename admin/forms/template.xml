@@ -136,7 +136,7 @@
 			label="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL"
 			description="COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_DESCRIPTION"
 			multiple="false"
-			default=""
+			default="0"
 			required="false"
 			button="true"
 		/>

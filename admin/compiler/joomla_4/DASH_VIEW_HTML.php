@@ -35,6 +35,8 @@ class HtmlView extends BaseHtmlView
 	{
 		// Assign data to the view
 		$this->icons          = $this->get('Icons');
+		$this->styles         = $this->get('Styles');
+		$this->scripts        = $this->get('Scripts');
 		$this->contributors   = ###Component###Helper::getContributors();
 
 		// get the manifest details of the component
@@ -90,11 +92,17 @@ class HtmlView extends BaseHtmlView
 	{
 		// set page title
 		$this->getDocument()->setTitle(Text::_('COM_###COMPONENT###_DASHBOARD'));
-
 		// add manifest to page JavaScript
 		$this->getDocument()->addScriptDeclaration("var manifest = JSON.parse('" . json_encode($this->manifest) . "');", "text/javascript");
-
-		// add dashboard style sheets
-		Html::_('stylesheet', "administrator/components/com_###component###/assets/css/dashboard.css", ['version' => 'auto']);
+		// add styles
+		foreach ($this->styles as $style)
+		{
+			Html::_('stylesheet', $style, ['version' => 'auto']);
+		}
+		// add scripts
+		foreach ($this->scripts as $script)
+		{
+			Html::_('script', $script, ['version' => 'auto']);
+		}
 	}
 }
