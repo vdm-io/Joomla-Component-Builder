@@ -121,7 +121,8 @@ class Utilities implements ServiceProviderInterface
 	public function getFileInjector(Container $container): FileInjector
 	{
 		return new FileInjector(
-			$container->get('Power.Injector')
+			$container->get('Power.Injector'),
+			$container->get('Joomla.Power.Injector')
 		);
 	}
 

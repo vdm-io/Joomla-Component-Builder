@@ -13,6 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector as Power;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Injector as JoomlaPower;
 use VDM\Joomla\Utilities\MathHelper;
 
 
@@ -33,23 +34,41 @@ final class FileInjector
 	protected Power $power;
 
 	/**
-	 * The pattern to get the powers
+	 * The Joomla Injector Class.
+	 *
+	 * @var   JoomlaPower
+	 * @since 3.2.1
+	 */
+	protected JoomlaPower $joomla;
+
+	/**
+	 * The power pattern to get the powers
 	 *
 	 * @var    string
 	 * @since 3.2.0
 	 **/
-	protected string $pattern = '/Super_'.'_'.'_[a-zA-Z0-9_]+_'.'_'.'_Power/';
+	protected string $powerPattern = '/Super_'.'_'.'_[a-zA-Z0-9_]+_'.'_'.'_Power/';
+
+	/**
+	 * The Joomla power pattern to get the powers
+	 *
+	 * @var    string
+	 * @since 3.2.1
+	 **/
+	protected string $joomlaPattern = '/Joomla_'.'_'.'_[a-zA-Z0-9_]+_'.'_'.'_Power/';
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Power   $power   The Injector Class.
+	 * @param Power        $power    The Injector Class.
+	 * @param JoomlaPower  $joomla   The Joomla Injector Class.
 	 *
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
-	public function __construct(Power $power)
+	public function __construct(Power $power, JoomlaPower $joomla)
 	{
 		$this->power = $power;
+		$this->joomla = $joomla;
 	}
 
 	/**
@@ -72,7 +91,9 @@ final class FileInjector
 			throw new \InvalidArgumentException('Position cannot be negative.');
 		}
 
-		$found_super_powers = preg_match($this->pattern, $data);
+		$found_joomla_powers = preg_match($this->joomlaPattern, $data);
+		$found_super_powers = preg_match($this->powerPattern, $data);
+
 		$actual_file = $this->openFileWithLock($file);
 
 		try
@@ -84,6 +105,11 @@ final class FileInjector
 			}
 
 			$this->processFile($actual_file, $temp_file, $data, $position, $replace);
+
+			if ($found_joomla_powers)
+			{
+				$this->injectJoomlaPowers($actual_file);
+			}
 
 			if ($found_super_powers)
 			{
@@ -201,6 +227,28 @@ final class FileInjector
 		rewind($actual_file);
 
 		$power_data = $this->power->power(
+			stream_get_contents($actual_file)
+		);
+
+		ftruncate($actual_file, 0);
+		rewind($actual_file);
+
+		fwrite($actual_file, $power_data);
+	}
+
+	/**
+	 * Injects Joomla powers into the file content, if found, and updates the file.
+	 *
+	 * @param resource  $actual_file   The file handle of the actual file.
+	 * 
+	 * @return void
+	 * @since 3.2.1
+	 */
+	private function injectJoomlaPowers($actual_file): void
+	{
+		rewind($actual_file);
+
+		$power_data = $this->joomla->power(
 			stream_get_contents($actual_file)
 		);
 

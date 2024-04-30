@@ -63,18 +63,6 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 		</div>
 	<?php echo Html::_('bootstrap.endTab'); ?>
 
-	<?php if ($this->canDo->get('joomla_component.access')) : ?>
-	<?php echo Html::_('bootstrap.addTab', 'serverTab', 'linked_components', Text::_('COM_COMPONENTBUILDER_SERVER_LINKED_COMPONENTS', true)); ?>
-		<div class="row-fluid form-horizontal-desktop">
-		</div>
-		<div class="row-fluid form-horizontal-desktop">
-			<div class="span12">
-				<?php echo LayoutHelper::render('server.linked_components_fullwidth', $this); ?>
-			</div>
-		</div>
-	<?php echo Html::_('bootstrap.endTab'); ?>
-	<?php endif; ?>
-
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'serverTab'; ?>
 	<?php echo LayoutHelper::render('joomla.edit.params', $this); ?>

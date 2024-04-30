@@ -25,9 +25,8 @@ use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
-use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
-use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 /**
  * Componentbuilder Server Admin Model
@@ -188,102 +187,8 @@ class ComponentbuilderModelServer extends AdminModel
 				$item->username = rtrim($basic->decryptString($item->username), "\0");
 			}
 		}
-		$this->sales_serverupdate_servervvvw = $item->id;
 
 		return $item;
-	}
-
-	/**
-	 * Method to get list data.
-	 *
-	 * @return mixed  An array of data items on success, false on failure.
-	 */
-	public function getVydlinked_components()
-	{
-		// Get the user object.
-		$user = Factory::getUser();
-		// Create a new query object.
-		$db = Factory::getDBO();
-		$query = $db->getQuery(true);
-
-		// Select some fields
-		$query->select('a.*');
-
-		// From the componentbuilder_joomla_component table
-		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
-
-		// Filter by sales_serverupdate_servervvvw global.
-		$sales_serverupdate_servervvvw = $this->sales_serverupdate_servervvvw;
-		if (is_numeric($sales_serverupdate_servervvvw ))
-		{
-			$query->where('a.sales_server = ' . (int) $sales_serverupdate_servervvvw . ' OR a.update_server = ' . (int) $sales_serverupdate_servervvvw, ' OR');
-		}
-		elseif (is_string($sales_serverupdate_servervvvw))
-		{
-			$query->where('a.sales_server = ' . $db->quote($sales_serverupdate_servervvvw) . ' OR a.update_server = ' . $db->quote($sales_serverupdate_servervvvw), ' OR');
-		}
-		else
-		{
-			$query->where('a.update_server = -5');
-		}
-
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-		// Filter by access level.
-		$_access = $this->getState('filter.access');
-		if ($_access && is_numeric($_access))
-		{
-			$query->where('a.access = ' . (int) $_access);
-		}
-		elseif (UtilitiesArrayHelper::check($_access))
-		{
-			// Secure the array for the query
-			$_access = ArrayHelper::toInteger($_access);
-			// Filter by the Access Array.
-			$query->where('a.access IN (' . implode(',', $_access) . ')');
-		}
-		// Implement View Level Access
-		if (!$user->authorise('core.options', 'com_componentbuilder'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-		}
-
-		// Order the results by ordering
-		$query->order('a.published  ASC');
-		$query->order('a.ordering  ASC');
-
-		// Load the items
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$items = $db->loadObjectList();
-
-			// Set values to display correctly.
-			if (UtilitiesArrayHelper::check($items))
-			{
-				// Get the user object if not set.
-				if (!isset($user) || !ObjectHelper::check($user))
-				{
-					$user = Factory::getUser();
-				}
-				foreach ($items as $nr => &$item)
-				{
-					// Remove items the user can't access.
-					$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
-					if (!$access)
-					{
-						unset($items[$nr]);
-						continue;
-					}
-
-				}
-			}
-			return $items;
-		}
-		return false;
 	}
 
 	/**

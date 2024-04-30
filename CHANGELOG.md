@@ -1,43 +1,29 @@
-# v3.2.1-rc1
+# v3.2.1-rc2
 
 - Improved the Schema Table update engine (more)
 - Fix autoloader timing, and loading.
 - Implement the Joomla Powers in JCB code, to move away from JClasses.
+- Remove many of the SQL updates, to only use the Schema updates of table columns to avoid collusion.
 
-# v3.2.1-beta3
-
-- Fix version_update column size.
-- Improved the Schema Table update engine.
-
-# v3.2.1-beta2
-
-- Fix the media field size limitation. #1109
-- Add dynamic datatype update to schema field check.
-
-# v3.2.1-beta1
+# v3.2.1-beta
 
 - Add fallback option to ensure that all JCB tables and fields exist.
 - Move the powers autoloader to its own file.
+- Fix the media field size limitation. #1109
+- Add dynamic datatype update to schema field check.
+- Fix version_update column size.
+- Improved the Schema Table update engine.
 
-# v3.2.1-alpha4
+# v3.2.1-alpha
 
-- Add Joomla powers for namespace dynamic management.
-
-# v3.2.1-alpha3
-
-- Fix plugin code display when methods and properties are missing.
-
-# v3.2.1-alpha2
-
+- Add power path override option on component level.
+- Fix the sql build feature. #1032
 - Add view list and single name fix.
 - Add component code name fix.
 - Add reset list of powers.
 - Fix missing Factory class in plugin. #1102
-
-# v3.2.1-alpha1
-
-- Add power path override option on component level.
-- Fix the sql build feature. #1032
+- Fix plugin code display when methods and properties are missing.
+- Add Joomla powers for namespace dynamic management.
 
 # v3.2.0
 
@@ -61,83 +47,44 @@
 
 # v3.2.0-beta
 
-- Move beta to main repo
-
-# v3.1.42
-
-- Fix #1055 to add the style and scripts to all views.
-
-# v3.1.40
-
-- Fix #1052 so that tabs last opened is remembered and opened again on save, refresh or reopening of an item.
-- Fix #1057 so that the datetime fields will be set correctly in mysql.
-
-# v3.1.39
-
-- Fix #1051 making sure the list view is lowercase.
-
-# v3.1.38
-
-- Fix #1046 so that the version restore function will work.
-
-# v3.1.37
-
-- Fix #1041 so that custom tabs are build correctly.
-- Fix #1043 so that delete function in Joomla 4 and 5 will work.
-- Fix #1045 so that plug-in Structure::setMainXmlFile method will except an object.
-- Fix #1042 so that it will remove line breaks and new lines from other languages as well.
-
-# v3.1.36
-
-- Move the defined or die below use statements.
-- Add the new router view
-
-# v3.1.35
-
-- Improve the Joomla 4 Templates.
-- Fix #1033 the response class issue for the gitea classes.
-- Remove the JRegistry class to resolve #1036, #1035
-
-# v3.1.34
-
-- Fix the AjaxController contructor class.
-- Improved the getModel calls from the AxajController class.
-
-# v3.1.33
-
+- Add namspace prefix to both global, and component override level.
+- Add Joomla 4 and 5 build option
+- Add joomla_version to custom code.
+- Add Joomla 4 and 5 correct build files.
+- Fix #1026 by removing chosen everywhere.
+- Resolve #1028 by adding in line helper toggle integration to all admin views.
+- Remove the import and export buttons until the area is fixed.
+- Add emptystate list template to all admin list views.
 - Fix #1026 by adding the correct layout to the filter views.
 - Fix #1026 by adding the class to the filter views.
 - Fix #1026 by adding a hint to the filters that are having multiple selection.
 - Fix the directional bog where a field in the filters are also called direction.
 - Fix the getModel helper method fot J4+.
-
-# v3.1.32
-
-- Fix #1026 by removing chosen everywhere.
-- Resolve #1028 by adding in line helper toggle integration to all admin views.
-- Remove the import and export buttons until the area is fixed.
-- Add emptystate list template to all admin list views.
-
-# v3.1.31
-
-- Add joomla_version to custom code.
-- Add Joomla 4 and 5 correct build files.
-
-# v3.1.30
-
-- Add namspace prefix to both global, and component override level.
-- Add Joomla 4 and 5 build option
+- Fix the AjaxController contructor class.
+- Improved the getModel calls from the AxajController class.
+- Improve the Joomla 4 Templates.
+- Fix #1033 the response class issue for the gitea classes.
+- Remove the JRegistry class to resolve #1036, #1035
+- Move the defined or die below use statements.
+- Add the new router view
+- Fix #1041 so that custom tabs are build correctly.
+- Fix #1043 so that delete function in Joomla 4 and 5 will work.
+- Fix #1045 so that plug-in Structure::setMainXmlFile method will except an object.
+- Fix #1042 so that it will remove line breaks and new lines from other languages as well.
+- Fix #1046 so that the version restore function will work.
+- Fix #1051 making sure the list view is lowercase.
+- Fix #1052 so that tabs last opened is remembered and opened again on save, refresh or reopening of an item.
+- Fix #1057 so that the datetime fields will be set correctly in mysql.
+- Fix #1055 to add the style and scripts to all views.
+- Move beta to main repo
 
 # v3.1.28
 
+- Adds better remote repository management for the super power features.
+- Fixes #1014 so that powers are added to components.
 - Updates PHPSecLib.
 - Fixed connection failure to remote server.
 - Adds overriding of back-folder and git-folder on component level.
-
-# v3.1.27
-
-- Adds better remote repository management for the super power features.
-- Fixes #1014 so that powers are added to components.
 
 # v3.1.26
 

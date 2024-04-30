@@ -70,9 +70,6 @@ class ComponentbuilderViewServer extends HtmlView
 			$this->referral .= '&return=' . (string)$return;
 		}
 
-		// Get Linked view data
-		$this->vydlinked_components = $this->get('Vydlinked_components');
-
 		// Set the toolbar
 		$this->addToolBar();
 
@@ -201,16 +198,6 @@ class ComponentbuilderViewServer extends HtmlView
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_SERVER_NEW' : 'COM_COMPONENTBUILDER_SERVER_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/server.css", ['version' => 'auto']);
-
-		// Add the CSS for Footable
-		Html::_('stylesheet', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', ['version' => 'auto']);
-		Html::_('stylesheet', 'media/com_componentbuilder/footable-v3/css/footable.standalone.min.css', ['version' => 'auto']);
-		// Add the JavaScript for Footable (adding all functions)
-		Html::_('script', 'media/com_componentbuilder/footable-v3/js/footable.min.js', ['version' => 'auto']);
-
-		$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('.footable').footable();});});";
-		$this->getDocument()->addScriptDeclaration($footable);
-
 		Html::_('script', $this->script, ['version' => 'auto']);
 		Html::_('script', "administrator/components/com_componentbuilder/views/server/submitbutton.js", ['version' => 'auto']);
 		Text::script('view not acceptable. Error');
