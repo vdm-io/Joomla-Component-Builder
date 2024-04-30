@@ -148,19 +148,24 @@ class DynamicgetField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// Get the user object.
+		$user = Factory::getApplication()->getIdentity();
+		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','dynamic_get_name','type')));
 		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
 		$query->where($db->quoteName('a.published') . ' = 1');
-$query->order('a.name ASC');
+		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
-			$options[] = Html::_('select.option', '', 'Select an option');
-			$model = ComponentbuilderHelper::getModel('dynamic_gets');
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
 			foreach($items as $item)
 			{
 				$type = $model->selectionTranslation($item->type,'gettype');
