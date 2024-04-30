@@ -1,35 +1,24 @@
-# v5.0.0-rc1
+# v5.0.0-rc2
 
 - Improved the Schema Table update engine (more).
 - Fix autoloader timing, and loading.
 - Implement the Joomla Powers in JCB code, to move away from JClasses.
+- Remove the SQL update, to only use the Schema updates of table columns to avoid collusion.
 
-# v5.0.0-beta5
+# v5.0.0-beta
 
+- Add the compiler menu back.
+- Fix the CustomfolderlistField #1094
+- Add view list and single name fix.
+- Add component code name fix.
+- Add reset list of powers.
+- Add Joomla powers for namespace dynamic management.
+- Add fallback option to ensure that all JCB tables and fields exist.
+- Move the powers autoloader to its own file.
 - Fix the media field size limitation. #1109
 - Add dynamic datatype update to schema field check.
 - Fix version_update column size.
 - Improved the Schema Table update engine.
-
-# v5.0.0-beta4
-
-- Add fallback option to ensure that all JCB tables and fields exist.
-- Move the powers autoloader to its own file.
-
-# v5.0.0-beta3
-
-- Add Joomla powers for namespace dynamic management.
-
-# v5.0.0-beta2
-
-- Add view list and single name fix.
-- Add component code name fix.
-- Add reset list of powers.
-
-# v5.0.0-beta1
-
-- Add the compiler menu back.
-- Fix the CustomfolderlistField #1094
 
 # v5.0.0-alpha
 
@@ -54,9 +43,12 @@
 - Add power path override option on component level.
 - Fix the sql build feature. #1032
 
-# v4.0.0-rc1
+# v4.0.0-rc2
 
 - Improved the Schema Table update engine (more).
+- Fix autoloader timing, and loading.
+- Implement the Joomla Powers in JCB code, to move away from JClasses.
+- Remove the SQL update, to only use the Schema updates of table columns to avoid collusion.
 
 # v3.2.0
 
