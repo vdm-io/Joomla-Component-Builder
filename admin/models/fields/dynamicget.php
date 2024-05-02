@@ -143,9 +143,7 @@ class JFormFieldDynamicget extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		// Get the user object.
-		$user = Factory::getUser();
-		// Get the databse object.
+		// Get the database object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','dynamic_get_name','type')));
@@ -161,6 +159,7 @@ class JFormFieldDynamicget extends JFormFieldList
 			{
 				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
 			}
+			$model = ComponentbuilderHelper::getModel('dynamic_gets');
 			foreach($items as $item)
 			{
 				$type = $model->selectionTranslation($item->type,'gettype');

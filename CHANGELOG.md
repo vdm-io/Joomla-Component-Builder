@@ -1,10 +1,11 @@
-# v3.2.1-rc3
+# v3.2.1-rc4
 
 - Improved the Schema Table update engine (more)
 - Fix autoloader timing, and loading.
 - Implement the Joomla Powers in JCB code, to move away from JClasses.
 - Remove many of the SQL updates, to only use the Schema updates of table columns to avoid collusion.
 - Fix the admin.css file loading on dashboard. #1112
+- Fix the missing model call. #1114
 
 # v3.2.1-beta
 
