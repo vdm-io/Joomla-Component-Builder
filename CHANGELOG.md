@@ -1,4 +1,4 @@
-# v4.0.0-rc3
+# v4.0.0-rc4
 
 - Improved the Schema Table update engine (more).
 - Fix autoloader timing, and loading.
@@ -6,6 +6,7 @@
 - Remove the SQL update, to only use the Schema updates of table columns to avoid collusion.
 - Fix the admin.css file loading on dashboard. #1112
 - Fix dynamic get data-type default to 0. #1110
+- Fix the missing model call. #1114
 
 # v4.0.0-beta
 
