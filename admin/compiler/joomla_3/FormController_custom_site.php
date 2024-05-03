@@ -94,14 +94,14 @@ class ###Component###Controller###SView### extends FormController
 	 * Function that allows child controller access to model data
 	 * after the data has been saved.
 	 *
-	 * @param   JModelLegacy  $model      The data model object.
-	 * @param   array         $validData  The validated data.
+	 * @param   BaseDatabaseModel  &$model     The data model object.
+	 * @param   array              $validData  The validated data.
 	 *
 	 * @return  void
 	 *
-	 * @since   12.2
+	 * @since   11.1
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = [])
+	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
 	}
 }

@@ -1,4 +1,4 @@
-# v3.2.1-rc4
+# v3.2.1-rc5
 
 - Improved the Schema Table update engine (more)
 - Fix autoloader timing, and loading.
@@ -6,6 +6,8 @@
 - Remove many of the SQL updates, to only use the Schema updates of table columns to avoid collusion.
 - Fix the admin.css file loading on dashboard. #1112
 - Fix the missing model call. #1114
+- Fix the wrong $date call. #1115
+- Add the BaseDatabaseModel use statement to custom site view controller. #1119
 
 # v3.2.1-beta
 
