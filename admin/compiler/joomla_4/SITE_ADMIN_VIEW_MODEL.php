@@ -178,7 +178,7 @@ class ###View###Model extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{###LICENSE_TABLE_LOCKED_CHECK###
-		$date = $this->getDatabase();
+		$date = Factory::getDate();
 		$user = $this->getCurrentUser();
 
 		if (isset($table->name))

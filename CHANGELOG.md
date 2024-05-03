@@ -1,4 +1,4 @@
-# v4.0.0-rc4
+# v4.0.0-rc5
 
 - Improved the Schema Table update engine (more).
 - Fix autoloader timing, and loading.
@@ -7,6 +7,8 @@
 - Fix the admin.css file loading on dashboard. #1112
 - Fix dynamic get data-type default to 0. #1110
 - Fix the missing model call. #1114
+- Fix the wrong $date call. #1115
+- Add the BaseDatabaseModel use statement to custom site view controller. #1119
 
 # v4.0.0-beta
 
