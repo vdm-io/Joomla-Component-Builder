@@ -1,4 +1,8 @@
-# v5.0.0-rc5
+# v5.0.0-rc6
+
+- Fix the customfolderlist field. #1120
+
+# v5.0.0-rc
 
 - Improved the Schema Table update engine (more).
 - Fix autoloader timing, and loading.
