@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filesystem\Folder;
 
 // import the list field type
 jimport('joomla.form.helper');
@@ -44,12 +46,12 @@ class JFormFieldCustomfolderlist extends JFormFieldList
 		// set the default
 		$options[] = Html::_('select.option', '', Text::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FOLDERS_TO_S',$localfolder));
 		// setup the folder if it does not exist
-		if (!\JFolder::exists($localfolder))
+		if (!Folder::exists($localfolder))
 		{
-			\JFolder::create($localfolder);
+			Folder::create($localfolder);
 		}
 		// now check if there are files in the folder
-		if ($folders = \JFolder::folders($localfolder))
+		if ($folders = Folder::folders($localfolder))
 		{
 			$options = [];
 			foreach ($folders as $folder)
