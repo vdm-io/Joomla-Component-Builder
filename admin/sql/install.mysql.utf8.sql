@@ -2079,7 +2079,8 @@ INSERT INTO `#__componentbuilder_joomla_power` (`id`, `description`, `guid`, `se
 (12, 'Class that handles all access authorisation routines.', '2d513d69-8c7c-4dab-bb84-c5ecafb91a9d', '{\"settings0\":{\"namespace\":\"Joomla\\\\CMS\\\\Access\\\\Access\",\"joomla_version\":\"0\"}}', 'JAccess', '', 1, '2024-04-27 12:56:41', '0000-00-00 00:00:00', 1, '', 1, 11),
 (13, 'Access rules class.', '80425d73-1789-4f59-b49d-1a712611a77a', '{\"settings0\":{\"namespace\":\"Joomla\\\\CMS\\\\Access\\\\Rules\",\"joomla_version\":\"0\"}}', 'JRules', '', 1, '2024-04-27 12:57:12', '0000-00-00 00:00:00', 1, '', 1, 11),
 (14, 'Rule class.', 'b07d4be5-bbbe-48c9-a2ab-843090a1c0de', '{\"settings0\":{\"namespace\":\"Joomla\\\\CMS\\\\Access\\\\Rule\",\"joomla_version\":\"0\"}}', 'JRule', '', 1, '2024-04-27 12:57:34', '0000-00-00 00:00:00', 1, '', 1, 11),
-(15, 'JDate is a class that stores a date and provides logic to manipulate and render that date in a variety of formats.', '3864fa33-ab10-48d5-98ea-5e1397e6a191', '{\"settings0\":{\"namespace\":\"Joomla\\\\CMS\\\\Date\\\\Date\",\"joomla_version\":\"0\"}}', 'JDate', '', 1, '2024-04-27 12:58:11', '0000-00-00 00:00:00', 1, '', 1, 11);
+(15, 'JDate is a class that stores a date and provides logic to manipulate and render that date in a variety of formats.', '3864fa33-ab10-48d5-98ea-5e1397e6a191', '{\"settings0\":{\"namespace\":\"Joomla\\\\CMS\\\\Date\\\\Date\",\"joomla_version\":\"0\"}}', 'JDate', '', 1, '2024-04-27 12:58:11', '0000-00-00 00:00:00', 1, '', 1, 11),
+(16, '', 'b32954a3-05c3-41a0-8238-85262ad46246', '{\"settings0\":{\"namespace\":\"Joomla\\\\CMS\\\\Filesystem\\\\Folder\",\"joomla_version\":\"0\"}}', 'JFolder', '', 1, '2024-05-06 05:29:46', '0000-00-00 00:00:00', 1, '', 1, 12);
 
 --
 -- Dumping data for table `#__componentbuilder_admin_view`
