@@ -42,7 +42,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @var   CMSApplication
 	 * @since 4.4.2
 	 */
-	protected CMSApplication $app;
+	protected $app;
 
 	/**
 	 * The database class.
