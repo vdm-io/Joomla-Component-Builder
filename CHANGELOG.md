@@ -1,28 +1,4 @@
-# v3.2.1-rc6
-
-- Fix the customfolderlist field. #1120
-
-# v3.2.1-rc
-
-- Improved the Schema Table update engine (more)
-- Fix autoloader timing, and loading.
-- Implement the Joomla Powers in JCB code, to move away from JClasses.
-- Remove many of the SQL updates, to only use the Schema updates of table columns to avoid collusion.
-- Fix the admin.css file loading on dashboard. #1112
-- Fix the missing model call. #1114
-- Fix the wrong $date call. #1115
-- Add the BaseDatabaseModel use statement to custom site view controller. #1119
-
-# v3.2.1-beta
-
-- Add fallback option to ensure that all JCB tables and fields exist.
-- Move the powers autoloader to its own file.
-- Fix the media field size limitation. #1109
-- Add dynamic datatype update to schema field check.
-- Fix version_update column size.
-- Improved the Schema Table update engine.
-
-# v3.2.1-alpha
+# v3.2.1
 
 - Add power path override option on component level.
 - Fix the sql build feature. #1032
@@ -32,6 +8,22 @@
 - Fix missing Factory class in plugin. #1102
 - Fix plugin code display when methods and properties are missing.
 - Add Joomla powers for namespace dynamic management.
+- Add fallback option to ensure that all JCB tables and fields exist.
+- Move the powers autoloader to its own file.
+- Fix the media field size limitation. #1109
+- Add dynamic datatype update to schema field check.
+- Fix version_update column size.
+- Improved the Schema Table update engine.
+- Improved the Schema Table update engine (more)
+- Fix autoloader timing, and loading.
+- Implement the Joomla Powers in JCB code, to move away from JClasses.
+- Remove many of the SQL updates, to only use the Schema updates of table columns to avoid collusion.
+- Fix the admin.css file loading on dashboard. #1112
+- Fix the missing model call. #1114
+- Fix the wrong $date call. #1115
+- Add the BaseDatabaseModel use statement to custom site view controller. #1119
+- Fix the customfolderlist field. #1120
+- Stable release of JCB 3.2.1
 
 # v3.2.0
 
