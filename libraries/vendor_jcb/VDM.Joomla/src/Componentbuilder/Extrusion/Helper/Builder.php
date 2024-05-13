@@ -109,6 +109,49 @@ class Builder extends Mapping
 		$object->created = $this->today;
 		$object->created_by = $this->user->id;
 		$object->published = 1;
+		// empty values for sql sake
+		$object->addlinked_views = '';
+		$object->addtables = '';
+		$object->addtabs = '';
+		$object->ajax_input = '';
+		$object->css_view = '';
+		$object->css_views = '';
+		$object->custom_button = '';
+		$object->html_import_view = '';
+		$object->javascript_view_file = '';
+		$object->javascript_view_footer = '';
+		$object->javascript_views_file = '';
+		$object->javascript_views_footer = '';
+		$object->php_after_cancel = '';
+		$object->php_after_delete = '';
+		$object->php_after_publish = '';
+		$object->php_ajaxmethod = '';
+		$object->php_allowadd = '';
+		$object->php_allowedit = '';
+		$object->php_batchcopy = '';
+		$object->php_batchmove = '';
+		$object->php_before_cancel = '';
+		$object->php_before_delete = '';
+		$object->php_before_publish = '';
+		$object->php_before_save = '';
+		$object->php_controller = '';
+		$object->php_controller_list = '';
+		$object->php_document = '';
+		$object->php_getform = '';
+		$object->php_getitem = '';
+		$object->php_getitems = '';
+		$object->php_getitems_after_all = '';
+		$object->php_getlistquery = '';
+		$object->php_import = '';
+		$object->php_import_display = '';
+		$object->php_import_ext = '';
+		$object->php_import_headers = '';
+		$object->php_import_save = '';
+		$object->php_import_setdata = '';
+		$object->php_model = '';
+		$object->php_model_list = '';
+		$object->php_postsavehook = '';
+		$object->php_save = '';
 		// add to data base
 		if ($this->db->insertObject('#__componentbuilder_admin_view', $object))
 		{
@@ -202,6 +245,15 @@ class Builder extends Mapping
 			$object->published = 1;
 			$object->store = 0;
 			$object->xml = $this->setFieldXML($field, $fieldType);
+			// empty values for sql sake
+			$object->css_view = '';
+			$object->css_views = '';
+			$object->initiator_on_get_model = '';
+			$object->initiator_on_save_model = '';
+			$object->on_get_model_field = '';
+			$object->on_save_model_field = '';
+			$object->javascript_view_footer = '';
+			$object->javascript_views_footer = '';
 			// add to data base
 			if ($this->db->insertObject('#__componentbuilder_field', $object))
 			{

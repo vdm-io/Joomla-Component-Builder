@@ -1,3 +1,7 @@
+# v5.0.1-alpha1
+
+- Fix auto build from SQL in Joomla 5.
+
 # v5.0.0
 
 - Fix the plug-in installer script builder bug #1067
