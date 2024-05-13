@@ -1,3 +1,7 @@
+# v4.0.1-alpha1
+
+- Fix auto build from SQL in Joomla 4.
+
 # v4.0.0
 
 - Fix the plug-in installer script builder bug #1067
