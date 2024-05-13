@@ -246,6 +246,16 @@ class Mapping
 			// get table name
 			$tableName = GetHelper::between($sql, "'#__", "'");
 		}
+		elseif (strpos($sql, "CREATE TABLE `") !== false)
+		{
+			// get table name
+			$tableName = GetHelper::between($sql, "CREATE TABLE `", "`");
+		}
+		elseif (strpos($sql, "CREATE TABLE IF NOT EXISTS `") !== false)
+		{
+			// get table name
+			$tableName = GetHelper::between($sql, "CREATE TABLE IF NOT EXISTS `", "`");
+		}
 
 		// if it still was not found
 		if (!isset($tableName) || !StringHelper::check($tableName))

@@ -1,3 +1,7 @@
+# v3.2.2-alpha1
+
+- Fix auto build from SQL in Joomla 4 and 5.
+
 # v3.2.1
 
 - Add power path override option on component level.
