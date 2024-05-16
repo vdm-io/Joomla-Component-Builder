@@ -41,6 +41,14 @@ abstract class ActiveRegistry implements Activeregistryinterface
 	protected bool $addAsArray = false;
 
 	/**
+	 * Base switch to keep array values unique
+	 *
+	 * @var    boolean
+	 * @since 3.2.2
+	 **/
+	protected bool $uniqueArray = false;
+
+	/**
 	 * Check if the registry has any content.
 	 *
 	 * @return bool  Returns true if the active array is not empty, false otherwise.
@@ -157,7 +165,16 @@ abstract class ActiveRegistry implements Activeregistryinterface
 				// Convert to array if it's not already an array
 				$array = [$array];
 			}
-			$array[] = $value;
+
+			if ($this->uniqueArray && in_array($value, $array))
+			{
+				// we do nothing
+				return;
+			}
+			else
+			{
+				$array[] = $value;
+			}
 		}
 		else
 		{

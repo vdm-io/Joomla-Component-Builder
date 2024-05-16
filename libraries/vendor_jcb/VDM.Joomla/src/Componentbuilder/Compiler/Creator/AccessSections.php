@@ -460,7 +460,7 @@ final class AccessSections
 					}
 				}
 
-				$this->permission ->set(
+				$this->permission->set(
 					$custom_admin_view, $customAdminCode, $customAdminCode,
 					$menuControllers, 'customAdmin'
 				);
@@ -661,7 +661,8 @@ final class AccessSections
 							}
 						}
 					}
-					$this->permission ->set(
+
+					$this->permission->set(
 						$view, $nameView, $nameViews, $menuControllers
 					);
 				}

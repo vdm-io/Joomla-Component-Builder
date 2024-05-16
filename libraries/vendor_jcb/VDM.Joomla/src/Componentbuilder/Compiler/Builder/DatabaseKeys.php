@@ -23,5 +23,20 @@ use VDM\Joomla\Abstraction\Registry;
  */
 final class DatabaseKeys extends Registry implements Registryinterface
 {
+	/**
+	 * Base switch to add values as string or array
+	 *
+	 * @var    boolean
+	 * @since 3.2.0
+	 **/
+	protected bool $addAsArray = true;
+
+	/**
+	 * Base switch to keep array values unique
+	 *
+	 * @var    boolean
+	 * @since 3.2.2
+	 **/
+	protected bool $uniqueArray = true;
 }
 
