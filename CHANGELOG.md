@@ -1,4 +1,8 @@
-# v3.2.2-alpha1
+# v3.2.2-alpha2
+
+- Fix permission issue for admin views.
+
+# v3.2.2-alpha
 
 - Fix auto build from SQL in Joomla 4 and 5.
 

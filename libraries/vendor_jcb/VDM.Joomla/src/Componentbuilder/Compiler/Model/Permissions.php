@@ -39,7 +39,18 @@ class Permissions
 
 		if (ArrayHelper::check($item->addpermissions))
 		{
-			$item->permissions = array_values($item->addpermissions);
+			if (isset($item->addpermissions["action"]) && is_array($item->addpermissions["action"])
+				&& isset($item->addpermissions["implementation"]) && is_array($item->addpermissions["implementation"]))
+			{
+				foreach ($item->addpermissions["action"] as $k => $action)
+				{
+					$item->permissions[] = ['action' => $action, 'implementation' => $item->addpermissions["implementation"][$k]];
+				}
+			}
+			else
+			{
+				$item->permissions = array_values($item->addpermissions);
+			}
 		}
 
 		unset($item->addpermissions);

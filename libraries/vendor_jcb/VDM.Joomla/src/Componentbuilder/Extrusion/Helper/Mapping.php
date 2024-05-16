@@ -34,7 +34,7 @@ class Mapping
 	protected $buildcompsql;
 	public $id;
 	public $name_code;
-	public array $addadmin_views;
+	public array $addadmin_views = [];
 	public array $addSql = [];
 	public array $source = [];
 	public array $sql = [];
