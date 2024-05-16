@@ -1,4 +1,8 @@
-# v5.0.1-alpha1
+# v5.0.1-alpha2
+
+- Fix permission issue for admin views.
+
+# v5.0.1-alpha
 
 - Fix auto build from SQL in Joomla 5.
 
