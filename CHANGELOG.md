@@ -1,10 +1,12 @@
-# v5.0.1-alpha2
+# v5.0.1-alpha3
 
-- Fix permission issue for admin views.
+- Add in JCB gitea push feature to help maintain JCB core features.
+- Add extending options to interfaces.
 
 # v5.0.1-alpha
 
 - Fix auto build from SQL in Joomla 5.
+- Fix permission issue for admin views.
 
 # v5.0.0
 

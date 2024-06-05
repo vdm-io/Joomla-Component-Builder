@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Power;
 
 
-use VDM\Joomla\Componentbuilder\Interfaces\GrepInterface as Grep;
+use VDM\Joomla\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Componentbuilder\Interfaces\Database\InsertInterface as Insert;
 use VDM\Joomla\Componentbuilder\Interfaces\Database\UpdateInterface as Update;
 use VDM\Joomla\Utilities\GuidHelper;

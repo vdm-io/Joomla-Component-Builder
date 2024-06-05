@@ -55,8 +55,8 @@ class Joomla_powerModel extends AdminModel
 	protected $tabLayoutFields = array(
 		'joomla_power' => array(
 			'fullwidth' => array(
-				'description',
-				'settings'
+				'settings',
+				'description'
 			),
 			'above' => array(
 				'system_name'

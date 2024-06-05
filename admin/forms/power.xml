@@ -163,38 +163,6 @@
 			message="COM_COMPONENTBUILDER_POWER_POWER_VERSION_MESSAGE"
 			hint="COM_COMPONENTBUILDER_POWER_POWER_VERSION_HINT"
 		/>
-		<!-- Not_required Field. Type: Hidden. (joomla) -->
-		<field
-			type="hidden"
-			name="not_required"
-			default="一_一"
-		/>
-		<!-- Method_selection Field. Type: Subform. (joomla) -->
-		<field
-			type="subform"
-			name="method_selection"
-			label="COM_COMPONENTBUILDER_POWER_METHOD_SELECTION_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			buttons="add,remove,move"
-			description="COM_COMPONENTBUILDER_POWER_METHOD_SELECTION_DESCRIPTION"
-			icon="list"
-			max="150"
-			min="0">
-			<form hidden="true" name="list_method_selection_modal" repeat="true">
-				<!-- Method Field. Type: Powersclassmethods. (custom) -->
-				<field
-					type="powersclassmethods"
-					name="method"
-					label="COM_COMPONENTBUILDER_POWER_METHOD_LABEL"
-					class="list_class span12 method_selection_list"
-					multiple="false"
-					default="0"
-					onchange="getClassCode(this, 'method');"
-					button="false"
-				/>
-			</form>
-		</field>
 		<!-- Load_selection Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -222,19 +190,6 @@
 		</field>
 		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_POWER_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_POWER_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
-		<!-- Licensing_template Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="licensing_template"
-			label="COM_COMPONENTBUILDER_POWER_LICENSING_TEMPLATE_LABEL"
-			rows="10"
-			cols="10"
-			class="text_area span12"
-			filter="RAW"
-			hint="COM_COMPONENTBUILDER_POWER_LICENSING_TEMPLATE_HINT"
-			validate="code"
-			showon="add_licensing_template:2"
-		/>
 		<!-- Description Field. Type: Textarea. (joomla) -->
 		<field
 			type="textarea"
@@ -247,8 +202,8 @@
 			filter="HTML"
 			hint="COM_COMPONENTBUILDER_POWER_DESCRIPTION_HINT"
 		/>
-		<!-- Note_approved_paths Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_approved_paths" label="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_LABEL" description="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_DESCRIPTION" heading="h4" class="alert alert-info note_approved_paths" showon="approved:1" />
+		<!-- Load_powers_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="load_powers_note" label="COM_COMPONENTBUILDER_POWER_LOAD_POWERS_NOTE_LABEL" description="COM_COMPONENTBUILDER_POWER_LOAD_POWERS_NOTE_DESCRIPTION" heading="h4" class="alert alert-info load_powers_note" />
 		<!-- Composer Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -306,18 +261,18 @@
 				</field>
 			</form>
 		</field>
-		<!-- Extends Field. Type: Classpowers. (custom) -->
+		<!-- Licensing_template Field. Type: Textarea. (joomla) -->
 		<field
-			type="classpowers"
-			name="extends"
-			label="COM_COMPONENTBUILDER_POWER_EXTENDS_LABEL"
-			description="COM_COMPONENTBUILDER_POWER_EXTENDS_DESCRIPTION"
-			class="list_class span12"
-			layout="joomla.form.field.list-fancy-select"
-			multiple="false"
-			default="0"
-			showon="type:class[OR]type:abstract class[OR]type:final class"
-			button="true"
+			type="textarea"
+			name="licensing_template"
+			label="COM_COMPONENTBUILDER_POWER_LICENSING_TEMPLATE_LABEL"
+			rows="10"
+			cols="10"
+			class="text_area span12"
+			filter="RAW"
+			hint="COM_COMPONENTBUILDER_POWER_LICENSING_TEMPLATE_HINT"
+			validate="code"
+			showon="add_licensing_template:2"
 		/>
 		<!-- Approved Field. Type: Radio. (joomla) -->
 		<field
@@ -334,32 +289,20 @@
 			<option value="1">
 				COM_COMPONENTBUILDER_POWER_APPROVED</option>
 		</field>
-		<!-- Property_selection Field. Type: Subform. (joomla) -->
+		<!-- Extendsinterfaces_custom Field. Type: Text. (joomla) -->
 		<field
-			type="subform"
-			name="property_selection"
-			label="COM_COMPONENTBUILDER_POWER_PROPERTY_SELECTION_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			buttons="add,remove,move"
-			description="COM_COMPONENTBUILDER_POWER_PROPERTY_SELECTION_DESCRIPTION"
-			icon="list"
-			max="150"
-			min="0">
-			<form hidden="true" name="list_property_selection_modal" repeat="true">
-				<!-- Property Field. Type: Powersclassproperties. (custom) -->
-				<field
-					type="powersclassproperties"
-					name="property"
-					label="COM_COMPONENTBUILDER_POWER_PROPERTY_LABEL"
-					class="list_class span12 property_selection_list"
-					multiple="false"
-					default="0"
-					onchange="getClassCode(this, 'property');"
-					button="false"
-				/>
-			</form>
-		</field>
+			type="text"
+			name="extendsinterfaces_custom"
+			label="COM_COMPONENTBUILDER_POWER_EXTENDSINTERFACES_CUSTOM_LABEL"
+			size="50"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_POWER_EXTENDSINTERFACES_CUSTOM_DESCRIPTION"
+			class="text_area span12"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_POWER_EXTENDSINTERFACES_CUSTOM_MESSAGE"
+			autocomplete="on"
+			showon="extendsinterfaces:-1[AND]type:interface"
+		/>
 		<!-- Add_head Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -374,6 +317,19 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_POWER_NO</option>
 		</field>
+		<!-- Extends Field. Type: Classpowers. (custom) -->
+		<field
+			type="classpowers"
+			name="extends"
+			label="COM_COMPONENTBUILDER_POWER_EXTENDS_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_EXTENDS_DESCRIPTION"
+			class="list_class span12"
+			layout="joomla.form.field.list-fancy-select"
+			multiple="false"
+			default="0"
+			showon="type:class[OR]type:abstract class[OR]type:final class"
+			button="true"
+		/>
 		<!-- Extends_custom Field. Type: Text. (joomla) -->
 		<field
 			type="text"
@@ -415,8 +371,93 @@
 			showon="type!:interface[AND]type!:trait"
 			button="true"
 		/>
+		<!-- Not_required Field. Type: Hidden. (joomla) -->
+		<field
+			type="hidden"
+			name="not_required"
+			default="一_一"
+		/>
+		<!-- Note_approved_paths Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_approved_paths" label="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_LABEL" description="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_DESCRIPTION" heading="h4" class="alert alert-info note_approved_paths" showon="approved:1" />
+		<!-- Property_selection Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="property_selection"
+			label="COM_COMPONENTBUILDER_POWER_PROPERTY_SELECTION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			description="COM_COMPONENTBUILDER_POWER_PROPERTY_SELECTION_DESCRIPTION"
+			icon="list"
+			max="150"
+			min="0">
+			<form hidden="true" name="list_property_selection_modal" repeat="true">
+				<!-- Property Field. Type: Powersclassproperties. (custom) -->
+				<field
+					type="powersclassproperties"
+					name="property"
+					label="COM_COMPONENTBUILDER_POWER_PROPERTY_LABEL"
+					class="list_class span12 property_selection_list"
+					multiple="false"
+					default="0"
+					onchange="getClassCode(this, 'property');"
+					button="false"
+				/>
+			</form>
+		</field>
+		<!-- Extendsinterfaces Field. Type: Interfacepowers. (custom) -->
+		<field
+			type="interfacepowers"
+			name="extendsinterfaces"
+			label="COM_COMPONENTBUILDER_POWER_EXTENDSINTERFACES_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_EXTENDSINTERFACES_DESCRIPTION"
+			class="list_class span12"
+			layout="joomla.form.field.list-fancy-select"
+			multiple="true"
+			default="0"
+			showon="type:interface"
+			button="true"
+		/>
+		<!-- Method_selection Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="method_selection"
+			label="COM_COMPONENTBUILDER_POWER_METHOD_SELECTION_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			buttons="add,remove,move"
+			description="COM_COMPONENTBUILDER_POWER_METHOD_SELECTION_DESCRIPTION"
+			icon="list"
+			max="150"
+			min="0">
+			<form hidden="true" name="list_method_selection_modal" repeat="true">
+				<!-- Method Field. Type: Powersclassmethods. (custom) -->
+				<field
+					type="powersclassmethods"
+					name="method"
+					label="COM_COMPONENTBUILDER_POWER_METHOD_LABEL"
+					class="list_class span12 method_selection_list"
+					multiple="false"
+					default="0"
+					onchange="getClassCode(this, 'method');"
+					button="false"
+				/>
+			</form>
+		</field>
 		<!-- Namespace_details Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="namespace_details" label="COM_COMPONENTBUILDER_POWER_NAMESPACE_DETAILS_LABEL" description="COM_COMPONENTBUILDER_POWER_NAMESPACE_DETAILS_DESCRIPTION" heading="h4" class="alert alert-success namespace_details" />
+		<!-- Approved_paths Field. Type: Superpowerpaths. (custom) -->
+		<field
+			type="superpowerpaths"
+			name="approved_paths"
+			label="COM_COMPONENTBUILDER_POWER_APPROVED_PATHS_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_APPROVED_PATHS_DESCRIPTION"
+			required="false"
+			showon="approved:1">
+			<!-- Option Set. -->
+			<option value="joomla/super-powers">
+				COM_COMPONENTBUILDER_POWER_JOOMLASUPERPOWERS</option>
+		</field>
 		<!-- Head Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -434,18 +475,8 @@
 			required="false"
 			validate="code"
 		/>
-		<!-- Approved_paths Field. Type: Superpowerpaths. (custom) -->
-		<field
-			type="superpowerpaths"
-			name="approved_paths"
-			label="COM_COMPONENTBUILDER_POWER_APPROVED_PATHS_LABEL"
-			description="COM_COMPONENTBUILDER_POWER_APPROVED_PATHS_DESCRIPTION"
-			required="false"
-			showon="approved:1">
-			<!-- Option Set. -->
-			<option value="joomla/super-powers">
-				COM_COMPONENTBUILDER_POWER_JOOMLASUPERPOWERS</option>
-		</field>
+		<!-- Autoload_composer_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="autoload_composer_note" label="COM_COMPONENTBUILDER_POWER_AUTOLOAD_COMPOSER_NOTE_LABEL" description="COM_COMPONENTBUILDER_POWER_AUTOLOAD_COMPOSER_NOTE_DESCRIPTION" heading="h4" class="alert alert-info autoload_composer_note" />
 		<!-- Use_selection Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -483,8 +514,21 @@
 				/>
 			</form>
 		</field>
-		<!-- Autoload_composer_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="autoload_composer_note" label="COM_COMPONENTBUILDER_POWER_AUTOLOAD_COMPOSER_NOTE_LABEL" description="COM_COMPONENTBUILDER_POWER_AUTOLOAD_COMPOSER_NOTE_DESCRIPTION" heading="h4" class="alert alert-info autoload_composer_note" />
+		<!-- Add_licensing_template Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_licensing_template"
+			label="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_LABEL"
+			description="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_DESCRIPTION"
+			class="btn-group btn-group-yesno"
+			default="1"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_POWER_USE_GLOBAL</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_POWER_OVERRIDE</option>
+		</field>
 		<!-- Main_class_code Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -501,23 +545,6 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Add_licensing_template Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_licensing_template"
-			label="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_LABEL"
-			description="COM_COMPONENTBUILDER_POWER_ADD_LICENSING_TEMPLATE_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_POWER_USE_GLOBAL</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_POWER_OVERRIDE</option>
-		</field>
-		<!-- Load_powers_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="load_powers_note" label="COM_COMPONENTBUILDER_POWER_LOAD_POWERS_NOTE_LABEL" description="COM_COMPONENTBUILDER_POWER_LOAD_POWERS_NOTE_DESCRIPTION" heading="h4" class="alert alert-info load_powers_note" />
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"

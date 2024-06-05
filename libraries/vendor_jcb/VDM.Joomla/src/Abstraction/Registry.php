@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Abstraction;
 
 
-use VDM\Joomla\Interfaces\Activeregistryinterface;
 use VDM\Joomla\Interfaces\Registryinterface;
 use VDM\Joomla\Abstraction\ActiveRegistry;
 
@@ -24,7 +23,7 @@ use VDM\Joomla\Abstraction\ActiveRegistry;
  * 
  * @since 3.2.0
  */
-abstract class Registry extends ActiveRegistry implements Activeregistryinterface, Registryinterface
+abstract class Registry extends ActiveRegistry implements Registryinterface
 {
 	/**
 	 * Path separator

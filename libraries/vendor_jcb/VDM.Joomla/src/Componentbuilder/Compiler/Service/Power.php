@@ -140,9 +140,9 @@ class Power implements ServiceProviderInterface
 	public function getGrep(Container $container): Grep
 	{
 		return new Grep(
-			$container->get('Config')->local_powers_repository_path,
+			$container->get('Gitea.Repository.Contents'),
 			$container->get('Config')->approved_paths,
-			$container->get('Gitea.Repository.Contents')
+			$container->get('Config')->local_powers_repository_path
 		);
 	}
 

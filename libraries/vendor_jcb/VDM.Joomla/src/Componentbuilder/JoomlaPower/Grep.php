@@ -12,10 +12,11 @@
 namespace VDM\Joomla\Componentbuilder\JoomlaPower;
 
 
+use Joomla\CMS\Language\Text;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Componentbuilder\Interfaces\GrepInterface;
-use VDM\Joomla\Componentbuilder\Power\Grep as ExtendingGrep;
+use VDM\Joomla\Interfaces\GrepInterface;
+use VDM\Joomla\Abstraction\Grep as ExtendingGrep;
 
 
 /**
@@ -31,87 +32,12 @@ use VDM\Joomla\Componentbuilder\Power\Grep as ExtendingGrep;
 final class Grep extends ExtendingGrep implements GrepInterface
 {
 	/**
-	 * Get a local power
+	 * Order of global search
 	 *
-	 * @param object    $path    The repository path details
-	 * @param string    $guid    The global unique id of the power
-	 *
-	 * @return object|null
-	 * @since 3.2.0
-	 */
-	private function getLocal(object $path, string $guid): ?object
-	{
-		if (empty($path->local->{$guid}->settings))
-		{
-			return null;
-		}
-
-		// get the settings
-		if (($settings = FileHelper::getContent($path->full_path . '/' . $path->local->{$guid}->settings, null)) !== null &&
-			JsonHelper::check($settings))
-		{
-			$power = json_decode($settings);
-
-			if (isset($power->guid))
-			{
-				return $power;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get a remote power
-	 *
-	 * @param object    $path    The repository path details
-	 * @param string    $guid    The global unique id of the power
-	 *
-	 * @return object|null
-	 * @since 3.2.0
-	 */
-	private function getRemote(object $path, string $guid): ?object
-	{
-		if (empty($path->index->{$guid}->settings))
-		{
-			return null;
-		}
-
-		// get the settings
-		if (($power = $this->loadRemoteFile($path->owner, $path->repo, $path->index->{$guid}->settings, $path->branch)) !== null &&
-			isset($power->guid))
-		{
-			return $power;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Load the local repository index of powers
-	 *
-	 * @param object    $path    The repository path details
-	 *
-	 * @return void
-	 * @since 3.2.0
-	 */
-	private function localIndex(object &$path)
-	{
-		if (isset($path->local) || !isset($path->full_path))
-		{
-			return;
-		}
-
-		if (($content = FileHelper::getContent($path->full_path . '/joomla-powers.json', null)) !== null &&
-			JsonHelper::check($content))
-		{
-			$path->local = json_decode($content);
-
-			return;
-		}
-
-		$path->local = null;
-	}
+	 * @var    array
+	 * @since 3.2.1
+	 **/
+	protected array $order = ['remote'];
 
 	/**
 	 * Load the remote repository index of powers
@@ -121,7 +47,7 @@ final class Grep extends ExtendingGrep implements GrepInterface
 	 * @return void
 	 * @since 3.2.0
 	 */
-	private function remoteIndex(object &$path)
+	protected function remoteIndex(object &$path): void
 	{
 		if (isset($path->index))
 		{
@@ -141,6 +67,99 @@ final class Grep extends ExtendingGrep implements GrepInterface
 
 			$path->index = null;
 		}
+	}
+
+	/**
+	 * Search for a remote power
+	 *
+	 * @param string    $guid    The global unique id of the power
+	 *
+	 * @return object|null
+	 * @since 3.2.0
+	 */
+	protected function searchRemote(string $guid): ?object
+	{
+		// we can only search if we have paths
+		if ($this->path && $this->paths)
+		{
+			foreach ($this->paths as $path)
+			{
+				// get local index
+				$this->remoteIndex($path);
+
+				if (!empty($path->index) && isset($path->index->{$guid}))
+				{
+					return $this->getRemote($path, $guid);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get a remote power
+	 *
+	 * @param object    $path    The repository path details
+	 * @param string    $guid    The global unique id of the power
+	 *
+	 * @return object|null
+	 * @since 3.2.0
+	 */
+	protected function getRemote(object $path, string $guid): ?object
+	{
+		if (empty($path->index->{$guid}->settings))
+		{
+			return null;
+		}
+
+		// get the settings
+		if (($power = $this->loadRemoteFile($path->owner, $path->repo, $path->index->{$guid}->settings, $path->branch)) !== null &&
+			isset($power->guid))
+		{
+			// set the git details in params
+			$power->params = (object) [
+				'git' => [
+					'owner' => $path->owner,
+					'repo' => $path->repo,
+					'branch' => $path->branch
+				]
+			];
+
+			return $power;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Load the remote file
+	 *
+	 * @param string         $owner    The repository owner
+	 * @param string         $repo     The repository name
+	 * @param string         $path     The repository path to file
+	 * @param string|null    $branch   The repository branch name
+	 *
+	 * @return mixed
+	 * @since 3.2.0
+	 */
+	protected function loadRemoteFile(string $owner, string $repo, string $path, ?string $branch)
+	{
+		try
+		{
+			$data = $this->contents->get($owner, $repo, $path, $branch);
+		}
+		catch (\Exception $e)
+		{
+			$this->app->enqueueMessage(
+				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path, $e->getMessage()),
+				'Error'
+			);
+
+			return null;
+		}
+
+		return $data;
 	}
 }
 

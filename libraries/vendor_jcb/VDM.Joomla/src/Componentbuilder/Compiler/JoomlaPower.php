@@ -207,96 +207,192 @@ final class JoomlaPower implements PowerInterface
 	}
 
 	/**
-	 * Set a power
+	 * Set a Joomla power
 	 *
-	 * @param string   $guid    The global unique id of the power
+	 * @param string $guid The global unique id of the power
 	 *
-	 * @return bool  true on successful setting of a power
+	 * @return bool true on successful setting of a power
 	 * @since 3.2.1
 	 */
 	private function set(string $guid): bool
 	{
-		// check if we have been here before
+		// Check if power is already set
 		if ($this->isPowerSet($guid))
 		{
 			return $this->state[$guid];
 		}
-		elseif ($this->isGuidValid($guid))
+
+		// Validate GUID
+		if (!$this->isGuidValid($guid))
 		{
-			// get the power data
-			$this->active[$guid] = $this->getPowerData($guid);
+			$this->state[$guid] = false;
+			return false;
+		}
 
-			if (is_object($this->active[$guid]))
+		// Get the power data
+		$this->active[$guid] = $this->getPowerData($guid);
+
+		// Validate power data object
+		if ($this->active[$guid] ===  null)
+		{
+			return $this->handlePowerNotFound($guid);
+		}
+
+		// Prevent recursive loading of the same power
+		$this->state[$guid] = true;
+
+		// Convert settings to array if valid JSON
+		$settings = $this->convertSettingsToArray(
+			$this->active[$guid]->settings
+		);
+
+		// Set the target version if settings array is valid
+		if (!$this->setTargetVersion($guid, $settings))
+		{
+			return false;
+		}
+
+		// Set class name and namespace
+		$this->setClassAndNamespace($guid);
+
+		return true;
+	}
+
+	/**
+	 * Convert settings JSON string to array
+	 *
+	 * @param string $settingsJson
+	 *
+	 * @return array|null
+	 * @since 3.2.2
+	 */
+	private function convertSettingsToArray(string $settingsJson): ?array
+	{
+		if (JsonHelper::check($settingsJson))
+		{
+			return json_decode($settingsJson, true);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the target version based on Joomla version and settings
+	 *
+	 * @param string $guid
+	 * @param array|null $settings
+	 *
+	 * @return bool
+	 * @since 3.2.2
+	 */
+	private function setTargetVersion(string $guid, ?array $settings): bool
+	{
+		$joomla_version = $this->config->joomla_version;
+
+		if (!$joomla_version || !ArrayHelper::check($settings))
+		{
+			return false;
+		}
+
+		$joomla_version_target = null;
+		$target_found = false;
+
+		foreach ($settings as $namespace)
+		{
+			// Set default values for all versions
+			if ($namespace['joomla_version'] == 0)
 			{
-				// make sure that in recursion we
-				// don't try to load this power again
-				// since during the load of a power we also load
-				// all powers linked to it
-				$this->state[$guid] = true;
+				$this->setNamespaceAndType($guid, $namespace);
+				$target_found = true;
+			}
 
-				// convert settings to an array
-				if (JsonHelper::check($this->active[$guid]->settings))
-				{
-					$this->active[$guid]->settings = $settings
-						= json_decode($this->active[$guid]->settings, true);
-				}
-
-				// set a target version
-				$joomla_version = $this->config->joomla_version;
-
-				if ($joomla_version && ArrayHelper::check($settings))
-				{
-					foreach ($settings as $namespace)
-					{
-						if ($joomla_version == $namespace['joomla_version'] ||
-							$namespace['joomla_version'] == 0)
-						{
-							$this->active[$guid]->namespace = $namespace['namespace'];
-							$this->active[$guid]->type = $namespace['type'] ?? 'class';
-							break;
-						}
-					}
-
-					$this->active[$guid]->class_name =
-						$this->extractLastNameFromNamespace($this->active[$guid]->namespace);
-
-					$this->active[$guid]->_namespace =
-						$this->removeLastNameFromNamespace($this->active[$guid]->namespace);
-
-					// set the approved super power values
-					$this->setSuperPowers($guid);
-
-					return true;
-				}
+			// Check for direct target version
+			if ($joomla_version == $namespace['joomla_version'])
+			{
+				$joomla_version_target = $namespace;
+				break;
 			}
 		}
 
-		// we failed to get the power,
-		// so we raise an error message
-		// only if guid is valid
-		if ($this->isGuidValid($guid))
+		if ($joomla_version_target)
 		{
-			// now we search for it via the super power paths
-			if (empty($this->retry[$guid]) && $this->superpower->load($guid, ['remote', 'local']))
-			{
-				// we found it and it was loaded into the database
-				unset($this->state[$guid]);
-				unset($this->active[$guid]);
+			$this->setNamespaceAndType($guid, $joomla_version_target);
+			$target_found = true;
+		}
 
-				// we make sure that this retry only happen once! (just in-case...)
-				$this->retry[$guid] = true;
-
-				// so we try to load it again
-				return $this->set($guid);
-			}
-
+		if (!$target_found)
+		{
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PJOOMLA_POWER_BGUIDSB_NOT_FOUNDP', $guid),
+				Text::sprintf('COM_COMPONENTBUILDER_PJOOMLA_POWER_BGUIDSB_WAS_FOUND_BUT_MISSING_A_NAMESPACE_VALUE_FOR_JOOMLA_SP', $guid, $joomla_version),
 				'Error'
 			);
+
+			$this->state[$guid] = false;
+
+			return false;
 		}
 
-		// let's not try again
+		return true;
+	}
+
+	/**
+	 * Set namespace and type for the active power
+	 *
+	 * @param string $guid
+	 * @param array $namespace
+	 *
+	 * @since 3.2.2
+	 */
+	private function setNamespaceAndType(string $guid, array $namespace): void
+	{
+		$this->active[$guid]->namespace = $namespace['namespace'];
+		$this->active[$guid]->type = $namespace['type'] ?? 'class';
+	}
+
+	/**
+	 * Set class name and namespace for the active power
+	 *
+	 * @param string $guid
+	 *
+	 * @since 3.2.2
+	 */
+	private function setClassAndNamespace(string $guid): void
+	{
+		$this->active[$guid]->class_name = $this->extractLastNameFromNamespace(
+			$this->active[$guid]->namespace
+		);
+
+		$this->active[$guid]->_namespace = $this->removeLastNameFromNamespace(
+			$this->active[$guid]->namespace
+		);
+	}
+
+	/**
+	 * Handle power not found scenario
+	 *
+	 * @param string $guid
+	 *
+	 * @return bool
+	 * @since 3.2.2
+	 */
+	private function handlePowerNotFound(string $guid): bool
+	{
+		if (empty($this->retry[$guid]) && $this->superpower->load($guid, ['remote', 'local']))
+		{
+			// Retry loading the power
+			unset($this->state[$guid]);
+			unset($this->active[$guid]);
+
+			$this->retry[$guid] = true;
+
+			return $this->set($guid);
+		}
+
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_PJOOMLA_POWER_BGUIDSB_NOT_FOUNDP', $guid),
+			'Error'
+		);
+
 		$this->state[$guid] = false;
 
 		return false;

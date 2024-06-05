@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Openai\Utilities;
 
 
-use Joomla\Http\Response as JoomlaResponse;
+use Joomla\CMS\Http\Response as JoomlaResponse;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 

@@ -494,7 +494,7 @@ class PowersModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.type LIKE '.$search.' OR a.description LIKE '.$search.' OR a.extends LIKE '.$search.' OR a.extends_custom LIKE '.$search.' OR a.approved_paths LIKE '.$search.' OR a.guid LIKE '.$search.' OR a.name LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.type LIKE '.$search.' OR a.description LIKE '.$search.' OR a.extendsinterfaces_custom LIKE '.$search.' OR a.extends LIKE '.$search.' OR a.extends_custom LIKE '.$search.' OR a.extendsinterfaces LIKE '.$search.' OR a.approved_paths LIKE '.$search.' OR a.guid LIKE '.$search.' OR a.name LIKE '.$search.')');
 			}
 		}
 
