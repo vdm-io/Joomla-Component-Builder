@@ -756,7 +756,7 @@ class Power implements PowerInterface
 	}
 
 	/**
-	 * Set Extend Class
+	 * Set Extend
 	 *
 	 * @param string  $guid  The global unique id of the power
 	 * @param array   $use   The use array
@@ -767,9 +767,29 @@ class Power implements PowerInterface
 	 */
 	private function setExtend(string $guid, array &$use, array &$as)
 	{
-		// does this extend something
-		$this->active[$guid]->extends_name = null;
+		// build the interface extends details
+		if ($this->active[$guid]->type === 'interface')
+		{
+			$this->setExtendInterface($guid, $use, $as);
+		}
+		else
+		{
+			$this->setExtendClass($guid, $use, $as);
+		}
+	}
 
+	/**
+	 * Set Extend Class
+	 *
+	 * @param string  $guid  The global unique id of the power
+	 * @param array   $use   The use array
+	 * @param array   $as    The use as array
+	 *
+	 * @return void
+	 * @since 3.2.0
+	 */
+	private function setExtendClass(string $guid, array &$use, array &$as)
+	{
 		// we first check for custom extending options
 		if ($this->active[$guid]->extends == -1
 			&& StringHelper::check($this->active[$guid]->extends_custom))
@@ -803,6 +823,89 @@ class Power implements PowerInterface
 				}
 			}
 		}
+		// reset it not found
+		else
+		{
+			$this->active[$guid]->extends = '';
+			$this->active[$guid]->extends_custom = '';
+		}
+		// always rest these for normal classes
+		$this->active[$guid]->extendsinterfaces = null;
+		$this->active[$guid]->extendsinterfaces_custom = '';
+	}
+
+	/**
+	 * Set Extend Interface
+	 *
+	 * @param string  $guid  The global unique id of the power
+	 * @param array   $use   The use array
+	 * @param array   $as    The use as array
+	 *
+	 * @return void
+	 * @since 3.2.2
+	 */
+	private function setExtendInterface(string $guid, array &$use, array &$as)
+	{
+		// does this extends interfaces
+		$this->active[$guid]->extendsinterfaces = (isset($this->active[$guid]->extendsinterfaces)
+			&& JsonHelper::check(
+				$this->active[$guid]->extendsinterfaces
+			)) ? json_decode((string)$this->active[$guid]->extendsinterfaces, true) : null;
+
+		if (ArrayHelper::check($this->active[$guid]->extendsinterfaces))
+		{
+			$bucket = [];
+			foreach ($this->active[$guid]->extendsinterfaces as $extend)
+			{
+				// we first check for custom extending options
+				if ($extend == -1
+					&& isset($this->active[$guid]->extendsinterfaces_custom)
+					&& StringHelper::check($this->active[$guid]->extendsinterfaces_custom))
+				{
+					// reserve extends custom for the linker
+					$this->active[$guid]->unchanged_extendsinterfaces_custom = $this->active[$guid]->extendsinterfaces_custom;
+
+					$bucket[] = $this->placeholder->update_(
+						$this->customcode->update($this->active[$guid]->extendsinterfaces_custom)
+					);
+
+					// just add once
+					unset($this->active[$guid]->extendsinterfaces_custom);
+				}
+				// does this extend existing
+				elseif (GuidHelper::valid($extend))
+				{
+					// check if it was set
+					if ($this->set($extend))
+					{
+						$extends_name = $this->get($extend, 1)->class_name;
+						// add to use
+						$use[] = $extend;
+
+						// add padding if the two names are the same
+						if ($extends_name === $this->active[$guid]->class_name)
+						{
+							$extends_name = $as[$extend]
+								= 'Extending' . $extends_name;
+						}
+						// get the name
+						$bucket[] = $extends_name;
+					}
+				}
+			}
+			if ($bucket !== [])
+			{
+				$this->active[$guid]->extends_name = implode(', ', $bucket);
+			}
+		}
+		else
+		{
+			$this->active[$guid]->extendsinterfaces = null;
+			$this->active[$guid]->extendsinterfaces_custom = '';
+		}
+		// always rest these for interfaces
+		$this->active[$guid]->extends = '';
+		$this->active[$guid]->extends_custom = '';
 	}
 
 	/**

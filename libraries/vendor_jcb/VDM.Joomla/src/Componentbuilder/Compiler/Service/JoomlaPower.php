@@ -113,9 +113,8 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getGrep(Container $container): Grep
 	{
 		return new Grep(
-			$container->get('Config')->local_joomla_powers_repository_path,
-			$container->get('Config')->approved_joomla_paths,
-			$container->get('Gitea.Repository.Contents')
+			$container->get('Gitea.Repository.Contents'),
+			$container->get('Config')->approved_joomla_paths
 		);
 	}
 

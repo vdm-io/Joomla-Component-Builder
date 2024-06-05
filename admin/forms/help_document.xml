@@ -123,6 +123,7 @@
 			name="groups"
 			label="COM_COMPONENTBUILDER_HELP_DOCUMENT_GROUPS_LABEL"
 			description="COM_COMPONENTBUILDER_HELP_DOCUMENT_GROUPS_DESCRIPTION"
+			layout="joomla.form.field.list-fancy-select"
 			required="true"
 			multiple="true"
 		/>

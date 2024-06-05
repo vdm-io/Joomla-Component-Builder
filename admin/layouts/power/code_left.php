@@ -30,6 +30,8 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'description',
 	'extends',
 	'extends_custom',
+	'extendsinterfaces',
+	'extendsinterfaces_custom',
 	'implements',
 	'implements_custom',
 	'namespace',

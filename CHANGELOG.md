@@ -1,10 +1,12 @@
-# v4.0.1-alpha2
+# v4.0.1-alpha3
 
-- Fix permission issue for admin views.
+- Add in JCB gitea push feature to help maintain JCB core features.
+- Add extending options to interfaces.
 
 # v4.0.1-alpha
 
 - Fix auto build from SQL in Joomla 4.
+- Fix permission issue for admin views.
 
 # v4.0.0
 

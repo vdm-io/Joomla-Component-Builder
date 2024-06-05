@@ -244,7 +244,7 @@ class Data
 			);
 
 			// Make sure the icon is only an icon path
-			if (strpos($item->icon, '#') !== false)
+			if (isset($item->icon) && strpos($item->icon, '#') !== false)
 			{
 				$item->icon = strstr($item->icon, '#', true);
 			}
