@@ -1259,7 +1259,7 @@ class ComponentbuilderModelAjax extends ListModel
 				array('table' => 'custom_admin_view', 'tables' => 'custom_admin_views', 'fields' => array('params' => 'custom_admin_view_headers:power_:power', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW'),
 				array('table' => 'joomla_component', 'tables' => 'joomla_components', 'fields' => array('params' => 'joomla_component_headers:power_:power', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT'),
 				array('table' => 'component_dashboard', 'tables' => 'components_dashboard', 'fields' => array('params' => 'component_dashboard_headers:power_:power', 'joomla_component' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_COMPONENT_DASHBOARD', 'linked_name' => 'system_name'),
-				array('table' => 'power', 'tables' => 'powers', 'fields' => array('extends' => 'GUID', 'implements' => 'ARRAY', 'use_selection' => 'use', 'load_selection' => 'load', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_POWER')
+				array('table' => 'power', 'tables' => 'powers', 'fields' => array('extends' => 'GUID', 'extendsinterfaces' => 'ARRAY', 'implements' => 'ARRAY', 'use_selection' => 'use', 'load_selection' => 'load', 'system_name' => 'NAME'), 'linked' => 'COM_COMPONENTBUILDER_POWER')
 			)
 		);
 

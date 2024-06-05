@@ -58,6 +58,17 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get Gitea Username
+	 *
+	 * @return  string  the access token
+	 * @since 3.2.0
+	 */
+	protected function getGiteausername(): ?string
+	{
+		return $this->custom_gitea_username ?? $this->params->get('gitea_username');
+	}
+
+	/**
 	 * get Gitea Access Token
 	 *
 	 * @return  string  the access token
@@ -90,6 +101,22 @@ class Config extends BaseConfig
 		if ($this->add_custom_gitea_url == 2)
 		{
 			return $this->params->get('custom_gitea_url');
+		}
+
+		return null;
+	}
+
+	/**
+	 * get Custom Gitea Username
+	 *
+	 * @return  string  the custom access token
+	 * @since 3.2.0
+	 */
+	protected function getCustomgiteausername(): ?string
+	{
+		if ($this->add_custom_gitea_url == 2)
+		{
+			return $this->params->get('custom_gitea_username');
 		}
 
 		return null;
@@ -148,6 +175,12 @@ class Config extends BaseConfig
 			$paths = $this->params->get('super_powers_init_repos');
 		}
 
+		// get the users own power repo (can overwrite all)
+		if (!empty($this->gitea_username))
+		{
+			$repos[$this->gitea_username . '.super-powers'] = (object) ['owner' => $this->gitea_username, 'repo' => 'super-powers', 'branch' => 'master'];
+		}
+
 		if (!empty($paths) && is_array($paths))
 		{
 			foreach ($paths as $path)
@@ -169,6 +202,22 @@ class Config extends BaseConfig
 		}
 
 		return $repos;
+	}
+
+	/**
+	 * Get super power push repo
+	 *
+	 * @return  object|null  The push repository on Gitea
+	 * @since 3.2.1
+	 */
+	protected function getSuperpowerspushrepo(): ?object
+	{
+		if (!empty($this->gitea_username))
+		{
+			return (object) ['owner' => $this->gitea_username, 'repo' => 'super-powers', 'branch' => 'master'];
+		}
+
+		return null;
 	}
 
 	/**

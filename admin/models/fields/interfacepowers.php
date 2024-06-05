@@ -144,11 +144,11 @@ class JFormFieldInterfacepowers extends JFormFieldList
 	protected function getOptions()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Get the databse object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.guid','a.name','a.system_name','a.type','a.power_version'),array('guid','implements_name','system_name','type','version')));
+		$query->select($db->quoteName(array('a.guid','a.name','a.system_name','a.type','a.power_version'),array('guid','extendsinterfaces_name','system_name','type','version')));
 		$query->from($db->quoteName('#__componentbuilder_power', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->where($db->quoteName('a.type') . ' = ' . $db->quote('interface'));
@@ -165,7 +165,7 @@ class JFormFieldInterfacepowers extends JFormFieldList
 			}
 		}
 		// get the input
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		// get the id
 		$power_id = $jinput->getInt('id', 0);
 		// if we have an id we remove all classes of the same namespace and name
@@ -176,19 +176,24 @@ class JFormFieldInterfacepowers extends JFormFieldList
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
 		$options = array();
-		// set the other option to enter text
-		$options[] = JHtml::_('select.option', -1, JText::_('COM_COMPONENTBUILDER_SET_CUSTOM'));
+		// if none was found, we add this to set an alternative to set custom
+		if (!$items)
+		{
+			$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_NONE_FOUND'));
+		}
 		if ($items)
 		{
 			if ($this->multiple === false)
 			{
-				$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
 			}
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->guid, $item->system_name . ' (v' . $item->version . ') [' . $item->type . ' ' . $item->implements_name . ']');
+				$options[] = Html::_('select.option', $item->guid, $item->system_name . ' [' . $item->type . ' ' . $item->extendsinterfaces_name . '] (v' . $item->version . ')');
 			}
 		}
+		// set the other option to enter text
+		$options[] = Html::_('select.option', -1, Text::_('COM_COMPONENTBUILDER_SET_CUSTOM'));
 		return $options;
 	}
 }

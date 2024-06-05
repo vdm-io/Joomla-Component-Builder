@@ -49,6 +49,8 @@ class ComponentbuilderModelPower extends AdminModel
 				'description',
 				'extends',
 				'extends_custom',
+				'extendsinterfaces',
+				'extendsinterfaces_custom',
 				'implements',
 				'implements_custom',
 				'namespace',
@@ -74,6 +76,12 @@ class ComponentbuilderModelPower extends AdminModel
 				'power_version'
 			)
 		),
+		'composer' => array(
+			'fullwidth' => array(
+				'autoload_composer_note',
+				'composer'
+			)
+		),
 		'licensing' => array(
 			'fullwidth' => array(
 				'add_licensing_template',
@@ -87,12 +95,6 @@ class ComponentbuilderModelPower extends AdminModel
 			),
 			'right' => array(
 				'note_approved_paths'
-			)
-		),
-		'composer' => array(
-			'fullwidth' => array(
-				'autoload_composer_note',
-				'composer'
 			)
 		)
 	);
@@ -225,14 +227,6 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->main_class_code = base64_decode($item->main_class_code);
 			}
 
-			if (!empty($item->method_selection))
-			{
-				// Convert the method_selection field to an array.
-				$method_selection = new Registry;
-				$method_selection->loadString($item->method_selection);
-				$item->method_selection = $method_selection->toArray();
-			}
-
 			if (!empty($item->load_selection))
 			{
 				// Convert the load_selection field to an array.
@@ -249,6 +243,14 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->composer = $composer->toArray();
 			}
 
+			if (!empty($item->implements))
+			{
+				// Convert the implements field to an array.
+				$implements = new Registry;
+				$implements->loadString($item->implements);
+				$item->implements = $implements->toArray();
+			}
+
 			if (!empty($item->property_selection))
 			{
 				// Convert the property_selection field to an array.
@@ -257,12 +259,20 @@ class ComponentbuilderModelPower extends AdminModel
 				$item->property_selection = $property_selection->toArray();
 			}
 
-			if (!empty($item->implements))
+			if (!empty($item->extendsinterfaces))
 			{
-				// Convert the implements field to an array.
-				$implements = new Registry;
-				$implements->loadString($item->implements);
-				$item->implements = $implements->toArray();
+				// Convert the extendsinterfaces field to an array.
+				$extendsinterfaces = new Registry;
+				$extendsinterfaces->loadString($item->extendsinterfaces);
+				$item->extendsinterfaces = $extendsinterfaces->toArray();
+			}
+
+			if (!empty($item->method_selection))
+			{
+				// Convert the method_selection field to an array.
+				$method_selection = new Registry;
+				$method_selection->loadString($item->method_selection);
+				$item->method_selection = $method_selection->toArray();
 			}
 
 			if (!empty($item->use_selection))
@@ -1092,19 +1102,6 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['guid'] = (string) GuidHelper::get();
 		}
 
-		// Set the method_selection items to data.
-		if (isset($data['method_selection']) && is_array($data['method_selection']))
-		{
-			$method_selection = new Registry;
-			$method_selection->loadArray($data['method_selection']);
-			$data['method_selection'] = (string) $method_selection;
-		}
-		elseif (!isset($data['method_selection']))
-		{
-			// Set the empty method_selection to data
-			$data['method_selection'] = '';
-		}
-
 		// Set the load_selection items to data.
 		if (isset($data['load_selection']) && is_array($data['load_selection']))
 		{
@@ -1131,6 +1128,19 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['composer'] = '';
 		}
 
+		// Set the implements items to data.
+		if (isset($data['implements']) && is_array($data['implements']))
+		{
+			$implements = new Registry;
+			$implements->loadArray($data['implements']);
+			$data['implements'] = (string) $implements;
+		}
+		elseif (!isset($data['implements']))
+		{
+			// Set the empty implements to data
+			$data['implements'] = '';
+		}
+
 		// Set the property_selection items to data.
 		if (isset($data['property_selection']) && is_array($data['property_selection']))
 		{
@@ -1144,17 +1154,30 @@ class ComponentbuilderModelPower extends AdminModel
 			$data['property_selection'] = '';
 		}
 
-		// Set the implements items to data.
-		if (isset($data['implements']) && is_array($data['implements']))
+		// Set the extendsinterfaces items to data.
+		if (isset($data['extendsinterfaces']) && is_array($data['extendsinterfaces']))
 		{
-			$implements = new Registry;
-			$implements->loadArray($data['implements']);
-			$data['implements'] = (string) $implements;
+			$extendsinterfaces = new Registry;
+			$extendsinterfaces->loadArray($data['extendsinterfaces']);
+			$data['extendsinterfaces'] = (string) $extendsinterfaces;
 		}
-		elseif (!isset($data['implements']))
+		elseif (!isset($data['extendsinterfaces']))
 		{
-			// Set the empty implements to data
-			$data['implements'] = '';
+			// Set the empty extendsinterfaces to data
+			$data['extendsinterfaces'] = '';
+		}
+
+		// Set the method_selection items to data.
+		if (isset($data['method_selection']) && is_array($data['method_selection']))
+		{
+			$method_selection = new Registry;
+			$method_selection->loadArray($data['method_selection']);
+			$data['method_selection'] = (string) $method_selection;
+		}
+		elseif (!isset($data['method_selection']))
+		{
+			// Set the empty method_selection to data
+			$data['method_selection'] = '';
 		}
 
 		// Set the use_selection items to data.

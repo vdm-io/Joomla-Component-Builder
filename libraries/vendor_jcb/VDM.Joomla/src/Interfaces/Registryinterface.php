@@ -12,12 +12,15 @@
 namespace VDM\Joomla\Interfaces;
 
 
+use VDM\Joomla\Interfaces\Activeregistryinterface;
+
+
 /**
  * The Registry Interface
  * 
  * @since 3.2.0
  */
-interface Registryinterface
+interface Registryinterface extends Activeregistryinterface
 {
 	/**
 	 * Sets a value into the registry using multiple keys.

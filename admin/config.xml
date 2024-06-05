@@ -134,6 +134,19 @@
 			folder="editors"
 			filter="cmd"
 		/>
+		<!-- Gitea_username Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="gitea_username"
+			label="COM_COMPONENTBUILDER_CONFIG_GITEA_USERNAME_LABEL"
+			size="128"
+			maxlength="50"
+			description="COM_COMPONENTBUILDER_CONFIG_GITEA_USERNAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CONFIG_GITEA_USERNAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CONFIG_GITEA_USERNAME_HINT"
+		/>
 		<!-- Gitea_token Field. Type: Password. (joomla) -->
 		<field
 			type="password"

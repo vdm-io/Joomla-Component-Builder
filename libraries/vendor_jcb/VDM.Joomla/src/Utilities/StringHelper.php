@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Utilities;
 
 
-use Joomla\CMS\Filter\InputFilter;
+use Joomla\Filter\InputFilter;
 use Joomla\CMS\Language\Language;
 use VDM\Joomla\Utilities\Component\Helper;
 

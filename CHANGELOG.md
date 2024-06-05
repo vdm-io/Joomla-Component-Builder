@@ -1,6 +1,7 @@
-# v3.2.2-alpha2
+# v3.2.2-alpha3
 
 - Fix permission issue for admin views.
+- Add extending options to interfaces.
 
 # v3.2.2-alpha
 

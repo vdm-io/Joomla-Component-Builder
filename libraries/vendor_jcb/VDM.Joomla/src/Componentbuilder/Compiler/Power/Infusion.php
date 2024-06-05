@@ -115,6 +115,8 @@ class Infusion
 		'unchanged_description' => 'description',
 		'extends' => 'extends',
 		'unchanged_extends_custom' => 'extends_custom',
+		'extendsinterfaces' => 'extendsinterfaces',
+		'unchanged_extendsinterfaces_custom' => 'extendsinterfaces_custom',
 		'guid' => 'guid',
 		'unchanged_head' => 'head',
 		'use_selection' => 'use_selection',
