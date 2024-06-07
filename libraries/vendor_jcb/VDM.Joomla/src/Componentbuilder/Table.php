@@ -3262,7 +3262,7 @@ class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
@@ -3342,7 +3342,7 @@ class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],

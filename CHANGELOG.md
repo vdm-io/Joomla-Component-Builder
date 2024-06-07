@@ -1,11 +1,12 @@
-# v3.2.2-alpha3
+# v3.2.2-alpha4
 
-- Fix permission issue for admin views.
-- Add extending options to interfaces.
+- Update the Schema class to also update null mismatching if needed
 
 # v3.2.2-alpha
 
 - Fix auto build from SQL in Joomla 4 and 5.
+- Fix permission issue for admin views.
+- Add extending options to interfaces.
 
 # v3.2.1
 

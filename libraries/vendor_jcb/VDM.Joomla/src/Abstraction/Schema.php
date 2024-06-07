@@ -343,9 +343,17 @@ abstract class Schema implements SchemaInterface
 					'expected' => $expected['type']
 				];
 			}
-
 			// check if update of default values is needed
-			if ($this->checkDefault($table, $column) && !isset($requireUpdate[$column]))
+			elseif ($this->checkDefault($table, $column))
+			{
+				$requireUpdate[$column] = [
+					'column' => $column,
+					'current' => $current->Type,
+					'expected' => $expected['type']
+				];
+			}
+			// check if update of null is needed
+			elseif ($this->checkNull($table, $column))
 			{
 				$requireUpdate[$column] = [
 					'column' => $column,
@@ -391,13 +399,21 @@ abstract class Schema implements SchemaInterface
 			$default = $this->getDefaultValue($type, $db_default);
 
 			// Prepare the null switch, and auto increment statement
-			$null_switch = !empty($db['null_switch']) ? " " . $db['null_switch'] : '';
+			$null_switch = !empty($db['null_switch']) ? ' ' . $db['null_switch'] : '';
+
+			// Prepare the auto increment statement
 			$auto_increment = !empty($db['auto_increment']) ? " AUTO_INCREMENT" : '';
+
+			// If there's a default value, the column should not be nullable
+			if ($default !== '')
+			{
+				$null_switch = '';
+			}
 
 			$this->setKeys($db);
 
 			// Assemble the SQL snippet for the column definition
-			return "{$column_name} {$type}{$null_switch}{$default}{$auto_increment}";
+			return "{$column_name} {$type}{$null_switch}{$auto_increment}{$default}";
 		} catch (\Exception $e) {
 			throw new \Exception("Error: failed to generate column definition for ($table.$field). " . $e->getMessage());
 		}
@@ -443,6 +459,61 @@ abstract class Schema implements SchemaInterface
 			is_string($current->Default) && strpos($current->Default, 'EMPTY') !== false)
 		{
 			return true; // little fix
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check and Update the null value if needed, including existing data adjustments
+	 *
+	 * @param string $table   The table to update.
+	 * @param string $column  The column/field to check.
+	 *
+	 * @return bool
+	 * @since  3.2.2
+	 */
+	protected function checkNull(string $table, string $column): bool
+	{
+		// Retrieve the expected column configuration
+		$expected = $this->table->get($table, $column, 'db');
+
+		// Skip updates if the null_switch is not set
+		if (!isset($expected['null_switch']))
+		{
+			return false;
+		}
+
+		// Retrieve the current column configuration
+		$current = $this->columns[$column];
+
+		// Skip updates if the Null is not set
+		if (!isset($current->Null))
+		{
+			return false;
+		}
+
+		// set the expected NULL
+		$expected_null = 'NO';
+		if ($expected['null_switch'] === "NULL")
+		{
+			$expected_null = 'YES';
+		}
+
+		// set the current NULL
+		$current_null = $current->Null;
+
+		// Prepare the type and default value SQL statement
+		$type = $expected['type'] ??  'TEXT';
+		$db_default = isset($expected['default']) ? $expected['default'] : null;
+		$default = $this->getDefaultValue($type, $db_default, true);
+
+		// check the null values if they match
+		if ($current_null !== $expected_null && $current_null === 'NO' && empty($default))
+		{
+			$this->success[] = "Success: updated the ($column) null state in $table table.";
+
+			return true;
 		}
 
 		return false;
@@ -679,8 +750,8 @@ abstract class Schema implements SchemaInterface
 	 * Adjusts the default value SQL fragment for a database field based on its type and specific rules.
 	 *
 	 * If the field is of type DATETIME and the Joomla version is not 3, it sets the default to CURRENT_TIMESTAMP
-	 * if not explicitly specified otherwise. For all other types, or when a 'EMPTY' default is specified, it handles
-	 * defaults by either leaving them unset or applying the provided default, properly quoted for SQL safety.
+	 * if not explicitly specified otherwise. For all other types it handles defaults by either leaving them unset or applying
+	 * the provided default, properly quoted for SQL safety. When a 'EMPTY' default is specified, it returns no default at all. (:)
 	 *
 	 * @param string	   $type          The type of the database field (e.g., 'DATETIME').
 	 * @param string|null  $defaultValue  Optional default value for the field, null if not provided.
@@ -691,7 +762,7 @@ abstract class Schema implements SchemaInterface
 	 */
 	protected function getDefaultValue(string $type, ?string $defaultValue, bool $pure = false): string
 	{
-		if ($defaultValue === null)
+		if ($defaultValue === null || strtoupper($defaultValue) === 'EMPTY')
 		{
 			return '';
 		}
@@ -722,11 +793,7 @@ abstract class Schema implements SchemaInterface
 			return 'NULL';
 		}
 
-		if (is_string($value) && strtoupper($value) === 'EMPTY')
-		{
-			return "''";
-		}
-		elseif (is_numeric($value))
+		if (is_numeric($value))
 		{
 			if (filter_var($value, FILTER_VALIDATE_INT))
 			{

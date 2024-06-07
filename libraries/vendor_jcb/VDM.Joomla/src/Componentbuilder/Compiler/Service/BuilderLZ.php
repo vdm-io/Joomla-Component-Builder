@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\Languages;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\LanguageMessages;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Layout;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\LayoutData;
@@ -86,6 +87,9 @@ class BuilderLZ implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(Languages::class, 'Compiler.Builder.Languages')
+			->share('Compiler.Builder.Languages', [$this, 'getLanguages'], true);
+
 		$container->alias(LanguageMessages::class, 'Compiler.Builder.Language.Messages')
 			->share('Compiler.Builder.Language.Messages', [$this, 'getLanguageMessages'], true);
 
@@ -244,6 +248,19 @@ class BuilderLZ implements ServiceProviderInterface
 
 		$container->alias(ViewsDefaultOrdering::class, 'Compiler.Builder.Views.Default.Ordering')
 			->share('Compiler.Builder.Views.Default.Ordering', [$this, 'getViewsDefaultOrdering'], true);
+	}
+
+	/**
+	 * Get The Languages Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Languages
+	 * @since 3.2.0
+	 */
+	public function getLanguages(Container $container): Languages
+	{
+		return new Languages();
 	}
 
 	/**
