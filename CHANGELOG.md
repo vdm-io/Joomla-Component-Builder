@@ -1,12 +1,14 @@
-# v4.0.1-alpha3
+# v4.0.1-alpha4
 
-- Add in JCB gitea push feature to help maintain JCB core features.
-- Add extending options to interfaces.
+- Change the extendsinterfaces field to allow null, #1139
+- Update the Schema class to also update null mismatching if needed
 
 # v4.0.1-alpha
 
 - Fix auto build from SQL in Joomla 4.
 - Fix permission issue for admin views.
+- Add in JCB gitea push feature to help maintain JCB core features.
+- Add extending options to interfaces.
 
 # v4.0.0
 
