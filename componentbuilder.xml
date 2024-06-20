@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="4.0" method="upgrade">
 	<name>COM_COMPONENTBUILDER</name>
-	<creationDate>7th June, 2024</creationDate>
+	<creationDate>20th June, 2024</creationDate>
 	<author>Llewellyn van der Merwe</author>
 	<authorEmail>joomla@vdm.io</authorEmail>
 	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>4.0.1-alpha4</version>
+	<version>4.0.1-alpha5</version>
 	<description><![CDATA[
-		<h1>Component Builder (v.4.0.1-alpha4)</h1>
+		<h1>Component Builder (v.4.0.1-alpha5)</h1>
 		<div style="clear: both;"></div>
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
@@ -84,6 +84,7 @@ Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/compo
 			<menu option="com_componentbuilder" view="language_translations">COM_COMPONENTBUILDER_MENU_LANGUAGE_TRANSLATIONS</menu>
 			<menu option="com_componentbuilder" view="languages">COM_COMPONENTBUILDER_MENU_LANGUAGES</menu>
 			<menu option="com_componentbuilder" view="servers">COM_COMPONENTBUILDER_MENU_SERVERS</menu>
+			<menu option="com_componentbuilder" view="repositories">COM_COMPONENTBUILDER_MENU_REPOSITORIES</menu>
 			<menu option="com_componentbuilder" view="help_documents">COM_COMPONENTBUILDER_MENU_HELP_DOCUMENTS</menu>
 		</submenu>
 		<files folder="admin">

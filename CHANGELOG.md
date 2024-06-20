@@ -1,7 +1,8 @@
-# v4.0.1-alpha4
+# v4.0.1-alpha5
 
-- Change the extendsinterfaces field to allow null, #1139
-- Update the Schema class to also update null mismatching if needed
+- Add repositories for better integration with gitea
+- Refactored the Data classes
+- Add new Data classes
 
 # v4.0.1-alpha
 
@@ -9,6 +10,8 @@
 - Fix permission issue for admin views.
 - Add in JCB gitea push feature to help maintain JCB core features.
 - Add extending options to interfaces.
+- Change the extendsinterfaces field to allow null, #1139
+- Update the Schema class to also update null mismatching if needed
 
 # v4.0.0
 

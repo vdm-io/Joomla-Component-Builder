@@ -14,8 +14,9 @@ namespace VDM\Joomla\Componentbuilder\JoomlaPower;
 
 use Joomla\DI\Container;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Service\JoomlaPower as Power;
-use VDM\Joomla\Componentbuilder\Service\Database;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Service\Database as PowerDatabase;
+use VDM\Joomla\Service\Database;
+use VDM\Joomla\Service\Model;
+use VDM\Joomla\Service\Data;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Componentbuilder\Power\Service\Gitea as GiteaPower;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
@@ -77,7 +78,8 @@ abstract class Factory implements FactoryInterface
 		return (new Container())
 			->registerServiceProvider(new Power())
 			->registerServiceProvider(new Database())
-			->registerServiceProvider(new PowerDatabase())
+			->registerServiceProvider(new Model())
+			->registerServiceProvider(new Data())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaPower())
 			->registerServiceProvider(new GiteaUtilities());

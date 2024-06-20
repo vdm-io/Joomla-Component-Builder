@@ -31,10 +31,6 @@ document.addEventListener('DOMContentLoaded', function()
 	var datatype_vvvvwbi = jQuery("#jform_datatype").val();
 	vvvvwbi(datatype_vvvvwbi);
 
-	var store_vvvvwbj = jQuery("#jform_store").val();
-	var datatype_vvvvwbj = jQuery("#jform_datatype").val();
-	vvvvwbj(store_vvvvwbj,datatype_vvvvwbj);
-
 	var store_vvvvwbl = jQuery("#jform_store").val();
 	vvvvwbl(store_vvvvwbl);
 
@@ -271,67 +267,6 @@ function datatype_vvvvwbi_SomeFunc(datatype_vvvvwbi)
 {
 	// set the function logic
 	if (datatype_vvvvwbi == 'CHAR' || datatype_vvvvwbi == 'VARCHAR' || datatype_vvvvwbi == 'INT' || datatype_vvvvwbi == 'TINYINT' || datatype_vvvvwbi == 'BIGINT' || datatype_vvvvwbi == 'FLOAT' || datatype_vvvvwbi == 'DECIMAL' || datatype_vvvvwbi == 'DOUBLE')
-	{
-		return true;
-	}
-	return false;
-}
-
-// the vvvvwbj function
-function vvvvwbj(store_vvvvwbj,datatype_vvvvwbj)
-{
-	if (isSet(store_vvvvwbj) && store_vvvvwbj.constructor !== Array)
-	{
-		var temp_vvvvwbj = store_vvvvwbj;
-		var store_vvvvwbj = [];
-		store_vvvvwbj.push(temp_vvvvwbj);
-	}
-	else if (!isSet(store_vvvvwbj))
-	{
-		var store_vvvvwbj = [];
-	}
-	var store = store_vvvvwbj.some(store_vvvvwbj_SomeFunc);
-
-	if (isSet(datatype_vvvvwbj) && datatype_vvvvwbj.constructor !== Array)
-	{
-		var temp_vvvvwbj = datatype_vvvvwbj;
-		var datatype_vvvvwbj = [];
-		datatype_vvvvwbj.push(temp_vvvvwbj);
-	}
-	else if (!isSet(datatype_vvvvwbj))
-	{
-		var datatype_vvvvwbj = [];
-	}
-	var datatype = datatype_vvvvwbj.some(datatype_vvvvwbj_SomeFunc);
-
-
-	// set this function logic
-	if (store && datatype)
-	{
-		jQuery('.note_whmcs_encryption').closest('.control-group').show();
-	}
-	else
-	{
-		jQuery('.note_whmcs_encryption').closest('.control-group').hide();
-	}
-}
-
-// the vvvvwbj Some function
-function store_vvvvwbj_SomeFunc(store_vvvvwbj)
-{
-	// set the function logic
-	if (store_vvvvwbj == 4)
-	{
-		return true;
-	}
-	return false;
-}
-
-// the vvvvwbj Some function
-function datatype_vvvvwbj_SomeFunc(datatype_vvvvwbj)
-{
-	// set the function logic
-	if (datatype_vvvvwbj == 'CHAR' || datatype_vvvvwbj == 'VARCHAR' || datatype_vvvvwbj == 'TEXT' || datatype_vvvvwbj == 'MEDIUMTEXT' || datatype_vvvvwbj == 'LONGTEXT' || datatype_vvvvwbj == 'BLOB' || datatype_vvvvwbj == 'TINYBLOB' || datatype_vvvvwbj == 'MEDIUMBLOB' || datatype_vvvvwbj == 'LONGBLOB')
 	{
 		return true;
 	}

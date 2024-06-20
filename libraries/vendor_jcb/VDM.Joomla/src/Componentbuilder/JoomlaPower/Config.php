@@ -65,7 +65,7 @@ class Config extends BaseConfig
 	 */
 	protected function getGiteausername(): ?string
 	{
-		return $this->custom_gitea_username ?? $this->params->get('gitea_username');
+		return $this->params->get('gitea_username');
 	}
 
 	/**
@@ -76,66 +76,7 @@ class Config extends BaseConfig
 	 */
 	protected function getGiteatoken(): ?string
 	{
-		return $this->custom_gitea_token ?? $this->params->get('gitea_token');
-	}
-
-	/**
-	 * get Add Custom Gitea URL
-	 *
-	 * @return  int  the add switch
-	 * @since 3.2.0
-	 */
-	protected function getAddcustomgiteaurl(): int
-	{
-		return $this->params->get('add_custom_gitea_url', 1);
-	}
-
-	/**
-	 * get Custom Gitea URL
-	 *
-	 * @return  string  the custom gitea url
-	 * @since 3.2.0
-	 */
-	protected function getCustomgiteaurl(): ?string
-	{
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('custom_gitea_url');
-		}
-
-		return null;
-	}
-
-	/**
-	 * get Custom Gitea Username
-	 *
-	 * @return  string  the custom access token
-	 * @since 3.2.0
-	 */
-	protected function getCustomgiteausername(): ?string
-	{
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('custom_gitea_username');
-		}
-
-		return null;
-	}
-
-	/**
-	 * get Custom Gitea Access Token
-	 *
-	 * @return  string  the custom access token
-	 * @since 3.2.0
-	 */
-	protected function getCustomgiteatoken(): ?string
-	{
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('custom_gitea_token');
-		}
-
-		return null;
+		return $this->params->get('gitea_token');
 	}
 
 	/**
@@ -165,9 +106,9 @@ class Config extends BaseConfig
 		// get the users own power repo (can overwrite all)
 		if (!empty($this->gitea_username))
 		{
-			$repos[$this->gitea_username . '.joomla-powers'] = (object) ['owner' => $this->gitea_username, 'repo' => 'joomla-powers', 'branch' => 'master'];
+			$repos[$this->gitea_username . '.joomla-powers'] = (object) ['organisation' => $this->gitea_username, 'repository' => 'joomla-powers', 'read_branch' => 'master'];
 		}
-		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) ['owner' => $this->joomla_powers_core_organisation, 'repo' => 'joomla-powers', 'branch' => 'master'];
+		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) ['organisation' => $this->joomla_powers_core_organisation, 'repository' => 'joomla-powers', 'read_branch' => 'master'];
 
 		return $repos;
 	}
@@ -183,7 +124,7 @@ class Config extends BaseConfig
 		// some defaults repos we need by JCB
 		if (!empty($this->gitea_username))
 		{
-			return (object) ['owner' => $this->gitea_username, 'repo' => 'joomla-powers', 'branch' => 'master'];
+			return (object) ['organisation' => $this->gitea_username, 'repository' => 'joomla-powers', 'read_branch' => 'master'];
 		}
 	}
 

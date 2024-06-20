@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Power\Generator;
 
 
-use VDM\Joomla\Componentbuilder\Power\Database\Load as Database;
+use VDM\Joomla\Data\Action\Load as Database;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
 use VDM\Joomla\Componentbuilder\Power\Generator\Bucket;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
@@ -77,7 +77,7 @@ final class Search
 	{
 		if (($power = $this->bucket->get("power.{$guid}")) === null)
 		{
-			if (($power = $this->database->item(['guid' => $guid])) === null)
+			if (($power = $this->database->table('power')->item(['guid' => $guid])) === null)
 			{
 				return null;
 			}
@@ -255,7 +255,7 @@ final class Search
 	{
 		if (($service_providers = $this->bucket->get("service_providers.{$guid}")) === null)
 		{
-			if (($powers = $this->database->items([
+			if (($powers = $this->database->table('power')->items([
 				'use_selection' => [
 					'operator' => 'LIKE',
 					'value' => "'%{$guid}%'",

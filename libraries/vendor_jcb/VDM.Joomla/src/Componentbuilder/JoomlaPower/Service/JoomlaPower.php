@@ -108,8 +108,7 @@ class JoomlaPower implements ServiceProviderInterface
 	{
 		return new Superpower(
 			$container->get('Joomla.Power.Grep'),
-			$container->get('Joomla.Power.Database.Insert'),
-			$container->get('Joomla.Power.Database.Update')
+			$container->get('Data.Item')
 		);
 	}
 

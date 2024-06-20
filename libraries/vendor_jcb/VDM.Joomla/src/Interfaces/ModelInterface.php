@@ -20,6 +20,16 @@ namespace VDM\Joomla\Interfaces;
 interface ModelInterface
 {
 	/**
+	 * Set the current active table
+	 *
+	 * @param string  $table The table that should be active
+	 *
+	 * @return self
+	 * @since 3.2.2
+	 */
+	public function table(string $table): self;
+
+	/**
 	 * Model the value
 	 *          Example: $this->value(value, 'value_key', 'table_name');
 	 *
@@ -36,13 +46,13 @@ interface ModelInterface
 	 * Model the values of an item
 	 *          Example: $this->item(Object, 'table_name');
 	 *
-	 * @param   object         $item      The item object
+	 * @param   object|null    $item      The item object
 	 * @param   string|null    $table     The table
 	 *
 	 * @return  object|null
 	 * @since 3.2.0
 	 */
-	public function item(object $item, ?string $table = null): ?object;
+	public function item(?object $item, ?string $table = null): ?object;
 
 	/**
 	 * Model the values of multiple items
@@ -60,13 +70,13 @@ interface ModelInterface
 	 * Model the values of an row
 	 *          Example: $this->item(Array, 'table_name');
 	 *
-	 * @param   array          $item      The item array
+	 * @param   array|null     $item      The item array
 	 * @param   string|null    $table     The table
 	 *
 	 * @return  array|null
 	 * @since 3.2.0
 	 */
-	public function row(array $item, ?string $table = null): ?array;
+	public function row(?array $item, ?string $table = null): ?array;
 
 	/**
 	 * Model the values of multiple rows
@@ -90,5 +100,25 @@ interface ModelInterface
 	 * @since 3.2.0
 	 */
 	public function last(?string $table = null): ?int;
+
+	/**
+	 * Set the current active table
+	 *
+	 * @param string   $tableName  The table name
+	 *
+	 * @return  void
+	 * @since 3.2.2
+	 */
+	public function setTable(string $tableName): void;
+
+	/**
+	 * Set the switch to control the behaviour of empty values
+	 *
+	 * @param bool   $allowEmpty  The switch
+	 *
+	 * @return  void
+	 * @since 3.2.2
+	 */
+	public function setAllowEmpty(bool $allowEmpty): void;
 }
 

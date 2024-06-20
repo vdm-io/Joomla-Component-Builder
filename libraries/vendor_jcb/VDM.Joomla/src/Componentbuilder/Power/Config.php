@@ -14,8 +14,10 @@ namespace VDM\Joomla\Componentbuilder\Power;
 
 use Joomla\Registry\Registry as JoomlaRegistry;
 use Joomla\CMS\Factory as JoomlaFactory;
+use Joomla\Input\Input;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Componentbuilder\Utilities\RepoHelper;
 use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
 
 
@@ -43,9 +45,9 @@ class Config extends BaseConfig
 	/**
 	 * Constructor
 	 *
-	 * @param Input|null        $input      Input
-	 * @param Registry|null     $params     The component parameters
-	 * @param Registry|null     $config     The Joomla configuration
+	 * @param Input|null            $input      Input
+	 * @param JoomlaRegistry|null   $params     The component parameters
+	 * @param JoomlaRegistry|null   $config     The Joomla configuration
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
@@ -65,7 +67,7 @@ class Config extends BaseConfig
 	 */
 	protected function getGiteausername(): ?string
 	{
-		return $this->custom_gitea_username ?? $this->params->get('gitea_username');
+		return $this->params->get('gitea_username');
 	}
 
 	/**
@@ -76,66 +78,7 @@ class Config extends BaseConfig
 	 */
 	protected function getGiteatoken(): ?string
 	{
-		return $this->custom_gitea_token ?? $this->params->get('gitea_token');
-	}
-
-	/**
-	 * get Add Custom Gitea URL
-	 *
-	 * @return  int  the add switch
-	 * @since 3.2.0
-	 */
-	protected function getAddcustomgiteaurl(): int
-	{
-		return $this->params->get('add_custom_gitea_url', 1);
-	}
-
-	/**
-	 * get Custom Gitea URL
-	 *
-	 * @return  string  the custom gitea url
-	 * @since 3.2.0
-	 */
-	protected function getCustomgiteaurl(): ?string
-	{
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('custom_gitea_url');
-		}
-
-		return null;
-	}
-
-	/**
-	 * get Custom Gitea Username
-	 *
-	 * @return  string  the custom access token
-	 * @since 3.2.0
-	 */
-	protected function getCustomgiteausername(): ?string
-	{
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('custom_gitea_username');
-		}
-
-		return null;
-	}
-
-	/**
-	 * get Custom Gitea Access Token
-	 *
-	 * @return  string  the custom access token
-	 * @since 3.2.0
-	 */
-	protected function getCustomgiteatoken(): ?string
-	{
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('custom_gitea_token');
-		}
-
-		return null;
+		return $this->params->get('gitea_token');
 	}
 
 	/**
@@ -148,11 +91,6 @@ class Config extends BaseConfig
 	{
 		// the VDM default organisation is [joomla]
 		$organisation = 'joomla';
-
-		if ($this->add_custom_gitea_url == 2)
-		{
-			return $this->params->get('super_powers_core_organisation', $organisation);
-		}
 
 		return $organisation;
 	}
@@ -168,38 +106,31 @@ class Config extends BaseConfig
 		// some defaults repos we need by JCB
 		$repos = [];
 
-		// only add custom init with custom gitea
-		$paths = null;
-		if ($this->add_custom_gitea_url == 2)
-		{
-			$paths = $this->params->get('super_powers_init_repos');
-		}
-
 		// get the users own power repo (can overwrite all)
-		if (!empty($this->gitea_username))
+		if ($this->gitea_username !== null)
 		{
-			$repos[$this->gitea_username . '.super-powers'] = (object) ['owner' => $this->gitea_username, 'repo' => 'super-powers', 'branch' => 'master'];
+			$repos[$this->gitea_username . '.super-powers'] = (object) [
+				'organisation' => $this->gitea_username,
+				'repository' => 'super-powers',
+				'read_branch' => 'master'
+			];
 		}
 
-		if (!empty($paths) && is_array($paths))
-		{
-			foreach ($paths as $path)
-			{
-				$owner = $path->owner ?? null;
-				$repo = $path->repo ?? null;
-				if ($owner !== null && $repo !== null)
-				{
-					// we make sure to get only the objects
-					$repos = ["{$owner}.{$repo}" => $path] + $repos;
-				}
-			}
-		}
-		else
-		{
-			$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'super-powers', 'branch' => 'master'];
-			$repos[$this->super_powers_core_organisation . '.gitea'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'gitea', 'branch' => 'master'];
-			$repos[$this->super_powers_core_organisation . '.openai'] = (object) ['owner' => $this->super_powers_core_organisation, 'repo' => 'openai', 'branch' => 'master'];
-		}
+		$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) [
+			'organisation' => $this->super_powers_core_organisation,
+			'repository' => 'super-powers',
+			'read_branch' => 'master'
+		];
+		$repos[$this->super_powers_core_organisation . '.gitea'] = (object) [
+			'organisation' => $this->super_powers_core_organisation,
+			'repository' => 'gitea',
+			'read_branch' => 'master'
+		];
+		$repos[$this->super_powers_core_organisation . '.openai'] = (object) [
+			'organisation' => $this->super_powers_core_organisation,
+			'repository' => 'openai',
+			'read_branch' => 'master'
+		];
 
 		return $repos;
 	}
@@ -212,9 +143,13 @@ class Config extends BaseConfig
 	 */
 	protected function getSuperpowerspushrepo(): ?object
 	{
-		if (!empty($this->gitea_username))
+		if ($this->gitea_username !== null)
 		{
-			return (object) ['owner' => $this->gitea_username, 'repo' => 'super-powers', 'branch' => 'master'];
+			return (object) [
+				'organisation' => $this->gitea_username,
+				'repository' => 'super-powers',
+				'read_branch' => 'master'
+			];
 		}
 
 		return null;
@@ -288,19 +223,14 @@ class Config extends BaseConfig
 		// some defaults repos we need by JCB
 		$approved = $this->super_powers_init_repos;
 
-		if (!$this->add_own_powers)
-		{
-			return array_values($approved);
-		}
+		$paths = RepoHelper::get(1); // super powers = 1
 
-		$paths = $this->params->get('approved_paths');
-
-		if (!empty($paths))
+		if ($paths !== null)
 		{
 			foreach ($paths as $path)
 			{
-				$owner = $path->owner ?? null;
-				$repo = $path->repo ?? null;
+				$owner = $path->organisation ?? null;
+				$repo = $path->repository ?? null;
 				if ($owner !== null && $repo !== null)
 				{
 					// we make sure to get only the objects

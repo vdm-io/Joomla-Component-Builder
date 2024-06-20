@@ -56,7 +56,9 @@ final class Grep extends ExtendingGrep implements GrepInterface
 
 		try
 		{
-			$path->index = $this->contents->get($path->owner, $path->repo, 'joomla-powers.json', $path->branch);
+			$this->contents->load_($path->base ?? null, $path->token ?? null);
+			$path->index = $this->contents->get($path->organisation, $path->repository, 'joomla-powers.json', $path->read_branch);
+			$this->contents->reset_();
 		}
 		catch (\Exception $e)
 		{
@@ -108,46 +110,43 @@ final class Grep extends ExtendingGrep implements GrepInterface
 	 */
 	protected function getRemote(object $path, string $guid): ?object
 	{
+		$power = null;
 		if (empty($path->index->{$guid}->settings))
 		{
-			return null;
+			return $power;
 		}
 
 		// get the settings
-		if (($power = $this->loadRemoteFile($path->owner, $path->repo, $path->index->{$guid}->settings, $path->branch)) !== null &&
+		$this->contents->load_($path->base ?? null, $path->token ?? null);
+		if (($power = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->settings, $path->read_branch)) !== null &&
 			isset($power->guid))
 		{
 			// set the git details in params
 			$power->params = (object) [
-				'git' => [
-					'owner' => $path->owner,
-					'repo' => $path->repo,
-					'branch' => $path->branch
-				]
+				'source' => ['guid' => $path->guid ?? null]
 			];
-
-			return $power;
 		}
+		$this->contents->reset_();
 
-		return null;
+		return $power;
 	}
 
 	/**
 	 * Load the remote file
 	 *
-	 * @param string         $owner    The repository owner
-	 * @param string         $repo     The repository name
-	 * @param string         $path     The repository path to file
-	 * @param string|null    $branch   The repository branch name
+	 * @param string         $organisation   The repository organisation
+	 * @param string         $repository     The repository name
+	 * @param string         $path           The repository path to file
+	 * @param string|null    $branch         The repository branch name
 	 *
 	 * @return mixed
 	 * @since 3.2.0
 	 */
-	protected function loadRemoteFile(string $owner, string $repo, string $path, ?string $branch)
+	protected function loadRemoteFile(string $organisation, string $repository, string $path, ?string $branch)
 	{
 		try
 		{
-			$data = $this->contents->get($owner, $repo, $path, $branch);
+			$data = $this->contents->get($organisation, $repository, $path, $branch);
 		}
 		catch (\Exception $e)
 		{
