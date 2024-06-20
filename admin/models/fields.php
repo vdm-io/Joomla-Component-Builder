@@ -346,7 +346,6 @@ class ComponentbuilderModelFields extends ListModel
 				2 => 'COM_COMPONENTBUILDER_FIELD_BASE64',
 				3 => 'COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY',
 				5 => 'COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY',
-				4 => 'COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION',
 				6 => 'COM_COMPONENTBUILDER_FIELD_EXPERT_MODE_CUSTOM'
 			);
 			// Now check if value is found in this array
@@ -721,22 +720,22 @@ class ComponentbuilderModelFields extends ListModel
 							continue;
 						}
 
+						// decode on_get_model_field
+						$item->on_get_model_field = base64_decode($item->on_get_model_field);
 						// decode on_save_model_field
 						$item->on_save_model_field = base64_decode($item->on_save_model_field);
 						// decode initiator_on_get_model
 						$item->initiator_on_get_model = base64_decode($item->initiator_on_get_model);
-						// decode initiator_on_save_model
-						$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
+						// decode javascript_view_footer
+						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode css_views
 						$item->css_views = base64_decode($item->css_views);
 						// decode css_view
 						$item->css_view = base64_decode($item->css_view);
-						// decode on_get_model_field
-						$item->on_get_model_field = base64_decode($item->on_get_model_field);
-						// decode javascript_view_footer
-						$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 						// decode javascript_views_footer
 						$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+						// decode initiator_on_save_model
+						$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);

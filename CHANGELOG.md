@@ -1,12 +1,15 @@
-# v3.2.2-alpha4
+# v3.2.2-alpha5
 
-- Update the Schema class to also update null mismatching if needed
+- Add repositories for better integration with gitea
+- Refactored the Data classes
+- Add new Data classes
 
 # v3.2.2-alpha
 
 - Fix auto build from SQL in Joomla 4 and 5.
 - Fix permission issue for admin views.
 - Add extending options to interfaces.
+- Update the Schema class to also update null mismatching if needed
 
 # v3.2.1
 

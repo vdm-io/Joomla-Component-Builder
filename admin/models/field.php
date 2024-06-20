@@ -71,7 +71,6 @@ class ComponentbuilderModelField extends AdminModel
 				'store',
 				'medium_encryption_note',
 				'basic_encryption_note',
-				'note_whmcs_encryption',
 				'note_expert_field_save_mode',
 				'initiator_on_save_model',
 				'initiator_on_get_model',
@@ -215,6 +214,12 @@ class ComponentbuilderModelField extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->on_get_model_field))
+			{
+				// base64 Decode on_get_model_field.
+				$item->on_get_model_field = base64_decode($item->on_get_model_field);
+			}
+
 			if (!empty($item->on_save_model_field))
 			{
 				// base64 Decode on_save_model_field.
@@ -227,10 +232,10 @@ class ComponentbuilderModelField extends AdminModel
 				$item->initiator_on_get_model = base64_decode($item->initiator_on_get_model);
 			}
 
-			if (!empty($item->initiator_on_save_model))
+			if (!empty($item->javascript_view_footer))
 			{
-				// base64 Decode initiator_on_save_model.
-				$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
+				// base64 Decode javascript_view_footer.
+				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
 			}
 
 			if (!empty($item->css_views))
@@ -245,22 +250,16 @@ class ComponentbuilderModelField extends AdminModel
 				$item->css_view = base64_decode($item->css_view);
 			}
 
-			if (!empty($item->on_get_model_field))
-			{
-				// base64 Decode on_get_model_field.
-				$item->on_get_model_field = base64_decode($item->on_get_model_field);
-			}
-
-			if (!empty($item->javascript_view_footer))
-			{
-				// base64 Decode javascript_view_footer.
-				$item->javascript_view_footer = base64_decode($item->javascript_view_footer);
-			}
-
 			if (!empty($item->javascript_views_footer))
 			{
 				// base64 Decode javascript_views_footer.
 				$item->javascript_views_footer = base64_decode($item->javascript_views_footer);
+			}
+
+			if (!empty($item->initiator_on_save_model))
+			{
+				// base64 Decode initiator_on_save_model.
+				$item->initiator_on_save_model = base64_decode($item->initiator_on_save_model);
 			}
 
 			if (!empty($item->xml))
@@ -1172,6 +1171,12 @@ class ComponentbuilderModelField extends AdminModel
 			$data['xml'] = (string) json_encode($data['xml']);
 		}
 
+		// Set the on_get_model_field string to base64 string.
+		if (isset($data['on_get_model_field']))
+		{
+			$data['on_get_model_field'] = base64_encode($data['on_get_model_field']);
+		}
+
 		// Set the on_save_model_field string to base64 string.
 		if (isset($data['on_save_model_field']))
 		{
@@ -1184,10 +1189,10 @@ class ComponentbuilderModelField extends AdminModel
 			$data['initiator_on_get_model'] = base64_encode($data['initiator_on_get_model']);
 		}
 
-		// Set the initiator_on_save_model string to base64 string.
-		if (isset($data['initiator_on_save_model']))
+		// Set the javascript_view_footer string to base64 string.
+		if (isset($data['javascript_view_footer']))
 		{
-			$data['initiator_on_save_model'] = base64_encode($data['initiator_on_save_model']);
+			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
 		}
 
 		// Set the css_views string to base64 string.
@@ -1202,22 +1207,16 @@ class ComponentbuilderModelField extends AdminModel
 			$data['css_view'] = base64_encode($data['css_view']);
 		}
 
-		// Set the on_get_model_field string to base64 string.
-		if (isset($data['on_get_model_field']))
-		{
-			$data['on_get_model_field'] = base64_encode($data['on_get_model_field']);
-		}
-
-		// Set the javascript_view_footer string to base64 string.
-		if (isset($data['javascript_view_footer']))
-		{
-			$data['javascript_view_footer'] = base64_encode($data['javascript_view_footer']);
-		}
-
 		// Set the javascript_views_footer string to base64 string.
 		if (isset($data['javascript_views_footer']))
 		{
 			$data['javascript_views_footer'] = base64_encode($data['javascript_views_footer']);
+		}
+
+		// Set the initiator_on_save_model string to base64 string.
+		if (isset($data['initiator_on_save_model']))
+		{
+			$data['initiator_on_save_model'] = base64_encode($data['initiator_on_save_model']);
 		}
 
 		// Set the Params Items to data

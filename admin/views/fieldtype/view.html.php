@@ -71,7 +71,7 @@ class ComponentbuilderViewFieldtype extends HtmlView
 		}
 
 		// Get Linked view data
-		$this->vxtfields = $this->get('Vxtfields');
+		$this->vxsfields = $this->get('Vxsfields');
 
 		// Set the toolbar
 		$this->addToolBar();

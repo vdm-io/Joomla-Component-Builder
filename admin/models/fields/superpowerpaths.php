@@ -15,7 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
-use VDM\Joomla\Utilities\Component\Helper;
 jimport('joomla.form.helper');
 \JFormHelper::loadFieldClass('checkboxes');
 
@@ -33,69 +32,41 @@ class JFormFieldSuperpowerpaths extends JFormFieldCheckboxes
 
 	// A DynamicCheckboxes@ Field
 	/**
-	 * Method to get the data to be passed to the layout for rendering.
+	 * Method to get the field options.
 	 *
-	 * @return  array
+	 * @return  array  The field option objects.
 	 *
-	 * @since   3.5
+	 * @since   3.7.0
 	 */
-	protected function getLayoutData()
+	protected function getOptions()
 	{
-		$data = parent::getLayoutData();
-
-		// True if the field has 'value' set. In other words, it has been stored, don't use the default values.
-		$hasValue = (isset($this->value) && !empty($this->value));
-
-		// If a value has been stored, use it. Otherwise, use the defaults.
-		$checkedOptions = $hasValue ? $this->value : $this->checkedOptions;
-
-		// get the form options
+		// Get the databse object.
+		$db = Factory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.repository', 'a.organisation')))
+			->from($db->quoteName('#__componentbuilder_repository', 'a'))
+			->where($db->quoteName('a.published') . ' >= 1')
+			->where($db->quoteName('a.target') . ' = 1') // super powers
+			->order($db->quoteName('a.ordering') . ' ASC');
+		$db->setQuery((string)$query);
+		$items = $db->loadObjectList();
 		$options = [];
-
-		// get the component params
-		$params = Helper::getParams();
-		$activate  = $params->get('super_powers_repositories', 0);
-
-		// set the default
-		$default = $params->get('super_powers_core', 'joomla/super-powers');
-
-		// must have one / in the path
-		if (strpos($default, '/') !== false)
+		if ($items)
 		{
-			$tmp = new \stdClass;
-			$tmp->text = $tmp->value = trim($default);
-			$tmp->checked = false;
-			$options[$tmp->value] = $tmp;
-		}
-
-		if ($activate == 1)
-		{
-			$subform = $params->get($this->fieldname);
-
-			// add the paths found in global settings
-			if (is_object($subform))
+			if ($this->multiple === false)
 			{
-				foreach ($subform as $value)
-				{
-					if (isset($value->owner) && strlen($value->owner) > 1 &&
-						isset($value->repo) && strlen($value->repo) > 1)
-					{
-						$tmp = new \stdClass;
-						$tmp->text = $tmp->value = trim($value->owner) . '/' . trim($value->repo);
-						$tmp->checked = false;
-
-						$options[$tmp->value] = $tmp;
-					}
-				}
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
+			foreach($items as $item)
+			{
+				$path = $item->organisation . '/' . $item->repository;
+				$options[] = Html::_('select.option', $path, $path);
 			}
 		}
-
-		$extraData = array(
-			'checkedOptions' => is_array($checkedOptions) ? $checkedOptions : explode(',', (string) $checkedOptions),
-			'hasValue'       => $hasValue,
-			'options'        => array_values($options)
-		);
-
-		return array_merge($data, $extraData);
+		else
+		{
+			$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_NO_ACTIVE_REPOSITORIES_FOUND'));
+		}
+		return $options;
 	}
 }

@@ -120,6 +120,7 @@ class ComponentbuilderController extends BaseController
 				'language_translation' => 'language_translations',
 				'language' => 'languages',
 				'server' => 'servers',
+				'repository' => 'repositories',
 				'help_document' => 'help_documents',
 				'admin_fields' => 'admins_fields',
 				'admin_fields_conditions' => 'admins_fields_conditions',

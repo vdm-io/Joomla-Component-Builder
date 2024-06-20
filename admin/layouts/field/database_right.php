@@ -31,7 +31,6 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'store',
 	'medium_encryption_note',
 	'basic_encryption_note',
-	'note_whmcs_encryption',
 	'note_expert_field_save_mode',
 	'initiator_on_save_model',
 	'initiator_on_get_model',

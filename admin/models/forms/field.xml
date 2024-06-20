@@ -226,8 +226,6 @@
 				COM_COMPONENTBUILDER_FIELD_BASIC_ENCRYPTION_LOCALDBKEY</option>
 			<option value="5">
 				COM_COMPONENTBUILDER_FIELD_MEDIUM_ENCRYPTION_LOCALFILEKEY</option>
-			<option value="4">
-				COM_COMPONENTBUILDER_FIELD_WHMCSKEY_ENCRYPTION</option>
 			<option value="6">
 				COM_COMPONENTBUILDER_FIELD_EXPERT_MODE_CUSTOM</option>
 		</field>
@@ -239,6 +237,21 @@
 			extension="com_componentbuilder.field"
 			description="COM_COMPONENTBUILDER_FIELD_CATID_DESCRIPTION"
 			class="inputbox"
+		/>
+		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_no_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_no_database_settings_needed" />
+		<!-- On_get_model_field Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="on_get_model_field"
+			label="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_LABEL"
+			rows="5"
+			cols="10"
+			description="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_HINT"
+			required="true"
 		/>
 		<!-- On_save_model_field Field. Type: Textarea. (joomla) -->
 		<field
@@ -264,19 +277,6 @@
 			class="text_area span12"
 			filter="raw"
 			hint="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_GET_MODEL_HINT"
-			required="false"
-		/>
-		<!-- Initiator_on_save_model Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="initiator_on_save_model"
-			label="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_LABEL"
-			rows="5"
-			cols="10"
-			description="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_HINT"
 			required="false"
 		/>
 		<!-- Note_filter_information Field. Type: Note. A None Database Field. (joomla) -->
@@ -324,8 +324,22 @@
 			<option value="Other">
 				COM_COMPONENTBUILDER_FIELD_OTHER</option>
 		</field>
-		<!-- Note_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_database_settings_needed" />
+		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="javascript_view_footer"
+			label="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_LABEL"
+			description="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
 		<!-- Css_views Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -411,37 +425,8 @@
 			message="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_MESSAGE"
 			hint="COM_COMPONENTBUILDER_FIELD_DATALENGHT_OTHER_HINT"
 		/>
-		<!-- On_get_model_field Field. Type: Textarea. (joomla) -->
-		<field
-			type="textarea"
-			name="on_get_model_field"
-			label="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_LABEL"
-			rows="5"
-			cols="10"
-			description="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_DESCRIPTION"
-			class="text_area span12"
-			filter="raw"
-			hint="COM_COMPONENTBUILDER_FIELD_ON_GET_MODEL_FIELD_HINT"
-			required="true"
-		/>
-		<!-- Javascript_view_footer Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="javascript_view_footer"
-			label="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_LABEL"
-			description="COM_COMPONENTBUILDER_FIELD_JAVASCRIPT_VIEW_FOOTER_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="javascript"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
-		<!-- Note_no_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_no_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_NO_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_no_database_settings_needed" />
+		<!-- Note_database_settings_needed Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_database_settings_needed" label="COM_COMPONENTBUILDER_FIELD_NOTE_DATABASE_SETTINGS_NEEDED_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_DATABASE_SETTINGS_NEEDED_DESCRIPTION" heading="h4" class="alert alert-info note_database_settings_needed" />
 		<!-- Javascript_views_footer Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -524,12 +509,23 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_FIELD_NO</option>
 		</field>
-		<!-- Note_whmcs_encryption Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_whmcs_encryption" label="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_WHMCS_ENCRYPTION_DESCRIPTION" heading="h4" class="alert alert-success note_whmcs_encryption" />
-		<!-- Helpnote Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="helpnote" label="COM_COMPONENTBUILDER_FIELD_HELPNOTE_LABEL" class="helpNote helpnote" />
 		<!-- Note_expert_field_save_mode Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_expert_field_save_mode" label="COM_COMPONENTBUILDER_FIELD_NOTE_EXPERT_FIELD_SAVE_MODE_LABEL" description="COM_COMPONENTBUILDER_FIELD_NOTE_EXPERT_FIELD_SAVE_MODE_DESCRIPTION" heading="h4" class="alert alert-success note_expert_encryption note_expert_field_save_mode" />
+		<!-- Helpnote Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="helpnote" label="COM_COMPONENTBUILDER_FIELD_HELPNOTE_LABEL" class="helpNote helpnote" />
+		<!-- Initiator_on_save_model Field. Type: Textarea. (joomla) -->
+		<field
+			type="textarea"
+			name="initiator_on_save_model"
+			label="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_LABEL"
+			rows="5"
+			cols="10"
+			description="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_DESCRIPTION"
+			class="text_area span12"
+			filter="raw"
+			hint="COM_COMPONENTBUILDER_FIELD_INITIATOR_ON_SAVE_MODEL_HINT"
+			required="false"
+		/>
 		<!-- Guid Field. Type: Text. (joomla) -->
 		<field
 			type="text"

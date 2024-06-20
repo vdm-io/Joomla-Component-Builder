@@ -19,9 +19,6 @@ use VDM\Joomla\Componentbuilder\JoomlaPower\Grep;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Super as Superpower;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Injector;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Model\Upsert;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Database\Insert;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Database\Update;
 
 
 /**
@@ -55,15 +52,6 @@ class JoomlaPower implements ServiceProviderInterface
 
 		$container->alias(Injector::class, 'Joomla.Power.Injector')
 			->share('Joomla.Power.Injector', [$this, 'getInjector'], true);
-
-		$container->alias(Upsert::class, 'Joomla.Power.Model.Upsert')
-			->share('Joomla.Power.Model.Upsert', [$this, 'getModelUpsert'], true);
-
-		$container->alias(Insert::class, 'Joomla.Power.Insert')
-			->share('Joomla.Power.Insert', [$this, 'getInsert'], true);
-
-		$container->alias(Update::class, 'Joomla.Power.Update')
-			->share('Joomla.Power.Update', [$this, 'getUpdate'], true);
 	}
 
 	/**
@@ -97,8 +85,7 @@ class JoomlaPower implements ServiceProviderInterface
 	{
 		return new Superpower(
 			$container->get('Joomla.Power.Grep'),
-			$container->get('Joomla.Power.Insert'),
-			$container->get('Joomla.Power.Update')
+			$container->get('Data.Item')
 		);
 	}
 
@@ -148,53 +135,6 @@ class JoomlaPower implements ServiceProviderInterface
 			$container->get('Joomla.Power.Extractor'),
 			$container->get('Power.Parser'),
 			$container->get('Placeholder')
-		);
-	}
-
-	/**
-	 * Get the Power Model Upsert
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Upsert
-	 * @since 3.2.0
-	 */
-	public function getModelUpsert(Container $container): Upsert
-	{
-		return new Upsert(
-			$container->get('Table')
-		);
-	}
-
-	/**
-	 * Get the Power Insert
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Insert
-	 * @since 3.2.0
-	 */
-	public function getInsert(Container $container): Insert
-	{
-		return new Insert(
-			$container->get('Joomla.Power.Model.Upsert'),
-			$container->get('Insert')
-		);
-	}
-
-	/**
-	 * Get the Power Update
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Update
-	 * @since 3.2.0
-	 */
-	public function getUpdate(Container $container): Update
-	{
-		return new Update(
-			$container->get('Joomla.Power.Model.Upsert'),
-			$container->get('Update')
 		);
 	}
 }
