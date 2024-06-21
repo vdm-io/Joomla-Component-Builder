@@ -121,7 +121,7 @@ class Generator implements ServiceProviderInterface
 	public function getSearch(Container $container): Search
 	{
 		return new Search(
-			$container->get('Power.Database.Load'),
+			$container->get('Data.Load'),
 			$container->get('Power.Parser'),
 			$container->get('Power.Generator.Bucket')
 		);

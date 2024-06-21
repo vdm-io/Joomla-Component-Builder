@@ -40,15 +40,7 @@ final class Load extends Database implements LoadInterface
 		?array $order = null, ?int $limit = null): ?array
 	{
 		// set key if found
-		$key = '';
-		if (isset($select['key']))
-		{
-			if (is_string($select['key']))
-			{
-				$key = $select['key'];
-			}
-			unset($select['key']);
-		}
+		$key = $this->getKey($select);
 
 		// check if we can get many rows
 		if ($this->many($select, $tables, $where, $order, $limit))
@@ -77,15 +69,7 @@ final class Load extends Database implements LoadInterface
 		?array $order = null, ?int $limit = null): ?array
 	{
 		// set key if found
-		$key = '';
-		if (isset($select['key']))
-		{
-			if (is_string($select['key']))
-			{
-				$key = $select['key'];
-			}
-			unset($select['key']);
-		}
+		$key = $this->getKey($select);
 
 		// check if we can get many rows
 		if ($this->many($select, $tables, $where, $order, $limit))
@@ -465,5 +449,29 @@ final class Load extends Database implements LoadInterface
 		return $query;
 	}
 
+	/**
+	 * Get the key from the selection array.
+	 *
+	 * This function retrieves a key from the provided selection array.
+	 * The key is removed from the array after being retrieved.
+	 *
+	 * @param   array   $select   Array of selection keys.
+	 *
+	 * @return  string|null   The key, or null if no key is found.
+	 * @since   3.2.2
+	 **/
+	protected function getKey(array &$select): ?string
+	{
+		$key = null;
+
+		// Check for 'key' first and ensure it's a string.
+		if (isset($select['key']) && is_string($select['key']))
+		{
+			$key = $select['key'];
+			unset($select['key']); // Remove 'key' from the array.
+		}
+
+		return $key;
+	}
 }
 

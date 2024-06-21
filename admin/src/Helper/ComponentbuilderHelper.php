@@ -6169,6 +6169,10 @@ abstract class ComponentbuilderHelper
 		{
 			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SERVERS'), 'index.php?option=com_componentbuilder&view=servers', $submenu === 'servers');
 		}
+		if ($user->authorise('repository.access', 'com_componentbuilder') && $user->authorise('repository.submenu', 'com_componentbuilder'))
+		{
+			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_REPOSITORIES'), 'index.php?option=com_componentbuilder&view=repositories', $submenu === 'repositories');
+		}
 		if ($user->authorise('help_document.access', 'com_componentbuilder') && $user->authorise('help_document.submenu', 'com_componentbuilder'))
 		{
 			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_componentbuilder&view=help_documents', $submenu === 'help_documents');

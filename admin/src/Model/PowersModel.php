@@ -23,7 +23,6 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
-use VDM\Joomla\Utilities\Component\Helper as JCBHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
 use VDM\Joomla\Utilities\FormHelper as JCBFormHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
@@ -117,7 +116,7 @@ class PowersModel extends ListModel
 		// load form from the parent class
 		$form = parent::getFilterForm($data, $loadData);
 
-		// Create the "admin_view" filter
+		// Create the "namegroup" filter
 		$attributes = array(
 			'name' => 'namegroup',
 			'type' => 'list',
@@ -126,7 +125,7 @@ class PowersModel extends ListModel
 		$options = array(
 			'' => '-  ' . Text::_('COM_COMPONENTBUILDER_NO_NAMESPACE_FOUND') . '  -'
 		);
-		// check if we have namespace (and limit to an extension if it is set)
+		// check if we have namespace
 		if (($namespaces = JCBFilterHelper::namespaces()) !== null)
 		{
 			$options = array(
@@ -144,53 +143,32 @@ class PowersModel extends ListModel
 		);
 		array_push($this->filter_fields, 'namegroup');
 
-		// get the component params
-		$params = JCBHelper::getParams();
-		$activate  = $params->get('super_powers_repositories', 0);
-		if ($activate == 1)
+		// Create the "approved_paths" filter
+		$attributes = array(
+			'name' => 'approved_paths',
+			'type' => 'list',
+			'onchange' => 'this.form.submit();',
+		);
+		$options = array(
+			'' => '-  ' . Text::_('COM_COMPONENTBUILDER_NO_PATHS_FOUND') . '  -'
+		);
+		// check if we have approved_paths = 1
+		if (($approvedpaths = JCBFilterHelper::repositories(1)) !== null)
 		{
-			$subform = $params->get('approved_paths', null);
-
-			// create approved paths filter
-			$attributes = array(
-				'name' => 'approved_paths',
-				'type' => 'list',
-				'onchange' => 'this.form.submit();',
-			);
 			$options = array(
-				'' => '-  ' . Text::_('COM_COMPONENTBUILDER_NO_PATHS_FOUND') . '  -'
+				'' => '-  ' . Text::_('COM_COMPONENTBUILDER_SELECT_APPROVED_PATH') . '  -'
 			);
-
-			// add the paths found in global settings
-			if (is_object($subform))
-			{
-				$core  = $params->get('super_powers_core', 'joomla/super-powers');
-
-				$options = array(
-					'' => '-  ' . Text::_('COM_COMPONENTBUILDER_SELECT_APPROVED_PATH') . '  -',
-					$core => $core
-				);
-
-				foreach ($subform as $value)
-				{
-					if (isset($value->owner) && strlen($value->owner) > 1 &&
-						isset($value->repo) && strlen($value->repo) > 1)
-					{
-						$value = trim($value->owner) . '/' . trim($value->repo);
-
-						$options[$value] = $value;
-					}
-				}
-			}
-
-			$form->setField(JCBFormHelper::xml($attributes, $options), 'filter');
-			$form->setValue(
-				'approved_paths',
-				'filter',
-				$this->state->get("filter.approved_paths")
-			);
-			array_push($this->filter_fields, 'approved_paths');
+			// make sure we do not lose the key values in normal merge
+			$options = $options + $approvedpaths;
 		}
+
+		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
+		$form->setValue(
+			'approved_paths',
+			'filter',
+			$this->state->get("filter.approved_paths")
+		);
+		array_push($this->filter_fields, 'approved_paths');
 
 		return $form;
 	}

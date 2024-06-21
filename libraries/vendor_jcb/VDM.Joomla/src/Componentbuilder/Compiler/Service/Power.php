@@ -15,10 +15,10 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power as Powers;
-use VDM\Joomla\Componentbuilder\Power\Grep;
 use VDM\Joomla\Componentbuilder\Power\Super as Superpower;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Infusion;
+use VDM\Joomla\Componentbuilder\Power\Grep;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Autoloader;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Infusion;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Structure;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Plantuml;
@@ -26,9 +26,6 @@ use VDM\Joomla\Componentbuilder\Compiler\Power\Repo\Readme as RepoReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Repos\Readme as ReposReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector;
-use VDM\Joomla\Componentbuilder\Power\Model\Upsert;
-use VDM\Joomla\Componentbuilder\Power\Database\Insert;
-use VDM\Joomla\Componentbuilder\Power\Database\Update;
 
 
 /**
@@ -83,19 +80,10 @@ class Power implements ServiceProviderInterface
 
 		$container->alias(Injector::class, 'Power.Injector')
 			->share('Power.Injector', [$this, 'getInjector'], true);
-
-		$container->alias(Upsert::class, 'Power.Model.Upsert')
-			->share('Power.Model.Upsert', [$this, 'getModelUpsert'], true);
-
-		$container->alias(Insert::class, 'Power.Insert')
-			->share('Power.Insert', [$this, 'getInsert'], true);
-
-		$container->alias(Update::class, 'Power.Update')
-			->share('Power.Update', [$this, 'getUpdate'], true);
 	}
 
 	/**
-	 * Get the Powers
+	 * Get The Power Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -108,12 +96,13 @@ class Power implements ServiceProviderInterface
 			$container->get('Config'),
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
-			$container->get('Customcode.Gui')
+			$container->get('Customcode.Gui'),
+			$container->get('Superpower')
 		);
 	}
 
 	/**
-	 * Get the Superpower
+	 * Get The Super Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -124,13 +113,12 @@ class Power implements ServiceProviderInterface
 	{
 		return new Superpower(
 			$container->get('Power.Grep'),
-			$container->get('Power.Insert'),
-			$container->get('Power.Update')
+			$container->get('Data.Item')
 		);
 	}
 
 	/**
-	 * Get the Grep
+	 * Get The Grep Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -147,7 +135,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Autoloader
+	 * Get The Autoloader Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -164,7 +152,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Infusion
+	 * Get The Infusion Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -187,7 +175,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Structure Builder
+	 * Get The Structure Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -210,11 +198,11 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Parser
+	 * Get The Parser Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Structure
+	 * @return  Parser
 	 * @since 3.2.0
 	 */
 	public function getParser(Container $container): Parser
@@ -223,7 +211,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Plantuml Builder
+	 * Get The Plantuml Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -236,7 +224,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Repo Readme Builder
+	 * Get The Readme Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -252,7 +240,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Repos Readme Builder
+	 * Get The Readme Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -268,7 +256,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Extractor
+	 * Get The Extractor Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -281,7 +269,7 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get the Compiler Power Injector
+	 * Get The Injector Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
@@ -295,53 +283,6 @@ class Power implements ServiceProviderInterface
 			$container->get('Power.Extractor'),
 			$container->get('Power.Parser'),
 			$container->get('Placeholder')
-		);
-	}
-
-	/**
-	 * Get the Power Model Upsert
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Upsert
-	 * @since 3.2.0
-	 */
-	public function getModelUpsert(Container $container): Upsert
-	{
-		return new Upsert(
-			$container->get('Table')
-		);
-	}
-
-	/**
-	 * Get the Power Insert
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Insert
-	 * @since 3.2.0
-	 */
-	public function getInsert(Container $container): Insert
-	{
-		return new Insert(
-			$container->get('Power.Model.Upsert'),
-			$container->get('Insert')
-		);
-	}
-
-	/**
-	 * Get the Power Update
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Update
-	 * @since 3.2.0
-	 */
-	public function getUpdate(Container $container): Update
-	{
-		return new Update(
-			$container->get('Power.Model.Upsert'),
-			$container->get('Update')
 		);
 	}
 }

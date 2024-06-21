@@ -21,7 +21,6 @@ use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
@@ -102,43 +101,43 @@ class Power implements PowerInterface
 	protected array $retry = [];
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
+	 * @var   Gui
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Gui $gui;
 
 	/**
-	 * The JCB Superpower class
+	 * The Super Class.
 	 *
-	 * @var    Superpower
+	 * @var   Superpower
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Superpower $superpower;
 
 	/**
@@ -158,23 +157,22 @@ class Power implements PowerInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null             $config       The compiler config object.
-	 * @param Placeholder|null        $placeholder  The compiler placeholder object.
-	 * @param Customcode|null         $customcode   The compiler customcode object.
-	 * @param Gui|null                $gui          The compiler customcode gui object.
-	 * @param Superpower|null         $superpower   The JCB superpower object.
+	 * @param Config        $config        The Config Class.
+	 * @param Placeholder   $placeholder   The Placeholder Class.
+	 * @param Customcode    $customcode    The Customcode Class.
+	 * @param Gui           $gui           The Gui Class.
+	 * @param Superpower    $superpower    The Super Class.
 	 *
-	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?Customcode $customcode = null, ?Gui $gui = null, ?Superpower $superpower = null)
+	public function __construct(Config $config, Placeholder $placeholder,
+		Customcode $customcode, Gui $gui, Superpower $superpower)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->superpower = $superpower ?: Compiler::_('Superpower');
+		$this->config = $config;
+		$this->placeholder = $placeholder;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->superpower = $superpower;
 		$this->db = Factory::getDbo();
 		$this->app = Factory::getApplication();
 	}

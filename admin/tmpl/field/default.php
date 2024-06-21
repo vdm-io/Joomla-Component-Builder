@@ -206,40 +206,6 @@ jQuery('#adminForm').on('change', '#jform_datatype',function (e)
 
 });
 
-// #jform_store listeners for store_vvvvwbj function
-jQuery('#jform_store').on('keyup',function()
-{
-	var store_vvvvwbj = jQuery("#jform_store").val();
-	var datatype_vvvvwbj = jQuery("#jform_datatype").val();
-	vvvvwbj(store_vvvvwbj,datatype_vvvvwbj);
-
-});
-jQuery('#adminForm').on('change', '#jform_store',function (e)
-{
-	e.preventDefault();
-	var store_vvvvwbj = jQuery("#jform_store").val();
-	var datatype_vvvvwbj = jQuery("#jform_datatype").val();
-	vvvvwbj(store_vvvvwbj,datatype_vvvvwbj);
-
-});
-
-// #jform_datatype listeners for datatype_vvvvwbj function
-jQuery('#jform_datatype').on('keyup',function()
-{
-	var store_vvvvwbj = jQuery("#jform_store").val();
-	var datatype_vvvvwbj = jQuery("#jform_datatype").val();
-	vvvvwbj(store_vvvvwbj,datatype_vvvvwbj);
-
-});
-jQuery('#adminForm').on('change', '#jform_datatype',function (e)
-{
-	e.preventDefault();
-	var store_vvvvwbj = jQuery("#jform_store").val();
-	var datatype_vvvvwbj = jQuery("#jform_datatype").val();
-	vvvvwbj(store_vvvvwbj,datatype_vvvvwbj);
-
-});
-
 // #jform_store listeners for store_vvvvwbl function
 jQuery('#jform_store').on('keyup',function()
 {

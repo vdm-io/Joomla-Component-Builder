@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\JoomlaPower;
 
 
-use VDM\Joomla\Componentbuilder\Interfaces\SuperInterface;
-use VDM\Joomla\Componentbuilder\Power\Super as ExtendingSuper;
+use VDM\Joomla\Interfaces\Data\RemoteInterface;
+use VDM\Joomla\Data\Remote;
 
 
 /**
@@ -21,7 +21,7 @@ use VDM\Joomla\Componentbuilder\Power\Super as ExtendingSuper;
  * 
  * @since 3.2.0
  */
-final class Super extends ExtendingSuper implements SuperInterface
+final class Super extends Remote implements RemoteInterface
 {
 	/**
 	 * Table Name

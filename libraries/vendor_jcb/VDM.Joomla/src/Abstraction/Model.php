@@ -15,6 +15,7 @@ namespace VDM\Joomla\Abstraction;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Interfaces\Tableinterface as Table;
+use VDM\Joomla\Interfaces\ModelInterface;
 
 
 /**
@@ -22,7 +23,7 @@ use VDM\Joomla\Interfaces\Tableinterface as Table;
  * 
  * @since 3.2.0
  */
-abstract class Model
+abstract class Model implements ModelInterface
 {
 	/**
 	 * Last ID
@@ -41,15 +42,56 @@ abstract class Model
 	protected Table $table;
 
 	/**
+	 * Table Name
+	 *
+	 * @var    string
+	 * @since 3.2.0
+	 */
+	protected string $tableName;
+
+	/**
+	 * The switch to control the behaviour of empty values
+	 *
+	 * @var    bool
+	 * @since 3.2.2
+	 */
+	protected bool $allowEmpty = true;
+
+	/**
 	 * Constructor
 	 *
-	 * @param Table         $table            The search table object.
+	 * @param Table         $table        The search table object.
+	 * @param string|null   $tableName    The table
+	 * @param bool|null          $allowEmpty   The switch to control the behaviour of empty values (default true)
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Table $table)
+	public function __construct(Table $table, ?string $tableName = null, bool $allowEmpty = null)
 	{
 		$this->table = $table;
+		if ($tableName !== null)
+		{
+			$this->setTable($tableName);
+		}
+		if ($allowEmpty !== null)
+		{
+			$this->setAllowEmpty($allowEmpty);
+		}
+	}
+
+	/**
+	 * Set the current active table
+	 *
+	 * @param string $table The table that should be active
+	 *
+	 * @return self
+	 * @since 3.2.2
+	 */
+	public function table(string $table): self
+	{
+		$this->setTable($table);
+
+		return $this;
 	}
 
 	/**
@@ -310,6 +352,54 @@ abstract class Model
 	}
 
 	/**
+	 * Set the current active table
+	 *
+	 * @param string   $tableName  The table name
+	 *
+	 * @return  void
+	 * @since 3.2.2
+	 */
+	public function setTable(string $tableName): void
+	{
+		$this->tableName = $tableName;
+	}
+
+	/**
+	 * Set the switch to control the behaviour of empty values
+	 *
+	 * @param bool   $allowEmpty  The switch
+	 *
+	 * @return  void
+	 * @since 3.2.2
+	 */
+	public function setAllowEmpty(bool $allowEmpty): void
+	{
+		$this->allowEmpty = $allowEmpty;
+	}
+
+	/**
+	 * Get the current active table
+	 *
+	 * @return  string
+	 * @since 3.2.0
+	 */
+	protected function getTable(): string
+	{
+		return $this->tableName;
+	}
+
+	/**
+	 * Get the switch to control the behaviour of empty values
+	 *
+	 * @return  bool
+	 * @since 3.2.2
+	 */
+	protected function getAllowEmpty(): bool
+	{
+		return $this->allowEmpty;
+	}
+
+	/**
 	 * Get the current active table's fields (including defaults)
 	 *
 	 * @param   string  $table     The area
@@ -346,13 +436,5 @@ abstract class Model
 	 * @since 3.2.0
 	 */
 	abstract protected function validateAfter(&$value, ?string $field = null, ?string $table = null): bool;
-
-	/**
-	 * Get the current active table
-	 *
-	 * @return  string
-	 * @since 3.2.0
-	 */
-	abstract protected function getTable(): string;
 }
 
