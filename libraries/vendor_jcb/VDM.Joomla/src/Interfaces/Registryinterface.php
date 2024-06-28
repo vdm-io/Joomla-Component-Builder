@@ -29,10 +29,10 @@ interface Registryinterface extends Activeregistryinterface
 	 * @param  mixed   $value     Value of entry
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return $this
+	 * @return self
 	 * @since 3.2.0
 	 */
-	public function set(string $path, $value): static;
+	public function set(string $path, $value): self;
 
 	/**
 	 * Adds content into the registry. If a key exists,
@@ -45,10 +45,10 @@ interface Registryinterface extends Activeregistryinterface
 	 *                                Override in child class allowed set class property $addAsArray = true.
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return $this
+	 * @return self
 	 * @since 3.2.0
 	 */
-	public function add(string $path, $value, ?bool $asArray = null): static;
+	public function add(string $path, $value, ?bool $asArray = null): self;
 
 	/**
 	 * Retrieves a value (or sub-array) from the registry using multiple keys.
@@ -68,10 +68,10 @@ interface Registryinterface extends Activeregistryinterface
 	 * @param  string  $path  Registry path (e.g. vdm.content.builder)
 	 *
 	 * @throws \InvalidArgumentException If any of the path values are not a number or string.
-	 * @return $this
+	 * @return self
 	 * @since 3.2.0
 	 */
-	public function remove(string $path): static;
+	public function remove(string $path): self;
 
 	/**
 	 * Checks the existence of a particular location in the registry using multiple keys.
@@ -89,9 +89,9 @@ interface Registryinterface extends Activeregistryinterface
 	 *
 	 * @param string|null   $value     The value to set.
 	 *
-	 * @return $this
+	 * @return self
 	 * @since 3.2.0
 	 */
-	public function setSeparator(?string $value): static;
+	public function setSeparator(?string $value): self;
 }
 

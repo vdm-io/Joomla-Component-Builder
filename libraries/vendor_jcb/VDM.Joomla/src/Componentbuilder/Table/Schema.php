@@ -18,7 +18,7 @@ use VDM\Joomla\Abstraction\Schema as ExtendingSchema;
 
 
 /**
- * JCB Tables Schema
+ * Componentbuilder Tables Schema
  * 
  * @since 3.2.1
  */

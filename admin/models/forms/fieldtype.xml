@@ -117,6 +117,7 @@
 			label="COM_COMPONENTBUILDER_FIELDTYPE_STORE_LABEL"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_STORE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="INT"
 			required="true"
@@ -155,6 +156,7 @@
 			name="indexes"
 			label="COM_COMPONENTBUILDER_FIELDTYPE_INDEXES_LABEL"
 			class="btn-group"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="INT"
 			required="true"
@@ -190,6 +192,7 @@
 			label="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_LABEL"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_DATADEFAULT_DESCRIPTION"
 			class="btn-group"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="">
 			<!-- Option Set. -->
@@ -229,6 +232,7 @@
 			label="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_LABEL"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_DATATYPE_DESCRIPTION"
 			class="btn-group"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
 			default="">
@@ -396,6 +400,7 @@
 			label="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_LABEL"
 			description="COM_COMPONENTBUILDER_FIELDTYPE_DATALENGHT_DESCRIPTION"
 			class="btn-group"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
 			default="">

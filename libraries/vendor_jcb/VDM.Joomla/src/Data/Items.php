@@ -142,32 +142,18 @@ final class Items implements ItemsInterface
 	 * @param string  $key       The key on which the values being searched.
 	 * @param string  $get       The key of the values we want back
 	 *
-	 * @return array|null The array of found values.
+	 * @return array|null   The array of found values.
 	 * @since 3.2.2
 	 */
 	public function values(array $values, string $key = 'guid', string $get = 'id'): ?array
 	{
 		// Perform the database query
-		$rows = $this->database->rows(
-			["a.$get" => $get],
-			["a" => $this->getTable()],
-			["a.$key" => ['operator' => 'IN', 'value' => $values]]
-		);
-
-		// Check if rows are found
-		if ($rows !== null)
-		{
-			// Return the values from the found rows
-			return array_values(
-				array_map(
-					fn($row) => $row[$get],
-					$rows
-				)
-			);
-		}
-
-		// Return null if no rows are found
-		return null;
+		return $this->load->table($this->getTable())->values([
+			$key => [
+				'operator' => 'IN',
+				'value' => array_values($values)
+			]
+		], $get);
 	}
 
 	/**
@@ -202,7 +188,7 @@ final class Items implements ItemsInterface
 	 * @return bool
 	 * @since 3.2.2
 	 */
-	public function delete(string $values, string $key = 'guid'): bool
+	public function delete(array $values, string $key = 'guid'): bool
 	{
 		return $this->delete->table($this->getTable())->items([$key => ['operator' => 'IN', 'value' => $values]]);
 	}
@@ -269,7 +255,12 @@ final class Items implements ItemsInterface
 		];
 
 		// Check for existing items.
-		$existingItems = $this->values($values, $key, $key);
+		$existingItems = $this->database->values(
+			["a.$key" => $key],
+			["a" => $this->getTable()],
+			["a.$key" => ['operator' => 'IN', 'value' => $values]]
+		);
+
 		if ($existingItems !== null)
 		{
 			$sets['update'] = $this->extractSet($items, $existingItems, $key) ?? [];

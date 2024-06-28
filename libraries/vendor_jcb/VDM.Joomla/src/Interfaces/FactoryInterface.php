@@ -17,6 +17,8 @@ use Joomla\DI\Container;
 
 /**
  * The Container Factory Interface
+ * 
+ * @since 0.0.0
  */
 interface FactoryInterface
 {
@@ -26,7 +28,7 @@ interface FactoryInterface
 	 * @param   string  $key  The container class key
 	 *
 	 * @return  Mixed
-	 * @since 3.2.0
+	 * @since 0.0.0
 	 */
 	public static function _(string $key);
 
@@ -34,7 +36,7 @@ interface FactoryInterface
 	 * Get the global container
 	 *
 	 * @return  Container
-	 * @since 3.2.0
+	 * @since 0.0.0
 	 */
 	public static function getContainer(): Container;
 }

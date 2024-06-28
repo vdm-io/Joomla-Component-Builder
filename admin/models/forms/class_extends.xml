@@ -117,6 +117,7 @@
 			label="COM_COMPONENTBUILDER_CLASS_EXTENDS_EXTENSION_TYPE_LABEL"
 			description="COM_COMPONENTBUILDER_CLASS_EXTENDS_EXTENSION_TYPE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true">
 			<!-- Option Set. -->

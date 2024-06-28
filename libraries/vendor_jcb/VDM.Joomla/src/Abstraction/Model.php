@@ -108,6 +108,69 @@ abstract class Model implements ModelInterface
 	abstract public function value($value, string $field, ?string $table = null);
 
 	/**
+	 * Model a value of multiple items
+	 *          Example: $this->items(Array, 'value_key', 'table_name');
+	 *
+	 * @param   array|null    $items    The array of values
+	 * @param   string        $field    The field key
+	 * @param   string|null   $table    The table
+	 *
+	 * @return  array|null
+	 * @since 3.2.2
+	 */
+	public function values(?array $items = null, string $field, ?string $table = null): ?array
+	{
+		// check if this is a valid table
+		if (ArrayHelper::check($items))
+		{
+			// set the table name
+			if (empty($table))
+			{
+				$table = $this->getTable();
+			}
+
+			// validate if field exist in table
+			if (!$this->table->exist($table, $field))
+			{
+				return null;
+			}
+
+			// value counter
+			$value_number = 0;
+
+			// check if this is a valid table
+			$item_bucket = [];
+
+			foreach ($items as $value)
+			{
+				if (!$this->validateBefore($value, $field, $table))
+				{
+					continue;
+				}
+
+				$value = $this->value($value, $field, $table);
+
+				if (!$this->validateAfter($value, $field, $table))
+				{
+					continue;
+				}
+
+				$item_bucket[] = $value;
+
+				$value_number++;
+			}
+
+			// do we have any values left
+			if ($value_number > 0)
+			{
+				return $item_bucket;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Model the values of an item
 	 *          Example: $this->item(Object, 'table_name');
 	 *

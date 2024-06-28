@@ -1,8 +1,8 @@
-# v3.2.2-alpha5
+# v3.2.2-alpha6
 
-- Add repositories for better integration with gitea
-- Refactored the Data classes
-- Add new Data classes
+- Add new subform classes
+- Fix registry class methods return type
+- Update all list and custom fields to use the new layouts
 
 # v3.2.2-alpha
 
@@ -10,6 +10,9 @@
 - Fix permission issue for admin views.
 - Add extending options to interfaces.
 - Update the Schema class to also update null mismatching if needed
+- Add repositories for better integration with gitea
+- Refactored the Data classes
+- Add new Data classes
 
 # v3.2.1
 

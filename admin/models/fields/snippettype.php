@@ -40,22 +40,23 @@ class JFormFieldSnippettype extends JFormFieldList
 	protected function getOptions()
 	{
 		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','type_name')));
-		$query->from($db->quoteName('#__componentbuilder_snippet_type', 'a'));
-		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.name ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			$options[] = JHtml::_('select.option', '', 'Select an option');
-			foreach($items as $item)
-			{
-				$options[] = JHtml::_('select.option', $item->id, $item->type_name);
-			}
-		}
-		return $options;
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.id','a.name'),array('id','type_name')));
+$query->from($db->quoteName('#__componentbuilder_snippet_type', 'a'));
+$query->where($db->quoteName('a.published') . ' >= 1');
+$query->order('a.name ASC');
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$options[] = JHtml::_('select.option', '', 'Select an option');
+	foreach($items as $item)
+	{
+		$options[] = JHtml::_('select.option', $item->id, $item->type_name);
+	}
+}
+
+return $options;
 	}
 }

@@ -130,6 +130,7 @@
 			label="COM_COMPONENTBUILDER_POWER_TYPE_LABEL"
 			description="COM_COMPONENTBUILDER_POWER_TYPE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
 			default="class">

@@ -53,6 +53,6 @@ class JFormFieldFilebehaviour extends JFormFieldList
 		$options[] = JHtml::_('select.option', '2', JText::_('COM_COMPONENTBUILDER_CONDITIONS'));
 		$options[] = JHtml::_('select.option', '3', JText::_('COM_COMPONENTBUILDER_CUSTOM_SCRIPT'));
 		$options[] = JHtml::_('select.option', '0', JText::_('COM_COMPONENTBUILDER_DO_NOT_ADD'));
-		return $options;
+return $options;
 	}
 }

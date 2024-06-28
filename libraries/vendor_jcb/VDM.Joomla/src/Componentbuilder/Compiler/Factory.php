@@ -56,6 +56,7 @@ use VDM\Joomla\Gitea\Service\Notifications as GiteNotifi;
 use VDM\Joomla\Gitea\Service\Miscellaneous as GiteaMisc;
 use VDM\Joomla\Gitea\Service\Admin as GiteaAdmin;
 use VDM\Joomla\Interfaces\FactoryInterface;
+use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
 
 /**
@@ -63,16 +64,8 @@ use VDM\Joomla\Interfaces\FactoryInterface;
  * 
  * @since 3.2.0
  */
-abstract class Factory implements FactoryInterface
+abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
-	/**
-	 * Global Compiler Container
-	 *
-	 * @var     Container
-	 * @since 3.2.0
-	 **/
-	protected static ?Container $container = null;
-
 	/**
 	 * Current Joomla Version Being Build
 	 *
@@ -80,19 +73,6 @@ abstract class Factory implements FactoryInterface
 	 * @since 3.2.0
 	 **/
 	protected static int $JoomlaVersion;
-
-	/**
-	 * Get any class from the compiler container
-	 *
-	 * @param   string  $key  The container class key
-	 *
-	 * @return  mixed
-	 * @since 3.2.0
-	 */
-	public static function _($key)
-	{
-		return self::getContainer()->get($key);
-	}
 
 	/**
 	 * Get array of all keys in container
@@ -121,22 +101,6 @@ abstract class Factory implements FactoryInterface
 		}
 
 		return self::getContainer()->get('J' . self::$JoomlaVersion . '.' . $key);
-	}
-
-	/**
-	 * Get the global compiler container
-	 *
-	 * @return  Container
-	 * @since 3.2.0
-	 */
-	public static function getContainer(): Container
-	{
-		if (!self::$container)
-		{
-			self::$container = self::createContainer();
-		}
-
-		return self::$container;
 	}
 
 	/**
