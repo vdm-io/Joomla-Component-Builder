@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Package\Service\Database;
 use VDM\Joomla\Componentbuilder\Service\Server;
 use VDM\Joomla\Componentbuilder\Package\Service\Display;
 use VDM\Joomla\Interfaces\FactoryInterface;
+use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
 
 /**
@@ -25,45 +26,8 @@ use VDM\Joomla\Interfaces\FactoryInterface;
  * 
  * @since 3.2.0
  */
-abstract class Factory implements FactoryInterface
+abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
-	/**
-	 * Global Package Container
-	 *
-	 * @var     Container
-	 * @since 3.2.0
-	 **/
-	protected static $container = null;
-
-	/**
-	 * Get any class from the package container
-	 *
-	 * @param   string  $key  The container class key
-	 *
-	 * @return  Mixed
-	 * @since 3.2.0
-	 */
-	public static function _($key)
-	{
-		return self::getContainer()->get($key);
-	}
-
-	/**
-	 * Get the global package container
-	 *
-	 * @return  Container
-	 * @since 3.2.0
-	 */
-	public static function getContainer(): Container
-	{
-		if (!self::$container)
-		{
-			self::$container = self::createContainer();
-		}
-
-		return self::$container;
-	}
-
 	/**
 	 * Create a container object
 	 *

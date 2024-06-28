@@ -103,6 +103,7 @@
 			name="component"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="0"
 			required="true"

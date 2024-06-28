@@ -104,6 +104,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_ADMIN_VIEW_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_ADMIN_VIEW_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default=""
 			required="true"

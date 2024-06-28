@@ -241,5 +241,16 @@ class Config extends BaseConfig
 
 		return array_values($approved);
 	}
+
+	/**
+	 * get indentation value
+	 *
+	 * @return  string  Indentation value
+	 * @since 3.2.2
+	 */
+	protected function getIndentationvalue(): string
+	{
+		return "\t";
+	}
 }
 

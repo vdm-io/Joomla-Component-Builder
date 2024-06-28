@@ -113,6 +113,33 @@ class Load implements LoadInterface
 	}
 
 	/**
+	 * Get a value from multiple rows from a given table
+	 *          Example: $this->values(
+	 *                        [
+	 *                           'guid' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+	 *                        ], 'value_key'
+	 *                    );
+	 *
+	 * @param   array      $keys      The item keys
+	 * @param   string     $field     The field key
+	 *
+	 * @return  array|null
+	 * @since 3.2.2
+	 */
+	public function values(array $keys, string $field): ?array
+	{
+		return $this->model->values(
+			$this->load->values(
+				["a.{$field}" => $field],
+				['a' => $this->getTable()],
+				$this->prefix($keys)
+			),
+			$field,
+			$this->getTable()
+		);
+	}
+
+	/**
 	 * Get values from a given table
 	 *          Example: $this->item(
 	 *                        [

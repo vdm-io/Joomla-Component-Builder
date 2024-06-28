@@ -43,21 +43,22 @@ class LibraryreadonlyField extends ListField
 	protected function getOptions()
 	{
 		$db = Factory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','library_name')));
-		$query->from($db->quoteName('#__componentbuilder_library', 'a'));
-		$query->order('a.name ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			$options[] = Html::_('select.option', '', 'Select an option');
-			foreach($items as $item)
-			{
-				$options[] = Html::_('select.option', $item->id, $item->library_name);
-			}
-		}
-		return $options;
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.id','a.name'),array('id','library_name')));
+$query->from($db->quoteName('#__componentbuilder_library', 'a'));
+$query->order('a.name ASC');
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$options[] = Html::_('select.option', '', 'Select an option');
+	foreach($items as $item)
+	{
+		$options[] = Html::_('select.option', $item->id, $item->library_name);
+	}
+}
+
+return $options;
 	}
 }

@@ -56,6 +56,6 @@ class FilebehaviourField extends ListField
 		$options[] = Html::_('select.option', '2', Text::_('COM_COMPONENTBUILDER_CONDITIONS'));
 		$options[] = Html::_('select.option', '3', Text::_('COM_COMPONENTBUILDER_CUSTOM_SCRIPT'));
 		$options[] = Html::_('select.option', '0', Text::_('COM_COMPONENTBUILDER_DO_NOT_ADD'));
-		return $options;
+return $options;
 	}
 }

@@ -120,6 +120,7 @@
 			label="COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_LABEL"
 			description="COM_COMPONENTBUILDER_CLASS_METHOD_VISIBILITY_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="STRING"
 			required="true">
@@ -144,6 +145,7 @@
 			label="COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_LABEL"
 			description="COM_COMPONENTBUILDER_CLASS_METHOD_EXTENSION_TYPE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true">
 			<!-- Option Set. -->
@@ -207,6 +209,7 @@
 			name="joomla_plugin_group"
 			label="COM_COMPONENTBUILDER_CLASS_METHOD_JOOMLA_PLUGIN_GROUP_LABEL"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="0"
 			required="true"

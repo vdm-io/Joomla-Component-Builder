@@ -135,6 +135,7 @@
 			label="COM_COMPONENTBUILDER_LIBRARY_HOW_LABEL"
 			description="COM_COMPONENTBUILDER_LIBRARY_HOW_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="1"
 			required="true"

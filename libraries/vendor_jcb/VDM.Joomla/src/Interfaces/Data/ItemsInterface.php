@@ -72,7 +72,7 @@ interface ItemsInterface
 	 * @return bool
 	 * @since 3.2.2
 	 */
-	public function delete(string $values, string $key = 'guid'): bool;
+	public function delete(array $values, string $key = 'guid'): bool;
 
 	/**
 	 * Get the current active table
