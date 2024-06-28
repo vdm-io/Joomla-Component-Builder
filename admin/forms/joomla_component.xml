@@ -265,6 +265,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_MVC_VERSIONDATE_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_MVC_VERSIONDATE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="int"
 			required="true"
@@ -762,6 +763,7 @@
 			name="translation_tool"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_TRANSLATION_TOOL_LABEL"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="0">
 			<!-- Option Set. -->
@@ -1280,6 +1282,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ASSETS_TABLE_FIX_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ASSETS_TABLE_FIX_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="3">
 			<!-- Option Set. -->
@@ -1364,6 +1367,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_UPDATE_SERVER_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="0"
 			button="true"
@@ -1377,6 +1381,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SALES_SERVER_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="0"
 			showon="add_sales_server:1"
@@ -1421,6 +1426,7 @@
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADDUIKIT_LABEL"
 			description="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADDUIKIT_DESCRIPTION"
 			class="btn-group btn-group-yesno"
+			layout="joomla.form.field.list-fancy-select"
 			default="0">
 			<!-- Option Set. -->
 			<option value="0">
@@ -1456,6 +1462,7 @@
 			name="addfootable"
 			label="COM_COMPONENTBUILDER_JOOMLA_COMPONENT_ADDFOOTABLE_LABEL"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="INT"
 			required="true"

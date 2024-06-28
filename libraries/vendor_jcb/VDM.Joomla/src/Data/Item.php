@@ -142,22 +142,7 @@ final class Item implements ItemInterface
 	 */
 	public function value(string $value, string $key = 'guid', string $get = 'id')
 	{
-		// Perform the database query
-		$value = $this->database->value(
-			["a.$get" => $get],
-			["a" => $this->getTable()],
-			["a.$key" => $value]
-		);
-
-		// Check if rows are found
-		if ($value !== null)
-		{
-			// Return the value
-			return $value;
-		}
-
-		// Return null if no rows are found
-		return null;
+		return $this->load->table($this->getTable())->value([$key => $value], $get);
 	}
 
 	/**
@@ -243,7 +228,13 @@ final class Item implements ItemInterface
 	 */
 	private function action(string $value, string $key): string
 	{
-		if (($id = $this->value($value, $key, 'id')) !== null && $id > 0)
+		$id = $this->database->value(
+			["a.id" => 'id'],
+			["a" => $this->getTable()],
+			["a.$key" => $value]
+		);
+
+		if ($id !== null && $id > 0)
 		{
 			return 'update';
 		}

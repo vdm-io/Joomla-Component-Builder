@@ -311,6 +311,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_CHARSET_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_CHARSET_DESCRIPTION"
 			class="list_class bestview"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="CMD"
 			required="true"
@@ -422,6 +423,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_TYPE_DESCRIPTION"
 			class="btn-group"
+			layout="joomla.form.field.list-fancy-select"
 			filter="INT"
 			default="1">
 			<!-- Option Set. -->
@@ -852,6 +854,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ROW_FORMAT_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ROW_FORMAT_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
 			default="DYNAMIC">
@@ -1918,6 +1921,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ENGINE_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ENGINE_DESCRIPTION"
 			class="list_class bestview"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="CMD"
 			required="true"
@@ -1957,6 +1961,7 @@
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_COLLATE_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_COLLATE_DESCRIPTION"
 			class="list_class bestview"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="CMD"
 			required="true"

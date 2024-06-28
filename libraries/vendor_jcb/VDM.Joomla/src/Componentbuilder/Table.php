@@ -17,11 +17,11 @@ use VDM\Joomla\Abstraction\BaseTable;
 
 
 /**
- * JCB Tables
+ * Componentbuilder Tables
  * 
  * @since 3.2.0
  */
-class Table extends BaseTable implements Tableinterface
+final class Table extends BaseTable implements Tableinterface
 {
 	/**
 	 * All areas/views/tables with their field details

@@ -217,6 +217,31 @@ final class Load extends Database implements LoadInterface
 	}
 
 	/**
+	 * Load values from multiple rows
+	 *
+	 * @param   array        $select   Array of selection keys
+	 * @param   array        $tables   Array of tables to search
+	 * @param   array|null   $where    Array of where key=>value match exist
+	 * @param   array|null   $order    Array of how to order the data
+	 * @param   int|null     $limit    Limit the number of values returned
+	 *
+	 * @return  array|null
+	 * @since   3.2.2
+	 **/
+	public function values(array $select, array $tables, ?array $where = null,
+		?array $order = null, ?int $limit = null): ?array
+	{
+		// check if we can get many rows
+		if ($this->many($select, $tables, $where, $order, $limit))
+		{
+			return $this->db->loadColumn();
+		}
+
+		// data does not exist
+		return null;
+	}
+
+	/**
 	 * Load many
 	 *
 	 * @param   array        $select   Array of selection keys

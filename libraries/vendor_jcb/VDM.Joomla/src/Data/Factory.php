@@ -9,20 +9,22 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Openai;
+namespace VDM\Joomla\Data;
 
 
 use Joomla\DI\Container;
-use VDM\Joomla\Openai\Service\Api;
-use VDM\Joomla\Openai\Service\Utilities;
+use VDM\Joomla\Service\Table;
+use VDM\Joomla\Service\Database;
+use VDM\Joomla\Service\Model;
+use VDM\Joomla\Service\Data;
 use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
 
 /**
- * Openai Factory
+ * Data Factory
  * 
- * @since 3.2.0
+ * @since 3.2.2
  */
 abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
@@ -30,13 +32,15 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	 * Create a container object
 	 *
 	 * @return  Container
-	 * @since 3.2.0
+	 * @since 3.2.2
 	 */
 	protected static function createContainer(): Container
 	{
 		return (new Container())
-			->registerServiceProvider(new Utilities())
-			->registerServiceProvider(new Api());
+			->registerServiceProvider(new Table())
+			->registerServiceProvider(new Database())
+			->registerServiceProvider(new Model())
+			->registerServiceProvider(new Data());
 	}
 }
 

@@ -46,6 +46,22 @@ interface LoadInterface
 	public function value(array $keys, string $field);
 
 	/**
+	 * Get a value from multiple rows from a given table
+	 *          Example: $this->values(
+	 *                        [
+	 *                           'guid' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+	 *                        ], 'value_key'
+	 *                    );
+	 *
+	 * @param   array      $keys      The item keys
+	 * @param   string     $field     The field key
+	 *
+	 * @return  array|null
+	 * @since 3.2.2
+	 */
+	public function values(array $keys, string $field): ?array;
+
+	/**
 	 * Get values from a given table
 	 *          Example: $this->item(
 	 *                        [

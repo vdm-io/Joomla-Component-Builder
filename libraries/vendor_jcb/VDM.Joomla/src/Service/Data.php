@@ -20,6 +20,8 @@ use VDM\Joomla\Data\Action\Update;
 use VDM\Joomla\Data\Action\Delete;
 use VDM\Joomla\Data\Item;
 use VDM\Joomla\Data\Items;
+use VDM\Joomla\Data\Subform;
+use VDM\Joomla\Data\MultiSubform;
 
 
 /**
@@ -56,6 +58,12 @@ class Data implements ServiceProviderInterface
 
 		$container->alias(Items::class, 'Data.Items')
 			->share('Data.Items', [$this, 'getItems'], true);
+
+		$container->alias(Subform::class, 'Data.Subform')
+			->share('Data.Subform', [$this, 'getSubform'], true);
+
+		$container->alias(MultiSubform::class, 'Data.MultiSubform')
+			->share('Data.MultiSubform', [$this, 'getMultiSubform'], true);
 	}
 
 	/**
@@ -156,6 +164,36 @@ class Data implements ServiceProviderInterface
 			$container->get('Data.Update'),
 			$container->get('Data.Delete'),
 			$container->get('Load')
+		);
+	}
+
+	/**
+	 * Get The Subform Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Subform
+	 * @since 3.2.0
+	 */
+	public function getSubform(Container $container): Subform
+	{
+		return new Subform(
+			$container->get('Data.Items')
+		);
+	}
+
+	/**
+	 * Get The MultiSubform Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  MultiSubform
+	 * @since 3.2.0
+	 */
+	public function getMultiSubform(Container $container): MultiSubform
+	{
+		return new MultiSubform(
+			$container->get('Data.Subform')
 		);
 	}
 }

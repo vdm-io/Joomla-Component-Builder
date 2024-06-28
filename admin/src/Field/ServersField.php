@@ -149,23 +149,24 @@ class ServersField extends ListField
 	protected function getOptions()
 	{
 		$db = Factory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','name', 'protocol')));
-		$query->from($db->quoteName('#__componentbuilder_server', 'a'));
-		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.name ASC');
-		$db->setQuery((string)$query);
-		$items = $db->loadObjectList();
-		$options = array();
-		if ($items)
-		{
-			$options[] = Html::_('select.option', '', 'Select an option');
-			foreach($items as $item)
-			{
+$query = $db->getQuery(true);
+$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','name', 'protocol')));
+$query->from($db->quoteName('#__componentbuilder_server', 'a'));
+$query->where($db->quoteName('a.published') . ' >= 1');
+$query->order('a.name ASC');
+$db->setQuery((string)$query);
+$items = $db->loadObjectList();
+$options = array();
+if ($items)
+{
+	$options[] = Html::_('select.option', '', 'Select an option');
+	foreach($items as $item)
+	{
 			$item->protocol = ($item->protocol == 2) ? Text::_('SFTP') : Text::_('FTP');
-				$options[] = Html::_('select.option', $item->id, $item->name.' ['.$item->protocol.']');
-			}
-		}
-		return $options;
+		$options[] = Html::_('select.option', $item->id, $item->name.' ['.$item->protocol.']');
+	}
+}
+
+return $options;
 	}
 }

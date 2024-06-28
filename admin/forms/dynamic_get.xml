@@ -120,6 +120,7 @@
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_MAIN_SOURCE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="INT"
 			required="true"
@@ -141,6 +142,7 @@
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_GETTYPE_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="INT"
 			required="true"
@@ -307,6 +309,7 @@
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_PLUGIN_EVENTS_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_PLUGIN_EVENTS_DESCRIPTION"
 			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="true">
 			<!-- Option Set. -->
 			<option value="onContentAfterTitle">
@@ -335,6 +338,7 @@
 			name="view_table_main"
 			label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_LABEL"
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_DESCRIPTION"
+			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default=""
 			required="true"

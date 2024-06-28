@@ -43,6 +43,19 @@ interface ModelInterface
 	public function value($value, string $field, ?string $table = null);
 
 	/**
+	 * Model a value of multiple items
+	 *          Example: $this->items(Array, 'value_key', 'table_name');
+	 *
+	 * @param   array|null    $items    The array of values
+	 * @param   string        $field    The field key
+	 * @param   string|null   $table    The table
+	 *
+	 * @return  array|null
+	 * @since 3.2.0
+	 */
+	public function values(?array $items = null, string $field, ?string $table = null): ?array;
+
+	/**
 	 * Model the values of an item
 	 *          Example: $this->item(Object, 'table_name');
 	 *

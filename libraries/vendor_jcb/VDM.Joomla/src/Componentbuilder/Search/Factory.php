@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Search\Service\Model;
 use VDM\Joomla\Componentbuilder\Search\Service\Database;
 use VDM\Joomla\Componentbuilder\Search\Service\Agent;
 use VDM\Joomla\Interfaces\FactoryInterface;
+use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
 
 /**
@@ -25,45 +26,8 @@ use VDM\Joomla\Interfaces\FactoryInterface;
  * 
  * @since 3.2.0
  */
-abstract class Factory implements FactoryInterface
+abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
-	/**
-	 * Global Search Container
-	 *
-	 * @var     Container
-	 * @since 3.2.0
-	 **/
-	protected static $container = null;
-
-	/**
-	 * Get any class from the search container
-	 *
-	 * @param   string  $key  The container class key
-	 *
-	 * @return  Mixed
-	 * @since 3.2.0
-	 */
-	public static function _(string $key)
-	{
-		return self::getContainer()->get($key);
-	}
-
-	/**
-	 * Get the global search container
-	 *
-	 * @return  Container
-	 * @since 3.2.0
-	 */
-	public static function getContainer(): Container
-	{
-		if (!self::$container)
-		{
-			self::$container = self::createContainer();
-		}
-
-		return self::$container;
-	}
-
 	/**
 	 * Create a container object
 	 *

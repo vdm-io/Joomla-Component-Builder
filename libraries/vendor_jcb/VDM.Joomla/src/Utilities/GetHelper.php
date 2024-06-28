@@ -14,6 +14,7 @@ namespace VDM\Joomla\Utilities;
 
 use Joomla\CMS\Factory;
 use VDM\Joomla\Utilities\Component\Helper;
+use VDM\Joomla\Data\Factory as Data;
 
 
 /**
@@ -35,6 +36,8 @@ abstract class GetHelper
 	 *
 	 * @return  mixed string/int/float
 	 * @since  3.0.9
+	 *
+	 * @deprecated 5.1  Use  Data::_('Load')->table($table)->value(...)
 	 */
 	public static function var(?string $table = null, $where = null,
 		string $whereString = 'user', string $what = 'id',
@@ -103,6 +106,8 @@ abstract class GetHelper
 	 *
 	 * @return  array|null
 	 * @since  3.0.9
+	 *
+	 * @deprecated 5.1  Use  Data::_('Load')->table($table)->values(...)
 	 */
 	public static function vars(?string $table = null, $where = null,
 		string $whereString = 'user', string $what = 'id', string $operator = 'IN',
