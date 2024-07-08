@@ -136,26 +136,6 @@ class Config extends BaseConfig
 	}
 
 	/**
-	 * Get super power push repo
-	 *
-	 * @return  object|null  The push repository on Gitea
-	 * @since 3.2.1
-	 */
-	protected function getSuperpowerspushrepo(): ?object
-	{
-		if ($this->gitea_username !== null)
-		{
-			return (object) [
-				'organisation' => $this->gitea_username,
-				'repository' => 'super-powers',
-				'read_branch' => 'master'
-			];
-		}
-
-		return null;
-	}
-
-	/**
 	 * get temporary path
 	 *
 	 * @return  string  The temporary path

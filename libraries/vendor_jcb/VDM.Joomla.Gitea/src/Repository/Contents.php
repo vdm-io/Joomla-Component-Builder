@@ -64,10 +64,10 @@ class Contents extends Api
 	 * @param   string|null  $ref       Optional. The name of the commit/branch/tag.
 	 *                                  Default the repository's default branch (usually master).
 	 *
-	 * @return  object|null
+	 * @return  null|array|object
 	 * @since   3.2.0
 	 **/
-	public function metadata(string $owner, string $repo, string $filepath, ?string $ref = null): ?object
+	public function metadata(string $owner, string $repo, string $filepath, ?string $ref = null): null|array|object
 	{
 		// Build the request path.
 		$path = "/repos/{$owner}/{$repo}/contents/{$filepath}";
@@ -100,7 +100,7 @@ class Contents extends Api
 	 * @param   string|null $authorEmail     The author's email.
 	 * @param   string|null $committerName   The committer's name.
 	 * @param   string|null $committerEmail  The committer's email.
-	 * @param   bool|null   $newBranch       Whether to create a new branch. Defaults to false.
+	 * @param   string|null   $newBranch       Whether to create a new branch. Defaults to null.
 	 * @param   string|null $authorDate      The author's date.
 	 * @param   string|null $committerDate   The committer's date.
 	 * @param   bool|null   $signoff         Add a Signed-off-by trailer. Defaults to null.
@@ -119,7 +119,7 @@ class Contents extends Api
 		?string $authorEmail = null,
 		?string $committerName = null,
 		?string $committerEmail = null,
-		?bool $newBranch = false,
+		?string $newBranch = null,
 		?string $authorDate = null,
 		?string $committerDate = null,
 		?bool $signoff = null

@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\JoomlaPower\Config;
 use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Grep;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Super as Superpower;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Repository;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
 
 
@@ -34,7 +35,7 @@ class JoomlaPower implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  void
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
 	public function register(Container $container)
 	{
@@ -50,6 +51,9 @@ class JoomlaPower implements ServiceProviderInterface
 		$container->alias(Superpower::class, 'Joomlapower')
 			->share('Joomlapower', [$this, 'getSuperpower'], true);
 
+		$container->alias(Repository::class, 'Joomla.Power.Repository')
+			->share('Joomla.Power.Repository', [$this, 'getRepository'], true);
+
 		$container->alias(Parser::class, 'Power.Parser')
 			->share('Power.Parser', [$this, 'getParser'], true);
 	}
@@ -60,7 +64,7 @@ class JoomlaPower implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Config
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
 	public function getConfig(Container $container): Config
 	{
@@ -73,7 +77,7 @@ class JoomlaPower implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Table
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
 	public function getTable(Container $container): Table
 	{
@@ -86,7 +90,7 @@ class JoomlaPower implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Grep
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
 	public function getGrep(Container $container): Grep
 	{
@@ -102,7 +106,7 @@ class JoomlaPower implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Superpower
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
 	public function getSuperpower(Container $container): Superpower
 	{
@@ -113,12 +117,30 @@ class JoomlaPower implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The Repository Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Repository
+	 * @since 3.2.2
+	 */
+	public function getRepository(Container $container): Repository
+	{
+		return new Repository(
+			$container->get('Config')->approved_joomla_paths,
+			$container->get('Joomla.Power.Grep'),
+			$container->get('Data.Items'),
+			$container->get('Gitea.Repository.Contents')
+		);
+	}
+
+	/**
 	 * Get The Parser Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Parser
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
 	public function getParser(Container $container): Parser
 	{
