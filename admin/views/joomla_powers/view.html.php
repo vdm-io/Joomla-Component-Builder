@@ -159,6 +159,11 @@ class ComponentbuilderViewJoomla_powers extends HtmlView
 			// add Reset button.
 			ToolbarHelper::custom('joomla_powers.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
 		}
+		if ($this->user->authorise('joomla_power.push', 'com_componentbuilder'))
+		{
+			// add Push button.
+			ToolbarHelper::custom('joomla_powers.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('joomla_powers');

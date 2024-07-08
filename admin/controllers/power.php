@@ -49,6 +49,20 @@ class ComponentbuilderControllerPower extends FormController
 		parent::__construct($config);
 	}
 
+	/**
+	 * Resets the specified power.
+	 *
+	 * This function performs several checks and operations:
+	 * 1. It verifies the authenticity of the request to prevent request forgery.
+	 * 2. It retrieves the item data posted by the user.
+	 * 3. It checks whether the current user has the necessary permissions to reset the power.
+	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to reset the specified power.
+	 * 6. Depending on the result of the reset operation, it sets the appropriate success or error message.
+	 * 7. It redirects the user to a specified URL with the result message and status.
+	 *
+	 * @return bool True on successful reset, false on failure.
+	 */
 	public function resetPowers()
 	{
 		// Check for request forgeries

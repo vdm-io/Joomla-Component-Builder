@@ -28,6 +28,16 @@ interface GrepInterface
 	public function getRemotePowersGuid(): ?array;
 
 	/**
+	 * Set the branch field
+	 *
+	 * @param string    $field   The global unique id of the power
+	 *
+	 * @return void
+	 * @since 3.2.2
+	 */
+	public function setBranchField(string $field): void;
+
+	/**
 	 * Get a power
 	 *
 	 * @param string   $guid    The global unique id of the power

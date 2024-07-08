@@ -1,8 +1,9 @@
-# v3.2.2-alpha6
+# v3.2.2-alpha7
 
-- Add new subform classes
-- Fix registry class methods return type
-- Update all list and custom fields to use the new layouts
+- Add push options to Joomla Power
+- Complete the Joomla Power Init and Reset features
+- Fix Gitea Contents class functions
+- Last Alpha release (feature block)
 
 # v3.2.2-alpha
 
@@ -13,6 +14,9 @@
 - Add repositories for better integration with gitea
 - Refactored the Data classes
 - Add new Data classes
+- Add new subform classes
+- Fix registry class methods return type
+- Update all list and custom fields to use the new layouts
 
 # v3.2.1
 

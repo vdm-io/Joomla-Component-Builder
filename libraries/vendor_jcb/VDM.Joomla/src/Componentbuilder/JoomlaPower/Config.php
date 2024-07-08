@@ -16,6 +16,7 @@ use Joomla\Registry\Registry as JoomlaRegistry;
 use Joomla\CMS\Factory as JoomlaFactory;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Componentbuilder\Utilities\RepoHelper;
 use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
 
 
@@ -114,21 +115,6 @@ class Config extends BaseConfig
 	}
 
 	/**
-	 * Get Joomla power push repo
-	 *
-	 * @return  object|null  The push repository on Gitea
-	 * @since 3.2.1
-	 */
-	protected function getJoomlapowerspushrepo(): ?object
-	{
-		// some defaults repos we need by JCB
-		if (!empty($this->gitea_username))
-		{
-			return (object) ['organisation' => $this->gitea_username, 'repository' => 'joomla-powers', 'read_branch' => 'master'];
-		}
-	}
-
-	/**
 	 * Get joomla power approved paths
 	 *
 	 * @return  array The approved paths to the repositories on Gitea
@@ -136,7 +122,26 @@ class Config extends BaseConfig
 	 */
 	protected function getApprovedjoomlapaths(): array
 	{
-		return array_values($this->joomla_powers_init_repos);
+		// some defaults repos we need by JCB
+		$approved = $this->joomla_powers_init_repos;
+
+		$paths = RepoHelper::get(2); // Joomla Power = 2
+
+		if ($paths !== null)
+		{
+			foreach ($paths as $path)
+			{
+				$owner = $path->organisation ?? null;
+				$repo = $path->repository ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$approved = ["{$owner}.{$repo}" => $path] + $approved;
+				}
+			}
+		}
+
+		return array_values($approved);
 	}
 }
 
