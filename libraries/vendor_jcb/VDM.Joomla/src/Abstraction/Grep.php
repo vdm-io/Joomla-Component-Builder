@@ -56,6 +56,14 @@ abstract class Grep implements GrepInterface
 	protected array $order = ['local', 'remote'];
 
 	/**
+	 * The target branch field name ['read_branch', 'write_branch']
+	 *
+	 * @var    string
+	 * @since 3.2.2
+	 **/
+	protected string $branch_field = 'read_branch';
+
+	/**
 	 * Gitea Repository Contents
 	 *
 	 * @var    Contents
@@ -118,6 +126,19 @@ abstract class Grep implements GrepInterface
 		}
 
 		return empty($powers) ? null : array_unique($powers);
+	}
+
+	/**
+	 * Set the branch field
+	 *
+	 * @param string    $field   The global unique id of the power
+	 *
+	 * @return void
+	 * @since 3.2.2
+	 */
+	public function setBranchField(string $field): void
+	{
+		$this->branch_field = $field;
 	}
 
 	/**
@@ -196,15 +217,12 @@ abstract class Grep implements GrepInterface
 					$path->path = trim($path->organisation) . '/' . trim($path->repository);
 
 					// update the branch
-					if ($path->read_branch === 'default' || empty($path->read_branch))
-					{
-						$path->read_branch = null;
-					}
+					$branch_field = $this->getBranchField();
+					$branch = $path->{$branch_field} ?? null;
 
-					// only update the write branch if set
-					if (isset($path->write_branch) && ($path->write_branch === 'default' || empty($path->write_branch)))
+					if ($branch === 'default' || empty($branch))
 					{
-						$path->write_branch = null;
+						$path->{$branch_field} = null;
 					}
 
 					// set local path
@@ -219,6 +237,17 @@ abstract class Grep implements GrepInterface
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the branch field
+	 *
+	 * @return string
+	 * @since 3.2.2
+	 */
+	public function getBranchField(): string
+	{
+		return $this->branch_field;
 	}
 }
 

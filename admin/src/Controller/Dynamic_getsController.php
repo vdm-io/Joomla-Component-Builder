@@ -56,27 +56,40 @@ class Dynamic_getsController extends AdminController
 
 
 	/**
-	 * Run the Expansion
+	 * Runs the expansion module.
 	 *
-	 * @return  void
+	 * This function performs several checks and operations:
+	 * 1. It verifies the authenticity of the request to prevent request forgery.
+	 * 2. It checks whether the current user has the necessary permissions to run the expansion module.
+	 * 3. If the user is authorized, it attempts to run the expansion via an API call.
+	 * 4. Depending on the result of the expansion operation, it sets the appropriate success or error message.
+	 * 5. It redirects the user to a specified URL with the result message and status.
+	 *
+	 * @return bool True on successful expansion, false on failure.
 	 */
 	public function runExpansion()
 	{
 		// Check for request forgeries
-		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
 		// check if user has the right
 		$user = Factory::getUser();
+
 		// set page redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=dynamic_gets', false);
+
 		// set massage
 		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
+
 		// check if this user has the right to run expansion
 		if($user->authorise('dynamic_gets.run_expansion', 'com_componentbuilder'))
 		{
 			// set massage
 			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
+
 			// run expansion via API
 			$result = ComponentbuilderHelper::getFileContents(Uri::root() . 'index.php?option=com_componentbuilder&task=api.expand');
+
 			// is there a message returned
 			if (!is_numeric($result) && StringHelper::check($result))
 			{
@@ -90,6 +103,7 @@ class Dynamic_getsController extends AdminController
 				return true;
 			}
 		}
+
 		$this->setRedirect($redirect_url, $message, 'error');
 		return false;
 	}

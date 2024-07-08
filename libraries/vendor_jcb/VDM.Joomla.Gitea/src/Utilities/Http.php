@@ -29,7 +29,7 @@ final class Http extends JoomlaHttp
 	 * @var    string
 	 * @since 3.2.0
 	 */
-	protected string $_token_; // to avoid collusions (but allow swapping)
+	protected string $_token_; // to avoid collisions (but allow swapping)
 
 	/**
 	 * Constructor.
@@ -52,7 +52,7 @@ final class Http extends JoomlaHttp
 		// add the token if given
 		if (is_string($token))
 		{
-			$config['headers']['Authorization'] = $token;
+			$config['headers']['Authorization'] = 'token ' . $token;
 			$this->_token_ = $token;
 		}
 
@@ -78,7 +78,7 @@ final class Http extends JoomlaHttp
 		);
 
 		// add the token
-		$headers['Authorization'] = $token;
+		$headers['Authorization'] = 'token ' . $token;
 		$this->_token_ = $token;
 
 		$this->setOption('headers', $headers);

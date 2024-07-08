@@ -303,10 +303,18 @@ class Joomla_componentModel extends AdminModel
 
 
 	/**
-	 * get VDM internal session key
+	 * Retrieves or generates a Vast Development Method (VDM) key for the current item.
 	 *
-	 * @return  string  the session key
+	 * This function performs the following operations:
+	 * 1. Checks if the VDM key is already set. If not, it proceeds to generate or retrieve one.
+	 * 2. Determines the item ID based on the presence of a specific argument.
+	 * 3. Attempts to retrieve an existing VDM key from a helper method using the item ID.
+	 * 4. If a VDM key is not found, it generates a new random VDM key.
+	 * 5. Stores the VDM key and associates it with the item ID in a helper method.
+	 * 6. Optionally, stores return and GUID values if available.
+	 * 7. Returns the VDM key.
 	 *
+	 * @return string The VDM key for the current item.
 	 */
 	public function getVDM()
 	{
