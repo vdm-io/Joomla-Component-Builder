@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface as Power;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface as Extractor;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
+use VDM\Joomla\Componentbuilder\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\InjectorInterface;
 

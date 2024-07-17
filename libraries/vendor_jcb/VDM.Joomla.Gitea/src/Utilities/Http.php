@@ -13,7 +13,9 @@ namespace VDM\Joomla\Gitea\Utilities;
 
 
 use Joomla\CMS\Http\Http as JoomlaHttp;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
+
 
 
 /**

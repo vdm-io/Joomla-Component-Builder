@@ -23,7 +23,7 @@ use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
+use VDM\Joomla\Componentbuilder\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\GuiInterface;
 
 

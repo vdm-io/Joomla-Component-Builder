@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-###SITE_CUSTOM_POWER_AUTOLOADER###
+###SITE_POWER_AUTOLOADER###
 
 ###SITE_HELPER_CLASS_HEADER###
 

@@ -25,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
-use VDM\Joomla\Componentbuilder\Power\Super as Superpower;
+use VDM\Joomla\Componentbuilder\Power\Remote\Get as Superpower;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface;
 
 
@@ -1148,7 +1148,7 @@ class Power implements PowerInterface
 					$repo = $global_path . '/' . $path;
 
 					// set SuperPowerKey (spk)
-					$spk = 'Super_'.'_' . str_replace('-', '_', $guid) . '_'.'_Power';
+					$spk = 'Super---' . str_replace('-', '_', $guid) . '---Power';
 
 					// set the global super power
 					$this->superpowers[$repo][$guid] = [

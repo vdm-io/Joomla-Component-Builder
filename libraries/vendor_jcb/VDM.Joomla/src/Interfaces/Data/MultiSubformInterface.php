@@ -49,7 +49,7 @@ interface MultiSubformInterface
 	/**
 	 * Set a subform items
 	 *
-	 * @param array   $items    The list of items from the subform to set
+	 * @param mixed   $items    The list of items from the subform to set
 	 * @param array   $setMap   The the map to set the subfrom data
 	 *
 	 *     Example:
@@ -72,6 +72,6 @@ interface MultiSubformInterface
 	 * @return bool
 	 * @since 3.2.2
 	 */
-	public function set(array $items, array $setMap): bool;
+	public function set(mixed $items, array $setMap): bool;
 }
 

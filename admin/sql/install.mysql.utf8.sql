@@ -109,8 +109,8 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_joomla_component` (
 	`access` INT(10) unsigned NOT NULL DEFAULT 0,
 	`ordering` INT(11) NOT NULL DEFAULT 0,
 	`metakey` TEXT,
-	`metadesc` TEXT NOT NULL,
-	`metadata` TEXT NOT NULL,
+	`metadesc` TEXT,
+	`metadata` TEXT,
 	PRIMARY KEY  (`id`),
 	KEY `idx_system_name` (`system_name`),
 	KEY `idx_name_code` (`name_code`),
@@ -2469,7 +2469,7 @@ INSERT INTO `#__componentbuilder_repository` (`id`, `system_name`, `organisation
 (8, 'Minify', 'joomla', 'minify', 1, 1, 'https://git.vdm.dev', '6c741f48-a192-4e17-a932-df552164cffb', 'master', 1, 8, 1, '2024-06-15 17:43:09', '2024-06-10 11:03:30', ''),
 (9, 'psr', 'joomla', 'psr', 1, 1, 'https://git.vdm.dev', 'bfaa857a-df24-4d8c-97c3-1da4167a2bc8', 'master', 1, 9, 1, '2024-06-15 17:43:09', '2024-06-10 11:03:41', ''),
 (10, 'fof', 'joomla', 'fof', 1, 1, 'https://git.vdm.dev', 'dd591247-1215-4faf-8a00-1f294768ba13', 'master', 1, 10, 1, '2024-06-15 17:43:09', '2024-06-10 11:03:47', ''),
-(12, 'Joomla Powers', 'joomla', 'joomla-powers', 2, 1, 'https://git.vdm.dev', 'dfba58ef-f823-43d4-ab73-865fdaf09294', 'master', 1, 12, 1, '2024-07-08 20:29:15', '2024-07-08 14:07:31', '');
+(12, 'Joomla Powers', 'joomla', 'joomla-powers', 2, 1, 'https://git.vdm.dev', 'dfba58ef-f823-43d4-ab73-865fdaf09294', 'master', 1, 12, '', '2024-07-16 22:05:16', '2024-07-08 14:07:31', '');
 
 --
 -- Dumping data for table `#__componentbuilder_help_document`

@@ -20,7 +20,7 @@ use Joomla\CMS\Version;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\Filesystem\Folder;
 use Joomla\Database\DatabaseInterface;
-use VDM\Joomla\Componentbuilder\Table\Schema;
+use VDM\Joomla\Componentbuilder\Table\SchemaChecker;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -556,26 +556,23 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 		if ($type === 'update')
 		{
 
-			// Check if the class and method exist before attempting to call it.
-			if (class_exists('\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper') &&
-				method_exists('\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper', 'removeFolder'))
-			{
-				// path to the compiler folders
-				$jcb_powers = [];
-				$jcb_powers[] = JPATH_LIBRARIES . '/vendor_jcb/VDM.Joomla/src/Componentbuilder';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.FOF';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Gitea';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Openai';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Wasabi';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Minify';
-				$jcb_powers[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Psr';
 
-				// we always remove all the old files to avoid mismatching
-				foreach ($jcb_powers as $jcb_power)
-				{
-					\VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper::removeFolder($jcb_power);
-				}
+			// all things to clear out
+			$jcb_cleaner = [];
+			$jcb_cleaner[] = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/compiler';
+			$jcb_cleaner[] = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/extrusion';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/vendor_jcb/VDM.Joomla/src/Componentbuilder';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.FOF';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Gitea';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Openai';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Wasabi';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Minify';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Psr';
+
+			foreach ($jcb_cleaner as $cleaner)
+			{
+				$this->removeFolder($cleaner);
 			}
 
 			// Check that the required configuration are set for PHP
@@ -1525,7 +1522,10 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 
 			// Check that the database is up-to date
-			$this->databaseSchemaCheck($this->app);
+			if ($this->classExists(SchemaChecker::class))
+			{
+				(new SchemaChecker())->run();
+			}
 
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
@@ -3261,12 +3261,15 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 
 			// Check that the database is up-to date
-			$this->databaseSchemaCheck($this->app);
+			if ($this->classExists(SchemaChecker::class))
+			{
+				(new SchemaChecker())->run();
+			}
 
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.0.1-alpha7 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.0.1-beta1 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -4098,6 +4101,80 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	}
 
 	/**
+	 * Remove folders with files (with ignore options)
+	 *
+	 * @param   string	    $dir	 The path to the folder to remove.
+	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
+	 *
+	 * @return  bool   True if all specified files/folders are removed, false otherwise.
+	 * @since 3.2.2
+	 */
+	protected function removeFolder(string $dir, ?array $ignore = null): bool
+	{
+		if (!is_dir($dir))
+		{
+			return false;
+		}
+
+		$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+		$it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+		// Remove trailing slash
+		$dir = rtrim($dir, '/');
+
+		foreach ($it as $file)
+		{
+			$filePath = $file->getPathname();
+			$relativePath = str_replace($dir . '/', '', $filePath);
+
+			if ($ignore !== null && in_array($relativePath, $ignore, true))
+			{
+				continue;
+			}
+
+			if ($file->isDir())
+			{
+				Folder::delete($filePath);
+			}
+			else
+			{
+				File::delete($filePath);
+			}
+		}
+
+		// Delete the root folder if there are no ignored files/folders left
+		if ($ignore === null || $this->isDirEmpty($dir, $ignore))
+		{
+			return Folder::delete($dir);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a directory is empty considering ignored files/folders.
+	 *
+	 * @param   string  $dir	 The path to the folder to check.
+	 * @param   array   $ignore  The folders and files to ignore.
+	 *
+	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
+     * @since 3.2.1
+	 */
+	protected function isDirEmpty(string $dir, array $ignore): bool
+	{
+		$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+		foreach ($it as $file)
+		{
+			$relativePath = str_replace($dir . '/', '', $file->getPathname());
+			if (!in_array($relativePath, $ignore, true))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Remove the files and folders in the given array from
 	 *
 	 * @return  void
@@ -4916,6 +4993,35 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	}
 
 	/**
+	 * Ensures that a class in the namespace is available.
+	 * If the class is not already loaded, it attempts to load it via the specified autoloader.
+	 *
+	 * @param string  $className   The fully qualified name of the class to check.
+	 *
+	 * @return bool True if the class exists or was successfully loaded, false otherwise.
+	 * @since 4.0.1
+	 */
+	protected function classExists(string $className): bool
+	{
+		if (!class_exists($className, true))
+		{
+			// The power autoloader for this project (JPATH_ADMINISTRATOR) area.
+			$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/src/Helper/PowerloaderHelper.php';
+			if (file_exists($power_autoloader))
+			{
+				require_once $power_autoloader;
+			}
+
+			// Check again if the class now exists after requiring the autoloader
+			if (!class_exists($className, true))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Define the required limits with specific messages for success and warning scenarios
 	 *
 	 * @var array
@@ -5020,66 +5126,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 		{
 			$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced.<br>These settings are crucial for ensuring the successful installation and compilation of extensions.<br>We\'ve identified that certain configurations currently do not meet the recommended standards.<br>To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
 ', 'notice');
-		}
-	}
-
-	/**
-	 * Make sure that the componentbuilder database schema is up to date.
-	 *
-	 * @return void
-	 * @since 3.2.1
-	 */
-	protected function databaseSchemaCheck($app): void
-	{
-		// try to load the schema class
-		try
-		{
-			// make sure the class is loaded
-			$this->ensureClassExists(
-				Schema::class
-			);
-
-			// instantiate the schema class and check/update the database
-			$messages = (new Schema())->update();
-		}
-		catch (\Exception $e)
-		{
-			$app->enqueueMessage($e->getMessage(), 'warning');
-			return;
-		}
-
-		foreach ($messages as $message)
-		{
-			$app->enqueueMessage($message, 'message');
-		}
-	}
-
-	/**
-	 * Ensures that a class in the namespace is available.
-	 * If the class is not already loaded, it attempts to load it via the power autoloader.
-	 *
-	 * @param mixed    $nameClass    The name::class we are looking for.
-	 *
-	 * @return void
-	 * @since 3.2.1
-	 * @throws \Exception If the class could not be loaded.
-	 */
-	protected function ensureClassExists($nameClass): void
-	{
-		if (!class_exists($nameClass, true))
-		{
-			// The power autoloader for this project admin area.
-			$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/src/Helper/PowerloaderHelper.php';
-			if (file_exists($power_autoloader))
-			{
-				require_once $power_autoloader;
-			}
-
-			// Check again if the class now exists after requiring it
-			if (!class_exists($nameClass, true))
-			{
-				throw new \Exception("We failed to find/load the $nameClass");
-			}
 		}
 	}
 

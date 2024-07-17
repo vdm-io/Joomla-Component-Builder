@@ -14,7 +14,7 @@ defined('_JCB_TEMPLATE') or die;
 ?>
 ###BOM###
 
-###CUSTOM_POWER_AUTOLOADER###
+###POWER_AUTOLOADER###
 
 // (soon) use Joomla\CMS\Association\AssociationExtensionInterface;
 use Joomla\CMS\Categories\CategoryFactoryInterface;
@@ -55,10 +55,10 @@ return new class () implements ServiceProviderInterface
 	{
 		// (soon) $container->set(AssociationExtensionInterface::class, new AssociationsHelper());
 
-		$container->registerServiceProvider(new CategoryFactory('\\###NAMESPACEPREFIX###\\Component\\###Component###'));
-		$container->registerServiceProvider(new MVCFactory('\\###NAMESPACEPREFIX###\\Component\\###Component###'));
-		$container->registerServiceProvider(new ComponentDispatcherFactory('\\###NAMESPACEPREFIX###\\Component\\###Component###'));
-		$container->registerServiceProvider(new RouterFactory('\\###NAMESPACEPREFIX###\\Component\\###Component###'));
+		$container->registerServiceProvider(new CategoryFactory('\\###NAMESPACEPREFIX###\\Component\\###ComponentNamespace###'));
+		$container->registerServiceProvider(new MVCFactory('\\###NAMESPACEPREFIX###\\Component\\###ComponentNamespace###'));
+		$container->registerServiceProvider(new ComponentDispatcherFactory('\\###NAMESPACEPREFIX###\\Component\\###ComponentNamespace###'));
+		$container->registerServiceProvider(new RouterFactory('\\###NAMESPACEPREFIX###\\Component\\###ComponentNamespace###'));
 
 		$container->set(
 			ComponentInterface::class,

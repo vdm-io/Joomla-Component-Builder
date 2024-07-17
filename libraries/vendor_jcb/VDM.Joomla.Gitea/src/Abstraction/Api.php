@@ -15,6 +15,7 @@ namespace VDM\Joomla\Gitea\Abstraction;
 use VDM\Joomla\Gitea\Utilities\Http;
 use VDM\Joomla\Gitea\Utilities\Uri;
 use VDM\Joomla\Gitea\Utilities\Response;
+use VDM\Joomla\Interfaces\Git\ApiInterface;
 
 
 /**
@@ -22,7 +23,7 @@ use VDM\Joomla\Gitea\Utilities\Response;
  * 
  * @since 3.2.0
  */
-abstract class Api
+abstract class Api implements ApiInterface
 {
 	/**
 	 * The Http class

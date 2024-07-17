@@ -108,7 +108,7 @@ class Joomla_powerController extends FormController
 		elseif($user->authorise('power.reset', 'com_componentbuilder'))
 		{
 			try {
-				if (JoomlaPowerFactory::_('Joomlapower')->reset([$guid]))
+				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset([$guid]))
 				{
 					// set success message
 					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
@@ -183,7 +183,7 @@ class Joomla_powerController extends FormController
 		elseif($user->authorise('power.push', 'com_componentbuilder'))
 		{
 			try {
-				if (JoomlaPowerFactory::_('Joomla.Power.Repository')->set([$guid]))
+				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->items([$guid]))
 				{
 					// set success message
 					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';

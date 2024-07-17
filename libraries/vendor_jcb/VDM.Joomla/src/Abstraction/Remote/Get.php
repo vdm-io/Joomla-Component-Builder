@@ -9,20 +9,20 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Data;
+namespace VDM\Joomla\Abstraction\Remote;
 
 
 use VDM\Joomla\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
-use VDM\Joomla\Interfaces\Data\RemoteInterface;
+use VDM\Joomla\Interfaces\Remote\GetInterface;
 
 
 /**
- * Load data based on global unique ids from remote system
+ * Get data based on global unique ids from remote system
  * 
  * @since 3.2.0
  */
-class Remote implements RemoteInterface
+abstract class Get implements GetInterface
 {
 	/**
 	 * The Grep Class.
@@ -90,7 +90,7 @@ class Remote implements RemoteInterface
 	 */
 	public function init(): bool
 	{
-		if (($items = $this->grep->getRemotePowersGuid()) !== null)
+		if (($items = $this->grep->getRemoteGuid()) !== null)
 		{
 			foreach($items as $guid)
 			{
@@ -126,7 +126,7 @@ class Remote implements RemoteInterface
 
 		foreach($items as $guid)
 		{
-			if (!$this->load($guid, ['remote']))
+			if (!$this->item($guid, ['remote']))
 			{
 				$success = false;
 			}
@@ -136,7 +136,7 @@ class Remote implements RemoteInterface
 	}
 
 	/**
-	 * Load a item
+	 * Load an item
 	 *
 	 * @param string   $guid    The global unique id of the item
 	 * @param array    $order   The search order
@@ -145,7 +145,7 @@ class Remote implements RemoteInterface
 	 * @return bool
 	 * @since 3.2.0
 	 */
-	public function load(string $guid, array $order = ['remote', 'local'], ?string $action = null): bool
+	public function item(string $guid, array $order = ['remote', 'local'], ?string $action = null): bool
 	{
 		if (($item = $this->grep->get($guid, $order)) !== null)
 		{

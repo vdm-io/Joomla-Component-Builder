@@ -107,7 +107,7 @@ class PowerController extends FormController
 		}
 		elseif($user->authorise('power.reset', 'com_componentbuilder'))
 		{
-			if (PowerFactory::_('Superpower')->reset([$guid]))
+			if (PowerFactory::_('Power.Remote.Get')->reset([$guid]))
 			{
 				// set success message
 				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';

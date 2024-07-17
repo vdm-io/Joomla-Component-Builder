@@ -15,7 +15,7 @@ defined('_JCB_TEMPLATE') or die;
 ###BOM###
 namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper;
 
-###CUSTOM_POWER_AUTOLOADER###
+###POWER_AUTOLOADER###
 
 ###ADMIN_HELPER_CLASS_HEADER###
 

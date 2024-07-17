@@ -78,9 +78,17 @@ class Autoloader
 		$this->content->set('ADMIN_POWER_HELPER', '');
 		$this->content->set('SITE_POWER_HELPER', '');
 		$this->content->set('PLUGIN_POWER_AUTOLOADER', '');
-		$this->content->set('CUSTOM_POWER_AUTOLOADER', '');
 		$this->content->set('SITE_PLUGIN_POWER_AUTOLOADER', '');
-		$this->content->set('SITE_CUSTOM_POWER_AUTOLOADER', '');
+		$this->content->set('POWER_AUTOLOADER', '');
+		$this->content->set('ONE_POWER_AUTOLOADER', '');
+		$this->content->set('TWO_POWER_AUTOLOADER', '');
+		$this->content->set('THREE_POWER_AUTOLOADER', '');
+		$this->content->set('FOUR_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_ONE_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_TWO_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_THREE_POWER_AUTOLOADER', '');
+		$this->content->set('SITE_FOUR_POWER_AUTOLOADER', '');
 	}
 
 	/**
@@ -91,13 +99,25 @@ class Autoloader
 	 */
 	public function setFiles()
 	{
-		// check if we are using a plugin
+		// for plugins
 		$this->content->set('PLUGIN_POWER_AUTOLOADER', PHP_EOL . PHP_EOL . $this->getAutoloaderFile(2));
 		$this->content->set('SITE_PLUGIN_POWER_AUTOLOADER', PHP_EOL . PHP_EOL . $this->getAutoloaderFile(2, 'JPATH_SITE'));
 
+		// for site spaced special cases
+		$this->content->set('SITE_ONE_POWER_AUTOLOADER', $this->getAutoloaderFile(1, 'JPATH_SITE'));
+		$this->content->set('SITE_TWO_POWER_AUTOLOADER', $this->getAutoloaderFile(2, 'JPATH_SITE'));
+		$this->content->set('SITE_THREE_POWER_AUTOLOADER', $this->getAutoloaderFile(3, 'JPATH_SITE'));
+		$this->content->set('SITE_FOUR_POWER_AUTOLOADER', $this->getAutoloaderFile(4, 'JPATH_SITE'));
+
+		// for admin spaced special cases
+		$this->content->set('ONE_POWER_AUTOLOADER', $this->getAutoloaderFile(1));
+		$this->content->set('TWO_POWER_AUTOLOADER', $this->getAutoloaderFile(2));
+		$this->content->set('THREE_POWER_AUTOLOADER', $this->getAutoloaderFile(3));
+		$this->content->set('FOUR_POWER_AUTOLOADER', $this->getAutoloaderFile(4));
+
 		// to add to custom files
-		$this->content->add('CUSTOM_POWER_AUTOLOADER', $this->getAutoloaderFile(0));
-		$this->content->add('SITE_CUSTOM_POWER_AUTOLOADER', $this->getAutoloaderFile(0, 'JPATH_SITE'));
+		$this->content->add('POWER_AUTOLOADER', $this->getAutoloaderFile(0));
+		$this->content->add('SITE_POWER_AUTOLOADER', $this->getAutoloaderFile(0, 'JPATH_SITE'));
 	}
 
 	/**
