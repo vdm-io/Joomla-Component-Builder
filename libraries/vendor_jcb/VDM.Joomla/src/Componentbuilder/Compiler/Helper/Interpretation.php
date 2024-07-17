@@ -10476,14 +10476,30 @@ class Interpretation extends Fields
 					// check if default field was overwritten
 					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metadesc'))
 					{
-						$db_ .= PHP_EOL . Indent::_(1)
-							. "`metadesc` TEXT NOT NULL,";
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							$db_ .= PHP_EOL . Indent::_(1)
+								. "`metadesc` TEXT NOT NULL,";
+						}
+						else
+						{
+							$db_ .= PHP_EOL . Indent::_(1)
+								. "`metadesc` TEXT,";
+						}
 					}
 					// check if default field was overwritten
 					if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.metadata'))
 					{
-						$db_ .= PHP_EOL . Indent::_(1)
-							. "`metadata` TEXT NOT NULL,";
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							$db_ .= PHP_EOL . Indent::_(1)
+								. "`metadata` TEXT NOT NULL,";
+						}
+						else
+						{
+							$db_ .= PHP_EOL . Indent::_(1)
+								. "`metadata` TEXT,";
+						}
 					}
 					// add to component dynamic fields
 					CFactory::_('Compiler.Builder.Component.Fields')->set($view . '.metakey',
@@ -10495,8 +10511,7 @@ class Interpretation extends Fields
 							'store' => NULL,
 							'tab_name' => 'publishing',
 							'db' => [
-								'type' => 'TEXT',
-								'default' => ''
+								'type' => 'TEXT'
 							]
 						]
 					);
@@ -10509,8 +10524,7 @@ class Interpretation extends Fields
 							'store' => NULL,
 							'tab_name' => 'publishing',
 							'db' => [
-								'type' => 'TEXT',
-								'default' => ''
+								'type' => 'TEXT'
 							]
 						]
 					);
@@ -10523,8 +10537,7 @@ class Interpretation extends Fields
 							'store' => 'json',
 							'tab_name' => 'publishing',
 							'db' => [
-								'type' => 'TEXT',
-								'default' => ''
+								'type' => 'TEXT'
 							]
 						]
 					);

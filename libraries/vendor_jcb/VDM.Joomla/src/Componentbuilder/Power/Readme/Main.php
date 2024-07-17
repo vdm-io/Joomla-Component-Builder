@@ -9,59 +9,27 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Power\Repos;
+namespace VDM\Joomla\Componentbuilder\Power\Readme;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Power;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Plantuml;
+use VDM\Joomla\Interfaces\Readme\MainInterface;
 
 
 /**
- * Compiler Power Repos Readme
+ * Compiler Power Main Readme
  * @since 3.2.0
  */
-class Readme
+final class Main implements MainInterface
 {
 	/**
-	 * Power Objects
+	 * Get Main Readme
 	 *
-	 * @var    Power
-	 * @since 3.2.0
-	 **/
-	protected Power $power;
-
-	/**
-	 * Compiler Powers Plantuml Builder
-	 *
-	 * @var    Plantuml
-	 * @since 3.2.0
-	 **/
-	protected Plantuml $plantuml;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Power|null         $power        The power object.
-	 * @param Plantuml|null      $plantuml     The powers plantuml builder object.
-	 *
-	 * @since 3.2.0
-	 */
-	public function __construct(?Power $power = null, ?Plantuml $plantuml = null)
-	{
-		$this->power = $power ?: Compiler::_('Power');
-		$this->plantuml = $plantuml ?: Compiler::_('Power.Plantuml');
-	}
-
-	/**
-	 * Get Super Power Readme
-	 *
-	 * @param array    $powers All powers of this super power.
+	 * @param array    $items  All items of this repository.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
-	public function get(array $powers): string
+	public function get(array $items): string
 	{
 		// build readme
 		$readme = ["```
@@ -83,7 +51,7 @@ class Readme
 		$readme[] = "\n### What is JCB Super Powers?\nThe Joomla Component Builder (JCB) Super Power features are designed to enhance JCB's functionality and streamline the development process. These Super Powers enable developers to efficiently manage and share their custom powers across multiple JCB instances through repositories hosted on [https://git.vdm.dev/[username]/[repository-name]](https://git.vdm.dev). JCB Super Powers are managed using a combination of layers, events, tasks, methods, switches, and algorithms, which work together to provide powerful customization and extensibility options. More details on JCB Super Powers can be found in the [Super Powers Documentation](https://git.vdm.dev/joomla/super-powers/wiki).\n\nIn summary, JCB Super Powers offer a flexible and efficient way to manage and share functionalities between JCB instances. By utilizing a sophisticated system of layers, events, tasks, methods, switches, and algorithms, developers can seamlessly integrate JCB core powers and their custom powers. For more information on how to work with JCB Super Powers, refer to the [Super Powers User Guide](https://git.vdm.dev/joomla/super-powers/wiki).\n\n### What can I find here?\nThis repository contains an index (see below) of all the approved powers within the JCB GUI. During the compilation of a component, these powers are automatically added to the repository, ensuring a well-organized and accessible collection of functionalities.\n";
 
 		// get the readme body
-		$readme[] = $this->readmeBuilder($powers);
+		$readme[] = $this->readmeBuilder($items);
 
 		// yes you can remove this, but why?
 		$readme[] = "\n---\n```
@@ -118,10 +86,10 @@ class Readme
 	 * @return string
 	 * @since 3.2.0
 	 */
-	private function readmeBuilder(array &$powers): string
+	private function readmeBuilder(array &$items): string
 	{
 		$classes = [];
-		foreach ($powers as $guid => $power)
+		foreach ($items as $guid => $power)
 		{
 			// add to the sort bucket
 			$classes[] = [
@@ -174,6 +142,8 @@ class Readme
 			// Add the class details
 			$result .= "\n  - " . $class['link'];
 		}
+
+		$result .= "\n> remember to replace the `---` with `___` in the SPK to activate that Power in your code";
 
 		return $result;
 	}
@@ -290,8 +260,8 @@ class Readme
 		return '**' . $type . ' ' . $name . "** | "
 			. $this->linkPowerRepo($power) . ' | '
 			. $this->linkPowerCode($power) . ' | '
-			. $this->linkPowerSettings($power) . ' | '
-			. $this->linkPowerSPK($power);
+			. $this->linkPowerSettings($power) . ' | SPK: `'
+			. $this->linkPowerSPK($power) .'`';
 	}
 
 	/**

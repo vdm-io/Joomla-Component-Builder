@@ -17,9 +17,10 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Config;
 use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Grep;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Super as Superpower;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Repository;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Get;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Set;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Readme\Item as ItemReadme;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Readme\Main as MainReadme;
 
 
 /**
@@ -48,14 +49,17 @@ class JoomlaPower implements ServiceProviderInterface
 		$container->alias(Grep::class, 'Joomla.Power.Grep')
 			->share('Joomla.Power.Grep', [$this, 'getGrep'], true);
 
-		$container->alias(Superpower::class, 'Joomlapower')
-			->share('Joomlapower', [$this, 'getSuperpower'], true);
+		$container->alias(Get::class, 'Joomla.Power.Remote.Get')
+			->share('Joomla.Power.Remote.Get', [$this, 'getRemoteGet'], true);
 
-		$container->alias(Repository::class, 'Joomla.Power.Repository')
-			->share('Joomla.Power.Repository', [$this, 'getRepository'], true);
+		$container->alias(Set::class, 'Joomla.Power.Remote.Set')
+			->share('Joomla.Power.Remote.Set', [$this, 'getRemoteSet'], true);
 
-		$container->alias(Parser::class, 'Power.Parser')
-			->share('Power.Parser', [$this, 'getParser'], true);
+		$container->alias(ItemReadme::class, 'Joomla.Power.Readme.Item')
+			->share('Joomla.Power.Readme.Item', [$this, 'getItemReadme'], true);
+
+		$container->alias(MainReadme::class, 'Joomla.Power.Readme.Main')
+			->share('Joomla.Power.Readme.Main', [$this, 'getMainReadme'], true);
 	}
 
 	/**
@@ -101,50 +105,65 @@ class JoomlaPower implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get The Super Class.
+	 * Get The Remote Get Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Superpower
+	 * @return  Get
 	 * @since 3.2.1
 	 */
-	public function getSuperpower(Container $container): Superpower
+	public function getRemoteGet(Container $container): Get
 	{
-		return new Superpower(
+		return new Get(
 			$container->get('Joomla.Power.Grep'),
 			$container->get('Data.Item')
 		);
 	}
 
 	/**
-	 * Get The Repository Class.
+	 * Get The Remote Set Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Repository
+	 * @return  Set
 	 * @since 3.2.2
 	 */
-	public function getRepository(Container $container): Repository
+	public function getRemoteSet(Container $container): Set
 	{
-		return new Repository(
+		return new Set(
 			$container->get('Config')->approved_joomla_paths,
 			$container->get('Joomla.Power.Grep'),
 			$container->get('Data.Items'),
+			$container->get('Joomla.Power.Readme.Item'),
+			$container->get('Joomla.Power.Readme.Main'),
 			$container->get('Gitea.Repository.Contents')
 		);
 	}
 
 	/**
-	 * Get The Parser Class.
+	 * Get The Item Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Parser
+	 * @return  ItemReadme
 	 * @since 3.2.1
 	 */
-	public function getParser(Container $container): Parser
+	public function getItemReadme(Container $container): ItemReadme
 	{
-		return new Parser();
+		return new ItemReadme();
+	}
+
+	/**
+	 * Get The Main Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  MainReadme
+	 * @since 3.2.1
+	 */
+	public function getMainReadme(Container $container): MainReadme
+	{
+		return new MainReadme();
 	}
 }
 

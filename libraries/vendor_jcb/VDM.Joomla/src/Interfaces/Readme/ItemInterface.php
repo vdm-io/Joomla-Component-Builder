@@ -9,26 +9,24 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Power;
-
-
-use VDM\Joomla\Interfaces\Data\RemoteInterface;
-use VDM\Joomla\Data\Remote;
+namespace VDM\Joomla\Interfaces\Readme;
 
 
 /**
- * Superpower of JCB
+ * Item Readme Interface
  * 
- * @since 3.2.0
+ * @since 3.2.2
  */
-final class Super extends Remote implements RemoteInterface
+interface ItemInterface
 {
 	/**
-	 * Table Name
+	 * Get an item readme
 	 *
-	 * @var    string
-	 * @since 3.2.1
+	 * @param object  $item  An item details.
+	 *
+	 * @return string
+	 * @since 3.2.2
 	 */
-	protected string $table = 'power';
+	public function get(object $item): string;
 }
 

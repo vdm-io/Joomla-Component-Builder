@@ -9,19 +9,19 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\JoomlaPower;
+namespace VDM\Joomla\Componentbuilder\Power\Remote;
 
 
-use VDM\Joomla\Interfaces\Data\RemoteInterface;
-use VDM\Joomla\Data\Remote;
+use VDM\Joomla\Interfaces\Remote\GetInterface;
+use VDM\Joomla\Abstraction\Remote\Get as ExtendingGet;
 
 
 /**
- * Super Joomla Power of JCB
+ * Remote Get Power of JCB
  * 
  * @since 3.2.0
  */
-final class Super extends Remote implements RemoteInterface
+final class Get extends ExtendingGet implements GetInterface
 {
 	/**
 	 * Table Name
@@ -29,6 +29,6 @@ final class Super extends Remote implements RemoteInterface
 	 * @var    string
 	 * @since 3.2.1
 	 */
-	protected string $table = 'joomla_power';
+	protected string $table = 'power';
 }
 

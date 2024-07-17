@@ -32,100 +32,46 @@ use VDM\Joomla\Abstraction\Grep as ExtendingGrep;
 final class Grep extends ExtendingGrep implements GrepInterface
 {
 	/**
-	 * Load the remote repository index of powers
+	 * The index file path
 	 *
-	 * @param object    $path    The repository path details
-	 *
-	 * @return void
-	 * @since 3.2.0
+	 * @var    string
+	 * @since 3.2.2
 	 */
-	protected function remoteIndex(object &$path): void
-	{
-		if (isset($path->index))
-		{
-			return;
-		}
-
-		try
-		{
-			$this->contents->load_($path->base ?? null, $path->token ?? null);
-			$path->index = $this->contents->get($path->organisation, $path->repository, 'super-powers.json', $path->read_branch);
-			$this->contents->reset_();
-		}
-		catch (\Exception $e)
-		{
-			if ('super-powers' === $path->repository && 'joomla' !== $path->organisation && (empty($path->base) || $path->base === 'https://git.vdm.dev'))
-			{
-				// give heads-up about the overriding feature
-				$this->app->enqueueMessage(
-					Text::sprintf('COM_COMPONENTBUILDER_PSUPER_POWERB_REPOSITORY_AT_BHTTPSGITVDMDEVSB_CAN_BE_USED_TO_OVERRIDE_ANY_POWERBR_BUT_HAS_NOT_YET_BEEN_SET_IN_YOUR_ACCOUNT_AT_HTTPSGITVDMDEVSBR_SMALLTHIS_IS_AND_OPTIONAL_FEATURESMALL', $path->path, $path->organisation),
-					'Message'
-				);
-			}
-			else
-			{
-				// give error
-				$this->app->enqueueMessage(
-					Text::sprintf('COM_COMPONENTBUILDER_PSUPER_POWERB_REPOSITORY_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path->path, $e->getMessage()),
-					'Error'
-				);
-			}
-
-			$path->index = null;
-		}
-	}
+	protected string $index_path = 'super-powers.json';
 
 	/**
-	 * Search for a local power
+	 * Search for a local item
 	 *
-	 * @param string    $guid    The global unique id of the power
+	 * @param string    $guid    The global unique id of the item
 	 *
 	 * @return object|null
 	 * @since 3.2.0
 	 */
 	protected function searchLocal(string $guid): ?object
 	{
-		// we can only search if we have paths
-		if ($this->path && $this->paths)
+		// check if it exists locally
+		if (($path = $this->existsLocally($guid)) !== null)
 		{
-			foreach ($this->paths as $path)
-			{
-				// get local index
-				$this->localIndex($path);
-
-				if (!empty($path->local) && isset($path->local->{$guid}))
-				{
-					return $this->getLocal($path, $guid);
-				}
-			}
+			return $this->getLocal($path, $guid);
 		}
 
 		return null;
 	}
 
 	/**
-	 * Search for a remote power
+	 * Search for a remote item
 	 *
-	 * @param string    $guid    The global unique id of the power
+	 * @param string    $guid    The global unique id of the item
 	 *
 	 * @return object|null
 	 * @since 3.2.0
 	 */
 	protected function searchRemote(string $guid): ?object
 	{
-		// we can only search if we have paths
-		if ($this->path && $this->paths)
+		// check if it exists remotely
+		if (($path = $this->existsRemotely($guid)) !== null)
 		{
-			foreach ($this->paths as $path)
-			{
-				// get local index
-				$this->remoteIndex($path);
-
-				if (!empty($path->index) && isset($path->index->{$guid}))
-				{
-					return $this->getRemote($path, $guid);
-				}
-			}
+			return $this->getRemote($path, $guid);
 		}
 
 		return null;
@@ -181,80 +127,69 @@ final class Grep extends ExtendingGrep implements GrepInterface
 			return $power;
 		}
 
-		// get the settings
+		// get the branch name
+		$branch = $this->getBranchName($path);
+
+		// load the base and token if set
 		$this->contents->load_($path->base ?? null, $path->token ?? null);
-		if (($power = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->settings, $path->read_branch)) !== null &&
+
+		// get the settings
+		if (($power = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->settings, $branch)) !== null &&
 			isset($power->guid))
 		{
 			// get the code
-			if (($code = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->power, $path->read_branch)) !== null)
+			if (($code = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->power, $branch)) !== null)
 			{
 				// set the git details in params
-				$power->params = (object) [
-					'source' => ['guid' => $path->guid ?? null]
-				];
 				$power->main_class_code = $code;
 			}
 		}
+
+		// reset back to the global base and token
 		$this->contents->reset_();
 
 		return $power;
 	}
 
 	/**
-	 * Load the remote file
+	 * Set repository messages and errors based on given conditions.
 	 *
-	 * @param string         $organisation  The repository organisation
-	 * @param string         $repository    The repository name
-	 * @param string         $path          The repository path to file
-	 * @param string|null    $branch        The repository branch name
-	 *
-	 * @return mixed
-	 * @since 3.2.0
-	 */
-	protected function loadRemoteFile(string $organisation, string $repository, string $path, ?string $branch)
-	{
-		try
-		{
-			$data = $this->contents->get($organisation, $repository, $path, $branch);
-		}
-		catch (\Exception $e)
-		{
-			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path, $e->getMessage()),
-				'Error'
-			);
-
-			return null;
-		}
-
-		return $data;
-	}
-
-	/**
-	 * Load the local repository index of powers
-	 *
-	 * @param object    $path    The repository path details
+	 * @param string       $message       The message to set (if error)
+	 * @param string       $path          Path value
+	 * @param string       $repository    Repository name
+	 * @param string       $organisation  Organisation name
+	 * @param string|null  $base          Base URL
 	 *
 	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function localIndex(object &$path)
+	protected function setRemoteIndexMessage(string $message, string $path, string $repository, string $organisation, ?string $base): void
 	{
-		if (isset($path->local) || !isset($path->full_path))
+		if ($repository === 'super-powers' && $organisation !== 'joomla' && (empty($base) || $base === 'https://git.vdm.dev'))
 		{
-			return;
+			// Give heads-up about the overriding feature
+			$this->app->enqueueMessage(
+				Text::sprintf(
+					'<p>Super Power</b> repository at <b>https://git.vdm.dev/%s</b> can be used to override any power!<br />But has not yet been set in your account at https://git.vdm.dev/%s<br /><small>This is an optional feature.</small>',
+					$path,
+					$organisation
+				),
+				'Message'
+			);
 		}
-
-		if (($content = FileHelper::getContent($path->full_path . '/super-powers.json', null)) !== null &&
-			JsonHelper::check($content))
+		else
 		{
-			$path->local = json_decode($content);
-
-			return;
+			// Give error
+			$this->app->enqueueMessage(
+				Text::sprintf(
+					'<p>Super Power</b> repository at <b>%s/%s</b> gave the following error!<br />%s</p>',
+					$this->contents->api(),
+					$path,
+					$message
+				),
+				'Error'
+			);
 		}
-
-		$path->local = null;
 	}
 }
 

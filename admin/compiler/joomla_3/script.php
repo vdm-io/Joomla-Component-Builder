@@ -138,76 +138,77 @@ class Com_###Component###InstallerScript
 	}
 
 	/**
-	 * Remove folders with files
+	 * Remove folders with files (with ignore options)
 	 *
-	 * @param   string   $dir     The path to folder to remove
-	 * @param   boolean  $ignore  The folders and files to ignore and not remove
+	 * @param   string	    $dir	 The path to the folder to remove.
+	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
 	 *
-	 * @return  boolean   True in all is removed
-	 *
+	 * @return  bool   True if all specified files/folders are removed, false otherwise.
+	 * @since 3.2.2
 	 */
-	protected function removeFolder($dir, $ignore = false)
+	protected function removeFolder(string $dir, ?array $ignore = null): bool
 	{
-		if (Folder::exists($dir))
+		if (!is_dir($dir))
 		{
-			$it = new RecursiveDirectoryIterator($dir);
-			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			// remove ending /
-			$dir = rtrim($dir, '/');
-			// now loop the files & folders
-			foreach ($it as $file)
-			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				// set file dir
-				$file_dir = $file->getPathname();
-				// check if this is a dir or a file
-				if ($file->isDir())
-				{
-					$keeper = false;
-					if ($this->checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file_dir, $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					Folder::delete($file_dir);
-				}
-				else
-				{
-					$keeper = false;
-					if ($this->checkArray($ignore))
-					{
-						foreach ($ignore as $keep)
-						{
-							if (strpos($file_dir, $dir.'/'.$keep) !== false)
-							{
-								$keeper = true;
-							}
-						}
-					}
-					if ($keeper)
-					{
-						continue;
-					}
-					File::delete($file_dir);
-				}
-			}
-			// delete the root folder if not ignore found
-			if (!$this->checkArray($ignore))
-			{
-				return Folder::delete($dir);
-			}
-			return true;
+			return false;
 		}
-		return false;
+
+		$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+		$it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+		// Remove trailing slash
+		$dir = rtrim($dir, '/');
+
+		foreach ($it as $file)
+		{
+			$filePath = $file->getPathname();
+			$relativePath = str_replace($dir . '/', '', $filePath);
+
+			if ($ignore !== null && in_array($relativePath, $ignore, true))
+			{
+				continue;
+			}
+
+			if ($file->isDir())
+			{
+				Folder::delete($filePath);
+			}
+			else
+			{
+				File::delete($filePath);
+			}
+		}
+
+		// Delete the root folder if there are no ignored files/folders left
+		if ($ignore === null || $this->isDirEmpty($dir, $ignore))
+		{
+			return Folder::delete($dir);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a directory is empty considering ignored files/folders.
+	 *
+	 * @param   string  $dir	 The path to the folder to check.
+	 * @param   array   $ignore  The folders and files to ignore.
+	 *
+	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
+     * @since 3.2.1
+	 */
+	protected function isDirEmpty(string $dir, array $ignore): bool
+	{
+		$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+		foreach ($it as $file)
+		{
+			$relativePath = str_replace($dir . '/', '', $file->getPathname());
+			if (!in_array($relativePath, $ignore, true))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -216,6 +217,7 @@ class Com_###Component###InstallerScript
 	 * @input    array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
+	 * @since 3.2.2
 	 */
 	protected function checkArray($array, $removeEmptyString = false)
 	{
@@ -236,5 +238,29 @@ class Com_###Component###InstallerScript
 			return $nr;
 		}
 		return false;
+	}
+
+	/**
+	 * Ensures that a class in the namespace is available.
+	 * If the class is not already loaded, it attempts to load it via the specified autoloader.
+	 *
+	 * @param string  $className   The fully qualified name of the class to check.
+	 *
+	 * @return bool True if the class exists or was successfully loaded, false otherwise.
+	 * @since 3.2.2
+	 */
+	protected function classExists(string $className): bool
+	{
+		if (!class_exists($className, true))
+		{
+###THREE_POWER_AUTOLOADER###
+
+			// Check again if the class now exists after requiring the autoloader
+			if (!class_exists($className, true))
+			{
+				return false;
+			}
+		}
+		return true;
 	}###INSTALLERMETHODS###
 }

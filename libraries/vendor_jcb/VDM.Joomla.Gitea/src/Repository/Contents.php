@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Gitea\Repository;
 
 
+use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface;
 use VDM\Joomla\Gitea\Abstraction\Api;
 
 
@@ -20,7 +21,7 @@ use VDM\Joomla\Gitea\Abstraction\Api;
  * 
  * @since 3.2.0
  */
-class Contents extends Api
+class Contents extends Api implements ContentsInterface
 {
 	/**
 	 * Get a file from a repository.
@@ -345,20 +346,20 @@ class Contents extends Api
 	/**
 	 * Delete a file in a repository.
 	 *
-	 * @param   string  $owner          The owner name.
-	 * @param   string  $repo           The repository name.
-	 * @param   string  $filepath       The file path.
-	 * @param   string  $message        The commit message.
-	 * @param   string  $branch         The branch name (optional).
-	 * @param   string  $sha            The blob SHA of the file.
-	 * @param   string  $authorName     The author name (optional).
-	 * @param   string  $authorEmail    The author email (optional).
-	 * @param   string  $committerName  The committer name (optional).
-	 * @param   string  $committerEmail The committer email (optional).
-	 * @param   string  $authorDate     The author date (optional).
-	 * @param   string  $committerDate  The committer date (optional).
-	 * @param   string  $newBranch      The new branch name (optional).
-	 * @param   bool    $signoff        Add a Signed-off-by trailer (optional).
+	 * @param   string       $owner          The owner name.
+	 * @param   string       $repo           The repository name.
+	 * @param   string       $filepath       The file path.
+	 * @param   string       $message        The commit message.
+	 * @param   string       $sha            The blob SHA of the file.
+	 * @param   string|null  $branch         The branch name (optional).
+	 * @param   string|null  $authorName     The author name (optional).
+	 * @param   string|null  $authorEmail    The author email (optional).
+	 * @param   string|null  $committerName  The committer name (optional).
+	 * @param   string|null  $committerEmail The committer email (optional).
+	 * @param   string|null  $authorDate     The author date (optional).
+	 * @param   string|null  $committerDate  The committer date (optional).
+	 * @param   string|null  $newBranch      The new branch name (optional).
+	 * @param   bool|null    $signoff        Add a Signed-off-by trailer (optional).
 	 *
 	 * @return  object|null
 	 * @since   3.2.0
@@ -449,7 +450,7 @@ class Contents extends Api
 		// Send the delete request.
 		return $this->response->get(
 			$this->http->delete(
-				$this->uri->get($path),
+				$this->uri->get($path), [], null,
 				json_encode($data)
 			)
 		);
@@ -458,10 +459,10 @@ class Contents extends Api
 	/**
 	 * Get the EditorConfig definitions of a file in a repository.
 	 *
-	 * @param   string  $owner      The owner name.
-	 * @param   string  $repo       The repository name.
-	 * @param   string  $filepath   The file path.
-	 * @param   string  $ref        The name of the commit/branch/tag.
+	 * @param   string       $owner      The owner name.
+	 * @param   string       $repo       The repository name.
+	 * @param   string       $filepath   The file path.
+	 * @param   string|null  $ref        The name of the commit/branch/tag.
 	 *
 	 * @return  string|null
 	 * @since   3.2.0

@@ -79,7 +79,7 @@ class ComponentbuilderControllerJoomla_powers extends AdminController
 		if($user->authorise('power.init', 'com_componentbuilder'))
 		{
 			try {
-				if (JoomlaPowerFactory::_('Joomlapower')->init())
+				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->init())
 				{
 					// set success message
 					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_JOOMLA_POWERS') . '</h1>';
@@ -154,7 +154,7 @@ class ComponentbuilderControllerJoomla_powers extends AdminController
 			$guids = GetHelper::vars('joomla_power', $pks, 'id', 'guid');
 
 			try {
-				if (JoomlaPowerFactory::_('Joomlapower')->reset($guids))
+				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset($guids))
 				{
 					// set success message
 					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
@@ -233,7 +233,7 @@ class ComponentbuilderControllerJoomla_powers extends AdminController
 			$guids = GetHelper::vars('joomla_power', $pks, 'id', 'guid');
 
 			try {
-				if (JoomlaPowerFactory::_('Joomla.Power.Repository')->set($guids))
+				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->items($guids))
 				{
 					// set success message
 					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';

@@ -94,7 +94,7 @@ final class Subform implements SubformInterface
 	/**
 	 * Set a subform items
 	 *
-	 * @param array    $items      The list of items from the subform to set
+	 * @param mixed    $items      The list of items from the subform to set
 	 * @param string   $indexKey   The index key on which the items should be observed as it relates to insert/update/delete.
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $linkValue  The value of the link key in child table.
@@ -102,11 +102,16 @@ final class Subform implements SubformInterface
 	 * @return bool
 	 * @since 3.2.2
 	 */
-	public function set(array $items, string $indexKey, string $linkKey, string $linkValue): bool
+	public function set(mixed $items, string $indexKey, string $linkKey, string $linkValue): bool
 	{
 		$items = $this->process($items, $indexKey, $linkKey, $linkValue);
 
 		$this->purge($items, $indexKey, $linkKey, $linkValue);
+
+		if (empty($items))
+		{
+			return true; // nothing to set (already purged)
+		}
 
 		return $this->items->table($this->getTable())->set(
 			$items, $indexKey
@@ -142,10 +147,19 @@ final class Subform implements SubformInterface
 
 		if ($currentIndexValues !== null)
 		{
-			// Extract the index values from the items array
-			$activeIndexValues = array_values(array_map(function($item) use ($indexKey) {
-				return $item[$indexKey] ?? null;
-			}, $items));
+			// Check if the items array is empty
+			if (empty($items))
+			{
+				// Set activeIndexValues to an empty array if items is empty
+				$activeIndexValues = [];
+			}
+			else
+			{
+				// Extract the index values from the items array
+				$activeIndexValues = array_values(array_map(function($item) use ($indexKey) {
+					return $item[$indexKey] ?? null;
+				}, $items));
+			}
 
 			// Find the index values that are no longer in the items array
 			$inactiveIndexValues = array_diff($currentIndexValues, $activeIndexValues);
@@ -205,7 +219,7 @@ final class Subform implements SubformInterface
 	/**
 	 * Processes an array of arrays based on the specified key.
 	 *
-	 * @param array    $items      Array of arrays to be processed.
+	 * @param mixed    $items      Array of arrays to be processed.
 	 * @param string   $indexKey   The index key on which the items should be observed as it relates to insert/update/delete
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $linkValue  The value of the link key in child table.
@@ -213,8 +227,9 @@ final class Subform implements SubformInterface
 	 * @return array  The processed array of arrays.
 	 * @since 3.2.2
 	 */
-	private function process(array $items, string $indexKey, string $linkKey, string $linkValue): array
+	private function process($items, string $indexKey, string $linkKey, string $linkValue): array
 	{
+		$items = is_array($items) ? $items : [];
 		foreach ($items as &$item)
 		{
 			$value = $item[$indexKey] ?? '';
