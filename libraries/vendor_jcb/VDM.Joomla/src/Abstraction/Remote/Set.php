@@ -71,7 +71,7 @@ abstract class Set implements SetInterface
 	 * All active repos
 	 *
 	 * @var   array
-	 * @since 3.2.0
+	 * @since 3.2.2
 	 **/
 	public array $repos;
 
@@ -79,7 +79,7 @@ abstract class Set implements SetInterface
 	 * Table Name
 	 *
 	 * @var   string
-	 * @since 3.2.1
+	 * @since 3.2.2
 	 */
 	protected string $table;
 
@@ -87,7 +87,7 @@ abstract class Set implements SetInterface
 	 * Area Name
 	 *
 	 * @var   string
-	 * @since 3.2.1
+	 * @since 3.2.2
 	 */
 	protected string $area;
 
@@ -628,7 +628,7 @@ abstract class Set implements SetInterface
 	 * @param object  $item  The item
 	 *
 	 * @return array|null
-	 * @since 3.2.0
+	 * @since 3.2.2
 	 */
 	protected function getIndexItem(object $item): ?array
 	{

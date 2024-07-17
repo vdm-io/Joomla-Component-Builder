@@ -346,7 +346,7 @@ class Power implements PowerInterface
 		if ($this->isGuidValid($guid))
 		{
 			// now we search for it via the super power paths
-			if (empty($this->retry[$guid]) && $this->superpower->load($guid, ['remote', 'local']))
+			if (empty($this->retry[$guid]) && $this->superpower->item($guid, ['remote', 'local']))
 			{
 				// we found it and it was loaded into the database
 				unset($this->state[$guid]);
