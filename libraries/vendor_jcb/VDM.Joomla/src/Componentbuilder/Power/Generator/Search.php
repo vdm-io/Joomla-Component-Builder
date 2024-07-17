@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Power\Generator;
 
 
 use VDM\Joomla\Data\Action\Load as Database;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
+use VDM\Joomla\Componentbuilder\Power\Parser;
 use VDM\Joomla\Componentbuilder\Power\Generator\Bucket;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 

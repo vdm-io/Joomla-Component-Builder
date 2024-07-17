@@ -138,7 +138,7 @@ class PowersController extends AdminController
 
 		if($user->authorise('power.init', 'com_componentbuilder'))
 		{
-			if (PowerFactory::_('Superpower')->init())
+			if (PowerFactory::_('Power.Remote.Get')->init())
 			{
 				// set success message
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_POWERS') . '</h1>';
@@ -208,7 +208,7 @@ class PowersController extends AdminController
 		{
 			$guids = GetHelper::vars('power', $pks, 'id', 'guid');
 
-			if (PowerFactory::_('Superpower')->reset($guids))
+			if (PowerFactory::_('Power.Remote.Get')->reset($guids))
 			{
 				// set success message
 				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';

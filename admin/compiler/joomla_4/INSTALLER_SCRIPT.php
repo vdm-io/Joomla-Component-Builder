@@ -280,6 +280,80 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	}
 
 	/**
+	 * Remove folders with files (with ignore options)
+	 *
+	 * @param   string	    $dir	 The path to the folder to remove.
+	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
+	 *
+	 * @return  bool   True if all specified files/folders are removed, false otherwise.
+	 * @since 3.2.2
+	 */
+	protected function removeFolder(string $dir, ?array $ignore = null): bool
+	{
+		if (!is_dir($dir))
+		{
+			return false;
+		}
+
+		$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+		$it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+		// Remove trailing slash
+		$dir = rtrim($dir, '/');
+
+		foreach ($it as $file)
+		{
+			$filePath = $file->getPathname();
+			$relativePath = str_replace($dir . '/', '', $filePath);
+
+			if ($ignore !== null && in_array($relativePath, $ignore, true))
+			{
+				continue;
+			}
+
+			if ($file->isDir())
+			{
+				Folder::delete($filePath);
+			}
+			else
+			{
+				File::delete($filePath);
+			}
+		}
+
+		// Delete the root folder if there are no ignored files/folders left
+		if ($ignore === null || $this->isDirEmpty($dir, $ignore))
+		{
+			return Folder::delete($dir);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a directory is empty considering ignored files/folders.
+	 *
+	 * @param   string  $dir	 The path to the folder to check.
+	 * @param   array   $ignore  The folders and files to ignore.
+	 *
+	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
+     * @since 3.2.1
+	 */
+	protected function isDirEmpty(string $dir, array $ignore): bool
+	{
+		$it = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+		foreach ($it as $file)
+		{
+			$relativePath = str_replace($dir . '/', '', $file->getPathname());
+			if (!in_array($relativePath, $ignore, true))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Remove the files and folders in the given array from
 	 *
 	 * @return  void
@@ -1095,5 +1169,29 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 				);
 			}
 		}
+	}
+
+	/**
+	 * Ensures that a class in the namespace is available.
+	 * If the class is not already loaded, it attempts to load it via the specified autoloader.
+	 *
+	 * @param string  $className   The fully qualified name of the class to check.
+	 *
+	 * @return bool True if the class exists or was successfully loaded, false otherwise.
+	 * @since 4.0.1
+	 */
+	protected function classExists(string $className): bool
+	{
+		if (!class_exists($className, true))
+		{
+###THREE_POWER_AUTOLOADER###
+
+			// Check again if the class now exists after requiring the autoloader
+			if (!class_exists($className, true))
+			{
+				return false;
+			}
+		}
+		return true;
 	}###INSTALLERMETHODS###
 }

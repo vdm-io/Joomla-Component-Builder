@@ -16,7 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower as Powers;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Grep;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Super as Superpower;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Get;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Injector;
 
@@ -41,8 +41,8 @@ class JoomlaPower implements ServiceProviderInterface
 		$container->alias(Powers::class, 'Joomla.Power')
 			->share('Joomla.Power', [$this, 'getPowers'], true);
 
-		$container->alias(Superpower::class, 'Joomlapower')
-			->share('Joomlapower', [$this, 'getSuperpower'], true);
+		$container->alias(Get::class, 'Joomla.Power.Remote.Get')
+			->share('Joomla.Power.Remote.Get', [$this, 'getRemoteGet'], true);
 
 		$container->alias(Grep::class, 'Joomla.Power.Grep')
 			->share('Joomla.Power.Grep', [$this, 'getGrep'], true);
@@ -69,21 +69,21 @@ class JoomlaPower implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
-			$container->get('Joomlapower')
+			$container->get('Joomla.Power.Remote.Get')
 		);
 	}
 
 	/**
-	 * Get the Superpower
+	 * Get the Remote Get
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Superpower
+	 * @return  Get
 	 * @since 3.2.0
 	 */
-	public function getSuperpower(Container $container): Superpower
+	public function getRemoteGet(Container $container): Get
 	{
-		return new Superpower(
+		return new Get(
 			$container->get('Joomla.Power.Grep'),
 			$container->get('Data.Item')
 		);

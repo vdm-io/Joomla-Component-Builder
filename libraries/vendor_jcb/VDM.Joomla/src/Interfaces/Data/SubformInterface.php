@@ -35,17 +35,17 @@ interface SubformInterface
 	 * @param string   $linkValue  The value of the link key in child table.
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $field      The parent field name of the subform in the parent view.
-	 * @param array    $set        The array SET of the keys of each row in the subform.
+	 * @param array    $get        The array SET of the keys of each row in the subform.
 	 *
 	 * @return array|null   The subform
 	 * @since 3.2.2
 	 */
-	public function get(string $linkValue, string $linkKey, string $field, array $set): ?array;
+	public function get(string $linkValue, string $linkKey, string $field, array $get): ?array;
 
 	/**
 	 * Set a subform items
 	 *
-	 * @param array    $items      The list of items from the subform to set
+	 * @param mixed    $items      The list of items from the subform to set
 	 * @param string   $indexKey   The index key on which the items should be observed as it relates to insert/update/delete.
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $linkValue  The value of the link key in child table.
@@ -53,7 +53,7 @@ interface SubformInterface
 	 * @return bool
 	 * @since 3.2.2
 	 */
-	public function set(array $items, string $indexKey, string $linkKey, string $linkValue): bool;
+	public function set(mixed $items, string $indexKey, string $linkKey, string $linkValue): bool;
 
 	/**
 	 * Get the current active table

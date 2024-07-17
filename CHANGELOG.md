@@ -1,9 +1,8 @@
-# v5.0.1-alpha7
+# v5.0.1-beta1
 
-- Add push options to Joomla Power
-- Complete the Joomla Power Init and Reset features
-- Fix Gitea Contents class functions
-- Last Alpha release (feature block)
+- Fix subform set methods
+- Improved the Joomla Power Push path
+- Fix the metadata, metadesc, metakey database issue
 
 # v5.0.1-alpha
 
@@ -19,6 +18,10 @@
 - Add new subform classes
 - Fix registry class methods return type
 - Update all list and custom fields to use the new layouts
+- Add push options to Joomla Power
+- Complete the Joomla Power Init and Reset features
+- Fix Gitea Contents class functions
+- Last Alpha release (feature block)
 
 # v5.0.0
 

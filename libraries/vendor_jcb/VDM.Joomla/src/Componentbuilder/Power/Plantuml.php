@@ -9,11 +9,11 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Power;
+namespace VDM\Joomla\Componentbuilder\Power;
 
 
 /**
- * Compiler Power Plantuml Builder
+ * Power Plantuml Builder
  * @since 3.2.0
  */
 class Plantuml

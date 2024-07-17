@@ -1558,7 +1558,6 @@ final class Table extends BaseTable implements Tableinterface
 				'tab_name' => 'publishing',
 				'db' => [
 					'type' => 'TEXT',
-					'default' => '',
 				],
 			],
 			'metadesc' => [
@@ -1570,7 +1569,6 @@ final class Table extends BaseTable implements Tableinterface
 				'tab_name' => 'publishing',
 				'db' => [
 					'type' => 'TEXT',
-					'default' => '',
 				],
 			],
 			'metadata' => [
@@ -1582,7 +1580,6 @@ final class Table extends BaseTable implements Tableinterface
 				'tab_name' => 'publishing',
 				'db' => [
 					'type' => 'TEXT',
-					'default' => '',
 				],
 			],
 		],

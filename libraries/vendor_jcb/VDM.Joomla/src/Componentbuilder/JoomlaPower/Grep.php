@@ -13,8 +13,6 @@ namespace VDM\Joomla\Componentbuilder\JoomlaPower;
 
 
 use Joomla\CMS\Language\Text;
-use VDM\Joomla\Utilities\FileHelper;
-use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Interfaces\GrepInterface;
 use VDM\Joomla\Abstraction\Grep as ExtendingGrep;
 
@@ -24,7 +22,7 @@ use VDM\Joomla\Abstraction\Grep as ExtendingGrep;
  * 
  *    The Grep feature will try to find your joomla power in the repositories listed in the global
  *    Options of JCB in the super powers tab, and if it can't be found there will try the global core
- *    Super powers of JCB. All searches are performed according the the [algorithm:cascading]
+ *    Super powers of JCB. All searches are performed according the [algorithm:cascading]
  *    See documentation for more details: https://git.vdm.dev/joomla/super-powers/wiki
  * 
  * @since 3.2.1
@@ -40,76 +38,19 @@ final class Grep extends ExtendingGrep implements GrepInterface
 	protected array $order = ['remote'];
 
 	/**
-	 * Load the remote repository index of powers
+	 * Search for a remote item
 	 *
-	 * @param object    $path    The repository path details
-	 *
-	 * @return void
-	 * @since 3.2.0
-	 */
-	protected function remoteIndex(object &$path): void
-	{
-		if (isset($path->index))
-		{
-			return;
-		}
-
-		$path->index = null;
-
-		// update the branch
-		$branch_field = $this->getBranchField();
-		$branch = $path->{$branch_field} ?? $path->read_branch ?? 'master';
-
-		try
-		{
-			$this->contents->load_($path->base ?? null, $path->token ?? null);
-			$source = $this->contents->metadata($path->organisation, $path->repository, 'src', $branch);
-			if ($source && is_array($source))
-			{
-				$path->index = new \stdClass();
-				foreach ($source as $index)
-				{
-					if (is_object($index) && isset($index->name))
-					{
-						$path->index->{$index->name} = $index;
-					}
-				}
-			}
-
-			$this->contents->reset_();
-		}
-		catch (\Exception $e)
-		{
-			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PJOOMLA_POWERB_REPOSITORY_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path->path, $e->getMessage()),
-				'Error'
-			);
-		}
-	}
-
-	/**
-	 * Search for a remote power
-	 *
-	 * @param string    $guid    The global unique id of the power
+	 * @param string    $guid    The global unique id of the item
 	 *
 	 * @return object|null
 	 * @since 3.2.0
 	 */
 	protected function searchRemote(string $guid): ?object
 	{
-		// we can only search if we have paths
-		if (is_array($this->paths))
+		// check if it exists remotely
+		if (($path = $this->existsRemotely($guid)) !== null)
 		{
-			foreach ($this->paths as $path)
-			{
-				// get local index
-				$this->remoteIndex($path);
-
-				if (!empty($path->index) && isset($path->index->{$guid}))
-				{
-					return $this->getRemote($path, $guid);
-				}
-			}
+			return $this->getRemote($path, $guid);
 		}
 
 		return null;
@@ -133,11 +74,12 @@ final class Grep extends ExtendingGrep implements GrepInterface
 		}
 
 		// get the branch name
-		$branch_field = $this->getBranchField();
-		$branch = $path->{$branch_field} ?? $path->read_branch ?? 'master';
+		$branch = $this->getBranchName($path);
+
+		// load the base and token if set
+		$this->contents->load_($path->base ?? null, $path->token ?? null);
 
 		// get the settings
-		$this->contents->load_($path->base ?? null, $path->token ?? null);
 		if (($power = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->path . '/item.json', $branch)) !== null &&
 			isset($power->guid))
 		{
@@ -145,56 +87,65 @@ final class Grep extends ExtendingGrep implements GrepInterface
 			$path_guid = $path->guid ?? null;
 			if ($path_guid !== null)
 			{
+				// get the Settings meta
 				if (($meta = $this->contents->metadata($path->organisation, $path->repository, $path->index->{$guid}->path . '/item.json', $branch)) !== null &&
 					isset($meta->sha))
 				{
 					if (isset($power->params) && is_object($power->params) &&
 						isset($power->params->source) && is_array($power->params->source))
 					{
-						$power->params->source[$path_guid] = $meta->sha;
+						$power->params->source[$path_guid . '-settings'] = $meta->sha;
 					}
 					else
 					{
-						$power->params = (object)[
-							'source' => [$path_guid => $meta->sha]
+						$power->params = (object) [
+							'source' => [$path_guid . '-settings' => $meta->sha]
+						];
+					}
+				}
+				// get the README meta
+				if (($meta = $this->contents->metadata($path->organisation, $path->repository, $path->index->{$guid}->path . '/README.md', $branch)) !== null &&
+					isset($meta->sha))
+				{
+					if (isset($power->params) && is_object($power->params) &&
+						isset($power->params->source) && is_array($power->params->source))
+					{
+						$power->params->source[$path_guid . '-readme'] = $meta->sha;
+					}
+					else
+					{
+						$power->params = (object) [
+							'source' => [$path_guid . '-readme' => $meta->sha]
 						];
 					}
 				}
 			}
 		}
+
+		// reset back to the global base and token
 		$this->contents->reset_();
 
 		return $power;
 	}
 
 	/**
-	 * Load the remote file
+	 * Set repository messages and errors based on given conditions.
 	 *
-	 * @param string         $organisation   The repository organisation
-	 * @param string         $repository     The repository name
-	 * @param string         $path           The repository path to file
-	 * @param string|null    $branch         The repository branch name
+	 * @param string       $message       The message to set (if error)
+	 * @param string       $path          Path value
+	 * @param string       $repository    Repository name
+	 * @param string       $organisation  Organisation name
+	 * @param string|null  $base          Base URL
 	 *
-	 * @return mixed
+	 * @return void
 	 * @since 3.2.0
 	 */
-	protected function loadRemoteFile(string $organisation, string $repository, string $path, ?string $branch)
+	protected function setRemoteIndexMessage(string $message, string $path, string $repository, string $organisation, ?string $base): void
 	{
-		try
-		{
-			$data = $this->contents->get($organisation, $repository, $path, $branch);
-		}
-		catch (\Exception $e)
-		{
-			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path, $e->getMessage()),
-				'Error'
-			);
-
-			return null;
-		}
-
-		return $data;
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_PJOOMLA_POWERB_REPOSITORY_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path, $message),
+			'Error'
+		);
 	}
 }
 

@@ -16,9 +16,9 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentMulti as Contents;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Parser;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Repo\Readme as RepoReadme;
-use VDM\Joomla\Componentbuilder\Compiler\Power\Repos\Readme as ReposReadme;
+use VDM\Joomla\Componentbuilder\Power\Parser;
+use VDM\Joomla\Interfaces\Readme\ItemInterface as ItemReadme;
+use VDM\Joomla\Interfaces\Readme\MainInterface as MainReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Utilities\StringHelper;
@@ -75,18 +75,18 @@ class Infusion
 	/**
 	 * The Readme Class.
 	 *
-	 * @var   RepoReadme
+	 * @var   ItemReadme
 	 * @since 3.2.0
 	 */
-	protected RepoReadme $reporeadme;
+	protected ItemReadme $itemreadme;
 
 	/**
 	 * The Readme Class.
 	 *
-	 * @var   ReposReadme
+	 * @var   MainReadme
 	 * @since 3.2.0
 	 */
-	protected ReposReadme $reposreadme;
+	protected MainReadme $mainreadme;
 
 	/**
 	 * The Placeholder Class.
@@ -165,16 +165,16 @@ class Infusion
 	 * @param Content       $content       The ContentOne Class.
 	 * @param Contents      $contents      The ContentMulti Class.
 	 * @param Parser        $parser        The Parser Class.
-	 * @param RepoReadme    $reporeadme    The Readme Class.
-	 * @param ReposReadme   $reposreadme   The Readme Class.
+	 * @param ItemReadme    $itemreadme    The Readme Class.
+	 * @param MainReadme    $mainreadme    The Readme Class.
 	 * @param Placeholder   $placeholder   The Placeholder Class.
 	 * @param Event         $event         The EventInterface Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Power $power, Content $content,
-		Contents $contents, Parser $parser, RepoReadme $reporeadme,
-		ReposReadme $reposreadme, Placeholder $placeholder,
+		Contents $contents, Parser $parser, ItemReadme $itemreadme,
+		MainReadme $mainreadme, Placeholder $placeholder,
 		Event $event)
 	{
 		$this->config = $config;
@@ -182,8 +182,8 @@ class Infusion
 		$this->content = $content;
 		$this->contents = $contents;
 		$this->parser = $parser;
-		$this->reporeadme = $reporeadme;
-		$this->reposreadme = $reposreadme;
+		$this->itemreadme = $itemreadme;
+		$this->mainreadme = $mainreadme;
 		$this->placeholder = $placeholder;
 		$this->event = $event;
 	}
@@ -273,7 +273,7 @@ class Infusion
 				}
 
 				// POWERREADME
-				$this->contents->set("{$key}|POWERREADME", $this->reposreadme->get($powers));
+				$this->contents->set("{$key}|POWERREADME", $this->mainreadme->get($powers));
 
 				// sort all powers
 				$this->sortPowers($powers);
@@ -355,7 +355,7 @@ class Infusion
 					$this->contents->set("{$power->key}|POWERLINKER", $this->linker($power));
 
 					// POWERLINKER
-					$this->contents->set("{$power->key}|POWERREADME", $this->reporeadme->get($power));
+					$this->contents->set("{$power->key}|POWERREADME", $this->itemreadme->get($power));
 
 					// Trigger Event: jcb_ce_onAfterInfusePowerData
 					$this->event->trigger(
