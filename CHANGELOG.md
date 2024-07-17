@@ -1,4 +1,8 @@
-# v4.0.1-beta1
+# v4.0.1-beta2
+
+- Fix function mismatch call in the compiler power class.
+
+# v4.0.1-beta
 
 - Fix subform set methods
 - Improved the Joomla Power Push path

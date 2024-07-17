@@ -27,7 +27,7 @@ final class Set extends ExtendingSet implements SetInterface
 	 * Table Name
 	 *
 	 * @var    string
-	 * @since 3.2.1
+	 * @since 3.2.2
 	 */
 	protected string $table = 'joomla_power';
 
@@ -35,7 +35,7 @@ final class Set extends ExtendingSet implements SetInterface
 	 * Area Name
 	 *
 	 * @var    string
-	 * @since 3.2.1
+	 * @since 3.2.2
 	 */
 	protected string $area = 'Joomla Power';
 
