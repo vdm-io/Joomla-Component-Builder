@@ -14,7 +14,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\InstallerScriptInterface;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Version;
 use Joomla\CMS\HTML\HTMLHelper as Html;
@@ -35,7 +34,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * The CMS Application.
 	 *
-	 * @var   CMSApplication
 	 * @since 4.4.2
 	 */
 	protected $app;
@@ -3269,7 +3267,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 5.0.1-beta3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 5.0.1-beta4 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
