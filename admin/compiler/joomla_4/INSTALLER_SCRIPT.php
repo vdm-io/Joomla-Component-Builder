@@ -19,7 +19,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\InstallerScriptInterface;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Version;
 use Joomla\CMS\HTML\HTMLHelper as Html;
@@ -39,7 +38,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * The CMS Application.
 	 *
-	 * @var   CMSApplication
 	 * @since 4.4.2
 	 */
 	protected $app;

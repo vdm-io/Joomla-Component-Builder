@@ -13,7 +13,6 @@ namespace VDM\Joomla\Abstraction;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
 use VDM\Joomla\Interfaces\SchemaInterface as Schema;
 use VDM\Joomla\Interfaces\Tableinterface as Table;
 use VDM\Joomla\Utilities\ClassHelper;
@@ -46,22 +45,21 @@ abstract class SchemaChecker implements SchemaCheckerInterface
 	/**
 	 * Application object.
 	 *
-	 * @var    CMSApplication
 	 * @since 3.2.2
 	 **/
-	protected CMSApplication $app;
+	protected  $app;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Schema|null           $schema   The Schema Class.
-	 * @param Table|null            $table    The Table Class.
-	 * @param CMSApplication|null   $app      The app object.
+	 * @param Schema|null                    $schema   The Schema Class.
+	 * @param Table|null                     $table    The Table Class.
+	 * @param                                      $app      The app object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.2
 	 */
-	public function __construct(?Schema $schema = null, ?Table $table = null, ?CMSApplication $app = null)
+	public function __construct(?Schema $schema = null, ?Table $table = null, $app = null)
 	{
 		$this->schema = $schema;
 		$this->table = $table;
