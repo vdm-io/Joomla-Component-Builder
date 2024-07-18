@@ -116,7 +116,7 @@
 			type="subform"
 			name="settings"
 			label="COM_COMPONENTBUILDER_JOOMLA_POWER_SETTINGS_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
+			layout="joomla.form.field.subform.repeatable"
 			multiple="true"
 			buttons="add,remove,move"
 			icon="list"
