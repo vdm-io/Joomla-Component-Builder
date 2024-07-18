@@ -94,7 +94,7 @@ abstract class Get implements GetInterface
 		{
 			foreach($items as $guid)
 			{
-				if ($this->item->table($this->getTable())->value($guid) !== null &&
+				if ($this->item->table($this->getTable())->value($guid) === null &&
 					($item = $this->grep->get($guid, ['remote'])) !== null)
 				{
 					$this->item->set($item);

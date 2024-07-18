@@ -45,8 +45,8 @@ final class Load extends Model implements ModelInterface
 			$table = $this->getTable();
 		}
 
-		// check if this is a valid table
-		if (($store = $this->table->get($table, $field, 'store')) !== null)
+		// check if this is a valid table (don't touch null)
+		if ($value !== null && ($store = $this->table->get($table, $field, 'store')) !== null)
 		{
 			// open the value based on the store method
 			switch($store)

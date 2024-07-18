@@ -1,12 +1,14 @@
-# v3.2.2-beta2
+# v3.2.2-beta3
 
-- Fix function mismatch call in the compiler power class.
+- Fix init feature to only add missing powers
+- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
 
 # v3.2.2-beta
 
 - Fix subform set methods
 - Improved the Joomla Power Push path
 - Fix the metadata, metadesc, metakey database issue
+- Fix function mismatch call in the compiler power class.
 
 # v3.2.2-alpha
 
