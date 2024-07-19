@@ -1,6 +1,6 @@
-# v3.2.2-beta4
+# v3.2.2-beta5
 
-- Fix app instances (mismatch) in the install script and schema class when installing from CLI
+- Add option to use placeholders in Joomla Power namespaces.
 
 # v3.2.2-beta
 
@@ -10,6 +10,7 @@
 - Fix function mismatch call in the compiler power class.
 - Fix init feature to only add missing powers
 - Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
+- Fix app instances (mismatch) in the install script and schema class when installing from CLI
 
 # v3.2.2-alpha
 
