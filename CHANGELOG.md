@@ -1,6 +1,6 @@
-# v3.2.2-beta5
+# v3.2.2-rc1
 
-- Add option to use placeholders in Joomla Power namespaces.
+- Final testing for stable release!
 
 # v3.2.2-beta
 
@@ -11,6 +11,7 @@
 - Fix init feature to only add missing powers
 - Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
 - Fix app instances (mismatch) in the install script and schema class when installing from CLI
+- Add option to use placeholders in Joomla Power namespaces.
 
 # v3.2.2-alpha
 
