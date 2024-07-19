@@ -345,7 +345,9 @@ final class JoomlaPower implements PowerInterface
 	 */
 	private function setNamespaceAndType(string $guid, array $namespace): void
 	{
-		$this->active[$guid]->namespace = $namespace['namespace'];
+		$this->active[$guid]->namespace = $this->placeholder->update_(
+			$namespace['namespace']
+		);
 		$this->active[$guid]->type = $namespace['type'] ?? 'class';
 	}
 
