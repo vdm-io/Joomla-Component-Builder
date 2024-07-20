@@ -1,19 +1,4 @@
-# v3.2.2-rc1
-
-- Final testing for stable release!
-
-# v3.2.2-beta
-
-- Fix subform set methods
-- Improved the Joomla Power Push path
-- Fix the metadata, metadesc, metakey database issue
-- Fix function mismatch call in the compiler power class.
-- Fix init feature to only add missing powers
-- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
-- Fix app instances (mismatch) in the install script and schema class when installing from CLI
-- Add option to use placeholders in Joomla Power namespaces.
-
-# v3.2.2-alpha
+# v3.2.2
 
 - Fix auto build from SQL in Joomla 4 and 5.
 - Fix permission issue for admin views.
@@ -28,7 +13,15 @@
 - Add push options to Joomla Power
 - Complete the Joomla Power Init and Reset features
 - Fix Gitea Contents class functions
-- Last Alpha release (feature block)
+- Fix subform set methods
+- Improved the Joomla Power Push path
+- Fix the metadata, metadesc, metakey database issue
+- Fix function mismatch call in the compiler power class.
+- Fix init feature to only add missing powers
+- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
+- Fix app instances (mismatch) in the install script and schema class when installing from CLI
+- Add option to use placeholders in Joomla Power namespaces.
+- Fix subform layout of uikit in JCB
 
 # v3.2.1
 
