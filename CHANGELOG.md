@@ -1,19 +1,4 @@
-# v4.0.1-rc1
-
-- Final testing for stable release!
-
-# v4.0.1-beta
-
-- Fix subform set methods
-- Improved the Joomla Power Push path
-- Fix the metadata, metadesc, metakey database issue
-- Fix function mismatch call in the compiler power class.
-- Fix init feature to only add missing powers
-- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
-- Fix app instances (mismatch) in the install script and schema class when installing from CLI
-- Add option to use placeholders in Joomla Power namespaces.
-
-# v4.0.1-alpha
+# v4.0.1
 
 - Fix auto build from SQL in Joomla 4.
 - Fix permission issue for admin views.
@@ -30,7 +15,15 @@
 - Add push options to Joomla Power
 - Complete the Joomla Power Init and Reset features
 - Fix Gitea Contents class functions
-- Last Alpha release (feature block)
+- Fix subform set methods
+- Improved the Joomla Power Push path
+- Fix the metadata, metadesc, metakey database issue
+- Fix function mismatch call in the compiler power class.
+- Fix init feature to only add missing powers
+- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
+- Fix app instances (mismatch) in the install script and schema class when installing from CLI
+- Add option to use placeholders in Joomla Power namespaces.
+- Fix subform layout of uikit in JCB
 
 # v4.0.0
 
@@ -76,28 +69,27 @@
 - Add the BaseDatabaseModel use statement to custom site view controller. #1119
 - Fix the customfolderlist field. #1120
 
-# v3.2.1
+# v3.2.2
 
-- Add power path override option on component level.
-- Fix the sql build feature. #1032
-- Add view list and single name fix.
-- Add component code name fix.
-- Add reset list of powers.
-- Fix missing Factory class in plugin. #1102
-- Fix plugin code display when methods and properties are missing.
-- Add Joomla powers for namespace dynamic management.
-- Add fallback option to ensure that all JCB tables and fields exist.
-- Move the powers autoloader to its own file.
-- Fix the media field size limitation. #1109
-- Add dynamic datatype update to schema field check.
-- Fix version_update column size.
-- Improved the Schema Table update engine.
-- Improved the Schema Table update engine (more)
-- Fix autoloader timing, and loading.
-- Implement the Joomla Powers in JCB code, to move away from JClasses.
-- Remove many of the SQL updates, to only use the Schema updates of table columns to avoid collusion.
-- Fix the admin.css file loading on dashboard. #1112
-- Fix the missing model call. #1114
-- Fix the wrong $date call. #1115
-- Add the BaseDatabaseModel use statement to custom site view controller. #1119
-- Fix the customfolderlist field. #1120
+- Fix auto build from SQL in Joomla 4 and 5.
+- Fix permission issue for admin views.
+- Add extending options to interfaces.
+- Update the Schema class to also update null mismatching if needed
+- Add repositories for better integration with gitea
+- Refactored the Data classes
+- Add new Data classes
+- Add new subform classes
+- Fix registry class methods return type
+- Update all list and custom fields to use the new layouts
+- Add push options to Joomla Power
+- Complete the Joomla Power Init and Reset features
+- Fix Gitea Contents class functions
+- Fix subform set methods
+- Improved the Joomla Power Push path
+- Fix the metadata, metadesc, metakey database issue
+- Fix function mismatch call in the compiler power class.
+- Fix init feature to only add missing powers
+- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
+- Fix app instances (mismatch) in the install script and schema class when installing from CLI
+- Add option to use placeholders in Joomla Power namespaces.
+- Fix subform layout of uikit in JCB
