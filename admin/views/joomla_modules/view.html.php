@@ -159,11 +159,6 @@ class ComponentbuilderViewJoomla_modules extends HtmlView
 			// add Get Snippets button.
 			ToolbarHelper::custom('joomla_modules.getSnippets', 'search custom-button-getsnippets', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
 		}
-		if ($this->user->authorise('joomla_module.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('joomla_modules.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('joomla_module.import'))
 		{

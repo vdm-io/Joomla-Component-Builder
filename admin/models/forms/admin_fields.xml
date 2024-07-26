@@ -126,7 +126,7 @@
 					name="field"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FIELD_DESCRIPTION"
-					class="list_class fieldFull"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					required="true"
 					button="false"
@@ -137,7 +137,8 @@
 					name="list"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_LIST_DESCRIPTION"
-					class="fieldMedium count-the-items1235"
+					class="count-the-items1235"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					onchange="checkAdminBehaviour(this)">
 					<!-- Option Set. -->
@@ -212,7 +213,7 @@
 					name="filter"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_FILTER_DESCRIPTION"
-					class="fieldSmall"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default=""
 					onchange="explainFilterBehaviour(this)">
@@ -240,7 +241,7 @@
 					name="tab"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_TAB_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_TAB_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default="1"
 					button="false"
@@ -251,7 +252,7 @@
 					name="alignment"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIGNMENT_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ALIGNMENT_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					filter="INT"
 					default="1">
@@ -289,7 +290,7 @@
 					name="permission"
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_PERMISSION_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="true">
 					<!-- Option Set. -->
 					<option value="1">

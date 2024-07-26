@@ -1,4 +1,11 @@
-# v3.2.3-alpha1
+# v3.2.3-alpha2
+
+- Fix missing scripts and styles fields and methods in the site admin view model
+- Update subform field layout across JCB for cleaner look
+- Remove expansion feature
+- Fix helper area
+
+# v3.2.3-alpha
 
 - Fix site view form missing classes in J4+
 - Fix permissions tab in items in J4+

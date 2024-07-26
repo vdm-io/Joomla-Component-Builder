@@ -137,7 +137,7 @@
 					name="customadminview"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_CUSTOMADMINVIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_CUSTOMADMINVIEW_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default=""
 					required="true"
@@ -149,7 +149,8 @@
 					name="icomoon"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ICOMOON_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ICOMOON_DESCRIPTION"
-					class="list_class fieldMedium icomoon342"
+					class="icomoon342"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					onchange="getIconImage(this);">
 					<!-- Option Set. -->
@@ -630,7 +631,7 @@
 					name="adminviews"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ADMINVIEWS_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_ADMINVIEWS_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="true"
 					button="false"
 				/>
@@ -640,7 +641,7 @@
 					name="before"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_BEFORE_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_VIEWS_BEFORE_DESCRIPTION"
-					class="list_class fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					button="false"
 				/>

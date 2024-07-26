@@ -169,11 +169,6 @@ class ComponentbuilderViewJoomla_components extends HtmlView
 			// add Import JCB Packages button.
 			ToolbarHelper::custom('joomla_components.smartImport', 'upload custom-button-smartimport', '', 'COM_COMPONENTBUILDER_IMPORT_JCB_PACKAGES', false);
 		}
-		if ($this->user->authorise('joomla_component.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('joomla_components.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
 		if ($this->user->authorise('joomla_component.backup', 'com_componentbuilder'))
 		{
 			// add Backup button.

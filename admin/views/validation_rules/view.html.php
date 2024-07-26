@@ -154,11 +154,6 @@ class ComponentbuilderViewValidation_rules extends HtmlView
 				ToolbarHelper::custom('validation_rules.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
-		if ($this->user->authorise('validation_rule.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('validation_rules.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('validation_rule.import'))
 		{

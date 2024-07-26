@@ -39,7 +39,7 @@ class JFormFieldAdminsviews extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','adminviews_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
@@ -52,7 +52,7 @@ class JFormFieldAdminsviews extends JFormFieldList
 		{
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->id, $item->adminviews_system_name);
+				$options[] = Html::_('select.option', $item->id, $item->adminviews_system_name);
 			}
 		}
 

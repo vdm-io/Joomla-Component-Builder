@@ -138,7 +138,7 @@
 					name="siteview"
 					label="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_SITEVIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_SITE_VIEWS_SITEVIEW_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					required="true"
 					button="false"

@@ -149,11 +149,6 @@ class ComponentbuilderViewPowers extends HtmlView
 				ToolbarHelper::trash('powers.trash');
 			}
 		}
-		if ($this->user->authorise('power.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('powers.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
 		if ($this->user->authorise('power.init', 'com_componentbuilder'))
 		{
 			// add Init button.

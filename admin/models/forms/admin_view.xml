@@ -688,7 +688,7 @@
 					name="adminview"
 					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ADMINVIEW_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default=""
 					required="true"
@@ -1359,7 +1359,8 @@
 					name="icomoon"
 					label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICOMOON_DESCRIPTION"
-					class="list_class fieldMedium icomoon342"
+					class="icomoon342"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					onchange="getIconImage(this);">
 					<!-- Option Set. -->

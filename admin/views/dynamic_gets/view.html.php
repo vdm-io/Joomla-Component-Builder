@@ -154,11 +154,6 @@ class ComponentbuilderViewDynamic_gets extends HtmlView
 				ToolbarHelper::custom('dynamic_gets.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
-		if ($this->user->authorise('dynamic_get.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('dynamic_gets.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('dynamic_get.import'))
 		{

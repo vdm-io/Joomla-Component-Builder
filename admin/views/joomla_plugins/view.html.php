@@ -149,11 +149,6 @@ class ComponentbuilderViewJoomla_plugins extends HtmlView
 				ToolbarHelper::trash('joomla_plugins.trash');
 			}
 		}
-		if ($this->user->authorise('joomla_plugin.run_expansion', 'com_componentbuilder'))
-		{
-			// add Run Expansion button.
-			ToolbarHelper::custom('joomla_plugins.runExpansion', 'expand-2 custom-button-runexpansion', '', 'COM_COMPONENTBUILDER_RUN_EXPANSION', false);
-		}
 		if ($this->user->authorise('joomla_plugin.get_boilerplate', 'com_componentbuilder'))
 		{
 			// add Get Boilerplate button.
