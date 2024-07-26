@@ -367,6 +367,7 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Form\FormHelper;';
 				$headers[] = 'use Joomla\CMS\Session\Session;';
 				$headers[] = 'use Joomla\CMS\Uri\Uri;';
+				$headers[] = 'use Joomla\CMS\User\User;';
 				$headers[] = 'use Joomla\CMS\Component\ComponentHelper;';
 				$headers[] = 'use Joomla\CMS\HTML\HTMLHelper as Html;';
 				$headers[] = 'use Joomla\CMS\Layout\FileLayout;';
@@ -402,6 +403,7 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;';
 				$headers[] = 'use Joomla\CMS\Plugin\PluginHelper;';
 				$headers[] = 'use Joomla\CMS\Toolbar\ToolbarHelper;';
+				$headers[] = 'use Joomla\CMS\User\User;';
 				$headers[] = 'use Joomla\CMS\Document\Document;';
 				$headers[] = "use {$this->NamespacePrefix}\\Component\\{$this->ComponentNamespace}\\{$target}\\Helper\\HeaderCheck;";
 				break;

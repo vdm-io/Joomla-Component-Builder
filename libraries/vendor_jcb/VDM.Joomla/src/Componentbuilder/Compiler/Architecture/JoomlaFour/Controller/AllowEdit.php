@@ -106,7 +106,7 @@ final class AllowEdit implements AllowEditInterface
 
 		// prepare custom permission script
 		$customAllow = $this->dispenser->get(
-			'php_allowedit', $nameSingleCode, '', null, true
+			'php_allowedit', $nameSingleCode
 		);
 
 		if ($this->category->exists("{$nameListCode}"))

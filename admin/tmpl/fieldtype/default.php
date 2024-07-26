@@ -108,14 +108,10 @@ defined('_JEXEC') or die;
 	<?php echo Html::_('uitab.addTab', 'fieldtypeTab', 'permissions', Text::_('COM_COMPONENTBUILDER_FIELDTYPE_PERMISSION', true)); ?>
 		<div class="row">
 			<div class="col-md-12">
-				<fieldset class="adminform">
-					<div class="adminformlist">
-					<?php foreach ($this->form->getFieldset('accesscontrol') as $field): ?>
-						<div>
-							<?php echo $field->label; echo $field->input;?>
-						</div>
-						<div class="clearfix"></div>
-					<?php endforeach; ?>
+				<fieldset id="fieldset-rules" class="options-form">
+					<legend><?php echo Text::_('COM_COMPONENTBUILDER_FIELDTYPE_PERMISSION'); ?></legend>
+					<div>
+						<?php echo $this->form->getInput('rules'); ?>
 					</div>
 				</fieldset>
 			</div>

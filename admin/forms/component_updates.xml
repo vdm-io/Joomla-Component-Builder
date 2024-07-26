@@ -250,7 +250,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_TARGET_VERSION_LABEL"
 					size="10"
 					maxlength="50"
-					default="3.*"
+					default="5\.[012]"
 					description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_UPDATE_TARGET_VERSION_DESCRIPTION"
 					class="text_area"
 					filter="string"

@@ -1,3 +1,11 @@
+# v4.0.2-alpha1
+
+- Fix site view form missing classes in J4+
+- Fix permissions tab in items in J4+
+- Fix site display controller checkEditId function in J4+
+- Add class methods to the HtmlView classes in J4+
+- Fix broken toolbar call in HtmlView in J4+
+
 # v4.0.1
 
 - Fix auto build from SQL in Joomla 4.

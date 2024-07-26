@@ -28,6 +28,38 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\View\###
 class HtmlView extends BaseHtmlView
 {
 	/**
+	 * The toolbar object
+	 *
+	 * @var    Toolbar
+	 * @since  3.10.11
+	 */
+	public Toolbar $toolbar;
+
+	/**
+	 * The styles url array
+	 *
+	 * @var    array
+	 * @since  3.10.11
+	 */
+	protected array $styles;
+
+	/**
+	 * The scripts url array
+	 *
+	 * @var    array
+	 * @since  3.10.11
+	 */
+	protected array $scripts;
+
+	/**
+	 * The user object.
+	 *
+	 * @var    Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power
+	 * @since  3.10.11
+	 */
+	public Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power $user;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -41,10 +73,10 @@ class HtmlView extends BaseHtmlView
 		$this->app ??= Factory::getApplication();
 		$this->params = $this->app->getParams();
 		$this->menu = $this->app->getMenu()->getActive();
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
+		$this->styles = $this->get('Styles') ?? [];
+		$this->scripts = $this->get('Scripts') ?? [];
 		// get the user object
-		$this->user ??= $this->app->getIdentity();###SITE_DIPLAY_METHOD###
+		$this->user ??= $this->getCurrentUser();###SITE_DIPLAY_METHOD###
 	}###SITE_EXTRA_DIPLAY_METHODS###
 
 	/**
@@ -82,8 +114,9 @@ class HtmlView extends BaseHtmlView
 		{
 			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
+
 		// now initiate the toolbar
-		$this->toolbar = Toolbar::getInstance();
+		$this->toolbar ??= Toolbar::getInstance();
 	}###SITE_GET_MODULE###
 
 	/**
