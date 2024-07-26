@@ -26,6 +26,7 @@ use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\User\User;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -37,6 +38,62 @@ use VDM\Joomla\Utilities\StringHelper;
  */
 class HtmlView extends BaseHtmlView
 {
+	/**
+	 * The items from the model
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $items;
+
+	/**
+	 * The state object
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $state;
+
+	/**
+	 * The styles url array
+	 *
+	 * @var    array
+	 * @since  5.0.0
+	 */
+	protected array $styles;
+
+	/**
+	 * The scripts url array
+	 *
+	 * @var    array
+	 * @since  5.0.0
+	 */
+	protected array $scripts;
+
+	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
+	 * The return here base64 url
+	 *
+	 * @var    string
+	 * @since  3.10.11
+	 */
+	public string $return_here;
+
+	/**
+	 * The user object.
+	 *
+	 * @var    User
+	 * @since  3.10.11
+	 */
+	public User $user;
+
 	/**
 	 * Components_custom_admin_menus view display method
 	 *
@@ -53,7 +110,7 @@ class HtmlView extends BaseHtmlView
 		$this->state = $this->get('State');
 		$this->styles = $this->get('Styles');
 		$this->scripts = $this->get('Scripts');
-		$this->user ??= Factory::getApplication()->getIdentity();
+		$this->user ??= $this->getCurrentUser();
 		// Load the filter form from xml.
 		$this->filterForm = $this->get('FilterForm');
 		// Load the active filters.

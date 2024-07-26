@@ -28,6 +28,54 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\View\###
 class HtmlView extends BaseHtmlView
 {
 	/**
+	 * The items from the model
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $items;
+
+	/**
+	 * The toolbar object
+	 *
+	 * @var    Toolbar
+	 * @since  3.10.11
+	 */
+	public Toolbar $toolbar;
+
+	/**
+	 * The styles url array
+	 *
+	 * @var    array
+	 * @since  5.0.0
+	 */
+	protected array $styles;
+
+	/**
+	 * The scripts url array
+	 *
+	 * @var    array
+	 * @since  5.0.0
+	 */
+	protected array $scripts;
+
+	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
+	 * The user object.
+	 *
+	 * @var    Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power
+	 * @since  3.10.11
+	 */
+	public Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power $user;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -82,6 +130,7 @@ class HtmlView extends BaseHtmlView
 		{
 			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
+
 		// now initiate the toolbar
 		$this->toolbar = Toolbar::getInstance();
 	}###SITE_GET_MODULE###

@@ -24,6 +24,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Filesystem\File;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\User\User;
 use Joomla\CMS\Session\Session;
 
 // No direct access to this file
@@ -36,6 +37,38 @@ use Joomla\CMS\Session\Session;
  */
 class HtmlView extends BaseHtmlView
 {
+	/**
+	 * The styles url array
+	 *
+	 * @var    array
+	 * @since  5.0.0
+	 */
+	protected array $styles;
+
+	/**
+	 * The scripts url array
+	 *
+	 * @var    array
+	 * @since  5.0.0
+	 */
+	protected array $scripts;
+
+	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
+	 * The user object.
+	 *
+	 * @var    User
+	 * @since  3.10.11
+	 */
+	public User $user;
+
 	/**
 	 * Display the view
 	 *
@@ -51,11 +84,11 @@ class HtmlView extends BaseHtmlView
 		// get the application
 		$this->app ??= Factory::getApplication();
 		// get the user object
-		$this->user ??= $this->app->getIdentity();
+		$this->user ??= $this->getCurrentUser();
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('get_snippets');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
+		$this->styles = $this->get('Styles') ?? [];
+		$this->scripts = $this->get('Scripts') ?? [];
 		// Initialise variables.
 		$this->items = $this->get('Items');
 

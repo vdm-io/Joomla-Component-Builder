@@ -386,8 +386,7 @@ class Infusion extends Interpretation
 					)
 					&& $view['edit_create_site_view'] > 0)
 				{
-					$site_edit_view_array[] = Indent::_(4) . "'"
-						. $nameSingleCode . "'";
+					$site_edit_view_array[$nameSingleCode] = $nameListCode;
 					CFactory::_('Config')->lang_target = 'both';
 					// insure site view does not get removed
 					CFactory::_('Config')->remove_site_edit_folder = false;
@@ -1501,9 +1500,19 @@ class Infusion extends Interpretation
 				PHP_EOL . implode("," . PHP_EOL, $viewarray)
 			);
 
-			// CUSTOM_ADMIN_EDIT_VIEW_ARRAY
+			// SITE_EDIT_VIEW_ARRAY (Joomla3 only)
 			CFactory::_('Compiler.Builder.Content.One')->set('SITE_EDIT_VIEW_ARRAY',
-				PHP_EOL . implode("," . PHP_EOL, $site_edit_view_array)
+				PHP_EOL . Indent::_(4) . "'" . implode("'," . PHP_EOL . Indent::_(4) . "'", array_keys($site_edit_view_array)) . "'"
+			);
+
+			// SITE_ALLOW_EDIT_VIEWS_ARRAY
+			CFactory::_('Compiler.Builder.Content.One')->set('SITE_ALLOW_EDIT_VIEWS_ARRAY',
+				CFactory::_('Architecture.Controller.AllowEditViews')->getArray($site_edit_view_array)
+			);
+
+			// SITE_ALLOW_EDIT_VIEWS_FUNCTIONS
+			CFactory::_('Compiler.Builder.Content.One')->set('SITE_ALLOW_EDIT_VIEWS_FUNCTIONS',
+				CFactory::_('Architecture.Controller.AllowEditViews')->getFunctions($site_edit_view_array)
 			);
 
 			// MAINMENUS

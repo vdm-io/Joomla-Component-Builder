@@ -22,6 +22,10 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\Allo
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Controller\AllowEdit as J5ControllerAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Controller\AllowEdit as J4ControllerAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AllowEdit as J3ControllerAllowEdit;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\AllowEditViewsInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Controller\AllowEditViews as J5ControllerAllowEditViews;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Controller\AllowEditViews as J4ControllerAllowEditViews;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AllowEditViews as J3ControllerAllowEditViews;
 
 
 /**
@@ -72,6 +76,18 @@ class ArchitectureController implements ServiceProviderInterface
 
 		$container->alias(J3ControllerAllowEdit::class, 'Architecture.Controller.J3.AllowEdit')
 			->share('Architecture.Controller.J3.AllowEdit', [$this, 'getJ3ControllerAllowEdit'], true);
+
+		$container->alias(AllowEditViewsInterface::class, 'Architecture.Controller.AllowEditViews')
+			->share('Architecture.Controller.AllowEditViews', [$this, 'getAllowEditViews'], true);
+
+		$container->alias(J5ControllerAllowEditViews::class, 'Architecture.Controller.J5.AllowEditViews')
+			->share('Architecture.Controller.J5.AllowEditViews', [$this, 'getJ5ControllerAllowEditViews'], true);
+
+		$container->alias(J4ControllerAllowEditViews::class, 'Architecture.Controller.J4.AllowEditViews')
+			->share('Architecture.Controller.J4.AllowEditViews', [$this, 'getJ4ControllerAllowEditViews'], true);
+
+		$container->alias(J3ControllerAllowEditViews::class, 'Architecture.Controller.J3.AllowEditViews')
+			->share('Architecture.Controller.J3.AllowEditViews', [$this, 'getJ3ControllerAllowEditViews'], true);
 	}
 
 	/**
@@ -211,6 +227,78 @@ class ArchitectureController implements ServiceProviderInterface
 	{
 		return new J3ControllerAllowEdit(
 			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEditViewsInterface Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  AllowEditViewsInterface
+	 * @since 5.0.2
+	 */
+	public function getAllowEditViews(Container $container): AllowEditViewsInterface
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		return $container->get('Architecture.Controller.J' . $this->targetVersion . '.AllowEditViews');
+	}
+
+	/**
+	 * Get The AllowEditViews Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5ControllerAllowEdit
+	 * @since 5.0.2
+	 */
+	public function getJ5ControllerAllowEditViews(Container $container): J5ControllerAllowEditViews
+	{
+		return new J5ControllerAllowEditViews(
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEditViews Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J4ControllerAllowEditViews
+	 * @since 5.0.2
+	 */
+	public function getJ4ControllerAllowEditViews(Container $container): J4ControllerAllowEditViews
+	{
+		return new J4ControllerAllowEditViews(
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEditViews Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3ControllerAllowEditViews
+	 * @since 5.0.2
+	 */
+	public function getJ3ControllerAllowEditViews(Container $container): J3ControllerAllowEditViews
+	{
+		return new J3ControllerAllowEditViews(
 			$container->get('Compiler.Creator.Permission'),
 			$container->get('Customcode.Dispenser'),
 			$container->get('Compiler.Builder.Category'),
