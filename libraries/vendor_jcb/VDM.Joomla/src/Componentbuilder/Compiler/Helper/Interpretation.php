@@ -13389,18 +13389,33 @@ class Interpretation extends Fields
 			$tabs .= PHP_EOL . Indent::_(2)
 				. '<div class="' . $row_class . '">';
 			$tabs .= PHP_EOL . Indent::_(3) . '<div class="' . $width_class . '12">';
-			$tabs .= PHP_EOL . Indent::_(4) . '<fieldset class="adminform">';
-			$tabs .= PHP_EOL . Indent::_(5) . '<div class="adminformlist">';
-			$tabs .= PHP_EOL . Indent::_(5)
-				. "<?php foreach (\$this->form->getFieldset('accesscontrol') as \$field): ?>";
-			$tabs .= PHP_EOL . Indent::_(6) . "<div>";
-			$tabs .= PHP_EOL . Indent::_(7)
-				. "<?php echo \$field->label; echo \$field->input;?>";
-			$tabs .= PHP_EOL . Indent::_(6) . "</div>";
-			$tabs .= PHP_EOL . Indent::_(6) . '<div class="clearfix"></div>';
-			$tabs .= PHP_EOL . Indent::_(5) . "<?php endforeach; ?>";
-			$tabs .= PHP_EOL . Indent::_(5) . "</div>";
-			$tabs .= PHP_EOL . Indent::_(4) . "</fieldset>";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$tabs .= PHP_EOL . Indent::_(4) . '<fieldset class="adminform">';
+				$tabs .= PHP_EOL . Indent::_(5) . '<div class="adminformlist">';
+				$tabs .= PHP_EOL . Indent::_(5)
+					. "<?php foreach (\$this->form->getFieldset('accesscontrol') as \$field): ?>";
+				$tabs .= PHP_EOL . Indent::_(6) . "<div>";
+				$tabs .= PHP_EOL . Indent::_(7)
+					. "<?php echo \$field->label; echo \$field->input;?>";
+				$tabs .= PHP_EOL . Indent::_(6) . "</div>";
+				$tabs .= PHP_EOL . Indent::_(6) . '<div class="clearfix"></div>';
+				$tabs .= PHP_EOL . Indent::_(5) . "<?php endforeach; ?>";
+				$tabs .= PHP_EOL . Indent::_(5) . "</div>";
+				$tabs .= PHP_EOL . Indent::_(4) . "</fieldset>";
+            }
+			else
+			{
+				$tabs .= PHP_EOL . Indent::_(4) . '<fieldset id="fieldset-rules" class="options-form">';
+				$tabs .= PHP_EOL . Indent::_(5)
+					. "<legend><?php echo Text:"
+					. ":_('{$tabLangName}'); ?></legend>";
+				$tabs .= PHP_EOL . Indent::_(5) . "<div>";
+				$tabs .= PHP_EOL . Indent::_(6)
+					. "<?php echo \$this->form->getInput('rules'); ?>";
+				$tabs .= PHP_EOL . Indent::_(5) . "</div>";
+				$tabs .= PHP_EOL . Indent::_(4) . "</fieldset>";
+			}
 			$tabs .= PHP_EOL . Indent::_(3) . "</div>";
 			$tabs .= PHP_EOL . Indent::_(2) . "</div>";
 			$tabs .= PHP_EOL . Indent::_(1)

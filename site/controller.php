@@ -115,7 +115,7 @@ class ComponentbuilderController extends BaseController
 		if (StringHelper::check($view))
 		{
 			$views = array(
-
+				''
 				);
 			// check if this is a edit view
 			if (in_array($view,$views))

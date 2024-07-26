@@ -25,7 +25,7 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Controll
  *
  * @since  1.6
  */
-class ###SView###Controller extends FormController
+class ###SView###Controller extends Joomla___907ccae5_57a9_44b9_a8aa_5b905d1cd70f___Power
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -107,14 +107,14 @@ class ###SView###Controller extends FormController
 	 * Function that allows child controller access to model data
 	 * after the data has been saved.
 	 *
-	 * @param   BaseDatabaseModel  $model      The data model object.
+	 * @param   Joomla___6dce7a1b_cfc3_4c2a_837d_be9cbc902446___Power  $model      The data model object.
 	 * @param   array              $validData  The validated data.
 	 *
 	 * @return  void
 	 *
 	 * @since   12.2
 	 */
-	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
+	protected function postSaveHook(Joomla___6dce7a1b_cfc3_4c2a_837d_be9cbc902446___Power $model, $validData = [])
 	{
 	}
 }
