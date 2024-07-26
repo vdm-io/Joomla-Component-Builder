@@ -17,6 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Filesystem\Folder;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -52,7 +53,7 @@ class AdminviewfolderlistField extends ListField
 		// now check if there are files in the folder
 		foreach ($localfolders as $localfolder)
 		{
-			if (is_dir($localfolder) && $folders = \Joomla\Filesystem\Folder::folders($localfolder))
+			if (is_dir($localfolder) && $folders = Folder::folders($localfolder))
 			{
 				if ($this->multiple === false)
 				{
@@ -60,7 +61,7 @@ class AdminviewfolderlistField extends ListField
 				}
 				foreach ($folders as $folder)
 				{
-					$options[] = Html::_('select.option', $folder, StringHelper::safe($folder, 'W'));
+					$options[] = Html::_('select.option', StringHelper::safe($folder), StringHelper::safe($folder, 'W'));
 				}
 			}
 		}

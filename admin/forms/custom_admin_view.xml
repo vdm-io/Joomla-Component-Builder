@@ -694,7 +694,8 @@
 					name="icomoon"
 					label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICOMOON_LABEL"
 					description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICOMOON_DESCRIPTION"
-					class="list_class fieldMedium icomoon342"
+					class="icomoon342"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					onchange="getIconImage(this);">
 					<!-- Option Set. -->

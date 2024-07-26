@@ -227,7 +227,7 @@
 					name="before"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_BEFORE_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_BEFORE_DESCRIPTION"
-					class="list_class fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					button="false"
 				/>

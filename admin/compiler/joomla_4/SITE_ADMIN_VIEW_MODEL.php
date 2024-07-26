@@ -37,6 +37,28 @@ class ###View###Model extends AdminModel
 	protected $tabLayoutFields = ###TABLAYOUTFIELDSARRAY###;
 
 	/**
+	 * The styles array.
+	 *
+	 * @var    array
+	 * @since  4.3
+	 */
+	protected array $styles = [
+		'components/com_###component###/assets/css/site.css',
+		'components/com_###component###/assets/css/###view###.css'
+ 	];
+
+	/**
+	 * The scripts array.
+	 *
+	 * @var    array
+	 * @since  4.3
+	 */
+	protected array $scripts = [
+		'components/com_###component###/assets/js/site.js',
+		'media/com_###component###/js/###view###.js'
+ 	];
+
+	/**
 	 * @var        string    The prefix to use with controller messages.
 	 * @since   1.6
 	 */
@@ -119,13 +141,47 @@ class ###View###Model extends AdminModel
 	}
 
 	/**
-	 * Method to get the script that have to be included on the form
+	 * Method to get the styles that have to be included on the view
 	 *
-	 * @return string    script files
+	 * @return  array    styles files
+	 * @since   4.3
 	 */
-	public function getScript()
+	public function getStyles(): array
 	{
-		return 'media/com_###component###/js/###view###.js';
+		return $this->styles;
+	}
+
+	/**
+	 * Method to set the styles that have to be included on the view
+	 *
+	 * @return  void
+	 * @since   4.3
+	 */
+	public function setStyles(string $path): void
+	{
+		$this->styles[] = $path;
+	}
+
+	/**
+	 * Method to get the script that have to be included on the view
+	 *
+	 * @return  array    script files
+	 * @since   4.3
+	 */
+	public function getScripts(): array
+	{
+		return $this->scripts;
+	}
+
+	/**
+	 * Method to set the script that have to be included on the view
+	 *
+	 * @return  void
+	 * @since   4.3
+	 */
+	public function setScript(string $path): void
+	{
+		$this->scripts[] = $path;
 	}
 
 	/**

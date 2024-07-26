@@ -113,7 +113,7 @@
 					multiple="false"
 					filter="CMD"
 					required="true"
-					default="joomla.form.field.subform.repeatable-table">
+					default="repeatablejcbjfive">
 					<!-- Option Set. -->
 					<option value="joomla.form.field.subform.repeatable-table">
 						COM_COMPONENTBUILDER_CONFIG_REPEATABLETABLE_JOOMLA</option>
@@ -1008,115 +1008,6 @@
 		</field>
 	</fieldset>
 	<fieldset
-		name="development_method_custom_config"
-		label="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_METHOD">
-
-		<!-- Development_method Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="development_method"
-			label="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_METHOD_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_METHOD_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_EXPANSION</option>
-		</field>
-		<!-- Note_development_method_default Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_development_method_default" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_DEFAULT_DESCRIPTION" heading="h2" class="alert alert-info note_development_method_default" showon="development_method:1" />
-		<!-- Note_development_method_expansion Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_development_method_expansion" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_LABEL" description="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPMENT_METHOD_EXPANSION_DESCRIPTION" heading="h2" class="alert alert-info note_development_method_expansion" showon="development_method:2" />
-		<!-- Expansion Field. Type: Subform. (joomla) -->
-		<field
-			type="subform"
-			name="expansion"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPANSION_LABEL"
-			layout="joomla.form.field.subform.repeatable-table"
-			multiple="true"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPANSION_DESCRIPTION"
-			icon="list"
-			max="50"
-			min="1"
-			showon="development_method:2">
-			<form hidden="true" name="list_expansion_modal" repeat="true">
-				<!-- Component_id Field. Type: Joomlacomponent. (custom) -->
-				<field
-					type="joomlacomponent"
-					name="component_id"
-					label="COM_COMPONENTBUILDER_CONFIG_COMPONENT_ID_LABEL"
-					class="list_class"
-					multiple="false"
-					default="0"
-					button="false"
-				/>
-				<!-- Install Field. Type: List. (joomla) -->
-				<field
-					type="list"
-					name="install"
-					label="COM_COMPONENTBUILDER_CONFIG_INSTALL_LABEL"
-					description="COM_COMPONENTBUILDER_CONFIG_INSTALL_DESCRIPTION"
-					class="list_class"
-					multiple="false"
-					default="1">
-					<!-- Option Set. -->
-					<option value="1">
-						COM_COMPONENTBUILDER_CONFIG_TRUE</option>
-					<option value="2">
-						COM_COMPONENTBUILDER_CONFIG_FALSE</option>
-				</field>
-				<!-- Backup Field. Type: Checkbox. (joomla) -->
-				<field
-					type="checkbox"
-					name="backup"
-					label="COM_COMPONENTBUILDER_CONFIG_BACKUP_LABEL"
-					value="1"
-					description="COM_COMPONENTBUILDER_CONFIG_BACKUP_DESCRIPTION"
-					class="inputbox"
-				/>
-				<!-- Repository Field. Type: Checkbox. (joomla) -->
-				<field
-					type="checkbox"
-					name="repository"
-					label="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_LABEL"
-					value="1"
-					description="COM_COMPONENTBUILDER_CONFIG_REPOSITORY_DESCRIPTION"
-					class="inputbox"
-				/>
-				<!-- Add_placeholders Field. Type: Checkbox. (joomla) -->
-				<field
-					type="checkbox"
-					name="add_placeholders"
-					label="COM_COMPONENTBUILDER_CONFIG_ADD_PLACEHOLDERS_LABEL"
-					value="1"
-					default=""
-					description="COM_COMPONENTBUILDER_CONFIG_ADD_PLACEHOLDERS_DESCRIPTION"
-					class="inputbox"
-				/>
-			</form>
-		</field>
-		<!-- Return_options_build Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="return_options_build"
-			label="COM_COMPONENTBUILDER_CONFIG_RETURN_OPTIONS_BUILD_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_RETURN_OPTIONS_BUILD_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="2"
-			showon="development_method:2">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_DISPLAY_MESSAGE</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_ONLY_BOOLEAN</option>
-		</field>
-		<!-- Expansioncronjob_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="expansioncronjob_note" label="COM_COMPONENTBUILDER_CONFIG_EXPANSIONCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_EXPANSIONCRONJOB_NOTE_DESCRIPTION" heading="h4" class="expansioncronjob_note" showon="development_method:2" />
-	</fieldset>
-	<fieldset
 		name="auto_backup_custom_config"
 		label="COM_COMPONENTBUILDER_CONFIG_AUTO_BACKUP">
 
@@ -1306,6 +1197,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_LABEL"
 			size="40"
 			maxlength="150"
+			default="Vast Development Method"
 			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_COMPANY_DESCRIPTION"
 			class="text_area"
 			required="true"
@@ -1321,6 +1213,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_LABEL"
 			size="10"
 			maxlength="120"
+			default="Llewellyn van der Merwe"
 			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_OWNER_DESCRIPTION"
 			class="text_area"
 			required="true"
@@ -1336,6 +1229,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_LABEL"
 			size="40"
 			maxlength="150"
+			default="joomla@vdm.io"
 			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_EMAIL_DESCRIPTION"
 			class="text_area"
 			required="true"
@@ -1352,6 +1246,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_LABEL"
 			size="60"
 			maxlength="150"
+			default="https://dev.vdm.io/"
 			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_WEBSITE_DESCRIPTION"
 			class="text_area"
 			required="true"
