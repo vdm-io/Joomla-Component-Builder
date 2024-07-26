@@ -129,7 +129,7 @@
 					name="tab"
 					label="COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_TAB_LABEL"
 					description="COM_COMPONENTBUILDER_ADMIN_CUSTOM_TABS_TAB_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default="1"
 					button="false"

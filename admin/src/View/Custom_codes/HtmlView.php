@@ -16,6 +16,7 @@ use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\User\User;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\FileLayout;
@@ -26,7 +27,6 @@ use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\User\User;
 
 // No direct access to this file
 \defined('_JEXEC') or die;

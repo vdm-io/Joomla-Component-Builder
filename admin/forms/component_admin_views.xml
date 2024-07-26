@@ -142,7 +142,7 @@
 					name="adminview"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADMINVIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADMINVIEW_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default=""
 					required="true"
@@ -154,7 +154,8 @@
 					name="icomoon"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ICOMOON_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ICOMOON_DESCRIPTION"
-					class="list_class fieldMedium icomoon342"
+					class="icomoon342"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					onchange="getIconImage(this);">
 					<!-- Option Set. -->
@@ -685,7 +686,7 @@
 					name="filter"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_FILTER_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_FILTER_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default="2">
 					<!-- Option Set. -->
@@ -700,7 +701,7 @@
 					name="edit_create_site_view"
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_EDIT_CREATE_SITE_VIEW_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false">
 					<!-- Option Set. -->
 					<option value="">

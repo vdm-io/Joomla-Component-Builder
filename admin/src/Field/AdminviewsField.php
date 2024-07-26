@@ -42,24 +42,27 @@ class AdminviewsField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// Get the database object.
 		$db = Factory::getDBO();
-$query = $db->getQuery(true);
-$query->select($db->quoteName(array('a.id','a.system_name'),array('id','adminview_system_name')));
-$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
-$query->where($db->quoteName('a.published') . ' >= 1');
-$query->order('a.system_name ASC');
-$db->setQuery((string)$query);
-$items = $db->loadObjectList();
-$options = array();
-if ($items)
-{
-	$options[] = Html::_('select.option', '', 'Select an option');
-	foreach($items as $item)
-	{
-		$options[] = Html::_('select.option', $item->id, $item->adminview_system_name);
-	}
-}
-
-return $options;
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','adminview_system_name')));
+		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->order('a.system_name ASC');
+		$db->setQuery((string)$query);
+		$items = $db->loadObjectList();
+		$options = [];
+		if ($items)
+		{
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
+			foreach($items as $item)
+			{
+				$options[] = Html::_('select.option', $item->id, $item->adminview_system_name);
+			}
+		}
+		return $options;
 	}
 }

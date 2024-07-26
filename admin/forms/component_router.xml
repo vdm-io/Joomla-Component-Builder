@@ -207,7 +207,7 @@
 					name="siteview"
 					label="COM_COMPONENTBUILDER_COMPONENT_ROUTER_SITEVIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_ROUTER_SITEVIEW_DESCRIPTION"
-					class="fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					required="true"
 					button="false"

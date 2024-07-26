@@ -141,7 +141,7 @@
 					name="adminview"
 					label="COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_ADMINVIEW_LABEL"
 					description="COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_ADMINVIEW_DESCRIPTION"
-					class="list_class fieldMedium"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					required="true"
 					button="false"

@@ -17,8 +17,6 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Uri\Uri;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -53,59 +51,4 @@ class FieldsController extends AdminController
 	{
 		return parent::getModel($name, $prefix, $config);
 	}
-
-
-	/**
-	 * Runs the expansion module.
-	 *
-	 * This function performs several checks and operations:
-	 * 1. It verifies the authenticity of the request to prevent request forgery.
-	 * 2. It checks whether the current user has the necessary permissions to run the expansion module.
-	 * 3. If the user is authorized, it attempts to run the expansion via an API call.
-	 * 4. Depending on the result of the expansion operation, it sets the appropriate success or error message.
-	 * 5. It redirects the user to a specified URL with the result message and status.
-	 *
-	 * @return bool True on successful expansion, false on failure.
-	 */
-	public function runExpansion()
-	{
-		// Check for request forgeries
-		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
-
-		// check if user has the right
-		$user = Factory::getUser();
-
-		// set page redirect
-		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=fields', false);
-
-		// set massage
-		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_EXPANSION_MODULE');
-
-		// check if this user has the right to run expansion
-		if($user->authorise('fields.run_expansion', 'com_componentbuilder'))
-		{
-			// set massage
-			$message = Text::_('COM_COMPONENTBUILDER_EXPANSION_FAILED_PLEASE_CHECK_YOUR_SETTINGS_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TAB');
-
-			// run expansion via API
-			$result = ComponentbuilderHelper::getFileContents(Uri::root() . 'index.php?option=com_componentbuilder&task=api.expand');
-
-			// is there a message returned
-			if (!is_numeric($result) && StringHelper::check($result))
-			{
-				$this->setRedirect($redirect_url, $result);
-				return true;
-			}
-			elseif (is_numeric($result) && 1 == $result)
-			{
-				$message = Text::_('COM_COMPONENTBUILDER_BTHE_EXPANSION_WAS_SUCCESSFULLYB_TO_SEE_MORE_INFORMATION_CHANGE_THE_BRETURN_OPTIONS_FOR_BUILDB_TO_BDISPLAY_MESSAGEB_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_DEVELOPMENT_METHOD_TABB');
-				$this->setRedirect($redirect_url, $message, 'message');
-				return true;
-			}
-		}
-
-		$this->setRedirect($redirect_url, $message, 'error');
-		return false;
-	}
-
 }
