@@ -304,6 +304,24 @@ class Config extends BaseConfig
 	}
 
 	/**
+	 * get component installer autoloader path
+	 *
+	 * @return  string  The component installer autoloader path
+	 * @since 5.0.2
+	 */
+	protected function getComponentinstallerautoloaderpath(): string
+	{
+		if ($this->joomla_version == 3)
+		{
+			return 'script_powerloader.php';
+		}
+		else
+		{
+			return ucfirst($this->component_codename) . 'InstallerPowerloader.php';
+		}
+	}
+
+	/**
 	 * get add namespace prefix
 	 *
 	 * @return  bool  The add namespace prefix switch

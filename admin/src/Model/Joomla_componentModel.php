@@ -1467,7 +1467,10 @@ class Joomla_componentModel extends AdminModel
 		}
 
 		// make sure that the component code name is safe.
-		$data['name_code'] = ComponentCodeNameHelper::safe($data['name_code']);
+		if (!empty($data['system_name']) && UtilitiesStringHelper::check($data['system_name']))
+		{
+			$data['name_code'] = ComponentCodeNameHelper::safe($data['name_code']);
+		}
 
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)

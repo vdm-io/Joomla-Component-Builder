@@ -182,6 +182,13 @@
 				"newName": "[[[Component]]]InstallerScript.php",
 				"type": "file"
 			},
+			"INSTALLER_AUTOLOADER_CLASS.php": {
+				"naam": "INSTALLER_AUTOLOADER_CLASS.php",
+				"path": "c0mp0n3nt/",
+				"rename": "new",
+				"newName": "[[[Component]]]InstallerPowerloader.php",
+				"type": "file"
+			},
 			"SITE_DISPATCHER.php": {
 				"naam": "SITE_DISPATCHER.php",
 				"path": "c0mp0n3nt/site/src/Dispatcher",

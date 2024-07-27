@@ -1160,8 +1160,7 @@ class Interpretation extends Fields
 			$newJ['component_version']
 				= CFactory::_('Component')->get('component_version');
 			// update the component with the new dynamic SQL
-			$modelJ = ComponentbuilderHelper::getModel('joomla_component');
-			$modelJ->save($newJ); // <-- to insure the history is also updated
+			CFactory::_('Data.Item')->table('joomla_component')->set((object) $newJ, 'id'); // <-- to insure the history is also updated
 			// reset the watch here
 			CFactory::_('History')->get('joomla_component', CFactory::_('Config')->component_id);
 
@@ -1175,10 +1174,9 @@ class Interpretation extends Fields
 			{
 				$newU['joomla_component'] = (int) CFactory::_('Config')->component_id;
 			}
-			$newU['version_update'] = json_encode($buket);
+			$newU['version_update'] = $buket;
 			// update the component with the new dynamic SQL
-			$modelU = ComponentbuilderHelper::getModel('component_updates');
-			$modelU->save($newU); // <-- to insure the history is also updated
+			CFactory::_('Data.Item')->table('component_updates')->set((object) $newU, 'id'); // <-- to insure the history is also updated
 		}
 	}
 
