@@ -19,6 +19,7 @@ use Joomla\CMS\Version;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\Filesystem\Folder;
 use Joomla\Database\DatabaseInterface;
+use VDM\Joomla\Componentbuilder\PHPConfigurationChecker;
 use VDM\Joomla\Componentbuilder\Table\SchemaChecker;
 
 // No direct access to this file
@@ -48,7 +49,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * The version number of the extension.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $release;
@@ -56,7 +57,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * The table the parameters are stored in.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $paramTable;
@@ -64,7 +65,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * The extension name. This should be set in the installer script.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $extension;
@@ -72,7 +73,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * A list of files to be deleted
 	 *
-	 * @var   array
+	 * @var    array
 	 * @since  3.6
 	 */
 	protected $deleteFiles = [];
@@ -80,7 +81,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * A list of folders to be deleted
 	 *
-	 * @var   array
+	 * @var    array
 	 * @since  3.6
 	 */
 	protected $deleteFolders = [];
@@ -88,7 +89,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * A list of CLI script files to be copied to the cli directory
 	 *
-	 * @var   array
+	 * @var    array
 	 * @since  3.6
 	 */
 	protected $cliScriptFiles = [];
@@ -96,7 +97,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * Minimum PHP version required to install the extension
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $minimumPhp;
@@ -104,7 +105,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	/**
 	 * Minimum Joomla! version required to install the extension
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $minimumJoomla;
@@ -158,7 +159,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter  $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function install(InstallerAdapter $adapter): bool {return true;}
@@ -180,7 +180,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter   $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function uninstall(InstallerAdapter $adapter): bool
@@ -525,7 +524,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter  $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function preflight(string $type, InstallerAdapter $adapter): bool
@@ -573,16 +571,22 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 				$this->removeFolder($cleaner);
 			}
 
-			// Check that the required configuration are set for PHP
-			$this->phpConfigurationCheck($this->app);
+			// Check that the PHP configurations are sufficient 
+			if ($this->classExists(PHPConfigurationChecker::class))
+			{
+				(new PHPConfigurationChecker())->run();
+			}
 		}
 
 		// do any install needed
 		if ($type === 'install')
 		{
 
-			// Check that the required configuration are set for PHP
-			$this->phpConfigurationCheck($this->app);
+			// Check that the PHP configurations are sufficient 
+			if ($this->classExists(PHPConfigurationChecker::class))
+			{
+				(new PHPConfigurationChecker())->run();
+			}
 		}
 
 		return true;
@@ -595,7 +599,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter  $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function postflight(string $type, InstallerAdapter $adapter): bool
@@ -3267,7 +3270,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 5.0.2-alpha2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 5.0.2-alpha3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();
@@ -4105,7 +4108,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
 	 *
 	 * @return  bool   True if all specified files/folders are removed, false otherwise.
-	 * @since 3.2.2
+	 * @since   3.2.2
 	 */
 	protected function removeFolder(string $dir, ?array $ignore = null): bool
 	{
@@ -4156,7 +4159,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   array   $ignore  The folders and files to ignore.
 	 *
 	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
-     * @since 3.2.1
+     * @since   3.2.1
 	 */
 	protected function isDirEmpty(string $dir, array $ignore): bool
 	{
@@ -4176,7 +4179,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * Remove the files and folders in the given array from
 	 *
 	 * @return  void
-	 *
 	 * @since   3.6
 	 */
 	protected function removeFiles()
@@ -4208,7 +4210,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * Moves the CLI scripts into the CLI folder in the CMS
 	 *
 	 * @return  void
-	 *
 	 * @since   3.6
 	 */
 	protected function moveCliFiles()
@@ -4239,7 +4240,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $contentHistoryOptions
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setContentType(
 		string $typeTitle,
@@ -4301,7 +4302,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $textPrefix
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setActionLogConfig(
 		string $typeTitle,
@@ -4354,7 +4355,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * Set action logs extensions integration
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setActionLogsExtensions(): void
 	{
@@ -4395,7 +4396,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $rules   The component rules
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setAssetsRules(string $rules): void
 	{
@@ -4433,7 +4434,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $params   The component rules
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setExtensionsParams(string $params): void
 	{
@@ -4476,7 +4477,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string  $dataType          This datatype we will change the rules column to if it to small.
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setDatabaseAssetsRulesFix(int $accessWorseCase, string $dataType): void
 	{
@@ -4511,7 +4512,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   bool     $fields    The switch to also remove related field data
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeViewData(string $context, bool $fields = false): void
 	{
@@ -4534,7 +4535,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeContentTypes(string $context): void
 	{
@@ -4591,7 +4592,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeFields(string $context): void
 	{
@@ -4653,7 +4654,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   array    $ids       The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeFieldsValues(string $context, array $ids): void
 	{
@@ -4684,7 +4685,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeFieldsGroups(string $context): void
 	{
@@ -4739,7 +4740,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeViewHistory(string $context): void
 	{
@@ -4771,7 +4772,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   array   $ids   The type ids
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeUcmBase(array $ids): void
 	{
@@ -4804,7 +4805,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeUcmContent(string $context): void
 	{
@@ -4836,7 +4837,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeContentItemTagMap(string $context): void
 	{
@@ -4871,7 +4872,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeActionLogConfig(string $context): void
 	{
@@ -4901,7 +4902,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * Remove Asset Table Integrated
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeAssetData(): void
 	{
@@ -4929,7 +4930,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * Remove action logs extensions integrated
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeActionLogsExtensions(): void
 	{
@@ -4959,7 +4960,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * Remove remove database fix (if possible)
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeDatabaseAssetsRulesFix(): void
 	{
@@ -4997,134 +4998,35 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 	 * @param string  $className   The fully qualified name of the class to check.
 	 *
 	 * @return bool True if the class exists or was successfully loaded, false otherwise.
-	 * @since 4.0.1
+	 * @since  4.0.1
 	 */
 	protected function classExists(string $className): bool
 	{
-		if (!class_exists($className, true))
+		if (class_exists($className, true))
 		{
-			// The power autoloader for this project (JPATH_ADMINISTRATOR) area.
-			$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/src/Helper/PowerloaderHelper.php';
-			if (file_exists($power_autoloader))
+			return true;
+		}
+
+		// Autoloaders to check
+		$autoloaders = [
+			__DIR__ . '/ComponentbuilderInstallerPowerloader.php',
+			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/src/Helper/PowerloaderHelper.php'
+		];
+
+		foreach ($autoloaders as $autoloader)
+		{
+			if (file_exists($autoloader))
 			{
-				require_once $power_autoloader;
+				require_once $autoloader;
+
+				if (class_exists($className, true))
+				{
+					return true;
+				}
 			}
-
-			// Check again if the class now exists after requiring the autoloader
-			if (!class_exists($className, true))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Define the required limits with specific messages for success and warning scenarios
-	 *
-	 * @var array
-	 * @since 3.2.1
-	 */
-	protected array $requiredPHPConfigs = [
-		'upload_max_filesize' => [
-			'value'   => '128M',
-			'success' => 'The upload_max_filesize is appropriately set to handle large files, which is essential for uploading substantial components and media.',
-			'warning' => 'The current upload_max_filesize may not support large file uploads effectively, potentially causing failures during component installation.'
-		],
-		'post_max_size' => [
-			'value'   => '128M',
-			'success' => 'The post_max_size setting is sufficient to manage large data submissions, ensuring smooth data processing within forms and uploads.',
-			'warning' => 'An insufficient post_max_size can lead to truncated data submissions, affecting form functionality and data integrity.'
-		],
-		'max_execution_time' => [
-			'value'   => 60,
-			'success' => 'Max execution time is set high enough to execute complex operations without premature termination, which is crucial for lengthy operations.',
-			'warning' => 'A low max execution time could lead to script timeouts, especially during intensive operations, which might interrupt execution and cause failures during the compiling of a large extension.'
-		],
-		'max_input_vars' => [
-			'value'   => 7000,
-			'success' => 'The max_input_vars setting supports a high number of input variables, facilitating complex forms and detailed component configurations.',
-			'warning' => 'Too few max_input_vars may result in lost data during processing complex forms, which can lead to incomplete configurations and operational issues.'
-		],
-		'max_input_time' => [
-			'value'   => 60,
-			'success' => 'Max input time is adequate for processing inputs efficiently during high-load operations, ensuring no premature timeouts.',
-			'warning' => 'An insufficient max input time could result in incomplete data processing during input-heavy operations, potentially leading to errors and data loss.'
-		],
-		'memory_limit' => [
-			'value'   => '256M',
-			'success' => 'The memory limit is set high to accommodate extensive operations and data processing, which enhances overall performance and stability.',
-			'warning' => 'A low memory limit can lead to frequent crashes and performance issues, particularly when processing large amounts of data or complex calculations.'
-		]
-	];
-
-	/**
-	 * Helper function to convert PHP INI memory values to bytes
-	 *
-	 * @param  string  $value     The value to convert
-	 *
-	 * @return int   The bytes value
-	 * @since 3.2.1
-	 */
-	protected function convertToBytes(string $value): int
-	{
-		$value = trim($value);
-		$lastChar = strtolower($value[strlen($value) - 1]);
-		$numValue = substr($value, 0, -1);
-
-		switch ($lastChar)
-		{
-			case 'g':
-				return $numValue * 1024 * 1024 * 1024;
-			case 'm':
-				return $numValue * 1024 * 1024;
-			case 'k':
-				return $numValue * 1024;
-			default:
-				return (int) $value;
-		}
-	}
-
-	/**
-	 * Check that the required configurations are set for PHP
-	 *
-	 * @param  $app  The application
-	 *
-	 * @return void
-	 * @since 3.2.1
-	 */
-	protected function phpConfigurationCheck($app): void
-	{
-		$showHelp = false;
-
-		// Check each configuration and provide detailed feedback
-		foreach ($this->requiredPHPConfigs as $configName => $configDetails)
-		{
-			$currentValue = ini_get($configName);
-			if ($currentValue === false)
-			{
-				$app->enqueueMessage("Error: Unable to retrieve current setting for '{$configName}'.", 'error');
-				continue;
-			}
-
-			$isMemoryValue = strpbrk($configDetails['value'], 'KMG') !== false;
-			$requiredValueBytes = $isMemoryValue ? $this->convertToBytes($configDetails['value']) : (int) $configDetails['value'];
-			$currentValueBytes = $isMemoryValue ? $this->convertToBytes($currentValue) : (int) $currentValue;
-			$conditionMet = $currentValueBytes >= $requiredValueBytes;
-
-			$messageType = $conditionMet ? 'message' : 'warning';
-			$messageText = $conditionMet ? 
-				"Success: {$configName} is set to {$currentValue}. " . $configDetails['success'] :
-				"Warning: {$configName} configuration should be at least {$configDetails['value']} but is currently {$currentValue}. " . $configDetails['warning'];
-			$showHelp = ($showHelp || $messageType === 'warning') ? true : false;
-			$app->enqueueMessage($messageText, $messageType);
 		}
 
-		if ($showHelp)
-		{
-			$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced.<br>These settings are crucial for ensuring the successful installation and compilation of extensions.<br>We\'ve identified that certain configurations currently do not meet the recommended standards.<br>To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
-', 'notice');
-		}
+		return false;
 	}
 
 	/**

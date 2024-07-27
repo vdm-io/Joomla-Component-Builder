@@ -351,7 +351,7 @@ final class Settings implements SettingsInterface
 		$this->config->get('footable', false)) 
 	    {
 			$this->addImportViewFolder();
-			$this->addPhpSpreadsheetFolder();
+			// $this->addPhpSpreadsheetFolder(); // soon
 			$this->addUikitFolder();
 			$this->addFooTableFolder();
 	    }

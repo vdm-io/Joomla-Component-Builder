@@ -52,7 +52,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * The version number of the extension.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $release;
@@ -60,7 +60,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * The table the parameters are stored in.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $paramTable;
@@ -68,7 +68,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * The extension name. This should be set in the installer script.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $extension;
@@ -76,7 +76,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * A list of files to be deleted
 	 *
-	 * @var   array
+	 * @var    array
 	 * @since  3.6
 	 */
 	protected $deleteFiles = [];
@@ -84,7 +84,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * A list of folders to be deleted
 	 *
-	 * @var   array
+	 * @var    array
 	 * @since  3.6
 	 */
 	protected $deleteFolders = [];
@@ -92,7 +92,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * A list of CLI script files to be copied to the cli directory
 	 *
-	 * @var   array
+	 * @var    array
 	 * @since  3.6
 	 */
 	protected $cliScriptFiles = [];
@@ -100,7 +100,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * Minimum PHP version required to install the extension
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $minimumPhp;
@@ -108,7 +108,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	/**
 	 * Minimum Joomla! version required to install the extension
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  3.6
 	 */
 	protected $minimumJoomla;
@@ -162,7 +162,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter  $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function install(InstallerAdapter $adapter): bool {return true;}
@@ -184,7 +183,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter   $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function uninstall(InstallerAdapter $adapter): bool
@@ -207,7 +205,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter  $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function preflight(string $type, InstallerAdapter $adapter): bool
@@ -252,7 +249,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   InstallerAdapter  $adapter  The adapter calling this method
 	 *
 	 * @return  boolean  True on success
-	 *
 	 * @since   4.2.0
 	 */
 	public function postflight(string $type, InstallerAdapter $adapter): bool
@@ -284,7 +280,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
 	 *
 	 * @return  bool   True if all specified files/folders are removed, false otherwise.
-	 * @since 3.2.2
+	 * @since   3.2.2
 	 */
 	protected function removeFolder(string $dir, ?array $ignore = null): bool
 	{
@@ -335,7 +331,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   array   $ignore  The folders and files to ignore.
 	 *
 	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
-     * @since 3.2.1
+     * @since   3.2.1
 	 */
 	protected function isDirEmpty(string $dir, array $ignore): bool
 	{
@@ -355,7 +351,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * Remove the files and folders in the given array from
 	 *
 	 * @return  void
-	 *
 	 * @since   3.6
 	 */
 	protected function removeFiles()
@@ -387,7 +382,6 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * Moves the CLI scripts into the CLI folder in the CMS
 	 *
 	 * @return  void
-	 *
 	 * @since   3.6
 	 */
 	protected function moveCliFiles()
@@ -418,7 +412,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $contentHistoryOptions
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setContentType(
 		string $typeTitle,
@@ -480,7 +474,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $textPrefix
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setActionLogConfig(
 		string $typeTitle,
@@ -533,7 +527,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * Set action logs extensions integration
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setActionLogsExtensions(): void
 	{
@@ -574,7 +568,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $rules   The component rules
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setAssetsRules(string $rules): void
 	{
@@ -612,7 +606,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $params   The component rules
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setExtensionsParams(string $params): void
 	{
@@ -655,7 +649,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string  $dataType          This datatype we will change the rules column to if it to small.
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function setDatabaseAssetsRulesFix(int $accessWorseCase, string $dataType): void
 	{
@@ -690,7 +684,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   bool     $fields    The switch to also remove related field data
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeViewData(string $context, bool $fields = false): void
 	{
@@ -713,7 +707,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeContentTypes(string $context): void
 	{
@@ -770,7 +764,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeFields(string $context): void
 	{
@@ -832,7 +826,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   array    $ids       The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeFieldsValues(string $context, array $ids): void
 	{
@@ -863,7 +857,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeFieldsGroups(string $context): void
 	{
@@ -918,7 +912,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeViewHistory(string $context): void
 	{
@@ -950,7 +944,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   array   $ids   The type ids
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeUcmBase(array $ids): void
 	{
@@ -983,7 +977,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeUcmContent(string $context): void
 	{
@@ -1015,7 +1009,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeContentItemTagMap(string $context): void
 	{
@@ -1050,7 +1044,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param   string   $context   The view context
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeActionLogConfig(string $context): void
 	{
@@ -1080,7 +1074,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * Remove Asset Table Integrated
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeAssetData(): void
 	{
@@ -1108,7 +1102,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * Remove action logs extensions integrated
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeActionLogsExtensions(): void
 	{
@@ -1138,7 +1132,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * Remove remove database fix (if possible)
 	 *
 	 * @return void
-	 * @since 4.4.2
+	 * @since  4.4.2
 	 */
 	protected function removeDatabaseAssetsRulesFix(): void
 	{
@@ -1176,20 +1170,31 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	 * @param string  $className   The fully qualified name of the class to check.
 	 *
 	 * @return bool True if the class exists or was successfully loaded, false otherwise.
-	 * @since 4.0.1
+	 * @since  4.0.1
 	 */
 	protected function classExists(string $className): bool
 	{
-		if (!class_exists($className, true))
+		if (class_exists($className, true))
 		{
-###THREE_POWER_AUTOLOADER###
+			return true;
+		}
 
-			// Check again if the class now exists after requiring the autoloader
-			if (!class_exists($className, true))
+		// Autoloaders to check
+		$autoloaders = [###INSTALLER_POWER_AUTOLOADER_ARRAY###];
+
+		foreach ($autoloaders as $autoloader)
+		{
+			if (file_exists($autoloader))
 			{
-				return false;
+				require_once $autoloader;
+
+				if (class_exists($className, true))
+				{
+					return true;
+				}
 			}
 		}
-		return true;
+
+		return false;
 	}###INSTALLERMETHODS###
 }

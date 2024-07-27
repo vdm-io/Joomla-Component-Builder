@@ -228,11 +228,6 @@ final class Header implements HeaderInterface
 		// get dynamic headers
 		switch ($context)
 		{
-			case 'admin.helper':
-			case 'site.helper':
-				$this->setHelperClassHeader($headers, $codeName);
-				break;
-
 			case 'admin.view.html':
 			case 'admin.views.html':
 			case 'custom.admin.view.html':
@@ -560,26 +555,6 @@ final class Header implements HeaderInterface
 		$this->headers[$context] = $headers;
 
 		return $headers;
-	}
-
-	/**
-	 * set Helper Dynamic Headers
-	 *
-	 * @param   array   $headers  The headers array
-	 * @param   string  $target_client
-	 *
-	 * @return void
-	 * @since 3.2.0
-	 */
-	protected function setHelperClassHeader(&$headers, $target_client)
-	{
-		// add only to admin client
-		if ('admin' === $target_client && $this->config->get('add_eximport', false))
-		{
-			$headers[] = 'use PhpOffice\PhpSpreadsheet\IOFactory;';
-			$headers[] = 'use PhpOffice\PhpSpreadsheet\Spreadsheet;';
-			$headers[] = 'use PhpOffice\PhpSpreadsheet\Writer\Xlsx;';
-		}
 	}
 }
 
