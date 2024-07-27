@@ -23,12 +23,15 @@ use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\PHPConfigurationChecker;
 use VDM\Joomla\Componentbuilder\Table\SchemaChecker;
 use VDM\Joomla\Utilities\GetHelper;
 HTML::_('bootstrap.renderModal');
 
 /**
  * Script File of Componentbuilder Component
+ *
+ * @since   1.5.0
  */
 class Com_ComponentbuilderInstallerScript
 {
@@ -36,6 +39,7 @@ class Com_ComponentbuilderInstallerScript
 	 * Constructor
 	 *
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
+	 * @since   1.5.0
 	 */
 	public function __construct(ComponentAdapter $parent) {}
 
@@ -45,6 +49,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function install(ComponentAdapter $parent) {}
 
@@ -52,6 +57,8 @@ class Com_ComponentbuilderInstallerScript
 	 * Called on uninstallation
 	 *
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
+	 *
+	 * @since   1.5.0
 	 */
 	public function uninstall(ComponentAdapter $parent)
 	{
@@ -5973,6 +5980,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function update(ComponentAdapter $parent){}
 
@@ -5983,6 +5991,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function preflight($type, ComponentAdapter $parent)
 	{
@@ -6457,15 +6466,21 @@ class Com_ComponentbuilderInstallerScript
 				$this->removeFolder($cleaner);
 			}
 
-			// Check that the required configuration are set for PHP
-			$this->phpConfigurationCheck($app);
+			// Check that the PHP configurations are sufficient 
+			if ($this->classExists(PHPConfigurationChecker::class))
+			{
+				(new PHPConfigurationChecker())->run();
+			}
 		}
 		// do any install needed
 		if ($type === 'install')
 		{
 
-			// Check that the required configuration are set for PHP
-			$this->phpConfigurationCheck($app);
+			// Check that the PHP configurations are sufficient 
+			if ($this->classExists(PHPConfigurationChecker::class))
+			{
+				(new PHPConfigurationChecker())->run();
+			}
 		}
 		// check if the PHPExcel stuff is still around
 		if (File::exists(JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/PHPExcel.php'))
@@ -6485,6 +6500,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function postflight($type, ComponentAdapter $parent)
 	{
@@ -9985,7 +10001,7 @@ class Com_ComponentbuilderInstallerScript
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.2.3-alpha2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 3.2.3-alpha3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))
@@ -11754,7 +11770,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
 	 *
 	 * @return  bool   True if all specified files/folders are removed, false otherwise.
-	 * @since 3.2.2
+	 * @since   3.2.2
 	 */
 	protected function removeFolder(string $dir, ?array $ignore = null): bool
 	{
@@ -11805,7 +11821,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @param   array   $ignore  The folders and files to ignore.
 	 *
 	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
-     * @since 3.2.1
+     * @since   3.2.1
 	 */
 	protected function isDirEmpty(string $dir, array $ignore): bool
 	{
@@ -11827,7 +11843,7 @@ class Com_ComponentbuilderInstallerScript
 	 * @input    array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
-	 * @since 3.2.2
+	 * @since   3.2.2
 	 */
 	protected function checkArray($array, $removeEmptyString = false)
 	{
@@ -11857,134 +11873,35 @@ class Com_ComponentbuilderInstallerScript
 	 * @param string  $className   The fully qualified name of the class to check.
 	 *
 	 * @return bool True if the class exists or was successfully loaded, false otherwise.
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function classExists(string $className): bool
 	{
-		if (!class_exists($className, true))
+		if (class_exists($className, true))
 		{
-			// The power autoloader for this project (JPATH_ADMINISTRATOR) area.
-			$power_autoloader = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/powerloader.php';
-			if (file_exists($power_autoloader))
+			return true;
+		}
+
+		// Autoloaders to check
+		$autoloaders = [
+			__DIR__ . '/script_powerloader.php',
+			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/powerloader.php'
+		];
+
+		foreach ($autoloaders as $autoloader)
+		{
+			if (file_exists($autoloader))
 			{
-				require_once $power_autoloader;
+				require_once $autoloader;
+
+				if (class_exists($className, true))
+				{
+					return true;
+				}
 			}
-
-			// Check again if the class now exists after requiring the autoloader
-			if (!class_exists($className, true))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Define the required limits with specific messages for success and warning scenarios
-	 *
-	 * @var array
-	 * @since 3.2.1
-	 */
-	protected array $requiredPHPConfigs = [
-		'upload_max_filesize' => [
-			'value'   => '128M',
-			'success' => 'The upload_max_filesize is appropriately set to handle large files, which is essential for uploading substantial components and media.',
-			'warning' => 'The current upload_max_filesize may not support large file uploads effectively, potentially causing failures during component installation.'
-		],
-		'post_max_size' => [
-			'value'   => '128M',
-			'success' => 'The post_max_size setting is sufficient to manage large data submissions, ensuring smooth data processing within forms and uploads.',
-			'warning' => 'An insufficient post_max_size can lead to truncated data submissions, affecting form functionality and data integrity.'
-		],
-		'max_execution_time' => [
-			'value'   => 60,
-			'success' => 'Max execution time is set high enough to execute complex operations without premature termination, which is crucial for lengthy operations.',
-			'warning' => 'A low max execution time could lead to script timeouts, especially during intensive operations, which might interrupt execution and cause failures during the compiling of a large extension.'
-		],
-		'max_input_vars' => [
-			'value'   => 7000,
-			'success' => 'The max_input_vars setting supports a high number of input variables, facilitating complex forms and detailed component configurations.',
-			'warning' => 'Too few max_input_vars may result in lost data during processing complex forms, which can lead to incomplete configurations and operational issues.'
-		],
-		'max_input_time' => [
-			'value'   => 60,
-			'success' => 'Max input time is adequate for processing inputs efficiently during high-load operations, ensuring no premature timeouts.',
-			'warning' => 'An insufficient max input time could result in incomplete data processing during input-heavy operations, potentially leading to errors and data loss.'
-		],
-		'memory_limit' => [
-			'value'   => '256M',
-			'success' => 'The memory limit is set high to accommodate extensive operations and data processing, which enhances overall performance and stability.',
-			'warning' => 'A low memory limit can lead to frequent crashes and performance issues, particularly when processing large amounts of data or complex calculations.'
-		]
-	];
-
-	/**
-	 * Helper function to convert PHP INI memory values to bytes
-	 *
-	 * @param  string  $value     The value to convert
-	 *
-	 * @return int   The bytes value
-	 * @since 3.2.1
-	 */
-	protected function convertToBytes(string $value): int
-	{
-		$value = trim($value);
-		$lastChar = strtolower($value[strlen($value) - 1]);
-		$numValue = substr($value, 0, -1);
-
-		switch ($lastChar)
-		{
-			case 'g':
-				return $numValue * 1024 * 1024 * 1024;
-			case 'm':
-				return $numValue * 1024 * 1024;
-			case 'k':
-				return $numValue * 1024;
-			default:
-				return (int) $value;
-		}
-	}
-
-	/**
-	 * Check that the required configurations are set for PHP
-	 *
-	 * @param  $app  The application
-	 *
-	 * @return void
-	 * @since 3.2.1
-	 */
-	protected function phpConfigurationCheck($app): void
-	{
-		$showHelp = false;
-
-		// Check each configuration and provide detailed feedback
-		foreach ($this->requiredPHPConfigs as $configName => $configDetails)
-		{
-			$currentValue = ini_get($configName);
-			if ($currentValue === false)
-			{
-				$app->enqueueMessage("Error: Unable to retrieve current setting for '{$configName}'.", 'error');
-				continue;
-			}
-
-			$isMemoryValue = strpbrk($configDetails['value'], 'KMG') !== false;
-			$requiredValueBytes = $isMemoryValue ? $this->convertToBytes($configDetails['value']) : (int) $configDetails['value'];
-			$currentValueBytes = $isMemoryValue ? $this->convertToBytes($currentValue) : (int) $currentValue;
-			$conditionMet = $currentValueBytes >= $requiredValueBytes;
-
-			$messageType = $conditionMet ? 'message' : 'warning';
-			$messageText = $conditionMet ? 
-				"Success: {$configName} is set to {$currentValue}. " . $configDetails['success'] :
-				"Warning: {$configName} configuration should be at least {$configDetails['value']} but is currently {$currentValue}. " . $configDetails['warning'];
-			$showHelp = ($showHelp || $messageType === 'warning') ? true : false;
-			$app->enqueueMessage($messageText, $messageType);
 		}
 
-		if ($showHelp)
-		{
-			$app->enqueueMessage('To optimize your Joomla Component Builder (JCB) development environment, specific PHP settings must be enhanced.<br>These settings are crucial for ensuring the successful installation and compilation of extensions.<br>We\'ve identified that certain configurations currently do not meet the recommended standards.<br>To adjust these settings and prevent potential issues, please consult our detailed guide available at <a href="https://git.vdm.dev/joomla/Component-Builder/wiki/PHP-Settings" target="_blank">JCB PHP Settings Wiki</a>.
-', 'notice');
-		}
+		return false;
 	}
 
 	/**

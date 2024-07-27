@@ -28,6 +28,8 @@ HTML::_('bootstrap.renderModal');
 
 /**
  * Script File of ###Component### Component
+ *
+ * @since   1.5.0
  */
 class Com_###Component###InstallerScript
 {
@@ -35,6 +37,7 @@ class Com_###Component###InstallerScript
 	 * Constructor
 	 *
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
+	 * @since   1.5.0
 	 */
 	public function __construct(ComponentAdapter $parent) {}
 
@@ -44,6 +47,7 @@ class Com_###Component###InstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function install(ComponentAdapter $parent) {}
 
@@ -51,6 +55,8 @@ class Com_###Component###InstallerScript
 	 * Called on uninstallation
 	 *
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
+	 *
+	 * @since   1.5.0
 	 */
 	public function uninstall(ComponentAdapter $parent)
 	{###UNINSTALLSCRIPT###
@@ -68,6 +74,7 @@ class Com_###Component###InstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function update(ComponentAdapter $parent){}
 
@@ -78,6 +85,7 @@ class Com_###Component###InstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function preflight($type, ComponentAdapter $parent)
 	{
@@ -121,6 +129,7 @@ class Com_###Component###InstallerScript
 	 * @param   ComponentAdapter  $parent  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.5.0
 	 */
 	public function postflight($type, ComponentAdapter $parent)
 	{
@@ -144,7 +153,7 @@ class Com_###Component###InstallerScript
 	 * @param   array|null  $ignore  The folders and files to ignore and not remove.
 	 *
 	 * @return  bool   True if all specified files/folders are removed, false otherwise.
-	 * @since 3.2.2
+	 * @since   3.2.2
 	 */
 	protected function removeFolder(string $dir, ?array $ignore = null): bool
 	{
@@ -195,7 +204,7 @@ class Com_###Component###InstallerScript
 	 * @param   array   $ignore  The folders and files to ignore.
 	 *
 	 * @return  bool    True if the directory is empty or contains only ignored items, false otherwise.
-     * @since 3.2.1
+     * @since   3.2.1
 	 */
 	protected function isDirEmpty(string $dir, array $ignore): bool
 	{
@@ -217,7 +226,7 @@ class Com_###Component###InstallerScript
 	 * @input    array   The array to check
 	 *
 	 * @returns bool/int  number of items in array on success
-	 * @since 3.2.2
+	 * @since   3.2.2
 	 */
 	protected function checkArray($array, $removeEmptyString = false)
 	{
@@ -247,20 +256,31 @@ class Com_###Component###InstallerScript
 	 * @param string  $className   The fully qualified name of the class to check.
 	 *
 	 * @return bool True if the class exists or was successfully loaded, false otherwise.
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function classExists(string $className): bool
 	{
-		if (!class_exists($className, true))
+		if (class_exists($className, true))
 		{
-###THREE_POWER_AUTOLOADER###
+			return true;
+		}
 
-			// Check again if the class now exists after requiring the autoloader
-			if (!class_exists($className, true))
+		// Autoloaders to check
+		$autoloaders = [###INSTALLER_POWER_AUTOLOADER_ARRAY###];
+
+		foreach ($autoloaders as $autoloader)
+		{
+			if (file_exists($autoloader))
 			{
-				return false;
+				require_once $autoloader;
+
+				if (class_exists($className, true))
+				{
+					return true;
+				}
 			}
 		}
-		return true;
+
+		return false;
 	}###INSTALLERMETHODS###
 }

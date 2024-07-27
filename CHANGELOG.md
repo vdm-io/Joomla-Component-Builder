@@ -1,9 +1,8 @@
-# v3.2.3-alpha2
+# v3.2.3-alpha3
 
-- Fix missing scripts and styles fields and methods in the site admin view model
-- Update subform field layout across JCB for cleaner look
-- Remove expansion feature
-- Fix helper area
+- Fix database mySql update in J4+
+- Remove phpspreadsheet completely from Joomla 4+
+- Add option to use powers in preflight event in the installer class
 
 # v3.2.3-alpha
 
@@ -12,6 +11,10 @@
 - Fix site display controller checkEditId function in J4+
 - Add class methods to the HtmlView classes in J4+
 - Fix broken toolbar call in HtmlView in J4+
+- Fix missing scripts and styles fields and methods in the site admin view model
+- Update subform field layout across JCB for cleaner look
+- Remove expansion feature
+- Fix helper area
 
 # v3.2.2
 
