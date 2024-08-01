@@ -7,9 +7,9 @@
 	<authorUrl>https://dev.vdm.io</authorUrl>
 	<copyright>Copyright (C) 2015 Vast Development Method. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>4.0.2-beta1</version>
+	<version>4.0.2-beta2</version>
 	<description><![CDATA[
-		<h1>Component Builder (v.4.0.2-beta1)</h1>
+		<h1>Component Builder (v.4.0.2-beta2)</h1>
 		<div style="clear: both;"></div>
 		<p>The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
