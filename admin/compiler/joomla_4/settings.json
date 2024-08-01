@@ -33,6 +33,12 @@
 			},
 			"tmpl": "tmpl"
 		},
+		"api": {
+			"src": {
+				"Controller": "Controller",
+				"View": "View"
+			}
+		},
 		"site": {
 			"assets": {
 				"css": "css",
@@ -562,6 +568,32 @@
 					"path": "c0mp0n3nt/admin/assets/js",
 					"rename": "viewFile",
 					"type": "javascript_file"
+				}
+			},
+			"api": {
+				"API_VIEW_CONTROLLER.php": {
+					"path": "c0mp0n3nt/api/src/Controller",
+					"rename": "new",
+					"newName": "[[[Name]]]Controller.php",
+					"type": "single"
+				},
+				"API_VIEW_JSON.php": {
+					"path": "c0mp0n3nt/api/src/View/[[[Name]]]",
+					"rename": "new",
+					"newName": "JsonapiView.php",
+					"type": "single"
+				},
+				"API_VIEWS_CONTROLLER.php": {
+					"path": "c0mp0n3nt/api/src/Controller",
+					"rename": "new",
+					"newName": "[[[Name]]]Controller.php",
+					"type": "list"
+				},
+				"API_VIEWS_JSON.php": {
+					"path": "c0mp0n3nt/api/src/View/[[[Name]]]",
+					"rename": "new",
+					"newName": "JsonapiView.php",
+					"type": "list"
 				}
 			},
 			"site": {
