@@ -1,10 +1,11 @@
-# v4.0.2-beta2
+# v4.0.2-beta3
 
-- Fix dynamicGet so that the table values will load again. #1155
+- Add more pure JS to the dynamic get area.
 
 # v4.0.2-beta
 
 - Fix abstract schema class function check default index warring
+- Fix dynamicGet so that the table values will load again. #1155
 
 # v4.0.2-alpha
 

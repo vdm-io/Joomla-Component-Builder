@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\CMS\Uri\Uri;
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
@@ -651,10 +652,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // for the values the will still be set
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('subform-row-add', function(event) {
-        var row = event.detail.row;
-        var groupName = row.getAttribute('data-group');
-        var fieldName = groupName.replace('join_', '').replace('_table', '').replace(/([0-9])/g, '');
-        var fieldNr = groupName.replace(/([A-z_])/g, '');
+        let row = event.detail.row;
+        let groupName = row.getAttribute('data-group');
+        let fieldName = groupName.replace('join_', '').replace('_table', '').replace(/([0-9])/g, '');
+        let fieldNr = groupName.replace(/([A-z_])/g, '');
         updateSubItems(fieldName, fieldNr, '_', '_');
     });
 });
@@ -669,14 +670,14 @@ document.getElementById('adminForm').addEventListener('change', function(e) {
 <?php endforeach; ?>
 
 document.getElementById('jform_add_php_router_parse').addEventListener('change', function() {
-    var valueSwitch = document.querySelector("#jform_add_php_router_parse input[type='radio']:checked").value;
+    let valueSwitch = document.querySelector("#jform_add_php_router_parse input[type='radio']:checked").value;
     getDynamicScripts(valueSwitch);
 });
 
 document.getElementById('adminForm').addEventListener('change', function(e) {
     if (e.target && e.target.matches('#jform_select_all input[type="radio"]')) {
         e.preventDefault();
-        var selectAll = e.target.value;
+        let selectAll = e.target.value;
         setSelectAll(selectAll);
     }
 });
@@ -688,7 +689,7 @@ function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
+		echo 'var url = "'. Uri::root() . '";';
 	}
 	else
 	{

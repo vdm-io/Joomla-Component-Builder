@@ -14,6 +14,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Uri\Uri;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -553,7 +554,7 @@ function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
+		echo 'var url = "'. Uri::root() . '";';
 	}
 	else
 	{

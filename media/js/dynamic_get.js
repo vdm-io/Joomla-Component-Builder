@@ -1401,37 +1401,37 @@ function isSet(val)
 }
 
 
-jQuery(document).ready(function()
-{
+document.addEventListener('DOMContentLoaded', function() {
 	// get the linked details
 	getLinked();
-	var valueSwitch = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
+	let valueSwitch = document.querySelector("#jform_add_php_router_parse input[type='radio']:checked").value;
 	getDynamicScripts(valueSwitch);
 	// check and load all the custom code edit buttons
 	getEditCustomCodeButtons();
 });
 
-function setSelectAll(select_all){
+function setSelectAll(select_all) {
 	// get source type
-	var main_source =  jQuery("#jform_main_source").val();
-	if (1 == main_source) {
-		var key = 'view';
-	} else if (2 == main_source) {
-		var key = 'db';
+	let main_source = document.getElementById("jform_main_source").value;
+	let key;
+	if (main_source == 1) {
+		key = 'view';
+	} else if (main_source == 2) {
+		key = 'db';
 	} else {
 		return true;
 	}
 	// only continue if set
 	if (select_all == 1) {
 		// set default notice
-		jQuery("#jform_"+key+"_selection").val('a.*');
+		document.getElementById("jform_" + key + "_selection").value = 'a.*';
 		// set the selection text area to read only
-		jQuery("#jform_"+key+"_selection").prop("readonly", true);
+		document.getElementById("jform_" + key + "_selection").readOnly = true;
 	} else {
 		// remove the read only from selection text area
-		jQuery("#jform_"+key+"_selection").prop("readonly", false);
+		document.getElementById("jform_" + key + "_selection").readOnly = false;
 		// get selected options
-		var value_main =  jQuery("#jform_"+key+"_table_main option:selected").val();
+		let value_main = document.getElementById("jform_" + key + "_table_main").selectedOptions[0].value;
 		// make sure that all fields are set as selected
 		if (key === 'view') {
 			getViewTableColumns(value_main, 'a', key, 3, true, '', '');
@@ -1441,144 +1441,155 @@ function setSelectAll(select_all){
 	}
 }
 
-function getViewTableColumns_server(viewId,asKey,rowType){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.viewTableColumns&format=json&raw=true");
-	if (token.length > 0 && viewId > 0 && asKey.length > 0)
-	{
-		var request = token+'=1&as='+asKey+'&type='+rowType+'&id='+viewId;
+function getViewTableColumns_server(viewId, asKey, rowType) {
+	let getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.viewTableColumns&format=json&raw=true");
+	let request = '';
+	if (token.length > 0 && viewId > 0 && asKey.length > 0) {
+		request = token + '=1&as=' + asKey + '&type=' + rowType + '&id=' + viewId;
 	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+	return fetch(getUrl + '&' + request, { method: 'GET' }).then(function(response) {
+		return response.json();
 	});
 }
 
-function getViewTableColumns(id, asKey, key, rowType, main, table_, nr_){
+function getViewTableColumns(id, asKey, key, rowType, main, table_, nr_) {
 	// check if this is the main view
-	if (main){
-		var select_all =  jQuery("#jform_select_all input[type='radio']:checked").val();
+	if (main) {
+		let select_all = document.querySelector("#jform_select_all input[type='radio']:checked").value;
 		// do not continue if set
-		if (select_all == 1){
+		if (select_all == 1) {
 			setSelectAll(select_all);
 			return true;
 		}
 	}
-	getViewTableColumns_server(id, asKey, rowType).done(function(result) {
-		if (result) {
+	getViewTableColumns_server(id, asKey, rowType).then(function(result) {
+		if (result.error) {
+			console.error(result.error);
+		} else if (result) {
 			loadSelectionData(result, 'view', key, main, table_, nr_);
 		} else {
 			loadSelectionData(false, 'view', key, main, table_, nr_);
 		}
-	})
-}
-
-function getDbTableColumns_server(name,asKey,rowType)
-{
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.dbTableColumns&format=json&raw=true");
-	if (token.length > 0 && name.length > 0 && asKey.length > 0) {
-		var request = token+'=1&as='+asKey+'&type='+rowType+'&name='+name;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
 	});
 }
 
-function getDbTableColumns(name, asKey, key, rowType, main, table_, nr_){
+function getDbTableColumns_server(name, asKey, rowType) {
+	let getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.dbTableColumns&format=json&raw=true");
+	let request = '';
+	if (token.length > 0 && name.length > 0 && asKey.length > 0) {
+		request = token + '=1&as=' + asKey + '&type=' + rowType + '&name=' + name;
+	}
+	return fetch(getUrl + '&' + request, { method: 'GET' }).then(function(response) {
+		return response.json();
+	});
+}
+
+function getDbTableColumns(name, asKey, key, rowType, main, table_, nr_) {
 	// check if this is the main view
-	if (main){
-		var select_all =  jQuery("#jform_select_all input[type='radio']:checked").val();
+	if (main) {
+		let select_all = document.querySelector("#jform_select_all input[type='radio']:checked").value;
 		// do not continue if set
-		if (select_all == 1){
+		if (select_all === 1) {
 			setSelectAll(select_all);
 			return true;
 		}
 	}
-	getDbTableColumns_server(name,asKey,rowType).done(function(result) {
-		if (result) {
+	getDbTableColumns_server(name, asKey, rowType).then(function(result) {
+		if (result.error) {
+			console.error(result.error);
+		} else if (result) {
 			loadSelectionData(result, 'db', key, main, table_, nr_);
 		} else {
 			loadSelectionData(false, 'db', key, main, table_, nr_);
 		}
-	})
+	});
 }
 
-function loadSelectionData(result, type, key, main, table_, nr_)
-{
-	if (main)
-	{
-		var textArea = 'textarea#jform_'+key+'_selection';
+function loadSelectionData(result, type, key, main, table_, nr_) {
+	var textArea;
+	if (main) {
+		textArea = document.querySelector('textarea#jform_' + key + '_selection');
+	} else {
+		textArea = document.querySelector('textarea#jform_join_' + type + '_table' + table_ + '_join_' + type + '_table' + key + nr_ + '_selection');
 	}
-	else 
-	{
-		var textArea = 'textarea#jform_join_'+type+'_table'+table_+'_join_'+type+'_table'+key+nr_+'_selection';
-	}
-	// no update the text area
-	if (result)
-	{
-		jQuery(textArea).val(result);
-	}
-	else
-	{
-		jQuery(textArea).val('');
+	// update the text area
+	if (result) {
+		textArea.value = result;
+	} else {
+		textArea.value = '';
 	}
 }
+
 function updateSubItems(fieldName, fieldNr, table_, nr_) {
-	if(jQuery('#jform_join_'+fieldName+'_table'+table_+'_join_'+fieldName+'_table'+fieldNr+nr_+'_'+fieldName+'_table').length) {
-		jQuery('#adminForm').on('change', '#jform_join_'+fieldName+'_table'+table_+'_join_'+fieldName+'_table'+fieldNr+nr_+'_'+fieldName+'_table',function (e) {
-			e.preventDefault();
-			// get options
-			var value1 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_"+fieldName+"_table option:selected").val();
-			var as_value2 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_as option:selected").val();
-			var row_value1 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_row_type option:selected").val();
-			if (fieldName === 'view') {
-				getViewTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
-			} else {
-				getDbTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+	let selector = '#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_' + fieldName + '_table';
+	if (document.querySelector(selector)) {
+		document.getElementById('adminForm').addEventListener('change', function(e) {
+			if (e.target.matches(selector)) {
+				e.preventDefault();
+				// get options
+				let selectElement = document.querySelector(selector);
+				let value1 = selectElement.options[selectElement.selectedIndex].value;
+				let asSelectElement = document.querySelector('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_as');
+				let as_value2 = asSelectElement.options[asSelectElement.selectedIndex].value;
+				let rowTypeElement = document.querySelector('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_row_type');
+				let row_value1 = rowTypeElement.options[rowTypeElement.selectedIndex].value;
+				if (fieldName === 'view') {
+					getViewTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+				} else {
+					getDbTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+				}
 			}
 		});
-		jQuery('#adminForm').on('change', '#jform_join_'+fieldName+'_table'+table_+'_join_'+fieldName+'_table'+fieldNr+nr_+'_as',function (e) {
-			e.preventDefault();
-			// get options
-			var value1 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_"+fieldName+"_table option:selected").val();
-			var as_value2 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_as option:selected").val();
-			var row_value1 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_row_type option:selected").val();
-			if (fieldName === 'view') {
-				getViewTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
-			} else {
-				getDbTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+
+		document.getElementById('adminForm').addEventListener('change', function(e) {
+			if (e.target.matches('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_as')) {
+				e.preventDefault();
+				// get options
+				let selectElement = document.querySelector(selector);
+				let value1 = selectElement.options[selectElement.selectedIndex].value;
+				let asSelectElement = document.querySelector('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_as');
+				let as_value2 = asSelectElement.options[asSelectElement.selectedIndex].value;
+				let rowTypeElement = document.querySelector('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_row_type');
+				let row_value1 = rowTypeElement.options[rowTypeElement.selectedIndex].value;
+				if (fieldName === 'view') {
+					getViewTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+				} else {
+					getDbTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+				}
 			}
 		});
-		jQuery('#adminForm').on('change', '#jform_join_'+fieldName+'_table'+table_+'_join_'+fieldName+'_table'+fieldNr+nr_+'_row_type',function (e) {
-			e.preventDefault();
-			// get options
-			var value1 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_"+fieldName+"_table option:selected").val();
-			var as_value2 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_as option:selected").val();
-			var row_value1 = jQuery("#jform_join_"+fieldName+"_table"+table_+"_join_"+fieldName+"_table"+fieldNr+nr_+"_row_type option:selected").val();
-			if (fieldName === 'view') {
-				getViewTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
-			} else {
-				getDbTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+
+		document.getElementById('adminForm').addEventListener('change', function(e) {
+			if (e.target.matches('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_row_type')) {
+				e.preventDefault();
+				// get options
+				let selectElement = document.querySelector(selector);
+				let value1 = selectElement.options[selectElement.selectedIndex].value;
+				let asSelectElement = document.querySelector('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_as');
+				let as_value2 = asSelectElement.options[asSelectElement.selectedIndex].value;
+				let rowTypeElement = document.querySelector('#jform_join_' + fieldName + '_table' + table_ + '_join_' + fieldName + '_table' + fieldNr + nr_ + '_row_type');
+				let row_value1 = rowTypeElement.options[rowTypeElement.selectedIndex].value;
+				if (fieldName === 'view') {
+					getViewTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+				} else {
+					getDbTableColumns(value1, as_value2, fieldNr, row_value1, false, table_, nr_);
+				}
 			}
 		});
 	}
 }
 
-function getDynamicScripts(id){
-	if (1 == id) {
+function getDynamicScripts(id) {
+	if (id == 1) {
 		// get the current values
-		var current_router_parse = jQuery('textarea#jform_php_router_parse').val();
+		let current_router_parse = document.querySelector('textarea#jform_php_router_parse').value;
 		// set the router parse method script
-		if(current_router_parse.length == 0){
+		if (current_router_parse.length == 0) {
 			getCodeFrom_server(1, 'routerparse', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_router_parse').val(result);
+				if (result.error) {
+					console.error(result.error);
+				} else if (result) {
+					document.querySelector('textarea#jform_php_router_parse').value = result;
 				}
 			});
 		}
@@ -1659,10 +1670,12 @@ function getEditCustomCodeButtons() {
 	});
 }
 
-function getLinked(){
+function getLinked() {
 	getCodeFrom_server(1, 'type', 'type', 'getLinked').then(function(result) {
-		if(result){
-			jQuery('#display_linked_to').html(result);
+		if (result.error) {
+			console.error(result.error);
+		} else if (result) {
+			document.getElementById('display_linked_to').innerHTML = result;
 		}
 	});
 }
