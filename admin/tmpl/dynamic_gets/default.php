@@ -49,32 +49,3 @@ if ($this->saveOrder)
 	<input type="hidden" name="task" value="" />
 	<?php echo Html::_('form.token'); ?>
 </form>
-<script type="text/javascript">
-// dynamic_gets footer script
-
-	// get page body
-	var outerBodyDiv = document.querySelector('body');
-
-	// start loading spinner
-	var loadingDiv = document.createElement('div');
-	loadingDiv.id = 'loading';
-
-	// Set CSS properties individually
-	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat";
-	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
-	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
-	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
-	loadingDiv.style.height = outerBodyDiv.offsetHeight + "px";
-	loadingDiv.style.position = 'fixed';
-	loadingDiv.style.opacity = '0.80';
-	loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-	loadingDiv.style.filter = "alpha(opacity=80)";
-	loadingDiv.style.display = 'none';
-
-	// add to page body
-	outerBodyDiv.appendChild(loadingDiv);
-// when the expand button is clicked
-jQuery('#toolbar').on('click',"button.button-expand-2", function(e){
-	loadingDiv.style.display = 'block';
-});
-</script>
