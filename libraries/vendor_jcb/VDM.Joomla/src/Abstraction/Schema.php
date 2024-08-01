@@ -455,8 +455,8 @@ abstract class Schema implements SchemaInterface
 			return true;
 		}
 
-		if (is_string($expected['default']) && strtoupper($expected['default']) === 'EMPTY' &&
-			is_string($current->Default) && strpos($current->Default, 'EMPTY') !== false)
+		if (isset($expected['default']) && is_string($expected['default']) && strtoupper($expected['default']) === 'EMPTY' &&
+			isset($current->Default) && is_string($current->Default) && strpos($current->Default, 'EMPTY') !== false)
 		{
 			return true; // little fix
 		}

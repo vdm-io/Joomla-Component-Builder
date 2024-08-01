@@ -1,8 +1,6 @@
-# v4.0.2-alpha3
+# v4.0.2-beta1
 
-- Fix database mySql update in J4+
-- Remove phpspreadsheet completely from Joomla 4+
-- Add option to use powers in preflight event in the installer class
+- Fix abstract schema class function check default index warring
 
 # v4.0.2-alpha
 
@@ -15,6 +13,9 @@
 - Update subform field layout across JCB for cleaner look
 - Remove expansion feature
 - Fix helper area
+- Fix database mySql update in J4+
+- Remove phpspreadsheet completely from Joomla 4+
+- Add option to use powers in preflight event in the installer class
 
 # v4.0.1
 
