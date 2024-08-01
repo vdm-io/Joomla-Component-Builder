@@ -1,4 +1,8 @@
-# v3.2.3-beta1
+# v3.2.3-beta2
+
+- Fix dynamicGet so that the table values will load again. #1155
+
+# v3.2.3-beta
 
 - Fix abstract schema class function check default index warring
 

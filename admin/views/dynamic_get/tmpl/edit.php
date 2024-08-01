@@ -641,44 +641,47 @@ jQuery('#adminForm').on('change', '#jform_gettype',function (e)
 
 
 
-<?php $fieldNrs = range(0,50,1); ?>
-<?php $fieldNames = array('db' => 'Db','view' => 'View'); ?>
+<?php $fieldNrs = range(0, 50, 1); ?>
+<?php $fieldNames = array('db' => 'Db', 'view' => 'View'); ?>
 // for the vlaues already set
-jQuery(document).ready(function(){
-<?php foreach($fieldNames as $fieldName => $funcName): ?>
- 	<?php foreach($fieldNrs as $fieldNr): ?>
-		updateSubItems('<?php echo $fieldName ?>', <?php echo $fieldNr ?>, '_', '_');
-	<?php endforeach; ?>
-<?php endforeach; ?>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php foreach($fieldNames as $fieldName => $funcName): ?>
+        <?php foreach($fieldNrs as $fieldNr): ?>
+            updateSubItems('<?php echo $fieldName ?>', <?php echo $fieldNr ?>, '_', '_');
+        <?php endforeach; ?>
+    <?php endforeach; ?>
 });
 // for the values the will still be set
-jQuery(document).ready(function(){
-	jQuery(document).on('subform-row-add', function(event, row){
-		var groupName = jQuery(row).data('group');
-		var fieldName = groupName.replace('join_', '').replace('_table', '').replace(/([0-9])/g, '');
-		var fieldNr = groupName.replace(/([A-z_])/g, '');
-		updateSubItems(fieldName, fieldNr, '_', '_');
-	});
-
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('subform-row-add', function(event) {
+        var row = event.detail.row;
+        var groupName = row.getAttribute('data-group');
+        var fieldName = groupName.replace('join_', '').replace('_table', '').replace(/([0-9])/g, '');
+        var fieldNr = groupName.replace(/([A-z_])/g, '');
+        updateSubItems(fieldName, fieldNr, '_', '_');
+    });
 });
-<?php foreach($fieldNames as $fieldName => $funcName): ?>jQuery('#adminForm').on('change', '#jform_<?php echo $fieldName ?>_table_main',function (e) {
-	// get options
-	var value_<?php echo $fieldName ?> = jQuery("#jform_<?php echo $fieldName ?>_table_main option:selected").val();
-	get<?php echo $funcName; ?>TableColumns(value_<?php echo $fieldName ?>, 'a', '<?php echo $fieldName ?>', 3, true, '', '');
+
+<?php foreach($fieldNames as $fieldName => $funcName): ?>
+document.getElementById('adminForm').addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'jform_<?php echo $fieldName ?>_table_main') {
+        let value_<?php echo $fieldName ?> = e.target.options[e.target.selectedIndex].value;
+        get<?php echo $funcName; ?>TableColumns(value_<?php echo $fieldName ?>, 'a', '<?php echo $fieldName ?>', 3, true, '', '');
+    }
 });
 <?php endforeach; ?>
-// #jform_add_php_router_parse listeners
-jQuery('#jform_add_php_router_parse').on('change',function() {
-	var valueSwitch = jQuery("#jform_add_php_router_parse input[type='radio']:checked").val();
-	getDynamicScripts(valueSwitch);
-});
-jQuery('#adminForm').on('change', '#jform_select_all',function (e)
-{
-	e.preventDefault();
-	// get the selected value
-	var select_all =  jQuery("#jform_select_all input[type='radio']:checked").val();
-	setSelectAll(select_all);
 
+document.getElementById('jform_add_php_router_parse').addEventListener('change', function() {
+    var valueSwitch = document.querySelector("#jform_add_php_router_parse input[type='radio']:checked").value;
+    getDynamicScripts(valueSwitch);
+});
+
+document.getElementById('adminForm').addEventListener('change', function(e) {
+    if (e.target && e.target.matches('#jform_select_all input[type="radio"]')) {
+        e.preventDefault();
+        var selectAll = e.target.value;
+        setSelectAll(selectAll);
+    }
 });
 
 <?php
