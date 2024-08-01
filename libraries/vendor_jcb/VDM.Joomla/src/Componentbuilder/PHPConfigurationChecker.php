@@ -19,7 +19,7 @@ use VDM\Joomla\Abstraction\PHPConfigurationChecker as ExtendingPHPConfigurationC
 /**
  * Componentbuilder PHP Configuration Checker
  * 
- * @since 3.2.2
+ * @since 5.02
  */
 final class PHPConfigurationChecker extends ExtendingPHPConfigurationChecker implements PHPConfigurationCheckerInterface
 {
