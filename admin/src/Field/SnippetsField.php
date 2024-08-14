@@ -16,6 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -148,30 +149,34 @@ class SnippetsField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// Get the databse object.
 		$db = Factory::getDBO();
-$query = $db->getQuery(true);
-$query->select($db->quoteName(array('a.id','a.name','b.name','c.name'),array('id','snippet_name','type','library')));
-$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id','a.name','b.name','c.name'),array('id','snippet_name','type','library')));
+		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
 		// From the componentbuilder_snippet_type table.
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.id') . ')');
 		// From the componentbuilder_library table.
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.id') . ')');
-$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('c.ordering ASC');
 		$query->order('b.name ASC');
-$db->setQuery((string)$query);
-$items = $db->loadObjectList();
-$options = array();
-if ($items)
-{
-	foreach($items as $item)
-	{
-				$lib = (isset($item->library) && ComponentbuilderHelper::checkString($item->library)) ? ' (' . $item->library . ')' :'';
-				$type = (isset($item->type) && ComponentbuilderHelper::checkString($item->type)) ? $item->type :Text::_('COM_COMPONENTBUILDER_NO_TYPE');
-		$options[] = Html::_('select.option', $item->id, $type . ' - ' . $item->snippet_name . $lib );
-	}
-}
-
-return $options;
+		$db->setQuery((string)$query);
+		$items = $db->loadObjectList();
+		$options = [];
+		if ($items)
+		{
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
+			foreach($items as $item)
+			{
+				$lib = (isset($item->library) && StringHelper::check($item->library)) ? ' (' . $item->library . ')' :'';
+				$type = (isset($item->type) && StringHelper::check($item->type)) ? $item->type :Text::_('COM_COMPONENTBUILDER_NO_TYPE');
+				$options[] = Html::_('select.option', $item->id, $type . ' - ' . $item->snippet_name . $lib);
+			}
+		}
+		return $options;
 	}
 }

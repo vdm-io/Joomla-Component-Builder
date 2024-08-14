@@ -42,24 +42,27 @@ class SnippettypeField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// Get the databse object.
 		$db = Factory::getDBO();
-$query = $db->getQuery(true);
-$query->select($db->quoteName(array('a.id','a.name'),array('id','type_name')));
-$query->from($db->quoteName('#__componentbuilder_snippet_type', 'a'));
-$query->where($db->quoteName('a.published') . ' >= 1');
-$query->order('a.name ASC');
-$db->setQuery((string)$query);
-$items = $db->loadObjectList();
-$options = array();
-if ($items)
-{
-	$options[] = Html::_('select.option', '', 'Select an option');
-	foreach($items as $item)
-	{
-		$options[] = Html::_('select.option', $item->id, $item->type_name);
-	}
-}
-
-return $options;
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id','a.name'),array('id','type_name')));
+		$query->from($db->quoteName('#__componentbuilder_snippet_type', 'a'));
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->order('a.name ASC');
+		$db->setQuery((string)$query);
+		$items = $db->loadObjectList();
+		$options = [];
+		if ($items)
+		{
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
+			foreach($items as $item)
+			{
+				$options[] = Html::_('select.option', $item->id, $item->type_name);
+			}
+		}
+		return $options;
 	}
 }

@@ -148,25 +148,28 @@ class ServersField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// Get the databse object. (prime)
 		$db = Factory::getDBO();
-$query = $db->getQuery(true);
-$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','name', 'protocol')));
-$query->from($db->quoteName('#__componentbuilder_server', 'a'));
-$query->where($db->quoteName('a.published') . ' >= 1');
-$query->order('a.name ASC');
-$db->setQuery((string)$query);
-$items = $db->loadObjectList();
-$options = array();
-if ($items)
-{
-	$options[] = Html::_('select.option', '', 'Select an option');
-	foreach($items as $item)
-	{
-			$item->protocol = ($item->protocol == 2) ? Text::_('SFTP') : Text::_('FTP');
-		$options[] = Html::_('select.option', $item->id, $item->name.' ['.$item->protocol.']');
-	}
-}
-
-return $options;
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id','a.name','a.protocol'),array('id','update_server_name', 'protocol')));
+		$query->from($db->quoteName('#__componentbuilder_server', 'a'));
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->order('a.name ASC');
+		$db->setQuery((string)$query);
+		$items = $db->loadObjectList();
+		$options = [];
+		if ($items)
+		{
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
+			foreach($items as $item)
+			{
+				$item->protocol = ($item->protocol == 2) ? Text::_('SFTP') : Text::_('FTP');
+				$options[] = Html::_('select.option', $item->id, $item->update_server_name .' ['.$item->protocol.']');
+			}
+		}
+		return $options;
 	}
 }

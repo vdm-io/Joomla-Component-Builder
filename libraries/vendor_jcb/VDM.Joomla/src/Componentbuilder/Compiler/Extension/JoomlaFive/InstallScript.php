@@ -116,6 +116,22 @@ final class InstallScript implements GetScriptInterface
 	protected array $postflightBucket = ['install' => [], 'uninstall' => [], 'discover_install' => [], 'update' => []];
 
 	/**
+	 * The paths of the old plugin class files
+	 *
+	 * @var     array
+	 * @since  5.0.2
+	 */
+	protected array $removeFilePaths = [];
+
+	/**
+	 * The paths of the old plugin folders
+	 *
+	 * @var     array
+	 * @since  5.0.2
+	 */
+	protected array $removeFolderPaths = [];
+
+	/**
 	 * get install script
 	 *
 	 * @param   Object       $extension     The extension object
@@ -127,6 +143,10 @@ final class InstallScript implements GetScriptInterface
 	{
 		// purge the object
 		$this->rest();
+
+		// set the remove path
+		$this->removeFilePaths = $extension->remove_file_paths ?? [];
+		$this->removeFolderPaths = $extension->remove_folder_paths ?? [];
 
 		// loop over methods and types
 		foreach ($this->methods as $method)
@@ -171,6 +191,8 @@ final class InstallScript implements GetScriptInterface
 	 */
 	protected function rest(): void
 	{
+		$this->removeFilePaths = [];
+		$this->removeFolderPaths = [];
 		$this->construct = [];
 		$this->install = [];
 		$this->update = [];
@@ -210,6 +232,9 @@ final class InstallScript implements GetScriptInterface
 		// load postflight method if set
 		$script .= $this->flight('postflight');
 
+		// load remove files method
+		$script .= $this->removeFiles();
+
 		// close the class
 		$script .= PHP_EOL . '}' . PHP_EOL;
 
@@ -229,9 +254,11 @@ final class InstallScript implements GetScriptInterface
 
 		// start build
 		$script = PHP_EOL . 'use Joomla\CMS\Factory;';
+		$script .= PHP_EOL . 'use Joomla\CMS\Version;';
+		$script .= PHP_EOL . 'use Joomla\CMS\Installer\InstallerAdapter;';
 		$script .= PHP_EOL . 'use Joomla\CMS\Language\Text;';
-		$script .= PHP_EOL . 'use Joomla\CMS\Filesystem\File;';
-		$script .= PHP_EOL . 'use Joomla\CMS\Filesystem\Folder;' . PHP_EOL;
+		$script .= PHP_EOL . 'use Joomla\Filesystem\File;';
+		$script .= PHP_EOL . 'use Joomla\Filesystem\Folder;' . PHP_EOL;
 		$script .= PHP_EOL . '/**';
 		$script .= PHP_EOL . ' * ' . $extension->official_name
 			. ' script file.';
@@ -252,25 +279,86 @@ final class InstallScript implements GetScriptInterface
 	 */
 	protected function construct(): string
 	{
-		// return empty string if not set
-		if (!ArrayHelper::check($this->construct))
-		{
-			return '';
-		}
-
 		// the __construct script
-		$script = PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script = PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1) . ' *' . Line::_(__Line__, __Class__)
+				.' The CMS Application.';
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1) . ' * @since  4.4.2';
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1) . 'protected $app;';
+
+		$script .= PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1) . ' *' . Line::_(__Line__, __Class__)
+				.' A list of files to be deleted';
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1) . ' * @var    array';
+		$script .= PHP_EOL . Indent::_(1) . ' * @since  3.6';
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1) . 'protected array $deleteFiles = [];';
+
+		$script .= PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1) . ' *' . Line::_(__Line__, __Class__)
+				.' A list of folders to be deleted';
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1) . ' * @var    array';
+		$script .= PHP_EOL . Indent::_(1) . ' * @since  3.6';
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1) . 'protected array $deleteFolders = [];';
+
+		$script .= PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
 		$script .= PHP_EOL . Indent::_(1) . ' * Constructor';
 		$script .= PHP_EOL . Indent::_(1) . ' *';
 		$script .= PHP_EOL . Indent::_(1)
-			. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
+			. ' * @param   InstallerAdapter  $adapter  The object responsible for running this script';
 		$script .= PHP_EOL . Indent::_(1) . ' */';
 		$script .= PHP_EOL . Indent::_(1)
 			. 'public function __construct($adapter)';
 		$script .= PHP_EOL . Indent::_(1) . '{';
-		$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $this->construct);
+
+		$script .= PHP_EOL . Indent::_(2) . '//' . Line::_(__Line__, __Class__)
+			. ' get application';
+		$script .= PHP_EOL . Indent::_(2)
+			. '$this->app = Factory::getApplication();' . PHP_EOL;
+
+		if (ArrayHelper::check($this->construct))
+		{
+			$script .= PHP_EOL . implode(PHP_EOL . PHP_EOL, $this->construct);
+		}
+
+		// check if custom remove file is set
+		if ($this->removeFilePaths !== [] && strpos($script, '$this->deleteFiles') === false)
+		{
+			// add the default delete files
+			foreach ($this->removeFilePaths as $filePath)
+			{
+				$script .= PHP_EOL . Indent::_(2) . "if (is_file(JPATH_ROOT . '$filePath'))";
+				$script .= PHP_EOL . Indent::_(2) . "{";
+				$script .= PHP_EOL . Indent::_(3) . "\$this->deleteFiles[] = '$filePath';";
+				$script .= PHP_EOL . Indent::_(2) . "}";
+			}
+		}
+
+		// check if custom remove file is set
+		if ($this->removeFolderPaths !== [] && strpos($script, '$this->deleteFolders') === false)
+		{
+			// add the default delete folders
+			foreach ($this->removeFolderPaths as $folderPath)
+			{
+				$script .= PHP_EOL . Indent::_(2) . "if (is_dir(JPATH_ROOT . '$folderPath'))";
+				$script .= PHP_EOL . Indent::_(2) . "{";
+				$script .= PHP_EOL . Indent::_(3) . "\$this->deleteFolders[] = '$folderPath';";
+				$script .= PHP_EOL . Indent::_(2) . "}";
+			}
+		}
+
 		// close the function
 		$script .= PHP_EOL . Indent::_(1) . '}';
+
+		// add remove files
+		$this->preflightBucket['bottom'][] = Indent::_(2) . '//' . Line::_(__Line__, __Class__)
+				.' remove old files and folders';
+		$this->preflightBucket['bottom'][] = Indent::_(2) . '$this->removeFiles();';
 
 		return $script;
 	}
@@ -295,7 +383,7 @@ final class InstallScript implements GetScriptInterface
 		$script .= PHP_EOL . Indent::_(1) . " * Called on $name";
 		$script .= PHP_EOL . Indent::_(1) . ' *';
 		$script .= PHP_EOL . Indent::_(1)
-			. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
+			. ' * @param   InstallerAdapter  $adapter  The object responsible for running this script';
 		$script .= PHP_EOL . Indent::_(1) . ' *';
 		$script .= PHP_EOL . Indent::_(1)
 			. ' * @return  boolean  True on success';
@@ -325,12 +413,6 @@ final class InstallScript implements GetScriptInterface
 	 */
 	protected function flight(string $name): string
 	{
-		// return empty string if not set
-		if (empty($this->{$name . 'Active'}))
-		{
-			return '';
-		}
-
 		// the pre/post function types
 		$script = PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
 		$script .= PHP_EOL . Indent::_(1)
@@ -339,7 +421,7 @@ final class InstallScript implements GetScriptInterface
 		$script .= PHP_EOL . Indent::_(1)
 			. ' * @param   string  $route  Which action is happening (install|uninstall|discover_install|update)';
 		$script .= PHP_EOL . Indent::_(1)
-			. ' * @param   Joomla\CMS\Installer\InstallerAdapter  $adapter  The object responsible for running this script';
+			. ' * @param   InstallerAdapter  $adapter  The object responsible for running this script';
 		$script .= PHP_EOL . Indent::_(1) . ' *';
 		$script .= PHP_EOL . Indent::_(1)
 			. ' * @return  boolean  True on success';
@@ -348,9 +430,9 @@ final class InstallScript implements GetScriptInterface
 			. $name . '($route, $adapter)';
 		$script .= PHP_EOL . Indent::_(1) . '{';
 		$script .= PHP_EOL . Indent::_(2) . '//' . Line::_(__Line__, __Class__)
-			. ' get application';
+			. ' set application to local method var, just use $this->app in future [we will drop $app in J6]';
 		$script .= PHP_EOL . Indent::_(2)
-			. '$app = Factory::getApplication();' . PHP_EOL;
+			. '$app = $this->app;' . PHP_EOL;
 
 		// add the default version check (TODO) must make this dynamic
 		if ('preflight' === $name)
@@ -358,35 +440,86 @@ final class InstallScript implements GetScriptInterface
 			$script .= PHP_EOL . Indent::_(2) . '//' . Line::_(__Line__, __Class__)
 				.' the default for both install and update';
 			$script .= PHP_EOL . Indent::_(2)
-				. '$jversion = new JVersion();';
+				. '$jversion = new Version();';
 			$script .= PHP_EOL . Indent::_(2)
-				. "if (!\$jversion->isCompatible('3.8.0'))";
+				. "if (!\$jversion->isCompatible('5.0.0'))";
 			$script .= PHP_EOL . Indent::_(2) . '{';
 			$script .= PHP_EOL . Indent::_(3)
-				. "\$app->enqueueMessage('Please upgrade to at least Joomla! 3.8.0 before continuing!', 'error');";
+				. "\$app->enqueueMessage('Please upgrade to at least Joomla! 5.0.0 before continuing!', 'error');";
 			$script .= PHP_EOL . Indent::_(3) . 'return false;';
 			$script .= PHP_EOL . Indent::_(2) . '}' . PHP_EOL;
 		}
 
-		// now add the scripts
-		foreach ($this->{$name . 'Bucket'} as $route => $_script)
+		if (!empty($this->{$name . 'Active'}))
 		{
-			if (ArrayHelper::check($_script))
+			// now add the scripts
+			foreach ($this->{$name . 'Bucket'} as $route => $_script)
 			{
-				// set the if and script
-				$script .= PHP_EOL . Indent::_(2) . "if ('" . $route
-					. "' === \$route)";
-				$script .= PHP_EOL . Indent::_(2) . '{';
-				$script .= PHP_EOL . implode(
-						PHP_EOL . PHP_EOL, $_script
-					);
-				$script .= PHP_EOL . Indent::_(2) . '}' . PHP_EOL;
+				if (ArrayHelper::check($_script) && $route !== 'bottom')
+				{
+					// set the if and script
+					$script .= PHP_EOL . Indent::_(2) . "if ('" . $route
+						. "' === \$route)";
+					$script .= PHP_EOL . Indent::_(2) . '{';
+					$script .= PHP_EOL . implode(
+							PHP_EOL . PHP_EOL, $_script
+						);
+					$script .= PHP_EOL . Indent::_(2) . '}' . PHP_EOL;
+				}
 			}
+		}
+
+		if (isset($this->{$name . 'Bucket'}['bottom']) && ArrayHelper::check($this->{$name . 'Bucket'}['bottom']))
+		{
+			$script .= PHP_EOL . implode(
+				PHP_EOL , $this->{$name . 'Bucket'}['bottom']
+			) . PHP_EOL;
 		}
 
 		// return true
 		$script .= PHP_EOL . Indent::_(2) . 'return true;';
 		// close the function
+		$script .= PHP_EOL . Indent::_(1) . '}';
+
+		return $script;
+	}
+
+	/**
+	 * build remove files methods
+	 *
+	 * @return  string
+	 * @since   5.0.2
+	 */
+	protected function removeFiles(): string
+	{
+		$script = PHP_EOL . PHP_EOL . Indent::_(1) . '/**';
+		$script .= PHP_EOL . Indent::_(1) . ' * Remove the files and folders in the given array from';
+		$script .= PHP_EOL . Indent::_(1) . ' *';
+		$script .= PHP_EOL . Indent::_(1) . ' * @return  void';
+		$script .= PHP_EOL . Indent::_(1) . ' * @since   5.0.2';
+		$script .= PHP_EOL . Indent::_(1) . ' */';
+		$script .= PHP_EOL . Indent::_(1) . 'protected function removeFiles()';
+		$script .= PHP_EOL . Indent::_(1) . '{';
+		$script .= PHP_EOL . Indent::_(2) . 'if (!empty($this->deleteFiles))';
+		$script .= PHP_EOL . Indent::_(2) . '{';
+		$script .= PHP_EOL . Indent::_(3) . 'foreach ($this->deleteFiles as $file)';
+		$script .= PHP_EOL . Indent::_(3) . '{';
+		$script .= PHP_EOL . Indent::_(4) . 'if (is_file(JPATH_ROOT . $file) && !File::delete(JPATH_ROOT . $file))';
+		$script .= PHP_EOL . Indent::_(4) . '{';
+		$script .= PHP_EOL . Indent::_(5) . 'echo Text::sprintf(\'JLIB_INSTALLER_ERROR_FILE_FOLDER\', $file) . \'<br>\';';
+		$script .= PHP_EOL . Indent::_(4) . '}';
+		$script .= PHP_EOL . Indent::_(3) . '}';
+		$script .= PHP_EOL . Indent::_(2) . '}';
+		$script .= PHP_EOL . PHP_EOL . Indent::_(2) . 'if (!empty($this->deleteFolders))';
+		$script .= PHP_EOL . Indent::_(2) . '{';
+		$script .= PHP_EOL . Indent::_(3) . 'foreach ($this->deleteFolders as $folder)';
+		$script .= PHP_EOL . Indent::_(3) . '{';
+		$script .= PHP_EOL . Indent::_(4) . 'if (is_dir(JPATH_ROOT . $folder) && !Folder::delete(JPATH_ROOT . $folder))';
+		$script .= PHP_EOL . Indent::_(4) . '{';
+		$script .= PHP_EOL . Indent::_(5) . 'echo Text::sprintf(\'JLIB_INSTALLER_ERROR_FILE_FOLDER\', $folder) . \'<br>\';';
+		$script .= PHP_EOL . Indent::_(4) . '}';
+		$script .= PHP_EOL . Indent::_(3) . '}';
+		$script .= PHP_EOL . Indent::_(2) . '}';
 		$script .= PHP_EOL . Indent::_(1) . '}';
 
 		return $script;

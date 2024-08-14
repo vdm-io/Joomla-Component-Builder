@@ -16,6 +16,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface as Power;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface as Extractor;
 use VDM\Joomla\Componentbuilder\Power\Parser;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\InjectorInterface;
 
 
@@ -476,6 +477,12 @@ class Injector implements InjectorInterface
 	 */
 	protected function addUseStatement(string &$name, string $className, string $namespaceStatement): void
 	{
+		// we don't add use statements with just one part
+		if ($this->countPartsInString($namespaceStatement) <= 1)
+		{
+			return; // we just update the code
+		}
+
 		if ($name !== $className)
 		{
 			$statement = 'use ' . $namespaceStatement . ' as ' . $name . ';';
@@ -486,6 +493,27 @@ class Injector implements InjectorInterface
 		}
 
 		$this->useStatements[$name] = $statement;
+	}
+
+	/**
+	 * Counts the number of parts in a string separated by backslashes.
+	 *
+	 * @param string $string The input string to be evaluated.
+	 *
+	 * @return int    The number of parts separated by backslashes.
+	 * @since 5.0.2
+	 */
+	protected function countPartsInString(string $string): int
+	{
+		// Split the string by the backslash
+		$parts = explode('\\', $string);
+
+		// Count the number of parts and return the result
+		if (($number = ArrayHelper::check($parts, true)) !== false)
+		{
+			return $number;
+		}
+		return 0;
 	}
 
 	/**

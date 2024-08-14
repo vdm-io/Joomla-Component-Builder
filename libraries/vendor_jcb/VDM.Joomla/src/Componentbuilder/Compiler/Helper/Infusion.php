@@ -2227,7 +2227,7 @@ class Infusion extends Interpretation
 										// FIELDSET_ . $file.$field_name.$fieldset
 										CFactory::_('Compiler.Builder.Content.Multi')->set($module->key .
 											'|FIELDSET_' . $file . $field_name . $fieldset,
-											$this->getExtensionFieldsetXML(
+											CFactory::_('Compiler.Creator.Fieldset.Extension')->get(
 												$module, $fields
 											)
 										);
@@ -2246,68 +2246,10 @@ class Infusion extends Interpretation
 					}
 				}
 			}
-			// infuse plugin data if set
-			if (CFactory::_('Joomlaplugin.Data')->exists())
-			{
-				foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
-				{
-					if (ObjectHelper::check($plugin))
-					{
-						// Trigger Event: jcb_ce_onBeforeInfusePluginData
-						CFactory::_('Event')->trigger(
-							'jcb_ce_onBeforeInfusePluginData', [&$plugin]
-						);
 
-						CFactory::_('Config')->build_target = $plugin->key;
-						CFactory::_('Config')->lang_target = $plugin->key;
-						$this->langPrefix = $plugin->lang_prefix;
-						CFactory::_('Config')->set('lang_prefix', $plugin->lang_prefix);
-						// MAINCLASS
-						CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key . '|MAINCLASS',
-							$this->getPluginMainClass($plugin)
-						);
-						// only add install script if needed
-						if ($plugin->add_install_script)
-						{
-							// INSTALLCLASS
-							CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key . '|INSTALLCLASS',
-								CFactory::_('Extension.InstallScript')->get($plugin)
-							);
-						}
-						// FIELDSET
-						if (isset($plugin->form_files)
-							&& ArrayHelper::check(
-								$plugin->form_files
-							))
-						{
-							foreach ($plugin->form_files as $file => $files)
-							{
-								foreach ($files as $field_name => $fieldsets)
-								{
-									foreach ($fieldsets as $fieldset => $fields)
-									{
-										// FIELDSET_ . $file.$field_name.$fieldset
-										CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key .
-											'|FIELDSET_' . $file . $field_name . $fieldset,
-											$this->getExtensionFieldsetXML(
-												$plugin, $fields
-											)
-										);
-									}
-								}
-							}
-						}
-						// MAINXML
-						CFactory::_('Compiler.Builder.Content.Multi')->set($plugin->key . '|MAINXML',
-							$this->getPluginMainXML($plugin)
-						);
-						// Trigger Event: jcb_ce_onAfterInfusePluginData
-						CFactory::_('Event')->trigger(
-							'jcb_ce_onAfterInfusePluginData', [&$plugin]
-						);
-					}
-				}
-			}
+			// infuse plugin data if set
+			CFactory::_('Joomlaplugin.Infusion')->set();
+
 			// rest globals
 			CFactory::_('Config')->build_target = $_backup_target;
 			CFactory::_('Config')->lang_target = $_backup_lang;
@@ -2413,6 +2355,7 @@ class Infusion extends Interpretation
 		// add final list of needed lang strings
 		$componentName = CFactory::_('Component')->get('name');
 		$componentName = OutputFilter::cleanText($componentName);
+		$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 
 		// Trigger Event: jcb_ce_onBeforeLoadingAllLangStrings
 		CFactory::_('Event')->trigger(
@@ -2426,20 +2369,20 @@ class Infusion extends Interpretation
 		if ($this->setLangAdmin($componentName))
 		{
 			$values[]                = array_values(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['admin']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.admin")
 			);
 			$mainLangLoader['admin'] = count(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['admin']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.admin")
 			);
 		}
 		// check the admin system lang is set
 		if ($this->setLangAdminSys())
 		{
 			$values[]                   = array_values(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['adminsys']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.adminsys")
 			);
 			$mainLangLoader['adminsys'] = count(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['adminsys']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.adminsys")
 			);
 		}
 		// check the site lang is set
@@ -2447,10 +2390,10 @@ class Infusion extends Interpretation
 			&& $this->setLangSite($componentName))
 		{
 			$values[]               = array_values(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['site']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.site")
 			);
 			$mainLangLoader['site'] = count(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['site']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.site")
 			);
 		}
 		// check the site system lang is set
@@ -2458,33 +2401,35 @@ class Infusion extends Interpretation
 			&& $this->setLangSiteSys($componentName))
 		{
 			$values[]                  = array_values(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['sitesys']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.sitesys")
 			);
 			$mainLangLoader['sitesys'] = count(
-				$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['sitesys']
+				CFactory::_('Compiler.Builder.Languages')->get("components.{$langTag}.sitesys")
 			);
 		}
 		$values = array_unique(ArrayHelper::merge($values));
 		// get the other lang strings if there is any
-		$this->multiLangString = $this->getMultiLangStrings($values);
+		CFactory::_('Compiler.Builder.Multilingual')->set('components',
+			CFactory::_('Language.Multilingual')->get($values)
+		);
 		// update insert the current lang in to DB
-		$this->setLangPlaceholders($values, CFactory::_('Config')->component_id);
+		CFactory::_('Language.Set')->execute($values, CFactory::_('Config')->component_id);
 		// remove old unused language strings
-		$this->purgeLanuageStrings($values, CFactory::_('Config')->component_id);
+		CFactory::_('Language.Purge')->execute($values, CFactory::_('Config')->component_id);
 		// path to INI file
 		$getPAth = CFactory::_('Utilities.Paths')->template_path . '/en-GB.com_admin.ini';
 
 		// Trigger Event: jcb_ce_onBeforeBuildAllLangFiles
 		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeBuildAllLangFiles', [&$this->languages['components']]
+			'jcb_ce_onBeforeBuildAllLangFiles', ['components']
 		);
 
 		// now we insert the values into the files
-		if (ArrayHelper::check($this->languages['components']))
+		if (CFactory::_('Compiler.Builder.Languages')->IsArray("components"))
 		{
 			// rest xml array
 			$langXML = [];
-			foreach ($this->languages['components'] as $tag => $areas)
+			foreach (CFactory::_('Compiler.Builder.Languages')->get("components") as $tag => $areas)
 			{
 				// trim the tag
 				$tag = trim((string) $tag);
@@ -2510,7 +2455,7 @@ class Infusion extends Interpretation
 					$file_name = $tag . '.com_' . CFactory::_('Config')->component_code_name . $t
 						. '.ini';
 					// check if language should be added
-					if ($this->shouldLanguageBeAdded(
+					if (CFactory::_('Language.Translation')->check(
 						$tag, $languageStrings, $mainLangLoader[$area],
 						$file_name
 					))

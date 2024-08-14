@@ -31,6 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\ModelExpertFieldInitiator;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ModelMediumField;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ModelWhmcsField;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\MovedPublishingFields;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\Multilingual;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\MysqlTableSetting;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\NewPublishingFields;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\OrderZero;
@@ -137,6 +138,9 @@ class BuilderLZ implements ServiceProviderInterface
 
 		$container->alias(MovedPublishingFields::class, 'Compiler.Builder.Moved.Publishing.Fields')
 			->share('Compiler.Builder.Moved.Publishing.Fields', [$this, 'getMovedPublishingFields'], true);
+
+		$container->alias(Multilingual::class, 'Compiler.Builder.Multilingual')
+			->share('Compiler.Builder.Multilingual', [$this, 'getMultilingual'], true);
 
 		$container->alias(MysqlTableSetting::class, 'Compiler.Builder.Mysql.Table.Setting')
 			->share('Compiler.Builder.Mysql.Table.Setting', [$this, 'getMysqlTableSetting'], true);
@@ -469,6 +473,19 @@ class BuilderLZ implements ServiceProviderInterface
 	public function getMovedPublishingFields(Container $container): MovedPublishingFields
 	{
 		return new MovedPublishingFields();
+	}
+
+	/**
+	 * Get The Multilingual Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Multilingual
+	 * @since 3.2.0
+	 */
+	public function getMultilingual(Container $container): Multilingual
+	{
+		return new Multilingual();
 	}
 
 	/**

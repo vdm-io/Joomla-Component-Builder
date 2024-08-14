@@ -9,10 +9,10 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin;
+namespace VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\JoomlaFour;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\Data as Plugin;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PluginDataInterface as Plugin;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
@@ -22,6 +22,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
+use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
@@ -29,14 +30,15 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Componentbuilder\Interfaces\Plugin\StructureInterface;
 
 
 /**
- * Joomla Plugin Builder Class
+ * Joomla 4 Plugin Builder Class
  * 
- * @since 3.2.0
+ * @since 5.0.2
  */
-class Structure
+class Structure implements StructureInterface
 {
 	/**
 	 * The Data Class.
@@ -119,6 +121,30 @@ class Structure
 	protected Files $files;
 
 	/**
+	 * The Placeholder Class.
+	 *
+	 * @var   Placeholder
+	 * @since 5.0.0
+	 */
+	protected Placeholder $placeholder;
+
+	/**
+	 * The Namespace Prefix
+	 *
+	 * @var    string
+	 * @since 5.0.0
+	 */
+	protected string $NamespacePrefix;
+
+	/**
+	 * The Component Namespace (in code)
+	 *
+	 * @var   string
+	 * @since 3.2.0
+	 */
+	protected string $ComponentNamespace;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Plugin      $plugin      The Data Class.
@@ -131,13 +157,14 @@ class Structure
 	 * @param Folder      $folder      The Folder Class.
 	 * @param File        $file        The File Class.
 	 * @param Files       $files       The Files Class.
+	 * @param Placeholder       $placeholder       The Placeholder Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Plugin $plugin, Component $component, Config $config,
 		Registry $registry, Dispenser $dispenser, Event $event,
 		Counter $counter, Folder $folder, File $file,
-		Files $files)
+		Files $files, Placeholder $placeholder)
 	{
 		$this->plugin = $plugin;
 		$this->component = $component;
@@ -149,6 +176,11 @@ class Structure
 		$this->folder = $folder;
 		$this->file = $file;
 		$this->files = $files;
+		$this->placeholder = $placeholder;
+
+		// set some global values
+		$this->NamespacePrefix = $this->placeholder->get('NamespacePrefix');
+		$this->ComponentNamespace = $this->placeholder->get('ComponentNamespace');
 	}
 
 	/**
@@ -180,6 +212,9 @@ class Structure
 					// plugin path
 					$this->pluginPath($plugin);
 
+					// create src folder
+					$this->folder->create($plugin->folder_path . '/src');
+
 					// set the plugin paths
 					$this->registry->set('dynamic_paths.' . $plugin->key, $plugin->folder_path);
 
@@ -191,6 +226,9 @@ class Structure
 
 					// set main class file
 					$this->setMainClassFile($plugin);
+
+					// set service provider class file
+					$this->setServiceProviderClassFile($plugin);
 
 					// set main xml file
 					$this->setMainXmlFile($plugin);
@@ -206,10 +244,10 @@ class Structure
 						&& $plugin->fields_rules_paths == 2)
 					{
 						// create fields folder
-						$this->folder->create($plugin->folder_path . '/fields');
+						$this->folder->create($plugin->folder_path . '/src/Field');
 
 						// create rules folder
-						$this->folder->create($plugin->folder_path . '/rules');
+						$this->folder->create($plugin->folder_path . '/src/Rule');
 					}
 
 					// set forms folder if needed
@@ -218,10 +256,10 @@ class Structure
 					// set SQL stuff if needed
 					$this->setSQL($plugin);
 
-					// creat the language folder path
+					// create the language folder path
 					$this->folder->create($plugin->folder_path . '/language');
 
-					// also creat the lang tag folder path
+					// also create the lang tag folder path
 					$this->folder->create(
 						$plugin->folder_path . '/language/' . $this->config->get('lang_tag', 'en-GB')
 					);
@@ -252,7 +290,7 @@ class Structure
 		$xml = '<?xml version="1.0" encoding="utf-8"?>';
 		$xml .= PHP_EOL . '<extension type="plugin" version="'
 			. $this->config->joomla_versions[$this->config->joomla_version]['xml_version'] . '" group="'
-			. strtolower((string) $plugin->group) . '" method="upgrade">';
+			. $plugin->group . '" method="upgrade">';
 		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $plugin->lang_prefix
 			. '</name>';
 		$xml .= PHP_EOL . Indent::_(1) . '<creationDate>' . Placefix::_h('BUILDDATE') . '</creationDate>';
@@ -263,6 +301,8 @@ class Structure
 		$xml .= PHP_EOL . Indent::_(1) . '<license>' . Placefix::_h('LICENSE') . '</license>';
 		$xml .= PHP_EOL . Indent::_(1) . '<version>' . $plugin->plugin_version
 			. '</version>';
+		$xml .= PHP_EOL . Indent::_(1) . '<namespace path="src">' . "{$this->NamespacePrefix}\\Plugin\\{$plugin->group_namespace}\\{$plugin->namespace}"
+			. '</namespace>';
 		$xml .= PHP_EOL . Indent::_(1) . '<description>' . $plugin->lang_prefix
 			. '_XML_DESCRIPTION</description>';
 		$xml .= Placefix::_h('MAINXML');
@@ -295,20 +335,61 @@ class Structure
 	 */
 	protected function setMainClassFile(object $plugin): void
 	{
+		// create extension folder
+		$this->folder->create($plugin->folder_path . '/src/Extension');
+
 		$file_details = [
-			'path' => $plugin->folder_path . '/' . $plugin->file_name . '.php',
-			'name' => $plugin->file_name . '.php',
-			'zip' => $plugin->file_name . '.php'
+			'path' => $plugin->folder_path . '/src/Extension/' . $plugin->class_file_name . '.php',
+			'name' => $plugin->class_file_name . '.php',
+			'zip' => 'src/Extension/' . $plugin->class_file_name . '.php'
 		];
 
 		$this->file->write(
 			$file_details['path'],
 			'<?php' . PHP_EOL . '// Plugin main class template' .
 			PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
+			"namespace {$this->NamespacePrefix}\\Plugin\\{$plugin->group_namespace}\\{$plugin->namespace}\\Extension;" .
+			PHP_EOL . PHP_EOL . Placefix::_h('EXTENSION_CLASS_HEADER') .
+			PHP_EOL . PHP_EOL . '// No direct access to this file' . PHP_EOL .
+			"defined('_JEXEC') or die('Restricted access');" .
+			PHP_EOL . PHP_EOL .
+			Placefix::_h('EXTENSION_CLASS')
+		);
+
+		$this->files->appendArray($plugin->key, $file_details);
+
+		// count the file created
+		$this->counter->file++;
+	}
+
+	/**
+	 * set the service provider path
+	 *
+	 * @param   object   $plugin    The plugin object
+	 *
+	 * @return  void
+	 * @since 3.2.0
+	 */
+	protected function setServiceProviderClassFile(object $plugin): void
+	{
+		// create services folder
+		$this->folder->create($plugin->folder_path . '/services');
+
+		$file_details = [
+			'path' => $plugin->folder_path . '/services/provider.php',
+			'name' => 'provider.php',
+			'zip' => 'services/provider.php'
+		];
+
+		$this->file->write(
+			$file_details['path'],
+			'<?php' . PHP_EOL . '// Plugin services provider class template' .
+			PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
 			PHP_EOL . '// No direct access to this file' . PHP_EOL .
-			"defined('_JEXEC') or die('Restricted access');"
-			. PHP_EOL .
-			Placefix::_h('MAINCLASS')
+			"defined('_JEXEC') or die('Restricted access');" .
+			PHP_EOL . PHP_EOL . 
+			Placefix::_h('PROVIDER_CLASS_HEADER') .
+			Placefix::_h('PROVIDER_CLASS')
 		);
 
 		$this->files->appendArray($plugin->key, $file_details);
@@ -368,7 +449,7 @@ class Structure
 				PHP_EOL . Placefix::_h('BOM') . PHP_EOL .
 				PHP_EOL . '// No direct access to this file' . PHP_EOL .
 				"defined('_JEXEC') or die('Restricted access');" . PHP_EOL .
-				Placefix::_h('INSTALLCLASS')
+				Placefix::_h('INSTALL_CLASS')
 			);
 
 			$this->files->appendArray($plugin->key, $file_details);
@@ -417,6 +498,9 @@ class Structure
 		if (isset($plugin->form_files)
 			&& ArrayHelper::check($plugin->form_files))
 		{
+			$Group = ucfirst((string) $plugin->group);
+			$FileName = $plugin->file_name;
+
 			// create forms folder
 			$this->folder->create($plugin->folder_path . '/forms');
 
@@ -460,28 +544,14 @@ class Structure
 				{
 					$xml .= PHP_EOL . '<form';
 
-					if ($this->config->get('joomla_version', 3) == 3)
-					{
-						$xml .= PHP_EOL . Indent::_(1)
-							. 'addrulepath="/administrator/components/com_'
-							. $this->config->component_code_name
-							. '/models/rules"';
-						$xml .= PHP_EOL . Indent::_(1)
-							. 'addfieldpath="/administrator/components/com_'
-							. $this->config->component_code_name
-							. '/models/fields"';
-					}
-					else
-					{
-						$xml .= PHP_EOL . Indent::_(1)
-							. 'addruleprefix="' . $this->config->namespace_prefix
-							. '\Component\\' . StringHelper::safe($this->config->component_code_name, 'F')
-							. '\Administrator\Rule"';
-						$xml .= PHP_EOL . Indent::_(1)
-							.'addfieldprefix="' . $this->config->namespace_prefix
-							. '\Component\\' . StringHelper::safe($this->config->component_code_name, 'F')
-							. '\Administrator\Field"';
-					}
+					$xml .= PHP_EOL . Indent::_(1)
+						. 'addruleprefix="' . $this->NamespacePrefix
+						. '\Component\\' . $this->ComponentNamespace
+						. '\Administrator\Rule"';
+					$xml .= PHP_EOL . Indent::_(1)
+						.'addfieldprefix="' . $this->NamespacePrefix
+						. '\Component\\' . $this->ComponentNamespace
+						. '\Administrator\Field"';
 
 					$xml .= PHP_EOL . '>';
 				}
@@ -525,16 +595,13 @@ class Structure
 							if (!isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
 							{
 								$plugin->add_rule_path[$file . $field_name . $fieldset] =
-									'/plugins/' . strtolower((string)$plugin->group) . '/'
-									. strtolower((string)$plugin->code_name) . '/rules';
+									"{$this->NamespacePrefix}\\Plugin\\{$Group}\\{$FileName}\\Rule";
 							}
 
 							if (!isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 							{
 								$plugin->add_field_path[$file . $field_name . $fieldset] =
-									'/plugins/' . strtolower((string)$plugin->group
-									) . '/' . strtolower((string)$plugin->code_name)
-									. '/fields';
+									"{$this->NamespacePrefix}\\Plugin\\{$Group}\\{$FileName}\\Field";
 							}
 						}
 

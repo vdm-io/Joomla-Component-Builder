@@ -42,25 +42,29 @@ class DynamicgetsField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// Get the databse object.
 		$db = Factory::getDBO();
-$query = $db->getQuery(true);
-$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','dynamic_get_name','type')));
-$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
-$query->where($db->quoteName('a.published') . ' = 1');
-$query->order('a.name ASC');
-$db->setQuery((string)$query);
-$items = $db->loadObjectList();
-$options = array();
-if ($items)
-{
-	$model = ComponentbuilderHelper::getModel('dynamic_gets');
-	foreach($items as $item)
-	{
-				$type = $model->selectionTranslation($item->type,'gettype');
-		$options[] = Html::_('select.option', $item->id, $item->dynamic_get_name . ' (' . Text::_($type) . ')' );
-	}
-}
-
-return $options;
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','dynamic_get_name','type')));
+		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
+		$query->where($db->quoteName('a.published') . ' >= 1');
+		$query->order('a.name ASC');
+		$db->setQuery((string)$query);
+		$items = $db->loadObjectList();
+		$options = [];
+		if ($items)
+		{
+			$model = ComponentbuilderHelper::getModel('dynamic_gets');
+			if ($this->multiple === false)
+			{
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+			}
+			foreach($items as $item)
+			{
+				$type = $model->selectionTranslation($item->type, 'gettype');
+				$options[] = Html::_('select.option', $item->id, $item->dynamic_get_name . ' (' . Text::_($type) . ')');
+			}
+		}
+		return $options;
 	}
 }
