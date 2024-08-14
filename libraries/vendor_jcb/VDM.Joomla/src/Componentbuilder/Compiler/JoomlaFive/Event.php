@@ -13,8 +13,9 @@ namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaFive;
 
 
 use Joomla\CMS\Factory;
-use Joomla\Registry\Registry;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Event\DispatcherInterface;
+use Joomla\Registry\Registry;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
 
@@ -35,9 +36,9 @@ class Event implements EventInterface
 	protected $activePlugins = false;
 
 	/**
-	 * The application to trigger and event TODO
+	 * The dispatcher to get events
 	 *
-	 * @since 3.2.0
+	 * @since 5.0.2
 	 */
 	protected $dispatcher;
 
@@ -69,7 +70,7 @@ class Event implements EventInterface
 			}
 		}
 
-		$this->dispatcher = Factory::getApplication();
+		$this->dispatcher = Factory::getContainer()->get(DispatcherInterface::class);
 	}
 
 	/**
@@ -89,8 +90,13 @@ class Event implements EventInterface
 		{
 			try
 			{
-				// Trigger this compiler event.
-				$results = $this->dispatcher->triggerEvent($event, $data ?? []);
+				$data ??= [];
+				$listeners = $this->dispatcher->getListeners($event);
+				foreach ($listeners as $listener)
+				{
+					// Call the listener with the unpacked arguments
+					$listener(...$data);
+				}
 			}
 			catch (\Exception $e)
 			{

@@ -23,6 +23,7 @@ Html::_('formbehavior.chosen', 'select');
 Html::_('behavior.keepalive');
 use Joomla\CMS\Session\Session;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Uri\Uri;
 
 $this->app->input->set('hidemainmenu', false);
 $selectNotice = '<h3>' . Text::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
@@ -245,7 +246,7 @@ function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
+		echo 'var url = "'. Uri::root() . '";';
 	}
 	else
 	{

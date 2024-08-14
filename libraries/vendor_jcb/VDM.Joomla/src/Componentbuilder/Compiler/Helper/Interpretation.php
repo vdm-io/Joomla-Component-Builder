@@ -11097,8 +11097,11 @@ class Interpretation extends Fields
 			// sort the strings
 			ksort($langContent);
 			// load to global languages
-			$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['admin']
-				= $langContent;
+			$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
+			CFactory::_('Compiler.Builder.Languages')->set(
+				"components.{$langTag}.admin",
+				$langContent
+			);
 			// remove tmp array
 			CFactory::_('Language')->setTarget('admin', null);
 
@@ -11187,8 +11190,11 @@ class Interpretation extends Fields
 			// sort the strings
 			ksort($langContent);
 			// load to global languages
-			$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['site']
-				= $langContent;
+			$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
+			CFactory::_('Compiler.Builder.Languages')->set(
+				"components.{$langTag}.site",
+				$langContent
+			);
 			// remove tmp array
 			CFactory::_('Language')->setTarget('site', null);
 
@@ -11235,8 +11241,11 @@ class Interpretation extends Fields
 			// sort strings
 			ksort($langContent);
 			// load to global languages
-			$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['sitesys']
-				= $langContent;
+			$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
+			CFactory::_('Compiler.Builder.Languages')->set(
+				"components.{$langTag}.sitesys",
+				$langContent
+			);
 			// remove tmp array
 			CFactory::_('Language')->setTarget('sitesys', null);
 
@@ -11272,8 +11281,11 @@ class Interpretation extends Fields
 			// sort strings
 			ksort($langContent);
 			// load to global languages
-			$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['adminsys']
-				= $langContent;
+			$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
+			CFactory::_('Compiler.Builder.Languages')->set(
+				"components.{$langTag}.adminsys",
+				$langContent
+			);
 			// remove tmp array
 			CFactory::_('Language')->setTarget('adminsys', null);
 
@@ -23020,7 +23032,7 @@ class Interpretation extends Fields
 				foreach ($fieldsets as $fieldset => $fields)
 				{
 					// get the field set
-					$xmlFields = $this->getExtensionFieldsetXML(
+					$xmlFields = CFactory::_('Compiler.Creator.Fieldset.Extension')->get(
 						$module, $fields, $dbkey
 					);
 					// check if the custom script field must be set
@@ -23066,29 +23078,32 @@ class Interpretation extends Fields
 			// get other languages
 			$values = array_unique($langContent);
 			// get the other lang strings if there is any
-			$this->multiLangString = $this->getMultiLangStrings($values);
+			CFactory::_('Compiler.Builder.Multilingual')->set('modules',
+				CFactory::_('Language.Multilingual')->get($values)
+			);
 			// start the modules language bucket (must rest every time)
-			$this->languages['modules']                 = [];
-			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
-			$this->languages['modules'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['all']
-				= $langContent;
+			$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
+			CFactory::_('Compiler.Builder.Languages')->set(
+				"modules.{$langTag}.all",
+				$langContent
+			);
 			CFactory::_('Language')->setTarget($module->key, null);
 			// update insert the current lang in to DB
-			$this->setLangPlaceholders($values, $module->id, 'modules');
+			CFactory::_('Language.Set')->execute($values, $module->id, 'modules');
 			// remove old unused language strings
-			$this->purgeLanuageStrings($values, $module->id, 'modules');
+			CFactory::_('Language.Purge')->execute($values, $module->id, 'modules');
 			$total = count($values);
 			unset($values);
 
 			// Trigger Event: jcb_ce_onBeforeBuildModuleLangFiles
 			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildModuleLangFiles', [&$module, &$this->languages['modules']]
+				'jcb_ce_onBeforeBuildModuleLangFiles', [&$module]
 			);
 
 			// now we insert the values into the files
-			if (ArrayHelper::check($this->languages['modules']))
+			if (CFactory::_('Compiler.Builder.Languages')->IsArray('modules'))
 			{
-				foreach ($this->languages['modules'] as $tag => $areas)
+				foreach (CFactory::_('Compiler.Builder.Languages')->get('modules') as $tag => $areas)
 				{
 					// trim the tag
 					$tag = trim($tag);
@@ -23096,7 +23111,7 @@ class Interpretation extends Fields
 					{
 						$file_name = $tag . '.' . $module->file_name . '.ini';
 						// check if language should be added
-						if ($this->shouldLanguageBeAdded(
+						if (CFactory::_('Language.Translation')->check(
 							$tag, $languageStrings, $total,
 							$file_name
 						))
@@ -23392,391 +23407,40 @@ class Interpretation extends Fields
 		return $xml;
 	}
 
+	/**
+	 * get Plugin Main Class
+	 *
+	 * @param   object  $plugin  The plugin object
+	 *
+	 * @return  string The fields set in xml
+	 * @deprecated 3.4 CFactory::_('Architecture.Plugin.Extension')->get(...);
+	 */
 	public function getPluginMainClass(&$plugin)
 	{
-		return CFactory::_('Placeholder')->update(
-			PHP_EOL . $plugin->head . PHP_EOL .
-			$plugin->comment . PHP_EOL . 'class ' .
-			$plugin->class_name . ' extends ' .
-			$plugin->extends . PHP_EOL . '{' . PHP_EOL .
-			$plugin->main_class_code . PHP_EOL .
-			"}" . PHP_EOL,
-			CFactory::_('Compiler.Builder.Content.One')->allActive()
-		);
+		return CFactory::_('Architecture.Plugin.Extension')->get($plugin);
 	}
 
+	/**
+	 * get Plugin Main XML
+	 *
+	 * @param   object  $plugin  The plugin object
+	 *
+	 * @return  string The xml
+	 * @deprecated 3.4 CFactory::_('Architecture.Plugin.MainXML')->get(...);
+	 */
 	public function getPluginMainXML(&$plugin)
 	{
-		// set the custom table key
-		$dbkey = 'yy';
-		// build the xml
-		$xml = '';
-		// search if we must add the component path
-		$add_component_path = false;
-		// build the config fields
-		$config_fields = [];
-		if (isset($plugin->config_fields)
-			&& ArrayHelper::check(
-				$plugin->config_fields
-			))
-		{
-			foreach ($plugin->config_fields as $field_name => $fieldsets)
-			{
-				foreach ($fieldsets as $fieldset => $fields)
-				{
-					// get the field set
-					$xmlFields = $this->getExtensionFieldsetXML(
-						$plugin, $fields, $dbkey
-					);
-					// make sure the xml is set and a string
-					if (isset($xmlFields)
-						&& StringHelper::check($xmlFields))
-					{
-						$config_fields[$field_name . $fieldset] = $xmlFields;
-					}
-					$dbkey++;
-					// check if the fieldset path requiers component paths
-					if (!$add_component_path
-						&& isset(
-							$plugin->fieldsets_paths[$field_name . $fieldset]
-						)
-						&& $plugin->fieldsets_paths[$field_name . $fieldset]
-						== 1)
-					{
-						$add_component_path = true;
-					}
-				}
-			}
-		}
-		// switch to add the language xml
-		$addLang = [];
-		// now build the language files
-		if (CFactory::_('Language')->exist($plugin->key))
-		{
-			// get plugin lang content
-			$langContent = CFactory::_('Language')->getTarget($plugin->key);
-			// Trigger Event: jcb_ce_onBeforeBuildPluginLang
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildPluginLang', [&$plugin, &$langContent]
-			);
-			// get other languages
-			$values = array_unique($langContent);
-			// get the other lang strings if there is any
-			$this->multiLangString = $this->getMultiLangStrings($values);
-			// start the plugins language bucket (must rest every time)
-			$this->languages['plugins']                 = [];
-			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
-			$this->languages['plugins'][CFactory::_('Config')->get('lang_tag', 'en-GB')]['all']
-				= $langContent;
-			CFactory::_('Language')->setTarget($plugin->key, null);
-			// update insert the current lang in to DB
-			$this->setLangPlaceholders($values, $plugin->id, 'plugins');
-			// remove old unused language strings
-			$this->purgeLanuageStrings($values, $plugin->id, 'plugins');
-			$total = count($values);
-			unset($values);
-			// Trigger Event: jcb_ce_onBeforeBuildPluginLangFiles
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildPluginLangFiles', [&$plugin, &$this->languages['plugins']]
-			);
-			// now we insert the values into the files
-			if (ArrayHelper::check($this->languages['plugins']))
-			{
-				foreach ($this->languages['plugins'] as $tag => $areas)
-				{
-					// trim the tag
-					$tag = trim($tag);
-					foreach ($areas as $area => $languageStrings)
-					{
-						$file_name = $tag . '.plg_' . strtolower((string) $plugin->group)
-							. '_'
-							. strtolower((string) $plugin->code_name) . '.ini';
-						// check if language should be added
-						if ($this->shouldLanguageBeAdded(
-							$tag, $languageStrings, $total,
-							$file_name
-						))
-						{
-							$lang = array_map(
-								fn($langstring, $placeholder) => $placeholder . '="' . $langstring . '"',
-								array_values($languageStrings),
-								array_keys($languageStrings)
-							);
-							// set path
-							$path = $plugin->folder_path . '/language/' . $tag
-								. '/';
-							// create path if not exist
-							if (!Folder::exists($path))
-							{
-								Folder::create($path);
-								// count the folder created
-								CFactory::_('Utilities.Counter')->folder++;
-							}
-							// add to language file
-							CFactory::_('Utilities.File')->write(
-								$path . $file_name,
-								implode(PHP_EOL, $lang)
-							);
-							CFactory::_('Utilities.File')->write(
-								$path . $tag . '.plg_' . strtolower(
-									(string) $plugin->group
-								)
-								. '_'
-								. strtolower((string) $plugin->code_name) . '.sys.ini',
-								implode(PHP_EOL, $lang)
-							);
-							// set the line counter
-							CFactory::_('Utilities.Counter')->line += count(
-									(array) $lang
-								);
-							unset($lang);
-							// trigger to add language
-							$addLang[$tag] = $tag;
-						}
-					}
-				}
-			}
-		}
-		// get all files and folders in plugin folder
-		$files   = Folder::files($plugin->folder_path);
-		$folders = Folder::folders($plugin->folder_path);
-		// the files/folders to ignore
-		$ignore = array('sql', 'language', 'script.php',
-			$plugin->file_name . '.xml',
-			$plugin->file_name . '.php');
-		// should the scriptfile be added
-		if ($plugin->add_install_script)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Scripts to run on installation -->';
-			$xml .= PHP_EOL . Indent::_(1)
-				. '<scriptfile>script.php</scriptfile>';
-		}
-		// should the sql install be added
-		if ($plugin->add_sql)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Runs on install; New in Joomla 1.5 -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<install>';
-			$xml .= PHP_EOL . Indent::_(2) . '<sql>';
-			$xml .= PHP_EOL . Indent::_(3)
-				. '<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>';
-			$xml .= PHP_EOL . Indent::_(2) . '</sql>';
-			$xml .= PHP_EOL . Indent::_(1) . '</install>';
-		}
-		// should the sql uninstall be added
-		if ($plugin->add_sql_uninstall)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Runs on uninstall; New in Joomla 1.5 -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<uninstall>';
-			$xml .= PHP_EOL . Indent::_(2) . '<sql>';
-			$xml .= PHP_EOL . Indent::_(3)
-				. '<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>';
-			$xml .= PHP_EOL . Indent::_(2) . '</sql>';
-			$xml .= PHP_EOL . Indent::_(1) . '</uninstall>';
-		}
-		// should the language xml be added
-		if (ArrayHelper::check($addLang))
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Language files -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<languages folder="language">';
-			// load all the language files to xml
-			foreach ($addLang as $addTag)
-			{
-				$xml .= PHP_EOL . Indent::_(2) . '<language tag="'
-					. $addTag . '">' . $addTag . '/' . $addTag . '.plg_'
-					. strtolower((string) $plugin->group) . '_' . strtolower(
-						(string) $plugin->code_name
-					) . '.ini</language>';
-				$xml .= PHP_EOL . Indent::_(2) . '<language tag="'
-					. $addTag . '">' . $addTag . '/' . $addTag . '.plg_'
-					. strtolower((string) $plugin->group) . '_' . strtolower(
-						(string) $plugin->code_name
-					) . '.sys.ini</language>';
-			}
-			$xml .= PHP_EOL . Indent::_(1) . '</languages>';
-		}
-		// add the plugin files
-		$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-				__LINE__,__CLASS__
-			) . ' Plugin files -->';
-		$xml .= PHP_EOL . Indent::_(1) . '<files>';
-		$xml .= PHP_EOL . Indent::_(2) . '<filename plugin="'
-			. $plugin->file_name . '">' . $plugin->file_name
-			. '.php</filename>';
-		// add other files found
-		if (ArrayHelper::check($files))
-		{
-			foreach ($files as $file)
-			{
-				// only add what is not ignored
-				if (!in_array($file, $ignore))
-				{
-					$xml .= PHP_EOL . Indent::_(2) . '<filename>' . $file
-						. '</filename>';
-				}
-			}
-		}
-		// add language folder
-		if (ArrayHelper::check($addLang))
-		{
-			$xml .= PHP_EOL . Indent::_(2) . '<folder>language</folder>';
-		}
-		// add sql folder
-		if ($plugin->add_sql || $plugin->add_sql_uninstall)
-		{
-			$xml .= PHP_EOL . Indent::_(2) . '<folder>sql</folder>';
-		}
-		// add other files found
-		if (ArrayHelper::check($folders))
-		{
-			foreach ($folders as $folder)
-			{
-				// only add what is not ignored
-				if (!in_array($folder, $ignore))
-				{
-					$xml .= PHP_EOL . Indent::_(2) . '<folder>' . $folder
-						. '</folder>';
-				}
-			}
-		}
-		$xml .= PHP_EOL . Indent::_(1) . '</files>';
-		// now add the Config Params if needed
-		if (ArrayHelper::check($config_fields))
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Config parameter -->';
-			// only add if part of the component field types path is required
-			if ($add_component_path)
-			{
-				// add path to plugin rules and custom fields
-				$xml .= PHP_EOL . Indent::_(1) . '<config';
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-				{
-					$xml .= PHP_EOL . Indent::_(2)
-						. 'addrulepath="/administrator/components/com_'
-						. CFactory::_('Config')->component_code_name . '/models/rules"';
-					$xml .= PHP_EOL . Indent::_(2)
-						. 'addfieldpath="/administrator/components/com_'
-						. CFactory::_('Config')->component_code_name . '/models/fields"';
-				}
-				else
-				{
-					$xml .= PHP_EOL . Indent::_(3)
-						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
-						. '\Administrator\Rule"';
-					$xml .= PHP_EOL . Indent::_(3)
-						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
-						. '\Administrator\Field">';
-				}
-				$xml .= PHP_EOL . Indent::_(1) . '>';
-			}
-			else
-			{
-				$xml .= PHP_EOL . Indent::_(1) . '<config>';
-			}
-			// add the fields
-			foreach ($plugin->config_fields as $field_name => $fieldsets)
-			{
-				$xml .= PHP_EOL . Indent::_(1) . '<fields name="' . $field_name
-					. '">';
-				foreach ($fieldsets as $fieldset => $fields)
-				{
-					// default to the field set name
-					$label = $fieldset;
-					if (isset($plugin->fieldsets_label[$field_name . $fieldset]))
-					{
-						$label = $plugin->fieldsets_label[$field_name . $fieldset];
-					}
-					// add path to plugin rules and custom fields
-					if (isset($plugin->fieldsets_paths[$field_name . $fieldset])
-						&& ($plugin->fieldsets_paths[$field_name . $fieldset] == 2
-							|| $plugin->fieldsets_paths[$field_name . $fieldset] == 3))
-					{
-						if (!isset($plugin->add_rule_path[$field_name . $fieldset]))
-						{
-							$plugin->add_rule_path[$field_name . $fieldset] =
-								'/plugins/' . strtolower((string) $plugin->group
-								) . '/' . strtolower((string) $plugin->code_name)
-								. '/rules';
-						}
-
-						if (!isset($plugin->add_field_path[$field_name . $fieldset]))
-						{
-							$plugin->add_field_path[$field_name . $fieldset] =
-								'/plugins/' . strtolower((string) $plugin->group
-								) . '/' . strtolower((string) $plugin->code_name)
-								. '/fields';
-						}
-					}
-					// add path to plugin rules and custom fields
-					if (isset($plugin->add_rule_path[$field_name . $fieldset])
-						|| isset($plugin->add_field_path[$field_name . $fieldset]))
-					{
-						$xml .= PHP_EOL . Indent::_(1) . '<!--'
-							. Line::_(__Line__, __Class__) . ' default paths of '
-							. $fieldset . ' fieldset points to the plugin -->';
-
-						$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-							. $fieldset . '" label="' . $label . '"';
-
-						if (isset($plugin->add_rule_path[$field_name . $fieldset]))
-						{
-							$xml .= PHP_EOL . Indent::_(2)
-								. 'addrulepath="' . $plugin->add_rule_path[$field_name . $fieldset] . '"';
-						}
-
-						if (isset($plugin->add_field_path[$field_name . $fieldset]))
-						{
-							$xml .= PHP_EOL . Indent::_(2)
-								. 'addfieldpath="' . $plugin->add_field_path[$field_name . $fieldset] . '"';
-						}
-
-						$xml .= PHP_EOL . Indent::_(1) . '>';
-					}
-					else
-					{
-						$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-							. $fieldset . '" label="' . $label . '">';
-					}
-					// load the fields
-					if (isset($config_fields[$field_name . $fieldset]))
-					{
-						$xml .= $config_fields[$field_name . $fieldset];
-						unset($config_fields[$field_name . $fieldset]);
-					}
-					$xml .= PHP_EOL . Indent::_(1) . '</fieldset>';
-				}
-				$xml .= PHP_EOL . Indent::_(1) . '</fields>';
-			}
-			$xml .= PHP_EOL . Indent::_(1) . '</config>';
-		}
-		// set update server if found
-		if ($plugin->add_update_server)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Update servers -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<updateservers>';
-			$xml .= PHP_EOL . Indent::_(2)
-				. '<server type="extension" priority="1" name="'
-				. $plugin->official_name . '">' . $plugin->update_server_url
-				. '</server>';
-			$xml .= PHP_EOL . Indent::_(1) . '</updateservers>';
-		}
-
-		return $xml;
+		return CFactory::_('Architecture.Plugin.MainXML')->get($plugin);
 	}
 
+	/**
+	 * get power code
+	 *
+	 * @param   object  $power
+	 *
+	 * @return  string
+	 * @deprecated 3.4 (line 393 private Compiler.Power.Infusion->code())
+	 */
 	public function getPowerCode(&$power)
 	{
 		$code = [];
@@ -23830,65 +23494,23 @@ class Interpretation extends Fields
 	 * @param   string  $dbkey      The database key
 	 *
 	 * @return  string The fields set in xml
-	 *
+	 * @deprecated 3.4 CFactory::_('Compiler.Creator.Access.Sections.Joomla.Fields')->get(...);
 	 */
-	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz')
+	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz'): string
 	{
-		// get global placeholders
-		$placeholder = CFactory::_('Component.Placeholder')->get();
 		// build the fieldset
-		return CFactory::_('Compiler.Creator.Fieldset.Dynamic')->get(
-			$fields, $extension->lang_prefix, $extension->key, $extension->key,
-			$placeholder, $dbkey
-		);
+		return CFactory::_('Compiler.Creator.Fieldset.Extension')->get($extension, $fields, $dbkey);
 	}
 
 	/**
 	 * check if a translation should be added
 	 *
 	 * @return  bool
-	 *
+	 * @deprecated 3.4 Use CFactory::_('Language.Translation')->check(...);
 	 */
 	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total, &$file_name)
 	{
-		// only log messages for none CFactory::_('Config')->get('lang_tag', 'en-GB') translations
-		if (CFactory::_('Config')->get('lang_tag', 'en-GB') !== $tag)
-		{
-			$langStringNr  = count($languageStrings);
-			$langStringSum = MathHelper::bc(
-				'mul', $langStringNr, 100
-			);
-			$percentage    = MathHelper::bc(
-				'div', $langStringSum, $total
-			);
-			$stringNAme    = ($langStringNr == 1) ? '(string '
-				. $tag . ' translated)'
-				: '(strings ' . $tag . ' translated)';
-			// force load if debug lines are added
-			if (!CFactory::_('Config')->get('debug_line_nr', false))
-			{
-				// check if we should install this translation
-				if ($percentage < CFactory::_('Config')->percentage_language_add)
-				{
-					// languages that will be excluded
-					CFactory::_('Compiler.Builder.Language.Messages')->set("exclude.$file_name",
-					 	'<b>' . $total . '</b>(total '
-						. CFactory::_('Config')->get('lang_tag', 'en-GB') . ' strings) only <b>'
-						. $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage
-					);
-
-					return false;
-				}
-			}
-			// languages that will be included
-			CFactory::_('Compiler.Builder.Language.Messages')->set("include.$file_name",
-				'<b>' . $total . '</b>(total '
-				. CFactory::_('Config')->get('lang_tag', 'en-GB') . ' strings) and <b>'
-				. $langStringNr . '</b>' . $stringNAme . ' = ' . $percentage
-			);
-		}
-
-		return true;
+		return CFactory::_('Language.Translation')->check($tag, $languageStrings, $total, $file_name);
 	}
 }
 

@@ -360,10 +360,10 @@ final class InstallScript implements GetScriptInterface
 			$script .= PHP_EOL . Indent::_(2)
 				. '$jversion = new JVersion();';
 			$script .= PHP_EOL . Indent::_(2)
-				. "if (!\$jversion->isCompatible('3.8.0'))";
+				. "if (!\$jversion->isCompatible('4.0.0'))";
 			$script .= PHP_EOL . Indent::_(2) . '{';
 			$script .= PHP_EOL . Indent::_(3)
-				. "\$app->enqueueMessage('Please upgrade to at least Joomla! 3.8.0 before continuing!', 'error');";
+				. "\$app->enqueueMessage('Please upgrade to at least Joomla! 4.0.0 before continuing!', 'error');";
 			$script .= PHP_EOL . Indent::_(3) . 'return false;';
 			$script .= PHP_EOL . Indent::_(2) . '}' . PHP_EOL;
 		}

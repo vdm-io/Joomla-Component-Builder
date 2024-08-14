@@ -17,6 +17,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 Html::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 Html::_('behavior.formvalidator');
 Html::_('formbehavior.chosen', 'select');
@@ -120,7 +121,7 @@ function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
+		echo 'var url = "'. Uri::root() . '";';
 	}
 	else
 	{

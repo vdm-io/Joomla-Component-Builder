@@ -72,7 +72,7 @@ class Autoloader
 	 *
 	 * @param Power     $power     The Power Class.
 	 * @param Config    $config    The Config Class.
-	 * @param Content   $content   The ContentOne Class.
+	 * @param Content   $content   The Content One Class.
 	 *
 	 * @since 3.2.0
 	 */

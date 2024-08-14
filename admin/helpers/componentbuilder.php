@@ -5673,8 +5673,8 @@ abstract class ComponentbuilderHelper
 		return MathHelper::sum($array, $scale);
 	}
 
-        /**
-         * create plugin class name
+	/**
+	 * create plugin class name
 	 *
 	 * @input	string       The group name
 	 * @input	string       The name
@@ -5683,7 +5683,7 @@ abstract class ComponentbuilderHelper
 	 * 
 	 * @since  3.0.9
 	 *
-	 * @deprecated  4.0 - Use PluginHelper::safe($name, $group);
+	 * @deprecated  4.0 - Use PluginHelper::safeClassName($name, $group);
          */
         public static function createPluginClassName($group, $name)
 	{

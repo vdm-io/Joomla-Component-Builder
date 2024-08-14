@@ -205,6 +205,11 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Helper\TagsHelper;';
 				break;
 
+			case 'plugin.extension.header':
+			case 'plugin.provider.header':
+				$headers = [];
+				break;
+
 			default:
 				break;
 		}

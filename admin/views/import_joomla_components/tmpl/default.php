@@ -17,6 +17,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Uri\Uri;
 Html::_('jquery.framework');
 Html::_('bootstrap.tooltip');
 Html::_('script', 'system/core.js', false, true);
@@ -552,7 +553,7 @@ function JRouter(link) {
 <?php
 	if ($app->isClient('site'))
 	{
-		echo 'var url = "'. \Joomla\CMS\Uri\Uri::root() . '";';
+		echo 'var url = "'. Uri::root() . '";';
 	}
 	else
 	{

@@ -38,6 +38,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterConstructorDefault;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterConstructorManual;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterMethodsDefault;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\RouterMethodsManual;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetExtension;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetString;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetXML;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldsetDynamic;
@@ -83,6 +84,9 @@ class Creator implements ServiceProviderInterface
 
 		$container->alias(CustomButtonPermissions::class, 'Compiler.Creator.Custom.Button.Permissions')
 			->share('Compiler.Creator.Custom.Button.Permissions', [$this, 'getCustomButtonPermissions'], true);
+
+		$container->alias(FieldsetExtension::class, 'Compiler.Creator.Fieldset.Extension')
+			->share('Compiler.Creator.Fieldset.Extension', [$this, 'getFieldsetExtension'], true);
 
 		$container->alias(ConfigFieldsets::class, 'Compiler.Creator.Config.Fieldsets')
 			->share('Compiler.Creator.Config.Fieldsets', [$this, 'getConfigFieldsets'], true);
@@ -666,6 +670,22 @@ class Creator implements ServiceProviderInterface
 	{
 		return new RouterMethodsManual(
 			$container->get('Compiler.Builder.Router')
+		);
+	}
+
+	/**
+	 * Get The FieldsetExtension Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  FieldsetExtension
+	 * @since   5.0.2
+	 */
+	public function getFieldsetExtension(Container $container): FieldsetExtension
+	{
+		return new FieldsetExtension(
+			$container->get('Component.Placeholder'),
+			$container->get('Compiler.Creator.Fieldset.Dynamic')
 		);
 	}
 

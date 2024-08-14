@@ -1049,8 +1049,6 @@ class Get
 		$this->langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
 		// also set the helper class langTag (for safeStrings)
 		\ComponentbuilderHelper::$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
-		// setup the main language array
-		$this->languages['components'][CFactory::_('Config')->get('lang_tag', 'en-GB')] = [];
 		// check if we have Tidy enabled @deprecated
 		$this->tidy = CFactory::_('Config')->get('tidy', false);
 		// set the field type builder @deprecated
@@ -2049,219 +2047,25 @@ class Get
 	 *
 	 * @param   array  $values  The lang strings to get
 	 *
-	 *
-	 * @return  void
-	 *
+	 * @return  array|null
+	 * @deprecated 3.4 Use CFactory::_('Language.Multilingual')->get($values);
 	 */
 	public function getMultiLangStrings($values)
 	{
-		// Create a new query object.
-		$query = $this->db->getQuery(true);
-		$query->from(
-			$this->db->quoteName(
-				'#__componentbuilder_language_translation', 'a'
-			)
-		);
-		if (ArrayHelper::check($values))
-		{
-			$query->select(
-				$this->db->quoteName(
-					array('a.id', 'a.translation', 'a.source', 'a.components',
-						'a.modules', 'a.plugins', 'a.published')
-				)
-			);
-			$query->where(
-				$this->db->quoteName('a.source') . ' IN (' . implode(
-					',', array_map(
-						fn($a) => $this->db->quote($a), $values
-					)
-				) . ')'
-			);
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				return $this->db->loadAssocList('source');
-			}
-		}
-
-		return false;
+		return CFactory::_('Language.Multilingual')->get($values);
 	}
 
 	/**
 	 * Set the Current language values to DB
 	 *
-	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.4 Use CFactory::_('Language.Set')->execute(...);
 	 */
 	public function setLangPlaceholders($strings, int $target_id,
 	                                    $target = 'components'
 	)
 	{
-		$counterInsert = 0;
-		$counterUpdate = 0;
-		$today         = Factory::getDate()->toSql();
-		foreach (
-			$this->languages[$target][CFactory::_('Config')->get('lang_tag', 'en-GB')] as $area => $placeholders
-		)
-		{
-			foreach ($placeholders as $placeholder => $string)
-			{
-				// to keep or remove
-				$remove = false;
-				// build the translations
-				if (StringHelper::check($string)
-					&& isset($this->multiLangString[$string]))
-				{
-					// make sure we have converted the string to array
-					if (isset($this->multiLangString[$string]['translation'])
-						&& JsonHelper::check(
-							$this->multiLangString[$string]['translation']
-						))
-					{
-						$this->multiLangString[$string]['translation']
-							= json_decode(
-							(string) $this->multiLangString[$string]['translation'], true
-						);
-					}
-					// if we have an array continue
-					if (isset($this->multiLangString[$string]['translation'])
-						&& ArrayHelper::check(
-							$this->multiLangString[$string]['translation']
-						))
-					{
-						// great lets build the multi languages strings
-						foreach (
-							$this->multiLangString[$string]['translation'] as
-							$translations
-						)
-						{
-							if (isset($translations['language'])
-								&& isset($translations['translation']))
-							{
-								// build arrays
-								if (!isset($this->languages[$target][$translations['language']]))
-								{
-									$this->languages[$target][$translations['language']]
-										= [];
-								}
-								if (!isset($this->languages[$target][$translations['language']][$area]))
-								{
-									$this->languages[$target][$translations['language']][$area]
-										= [];
-								}
-								$this->languages[$target][$translations['language']][$area][$placeholder]
-									= CFactory::_('Language')->fix($translations['translation']);
-							}
-						}
-					}
-					else
-					{
-						// remove this string not to be checked again
-						$remove = true;
-					}
-				}
-				// do the database management
-				if (StringHelper::check($string)
-					&& ($key = array_search($string, $strings)) !== false)
-				{
-					if (isset($this->multiLangString[$string]))
-					{
-						// update the existing placeholder in db
-						$id = $this->multiLangString[$string]['id'];
-						if (JsonHelper::check(
-							$this->multiLangString[$string][$target]
-						))
-						{
-							$targets = (array) json_decode(
-								(string) $this->multiLangString[$string][$target], true
-							);
-							// check if we should add the target ID
-							if (in_array($target_id, $targets))
-							{
-								// only skip the update if the string is published and has the target ID
-								if ($this->multiLangString[$string]['published']
-									== 1)
-								{
-									continue;
-								}
-							}
-							else
-							{
-								$targets[] = $target_id;
-							}
-						}
-						else
-						{
-							$targets = array($target_id);
-						}
-						// start the bucket for this lang
-						$this->setUpdateExistingLangStrings(
-							$id, $target, $targets, 1, $today, $counterUpdate
-						);
-
-						$counterUpdate++;
-
-						// load to db
-						$this->setExistingLangStrings(50);
-						// remove string if needed
-						if ($remove)
-						{
-							unset($this->multiLangString[$string]);
-						}
-					}
-					else
-					{
-						// add the new lang placeholder to the db
-						if (!isset($this->newLangStrings[$target]))
-						{
-							$this->newLangStrings[$target] = [];
-						}
-						$this->newLangStrings[$target][$counterInsert]
-							= [];
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							json_encode(array($target_id))
-						); // 'target'
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							$string
-						);  // 'source'
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							1
-						);   // 'published'
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							$today
-						);  // 'created'
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							(int) $this->user->id
-						);   // 'created_by'
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							1
-						);   // 'version'
-						$this->newLangStrings[$target][$counterInsert][]
-							= $this->db->quote(
-							1
-						);   // 'access'
-
-						$counterInsert++;
-
-						// load to db
-						$this->setNewLangStrings($target, 100);
-					}
-					// only set the string once
-					unset($strings[$key]);
-				}
-			}
-		}
-		// just to make sure all is done
-		$this->setExistingLangStrings();
-		$this->setNewLangStrings($target);
+		CFactory::_('Language.Set')->execute($strings, $target_id, $target);
 	}
 
 	/**
@@ -2271,48 +2075,19 @@ class Get
 	 * @param   int     $when    To set when to update
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.4
 	 */
 	protected function setNewLangStrings($target, $when = 1)
 	{
-		if (isset($this->newLangStrings[$target])
-			&& count(
-				(array) $this->newLangStrings[$target]
-			) >= $when)
-		{
-			// Create a new query object.
-			$query    = $this->db->getQuery(true);
-			$continue = false;
-			// Insert columns.
-			$columns = array($target, 'source', 'published', 'created',
-				'created_by', 'version', 'access');
-			// Prepare the insert query.
-			$query->insert(
-				$this->db->quoteName('#__componentbuilder_language_translation')
-			);
-			$query->columns($this->db->quoteName($columns));
-			foreach ($this->newLangStrings[$target] as $values)
-			{
-				if (count((array) $values) == 7)
-				{
-					$query->values(implode(',', $values));
-					$continue = true;
-				}
-				else
-				{
-					// TODO line mismatch... should not happen
-				}
-			}
-			// clear the values array
-			$this->newLangStrings[$target] = [];
-			if (!$continue)
-			{
-				return false; // insure we dont continue if no values were loaded
-			}
-			// Set the query using our newly populated query object and execute it.
-			$this->db->setQuery($query);
-			$this->db->execute();
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -2321,29 +2096,19 @@ class Get
 	 * @param   int  $when  To set when to update
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.4
 	 */
 	protected function setExistingLangStrings($when = 1)
 	{
-		if (count((array) $this->existingLangStrings) >= $when)
-		{
-			foreach ($this->existingLangStrings as $values)
-			{
-				// Create a new query object.
-				$query = $this->db->getQuery(true);
-				// Prepare the update query.
-				$query->update(
-					$this->db->quoteName(
-						'#__componentbuilder_language_translation'
-					)
-				)->set($values['fields'])->where($values['conditions']);
-				// Set the query using our newly populated query object and execute it.
-				$this->db->setQuery($query);
-				$this->db->execute();
-			}
-			// clear the values array
-			$this->existingLangStrings = [];
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -2352,25 +2117,19 @@ class Get
 	 * @param   int  $id  To string ID to remove
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.4
 	 */
 	protected function removeExitingLangString($id)
 	{
-		// Create a new query object.
-		$query = $this->db->getQuery(true);
-
-		// delete all custom keys for user 1001.
-		$conditions = array(
-			$this->db->quoteName('id') . ' = ' . (int) $id
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
-
-		$query->delete(
-			$this->db->quoteName('#__componentbuilder_language_translation')
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
 		);
-		$query->where($conditions);
-
-		$this->db->setQuery($query);
-		$this->db->execute();
 	}
 
 	/**
@@ -2379,180 +2138,32 @@ class Get
 	 * @param   string  $values  the active strings
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.4 Use CFactory::_('Language.Purge')->execute(...);
 	 */
-	public function purgeLanuageStrings($values, $target_id,
-	                                    $target = 'components'
-	)
+	public function purgeLanuageStrings($values, $target_id, $target = 'components')
 	{
-		// the target types are
-		$target_types = array('components' => 'components',
-		                      'modules'    => 'modules',
-		                      'plugins'    => 'plugins');
-		// make sure we only work with preset targets
-		if (isset($target_types[$target]))
-		{
-			// remove the current target
-			unset($target_types[$target]);
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-			$query->from(
-				$this->db->quoteName(
-					'#__componentbuilder_language_translation', 'a'
-				)
-			);
-			$query->select(
-				$this->db->quoteName(
-					array('a.id', 'a.translation', 'a.components', 'a.modules',
-						'a.plugins')
-				)
-			);
-			// get all string that are not linked to this component
-			$query->where(
-				$this->db->quoteName('a.source') . ' NOT IN (' . implode(
-					',', array_map(
-						fn($a) => $this->db->quote($a), $values
-					)
-				) . ')'
-			);
-			$query->where($this->db->quoteName('a.published') . ' = 1');
-			$this->db->setQuery($query);
-			$this->db->execute();
-			if ($this->db->getNumRows())
-			{
-				$counterUpdate = 0;
-				$otherStrings  = $this->db->loadAssocList();
-				$today         = Factory::getDate()->toSql();
-				foreach ($otherStrings as $item)
-				{
-					if (JsonHelper::check($item[$target]))
-					{
-						$targets = (array) json_decode((string) $item[$target], true);
-						// if component is not found ignore this string, and do nothing
-						if (($key = array_search($target_id, $targets))
-							!== false)
-						{
-							// first remove the component from the string
-							unset($targets[$key]);
-							// check if there are more components
-							if (ArrayHelper::check($targets))
-							{
-								// just update the string to unlink the current component
-								$this->setUpdateExistingLangStrings(
-									$item['id'], $target, $targets, 1, $today,
-									$counterUpdate
-								);
-
-								$counterUpdate++;
-
-								// load to db
-								$this->setExistingLangStrings(50);
-							}
-							// check if this string has been worked on or is linked to other extensions
-							else
-							{
-								// the action (1 = remove, 2 = archive, 0 = do nothing)
-								$action_with_string = 1;
-								// now check if it is linked to other extensions
-								foreach ($target_types as $other_target)
-								{
-									// just one linked extension type is enough to stop the search
-									if ($action_with_string
-										&& JsonHelper::check(
-											$item[$other_target]
-										))
-									{
-										$other_targets = (array) json_decode(
-											(string) $item[$other_target], true
-										);
-										// check if linked to other extensions
-										if (ArrayHelper::check(
-											$other_targets
-										))
-										{
-											$action_with_string
-												= 0; // do nothing
-										}
-									}
-								}
-								// check we should just archive or remove string
-								if ($action_with_string
-									&& JsonHelper::check(
-										$item['translation']
-									))
-								{
-									$translation = json_decode(
-										(string) $item['translation'], true
-									);
-									if (ArrayHelper::check(
-										$translation
-									))
-									{
-										// only archive the item and update the string to unlink the current component
-										$this->setUpdateExistingLangStrings(
-											$item['id'], $target, $targets, 2,
-											$today, $counterUpdate
-										);
-
-										$counterUpdate++;
-
-										// load to db
-										$this->setExistingLangStrings(50);
-
-										$action_with_string
-											= 2; // we archived it
-									}
-								}
-								// remove the string since no translation found and not linked to any other extensions
-								if ($action_with_string == 1)
-								{
-									$this->removeExitingLangString($item['id']);
-								}
-							}
-						}
-					}
-				}
-				// load to db
-				$this->setExistingLangStrings();
-			}
-		}
+		CFactory::_('Language.Purge')->execute($values, $target_id, $target);
 	}
 
 	/**
 	 * just to add lang string to the existing Lang Strings array
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.4
 	 */
 	protected function setUpdateExistingLangStrings($id, $target, $targets,
 	                                                $published, $today, $counterUpdate
 	)
 	{
-		// start the bucket for this lang
-		$this->existingLangStrings[$counterUpdate]               = [];
-		$this->existingLangStrings[$counterUpdate]['id']         = (int) $id;
-		$this->existingLangStrings[$counterUpdate]['conditions'] = [];
-		$this->existingLangStrings[$counterUpdate]['conditions'][]
-		                                                         = $this->db->quoteName(
-				'id'
-			) . ' = ' . $this->db->quote($id);
-		$this->existingLangStrings[$counterUpdate]['fields']     = [];
-		$this->existingLangStrings[$counterUpdate]['fields'][]
-		                                                         = $this->db->quoteName(
-				$target
-			) . ' = ' . $this->db->quote(json_encode($targets));
-		$this->existingLangStrings[$counterUpdate]['fields'][]
-		                                                         = $this->db->quoteName(
-				'published'
-			) . ' = ' . $this->db->quote($published);
-		$this->existingLangStrings[$counterUpdate]['fields'][]
-		                                                         = $this->db->quoteName(
-				'modified'
-			) . ' = ' . $this->db->quote($today);
-		$this->existingLangStrings[$counterUpdate]['fields'][]
-		                                                         = $this->db->quoteName(
-				'modified_by'
-			) . ' = ' . $this->db->quote((int) $this->user->id);
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
@@ -2784,26 +2395,15 @@ class Get
 	 */
 	public function getPluginXMLTemplate(&$plugin)
 	{
-		$xml = '<?xml version="1.0" encoding="utf-8"?>';
-		$xml .= PHP_EOL . '<extension type="plugin" version="'
-			. CFactory::_('Config')->joomla_versions[CFactory::_('Config')->joomla_version]['xml_version'] . '" group="'
-			. strtolower((string) $plugin->group) . '" method="upgrade">';
-		$xml .= PHP_EOL . Indent::_(1) . '<name>' . $plugin->lang_prefix
-			. '</name>';
-		$xml .= PHP_EOL . Indent::_(1) . '<creationDate>' . Placefix::_h('BUILDDATE') . '</creationDate>';
-		$xml .= PHP_EOL . Indent::_(1) . '<author>' . Placefix::_h('AUTHOR') . '</author>';
-		$xml .= PHP_EOL . Indent::_(1) . '<authorEmail>' . Placefix::_h('AUTHOREMAIL') . '</authorEmail>';
-		$xml .= PHP_EOL . Indent::_(1) . '<authorUrl>' . Placefix::_h('AUTHORWEBSITE') . '</authorUrl>';
-		$xml .= PHP_EOL . Indent::_(1) . '<copyright>' . Placefix::_h('COPYRIGHT') . '</copyright>';
-		$xml .= PHP_EOL . Indent::_(1) . '<license>' . Placefix::_h('LICENSE') . '</license>';
-		$xml .= PHP_EOL . Indent::_(1) . '<version>' . $plugin->plugin_version
-			. '</version>';
-		$xml .= PHP_EOL . Indent::_(1) . '<description>' . $plugin->lang_prefix
-			. '_XML_DESCRIPTION</description>';
-		$xml .= Placefix::_h('MAINXML');
-		$xml .= PHP_EOL . '</extension>';
-
-		return $xml;
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**

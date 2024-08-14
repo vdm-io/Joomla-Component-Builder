@@ -262,6 +262,10 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Helper\TagsHelper;';
 				break;
 
+			case 'plugin.provider.header':
+				$headers[] = "use {$this->NamespacePrefix}\\Plugin\\[[[PluginGroupNamespace]]]\\[[[PluginNamespace]]]\\Extension\\{$codeName};";
+				break;
+
 			default:
 				break;
 		}
@@ -546,6 +550,19 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\HTML\HTMLHelper as Html;';
 				$headers[] = 'use Joomla\CMS\Component\ComponentHelper;';
 				$headers[] = 'use Joomla\CMS\Form\Field\###FORM_EXTENDS###;';
+				break;
+
+			case 'plugin.extension.header':
+				$headers = [];
+				break;
+			case 'plugin.provider.header':
+				$headers = [];
+				$headers[] = 'use Joomla\CMS\Factory;';
+				$headers[] = 'use Joomla\CMS\Plugin\PluginHelper;';
+				$headers[] = 'use Joomla\CMS\Extension\PluginInterface;';
+				$headers[] = 'use Joomla\Event\DispatcherInterface;';
+				$headers[] = 'use Joomla\DI\ServiceProviderInterface;';
+				$headers[] = 'use Joomla\DI\Container;';
 				break;
 
 			default:

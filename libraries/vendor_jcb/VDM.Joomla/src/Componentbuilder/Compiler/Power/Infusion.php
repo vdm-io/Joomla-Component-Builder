@@ -30,7 +30,7 @@ use VDM\Joomla\Utilities\ObjectHelper;
  * Compiler Power Infusion
  * @since 3.2.0
  */
-class Infusion
+final class Infusion
 {
 	/**
 	 * The Config Class.

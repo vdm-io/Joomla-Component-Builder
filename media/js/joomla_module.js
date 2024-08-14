@@ -238,10 +238,12 @@ function setModuleCode() {
 	});
 }
 
-function getLinked(){
+function getLinked() {
 	getCodeFrom_server(1, 'type', 'type', 'getLinked').then(function(result) {
-		if(result){
-			jQuery('#display_linked_to').html(result);
+		if (result.error) {
+			console.error(result.error);
+		} else if (result) {
+			document.getElementById('display_linked_to').innerHTML = result;
 		}
 	});
 }

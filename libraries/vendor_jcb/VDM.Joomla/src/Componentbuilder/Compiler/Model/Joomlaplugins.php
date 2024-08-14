@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\Data as Plugin;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PluginDataInterface as Plugin;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 
