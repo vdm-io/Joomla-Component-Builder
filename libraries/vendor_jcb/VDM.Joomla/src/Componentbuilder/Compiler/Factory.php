@@ -44,6 +44,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderLZ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitecturePlugin;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
 use VDM\Joomla\Gitea\Service\Settings as GiteaSettings;
@@ -143,6 +144,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Creator())
 			->registerServiceProvider(new ArchitectureController())
 			->registerServiceProvider(new ArchitectureModel())
+			->registerServiceProvider(new ArchitecturePlugin())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaUtilities())
 			->registerServiceProvider(new GiteaSettings())

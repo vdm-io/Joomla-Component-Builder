@@ -25,7 +25,7 @@ use VDM\Joomla\Utilities\GetHelper;
  * 
  * @since 3.2.0
  */
-class Extractor
+final class Extractor
 {
 	/**
 	 * The lang keys for extensions

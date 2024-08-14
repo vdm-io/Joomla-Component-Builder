@@ -24,7 +24,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\LanguageInterface;
  * 
  * @since 3.2.0
  */
-class Language implements LanguageInterface
+final class Language implements LanguageInterface
 {
 	/**
 	 * The language content

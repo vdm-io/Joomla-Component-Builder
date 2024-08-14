@@ -9,12 +9,11 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin;
+namespace VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\JoomlaFour;
 
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
@@ -29,17 +28,19 @@ use VDM\Joomla\Utilities\String\PluginHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PluginDataInterface;
 
 
 /**
- * Joomla Plugin Data Class
+ * Joomla 4 Plug-in Data Class
  * 
- * @since 3.2.0
+ * @since 5.0.2
  */
-class Data
+final class Data implements PluginDataInterface
 {
 	/**
-	 * Compiler Joomla Plugins Data
+	 * Compiler Joomla Plug-in's Data
 	 *
 	 * @var    array
 	 * @since 3.2.0
@@ -47,68 +48,68 @@ class Data
 	protected array $data = [];
 
 	/**
-	 * Compiler Config
+	 * The Configure Class.
 	 *
-	 * @var    Config
-	 * @since 3.2.0
+	 * @var   Config
+	 * @since 5.0.2
 	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
-	 * @since 3.2.0
+	 * @var   Customcode
+	 * @since 5.0.2
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
-	 * @since 3.2.0
-	 **/
+	 * @var   Gui
+	 * @since 5.0.2
+	 */
 	protected Gui $gui;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
-	 * @since 3.2.0
-	 **/
+	 * @var   Placeholder
+	 * @since 5.0.2
+	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Language
+	 * The Language Class.
 	 *
-	 * @var    Language
-	 * @since 3.2.0
-	 **/
+	 * @var   Language
+	 * @since 5.0.2
+	 */
 	protected Language $language;
 
 	/**
-	 * Compiler Field
+	 * The Field Class.
 	 *
-	 * @var    Field
-	 * @since 3.2.0
+	 * @var   Field
+	 * @since 5.0.2
 	 */
 	protected Field $field;
 
 	/**
-	 * Compiler field name
+	 * The Name Class.
 	 *
-	 * @var    FieldName
-	 * @since 3.2.0
+	 * @var   FieldName
+	 * @since 5.0.2
 	 */
-	protected FieldName $fieldName;
+	protected FieldName $fieldname;
 
 	/**
-	 * Compiler Files Folders
+	 * The Filesfolders Class.
 	 *
-	 * @var    Filesfolders
-	 * @since 3.2.0
+	 * @var   Filesfolders
+	 * @since 5.0.2
 	 */
-	protected Filesfolders $filesFolders;
+	protected Filesfolders $filesfolders;
 
 	/**
 	 * Database object to query local DB
@@ -118,32 +119,53 @@ class Data
 	protected $db;
 
 	/**
-	 * Constructor
+	 * Define the mappings of traits and classes to their respective methods and services
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Customcode|null           $customcode       The compiler customcode object.
-	 * @param Gui|null                  $gui              The compiler customcode gui.
-	 * @param Placeholder|null          $placeholder      The compiler placeholder object.
-	 * @param Language|null             $language         The compiler Language object.
-	 * @param Field|null                $field            The compiler field data object.
-	 * @param FieldName|null            $fieldName        The compiler  field name object.
-	 * @param Filesfolders|null         $filesFolders     The compiler files folders object.
+	 * @var    array
+	 * @since 5.0.2
+	 **/
+	protected array $service_checks = [
+		'DatabaseAwareTrait' => [
+			'trait' => 'Joomla\Database\DatabaseAwareTrait',
+			'class' => 'Joomla__'.'_ae15e6b6_f7de_43ad_be4b_71499ae88f45___Power',
+			'method' => 'setDatabase',
+			'service' => 'Joomla__'.'_7bd29d76_73c9_4c07_a5da_4f7a32aff78f___Power'
+		],
+		'UserFactoryAwareTrait' => [
+			'trait' => 'Joomla\CMS\User\UserFactoryAwareTrait',
+			'class' => 'Joomla__'.'_a6b2c321_5de3_4425_b05f_e5340965fb80___Power',
+			'method' => 'setUserFactory',
+			'service' => 'Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power'
+		]
+	];
+
+	/**
+	 * Constructor.
 	 *
-	 * @since 3.2.0
+	 * @param Config         $config         The Config Class.
+	 * @param Customcode     $customcode     The Customcode Class.
+	 * @param Gui            $gui            The Gui Class.
+	 * @param Placeholder    $placeholder    The Placeholder Class.
+	 * @param Language       $language       The Language Class.
+	 * @param Field          $field          The Field Class.
+	 * @param FieldName      $fieldname      The Name Class.
+	 * @param Filesfolders   $filesfolders   The Filesfolders Class.
+	 *
+	 * @since 5.0.2
 	 */
-	public function __construct(?Config $config = null, ?Customcode $customcode = null,
-		?Gui $gui = null, ?Placeholder $placeholder = null,
-		?Language $language = null, ?Field $field = null, ?FieldName $fieldName = null,
-		?Filesfolders $filesFolders = null)
+	public function __construct(Config $config, Customcode $customcode, Gui $gui,
+		Placeholder $placeholder, Language $language,
+		Field $field, FieldName $fieldname,
+		Filesfolders $filesfolders)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->language = $language ?: Compiler::_('Language');
-		$this->field = $field ?: Compiler::_('Field');
-		$this->fieldName = $fieldName ?: Compiler::_('Field.Name');
-		$this->filesFolders = $filesFolders ?: Compiler::_('Model.Filesfolders');
+		$this->config = $config;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->placeholder = $placeholder;
+		$this->language = $language;
+		$this->field = $field;
+		$this->fieldname = $fieldname;
+		$this->filesfolders = $filesfolders;
 		$this->db = Factory::getDbo();
 	}
 
@@ -326,9 +348,19 @@ class Data
 				$this->config->lang_prefix = $plugin->lang_prefix;
 
 				// set plugin class name
-				$plugin->class_name
-					= PluginHelper::safeClassName(
-						$plugin->code_name,
+				$plugin->class_name = ucfirst(
+						$plugin->code_name
+				);
+				// set plugin context name
+				$plugin->context_name = strtolower((string)
+						$plugin->code_name
+				);
+
+				// set plugin namespace
+				$plugin->namespace = $plugin->code_name;
+
+				// set plugin group namespace
+				$plugin->group_namespace = ucfirst(
 						$plugin->group
 				);
 
@@ -352,7 +384,8 @@ class Data
 					) . '__J' . $this->config->joomla_version;
 
 				// set plugin file name
-				$plugin->file_name = strtolower((string) $plugin->code_name);
+				$plugin->file_name = $plugin->context_name;
+				$plugin->class_file_name = $plugin->code_name;
 
 				// set plugin context
 				$plugin->context = $plugin->folder_name . '.' . $plugin->id;
@@ -454,7 +487,7 @@ class Data
 					// set GUI mapper field
 					$guiMapper['field'] = 'head';
 					// base64 Decode head.
-					$plugin->head = $this->gui->set(
+					$plugin->header = $this->gui->set(
 						$this->placeholder->update_(
 							$this->customcode->update(
 								base64_decode((string) $plugin->head)
@@ -466,7 +499,7 @@ class Data
 				elseif (!empty($plugin->class_head))
 				{
 					// base64 Decode head.
-					$plugin->head = $this->gui->set(
+					$plugin->header = $this->gui->set(
 						$this->placeholder->update_(
 							$this->customcode->update(
 								base64_decode((string) $plugin->class_head)
@@ -480,6 +513,23 @@ class Data
 					);
 				}
 				unset($plugin->class_head);
+
+				// Check the plugin's code and header for each trait
+				foreach ($this->service_checks as $key => $info)
+				{
+					if (strpos($plugin->main_class_code, $key) !== false ||
+						strpos($plugin->main_class_code, $info['class']) !== false ||
+						strpos($plugin->header, $info['trait']) !== false) 
+					{
+						$service_provider[] = Indent::_(4) . "\$plugin->{$info['method']}(\$container->get({$info['service']}::class));";
+					}
+				}
+
+				// Assign service provider if any services were added
+				if (!empty($service_provider))
+				{
+					$plugin->service_provider = implode(PHP_EOL, $service_provider);
+				}
 
 				// set the comment
 				if (!empty($plugin->comment))
@@ -683,7 +733,7 @@ class Data
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->fieldName->get(
+									$this->fieldname->get(
 										$field, $plugin->key, $unique
 									);
 									// add the fields to the global form file builder
@@ -710,7 +760,7 @@ class Data
 								foreach ($form['fields'] as $field)
 								{
 									// so first we lock the field name in
-									$this->fieldName->get(
+									$this->fieldname->get(
 										$field, $plugin->key, $unique
 									);
 									// add the fields to the config builder
@@ -730,19 +780,21 @@ class Data
 				unset($plugin->fields);
 
 				// set files and folders
-				$this->filesFolders->set($plugin);
+				$this->filesfolders->set($plugin);
 
 				// add PHP in plugin install
 				$plugin->add_install_script = true;
 				$addScriptMethods = [
 					'php_preflight',
 					'php_postflight',
-					'php_method'
+					'php_method',
+					'php_script'
 				];
 				$addScriptTypes = [
 					'install',
 					'update',
-					'uninstall'
+					'uninstall',
+					'construct'
 				];
 				foreach ($addScriptMethods as $scriptMethod)
 				{
@@ -846,6 +898,10 @@ class Data
 					}
 				}
 
+				// old path (to remove)
+				$plugin->remove_file_paths = [];
+				$plugin->remove_file_paths[] = "/plugins/{$plugin->group}/{$plugin->context_name}/{$plugin->file_name}.php";
+
 				// set the update server stuff (TODO)
 				// update_server_xml_path
 				// update_server_xml_file_name
@@ -874,6 +930,5 @@ class Data
 
 		return false;
 	}
-
 }
 

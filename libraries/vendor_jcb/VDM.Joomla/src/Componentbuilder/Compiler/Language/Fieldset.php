@@ -23,7 +23,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\AccessSwitchList;
  * 
  * @since 3.2.0
  */
-class Fieldset
+final class Fieldset
 {
 	/**
 	 * The Language Class.
