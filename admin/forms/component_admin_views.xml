@@ -680,6 +680,24 @@
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_PORT_DESCRIPTION"
 					class="inputbox"
 				/>
+				<!-- Add_api Field. Type: List. (joomla) -->
+				<field
+					type="list"
+					name="add_api"
+					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADD_API_LABEL"
+					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ADD_API_DESCRIPTION"
+					layout="joomla.form.field.list-fancy-select"
+					multiple="false">
+					<!-- Option Set. -->
+					<option value="0">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_NONE</option>
+					<option value="1">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_LIST</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ITEM</option>
+					<option value="2">
+						COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_BOTH</option>
+				</field>
 				<!-- Filter Field. Type: List. (joomla) -->
 				<field
 					type="list"

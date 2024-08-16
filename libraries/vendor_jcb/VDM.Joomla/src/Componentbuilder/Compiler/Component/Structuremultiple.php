@@ -157,6 +157,7 @@ final class Structuremultiple
 
 		$config = [];
 		$checkin = false;
+		$api = null;
 
 		foreach ($this->component->get('admin_views') as $view)
 		{
@@ -174,7 +175,15 @@ final class Structuremultiple
 				$checkin = true;
 				$this->config->set('add_checkin', $checkin);
 			}
+
+			if (($target = $this->hasApi($view)) > 0)
+			{
+				$this->buildApi($view, $config, $target);
+				$api = 1;
+			}
 		}
+
+		$this->config->set('add_api', $api);
 
 		return true;
 	}
@@ -266,6 +275,25 @@ final class Structuremultiple
 	}
 
 	/**
+	 * Check if the view has an API
+	 *
+	 * @param array $view
+	 *
+	 * @return int
+	 * @since  5.0.2
+	 */
+	private function hasApi(array $view): int
+	{
+		// only for Joomla 4 and above
+		if ($this->config->get('joomla_version', 3) < 4 || !isset($view['add_api']))
+		{
+			return 0;
+		}
+
+		return (int) $view['add_api'];
+	}
+
+	/**
 	 * Check if the view is a valid view
 	 *
 	 * @param array $view
@@ -329,6 +357,35 @@ final class Structuremultiple
 		if ($view['settings']->name_list != 'null')
 		{
 			$target = ['admin' => $view['settings']->name_list];
+			$this->structure->build($target, 'list', false, $config);
+		}
+	}
+
+	/**
+	 * Build the api
+	 *
+	 * @param array  $view
+	 * @param array  $config
+	 * @param int    $targetArea
+	 *
+	 * @return void
+	 * @since  5.0.2
+	 */
+	private function buildApi(array $view, array $config, int $targetArea)
+	{
+		$settings = $view['settings'];
+
+		// build the api
+		if ($settings->name_single != 'null' && $targetArea !== 1)
+		{
+			$target = ['api' => $settings->name_single];
+			$this->structure->build($target, 'single', false, $config);
+		}
+
+		// build the list view
+		if ($settings->name_list != 'null' && $targetArea !== 3)
+		{
+			$target = ['api' => $settings->name_list];
 			$this->structure->build($target, 'list', false, $config);
 		}
 	}
