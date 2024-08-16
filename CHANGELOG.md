@@ -1,14 +1,4 @@
-# v3.2.3-beta4
-
-- Add native plugin builder for Joomla 4 & 5
-
-# v3.2.3-beta
-
-- Fix abstract schema class function check default index warring
-- Fix dynamicGet so that the table values will load again. #1155
-- Keep jQuery in dynamicGet area for Joomla 3
-
-# v3.2.3-alpha
+# v3.2.3
 
 - Fix site view form missing classes in J4+
 - Fix permissions tab in items in J4+
@@ -22,6 +12,11 @@
 - Fix database mySql update in J4+
 - Remove phpspreadsheet completely from Joomla 4+
 - Add option to use powers in preflight event in the installer class
+- Fix abstract schema class function check default index warring
+- Fix dynamicGet so that the table values will load again. #1155
+- Keep jQuery in dynamicGet area for Joomla 3
+- Add native plugin builder for Joomla 4 & 5
+- Add basic API for admin views
 
 # v3.2.2
 

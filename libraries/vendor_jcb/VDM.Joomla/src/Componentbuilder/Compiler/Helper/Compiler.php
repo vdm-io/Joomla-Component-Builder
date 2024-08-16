@@ -132,6 +132,12 @@ class Compiler extends Infusion
 				);
 				CFactory::_('Utilities.File')->write($xmlPath, $componentXML);
 			}
+			// remove API
+			if (CFactory::_('Config')->get('add_api') === null)
+			{
+				// first remove the files and folders
+				CFactory::_('Utilities.Folder')->remove(CFactory::_('Utilities.Paths')->component_path . '/api');
+			}
 
 			// Trigger Event: jcb_ce_onBeforeUpdateFiles
 			CFactory::_('Event')->trigger(
