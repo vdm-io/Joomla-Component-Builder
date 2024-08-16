@@ -668,6 +668,7 @@ class Infusion extends Interpretation
 							$nameSingleCode
 						)
 					);
+
 					// ADMIN_VIEW_MODEL_HEADER <<<DYNAMIC>>> add the header details for the model
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_MODEL_HEADER',
 						CFactory::_('Header')->get(
@@ -684,6 +685,22 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADMIN_VIEW_HEADER',
 						CFactory::_('Header')->get(
 							'admin.view', $nameSingleCode
+						)
+					);
+
+					// API_VIEW_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|API_VIEW_CONTROLLER_HEADER',
+						CFactory::_('Header')->get(
+							'api.view.controller',
+							$nameSingleCode
+						)
+					);
+
+					// API_VIEW_JSON_HEADER <<<DYNAMIC>>> add the header details for the controller
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|API_VIEW_JSON_HEADER',
+						CFactory::_('Header')->get(
+							'api.view.json',
+							$nameSingleCode
 						)
 					);
 
@@ -1025,6 +1042,20 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_HEADER',
 						CFactory::_('Header')->get(
 							'admin.views', $nameListCode
+						)
+					);
+
+					// API_VIEWS_CONTROLLER_HEADER <<<DYNAMIC>>> add the header details for the controller
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|API_VIEWS_CONTROLLER_HEADER',
+						CFactory::_('Header')->get(
+							'api.views.controller', $nameListCode
+						)
+					);
+
+					// API_VIEWS_JSON_HEADER <<<DYNAMIC>>> add the header details for the controller
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|API_VIEWS_JSON_HEADER',
+						CFactory::_('Header')->get(
+							'api.views.json', $nameListCode
 						)
 					);
 

@@ -1,14 +1,4 @@
-# v4.0.2-beta4
-
-- Add native plugin builder for Joomla 4 & 5
-
-# v4.0.2-beta
-
-- Fix abstract schema class function check default index warring
-- Fix dynamicGet so that the table values will load again. #1155
-- Add more pure JS to the dynamic get area
-
-# v4.0.2-alpha
+# v4.0.2
 
 - Fix site view form missing classes in J4+
 - Fix permissions tab in items in J4+
@@ -22,6 +12,11 @@
 - Fix database mySql update in J4+
 - Remove phpspreadsheet completely from Joomla 4+
 - Add option to use powers in preflight event in the installer class
+- Fix abstract schema class function check default index warring
+- Fix dynamicGet so that the table values will load again. #1155
+- Add more pure JS to the dynamic get area
+- Add native plugin builder for Joomla 4 & 5
+- Add basic API for admin views
 
 # v4.0.1
 
@@ -94,27 +89,21 @@
 - Add the BaseDatabaseModel use statement to custom site view controller. #1119
 - Fix the customfolderlist field. #1120
 
-# v3.2.2
+# v3.2.3
 
-- Fix auto build from SQL in Joomla 4 and 5.
-- Fix permission issue for admin views.
-- Add extending options to interfaces.
-- Update the Schema class to also update null mismatching if needed
-- Add repositories for better integration with gitea
-- Refactored the Data classes
-- Add new Data classes
-- Add new subform classes
-- Fix registry class methods return type
-- Update all list and custom fields to use the new layouts
-- Add push options to Joomla Power
-- Complete the Joomla Power Init and Reset features
-- Fix Gitea Contents class functions
-- Fix subform set methods
-- Improved the Joomla Power Push path
-- Fix the metadata, metadesc, metakey database issue
-- Fix function mismatch call in the compiler power class.
-- Fix init feature to only add missing powers
-- Fix controller postSaveHook function, for correct model class in Joomla 4 and 5
-- Fix app instances (mismatch) in the install script and schema class when installing from CLI
-- Add option to use placeholders in Joomla Power namespaces.
-- Fix subform layout of uikit in JCB
+- Fix site view form missing classes in J4+
+- Fix permissions tab in items in J4+
+- Fix site display controller checkEditId function in J4+
+- Add class methods to the HtmlView classes in J4+
+- Fix broken toolbar call in HtmlView in J4+
+- Fix missing scripts and styles fields and methods in the site admin view model
+- Update subform field layout across JCB for cleaner look
+- Remove expansion feature
+- Fix helper area
+- Fix database mySql update in J4+
+- Remove phpspreadsheet completely from Joomla 4+
+- Add option to use powers in preflight event in the installer class
+- Fix abstract schema class function check default index warring
+- Fix dynamicGet so that the table values will load again. #1155
+- Keep jQuery in dynamicGet area for Joomla 3
+- Add native plugin builder for Joomla 4 & 5
