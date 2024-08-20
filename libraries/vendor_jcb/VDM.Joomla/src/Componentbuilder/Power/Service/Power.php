@@ -18,7 +18,11 @@ use VDM\Joomla\Componentbuilder\Power\Config;
 use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\Power\Grep;
 use VDM\Joomla\Componentbuilder\Power\Remote\Get;
+use VDM\Joomla\Componentbuilder\Power\Remote\Set;
 use VDM\Joomla\Componentbuilder\Power\Parser;
+use VDM\Joomla\Componentbuilder\Power\Plantuml;
+use VDM\Joomla\Componentbuilder\Power\Readme\Item as ItemReadme;
+use VDM\Joomla\Componentbuilder\Power\Readme\Main as MainReadme;
 
 
 /**
@@ -50,8 +54,20 @@ class Power implements ServiceProviderInterface
 		$container->alias(Get::class, 'Power.Remote.Get')
 			->share('Power.Remote.Get', [$this, 'getRemoteGet'], true);
 
+		$container->alias(Set::class, 'Power.Remote.Set')
+			->share('Power.Remote.Set', [$this, 'getRemoteSet'], true);
+
 		$container->alias(Parser::class, 'Power.Parser')
 			->share('Power.Parser', [$this, 'getParser'], true);
+
+		$container->alias(Plantuml::class, 'Power.Plantuml')
+			->share('Power.Plantuml', [$this, 'getPlantuml'], true);
+
+		$container->alias(ItemReadme::class, 'Power.Readme.Item')
+			->share('Power.Readme.Item', [$this, 'getItemReadme'], true);
+
+		$container->alias(MainReadme::class, 'Power.Readme.Main')
+			->share('Power.Readme.Main', [$this, 'getMainReadme'], true);
 	}
 
 	/**
@@ -114,6 +130,55 @@ class Power implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The Remote Set Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Set
+	 * @since  5.0.3
+	 */
+	public function getRemoteSet(Container $container): Set
+	{
+		return new Set(
+			$container->get('Config')->approved_paths,
+			$container->get('Power.Grep'),
+			$container->get('Data.Items'),
+			$container->get('Power.Readme.Item'),
+			$container->get('Power.Readme.Main'),
+			$container->get('Gitea.Repository.Contents'), null, null, null,
+			$container->get('Power.Parser')
+		);
+	}
+
+	/**
+	 * Get The Readme Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ItemReadme
+	 * @since   5.0.3
+	 */
+	public function getItemReadme(Container $container): ItemReadme
+	{
+		return new ItemReadme(
+			$container->get('Power.Plantuml')
+		);
+	}
+
+	/**
+	 * Get The Readme Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  MainReadme
+	 * @since   5.0.3
+	 */
+	public function getMainReadme(Container $container): MainReadme
+	{
+		return new MainReadme();
+	}
+
+	/**
 	 * Get The Parser Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -124,6 +189,19 @@ class Power implements ServiceProviderInterface
 	public function getParser(Container $container): Parser
 	{
 		return new Parser();
+	}
+
+	/**
+	 * Get The Plantuml Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Plantuml
+	 * @since   5.0.3
+	 */
+	public function getPlantuml(Container $container): Plantuml
+	{
+		return new Plantuml();
 	}
 }
 

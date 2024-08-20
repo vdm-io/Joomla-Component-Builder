@@ -9104,6 +9104,22 @@ final class Table extends BaseTable implements Tableinterface
 					'key' => true,
 				],
 			],
+			'addplaceholders' => [
+				'name' => 'addplaceholders',
+				'label' => 'COM_COMPONENTBUILDER_REPOSITORY_ADDPLACEHOLDERS_LABEL',
+				'type' => 'subform',
+				'title' => false,
+				'list' => 'repositories',
+				'store' => 'json',
+				'tab_name' => 'Placeholders',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+			],
 			'access_repo' => [
 				'name' => 'access_repo',
 				'label' => 'COM_COMPONENTBUILDER_REPOSITORY_ACCESS_REPO_LABEL',

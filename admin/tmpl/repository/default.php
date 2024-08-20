@@ -59,6 +59,16 @@ defined('_JEXEC') or die;
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>
 
+	<?php echo Html::_('uitab.addTab', 'repositoryTab', 'placeholders', Text::_('COM_COMPONENTBUILDER_REPOSITORY_PLACEHOLDERS', true)); ?>
+		<div class="row">
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<?php echo LayoutHelper::render('repository.placeholders_fullwidth', $this); ?>
+			</div>
+		</div>
+	<?php echo Html::_('uitab.endTab'); ?>
+
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'repositoryTab'; ?>
 	<?php echo LayoutHelper::render('joomla.edit.params', $this); ?>

@@ -3,13 +3,13 @@
 
 This is a [Joomla 4.x](https://extensions.joomla.org/extension/component-builder/) component. [__See In Action__](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
- ![Component Builder image](https://git.vdm.dev/joomla/Component-Builder/raw/branch/master/admin/assets/images/jcb-banner.jpg "The Component Builder")
+ ![Component Builder image](https://git.vdm.dev/joomla/Component-Builder/raw/branch/5.x/admin/assets/images/jcb-banner.jpg "The Component Builder")
 
 The Component Builder for [Joomla](https://extensions.joomla.org/extension/component-builder/) is highly advanced tool that is truly able to build extremely complex components in a fraction of the time.
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (4.0.2) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (4.0.3-alpha1) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -144,13 +144,13 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 16th August, 2024
-+ *Version*: 4.0.2
++ *Last Build*: 20th August, 2024
++ *Version*: 4.0.3-alpha1
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **824275**
-+ *Field count*: **2094**
-+ *File count*: **5732**
++ *Line count*: **828072**
++ *Field count*: **2098**
++ *File count*: **5739**
 + *Folder count*: **606**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](https://www.joomlacomponentbuilder.com).

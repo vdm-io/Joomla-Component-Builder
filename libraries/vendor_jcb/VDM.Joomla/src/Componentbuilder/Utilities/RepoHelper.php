@@ -13,6 +13,8 @@ namespace VDM\Joomla\Componentbuilder\Utilities;
 
 
 use Joomla\CMS\Factory;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 
 /**
@@ -45,6 +47,7 @@ abstract class RepoHelper
 				'username',
 				'target',
 				'access_repo',
+				'addplaceholders',
 				'guid'
 			)))
 			->from($db->quoteName('#__componentbuilder_repository'))
@@ -66,13 +69,43 @@ abstract class RepoHelper
 					unset($item->token);
 				}
 				unset($item->access_repo);
+
+				$item->placeholders = self::setPlaceholders($item->addplaceholders ?? '');
+				unset($item->addplaceholders);
+
 				$path = $item->organisation . '/' . $item->repository;
 				$options[$path] =  $item;
 			}
+
 			return $options;
 		}
 
 		return null;
+	}
+
+	/**
+	 * set the placeholders for this repo
+	 *
+	 * @param string   $placeholders    The repo placeholders
+	 *
+	 * @return array  The result set
+	 * @since  5.0.3
+	 **/
+	protected static function setPlaceholders(string $placeholders): array
+	{
+		$bucket = [];
+		if (JsonHelper::check($placeholders))
+		{
+			$placeholders = json_decode((string) $placeholders, true);
+			if (ArrayHelper::check($placeholders))
+			{
+				foreach ($placeholders as $row)
+				{
+					$bucket[$row['target']] = $row['value'];
+				}
+			}
+		}
+		return $bucket;
 	}
 }
 
