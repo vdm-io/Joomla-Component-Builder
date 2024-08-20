@@ -75,7 +75,7 @@
 		<name>Component Builder</name>
 		<description>Builds Complex Joomla Components</description>
 		<element>pkg_component_builder</element>
-		<type>component</type>
+		<type>package</type>
 		<client>site</client>
 		<version>5.0.2</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
@@ -84,6 +84,24 @@
 		</downloads>
 		<tags>
 			<tag>stable</tag>
+		</tags>
+		<maintainer>Llewellyn van der Merwe</maintainer>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
+		<targetplatform name="joomla" version="5\.[012]"/>
+	</update>
+	<update>
+		<name>Component Builder</name>
+		<description>Builds Complex Joomla Components</description>
+		<element>pkg_component_builder</element>
+		<type>package</type>
+		<client>site</client>
+		<version>5.0.3-alpha1</version>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.3-alpha1.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>alpha</tag>
 		</tags>
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>

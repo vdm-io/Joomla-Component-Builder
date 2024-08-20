@@ -258,6 +258,11 @@ class HtmlView extends BaseHtmlView
 					// add Reset button.
 					ToolbarHelper::custom('power.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
 				}
+				if ($this->canDo->get('power.push'))
+				{
+					// add Push button.
+					ToolbarHelper::custom('power.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+				}
 				ToolbarHelper::cancel('power.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}

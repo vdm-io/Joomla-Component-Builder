@@ -1302,6 +1302,7 @@ CREATE TABLE IF NOT EXISTS `#__componentbuilder_repository` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`asset_id` INT(10) unsigned NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.',
 	`access_repo` TINYINT(1) NOT NULL DEFAULT 0,
+	`addplaceholders` TEXT NOT NULL,
 	`base` VARCHAR(255) NOT NULL DEFAULT '',
 	`guid` VARCHAR(36) NOT NULL DEFAULT '',
 	`organisation` VARCHAR(255) NOT NULL DEFAULT '',
@@ -2517,8 +2518,8 @@ INSERT INTO `#__componentbuilder_language` (`id`, `langtag`, `name`, `params`, `
 
 INSERT INTO `#__componentbuilder_repository` (`id`, `system_name`, `organisation`, `repository`, `target`, `type`, `base`, `guid`, `read_branch`, `access`, `ordering`, `published`, `modified`, `created`, `params`) VALUES
 (1, 'Super Powers', 'joomla', 'super-powers', 1, 1, 'https://git.vdm.dev', '1a1b6f3d-f16c-431a-b270-7a8a80cc7f56', 'master', 1, 1, 1, '2024-06-10 11:13:46', '2024-06-10 10:59:35', ''),
-(2, 'JCB Compiler', 'joomla', 'jcb-compiler', 1, 1, 'https://git.vdm.dev', 'd12c7672-7b75-4a59-a5f3-c33f1a2f929b', 'master', 1, 2, 1, '2024-06-15 17:43:09', '2024-06-10 11:01:06', ''),
-(3, 'JCB Packager', 'joomla', 'jcb-packager', 1, 1, 'https://git.vdm.dev', 'd8155014-5734-4fb5-9ccb-6bb33367ef78', 'master', 1, 3, 1, '2024-06-15 17:43:09', '2024-06-10 11:01:35', ''),
+(2, 'JCB Compiler', 'joomla', 'jcb-compiler', 1, 1, 'https://git.vdm.dev', 'd12c7672-7b75-4a59-a5f3-c33f1a2f929b', 'master', 1, 2, 1, '2024-08-20 09:34:58', '2024-06-10 11:01:06', ''),
+(3, 'JCB Packager', 'joomla', 'jcb-packager', 1, 1, 'https://git.vdm.dev', 'd8155014-5734-4fb5-9ccb-6bb33367ef78', 'master', 1, 3, 1, '2024-08-20 08:33:21', '2024-06-10 11:01:35', ''),
 (4, 'PHP Seclib', 'joomla', 'phpseclib', 1, 1, 'https://git.vdm.dev', 'e63d916c-81c1-4a56-a73f-584174b36c87', 'master', 1, 4, 1, '2024-06-15 17:43:09', '2024-06-10 11:02:03', ''),
 (5, 'JCB Search', 'joomla', 'search', 1, 1, 'https://git.vdm.dev', '6e57dc23-a17d-4937-bdbf-639ae1b8409f', 'master', 1, 5, 1, '2024-06-15 17:43:09', '2024-06-10 11:02:43', ''),
 (6, 'Gitea', 'joomla', 'gitea', 1, 1, 'https://git.vdm.dev', 'a0cbfb8a-b427-48eb-b493-a02b34854019', 'master', 1, 6, 1, '2024-06-15 17:43:09', '2024-06-10 11:03:09', ''),
