@@ -119,6 +119,81 @@ class ComponentbuilderControllerPower extends FormController
 		return $success;
 	}
 
+	 /**
+	 * Pushes the specified power.
+	 *
+	 * This function performs several checks and operations:
+	 * 1. It verifies the authenticity of the request to prevent request forgery.
+	 * 2. It retrieves the item data posted by the user.
+	 * 3. It checks whether the current user has the necessary permissions to push the power.
+	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to push the specified power.
+	 * 6. Depending on the result of the push operation, it sets the appropriate success or error message.
+	 * 7. It redirects the user to a specified URL with the result message and status.
+	 *
+	 * @return bool True on successful push, false on failure.
+	 */
+	public function pushPowers()
+	{
+		// Check for request forgeries
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		// get Item posted
+		$item = $this->input->post->get('jform', array(), 'array');
+
+		// check if user has the right
+		$user = Factory::getUser();
+
+		// set default error message
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_PUSH_THIS_POWER') . '</p>';
+		$status = 'error';
+		$success = false;
+
+		// load the ID
+		$id = $item['id'] ?? null;
+		$guid = $item['guid'] ?? null;
+
+		// check if there is any selections
+		if ($id === null || $guid === null)
+		{
+			// set error message
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
+			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
+		}
+		elseif($user->authorise('power.push', 'com_componentbuilder'))
+		{
+			try {
+				if (PowerFactory::_('Power.Remote.Set')->items([$guid]))
+				{
+					// set success message
+					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+					$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THE_POWER_HAS_SUCCESSFULLY_BEEN_PUSHED').'</p>';
+					$status = 'success';
+					$success = true;
+				}
+				else
+				{
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_POWER_HAS_FAILED') . '</p>';
+				}
+			} catch (\Exception $e) {
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
+				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
+			}
+		}
+
+		// set redirect
+		$redirect_url = Route::_(
+			'index.php?option=com_componentbuilder&view=power'
+			. $this->getRedirectToItemAppend($id), $success
+		);
+
+		$this->setRedirect($redirect_url, $message, $status);
+
+		return $success;
+	}
+
 	/**
 	 * Method override to check if you can add a new record.
 	 *

@@ -17,6 +17,7 @@ use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
 use VDM\Joomla\Interfaces\Readme\ItemInterface as ItemReadme;
 use VDM\Joomla\Interfaces\Readme\MainInterface as MainReadme;
 use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface as Git;
+use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Interfaces\Remote\SetInterface;
 
 
@@ -146,6 +147,27 @@ abstract class Set implements SetInterface
 	 * @since 3.2.2
 	 */
 	protected string $index_settings_path = 'index.json';
+
+	/**
+	 * Core Placeholders
+	 *
+	 * @var    array
+	 * @since  5.0.3
+	 */
+	protected array $placeholders = [
+		'[['.'[NamespacePrefix]]]' => 'VDM',
+		'[['.'[ComponentNamespace]]]' => 'Componentbuilder',
+		'[['.'[Component]]]' => 'Componentbuilder', 
+		'[['.'[component]]]' => 'componentbuilder'
+	];
+
+	/**
+	 * Repo Placeholders
+	 *
+	 * @var    array
+	 * @since  5.0.3
+	 */
+	protected array $repoPlaceholders = [];
 
 	/**
 	 * Constructor.
@@ -500,52 +522,7 @@ abstract class Set implements SetInterface
 	 */
 	protected function getLocalItems(array $guids): ?array
 	{
-		$items = $this->fetchLocalItems($guids);
-
-		if ($items === null)
-		{
-			return null;
-		}
-
-		return $this->mapItems($items);
-	}
-
-	/**
-	 * Fetch items from the database
-	 *
-	 * @param array $guids The global unique ids of the items
-	 *
-	 * @return array|null
-	 * @since 3.2.2
-	 */
-	protected function fetchLocalItems(array $guids): ?array
-	{
 		return $this->items->table($this->getTable())->get($guids);
-	}
-
-	/**
-	 * Map items to their properties
-	 *
-	 * @param array $items The items fetched from the database
-	 *
-	 * @return array
-	 * @since 3.2.2
-	 */
-	protected function mapItems(array $items): array
-	{
-		$bucket = [];
-
-		foreach ($items as $item)
-		{
-			if (!isset($item->guid))
-			{
-				continue;
-			}
-
-			$bucket[$item->guid] = $this->mapItem($item);
-		}
-
-		return $bucket;
 	}
 
 	/**
@@ -562,7 +539,15 @@ abstract class Set implements SetInterface
 
 		foreach ($this->map as $key => $map)
 		{
-			$power[$key] = $item->{$map} ?? null;
+			$methodName = "mapItemValue_{$key}";
+			if (method_exists($this, $methodName))
+			{
+				$this->{$methodName}($item, $power);
+			}
+			else
+			{
+				$power[$key] = $item->{$map} ?? null;
+			}
 		}
 
 		return (object) $power;
@@ -586,10 +571,14 @@ abstract class Set implements SetInterface
 		$index_item = null;
 		foreach ($this->repos as $key => $repo)
 		{
-			if (empty($repo->write_branch) || $repo->write_branch === 'default')
+			if (empty($repo->write_branch) || $repo->write_branch === 'default' || !$this->targetRepo($item, $repo))
 			{
 				continue;
 			}
+
+			$item = $this->mapItem($item);
+
+			$this->setRepoPlaceholders($repo);
 
 			$this->git->load_($repo->base ?? null, $repo->token ?? null);
 
@@ -620,6 +609,43 @@ abstract class Set implements SetInterface
 
 			$this->git->reset_();
 		}
+	}
+
+	/**
+	 * Set the Repo Placeholders
+	 *
+	 * @param object  $repo  The repo
+	 *
+	 * @return void
+	 * @since  5.0.3
+	 */
+	protected function setRepoPlaceholders(object $repo): void
+	{
+		$this->repoPlaceholders = $this->placeholders;
+		if (!empty($repo->placeholders) && is_array($repo->placeholders))
+		{
+			foreach ($repo->placeholders as $key => $value)
+			{
+				$this->repoPlaceholders[$key] = $value;
+			}
+		}
+	}
+
+	/**
+	 * Update Placeholders in String
+	 *
+	 * @param string  $string  The value to update
+	 *
+	 * @return string
+	 * @since  5.0.3
+	 */
+	protected function updatePlaceholders(string $string): string
+	{
+		return str_replace(
+			array_keys($this->repoPlaceholders),
+			array_values($this->repoPlaceholders), 
+			$string
+		);
 	}
 
 	/**
@@ -669,25 +695,36 @@ abstract class Set implements SetInterface
 	}
 
 	/**
-	 * Checks if two objects are equal by comparing their JSON representations.
+	 * check that we have a target repo of this item
 	 *
-	 * This method converts both input objects to JSON strings and compares these strings.
-	 * If the JSON strings are identical, the objects are considered equal.
+	 * @param object  $item  The item
+	 * @param object  $repo  The current repo
 	 *
-	 * @param object $obj1 The first object to compare.
-	 * @param object $obj2 The second object to compare.
-	 *
-	 * @return bool True if the objects are equal, false otherwise.
-	 * @since 3.2.2
+	 * @return bool
+	 * @since  5.0.3
 	 */
-	protected function areObjectsEqual(object $obj1, object $obj2): bool
+	protected function targetRepo(object $item, object $repo): bool
 	{
-		// Convert both objects to JSON strings
-		$json1 = json_encode($obj1);
-		$json2 = json_encode($obj2);
+		return true; // for more control in children classes
+	}
 
-		// Compare the JSON strings
-		return $json1 === $json2;
+	/**
+	 * Checks if two objects are equal by comparing their properties and values.
+	 *
+	 *  This method converts both input objects to associative arrays, sorts the arrays by keys,
+	 *  and compares these sorted arrays.
+	 *
+	 *  If the arrays are identical, the objects are considered equal.
+	 *
+	 * @param object|null  $obj1  The first object to compare.
+	 * @param object|null  $obj2  The second object to compare.
+	 *
+	 * @return bool   True if the objects are equal, false otherwise.
+	 * @since  5.0.2
+	 */
+	protected function areObjectsEqual(?object $obj1, ?object $obj2): bool
+	{
+		return ObjectHelper::equal($obj1, $obj2); // basic comparison
 	}
 
 	/**

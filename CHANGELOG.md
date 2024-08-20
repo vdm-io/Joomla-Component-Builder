@@ -1,3 +1,7 @@
+# v3.2.4-alpha1
+
+- Add push option to powers area
+
 # v3.2.3
 
 - Fix site view form missing classes in J4+

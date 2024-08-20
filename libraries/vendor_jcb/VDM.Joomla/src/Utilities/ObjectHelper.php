@@ -39,17 +39,19 @@ abstract class ObjectHelper
 	}
 
 	/**
-	 * Compare two objects for equality based on their property values.
+	 * Checks if two objects are equal by comparing their properties and values.
 	 *
-	 *   Note that this method works only for simple objects that don't
-	 *   contain any nested objects or resource references. If you need
-	 *   to compare more complex objects, you may need to use a
-	 *   more advanced method such as serialization or reflection.
+	 *  This method converts both input objects to
+	 *  associative arrays, sorts the arrays by keys,
+	 *  and compares these sorted arrays.
 	 *
-	 * @param object|null $obj1 The first object to compare.
-	 * @param object|null $obj2 The second object to compare.
+	 *  If the arrays are identical, the objects are considered equal.
 	 *
-	 * @return bool True if the objects have the same key-value pairs and false otherwise.
+	 * @param object|null  $obj1  The first object to compare.
+	 * @param object|null  $obj2  The second object to compare.
+	 *
+	 * @return bool  True if the objects are equal, false otherwise.
+	 * @since  5.0.2
 	 */
 	public static function equal(?object $obj1, ?object $obj2): bool
 	{
@@ -62,17 +64,41 @@ abstract class ObjectHelper
 			return false;
 		}
 
-		// Convert the objects to arrays of their property values using get_object_vars.
-		$array1 = get_object_vars($obj1);
-		$array2 = get_object_vars($obj2);
+		// Convert both objects to associative arrays
+		$array1 = json_decode(json_encode($obj1), true);
+		$array2 = json_decode(json_encode($obj2), true);
 
-		// Compare the arrays using array_diff_assoc to detect any differences.
-		$diff1 = array_diff_assoc($array1, $array2);
-		$diff2 = array_diff_assoc($array2, $array1);
+		// Sort the arrays by keys
+		self::recursiveKsort($array1);
+		self::recursiveKsort($array2);
 
-		// If the arrays have the same key-value pairs, they will have no differences, so return true.
-		return empty($diff1) && empty($diff2);
+		// Compare the sorted arrays
+		return $array1 === $array2;
 	}
 
+	/**
+	 * Recursively sorts an associative array by keys.
+	 *
+	 * This method will sort an associative array by its keys at all levels.
+	 *
+	 * @param array &$array The array to sort.
+	 *
+	 * @return void
+	 * @since  5.0.2
+	 */
+	protected static function recursiveKsort(array &$array): void
+	{
+		// Sort the array by its keys
+		ksort($array);
+
+		// Recursively sort nested arrays
+		foreach ($array as &$value)
+		{
+			if (is_array($value))
+			{
+				self::recursiveKsort($value);
+			}
+		}
+	}
 }
 

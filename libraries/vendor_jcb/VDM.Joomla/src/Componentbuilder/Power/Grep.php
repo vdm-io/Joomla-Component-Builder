@@ -143,6 +143,60 @@ final class Grep extends ExtendingGrep implements GrepInterface
 				// set the git details in params
 				$power->main_class_code = $code;
 			}
+
+			// set the git details in params
+			$path_guid = $path->guid ?? null;
+			if ($path_guid !== null)
+			{
+				// get the Settings meta
+				if (($meta = $this->contents->metadata($path->organisation, $path->repository, $path->index->{$guid}->settings, $branch)) !== null &&
+					isset($meta->sha))
+				{
+					if (isset($power->params) && is_object($power->params) &&
+						isset($power->params->source) && is_array($power->params->source))
+					{
+						$power->params->source[$path_guid . '-settings'] = $meta->sha;
+					}
+					else
+					{
+						$power->params = (object) [
+							'source' => [$path_guid . '-settings' => $meta->sha]
+						];
+					}
+				}
+				// get the power meta
+				if (($meta = $this->contents->metadata($path->organisation, $path->repository, $path->index->{$guid}->power, $branch)) !== null &&
+					isset($meta->sha))
+				{
+					if (isset($power->params) && is_object($power->params) &&
+						isset($power->params->source) && is_array($power->params->source))
+					{
+						$power->params->source[$path_guid . '-power'] = $meta->sha;
+					}
+					else
+					{
+						$power->params = (object) [
+							'source' => [$path_guid . '-power' => $meta->sha]
+						];
+					}
+				}
+				// get the README meta
+				if (($meta = $this->contents->metadata($path->organisation, $path->repository, $path->index->{$guid}->path . '/README.md', $branch)) !== null &&
+					isset($meta->sha))
+				{
+					if (isset($power->params) && is_object($power->params) &&
+						isset($power->params->source) && is_array($power->params->source))
+					{
+						$power->params->source[$path_guid . '-readme'] = $meta->sha;
+					}
+					else
+					{
+						$power->params = (object) [
+							'source' => [$path_guid . '-readme' => $meta->sha]
+						];
+					}
+				}
+			}
 		}
 
 		// reset back to the global base and token

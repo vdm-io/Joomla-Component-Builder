@@ -207,6 +207,51 @@
 			validate="guid"
 			hint="COM_COMPONENTBUILDER_REPOSITORY_GUID_HINT"
 		/>
+		<!-- Addplaceholders Field. Type: Subform. (joomla) -->
+		<field
+			type="subform"
+			name="addplaceholders"
+			label="COM_COMPONENTBUILDER_REPOSITORY_ADDPLACEHOLDERS_LABEL"
+			layout="joomla.form.field.subform.repeatable-table"
+			multiple="true"
+			description="COM_COMPONENTBUILDER_REPOSITORY_ADDPLACEHOLDERS_DESCRIPTION"
+			default=""
+			icon="list">
+			<form hidden="true" name="list_addplaceholders_modal" repeat="true">
+				<!-- Target Field. Type: Text. (joomla) -->
+				<field
+					type="text"
+					name="target"
+					label="COM_COMPONENTBUILDER_REPOSITORY_TARGET_LABEL"
+					size="50"
+					maxlength="150"
+					description="COM_COMPONENTBUILDER_REPOSITORY_TARGET_DESCRIPTION"
+					class="text_area"
+					required="true"
+					filter="STRING"
+					message="COM_COMPONENTBUILDER_REPOSITORY_TARGET_MESSAGE"
+					hint="COM_COMPONENTBUILDER_REPOSITORY_TARGET_HINT"
+					autocomplete="off"
+				/>
+				<!-- Value Field. Type: Textarea. (joomla) -->
+				<field
+					type="textarea"
+					name="value"
+					label="COM_COMPONENTBUILDER_REPOSITORY_VALUE_LABEL"
+					rows="1"
+					cols="5"
+					default="default text"
+					description="COM_COMPONENTBUILDER_REPOSITORY_VALUE_DESCRIPTION"
+					message="COM_COMPONENTBUILDER_REPOSITORY_VALUE_MESSAGE"
+					class="text_area span12"
+					filter="RAW"
+					hint="COM_COMPONENTBUILDER_REPOSITORY_VALUE_HINT"
+					required="true"
+				/>
+			</form>
+		</field>
+		<!-- Placeholder_note Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="placeholder_note" label="COM_COMPONENTBUILDER_REPOSITORY_PLACEHOLDER_NOTE_LABEL" description="COM_COMPONENTBUILDER_REPOSITORY_PLACEHOLDER_NOTE_DESCRIPTION" heading="h4" class="alert alert-info placeholder_note" />
 		<!-- Access_repo Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"

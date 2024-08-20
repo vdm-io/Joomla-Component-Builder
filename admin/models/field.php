@@ -1266,7 +1266,7 @@ class ComponentbuilderModelField extends AdminModel
 	 *
 	 * @since   3.0
 	 */
-	protected function generateUnique($field,$value)
+	protected function generateUnique($field, $value)
 	{
 		// set field value unique
 		$table = $this->getTable();

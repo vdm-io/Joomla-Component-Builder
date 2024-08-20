@@ -58,6 +58,12 @@ class ComponentbuilderModelRepository extends AdminModel
 				'target',
 				'access_repo'
 			)
+		),
+		'placeholders' => array(
+			'fullwidth' => array(
+				'placeholder_note',
+				'addplaceholders'
+			)
 		)
 	);
 
@@ -121,6 +127,14 @@ class ComponentbuilderModelRepository extends AdminModel
 				$registry = new Registry;
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry->toArray();
+			}
+
+			if (!empty($item->addplaceholders))
+			{
+				// Convert the addplaceholders field to an array.
+				$addplaceholders = new Registry;
+				$addplaceholders->loadString($item->addplaceholders);
+				$item->addplaceholders = $addplaceholders->toArray();
 			}
 		}
 
@@ -840,6 +854,19 @@ class ComponentbuilderModelRepository extends AdminModel
 			$data['guid'] = (string) GuidHelper::get();
 		}
 
+		// Set the addplaceholders items to data.
+		if (isset($data['addplaceholders']) && is_array($data['addplaceholders']))
+		{
+			$addplaceholders = new Registry;
+			$addplaceholders->loadArray($data['addplaceholders']);
+			$data['addplaceholders'] = (string) $addplaceholders;
+		}
+		elseif (!isset($data['addplaceholders']))
+		{
+			// Set the empty addplaceholders to data
+			$data['addplaceholders'] = '';
+		}
+
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
@@ -879,7 +906,7 @@ class ComponentbuilderModelRepository extends AdminModel
 	 *
 	 * @since   3.0
 	 */
-	protected function generateUnique($field,$value)
+	protected function generateUnique($field, $value)
 	{
 		// set field value unique
 		$table = $this->getTable();

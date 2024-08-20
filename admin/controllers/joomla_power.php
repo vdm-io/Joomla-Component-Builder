@@ -91,7 +91,7 @@ class ComponentbuilderControllerJoomla_power extends FormController
 			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
 			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_JOOMLA_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
 		}
-		elseif($user->authorise('power.reset', 'com_componentbuilder'))
+		elseif($user->authorise('joomla_power.reset', 'com_componentbuilder'))
 		{
 			try {
 				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset([$guid]))
@@ -166,7 +166,7 @@ class ComponentbuilderControllerJoomla_power extends FormController
 			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
 			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_JOOMLA_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
 		}
-		elseif($user->authorise('power.push', 'com_componentbuilder'))
+		elseif($user->authorise('joomla_power.push', 'com_componentbuilder'))
 		{
 			try {
 				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->items([$guid]))

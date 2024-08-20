@@ -76,7 +76,7 @@ class ComponentbuilderControllerJoomla_powers extends AdminController
 		$status = 'error';
 		$success = false;
 
-		if($user->authorise('power.init', 'com_componentbuilder'))
+		if($user->authorise('joomla_power.init', 'com_componentbuilder'))
 		{
 			try {
 				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->init())
@@ -149,7 +149,7 @@ class ComponentbuilderControllerJoomla_powers extends AdminController
 
 		// check if user has the right
 		$user = Factory::getUser();
-		if($user->authorise('power.reset', 'com_componentbuilder'))
+		if($user->authorise('joomla_power.reset', 'com_componentbuilder'))
 		{
 			$guids = GetHelper::vars('joomla_power', $pks, 'id', 'guid');
 
@@ -228,7 +228,7 @@ class ComponentbuilderControllerJoomla_powers extends AdminController
 
 		// check if user has the right
 		$user = Factory::getUser();
-		if($user->authorise('power.push', 'com_componentbuilder'))
+		if($user->authorise('joomla_power.push', 'com_componentbuilder'))
 		{
 			$guids = GetHelper::vars('joomla_power', $pks, 'id', 'guid');
 
