@@ -6614,7 +6614,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " check if the CSS file exists.";
 			$setter .= PHP_EOL . $tabV . Indent::_(5)
-				. "if (File::exists(JPATH_ROOT.'/media/com_"
+				. "if (@file_exists(JPATH_ROOT.'/media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "{";
@@ -6630,7 +6630,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . Indent::_(5)
-				. "if (File::exists(JPATH_ROOT.'/media/com_"
+				. "if (@file_exists(JPATH_ROOT.'/media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "{";
@@ -6671,7 +6671,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " check if the CSS file exists.";
 			$setter .= PHP_EOL . $tabV . Indent::_(5)
-				. "if (File::exists(JPATH_ROOT.'/media/com_"
+				. "if (@file_exists(JPATH_ROOT.'/media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/css/components/'.\$name.\$style.\$size.'.css'))";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "{";
@@ -6687,7 +6687,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " check if the JavaScript file exists.";
 			$setter .= PHP_EOL . $tabV . Indent::_(5)
-				. "if (File::exists(JPATH_ROOT.'/media/com_"
+				. "if (@file_exists(JPATH_ROOT.'/media/com_"
 				. CFactory::_('Config')->component_code_name
 				. "/uikit-v2/js/components/'.\$name.\$size.'.js'))";
 			$setter .= PHP_EOL . $tabV . Indent::_(5) . "{";
@@ -7154,7 +7154,7 @@ class Interpretation extends Fields
 						$file
 					))
 				{
-					if (File::exists($file['path']))
+					if (@file_exists($file['path']))
 					{
 						$string            = FileHelper::getContent(
 							$file['path']
@@ -7170,7 +7170,7 @@ class Interpretation extends Fields
 					{
 						if (ArrayHelper::check($doc))
 						{
-							if (File::exists($doc['path']))
+							if (@file_exists($doc['path']))
 							{
 								$string
 									= FileHelper::getContent(

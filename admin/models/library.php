@@ -1125,7 +1125,7 @@ class ComponentbuilderModelLibrary extends AdminModel
 		// also check to insure these names are not used again
 		if (!isset(ComponentbuilderHelper::$libraryNames[$data['id']]) && in_array($data['name'], ComponentbuilderHelper::$libraryNames))
 		{
-			$data['name'] = $this->generateUniqe('name', $data['name']);
+			$data['name'] = $this->generateUnique('name', $data['name']);
 		}
 
 		// Set the Params Items to data

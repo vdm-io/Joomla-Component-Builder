@@ -1,4 +1,10 @@
-# v3.2.4-alpha1
+# v3.2.4-alpha2
+
+- Fix library save as copy error. #1162
+- Fix the error when no components exists. #1164
+- Fix search page error due to File class.
+
+# v3.2.4-alpha
 
 - Add push option to powers area
 
