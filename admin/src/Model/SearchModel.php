@@ -352,10 +352,10 @@ class SearchModel extends ItemModel
 	/**
 	 * Get all components in the system
 	 *
-	 * @return  array
+	 * @return  array|null
 	 * @since   3.2.0
 	 **/
-	public function getComponents(): array
+	public function getComponents(): ?array
 	{
 		// Get a db connection.
 		$db = $this->getDbo();
@@ -378,7 +378,6 @@ class SearchModel extends ItemModel
 		$db->setQuery($query);
 
 		// return the result
-		return $db->loadObjectList();
+		return $db->loadObjectList() ?? null;
 	}
-
 }
