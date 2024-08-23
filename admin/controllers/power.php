@@ -49,6 +49,7 @@ class ComponentbuilderControllerPower extends FormController
 		parent::__construct($config);
 	}
 
+
 	/**
 	 * Resets the specified power.
 	 *

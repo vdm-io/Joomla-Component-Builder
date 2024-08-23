@@ -45,10 +45,10 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_HELP_DOCUMENT_LOCATION_LABEL', 'a.location', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL', 'h.', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_HELP_DOCUMENT_ADMIN_VIEW_LABEL', 'g.', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL', 'i.', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_HELP_DOCUMENT_SITE_VIEW_LABEL', 'h.', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

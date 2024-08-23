@@ -161,6 +161,16 @@ class ComponentbuilderViewFieldtype extends HtmlView
 				{
 					ToolbarHelper::custom('fieldtype.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 				}
+				if ($this->canDo->get('fieldtype.reset'))
+				{
+					// add Reset button.
+					ToolbarHelper::custom('fieldtype.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+				}
+				if ($this->canDo->get('fieldtype.push'))
+				{
+					// add Push button.
+					ToolbarHelper::custom('fieldtype.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+				}
 				ToolbarHelper::cancel('fieldtype.cancel', 'JTOOLBAR_CLOSE');
 			}
 		}

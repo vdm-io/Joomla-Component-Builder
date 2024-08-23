@@ -115,7 +115,7 @@
 			<option value="3">
 				COM_COMPONENTBUILDER_HELP_DOCUMENT_URL</option>
 		</field>
-		<!-- Groups Field. Type: Usergrouplist. (custom) -->
+		<!-- Groups Field. Type: Usergrouplist. (joomla) -->
 		<field
 			type="usergrouplist"
 			name="groups"

@@ -155,6 +155,8 @@
 				COM_COMPONENTBUILDER_REPOSITORY_SUPER_POWER</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_POWER</option>
+			<option value="3">
+				COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_FIELD_TYPE</option>
 		</field>
 		<!-- Type Field. Type: List. (joomla) -->
 		<field

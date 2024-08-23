@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				<h3><?php echo Text::sprintf('COM_COMPONENTBUILDER_S_PLEASE_WAIT', $this->user->name); ?></h3>
 				<p style="font-size: smaller;"><?php echo Text::_('COM_COMPONENTBUILDER_THIS_MAY_TAKE_A_WHILE_DEPENDING_ON_THE_SIZE_OF_YOUR_PROJECT'); ?></p>
 				<p><b><span class="component-name"><?php echo Text::_('COM_COMPONENTBUILDER_THE_COMPONENT'); ?></span></b> <?php echo Text::_('COM_COMPONENTBUILDER_IS_BEING_COMPILED'); ?> <span class="loading-dots">.</span></p>
+				<p style="font-size: smaller;"><?php echo Text::_('COM_COMPONENTBUILDER_DURING_THE_INITIAL_COMPILATION_OF_ANY_COMPONENT_THE_PROCESS_MAY_TAKE_ADDITIONAL_TIME_AS_WE_RETRIEVE_AND_CONFIGURE_THE_ASSOCIATED_SUPERPOWERS_'); ?></p>
 				<div style="text-align: center;"><?php echo ComponentbuilderHelper::getDynamicContent('builder-gif', $this->builder_gif_size); ?></div>
 				<div class="clearfix"></div>
 			</div>

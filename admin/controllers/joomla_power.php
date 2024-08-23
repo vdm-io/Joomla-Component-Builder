@@ -49,15 +49,16 @@ class ComponentbuilderControllerJoomla_power extends FormController
 		parent::__construct($config);
 	}
 
+
 	/**
-	 * Resets the specified Joomla power.
+	 * Resets the specified Joomla Power.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the item data posted by the user.
-	 * 3. It checks whether the current user has the necessary permissions to reset the Joomla power.
+	 * 3. It checks whether the current user has the necessary permissions to reset the Joomla Power.
 	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
-	 * 5. If the user is authorized and the identifiers are valid, it attempts to reset the specified power.
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to reset the specified Joomla Power.
 	 * 6. Depending on the result of the reset operation, it sets the appropriate success or error message.
 	 * 7. It redirects the user to a specified URL with the result message and status.
 	 *
@@ -93,23 +94,18 @@ class ComponentbuilderControllerJoomla_power extends FormController
 		}
 		elseif($user->authorise('joomla_power.reset', 'com_componentbuilder'))
 		{
-			try {
-				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset([$guid]))
-				{
-					// set success message
-					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
-					$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THE_JOOMLA_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
-					$status = 'success';
-					$success = true;
-				}
-				else
-				{
-					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
-					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_JOOMLA_POWER_HAS_FAILED') . '</p>';
-				}
-			} catch (\Exception $e) {
+			if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset([$guid]))
+			{
+				// set success message
+				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+				$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THE_JOOMLA_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
+				$status = 'success';
+				$success = true;
+			}
+			else
+			{
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
-				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
+				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_JOOMLA_POWER_HAS_FAILED') . '</p>';
 			}
 		}
 
@@ -125,14 +121,14 @@ class ComponentbuilderControllerJoomla_power extends FormController
 	}
 
 	 /**
-	 * Pushes the specified Joomla power.
+	 * Pushes the specified Joomla Power.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the item data posted by the user.
-	 * 3. It checks whether the current user has the necessary permissions to push the Joomla power.
+	 * 3. It checks whether the current user has the necessary permissions to push the Joomla Power.
 	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
-	 * 5. If the user is authorized and the identifiers are valid, it attempts to push the specified power.
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to push the specified Joomla Power.
 	 * 6. Depending on the result of the push operation, it sets the appropriate success or error message.
 	 * 7. It redirects the user to a specified URL with the result message and status.
 	 *

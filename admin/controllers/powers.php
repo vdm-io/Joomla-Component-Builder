@@ -50,13 +50,14 @@ class ComponentbuilderControllerPowers extends AdminController
 		return parent::getModel($name, $prefix, $config);
 	}
 
+
 	/**
-	 * Initializes all remote powers and syncs them with the local database.
+	 * Initializes all remote Powers and syncs them with the local database.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
-	 * 2. It checks whether the current user has the necessary permissions to initialize the powers.
-	 * 3. If the user is authorized, it attempts to initialize the remote powers.
+	 * 2. It checks whether the current user has the necessary permissions to initialize the Powers.
+	 * 3. If the user is authorized, it attempts to initialize the remote Powers.
 	 * 4. Depending on the result of the initialization operation, it sets the appropriate success or error message.
 	 * 5. It redirects the user to a specified URL with the result message and status.
 	 *
@@ -78,19 +79,24 @@ class ComponentbuilderControllerPowers extends AdminController
 
 		if($user->authorise('power.init', 'com_componentbuilder'))
 		{
-			if (PowerFactory::_('Power.Remote.Get')->init())
-			{
-				// set success message
-				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_POWERS') . '</h1>';
-				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_LOCAL_DATABASE_POWERS_HAS_SUCCESSFULLY_BEEN_SYNCED_WITH_THE_REMOTE_REPOSITORIES') . '</p>';
+			try {
+				if (PowerFactory::_('Power.Remote.Get')->init())
+				{
+					// set success message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_JOOMLA_POWERS') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_LOCAL_DATABASE_POWERS_HAS_SUCCESSFULLY_BEEN_SYNCED_WITH_THE_REMOTE_REPOSITORIES') . '</p>';
 
-				$status = 'success';
-				$success = true;
-			}
-			else
-			{
+					$status = 'success';
+					$success = true;
+				}
+				else
+				{
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_INITIALIZATION_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_INITIALIZATION_OF_THIS_POWERS_HAS_FAILED') . '</p>';
+				}
+			} catch (\Exception $e) {
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_INITIALIZATION_FAILED') . '</h1>';
-				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_INITIALIZATION_OF_THIS_POWERS_HAS_FAILED') . '</p>';
+				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
 			}
 		}
 
@@ -102,15 +108,15 @@ class ComponentbuilderControllerPowers extends AdminController
 	}
 
 	/**
-	 * Resets the selected powers.
+	 * Resets the selected Powers.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the IDs of the selected powers from the user input.
 	 * 3. It sanitizes the input by converting the IDs to integers.
 	 * 4. It checks whether any powers have been selected.
-	 * 5. It checks whether the current user has the necessary permissions to reset the selected powers.
-	 * 6. If the user is authorized and powers are selected, it attempts to reset the selected powers.
+	 * 5. It checks whether the current user has the necessary permissions to reset the selected Powers.
+	 * 6. If the user is authorized and powers are selected, it attempts to reset the selected Powers.
 	 * 7. Depending on the result of the reset operation, it sets the appropriate success or error message.
 	 * 8. It redirects the user to a specified URL with the result message and status.
 	 *
@@ -148,18 +154,23 @@ class ComponentbuilderControllerPowers extends AdminController
 		{
 			$guids = GetHelper::vars('power', $pks, 'id', 'guid');
 
-			if (PowerFactory::_('Power.Remote.Get')->reset($guids))
-			{
-				// set success message
-				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
-				$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THESE_POWERS_HAVE_SUCCESSFULLY_BEEN_RESET').'</p>';
-				$status = 'success';
-				$success = true;
-			}
-			else
-			{
+			try {
+				if (PowerFactory::_('Power.Remote.Get')->reset($guids))
+				{
+					// set success message
+					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+					$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THESE_POWERS_HAVE_SUCCESSFULLY_BEEN_RESET').'</p>';
+					$status = 'success';
+					$success = true;
+				}
+				else
+				{
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THESE_POWERS_HAS_FAILED') . '</p>';
+				}
+			} catch (\Exception $e) {
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
-				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THESE_POWERS_HAS_FAILED') . '</p>';
+				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
 			}
 
 			// set redirect
@@ -176,15 +187,15 @@ class ComponentbuilderControllerPowers extends AdminController
 	}
 
 	/**
-	 * Pushes the selected powers.
+	 * Pushes the selected Powers.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the IDs of the selected powers from the user input.
 	 * 3. It sanitizes the input by converting the IDs to integers.
 	 * 4. It checks whether any powers have been selected.
-	 * 5. It checks whether the current user has the necessary permissions to push the selected powers.
-	 * 6. If the user is authorized and powers are selected, it attempts to push the selected powers.
+	 * 5. It checks whether the current user has the necessary permissions to push the selected Powers.
+	 * 6. If the user is authorized and powers are selected, it attempts to push the selected Powers.
 	 * 7. Depending on the result of the push operation, it sets the appropriate success or error message.
 	 * 8. It redirects the user to a specified URL with the result message and status.
 	 *

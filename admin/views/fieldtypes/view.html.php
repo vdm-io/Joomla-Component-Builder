@@ -154,6 +154,21 @@ class ComponentbuilderViewFieldtypes extends HtmlView
 				ToolbarHelper::custom('fieldtypes.exportData', 'download', '', 'COM_COMPONENTBUILDER_EXPORT_DATA', true);
 			}
 		}
+		if ($this->user->authorise('fieldtype.init', 'com_componentbuilder'))
+		{
+			// add Init button.
+			ToolbarHelper::custom('fieldtypes.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
+		}
+		if ($this->user->authorise('fieldtype.reset', 'com_componentbuilder'))
+		{
+			// add Reset button.
+			ToolbarHelper::custom('fieldtypes.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+		}
+		if ($this->user->authorise('fieldtype.push', 'com_componentbuilder'))
+		{
+			// add Push button.
+			ToolbarHelper::custom('fieldtypes.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+		}
 
 		if ($this->canDo->get('core.import') && $this->canDo->get('fieldtype.import'))
 		{
