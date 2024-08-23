@@ -54,13 +54,14 @@ class Joomla_powersController extends AdminController
 		return parent::getModel($name, $prefix, $config);
 	}
 
+
 	/**
-	 * Initializes all remote Joomla powers and syncs them with the local database.
+	 * Initializes all remote Joomla Powers and syncs them with the local database.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
-	 * 2. It checks whether the current user has the necessary permissions to initialize the Joomla powers.
-	 * 3. If the user is authorized, it attempts to initialize the remote Joomla powers.
+	 * 2. It checks whether the current user has the necessary permissions to initialize the Joomla Powers.
+	 * 3. If the user is authorized, it attempts to initialize the remote Joomla Powers.
 	 * 4. Depending on the result of the initialization operation, it sets the appropriate success or error message.
 	 * 5. It redirects the user to a specified URL with the result message and status.
 	 *
@@ -111,15 +112,15 @@ class Joomla_powersController extends AdminController
 	}
 
 	/**
-	 * Resets the selected Joomla powers.
+	 * Resets the selected Joomla Powers.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the IDs of the selected powers from the user input.
 	 * 3. It sanitizes the input by converting the IDs to integers.
 	 * 4. It checks whether any powers have been selected.
-	 * 5. It checks whether the current user has the necessary permissions to reset the selected Joomla powers.
-	 * 6. If the user is authorized and powers are selected, it attempts to reset the selected Joomla powers.
+	 * 5. It checks whether the current user has the necessary permissions to reset the selected Joomla Powers.
+	 * 6. If the user is authorized and powers are selected, it attempts to reset the selected Joomla Powers.
 	 * 7. Depending on the result of the reset operation, it sets the appropriate success or error message.
 	 * 8. It redirects the user to a specified URL with the result message and status.
 	 *
@@ -190,15 +191,15 @@ class Joomla_powersController extends AdminController
 	}
 
 	/**
-	 * Pushes the selected Joomla powers.
+	 * Pushes the selected Joomla Powers.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the IDs of the selected powers from the user input.
 	 * 3. It sanitizes the input by converting the IDs to integers.
 	 * 4. It checks whether any powers have been selected.
-	 * 5. It checks whether the current user has the necessary permissions to push the selected Joomla powers.
-	 * 6. If the user is authorized and powers are selected, it attempts to push the selected Joomla powers.
+	 * 5. It checks whether the current user has the necessary permissions to push the selected Joomla Powers.
+	 * 6. If the user is authorized and powers are selected, it attempts to push the selected Joomla Powers.
 	 * 7. Depending on the result of the push operation, it sets the appropriate success or error message.
 	 * 8. It redirects the user to a specified URL with the result message and status.
 	 *

@@ -138,7 +138,7 @@ final class ConfigFieldsetsGroupControl
 			{
 				$this->configfieldsets->add('component', Indent::_(2) . '<field name="'
 					. $selector . '"');
-				$this->configfieldsets->add('component', Indent::_(3) . 'type="usergroup"');
+				$this->configfieldsets->add('component', Indent::_(3) . 'type="usergrouplist"');
 				$this->configfieldsets->add('component', Indent::_(3) . 'label="' . $label . '"');
 				$this->configfieldsets->add('component', Indent::_(3) . 'description="'
 					. $lang . '_TARGET_GROUP_DESC"');

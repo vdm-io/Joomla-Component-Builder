@@ -63,6 +63,7 @@ class PowerController extends FormController
 	 */
 	protected $view_list = 'powers';
 
+
 	/**
 	 * Resets the specified power.
 	 *

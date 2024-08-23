@@ -25,7 +25,6 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
-use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
 // No direct access to this file
@@ -216,8 +215,17 @@ class Help_documentsModel extends ListModel
 					continue;
 				}
 
-				// convert groups
-				$item->groups = JsonHelper::string($item->groups, ', ', 'groups');
+				// decode groups
+				$groupsArray = json_decode($item->groups, true);
+				if (UtilitiesArrayHelper::check($groupsArray))
+				{
+					$groupsNames = [];
+					foreach ($groupsArray as $groups)
+					{
+						$groupsNames[] = ComponentbuilderHelper::getGroupName($groups);
+					}
+					$item->groups =  implode(', ', $groupsNames);
+				}
 			}
 		}
 
@@ -317,7 +325,7 @@ class Help_documentsModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.title LIKE '.$search.' OR a.type LIKE '.$search.' OR a.location LIKE '.$search.' OR a.admin_view LIKE '.$search.' OR h. LIKE '.$search.' OR a.site_view LIKE '.$search.' OR i. LIKE '.$search.')');
+				$query->where('(a.title LIKE '.$search.' OR a.type LIKE '.$search.' OR a.location LIKE '.$search.' OR a.admin_view LIKE '.$search.' OR g. LIKE '.$search.' OR a.site_view LIKE '.$search.' OR h. LIKE '.$search.')');
 			}
 		}
 

@@ -18062,7 +18062,7 @@ class Interpretation extends Fields
 						. "\$query = \$db->getQuery(true);";
 
 					// check if usergroup as we change to an object query
-					if ($filter['type'] === 'usergroup')
+					if ($filter['type'] === 'usergroup' || $filter['type'] === 'usergrouplist')
 					{
 						$function[] = PHP_EOL . Indent::_(2) . "//"
 							. Line::_(__Line__, __Class__) . " Select the text.";
@@ -18139,7 +18139,7 @@ class Interpretation extends Fields
 							. $nameListCode . "');";
 					}
 					// check if usergroup as we change to an object query
-					if ($filter['type'] !== 'usergroup')
+					if ($filter['type'] !== 'usergroup' && $filter['type'] !== 'usergrouplist')
 					{
 						$function[] = Indent::_(3)
 							. "\$_results = array_unique(\$_results);";
@@ -18197,7 +18197,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						if ($filter['type'] === 'usergroup')
+						if ($filter['type'] === 'usergroup' || $filter['type'] === 'usergrouplist')
 						{
 							$function[] = Indent::_(4) . "//" . Line::_(
 									__LINE__,__CLASS__
@@ -20677,7 +20677,7 @@ class Interpretation extends Fields
 						break;
 				}
 
-				if ($item['type'] === 'usergroup' && !$export
+				if (($item['type'] === 'usergroup' || $item['type'] === 'usergrouplist') && !$export
 					&& $item['method'] != 6)
 				{
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "//"
@@ -20704,7 +20704,7 @@ class Interpretation extends Fields
 						. $item['name'] . "Names);";
 					$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "}";
 				}
-				/* elseif ($item['type'] === 'usergroup' && $export)
+				/* elseif (($item['type'] === 'usergroup' || $item['type'] === 'usergrouplist') && $export)
 				{
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "//".Line::_(__Line__, __Class__)." decode ".$item['name'];
 					$fix .= PHP_EOL.Indent::_(1).$tab.Indent::_(3) . "\$".$item['name']."Array = ".$decode."(\$item->".$item['name'].$suffix_decode.");";
