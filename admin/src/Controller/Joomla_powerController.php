@@ -63,15 +63,16 @@ class Joomla_powerController extends FormController
 	 */
 	protected $view_list = 'joomla_powers';
 
+
 	/**
-	 * Resets the specified Joomla power.
+	 * Resets the specified Joomla Power.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the item data posted by the user.
-	 * 3. It checks whether the current user has the necessary permissions to reset the Joomla power.
+	 * 3. It checks whether the current user has the necessary permissions to reset the Joomla Power.
 	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
-	 * 5. If the user is authorized and the identifiers are valid, it attempts to reset the specified power.
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to reset the specified Joomla Power.
 	 * 6. Depending on the result of the reset operation, it sets the appropriate success or error message.
 	 * 7. It redirects the user to a specified URL with the result message and status.
 	 *
@@ -139,14 +140,14 @@ class Joomla_powerController extends FormController
 	}
 
 	 /**
-	 * Pushes the specified Joomla power.
+	 * Pushes the specified Joomla Power.
 	 *
 	 * This function performs several checks and operations:
 	 * 1. It verifies the authenticity of the request to prevent request forgery.
 	 * 2. It retrieves the item data posted by the user.
-	 * 3. It checks whether the current user has the necessary permissions to push the Joomla power.
+	 * 3. It checks whether the current user has the necessary permissions to push the Joomla Power.
 	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
-	 * 5. If the user is authorized and the identifiers are valid, it attempts to push the specified power.
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to push the specified Joomla Power.
 	 * 6. Depending on the result of the push operation, it sets the appropriate success or error message.
 	 * 7. It redirects the user to a specified URL with the result message and status.
 	 *

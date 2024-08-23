@@ -1116,7 +1116,7 @@ final class Builders
 					break;
 			}
 			// just a heads-up for usergroups set to multiple
-			if ($typeName === 'usergroup')
+			if ($typeName === 'usergroup' || $typeName === 'usergrouplist')
 			{
 				$this->sitefielddata->set(
 					$nameSingleCode, $name, 'json', $typeName

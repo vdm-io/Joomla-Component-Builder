@@ -1,12 +1,14 @@
-# v5.0.3-alpha2
+# v5.0.3-alpha3
 
-- Fix library save as copy error. #1162
-- Fix the error when no components exists. #1164
-- Fix search page error due to File class.
+- Fix usergrouplist compiler triggers. #1100
+- Add field type power integration [init, reset, push]
 
 # v5.0.3-alpha
 
 - Add push option to powers area
+- Fix library save as copy error. #1162
+- Fix the error when no components exists. #1164
+- Fix search page error due to File class.
 
 # v5.0.2
 

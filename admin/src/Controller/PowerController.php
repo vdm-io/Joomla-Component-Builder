@@ -63,6 +63,7 @@ class PowerController extends FormController
 	 */
 	protected $view_list = 'powers';
 
+
 	/**
 	 * Resets the specified power.
 	 *
@@ -107,18 +108,23 @@ class PowerController extends FormController
 		}
 		elseif($user->authorise('power.reset', 'com_componentbuilder'))
 		{
-			if (PowerFactory::_('Power.Remote.Get')->reset([$guid]))
-			{
-				// set success message
-				$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
-				$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THE_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
-				$status = 'success';
-				$success = true;
-			}
-			else
-			{
+			try {
+				if (PowerFactory::_('Power.Remote.Get')->reset([$guid]))
+				{
+					// set success message
+					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
+					$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THE_POWER_HAS_SUCCESSFULLY_BEEN_RESET').'</p>';
+					$status = 'success';
+					$success = true;
+				}
+				else
+				{
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_POWER_HAS_FAILED') . '</p>';
+				}
+			} catch (\Exception $e) {
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
-				$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_POWER_HAS_FAILED') . '</p>';
+				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
 			}
 		}
 
