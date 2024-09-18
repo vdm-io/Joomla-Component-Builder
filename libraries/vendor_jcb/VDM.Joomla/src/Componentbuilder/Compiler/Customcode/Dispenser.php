@@ -12,13 +12,12 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Customcode;
 
 
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Hash;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\LockBase;
+use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\DispenserInterface;
 
 
@@ -33,7 +32,7 @@ class Dispenser implements DispenserInterface
 	 * Customcode Dispenser Hub
 	 *
 	 * @var    array
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	public array $hub;
 
@@ -41,7 +40,7 @@ class Dispenser implements DispenserInterface
 	 * Compiler Placeholder
 	 *
 	 * @var    Placeholder
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected Placeholder $placeholder;
 
@@ -49,7 +48,7 @@ class Dispenser implements DispenserInterface
 	 * Compiler Customcode
 	 *
 	 * @var    Customcode
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected Customcode $customcode;
 
@@ -57,7 +56,7 @@ class Dispenser implements DispenserInterface
 	 * Compiler Customcode in Gui
 	 *
 	 * @var    Gui
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected Gui $gui;
 
@@ -65,7 +64,7 @@ class Dispenser implements DispenserInterface
 	 * Compiler Customcode to Hash
 	 *
 	 * @var    Hash
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected Hash $hash;
 
@@ -73,29 +72,29 @@ class Dispenser implements DispenserInterface
 	 * Compiler Customcode to LockBase
 	 *
 	 * @var    LockBase
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected LockBase $base64;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Placeholder|null  $placeholder The compiler placeholder object.
-	 * @param Customcode|null   $customcode  The compiler customcode object.
-	 * @param Gui|null          $gui         The compiler customcode gui object.
-	 * @param Hash|null         $hash        The compiler customcode hash object.
-	 * @param LockBase|null     $base64      The compiler customcode lock base64 object.
+	 * @param Placeholder   $placeholder   The Placeholder Class.
+	 * @param Customcode    $customcode    The Customcode Class.
+	 * @param Gui           $gui           The Gui Class.
+	 * @param Hash          $hash          The Hash Class.
+	 * @param LockBase      $lockbase      The LockBase Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Placeholder $placeholder = null, ?Customcode $customcode = null,
-		?Gui $gui = null, ?Hash $hash = null, ?LockBase $base64 = null)
+	public function __construct(Placeholder $placeholder, Customcode $customcode, Gui $gui,
+		Hash $hash, LockBase $lockbase)
 	{
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->hash = $hash ?: Compiler::_('Customcode.Hash');
-		$this->base64 = $base64 ?: Compiler::_('Customcode.LockBase');
+		$this->placeholder = $placeholder;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->hash = $hash;
+		$this->base64 = $lockbase;
 	}
 
 	/**
@@ -114,7 +113,7 @@ class Dispenser implements DispenserInterface
 	 *                                    default: false
 	 *
 	 * @return  bool    true on success
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function set(&$script, string $first, ?string $second = null, ?string $third = null,
 		array $config = [], bool $base64 = true, bool $dynamic = true, bool $add = false): bool
@@ -177,7 +176,7 @@ class Dispenser implements DispenserInterface
 	 * @param string       $suffix   The suffix to add after the script if found
 	 *
 	 * @return  mixed  The string/script if found or the default value if not found
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function get(string $first, string $second, string $prefix = '', ?string $note = null,
 	                    bool $unset = false, $default = null, string $suffix = '')
@@ -224,7 +223,7 @@ class Dispenser implements DispenserInterface
 	 *                                    default: false
 	 *
 	 * @return  void
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	protected function initHub(string $first, ?string $second = null, ?string $third = null, bool $add = false)
 	{
@@ -255,7 +254,7 @@ class Dispenser implements DispenserInterface
 	 *                                    default: false
 	 *
 	 * @return  void
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	protected function setHub(string $script, string $first, ?string $second = null, ?string $third = null, bool $add = false)
 	{

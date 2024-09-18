@@ -52,7 +52,23 @@ class ###View###Controller extends FormController
 	 * @var    string
 	 * @since  1.6
 	 */
-	protected $view_list = '###views###';###ADMIN_CUSTOM_BUTTONS_CONTROLLER###
+	protected $view_list = '###views###';
+
+	/**
+	 * Referral value
+	 *
+	 * @var    string
+	 * @since  5.0
+	 */
+	protected string $ref;
+
+	/**
+	 * Referral ID value
+	 *
+	 * @var    int
+	 * @since  5.0
+	 */
+	protected int $refid;###ADMIN_CUSTOM_BUTTONS_CONTROLLER###
 
 	/**
 	 * Method override to check if you can add a new record.

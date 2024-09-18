@@ -13,6 +13,8 @@ namespace VDM\Joomla\Data;
 
 
 use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
+use VDM\Joomla\Data\Guid;
+use VDM\Joomla\Interfaces\Data\GuidInterface;
 use VDM\Joomla\Interfaces\Data\SubformInterface;
 
 
@@ -21,10 +23,17 @@ use VDM\Joomla\Interfaces\Data\SubformInterface;
  * 
  * @since  3.2.2
  */
-final class Subform implements SubformInterface
+final class Subform implements GuidInterface, SubformInterface
 {
 	/**
-	 * The ItemsInterface Class.
+	 * The Globally Unique Identifier.
+	 *
+	 * @since 5.0.2
+	 */
+	use Guid;
+
+	/**
+	 * The Items Class.
 	 *
 	 * @var   Items
 	 * @since 3.2.2
@@ -42,7 +51,7 @@ final class Subform implements SubformInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Items       $items   The ItemsInterface Class.
+	 * @param Items       $items   The Items Class.
 	 * @param string|null $table   The table name.
 	 *
 	 * @since 3.2.2
@@ -77,16 +86,17 @@ final class Subform implements SubformInterface
 	 * @param string   $linkValue  The value of the link key in child table.
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $field      The parent field name of the subform in the parent view.
-	 * @param array    $get        The array get:set of the keys of each row in the subform.
+	 * @param array    $get        The array SET of the keys of each row in the subform.
+	 * @param bool     $multi      The switch to return a multiple set.
 	 *
 	 * @return array|null   The subform
 	 * @since 3.2.2
 	 */
-	public function get(string $linkValue, string $linkKey, string $field, array $get): ?array
+	public function get(string $linkValue, string $linkKey, string $field, array $get, bool $multi = true): ?array
 	{
 		if (($items = $this->items->table($this->getTable())->get([$linkValue], $linkKey)) !== null)
 		{
-			return $this->converter($items, $get, $field);
+			return $this->converter($items, $get, $field, $multi);
 		}
 		return null;
 	}
@@ -179,11 +189,12 @@ final class Subform implements SubformInterface
 	 * @param array  $items  Array of objects or arrays to be filtered.
 	 * @param array  $keySet Array of keys to retain in each item.
 	 * @param string $field  The field prefix for the resulting associative array.
+	 * @param bool   $multi  The switch to return a multiple set.
 	 *
 	 * @return array Array of filtered arrays set by association.
 	 * @since 3.2.2
 	 */
-	private function converter(array $items, array $keySet, string $field): array
+	private function converter(array $items, array $keySet, string $field, bool $multi): array
 	{
 		/**
 		 * Filters keys for a single item and converts it to an array.
@@ -209,6 +220,10 @@ final class Subform implements SubformInterface
 		$result = [];
 		foreach ($items as $index => $item)
 		{
+			if (!$multi)
+			{
+				return $filterKeys($item, $keySet);
+			}
 			$filteredArray = $filterKeys($item, $keySet);
 			$result[$field . $index] = $filteredArray;
 		}
@@ -230,6 +245,11 @@ final class Subform implements SubformInterface
 	private function process($items, string $indexKey, string $linkKey, string $linkValue): array
 	{
 		$items = is_array($items) ? $items : [];
+		if ($items !== [] && !$this->isMultipleSets($items))
+		{
+			$items = [$items];
+		}
+
 		foreach ($items as &$item)
 		{
 			$value = $item[$indexKey] ?? '';
@@ -238,7 +258,7 @@ final class Subform implements SubformInterface
 					if (empty($value))
 					{
 						// set INDEX
-						$item[$indexKey] = $this->setGuid($indexKey);
+						$item[$indexKey] = $this->getGuid($indexKey);
 					}
 					break;
 				case 'id':
@@ -259,67 +279,26 @@ final class Subform implements SubformInterface
 	}
 
 	/**
-	 * Returns a GUIDv4 string
+	 * Function to determine if the array consists of multiple data sets (arrays of arrays).
 	 * 
-	 * Thanks to Dave Pearson (and other)
-	 * https://www.php.net/manual/en/function.com-create-guid.php#119168 
-	 *
-	 * Uses the best cryptographically secure method
-	 * for all supported platforms with fallback to an older,
-	 * less secure version.
-	 *
-	 * @param string  $key    The key to check and modify values.
-	 * @param  bool   $trim
-	 *
-	 * @return string
-	 *
-	 * @since  3.0.9
+	 * @param array $array The input array to be checked.
+	 * 
+	 * @return bool True if the array contains only arrays (multiple data sets), false otherwise.
+	 * @since  5.0.2
 	 */
-	private function setGuid(string $key, bool $trim = true): string
+	private function isMultipleSets(array $array): bool
 	{
-		// Windows
-		if (function_exists('com_create_guid'))
+		foreach ($array as $element)
 		{
-			if ($trim)
+			// As soon as we find a non-array element, return false
+			if (!is_array($element))
 			{
-				return trim(\com_create_guid(), '{}');
+				return false;
 			}
-			return \com_create_guid();
 		}
 
-		// set the braces if needed
-		$lbrace = $trim ? "" : chr(123);    // "{"
-		$rbrace = $trim ? "" : chr(125);    // "}"
-
-		// OSX/Linux
-		if (function_exists('openssl_random_pseudo_bytes'))
-		{
-			$data = \openssl_random_pseudo_bytes(16);
-			$data[6] = chr( ord($data[6]) & 0x0f | 0x40);    // set version to 0100
-			$data[8] = chr( ord($data[8]) & 0x3f | 0x80);    // set bits 6-7 to 10
-			return $lbrace . vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)) . $lbrace;
-		}
-
-		// Fallback (PHP 4.2+)
-		mt_srand((double) microtime() * 10000);
-		$charid = strtolower( md5( uniqid( rand(), true)));
-		$hyphen = chr(45);                  // "-"
-		$guidv4 = $lbrace.
-			substr($charid,  0,  8). $hyphen.
-			substr($charid,  8,  4). $hyphen.
-			substr($charid, 12,  4). $hyphen.
-			substr($charid, 16,  4). $hyphen.
-			substr($charid, 20, 12).
-			$rbrace;
-
-		// check that it does not already exist (one in a billion chance ;)
-		// but we do it any way...
-		if ($this->items->table($this->getTable())->values([$guidv4], $key))
-		{
-			return $this->setGuid($key);
-		}
-
-		return $guidv4;
+		// If all elements are arrays, return true
+		return true;
 	}
 }
 

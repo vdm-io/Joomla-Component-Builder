@@ -36,11 +36,12 @@ interface SubformInterface
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $field      The parent field name of the subform in the parent view.
 	 * @param array    $get        The array SET of the keys of each row in the subform.
+	 * @param bool     $multi      The switch to return a multiple set.
 	 *
 	 * @return array|null   The subform
 	 * @since 3.2.2
 	 */
-	public function get(string $linkValue, string $linkKey, string $field, array $get): ?array;
+	public function get(string $linkValue, string $linkKey, string $field, array $get, bool $multi = true): ?array;
 
 	/**
 	 * Set a subform items

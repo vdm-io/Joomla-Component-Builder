@@ -40,9 +40,9 @@ class JFormFieldNamespaces extends JFormFieldList
 	protected function getOptions()
 	{
 		// Get the user object.
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		// Get the databse object.
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.guid','a.name','a.namespace','a.type','a.power_version'),array('guid','use_name','namespace','type','version')));
 		$query->from($db->quoteName('#__componentbuilder_power', 'a'));
@@ -60,7 +60,7 @@ class JFormFieldNamespaces extends JFormFieldList
 			}
 		}
 		// get the input
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		// get the id
 		$power_id = $jinput->getInt('id', 0);
 		// if we have an id we remove all classes of the same namespace and name
@@ -74,17 +74,17 @@ class JFormFieldNamespaces extends JFormFieldList
 		// if none was found, we add this to set an alternative to set custom
 		if (!$items)
 		{
-			$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_NONE_FOUND'));
+			$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_NONE_FOUND'));
 		}
 		if ($items)
 		{
 			if ($this->multiple === false)
 			{
-				$options[] = JHtml::_('select.option', '', JText::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
+				$options[] = Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION'));
 			}
 			foreach($items as $item)
 			{
-				$options[] = JHtml::_('select.option', $item->guid, str_replace('.','\\', $item->namespace) . ' [' . $item->use_name . '] (v' . $item->version . ' - ' . $item->type . ')');
+				$options[] = Html::_('select.option', $item->guid, str_replace('.','\\', $item->namespace) . ' [' . $item->use_name . '] (v' . $item->version . ' - ' . $item->type . ')');
 			}
 		}
 		return $options;

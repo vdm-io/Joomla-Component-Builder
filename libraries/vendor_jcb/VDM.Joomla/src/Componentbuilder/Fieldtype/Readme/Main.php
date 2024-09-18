@@ -34,13 +34,13 @@ final class Main implements MainInterface
 	{
 		// build readme
 		$readme = ["```
-     ██╗ ██████╗  ██████╗ ███╗   ███╗██╗      █████╗                             
-     ██║██╔═══██╗██╔═══██╗████╗ ████║██║     ██╔══██╗                            
-     ██║██║   ██║██║   ██║██╔████╔██║██║     ███████║                            
-██   ██║██║   ██║██║   ██║██║╚██╔╝██║██║     ██╔══██║                            
-╚█████╔╝╚██████╔╝╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║                            
- ╚════╝  ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝                            
-                                                                                 
+     ██╗ ██████╗  ██████╗ ███╗   ███╗██╗      █████╗
+     ██║██╔═══██╗██╔═══██╗████╗ ████║██║     ██╔══██╗
+     ██║██║   ██║██║   ██║██╔████╔██║██║     ███████║
+██   ██║██║   ██║██║   ██║██║╚██╔╝██║██║     ██╔══██║
+╚█████╔╝╚██████╔╝╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║
+ ╚════╝  ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
+
 ███████╗██╗███████╗██╗     ██████╗     ████████╗██╗   ██╗██████╗ ███████╗███████╗
 ██╔════╝██║██╔════╝██║     ██╔══██╗    ╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔════╝
 █████╗  ██║█████╗  ██║     ██║  ██║       ██║    ╚████╔╝ ██████╔╝█████╗  ███████╗
@@ -52,7 +52,7 @@ final class Main implements MainInterface
 		// default description of super powers
 		$readme[] = "\n### What is JCB Joomla Field Types?\nThe Joomla field types provide a powerful way to map Joomla-related field types, enabling seamless integration with Joomla Component Builder (JCB). This repository serves as a centralized system for maintaining, updating, and distributing these field types throughout the JCB ecosystem.\n
 \n
-When you need to update any field type in JCB, simply select the desired field type and click the "reset" button. This action will automatically sync the selected field type with its corresponding version hosted in our core repository, ensuring you always have the latest updates.\n
+When you need to update any field type in JCB, simply select the desired field type and click the \"reset\" button. This action will automatically sync the selected field type with its corresponding version hosted in our core repository, ensuring you always have the latest updates.\n
 \n
 Moreover, if you wish to tailor the field types to your specific needs, you can fork the repository and point your JCB instance to your fork. This allows you to maintain and update field types independently from the main JCB community, offering the flexibility that is at the heart of open-source philosophy.\n
 \n

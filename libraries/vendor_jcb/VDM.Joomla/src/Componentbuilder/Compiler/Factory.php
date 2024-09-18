@@ -42,6 +42,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Utilities;
 use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderAJ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderLZ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComHelperClass;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitecturePlugin;
@@ -142,6 +143,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new BuilderAJ())
 			->registerServiceProvider(new BuilderLZ())
 			->registerServiceProvider(new Creator())
+			->registerServiceProvider(new ArchitectureComHelperClass())
 			->registerServiceProvider(new ArchitectureController())
 			->registerServiceProvider(new ArchitectureModel())
 			->registerServiceProvider(new ArchitecturePlugin())

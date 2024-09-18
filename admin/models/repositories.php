@@ -200,7 +200,7 @@ class ComponentbuilderModelRepositories extends ListModel
 				0 => 'COM_COMPONENTBUILDER_REPOSITORY_SELECT_AN_OPTION',
 				1 => 'COM_COMPONENTBUILDER_REPOSITORY_SUPER_POWER',
 				2 => 'COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_POWER',
-				3 => 'COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_FIELD_TYPE'
+				3 => 'COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_FIELD_TYPES'
 			);
 			// Now check if value is found in this array
 			if (isset($targetArray[$value]) && StringHelper::check($targetArray[$value]))

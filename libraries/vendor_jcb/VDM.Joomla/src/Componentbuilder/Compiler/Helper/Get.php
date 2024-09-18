@@ -173,7 +173,7 @@ class Get
 	 * @var     bool
 	 * @deprecated 3.3 Use CFactory::_('Config')->remove_line_breaks;
 	 */
-	public $removeLineBreaks = false;
+	public $removeLineBreaks = true;
 
 	/**
 	 * The placeholders for custom code keys

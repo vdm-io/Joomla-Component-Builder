@@ -65,7 +65,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(10) unsigned',
 				'default' => '0',
-				'null_switch' => 'NOT NULL',
+				'null_switch' => 'NULL',
 				'comment' => 'FK to the #__assets table.'
 			]
 		],
@@ -80,7 +80,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(11)',
 				'default' => '0',
-				'null_switch' => 'NOT NULL'
+				'null_switch' => 'NULL'
 			]
 		],
 		'published' => [
@@ -94,7 +94,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'TINYINT(3)',
 				'default' => '1',
-				'null_switch' => 'NOT NULL',
+				'null_switch' => 'NULL',
 				'key' => true,
 				'key_name' => 'state'
 			]
@@ -110,7 +110,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(10) unsigned',
 				'default' => '0',
-				'null_switch' => 'NOT NULL',
+				'null_switch' => 'NULL',
 				'key' => true,
 				'key_name' => 'modifiedby'
 			]
@@ -126,7 +126,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'DATETIME',
 				'default' => '0000-00-00 00:00:00',
-				'null_switch' => 'NOT NULL'
+				'null_switch' => 'NULL'
 			]
 		],
 		'created_by' => [
@@ -140,7 +140,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(10) unsigned',
 				'default' => '0',
-				'null_switch' => 'NOT NULL',
+				'null_switch' => 'NULL',
 				'key' => true,
 				'key_name' => 'createdby'
 			]
@@ -156,7 +156,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'DATETIME',
 				'default' => '0000-00-00 00:00:00',
-				'null_switch' => 'NOT NULL'
+				'null_switch' => 'NULL'
 			]
 		],
 		'checked_out' => [
@@ -170,7 +170,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(10) unsigned',
 				'default' => '0',
-				'null_switch' => 'NOT NULL',
+				'null_switch' => 'NULL',
 				'key' => true,
 				'key_name' => 'checkout'
 			]
@@ -186,7 +186,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'DATETIME',
 				'default' => '0000-00-00 00:00:00',
-				'null_switch' => 'NOT NULL'
+				'null_switch' => 'NULL'
 			]
 		],
 		'hits' => [
@@ -200,7 +200,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(10) unsigned',
 				'default' => '0',
-				'null_switch' => 'NOT NULL'
+				'null_switch' => 'NULL'
 			]
 		],
 		'version' => [
@@ -214,7 +214,7 @@ abstract class BaseTable implements Tableinterface
 			'db' => [
 				'type' => 'INT(10) unsigned',
 				'default' => '1',
-				'null_switch' => 'NOT NULL'
+				'null_switch' => 'NULL'
 			]
 		],
 		'params' => [

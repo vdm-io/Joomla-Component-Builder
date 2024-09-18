@@ -107,9 +107,9 @@ class Config extends BaseConfig
 		// get the users own power repo (can overwrite all)
 		if (!empty($this->gitea_username))
 		{
-			$repos[$this->gitea_username . '.joomla-fieldtype'] = (object) ['organisation' => $this->gitea_username, 'repository' => 'joomla-fieldtype', 'read_branch' => 'master'];
+			$repos[$this->gitea_username . '.joomla-fieldtypes'] = (object) ['organisation' => $this->gitea_username, 'repository' => 'joomla-fieldtypes', 'read_branch' => 'master'];
 		}
-		$repos[$this->joomla_fieldtype_core_organisation . '.joomla-fieldtype'] = (object) ['organisation' => $this->joomla_fieldtype_core_organisation, 'repository' => 'joomla-fieldtype', 'read_branch' => 'master'];
+		$repos[$this->joomla_fieldtype_core_organisation . '.joomla-fieldtypes'] = (object) ['organisation' => $this->joomla_fieldtype_core_organisation, 'repository' => 'joomla-fieldtypes', 'read_branch' => 'master'];
 
 		return $repos;
 	}

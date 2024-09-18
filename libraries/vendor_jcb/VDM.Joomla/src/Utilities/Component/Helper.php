@@ -14,9 +14,11 @@ namespace VDM\Joomla\Utilities\Component;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
+use VDM\Joomla\Utilities\StringHelper;
 
 
 /**
@@ -51,6 +53,57 @@ abstract class Helper
 	protected static array $params = [];
 
 	/**
+	 * Sets a parameter value for the given target in the specified option's params.
+	 * If no option is provided, it falls back to the default option.
+	 *
+	 * This method updates the parameters for a given extension in the database,
+	 * only if the new value differs from the existing one.
+	 *
+	 * @param string      $target The parameter name to be updated.
+	 * @param mixed       $value  The value to set for the parameter.
+	 * @param string|null $option The optional extension element name. Defaults to null, which will use the default option.
+	 *
+	 * @return mixed The previous value of the parameter before it was updated.
+	 * @since  5.0.3
+	 */
+	public static function setParams(string $target, $value, ?string $option = null)
+	{
+		// Ensure that an option is specified, defaulting to the system's option if not provided.
+		if (empty($option))
+		{
+			$option = static::getOption();
+		}
+
+		// Retrieve current parameters for the specified option.
+		$params = static::getParams($option);
+
+		// Get the current value of the target parameter.
+		$was = $params->get($target, null);
+
+		// Only proceed if the new value differs from the current value.
+		if ($was !== $value)
+		{
+			// Update the parameter value.
+			$params->set($target, $value);
+
+			// Obtain a database connection instance.
+			$db = Factory::getDBO();
+			$query = $db->getQuery(true);
+
+			// Build and execute the query to update the parameters in the database.
+			$query->update('#__extensions AS a')
+				  ->set('a.params = ' . $db->quote((string) $params))
+				  ->where('a.element = ' . $db->quote((string) $option));
+
+			$db->setQuery($query);
+			$db->execute();
+		}
+
+		// Return the previous value of the parameter.
+		return $was;
+	}
+
+	/**
 	 * Gets the parameter object for the component
 	 *
 	 * @param   string|null     $option  The option for the component.
@@ -64,16 +117,16 @@ abstract class Helper
 		// check that we have an option
 		if (empty($option))
 		{
-			$option = self::getOption();
+			$option = static::getOption();
 		}
 
 		// get global value
-		if (!isset(self::$params[$option]) || !self::$params[$option] instanceof Registry)
+		if (!isset(static::$params[$option]) || !static::$params[$option] instanceof Registry)
 		{
-			self::$params[$option] = ComponentHelper::getParams($option);
+			static::$params[$option] = ComponentHelper::getParams($option);
 		}
 
-		return self::$params[$option];
+		return static::$params[$option];
 	}
 
 	/**
@@ -86,7 +139,7 @@ abstract class Helper
 	 */
 	public static function setOption(?string $option): void
 	{
-		self::$option = $option;
+		static::$option = $option;
 	}
 
 	/**
@@ -99,13 +152,13 @@ abstract class Helper
 	 */
 	public static function getOption(?string $default = 'empty'): ?string
 	{
-		if (empty(self::$option))
+		if (empty(static::$option))
 		{
 			// get the option from the url input
-			self::$option = (new Input)->getString('option', null);
+			static::$option = (new Input)->getString('option', null);
 		}
 
-		if (empty(self::$option))
+		if (empty(static::$option))
 		{
 			$app = Factory::getApplication();
 
@@ -113,16 +166,16 @@ abstract class Helper
 			if (method_exists($app, 'getInput'))
 			{
 				// get the option from the application
-				self::$option = $app->getInput()->getCmd('option', $default);
+				static::$option = $app->getInput()->getCmd('option', $default);
 			}
 			else
 			{
 				// Use the default value if getInput method does not exist
-				self::$option = $default;
+				static::$option = $default;
 			}
 		}
 
-		return self::$option;
+		return static::$option;
 	}
 
 	/**
@@ -139,7 +192,7 @@ abstract class Helper
 		// check that we have an option
 		if (empty($option))
 		{
-			$option = self::getOption();
+			$option = static::getOption();
 		}
 		// option with com_
 		if (is_string($option) && strpos($option, 'com_') === 0)
@@ -164,7 +217,7 @@ abstract class Helper
 	{
 		// check that we have an option
 		// and get the code name from it
-		if (($code_name = self::getCode($option, null)) !== null)
+		if (($code_name = static::getCode($option, null)) !== null)
 		{
 			// we build the helper class name
 			$helper_name = '\\' . \ucfirst($code_name) . 'Helper';
@@ -176,7 +229,7 @@ abstract class Helper
 			}
 
 			// try loading namespace
-			if (($namespace = self::getNamespace($option)) !== null)
+			if (($namespace = static::getNamespace($option)) !== null)
 			{
 				$name = \ucfirst($code_name) . 'Helper';
 				$namespace_helper =  '\\' . $namespace . '\Administrator\Helper\\' . NamespaceHelper::safeSegment($name); // TODO target site or admin locations not just admin...
@@ -202,7 +255,7 @@ abstract class Helper
 	 */
 	public static function getNamespace(?string $option = null): ?string
 	{
-		$manifest = self::getManifest($option);
+		$manifest = static::getManifest($option);
 
 		return $manifest->namespace ?? null;
 	}
@@ -220,13 +273,13 @@ abstract class Helper
 	public static function getManifest(?string $option = null): ?object
 	{
 		if ($option === null
-			&& ($option = self::getOption($option)) === null)
+			&& ($option = static::getOption($option)) === null)
 		{
 			return null;
 		}
 
 		// get global manifest_cache values
-		if (!isset(self::$manifest[$option]))
+		if (!isset(static::$manifest[$option]))
 		{
 			$db = Factory::getDbo();
 			$query = $db->getQuery(true);
@@ -240,14 +293,14 @@ abstract class Helper
 
 			try {
 				$manifest = $db->loadResult();
-				self::$manifest[$option] = json_decode($manifest);
+				static::$manifest[$option] = json_decode($manifest);
 			} catch (\Exception $e) {
 				// Handle the database error appropriately.
-				self::$manifest[$option] = null;
+				static::$manifest[$option] = null;
 			}
 		}
 
-		return self::$manifest[$option];
+		return static::$manifest[$option];
 	}
 
 	/**
@@ -263,7 +316,7 @@ abstract class Helper
 	public static function methodExists(string $method, ?string $option = null): bool
 	{
 		// get the helper class
-		return ($helper = self::get($option, null)) !== null &&
+		return ($helper = static::get($option, null)) !== null &&
 			method_exists($helper, $method);
 	}
 
@@ -280,7 +333,7 @@ abstract class Helper
 	public static function _(string $method, array $arguments = [], ?string $option = null)
 	{
 		// get the helper class
-		if (($helper = self::get($option, null)) !== null &&
+		if (($helper = static::get($option, null)) !== null &&
 			method_exists($helper, $method))
 		{
 			// we know this is not ideal...
@@ -292,5 +345,76 @@ abstract class Helper
 		return null;
 	}
 
+	/**
+	 * Returns a Model object based on the specified type, prefix, and configuration.
+	 *
+	 * @param   string       $type     The model type to instantiate. Must not be empty.
+	 * @param   string       $prefix   Prefix for the model class name. Optional, defaults to 'Administrator'.
+	 * @param   string|null  $option   The component option. Optional, defaults to the component's option.
+	 * @param   array        $config   Configuration array for the model. Optional, defaults to an empty array.
+	 *
+	 * @return  BaseDatabaseModel   The instantiated model object.
+	 *
+	 * @throws  \InvalidArgumentException  If the $type parameter is empty.
+	 * @throws  \Exception                 For other errors that may occur during model creation.
+	 *
+	 * @since   5.0.3
+	 */
+	public static function getModel(string $type, string $prefix = 'Administrator',
+		?string $option = null, array $config = []): BaseDatabaseModel
+	{
+		// Ensure the $type parameter is not empty
+		if (empty($type))
+		{
+			throw new \InvalidArgumentException('The $type parameter cannot be empty when calling Component Helper getModel method.');
+		}
+
+		// Ensure the $option parameter is set, defaulting to the component's option if not provided
+		if (empty($option))
+		{
+			$option = static::getOption();
+		}
+
+		// Normalize the model type name if the first character is not uppercase
+		if (!ctype_upper($type[0]))
+		{
+			$type = StringHelper::safe($type, 'F');
+		}
+
+		// Normalize the prefix if it's not 'Site' or 'Administrator'
+		if ($prefix !== 'Site' && $prefix !== 'Administrator')
+		{
+			$prefix = static::getPrefixFromModelPath($prefix);
+		}
+
+		// Instantiate and return the model using the MVCFactory
+		return Factory::getApplication()
+			->bootComponent($option)
+			->getMVCFactory()
+			->createModel($type, $prefix, $config);
+	}
+
+	/**
+	 * Get the prefix from the model path
+	 *
+	 * @param   string  $path    The model path
+	 *
+	 * @return  string  The prefix value
+	 * @since   5.0.3
+	 */
+	private static function getPrefixFromModelPath(string $path): string
+	{
+		// Check if $path starts with JPATH_ADMINISTRATOR path
+		if (str_starts_with($path, JPATH_ADMINISTRATOR . '/components/'))
+		{
+			return 'Administrator';
+		}
+		// Check if $path starts with JPATH_SITE path
+		elseif (str_starts_with($path, JPATH_SITE . '/components/'))
+		{
+			return 'Site';
+		}
+		return 'Administrator';
+	}
 }
 

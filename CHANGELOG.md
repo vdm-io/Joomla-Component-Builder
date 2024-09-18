@@ -1,6 +1,8 @@
-# v3.2.4-alpha3
+# v3.2.4-alpha4
 
-- Fix usergrouplist compiler triggers. #1100
+- Fix database default fields to allow NULL. #1169
+- Fix the power list field to allow search. #1167
+- Remove Demo component from JCB v3 and added Hello Word component as demo in JCB v3.
 
 # v3.2.4-alpha
 
@@ -8,6 +10,8 @@
 - Fix library save as copy error. #1162
 - Fix the error when no components exists. #1164
 - Fix search page error due to File class.
+- Fix usergrouplist compiler triggers. #1100
+- Add field type power integration [init, reset, push]
 
 # v3.2.3
 

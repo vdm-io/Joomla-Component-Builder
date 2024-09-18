@@ -5417,7 +5417,6 @@ abstract class ComponentbuilderHelper
 		return $d && $d->format($format) == $date;
 	}
 
-
 	/**
 	* The subform layouts
 	**/
