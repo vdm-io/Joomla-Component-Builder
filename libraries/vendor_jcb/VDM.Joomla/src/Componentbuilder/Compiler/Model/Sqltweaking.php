@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -37,13 +36,13 @@ class Sqltweaking
 	/**
 	 * Constructor
 	 *
-	 * @param Registry|null      $registry      The compiler registry object.
+	 * @param Registry    $registry     The compiler registry object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Registry $registry = null)
+	public function __construct(Registry $registry)
 	{
-		$this->registry = $registry ?: Compiler::_('Registry');
+		$this->registry = $registry;
 	}
 
 	/**

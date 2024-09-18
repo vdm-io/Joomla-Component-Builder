@@ -63,6 +63,22 @@ class PowerController extends FormController
 	 */
 	protected $view_list = 'powers';
 
+	/**
+	 * Referral value
+	 *
+	 * @var    string
+	 * @since  5.0
+	 */
+	protected string $ref;
+
+	/**
+	 * Referral ID value
+	 *
+	 * @var    int
+	 * @since  5.0
+	 */
+	protected int $refid;
+
 
 	/**
 	 * Resets the specified power.

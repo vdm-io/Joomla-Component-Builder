@@ -267,7 +267,6 @@ class Joomla_pluginsModel extends ListModel
 		return true;
 	}
 
-
 	/**
 	 * Method to auto-populate the model state.
 	 *

@@ -264,9 +264,9 @@
 			label="COM_COMPONENTBUILDER_REPOSITORY_ACCESS_REPO_LABEL"
 			description="COM_COMPONENTBUILDER_REPOSITORY_ACCESS_REPO_DESCRIPTION"
 			class="btn-group btn-group-yesno"
-			default="">
+			default="0">
 			<!-- Option Set. -->
-			<option value="">
+			<option value="0">
 				COM_COMPONENTBUILDER_REPOSITORY_GLOBAL</option>
 			<option value="1">
 				COM_COMPONENTBUILDER_REPOSITORY_OVERRIDE</option>

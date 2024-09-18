@@ -445,7 +445,10 @@ final class MultiSubform implements MultiSubformInterface
 	{
 		if ($this->validSetMap($map))
 		{
-			return $this->setSubformData($subform[$key], $map, [$table => $subform]);
+			// will delete all existing linked items [IF EMPTY] :( not ideal, but real
+			$data = (empty($subform[$key]) || !is_array($subform[$key])) ? [] : $subform[$key];
+
+			return $this->setSubformData($data, $map, [$table => $subform]);
 		}
 
 		return false;

@@ -480,10 +480,23 @@ class AjaxModel extends ListModel
 			return ['error' => $message];
 		}
 
-		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JOOMLA_COMPONENT_BUILDER_SYSTEM_HAS_INTERNET_CONNECTION')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
 	}
 
 	// Used in joomla_module
+	/**
+	 * Generates and returns the module code based on the provided data.
+	 *
+	 * This method processes the input data to generate module-specific code snippets 
+	 * for class inclusion, data handling, libraries, CSS, and template loading. 
+	 * It merges these code blocks into an array and specifies their placement within the final module output.
+	 *
+	 * @param string $data JSON-encoded string containing the module's class, get, lib, and other properties.
+	 *
+	 * @return array An associative array containing the generated code snippets for the module, 
+	 *               including class, get, libraries, CSS, and template code, each with merge settings.
+	 * @since  3.0.9
+	 */
 	public function getModuleCode($data)
 	{
 		// reset the return array
@@ -532,7 +545,7 @@ class AjaxModel extends ListModel
 		$code['css']['code'] = '// get the module class sfx (local)';
 		$code['css']['code'] .= PHP_EOL . "\$moduleclass_sfx = htmlspecialchars(\$params->get('moduleclass_sfx'), ENT_COMPAT, 'UTF-8');";
 		$code['tmpl']['code'] = '// load the default Tmpl';
-		$code['tmpl']['code'] .= PHP_EOL . "require JModuleHelper::getLayoutPath('mod_[[[module]]]', \$params->get('layout', 'default'));";
+		$code['tmpl']['code'] .= PHP_EOL . "require Joomla__"."_f15d556d_33dd_4ee3_a0f7_0653e4a7a1e4___Power::getLayoutPath('mod_[[[module]]]', \$params->get('layout', 'default'));";
 		// set placement
 		$code['css']['merge'] = 1;
 		$code['css']['merge_target'] = '// load the default Tmpl';
@@ -542,13 +555,31 @@ class AjaxModel extends ListModel
 		return $code;
 	}
 
-
 	// Used in joomla_plugin
+	/**
+	 * Retrieves the class code based on the provided ID and type.
+	 *
+	 * @param int|string $id   The ID of the class.
+	 * @param string     $type The type of the class (e.g., 'property', 'method').
+	 *
+	 * @return mixed The class code, or false on failure.
+	 * @since  3.0.9
+	 */
 	public function getClassCode($id, $type)
 	{
 		return ComponentbuilderHelper::getClassCode($id, $type);
 	}
 
+	/**
+	 * Retrieves class code IDs based on the provided ID, type, and key.
+	 *
+	 * @param int|string $id   The ID of the class.
+	 * @param string     $type The type of the class (e.g., 'property', 'method', 'joomla_plugin_group').
+	 * @param int        $key  The key that determines which data to return (e.g., 1 for 'joomla_plugin_group', 2 for 'extension_type').
+	 *
+	 * @return mixed The corresponding class code IDs or false if no valid data is found.
+	 * @since  3.0.9
+	 */
 	public function getClassCodeIds($id, $type, $key)
 	{
 		if ('property' === $type || 'method' === $type)
@@ -570,9 +601,20 @@ class AjaxModel extends ListModel
 		return false;
 	}
 
+	/**
+	 * Retrieves the header code of the class based on the provided ID and type.
+	 *
+	 * @param int|string $id   The ID of the class.
+	 * @param string     $type The type of the header (e.g., 'extends').
+	 *
+	 * @return string|false The decoded header code, or false if no valid data is found.
+	 * @since  3.0.9
+	 */
 	public function getClassHeaderCode($id, $type)
 	{
-		if ('extends' === $type && ($head = GetHelper::var('class_' . $type, $id, 'id', 'head')) !== false && StringHelper::check($head))
+		if ('extends' === $type &&
+			($head = GetHelper::var('class_' . $type, $id, 'id', 'head')) !== false &&
+				StringHelper::check($head))
 		{
 			return base64_decode($head);
 		}

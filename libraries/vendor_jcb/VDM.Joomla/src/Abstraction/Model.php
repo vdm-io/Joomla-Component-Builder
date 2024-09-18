@@ -118,7 +118,7 @@ abstract class Model implements ModelInterface
 	 * @return  array|null
 	 * @since 3.2.2
 	 */
-	public function values(?array $items = null, string $field, ?string $table = null): ?array
+	public function values(?array $items, string $field, ?string $table = null): ?array
 	{
 		// check if this is a valid table
 		if (ArrayHelper::check($items))

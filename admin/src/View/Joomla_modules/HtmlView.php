@@ -198,11 +198,6 @@ class HtmlView extends BaseHtmlView
 				ToolbarHelper::trash('joomla_modules.trash');
 			}
 		}
-		if ($this->user->authorise('joomla_module.get_snippets', 'com_componentbuilder'))
-		{
-			// add Get Snippets button.
-			ToolbarHelper::custom('joomla_modules.getSnippets', 'search custom-button-getsnippets', '', 'COM_COMPONENTBUILDER_GET_SNIPPETS', false);
-		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('joomla_modules');

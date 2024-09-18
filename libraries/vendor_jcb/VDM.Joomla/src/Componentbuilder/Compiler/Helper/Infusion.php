@@ -337,9 +337,10 @@ class Infusion extends Interpretation
 
 			// HELPER_CREATEUSER
 			CFactory::_('Compiler.Builder.Content.One')->add('HELPER_CREATEUSER',
-				$this->setCreateUserHelperMethod(
-				CFactory::_('Component')->get('creatuserhelper')
-			));
+				CFactory::_('Architecture.ComHelperClass.CreateUser')->get(
+					CFactory::_('Component')->get('creatuserhelper', 0)
+				)
+			);
 
 			// HELP
 			CFactory::_('Compiler.Builder.Content.One')->set('HELP', $this->noHelp());

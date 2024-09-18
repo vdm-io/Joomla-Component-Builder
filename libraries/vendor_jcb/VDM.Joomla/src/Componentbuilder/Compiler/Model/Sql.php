@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sqldump;
 
@@ -43,15 +42,15 @@ class Sql
 	/**
 	 * Constructor
 	 *
-	 * @param Dispenser|null  $dispenser   The compiler customcode dispenser.
-	 * @param Sqldump|null    $dump        The compiler SQL dump.
+	 * @param Dispenser  $dispenser   The compiler customcode dispenser.
+	 * @param Sqldump    $dump        The compiler SQL dump.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Dispenser $dispenser = null, ?Sqldump $dump = null)
+	public function __construct(Dispenser $dispenser, Sqldump $dump)
 	{
-		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
-		$this->dump = $dump ?: Compiler::_('Model.Sqldump');
+		$this->dispenser = $dispenser;
+		$this->dump = $dump;
 	}
 
 	/**
@@ -92,6 +91,5 @@ class Sql
 		unset($item->tables);
 		unset($item->sql);
 	}
-
 }
 

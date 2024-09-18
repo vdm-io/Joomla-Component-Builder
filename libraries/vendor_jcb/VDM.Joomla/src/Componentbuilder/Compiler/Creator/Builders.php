@@ -992,7 +992,8 @@ final class Builders
 				'code'      => $name,
 				'name'      => $listLangName,
 				'extension' => $_extension,
-				'filter'    => $field['filter']
+				'filter'    => $field['filter'],
+				'add_icon'  => StringHelper::check($view['settings']->icon_category)
 			]);
 			// also set code name for title alias fix
 			$this->categorycode->set($nameSingleCode, [

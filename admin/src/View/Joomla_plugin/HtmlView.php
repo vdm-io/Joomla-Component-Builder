@@ -328,9 +328,9 @@ class HtmlView extends BaseHtmlView
 		Html::_('script', 'media/com_componentbuilder/js/jstorage.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/js/strtotime.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
@@ -367,11 +367,11 @@ class HtmlView extends BaseHtmlView
 			$expire = 30000; // only 30 seconds
 		}
 		// Set the Time To Live To JavaScript
-		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
-		$this->document->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
+		$this->getDocument()->addScriptDeclaration("var expire = ". (int) $expire.";");
+		$this->getDocument()->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
 		// add a few field options via PHP
-		\JFormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
-		$tmp_ = \JFormHelper::loadFieldType('joomlaplugingroups')->options;
+		FormHelper::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		$tmp_ = FormHelper::loadFieldType('joomlaplugingroups')->options;
 		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
@@ -380,9 +380,9 @@ class HtmlView extends BaseHtmlView
 				$_tmp[$item->value] = $item->text;
 			}
 			// Set the values to JavaScript
-			$this->document->addScriptDeclaration("selectionArray['joomla_plugin_group'] = ". json_encode($_tmp) . ";");
+			$this->getDocument()->addScriptDeclaration("selectionArray['joomla_plugin_group'] = ". json_encode($_tmp) . ";");
 		}
-		$tmp_ = \JFormHelper::loadFieldType('pluginsclassproperties')->options;
+		$tmp_ = FormHelper::loadFieldType('pluginsclassproperties')->options;
 		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
@@ -391,9 +391,9 @@ class HtmlView extends BaseHtmlView
 				$_tmp[$item->value] = $item->text;
 			}
 			// Set the values to JavaScript
-			$this->document->addScriptDeclaration("selectionArray['property'] = ". json_encode($_tmp) . ";");
+			$this->getDocument()->addScriptDeclaration("selectionArray['property'] = ". json_encode($_tmp) . ";");
 		}
-		$tmp_ = \JFormHelper::loadFieldType('pluginsclassmethods')->options;
+		$tmp_ = FormHelper::loadFieldType('pluginsclassmethods')->options;
 		if (ArrayHelper::check($tmp_))
 		{
 			$_tmp = array();
@@ -402,7 +402,7 @@ class HtmlView extends BaseHtmlView
 				$_tmp[$item->value] = $item->text;
 			}
 			// Set the values to JavaScript
-			$this->document->addScriptDeclaration("selectionArray['method'] = ". json_encode($_tmp) . ";");
+			$this->getDocument()->addScriptDeclaration("selectionArray['method'] = ". json_encode($_tmp) . ";");
 		}
 	}
 }
