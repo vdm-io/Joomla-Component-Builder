@@ -1,8 +1,6 @@
-# v3.2.4-alpha4
+# v3.2.4-beta1
 
-- Fix database default fields to allow NULL. #1169
-- Fix the power list field to allow search. #1167
-- Remove Demo component from JCB v3 and added Hello Word component as demo in JCB v3.
+- Fix zip missing working path
 
 # v3.2.4-alpha
 
@@ -12,6 +10,9 @@
 - Fix search page error due to File class.
 - Fix usergrouplist compiler triggers. #1100
 - Add field type power integration [init, reset, push]
+- Fix database default fields to allow NULL. #1169
+- Fix the power list field to allow search. #1167
+- Remove Demo component from JCB v3 and added Hello Word component as demo in JCB v3.
 
 # v3.2.3
 
