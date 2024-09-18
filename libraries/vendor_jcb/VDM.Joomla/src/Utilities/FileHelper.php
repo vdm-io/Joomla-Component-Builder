@@ -50,6 +50,12 @@ abstract class FileHelper
 	 */
 	public static function zip($workingDirectory, &$filepath): bool
 	{
+		// check the work directory is set
+		if (!is_dir($workingDirectory))
+		{
+			return false;
+		}
+
 		// store the current joomla working directory
 		$joomla = getcwd();
 

@@ -398,13 +398,13 @@ final class Infusion
 		$code[] = 'namespace ' . $power->_namespace . ';' . PHP_EOL;
 
 		// check if we have header data
-		if (StringHelper::check($power->head))
+		if (isset($power->head) && StringHelper::check($power->head))
 		{
 			$code[] = PHP_EOL . $power->head;
 		}
 
 		// add description if set
-		if (StringHelper::check($power->description))
+		if (isset($power->description) && StringHelper::check($power->description))
 		{
 			// check if this is escaped
 			if (strpos((string) $power->description, '/*') === false)
@@ -419,13 +419,13 @@ final class Infusion
 		$declaration = $power->type . ' ' . $power->class_name;
 
 		// check if we have extends
-		if (StringHelper::check($power->extends_name))
+		if (isset($power->extends_name) && StringHelper::check($power->extends_name))
 		{
 			$declaration .= ' extends ' . $power->extends_name;
 		}
 
 		// check if we have implements
-		if (ArrayHelper::check($power->implement_names))
+		if (isset($power->implement_names) && ArrayHelper::check($power->implement_names))
 		{
 			$declaration .= ' implements ' . implode(', ', $power->implement_names);
 		}
@@ -434,7 +434,7 @@ final class Infusion
 		$code[] = '{';
 
 		// add the main code if set
-		if (StringHelper::check($power->main_class_code))
+		if (isset($power->main_class_code) && StringHelper::check($power->main_class_code))
 		{
 			$code[] = $power->main_class_code;
 		}

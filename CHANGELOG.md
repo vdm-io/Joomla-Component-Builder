@@ -1,8 +1,7 @@
-# v4.0.3-alpha4
+# v4.0.3-beta1
 
-- Fix database default fields to allow NULL. #1169
-- Fix the power list field to allow search. #1167
-- Expanded the Demo component in JCB v4 to include more advance features.
+- Fix zip missing working path
+- Fix demo site view dynamic get
 
 # v4.0.3-alpha
 
@@ -12,6 +11,9 @@
 - Fix search page error due to File class
 - Fix usergrouplist compiler triggers. #1100
 - Add field type power integration [init, reset, push]
+- Fix database default fields to allow NULL. #1169
+- Fix the power list field to allow search. #1167
+- Expanded the Demo component in JCB v4 to include more advance features
 
 # v4.0.2
 
