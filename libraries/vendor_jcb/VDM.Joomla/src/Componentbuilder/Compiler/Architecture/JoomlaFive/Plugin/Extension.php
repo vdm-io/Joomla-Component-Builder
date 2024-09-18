@@ -155,7 +155,7 @@ final class Extension implements ExtensionInterface
 		$counter = 0;
 		foreach ($methods as $method)
 		{
-			if ($method['access'] === 'public' && !$method['static'] && !$method['abstract'])
+			if ($this->validEventName($method))
 			{
 				$events[$method['name']] =  Indent::_(3) . "'{$method['name']}' => '{$method['name']}'";
 
@@ -189,6 +189,37 @@ final class Extension implements ExtensionInterface
 		$method[] = Indent::_(1) . '}';
 
 		return implode(PHP_EOL, $method);
+	}
+
+	/**
+	 * Validates if a method name is a valid event name for a Joomla plugin.
+	 *
+	 * The method must meet the following criteria:
+	 * - It must be public, not static, and not abstract.
+	 * - It must not be a magic method (i.e., should not start with '__').
+	 *
+	 * @param  array  $method  The method details, including 'name', 'access', 'static', and 'abstract'.
+	 *
+	 * @return bool  Returns true if the method is a valid event name, otherwise false.
+	 *
+	 * @since 5.0.2
+	 */
+	protected function validEventName(array $method): bool
+	{
+		// Check if the method is public, static, and not abstract
+		if ($method['access'] !== 'public' || $method['static'] || $method['abstract']) 
+		{
+			return false;
+		}
+
+		// Check if the method is a magic method (starts with '__')
+		if (substr($method['name'], 0, 2) === '__') 
+		{
+			return false;
+		}
+
+		// If all checks pass, the method is a valid event name
+		return true;
 	}
 
 	/**

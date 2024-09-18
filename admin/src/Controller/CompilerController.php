@@ -19,6 +19,7 @@ use Joomla\CMS\Session\Session;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use Joomla\CMS\Version;
+use VDM\Joomla\Componentbuilder\File\Factory as FileFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\Uri\Uri;
@@ -68,6 +69,11 @@ class CompilerController extends AdminController
 	{
 		$this->setRedirect(Route::_('index.php?option=com_componentbuilder', false));
 	}
+
+	/**
+	 * Adding this so that the upload factory gets build for Super Powers
+	 * FileFactory
+	 */
 
 	/**
 	 * get all the animations used in the compiler

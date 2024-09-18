@@ -21,12 +21,28 @@ use VDM\Joomla\Utilities\StringHelper;
 // No direct access to this file
 defined('JPATH_BASE') or die;
 
-$table_id = (isset($displayData['id'])) ? $displayData['id'] : StringHelper::random(7);
-$name = (isset($displayData['name'])) ? $displayData['name'] : false;
-$table_class = (isset($displayData['table_class'])) ? $displayData['table_class'] : 'uk-table';
-$table_container_class = (isset($displayData['table_container_class'])) ? $displayData['table_container_class'] : 'uk-overflow-auto';
-$headers = (isset($displayData['headers'])) ? $displayData['headers'] : [Text::_('COM_COMPONENTBUILDER_NO'), Text::_('COM_COMPONENTBUILDER_HEADERS'), Text::_('COM_COMPONENTBUILDER_FOUND')];
-$items = (isset($displayData['items'])) ? $displayData['items'] : 6;
+// Extract all keys from $displayData as individual variables.
+extract($displayData);
+
+// Assign default values for variables that might not be present in $displayData.
+
+// The 'table_id' parameter, defaulting to a randomly generated value if not set or is null.
+$table_id = $id ?? StringHelper::random(7);
+
+// The 'name' parameter, defaulting to false if not set or is null.
+$name ??= false;
+
+// The 'table_class' parameter, defaulting to 'uk-table' if not set or is null.
+$table_class ??= 'uk-table';
+
+// The 'table_container_class' parameter, defaulting to 'uk-overflow-auto' if not set or is null.
+$table_container_class ??= 'uk-overflow-auto';
+
+// The 'headers' parameter, defaulting to an array of default header values if not set or is null.
+$headers ??= [Text::_('COM_COMPONENTBUILDER_NO'), Text::_('COM_COMPONENTBUILDER_HEADERS'), Text::_('COM_COMPONENTBUILDER_FOUND')];
+
+// The 'items' parameter, defaulting to 6 if not set or is null.
+$items ??= 6;
 
 ?>
 <div class="<?php echo $$table_container_class; ?>">

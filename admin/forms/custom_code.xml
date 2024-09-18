@@ -144,6 +144,7 @@
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_DESCRIPTION"
 			class="btn-group btn-group-yesno"
+			default="0"
 			required="true">
 			<!-- Option Set. -->
 			<option value="1">

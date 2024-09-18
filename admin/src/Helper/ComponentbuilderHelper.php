@@ -44,6 +44,7 @@ use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use VDM\Joomla\Utilities\Base64Helper;
@@ -55,7 +56,6 @@ use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
 use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Utilities\FormHelper;
 use Joomla\CMS\Router\Route;
 
@@ -1230,8 +1230,9 @@ abstract class ComponentbuilderHelper
 		if ((int) $id > 0)
 		{
 			// get the model
-			$model = self::getModel($type);
-			$app   = Factory::getApplication();
+			Helper::setOption('com_componentbuilder');
+			$model = Helper::getModel($type);
+			$app = Factory::getApplication();
 			// get item
 			if ($item = $model->getItem($id))
 			{
@@ -5417,7 +5418,6 @@ abstract class ComponentbuilderHelper
 		$d = DateTime::createFromFormat($format, $date);
 		return $d && $d->format($format) == $date;
 	}
-
 
 	/**
 	* The subform layouts

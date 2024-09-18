@@ -24,7 +24,7 @@ use VDM\Joomla\FOF\Encrypt\Randvalinterface;
  * 
  * @package  FrameworkOnFramework
  * @since    1.0
- * @deprecated Use phpseclib/phpseclib version 3 Instead. 
+ * @deprecated Use phpseclib/phpseclib version 3 Instead.
  */
 class Randval implements Randvalinterface
 {

@@ -51,13 +51,4 @@ class Joomla_modulesController extends AdminController
 	{
 		return parent::getModel($name, $prefix, $config);
 	}
-
-	public function getSnippets()
-	{
-		// Check for request forgeries
-		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
-		// redirect to the import snippets custom admin view
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=get_snippets', false));
-		return;
-	}
 }

@@ -543,14 +543,7 @@ class Config extends BaseConfig
 	 */
 	protected function getRemovelinebreaks(): bool
 	{
-		// get posted value
-		$value = $this->input->post->get('remove_line_breaks', 2, 'INT');
-		// get global
-		if ($value > 1)
-		{
-			return (bool) GetHelper::var('joomla_component', $this->component_id, 'id', 'remove_line_breaks');
-		}
-		return (bool) $value;
+		return (bool) true;
 	}
 
 	/**
@@ -889,7 +882,26 @@ class Config extends BaseConfig
 	 */
 	protected function getApprovedjoomlapaths(): array
 	{
-		return array_values($this->joomla_powers_init_repos);
+		// some defaults repos we need by JCB
+		$approved = $this->joomla_powers_init_repos;
+
+		$paths = RepoHelper::get(2); // Joomla Power = 2
+
+		if ($paths !== null)
+		{
+			foreach ($paths as $path)
+			{
+				$owner = $path->organisation ?? null;
+				$repo = $path->repository ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$approved = ["{$owner}.{$repo}" => $path] + $approved;
+				}
+			}
+		}
+
+		return array_values($approved);
 	}
 
 	/**

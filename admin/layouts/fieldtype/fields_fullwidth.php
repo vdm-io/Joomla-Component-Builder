@@ -44,9 +44,9 @@ else
 	$ref = ($id) ? "&ref=fieldtype&refid=" . $id : "";
 }
 // set the create new URL
-$new = "index.php?option=com_componentbuilder&view=fields&task=field.edit" . $ref;
+$new = "index.php?option=com_componentbuilder&view=fields&task=field.add" . $ref;
 // set the create new and close URL
-$close_new = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
+$close_new = "index.php?option=com_componentbuilder&view=fields&task=field.add";
 // load the action object
 $can = ComponentbuilderHelper::getActions('field');
 

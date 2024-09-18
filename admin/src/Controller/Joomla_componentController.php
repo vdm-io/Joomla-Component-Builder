@@ -63,6 +63,22 @@ class Joomla_componentController extends FormController
 	 */
 	protected $view_list = 'joomla_components';
 
+	/**
+	 * Referral value
+	 *
+	 * @var    string
+	 * @since  5.0
+	 */
+	protected string $ref;
+
+	/**
+	 * Referral ID value
+	 *
+	 * @var    int
+	 * @since  5.0
+	 */
+	protected int $refid;
+
 	public function refresh()
 	{
 		// Check for request forgeries

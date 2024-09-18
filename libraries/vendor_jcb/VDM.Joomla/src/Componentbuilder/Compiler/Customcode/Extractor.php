@@ -787,7 +787,7 @@ class Extractor implements ExtractorInterface
 			$query->columns($this->db->quoteName($columns));
 			foreach ($this->new as $values)
 			{
-				if (count((array) $values) == 15)
+				if (count((array) $values) == 16)
 				{
 					$query->values(implode(',', $values));
 					$continue = true;

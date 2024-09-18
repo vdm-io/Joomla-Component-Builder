@@ -1,7 +1,8 @@
-# v4.0.3-alpha3
+# v4.0.3-alpha4
 
-- Fix usergrouplist compiler triggers. #1100
-- Add field type power integration [init, reset, push]
+- Fix database default fields to allow NULL. #1169
+- Fix the power list field to allow search. #1167
+- Expanded the Demo component in JCB v4 to include more advance features.
 
 # v4.0.3-alpha
 
@@ -9,6 +10,8 @@
 - Fix library save as copy error. #1162
 - Fix the error when no components exists. #1164
 - Fix search page error due to File class
+- Fix usergrouplist compiler triggers. #1100
+- Add field type power integration [init, reset, push]
 
 # v4.0.2
 

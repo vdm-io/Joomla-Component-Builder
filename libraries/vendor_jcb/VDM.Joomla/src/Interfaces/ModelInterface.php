@@ -53,7 +53,7 @@ interface ModelInterface
 	 * @return  array|null
 	 * @since 3.2.0
 	 */
-	public function values(?array $items = null, string $field, ?string $table = null): ?array;
+	public function values(?array $items, string $field, ?string $table = null): ?array;
 
 	/**
 	 * Model the values of an item

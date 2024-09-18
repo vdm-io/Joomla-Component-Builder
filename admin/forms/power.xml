@@ -238,10 +238,10 @@
 					label="COM_COMPONENTBUILDER_POWER_NAMESPACE_LABEL"
 					layout="joomla.form.field.subform.repeatable-table"
 					multiple="true"
-					buttons="add,remove,move"
+					buttons="add,remove"
 					icon="list"
 					max="30"
-					min="1"
+					min="0"
 					nested_depth="1">
 					<form hidden="true" name="list_namespace_modal" repeat="true">
 						<!-- Use Field. Type: Text. (joomla) -->
@@ -496,7 +496,8 @@
 					type="namespaces"
 					name="use"
 					label="COM_COMPONENTBUILDER_POWER_USE_LABEL"
-					class="list_class span12"
+					class="span12"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default="0"
 					button="false"
