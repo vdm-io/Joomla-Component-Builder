@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    3rd September, 2020
+ * @created    4th September, 2020
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\File;
 
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
@@ -58,6 +59,14 @@ final class Display
 	protected array $fileTypes;
 
 	/**
+	 * The active user access
+	 *
+	 * @var    array
+	 * @since 5.0.2
+	 */
+	protected array $access;
+
+	/**
 	 * The File Type Task
 	 *
 	 * @var    array
@@ -78,6 +87,9 @@ final class Display
 		$this->item = $item;
 		$this->items = $items;
 		$this->url = rtrim(Uri::root(), '/');
+
+		$user = Factory::getApplication()->getIdentity();
+		$this->access = $user->getAuthorisedViewLevels();
 	}
 
 	/**
@@ -95,7 +107,8 @@ final class Display
 		{
 			foreach ($files as $n => $file)
 			{
-				if ($file->entity_type !== $target)
+				if ($file->entity_type !== $target ||
+					!in_array($file->access, $this->access))
 				{
 					unset($files[$n]);
 					continue;

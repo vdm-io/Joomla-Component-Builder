@@ -87,8 +87,7 @@ final class CreateUser implements CreateUserInterface
 			$method[] = Indent::_(2) . "\$lang = Factory::getLanguage();";
 			$method[] = Indent::_(2) . "\$extension = 'com_users';";
 			$method[] = Indent::_(2) . "\$base_dir = JPATH_SITE;";
-			$method[] = Indent::_(2) . "\$language_tag = '" . CFactory::_('Config')->get('lang_tag', 'en-GB')
-				. "';";
+			$method[] = Indent::_(2) . "\$language_tag = 'en-GB';";
 			$method[] = Indent::_(2) . "\$reload = true;";
 			$method[] = Indent::_(2)
 				. "\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
@@ -306,8 +305,7 @@ final class CreateUser implements CreateUserInterface
 			$method[] = Indent::_(2) . "\$lang = Factory::getLanguage();";
 			$method[] = Indent::_(2) . "\$extension = 'com_users';";
 			$method[] = Indent::_(2) . "\$base_dir = JPATH_ADMINISTRATOR;";
-			$method[] = Indent::_(2) . "\$language_tag = '" . CFactory::_('Config')->get('lang_tag', 'en-GB')
-				. "';";
+			$method[] = Indent::_(2) . "\$language_tag = 'en-GB';";
 			$method[] = Indent::_(2) . "\$reload = true;";
 			$method[] = Indent::_(2)
 				. "\$lang->load(\$extension, \$base_dir, \$language_tag, \$reload);";
