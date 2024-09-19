@@ -344,7 +344,7 @@ abstract class Schema implements SchemaInterface
 				];
 			}
 			// check if update of default values is needed
-			elseif ($this->checkDefault($table, $column))
+			if ($this->checkDefault($table, $column))
 			{
 				$requireUpdate[$column] = [
 					'column' => $column,
@@ -353,7 +353,7 @@ abstract class Schema implements SchemaInterface
 				];
 			}
 			// check if update of null is needed
-			elseif ($this->checkNull($table, $column))
+			if ($this->checkNull($table, $column))
 			{
 				$requireUpdate[$column] = [
 					'column' => $column,

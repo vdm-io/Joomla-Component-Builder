@@ -1,4 +1,11 @@
-# v5.0.3-beta1
+# v5.0.3-beta2
+
+- Fix the demo site view to also display files
+- Fix the message of field type init
+- Fix to ensure type-agnostic comparisons by casting to CHAR in joins in dynamic get
+- Fix dynamic download for site area to have correct namespace
+
+# v5.0.3-beta
 
 - Fix zip missing working path
 - Fix demo site view dynamic get
