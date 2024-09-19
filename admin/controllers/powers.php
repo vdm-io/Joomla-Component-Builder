@@ -83,7 +83,7 @@ class ComponentbuilderControllerPowers extends AdminController
 				if (PowerFactory::_('Power.Remote.Get')->init())
 				{
 					// set success message
-					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_JOOMLA_POWERS') . '</h1>';
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_POWERS') . '</h1>';
 					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_LOCAL_DATABASE_POWERS_HAS_SUCCESSFULLY_BEEN_SYNCED_WITH_THE_REMOTE_REPOSITORIES') . '</p>';
 
 					$status = 'success';
