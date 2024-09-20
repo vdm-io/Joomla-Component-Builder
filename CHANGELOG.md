@@ -1,30 +1,24 @@
-# v4.0.3-beta3
+# v4.0.3
 
-- Fix the missing edit button on fields in the related views
-- Fix the dashboard display
-- Place the search option back in the use field of the related views
-- Fix the namespace issue that broken the linker
-
-# v4.0.3-beta
-
-- Fix zip missing working path
-- Fix demo site view dynamic get
-- Fix the demo site view to also display files
-- Fix the message of field type init
-- Fix to ensure type-agnostic comparisons by casting to CHAR in joins in dynamic get
-- Fix dynamic download for site area to have correct namespace
-
-# v4.0.3-alpha
-
-- Add push option to powers area
-- Fix library save as copy error. #1162
-- Fix the error when no components exists. #1164
-- Fix search page error due to File class
+- Add [push] option to powers area.
+- Fix [Save as Copy] error in library. #1162
+- Fix error when no components exist. #1164
+- Fix search page error caused by File class.
 - Fix usergrouplist compiler triggers. #1100
-- Add field type power integration [init, reset, push]
-- Fix database default fields to allow NULL. #1169
-- Fix the power list field to allow search. #1167
-- Expanded the Demo component in JCB v4 to include more advance features
+- Add power field type integration [init, reset, push].
+- Fix default database fields to allow NULL. #1169
+- Fix power list field to enable search. #1167
+- Expand the Demo component in JCB v4 to include more advanced features.
+- Fix missing working path in zip process.
+- Fix dynamic get issue in demo site view.
+- Fix demo site view to display files.
+- Fix field type init message.
+- Ensure type-agnostic comparisons by casting to CHAR in joins for dynamic get.
+- Fix dynamic download for site area with correct namespace.
+- Fix missing edit button on fields in related views.
+- Fix dashboard display.
+- Restore search option in [use] field of related views.
+- Fix namespace issue that broke the linker.
 
 # v4.0.2
 
@@ -117,21 +111,23 @@
 - Add the BaseDatabaseModel use statement to custom site view controller. #1119
 - Fix the customfolderlist field. #1120
 
-# v3.2.3
+# v3.2.4
 
-- Fix site view form missing classes in J4+
-- Fix permissions tab in items in J4+
-- Fix site display controller checkEditId function in J4+
-- Add class methods to the HtmlView classes in J4+
-- Fix broken toolbar call in HtmlView in J4+
-- Fix missing scripts and styles fields and methods in the site admin view model
-- Update subform field layout across JCB for cleaner look
-- Remove expansion feature
-- Fix helper area
-- Fix database mySql update in J4+
-- Remove phpspreadsheet completely from Joomla 4+
-- Add option to use powers in preflight event in the installer class
-- Fix abstract schema class function check default index warring
-- Fix dynamicGet so that the table values will load again. #1155
-- Keep jQuery in dynamicGet area for Joomla 3
-- Add native plugin builder for Joomla 4 & 5
+- Add [push] option to Powers area.
+- Fix [Save As Copy] error in library. #1162
+- Fix error when no components exist. #1164
+- Fix search page error caused by File class.
+- Fix UserGroupList compiler triggers. #1100
+- Add Power field type integration: init, reset, push.
+- Fix database default fields to allow NULL. #1169
+- Fix Power List field to allow searching. #1167
+- Remove Demo component from JCB v3; add Hello World component as demo.
+- Fix missing working path in ZIP.
+- Fix demo site view to display files.
+- Fix message for Field Type init.
+- Ensure type-agnostic comparisons by casting to CHAR in joins for dynamic retrieval.
+- Fix dynamic download in site area with correct namespace.
+- Fix missing edit button on fields in related views.
+- Fix dashboard display issues.
+- Re-add search option in use field of related views.
+- Fix namespace issue that broke the linker.
