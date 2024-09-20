@@ -21425,6 +21425,15 @@ class Interpretation extends Fields
 
 	public function setDashboardDisplayData()
 	{
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			return $this->setDashboardDisplayDataJ3();
+		}
+		return $this->setDashboardDisplayDataJ4();
+	}
+
+	public function setDashboardDisplayDataJ3()
+	{
 		// display array reset
 		$display           = [];
 		$mainAccordianName = 'cPanel';
@@ -21435,13 +21444,7 @@ class Interpretation extends Fields
 		$row_class         = 'row-fluid';
 		$form_class        = 'form-horizontal';
 		$uitab             = 'bootstrap';
-		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
-		{
-			$width_class = 'col-md-';
-			$row_class   = 'row';
-			$form_class  = 'main-card';
-			$uitab       = 'uitab';
-		}
+
 		// check if we have custom tabs
 		if (CFactory::_('Component')->isArray('dashboard_tab'))
 		{
@@ -21554,6 +21557,120 @@ class Interpretation extends Fields
 				}
 				$display[] = $tab . Indent::_(1)
 					. "<?php  echo Html::_('bootstrap.endAccordion'); ?>";
+				$display[] = $tab . "</div>";
+				$display[] = Indent::_(2) . "</div>";
+				$display[] = Indent::_(2)
+					. "<?php echo Html::_('{$uitab}.endTab'); ?>";
+			}
+
+			$display[] = PHP_EOL . Indent::_(1)
+				. "<?php echo Html::_('{$uitab}.endTabSet'); ?>";
+		}
+		else
+		{
+			$display[] = Indent::_(2) . "</div>";
+		}
+		$display[] = Indent::_(1) . "</div>";
+		$display[] = "</div>";
+
+		// return the display
+		return PHP_EOL . implode(PHP_EOL, $display);
+	}
+
+	public function setDashboardDisplayDataJ4()
+	{
+		// display array reset
+		$display           = [];
+		$mainAccordianName = 'cPanel';
+		$builder           = [];
+		$tab               = Indent::_(3);
+		$loadTabs          = false;
+		$width_class       = 'col-md-';
+		$row_class         = 'row';
+		$form_class        = 'main-card';
+		$uitab             = 'uitab';
+
+		// check if we have custom tabs
+		if (CFactory::_('Component')->isArray('dashboard_tab'))
+		{
+			// build the tabs and accordians
+			foreach (CFactory::_('Component')->get('dashboard_tab') as $data)
+			{
+				$builder[$data['name']][$data['header']]
+					= CFactory::_('Placeholder')->update_(
+					$data['html']
+				);
+			}
+			// since we have custom tabs we must load the tab structure around the cpanel
+			$display[] = '<div id="j-main-container">';
+			$display[] = Indent::_(1) . '<div class="' . $form_class . '">';
+			$display[] = Indent::_(1)
+				. "<?php echo Html::_('{$uitab}.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
+			$display[] = PHP_EOL . Indent::_(2)
+				. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', 'cpanel', Text:"
+				. ":_('cPanel', true)); ?>";
+			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
+			// change the name of the main tab
+			$mainAccordianName = 'Control Panel';
+			$loadTabs          = true;
+		}
+		else
+		{
+			$display[] = '<div id="j-main-container">';
+			$display[] = Indent::_(1) . '<div class="' . $form_class . '" style="padding: 20px;">';
+			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
+		}
+		// set dashboard display
+		$display[] = $tab . '<div class="' . $width_class . '9">';
+		$display[] = $tab . Indent::_(1)
+			. "<?php echo \$this->loadTemplate('main');?>";
+		$display[] = $tab . "</div>";
+		$display[] = $tab . '<div class="' . $width_class . '3">';
+		$display[] = $tab . Indent::_(1)
+			. "<?php echo \$this->loadTemplate('vdm');?>";
+		$display[] = $tab . "</div>";
+
+		if ($loadTabs)
+		{
+			$display[] = Indent::_(2) . "</div>";
+			$display[] = Indent::_(2)
+				. "<?php echo Html::_('{$uitab}.endTab'); ?>";
+			// load the new tabs
+			foreach ($builder as $tabname => $accordians)
+			{
+				$alias        = StringHelper::safe($tabname);
+				$display[]    = PHP_EOL . Indent::_(2)
+					. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', '"
+					. $alias . "', Text:" . ":_('" . $tabname
+					. "', true)); ?>";
+				$display[]    = Indent::_(2) . '<div class="' . $row_class . '">';
+				$display[]    = $tab . '<div class="' . $width_class . '12">';
+				$slidecounter = 1;
+				foreach ($accordians as $accordianname => $html)
+				{
+					$ac_alias    = StringHelper::safe(
+						$accordianname
+					);
+					$counterName = StringHelper::safe(
+						$slidecounter
+					);
+					$tempName    = $alias . '_' . $ac_alias;
+					$display[]   = $tab . Indent::_(1)
+						. "<?php echo \$this->loadTemplate('" . $tempName
+						. "');?>";
+					$slidecounter++;
+					// build the template file
+					$target = array('custom_admin' => CFactory::_('Config')->component_code_name);
+					CFactory::_('Utilities.Structure')->build($target, 'template', $tempName);
+					// set the file data
+					$TARGET = StringHelper::safe(
+						CFactory::_('Config')->build_target, 'U'
+					);
+					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
+					// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
+				}
 				$display[] = $tab . "</div>";
 				$display[] = Indent::_(2) . "</div>";
 				$display[] = Indent::_(2)

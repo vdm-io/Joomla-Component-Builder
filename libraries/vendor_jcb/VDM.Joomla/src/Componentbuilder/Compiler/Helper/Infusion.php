@@ -1588,7 +1588,7 @@ class Infusion extends Interpretation
 
 				// DASHBOARDICONACCESS
 				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASHBOARDICONACCESS',
-					$this->setDashboardIconAccess()
+					CFactory::_('Compiler.Builder.Permission.Dashboard')->build()
 				);
 
 				// DASH_MODEL_METHODS

@@ -1948,15 +1948,15 @@ class ComponentbuilderModelAjax extends ListModel
 		{
 			// check if we have GUID setup
 			$validGUID = function ($guid) {
-				if (method_exists('ComponentbuilderHelper', 'validGUID') && ComponentbuilderHelper::validGUID($guid))
+				if (method_exists(ComponentbuilderHelper::class, 'validGUID') && ComponentbuilderHelper::validGUID($guid))
 				{
 					return true;
 				}
 				return false;
 			};
 			// check if functions exists
-			$guidEdit = method_exists('ComponentbuilderHelper', 'getEditButtonGUID');
-			$getEdit =  method_exists('ComponentbuilderHelper', 'getEditButton');
+			$guidEdit = method_exists(ComponentbuilderHelper::class, 'getEditButtonGUID');
+			$getEdit =  method_exists(ComponentbuilderHelper::class, 'getEditButton');
 			// reset bucket
 			$bucket = array();
 			if (UtilitiesArrayHelper::check($value))
