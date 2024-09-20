@@ -544,7 +544,7 @@ class ComponentbuilderControllerCompiler extends AdminController
 			$tmp = $comConfig->get('tmp_path');
 			if ($model->emptyFolder($tmp))
 			{
-				$message = Text::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEAR_SUCCESSFULLYB');
+				$message = Text::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEARED_SUCCESSFULLYB');
 				$this->setRedirect($redirect_url, $message, 'message');
 				// get application
 				$app = Factory::getApplication();

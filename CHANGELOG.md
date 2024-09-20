@@ -1,29 +1,24 @@
-# v3.2.4-beta3
+# v3.2.4
 
-- Fix the missing edit button on fields in the related views
-- Fix the dashboard display
-- Place the search option back in the use field of the related views
-- Fix the namespace issue that broken the linker
-
-# v3.2.4-beta
-
-- Fix zip missing working path
-- Fix the demo site view to also display files
-- Fix the message of field type init
-- Fix to ensure type-agnostic comparisons by casting to CHAR in joins in dynamic get
-- Fix dynamic download for site area to have correct namespace
-
-# v3.2.4-alpha
-
-- Add push option to powers area
-- Fix library save as copy error. #1162
-- Fix the error when no components exists. #1164
-- Fix search page error due to File class.
-- Fix usergrouplist compiler triggers. #1100
-- Add field type power integration [init, reset, push]
+- Add [push] option to Powers area.
+- Fix [Save As Copy] error in library. #1162
+- Fix error when no components exist. #1164
+- Fix search page error caused by File class.
+- Fix UserGroupList compiler triggers. #1100
+- Add Power field type integration: init, reset, push.
 - Fix database default fields to allow NULL. #1169
-- Fix the power list field to allow search. #1167
-- Remove Demo component from JCB v3 and added Hello Word component as demo in JCB v3.
+- Fix Power List field to allow searching. #1167
+- Remove Demo component from JCB v3; add Hello World component as demo.
+- Fix missing working path in ZIP.
+- Fix demo site view to display files.
+- Fix message for Field Type init.
+- Ensure type-agnostic comparisons by casting to CHAR in joins for dynamic retrieval.
+- Fix dynamic download in site area with correct namespace.
+- Fix missing edit button on fields in related views.
+- Fix dashboard display issues.
+- Re-add search option in use field of related views.
+- Fix namespace issue that broke the linker.
+
 
 # v3.2.3
 
