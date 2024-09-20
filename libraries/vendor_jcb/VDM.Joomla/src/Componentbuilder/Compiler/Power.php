@@ -492,7 +492,7 @@ class Power implements PowerInterface
 			$this->active[$guid]->file_name = array_pop($src_array);
 
 			// namespace array
-			$namespace_array = [...$path_array, ...$src_array];
+			$namespace_array = array_merge($path_array, $src_array);
 		}
 		else
 		{
@@ -534,11 +534,11 @@ class Power implements PowerInterface
 		// set the actual class namespace
 		$this->active[$guid]->_namespace = implode('\\', $namespace_array);
 
-		// set global namespaces for autoloader
-		$this->namespace[implode('.', $path_array)] = $path_array;
-
 		// get the parent folder (the first value in array)
 		$prefix_folder = implode('.', $path_array);
+
+		// set global namespaces for autoloader
+		$this->namespace[$prefix_folder] = $path_array;
 
 		// make sub folders if still found
 		$sub_folder = '';
