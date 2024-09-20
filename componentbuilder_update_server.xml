@@ -116,7 +116,7 @@
 		<version>5.0.3-beta</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.3-beta2.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.3-beta3.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>beta</tag>
@@ -131,10 +131,10 @@
 		<element>pkg_component_builder</element>
 		<type>package</type>
 		<client>site</client>
-		<version>5.0.3-beta2</version>
+		<version>5.0.3-beta3</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.3-beta2.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://git.vdm.dev/api/v1/repos/joomla/pkg-component-builder/archive/v5.0.3-beta3.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>beta</tag>

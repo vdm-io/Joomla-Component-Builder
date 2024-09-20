@@ -25,18 +25,10 @@ defined('_JEXEC') or die;
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'cpanel', Text::_('cPanel', true)); ?>
 		<div class="row">
 			<div class="col-md-9">
-				<?php echo Html::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>
-					<?php echo Html::_('bootstrap.addSlide', 'dashboard_left', 'Control Panel', 'main'); ?>
-						<?php echo $this->loadTemplate('main');?>
-					<?php echo Html::_('bootstrap.endSlide'); ?>
-				<?php echo Html::_('bootstrap.endAccordion'); ?>
+				<?php echo $this->loadTemplate('main');?>
 			</div>
 			<div class="col-md-3">
-				<?php echo Html::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>
-					<?php echo Html::_('bootstrap.addSlide', 'dashboard_right', 'Vast Development Method', 'vdm'); ?>
-						<?php echo $this->loadTemplate('vdm');?>
-					<?php echo Html::_('bootstrap.endSlide'); ?>
-				<?php echo Html::_('bootstrap.endAccordion'); ?>
+				<?php echo $this->loadTemplate('vdm');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
@@ -44,11 +36,7 @@ defined('_JEXEC') or die;
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'wiki', Text::_('Wiki', true)); ?>
 		<div class="row">
 			<div class="col-md-12">
-				<?php  echo Html::_('bootstrap.startAccordion', 'wiki_accordian', array('active' => 'wiki_one')); ?>
-					<?php  echo Html::_('bootstrap.addSlide', 'wiki_accordian', 'Tutorials', 'wiki_one'); ?>
-						<?php echo $this->loadTemplate('wiki_tutorials');?>
-					<?php  echo Html::_('bootstrap.endSlide'); ?>
-				<?php  echo Html::_('bootstrap.endAccordion'); ?>
+				<?php echo $this->loadTemplate('wiki_tutorials');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
@@ -56,11 +44,7 @@ defined('_JEXEC') or die;
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'notice_board', Text::_('Notice Board', true)); ?>
 		<div class="row">
 			<div class="col-md-12">
-				<?php  echo Html::_('bootstrap.startAccordion', 'notice_board_accordian', array('active' => 'notice_board_one')); ?>
-					<?php  echo Html::_('bootstrap.addSlide', 'notice_board_accordian', 'Vast Development Method', 'notice_board_one'); ?>
-						<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
-					<?php  echo Html::_('bootstrap.endSlide'); ?>
-				<?php  echo Html::_('bootstrap.endAccordion'); ?>
+				<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
@@ -68,11 +52,7 @@ defined('_JEXEC') or die;
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'readme', Text::_('Readme', true)); ?>
 		<div class="row">
 			<div class="col-md-12">
-				<?php  echo Html::_('bootstrap.startAccordion', 'readme_accordian', array('active' => 'readme_one')); ?>
-					<?php  echo Html::_('bootstrap.addSlide', 'readme_accordian', 'Information', 'readme_one'); ?>
-						<?php echo $this->loadTemplate('readme_information');?>
-					<?php  echo Html::_('bootstrap.endSlide'); ?>
-				<?php  echo Html::_('bootstrap.endAccordion'); ?>
+				<?php echo $this->loadTemplate('readme_information');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>

@@ -329,10 +329,11 @@ final class ConfigFieldsets
 								$field['custom_value']
 							))
 						{
-							// add array if found
-							if ((strpos((string) $field['custom_value'], '["') !== false)
-								&& (strpos((string) $field['custom_value'], '"]')
-									!== false))
+							// add array or object if found
+							if (((strpos((string) $field['custom_value'], '["') !== false)
+								&& (strpos((string) $field['custom_value'], '"]') !== false)) ||
+								((strpos((string) $field['custom_value'], '{"') !== false)
+								&& (strpos((string) $field['custom_value'], '"}') !== false)))
 							{
 								// load the Global checkin defautls
 								$this->extensionsparams->add('component', '"' . $fieldName

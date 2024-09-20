@@ -154,7 +154,7 @@ final class InputButton implements InputButtonInterface
 				. "\$button_code_name = \$this->getAttribute('name');";
 			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get the input from url";
-			$addButton[] = Indent::_(3) . "\$app = Factory::getApplication();";
+			$addButton[] = Indent::_(3) . "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 			$addButton[] = Indent::_(3) . "\$jinput = \$app->input;";
 			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get the view name & id";
@@ -181,7 +181,7 @@ final class InputButton implements InputButtonInterface
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " get the return value.";
 				$addButton[] = Indent::_(4)
-					. "\$_uri = (string) \Joomla\CMS\Uri\Uri::getInstance();";
+					. "\$_uri = (string) Joomla__"."_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::getInstance();";
 				$addButton[] = Indent::_(4)
 					. "\$_return = urlencode(base64_encode(\$_uri));";
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
@@ -206,7 +206,7 @@ final class InputButton implements InputButtonInterface
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " get the return value.";
 				$addButton[] = Indent::_(4)
-					. "\$_uri = (string) \Joomla\CMS\Uri\Uri::getInstance();";
+					. "\$_uri = (string) Joomla__"."_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::getInstance();";
 				$addButton[] = Indent::_(4)
 					. "\$_return = urlencode(base64_encode(\$_uri));";
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
@@ -231,7 +231,7 @@ final class InputButton implements InputButtonInterface
 				. "\$button_label = ucfirst(strtolower(\$button_label));";
 			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " get user object";
-			$addButton[] = Indent::_(3) . "\$user = Factory::getApplication()->getIdentity();";
+			$addButton[] = Indent::_(3) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			$addButton[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " only add if user allowed to create " . $fieldData['view'];
 			// check if the item has permissions.
@@ -272,7 +272,11 @@ final class InputButton implements InputButtonInterface
 $addButton[] = Indent::_(4) . "\$script[] = \"";
 			$addButton[] = Indent::_(5) . "document.addEventListener('DOMContentLoaded', function() {";
 			$addButton[] = Indent::_(6)
-				. "document.getElementById('jform_\".\$button_code_name.\"').addEventListener('change', function(e) {";
+				. "let  \".\$button_code_name.\"Field = document.getElementById('jform_\".\$button_code_name.\"');";
+			$addButton[] = Indent::_(6)
+				. "if (!\".\$button_code_name.\"Field) { return; }";
+			$addButton[] = Indent::_(6)
+				. "\".\$button_code_name.\"Field.addEventListener('change', function(e) {";
 			$addButton[] = Indent::_(7) . "e.preventDefault();";
 			$addButton[] = Indent::_(7)
 				. "let \".\$button_code_name.\"Value = this.value;";
@@ -280,7 +284,7 @@ $addButton[] = Indent::_(4) . "\$script[] = \"";
 				. "\".\$button_code_name.\"Button(\".\$button_code_name.\"Value);";
 			$addButton[] = Indent::_(6) . "});";
 			$addButton[] = Indent::_(6)
-				. "let \".\$button_code_name.\"Value = document.getElementById('jform_\".\$button_code_name.\"').value;";
+				. "let \".\$button_code_name.\"Value = \".\$button_code_name.\"Field.value;";
 			$addButton[] = Indent::_(6)
 				. "\".\$button_code_name.\"Button(\".\$button_code_name.\"Value);";
 			$addButton[] = Indent::_(5) . "});";
@@ -324,7 +328,7 @@ $addButton[] = Indent::_(4) . "\$script[] = \"";
 			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load the needed script.";
 			$addButton[] = Indent::_(4)
-				. "\$document = Factory::getApplication()->getDocument();";
+				. "\$document = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getDocument();";
 			$addButton[] = Indent::_(4)
 				. "\$document->addScriptDeclaration(implode(' ',\$script));";
 			$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
