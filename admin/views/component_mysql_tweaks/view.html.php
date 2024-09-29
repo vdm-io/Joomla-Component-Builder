@@ -79,11 +79,11 @@ class ComponentbuilderViewComponent_mysql_tweaks extends HtmlView
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// Display the template
-		parent::display($tpl);
-
 		// Set the document
 		$this->setDocument();
+
+		// Display the template
+		parent::display($tpl);
 	}
 
 

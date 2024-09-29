@@ -25,6 +25,7 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator
  *
  * @since  1.6
  */
+#[AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
@@ -82,6 +83,8 @@ class HtmlView extends BaseHtmlView
 
 		// Set the html view document stuff
 		$this->_prepareDocument();
+
+		parent::display($tpl);
 	}###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS###
 
 	/**

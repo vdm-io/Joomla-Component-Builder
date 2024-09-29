@@ -54,6 +54,7 @@ class ComponentbuilderViewApi extends HtmlView
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
+		// Display the template
 		parent::display($tpl);
 	}
 
