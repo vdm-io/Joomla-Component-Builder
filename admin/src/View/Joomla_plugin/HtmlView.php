@@ -36,6 +36,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
  *
  * @since  1.6
  */
+#[AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**

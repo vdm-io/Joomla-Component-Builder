@@ -29,6 +29,14 @@ use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
 	/**
+	 * Package Container
+	 *
+	 * @var   Container|null
+	 * @since 5.0.3
+	 **/
+	protected static ?Container $container = null;
+
+	/**
 	 * Create a container object
 	 *
 	 * @return  Container

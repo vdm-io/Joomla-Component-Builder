@@ -4781,8 +4781,6 @@ class Interpretation extends Fields
 				}
 				$method .= PHP_EOL . Indent::_(2) . "}";
 			}
-			$method .= PHP_EOL . PHP_EOL . Indent::_(2)
-				. "parent::display(\$tpl);";
 		}
 
 		return $method;

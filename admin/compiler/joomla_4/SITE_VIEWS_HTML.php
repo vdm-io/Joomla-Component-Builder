@@ -93,6 +93,8 @@ class HtmlView extends BaseHtmlView
 		$this->scripts = $this->get('Scripts');
 		// get the user object
 		$this->user ??= $this->app->getIdentity();###SITE_DIPLAY_METHOD###
+
+		parent::display($tpl);
 	}###SITE_EXTRA_DIPLAY_METHODS###
 
 	/**

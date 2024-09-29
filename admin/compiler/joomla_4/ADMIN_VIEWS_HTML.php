@@ -25,6 +25,7 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator
  *
  * @since  1.6
  */
+#[AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
