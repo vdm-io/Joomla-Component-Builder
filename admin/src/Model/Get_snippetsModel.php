@@ -112,9 +112,12 @@ class Get_snippetsModel extends ListModel
  	];
 
 	/**
-	 * A custom property for UIKit components. (not used unless you load v2)
+	 * A custom property for UI Kit components.
+	 *
+	 * @var   mixed  Property for storing UI Kit component-related data or objects.
+	 * @since 3.2.0
 	 */
-	protected $uikitComp;
+	protected $uikitComp = [];
 
 	/**
 	 * Constructor

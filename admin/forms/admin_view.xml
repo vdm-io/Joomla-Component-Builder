@@ -2473,6 +2473,7 @@
 					name="table"
 					label="COM_COMPONENTBUILDER_ADMIN_VIEW_TABLE_LABEL"
 					class="list_class"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default="0"
 					button="false"

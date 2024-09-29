@@ -37,6 +37,7 @@ use VDM\Joomla\Utilities\StringHelper;
  *
  * @since  1.6
  */
+#[AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
@@ -154,10 +155,10 @@ class HtmlView extends BaseHtmlView
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
-		parent::display($tpl);
-
 		// Set the html view document stuff
 		$this->_prepareDocument();
+
+		parent::display($tpl);
 	}
 
 	// These are subform layouts used in JCB

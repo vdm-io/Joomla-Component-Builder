@@ -27,6 +27,7 @@ use VDM\Joomla\Utilities\StringHelper;
  *
  * @since  1.6
  */
+#[AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**

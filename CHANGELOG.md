@@ -1,3 +1,8 @@
+# v4.0.4-alpha1
+
+- Add [AllowDynamicProperties] in the base view class for J5
+- Move the _prepareDocument  above the display call in the base view class
+
 # v4.0.3
 
 - Add [push] option to powers area.
