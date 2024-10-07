@@ -109,7 +109,7 @@ class Infusion extends Interpretation
 			// COMPANYNAME
 			$companyname = CFactory::_('Component')->get('companyname');
 			CFactory::_('Compiler.Builder.Content.One')->set('COMPANYNAME', trim(
-				(string) \JFilterOutput::cleanText($companyname)
+				(string) OutputFilter::cleanText($companyname)
 			));
 
 			// POWER_LIBRARY_FOLDER

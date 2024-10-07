@@ -534,6 +534,9 @@ class Custom_admin_viewModel extends AdminModel
 			}
 		}
 
+		// update the ajax_input (sub form) layout
+		$form->setFieldAttribute('ajax_input', 'layout', ComponentbuilderHelper::getSubformLayout('custom_admin_view', 'ajax_input'));
+
 		// update all editors to use this components global editor
 		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
 		// now get all the editor fields

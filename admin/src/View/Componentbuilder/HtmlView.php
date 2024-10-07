@@ -27,14 +27,17 @@ use VDM\Joomla\Utilities\StringHelper;
  *
  * @since  1.6
  */
-#[AllowDynamicProperties]
+#[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
 	 * View display method
+	 *
 	 * @return void
+	 * @throws \Exception
+	 * @since   1.6
 	 */
-	function display($tpl = null)
+	function display($tpl = null): void
 	{
 		// Assign data to the view
 		$this->icons          = $this->get('Icons');
