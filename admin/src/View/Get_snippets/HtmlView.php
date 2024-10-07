@@ -35,7 +35,7 @@ use Joomla\CMS\Session\Session;
  *
  * @since  1.6
  */
-#[AllowDynamicProperties]
+#[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
@@ -76,9 +76,10 @@ class HtmlView extends BaseHtmlView
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
 	 * @return  void
+	 * @throws \Exception
 	 * @since  1.6
 	 */
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		// get component params
 		$this->params = ComponentHelper::getParams('com_componentbuilder');
@@ -227,20 +228,20 @@ class HtmlView extends BaseHtmlView
 			$expire = 30000; // only 30 seconds
 		}
 		// Set the Time To Live To JavaScript
-		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
+		$this->getDocument()->addScriptDeclaration("var expire = ". (int) $expire.";");
 		// set snippet path
-		$this->document->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
-		$this->document->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
+		$this->getDocument()->addScriptDeclaration("var snippetPath = '". ComponentbuilderHelper::$snippetPath ."';");
+		$this->getDocument()->addScriptDeclaration("var snippetsPath = '". ComponentbuilderHelper::$snippetsPath ."';");
 		// token
-		$this->document->addScriptDeclaration("var token = '". Session::getFormToken() ."';");
+		$this->getDocument()->addScriptDeclaration("var token = '". Session::getFormToken() ."';");
 		// add some global items buckets for bulk updating
-		$this->document->addScriptDeclaration("var bulkItems = {};");
-		$this->document->addScriptDeclaration("bulkItems.new = [];");
-		$this->document->addScriptDeclaration("bulkItems.diverged = [];");
-		$this->document->addScriptDeclaration("bulkItems.ahead = [];");
-		$this->document->addScriptDeclaration("bulkItems.behind = [];");
+		$this->getDocument()->addScriptDeclaration("var bulkItems = {};");
+		$this->getDocument()->addScriptDeclaration("bulkItems.new = [];");
+		$this->getDocument()->addScriptDeclaration("bulkItems.diverged = [];");
+		$this->getDocument()->addScriptDeclaration("bulkItems.ahead = [];");
+		$this->getDocument()->addScriptDeclaration("bulkItems.behind = [];");
 		// set an error message if needed
-		$this->document->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".Text::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".Text::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
+		$this->getDocument()->addScriptDeclaration("var returnError = '<div class=\"uk-alert uk-alert-warning\"><h1>".Text::_('COM_COMPONENTBUILDER_AN_ERROR_HAS_OCCURRED')."!</h1><p>".Text::_('COM_COMPONENTBUILDER_PLEASE_TRY_AGAIN_LATER').".</p></div>';");
 		// need to add some language strings
 		Text::script('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS');
 		Text::script('COM_COMPONENTBUILDER_SNIPPETS');
@@ -275,7 +276,7 @@ class HtmlView extends BaseHtmlView
 		Text::script('COM_COMPONENTBUILDER_AVAILABLE_LIBRARIES');
 		Text::script('COM_COMPONENTBUILDER_OPEN_LIBRARY_SNIPPETS');
 		// add some lang verfy messages
-		$this->document->addScriptDeclaration("
+		$this->getDocument()->addScriptDeclaration("
 			// set the snippet from gitHub
 			function getConfirmUpdate(status) {
 				switch(status) {
@@ -301,7 +302,7 @@ class HtmlView extends BaseHtmlView
 		if (ArrayHelper::check($this->items))
 		{
 			// Set the local snippets array
-			$this->document->addScriptDeclaration("var local_snippets = ". json_encode($local_snippets).";");
+			$this->getDocument()->addScriptDeclaration("var local_snippets = ". json_encode($local_snippets).";");
 		}
 		// add styles
 		foreach ($this->styles as $style)

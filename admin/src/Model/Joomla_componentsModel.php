@@ -32,6 +32,8 @@ use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -254,7 +256,7 @@ class Joomla_componentsModel extends ListModel
 			}
 
 			// create the folders
-			JFolder::create($this->packagePath);
+			Folder::create($this->packagePath);
 
 			// update $pks with returned IDs
 			$pks = array();
@@ -1396,10 +1398,10 @@ class Joomla_componentsModel extends ListModel
 			$this->lockFiles();
 
 			// remove old zip files with the same name
-			if (JFile::exists($this->zipPath))
+			if (is_file($this->zipPath))
 			{
 				// remove file if found
-				JFile::delete($this->zipPath);
+				File::delete($this->zipPath);
 			}
 
 			// zip the folder
@@ -1421,7 +1423,7 @@ class Joomla_componentsModel extends ListModel
 				}
 
 				// remove the local file
-				JFile::delete($this->zipPath);
+				File::delete($this->zipPath);
 			}
 
 			// remove the folder
@@ -1480,7 +1482,7 @@ class Joomla_componentsModel extends ListModel
 		chdir($tmpPath);
 
 		// get a list of files in the current directory tree (all)
-		$files = JFolder::files('.', '.', true, true);
+		$files = Folder::files('.', '.', true, true);
 
 		// read in the file content
 		foreach ($files as $file)
@@ -1535,7 +1537,7 @@ class Joomla_componentsModel extends ListModel
 		if (!FileHelper::exists($tmpPath))
 		{
 			// create the folders if not found
-			JFolder::create($tmpPath);
+			Folder::create($tmpPath);
 		}
 
 		// now move it
@@ -1559,10 +1561,10 @@ class Joomla_componentsModel extends ListModel
 						$customFilePath = str_replace('//', '/', $this->customPath.'/'.$item);
 					}
 					// now check if file exist
-					if (!JFile::exists($tmpFilePath) && JFile::exists($customFilePath))
+					if (!is_file($tmpFilePath) && is_file($customFilePath))
 					{
 						// move the file to its place
-						JFile::copy($customFilePath, $tmpFilePath);
+						File::copy($customFilePath, $tmpFilePath);
 					}
 				}
 
@@ -1577,14 +1579,14 @@ class Joomla_componentsModel extends ListModel
 					if (!FileHelper::exists($imageFolderPath))
 					{
 						// create the folders if not found
-						JFolder::create($imageFolderPath);
+						Folder::create($imageFolderPath);
 					}
 					$tmpImagePath = str_replace('//', '/', $this->packagePath.'/'.$item);
 					$customImagePath = str_replace('//', '/', JPATH_ROOT.'/'.$item);
-					if (!JFile::exists($tmpImagePath) && JFile::exists($customImagePath))
+					if (!is_file($tmpImagePath) && is_file($customImagePath))
 					{
 						// move the file to its place
-						JFile::copy($customImagePath, $tmpImagePath);
+						File::copy($customImagePath, $tmpImagePath);
 					}
 				}
 
@@ -1606,7 +1608,7 @@ class Joomla_componentsModel extends ListModel
 					if (!FileHelper::exists($tmpFolderPath) && FileHelper::exists($customFolderPath))
 					{
 						// move the folder to its place
-						JFolder::copy($customFolderPath, $tmpFolderPath,'',true);
+						Folder::copy($customFolderPath, $tmpFolderPath,'',true);
 					}
 				}
 			}

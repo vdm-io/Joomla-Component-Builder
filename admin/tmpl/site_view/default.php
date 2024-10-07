@@ -332,40 +332,27 @@ jQuery('#adminForm').on('change', '#jform_button_position',function (e)
 
 
 
-jQuery(function() {
-	jQuery('#open-libraries').html('<a href="index.php?option=com_componentbuilder&view=libraries"><?php echo JText::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></a>');
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelector('#open-libraries').innerHTML = '<a href="index.php?option=com_componentbuilder&view=libraries"><?php echo Text::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></a>';
 });
+
 jQuery('#jform_snippet').closest('.input-append').addClass('jform_snippet_input_width');
 jQuery('#jform_main_get').closest('.input-append').addClass('jform_main_get_input_width');
 jQuery('#jform_dynamic_get').closest('.input-append').addClass('jform_dynamic_get_input_width');
 jQuery(function() {
-    jQuery("code").click(function() {
-        jQuery(this).selText().addClass("selected");
-    });
+	// make sure the code bocks are active
+	document.querySelectorAll("code").forEach(function(codeBlock) {
+		codeBlock.addEventListener("click", function() {
+			codeBlock.selText(); // Call the custom selText function
+			codeBlock.classList.add("selected"); // Add the "selected" class
+		});
+	});
 });
+
 jQuery('#adminForm').on('change', '#jform_libraries',function (e) {
 	e.preventDefault();
 	getSnippets();
 });
-
-jQuery.fn.selText = function() {
-    var obj = this[0];
-    if (jQuery.browser.msie) {
-        var range = obj.offsetParent.createTextRange();
-        range.moveToElementText(obj);
-        range.select();
-    } else if (jQuery.browser.mozilla || $.browser.opera) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        var range = obj.ownerDocument.createRange();
-        range.selectNodeContents(obj);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } else if (jQuery.browser.safari) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        selection.setBaseAndExtent(obj, 0, obj, 1);
-    }
-    return this;
-}
 
 jQuery('#adminForm').on('change', '#jform_snippet',function (e) {
 	e.preventDefault();
@@ -401,6 +388,22 @@ jQuery(document).ready(function() {
 // some lang strings
 var select_a_snippet = '<?php echo Text::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPET'); ?>';
 var create_a_snippet = '<?php echo Text::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
+
+
+HTMLElement.prototype.selText = function() {
+    var obj = this;
+
+    // For modern browsers, handle the selection
+    var selection = window.getSelection();
+    var range = document.createRange();
+
+    // Select the content of the element
+    range.selectNodeContents(obj);
+    selection.removeAllRanges();  // Clear any previous selections
+    selection.addRange(range);    // Add the new selection range
+
+    return this;
+};
 
 document.addEventListener("DOMContentLoaded", function() {
 	document.querySelectorAll(".loading-dots").forEach(function(loading_dots) {

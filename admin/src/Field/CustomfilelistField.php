@@ -16,6 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\CMS\Filesystem\Folder;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -47,12 +48,12 @@ class CustomfilelistField extends ListField
 		// set the default
 		$options[] = Html::_('select.option', '', Text::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FILES_TO_S',$localfolder));
 		// setup the folder if it does not exist
-		if (!\JFolder::exists($localfolder))
+		if (!is_dir($localfolder))
 		{
-			\JFolder::create($localfolder);
+			Folder::create($localfolder);
 		}
 		// now check if there are files in the folder
-		if ($files = \JFolder::files($localfolder))
+		if ($files = Folder::files($localfolder))
 		{
 			$options = array();
 			foreach ($files as $file)

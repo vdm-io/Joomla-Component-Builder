@@ -78,7 +78,7 @@ function getLibraries(path) {
 		buildLibraries(_paths);
 	} else {
 		jQuery.get(path)
-		.success(function(paths) {
+		.done(function(paths) {
 			// load only this library paths
 			jQuery.jStorage.set('JCB-Snippets-Paths', paths, {TTL: expire});
 			buildLibraries(paths);
@@ -161,7 +161,7 @@ function getSnippets(path, libraryName) {
 		jQuery('#snippets-github').html('<h1>'+Joomla.JText._('COM_COMPONENTBUILDER_JCB_COMMUNITY_SNIPPETS')+'</h1>');
 	} else {
 		jQuery.get(path)
-		.success(function(paths) {
+		.done(function(paths) {
 			// load only this library paths
 			jQuery.jStorage.set('JCB-Snippets-Paths', paths, {TTL: expire});
 			setSnippets(paths, libraryName);
@@ -190,7 +190,7 @@ function setSnippets(paths, libraryName) {
 				fromLocal = true;
 			} else {
 				jQuery.get(snippetPath+value.path)
-				.success(function(snippet) {
+				.done(function(snippet) {
 					// convert the string to json.object
 					snippet = jQuery.parseJSON(snippet);
 					jQuery.jStorage.set(value.path, snippet, {TTL: expire});
@@ -469,7 +469,7 @@ function getSnippetModal(key, type) {
 		showSnippetModal(_snippet, type);
 	} else {
 		jQuery.get('https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/'+key)
-		.success(function(snippet) {
+		.done(function(snippet) {
 			// convert the string to json.object
 			snippet = jQuery.parseJSON(snippet);
 			jQuery.jStorage.set(key, snippet, {TTL: expire});
@@ -527,7 +527,6 @@ function getKeyID(key) {
 	// return the id build
 	return keyID;
 }
-
 // get key ID
 function getKeyID(key) {
 	// get useful ID
