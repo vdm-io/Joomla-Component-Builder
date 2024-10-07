@@ -6372,9 +6372,9 @@ class Com_ComponentbuilderInstallerScript
 				{
 					// check if this install has the wiki file (just remove it)
 					$wiki_menu = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/wiki_menu.txt';
-					if (JFile::exists($wiki_menu))
+					if (is_file($wiki_menu))
 					{
-						JFile::delete($wiki_menu);
+						File::delete($wiki_menu);
 					}
 				}
 				// target version less then or equal to 2.11.2
@@ -9969,7 +9969,7 @@ class Com_ComponentbuilderInstallerScript
 			}
 			// check if this install has the libraries in the helper folder, if so remove it
 			$vendorPath = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/vendor';
-			if (\JFolder::exists($vendorPath))
+			if (is_dir($vendorPath))
 			{
 				ComponentbuilderHelper::removeFolder($vendorPath);
 				// set a notice that this was done
@@ -9977,7 +9977,7 @@ class Com_ComponentbuilderInstallerScript
 			}
 			// check if this install has the libraries in the helper folder, if so remove it
 			$vendorPath = JPATH_ROOT . '/libraries/vdm_io';
-			if (\JFolder::exists($vendorPath))
+			if (is_dir($vendorPath))
 			{
 				ComponentbuilderHelper::removeFolder($vendorPath);
 				// set a notice that this was done
@@ -9985,7 +9985,7 @@ class Com_ComponentbuilderInstallerScript
 			}
 			// check if we still have the old Gitea Classes
 			$giteaPath = JPATH_ROOT . '/libraries/jcb_powers/VDM.Gitea';
-			if (\JFolder::exists($giteaPath))
+			if (is_dir($giteaPath))
 			{
 				ComponentbuilderHelper::removeFolder($giteaPath);
 				// set a notice that this was done
@@ -10001,7 +10001,7 @@ class Com_ComponentbuilderInstallerScript
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 3.2.5-alpha1 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 3.2.5-alpha2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Set db if not set already.
 			if (!isset($db))

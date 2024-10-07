@@ -136,7 +136,7 @@ class ComponentbuilderControllerSnippets extends AdminController
 			$input = Factory::getApplication()->input;
 			$pks = $input->post->get('cid', array(), 'array');
 			// Sanitize the input
-			JArrayHelper::toInteger($pks);
+			ArrayHelper::toInteger($pks);
 			// check if there is any selections
 			if (!UtilitiesArrayHelper::check($pks))
 			{

@@ -206,6 +206,11 @@ class ComponentbuilderViewLanguages extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		if (!isset($this->document))
 		{
 			$this->document = Factory::getDocument();

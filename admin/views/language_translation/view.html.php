@@ -195,6 +195,11 @@ class ComponentbuilderViewLanguage_translation extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/language_translation.css", ['version' => 'auto']);
@@ -210,7 +215,7 @@ class ComponentbuilderViewLanguage_translation extends HtmlView
 		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css', ['version' => 'auto']);
 		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
 		Text::script('view not acceptable. Error');
 	}
 

@@ -195,6 +195,11 @@ class ComponentbuilderViewField extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_FIELD_NEW' : 'COM_COMPONENTBUILDER_FIELD_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/field.css", ['version' => 'auto']);
@@ -215,9 +220,9 @@ class ComponentbuilderViewField extends HtmlView
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// add the libs for subform (since not adding it via xml but ajax)
  		Html::_('jquery.ui', array('core', 'sortable'));
  		Html::_('script', 'system/subform-repeatable.js', array('version' => 'auto', 'relative' => true));

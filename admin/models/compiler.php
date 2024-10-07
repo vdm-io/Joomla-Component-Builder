@@ -21,6 +21,10 @@ use Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Helper\Compiler;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Installer\InstallerHelper;
+use Joomla\CMS\Installer\Installer;
 
 /**
  * Componentbuilder List Model for Compiler
@@ -162,7 +166,7 @@ class ComponentbuilderModelCompiler extends ListModel
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
 		
-		if (JFolder::exists($dir))
+		if (is_dir($dir))
 		{
 			$it = new RecursiveDirectoryIterator($dir);
 			$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
@@ -171,19 +175,19 @@ class ComponentbuilderModelCompiler extends ListModel
 				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
 				if ($file->isDir())
 				{
-					JFolder::delete($file->getPathname());	
+					Folder::delete($file->getPathname());	
 				}
 				else
 				{
 					if ($file->getBasename() !== 'index.html')
 					{
-						JFile::delete($file->getPathname());
+						File::delete($file->getPathname());
 					}
 				}
 			}
 			if ($removeDir)
 			{
-				if (JFolder::delete($dir))
+				if (Folder::delete($dir))
 				{
 					return true;
 				}
@@ -228,7 +232,7 @@ class ComponentbuilderModelCompiler extends ListModel
 		$tmp_dest = $config->get('tmp_path');
 
 		// Unpack the downloaded package file.
-		$package = JInstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
+		$package = InstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
 
 		// insure the install type is folder (JCB zip file is in the folder)
 		$installType = 'folder';
@@ -253,7 +257,7 @@ class ComponentbuilderModelCompiler extends ListModel
 		}
 
 		// Get an installer instance.
-		$installer = JInstaller::getInstance();
+		$installer = Installer::getInstance();
 
 		// Install the package.
 		if (!$installer->install($package['dir']))
@@ -290,7 +294,7 @@ class ComponentbuilderModelCompiler extends ListModel
 			$package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
 		}
 
-		JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+		InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
 		// Clear the cached extension data and menu cache
 		$this->cleanCache('_system', 0);

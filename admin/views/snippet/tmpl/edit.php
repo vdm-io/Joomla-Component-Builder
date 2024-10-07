@@ -17,6 +17,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 Html::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 Html::_('behavior.formvalidator');
 Html::_('formbehavior.chosen', 'select');
@@ -111,11 +112,11 @@ $componentParams = $this->params; // will be removed just use $this->params inst
 
 <?php 
 	// setup the return url
-	$uri = (string) JUri::getInstance();
+	$uri = (string) Uri::getInstance();
 	$return = urlencode(base64_encode($uri));
 	$optionsURL = 'index.php?option=com_config&view=component&component=com_componentbuilder&return='.$return;
 ?>
-jQuery(function() {
-	jQuery('#contributor-global-settings').html("<a class='btn btn-small options-link' href='<?php echo $optionsURL;?>'><span class='icon-options'></span><?php echo JText::_('COM_COMPONENTBUILDER_OPTIONS'); ?></a>");
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelector('#contributor-global-settings').innerHTML = '<a href="<?php echo $optionsURL;?>"><?php echo Text::_('COM_COMPONENTBUILDER_LIBRARIES'); ?></a>';
 });
 </script>

@@ -205,6 +205,11 @@ class ComponentbuilderViewJoomla_power extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_POWER_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_POWER_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/joomla_power.css", ['version' => 'auto']);

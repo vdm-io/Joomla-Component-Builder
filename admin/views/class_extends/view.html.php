@@ -195,6 +195,11 @@ class ComponentbuilderViewClass_extends extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_CLASS_EXTENDS_NEW' : 'COM_COMPONENTBUILDER_CLASS_EXTENDS_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/class_extends.css", ['version' => 'auto']);
@@ -215,9 +220,9 @@ class ComponentbuilderViewClass_extends extends HtmlView
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		Text::script('view not acceptable. Error');
 	}
 

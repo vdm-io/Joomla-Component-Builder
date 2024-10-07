@@ -195,6 +195,11 @@ class ComponentbuilderViewJoomla_module extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_MODULE_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_MODULE_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/joomla_module.css", ['version' => 'auto']);
@@ -219,9 +224,9 @@ class ComponentbuilderViewJoomla_module extends HtmlView
 		Html::_('script', 'media/com_componentbuilder/js/jstorage.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/js/strtotime.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// check if we should use browser storage
 		$setBrowserStorage = $this->params->get('set_browser_storage', null);
 		if ($setBrowserStorage)
@@ -252,7 +257,7 @@ class ComponentbuilderViewJoomla_module extends HtmlView
 			$expire = 30000; // only 30 seconds
 		}
 		// Set the Time To Live To JavaScript
-		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
+		$this->getDocument()->addScriptDeclaration("var expire = ". (int) $expire.";");
 		Text::script('view not acceptable. Error');
 	}
 

@@ -195,6 +195,11 @@ class ComponentbuilderViewLibrary_files_folders_urls extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_NEW' : 'COM_COMPONENTBUILDER_LIBRARY_FILES_FOLDERS_URLS_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/library_files_folders_urls.css", ['version' => 'auto']);

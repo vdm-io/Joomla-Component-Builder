@@ -1,4 +1,12 @@
-# v3.2.5-alpha1
+# v3.2.5-alpha2
+
+- Remove all backward compatibility issues, so JCB will not need the [Backward Compatibility] plugin to run.
+- Added new import powers for custom import of spreadsheets.
+- Move the setDocument and _prepareDocument above the display in the site view and custom admin view.
+- Update the trashhelper layout to work in Joomla 5.
+- Add AllowDynamicProperties (Joomla 4+5) to view class to allow Custom Dynamic Get methods to work without issues.
+
+# v3.2.5-alpha
 
 - Add [AllowDynamicProperties] in the base view class for J5
 - Move the _prepareDocument  above the display call in the base view class

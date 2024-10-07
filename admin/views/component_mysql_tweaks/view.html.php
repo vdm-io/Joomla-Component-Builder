@@ -195,6 +195,11 @@ class ComponentbuilderViewComponent_mysql_tweaks extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_MYSQL_TWEAKS_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/component_mysql_tweaks.css", ['version' => 'auto']);

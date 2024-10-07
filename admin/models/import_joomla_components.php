@@ -201,7 +201,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 							// set auto loader
 							ComponentbuilderHelper::autoLoader('smart');
 							// get install folder
-							$dir = JFile::stripExt($package['dir']);
+							$dir = File::stripExt($package['dir']);
 							// remove unziped folder
 							ComponentbuilderHelper::removeFolder($dir);
 						}
@@ -307,7 +307,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			// set auto loader
 			ComponentbuilderHelper::autoLoader('smart');
 			// extract the package
-			if (JFile::exists($package['dir']))
+			if (is_file($package['dir']))
 			{
 				// does this package pass a checksum
 				$checksum = false;
@@ -355,12 +355,12 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				// get the zip adapter
 				$zip = JArchive::getAdapter('zip');
 				// set the directory name
-				$this->dir = JFile::stripExt($package['dir']);
+				$this->dir = File::stripExt($package['dir']);
 				// unzip the package
 				$zip->extract($package['dir'], $this->dir);
 				// check for database file
 				$infoFile = $this->dir . '/info.vdm';
-				if (JFile::exists($infoFile))
+				if (is_file($infoFile))
 				{
 					// load the data
 					if ($info = FileHelper::getContent($infoFile))
@@ -631,13 +631,13 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				// set auto loader
 				ComponentbuilderHelper::autoLoader('smart');
 				// extract the package
-				if (JFile::exists($package['dir']))
+				if (is_file($package['dir']))
 				{
 					// set the directory name
-					$this->dir = JFile::stripExt($package['dir']);
+					$this->dir = File::stripExt($package['dir']);
 					// check for database file
 					$dbFile = $this->dir . '/db.vdm';
-					if (!JFile::exists($dbFile))
+					if (!is_file($dbFile))
 					{
 						// get the zip adapter
 						$zip = JArchive::getAdapter('zip');
@@ -645,7 +645,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 						$zip->extract($package['dir'], $this->dir);
 					}
 					// check again
-					if (JFile::exists($dbFile))
+					if (is_file($dbFile))
 					{
 						// load the data
 						if ($data = FileHelper::getContent($dbFile))
@@ -938,10 +938,10 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		$success = true;
 		// check if we have custom files
 		$customDir = str_replace('//', '/', $this->dir . '/custom');
-		if (JFolder::exists($customDir))
+		if (is_dir($customDir))
 		{
 			// great we have some custom stuff lets move it
-			if (!JFolder::copy($customDir, $customPath,'',true))
+			if (!Folder::copy($customDir, $customPath,'',true))
 			{
 				$this->app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_BCUSTOM_FILESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
@@ -954,10 +954,10 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		}
 		// check if we have images
 		$imageDir = str_replace('//', '/', $this->dir . '/images');
-		if (JFolder::exists($imageDir))
+		if (is_dir($imageDir))
 		{
 			// great we have some images lets move them
-			if (!JFolder::copy($imageDir, $imagesPath,'',true))
+			if (!Folder::copy($imageDir, $imagesPath,'',true))
 			{
 				$this->app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_BIMAGESB_NOT_MOVED_TO_CORRECT_LOCATION'), 'error');
 				$success = false;
@@ -970,10 +970,10 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		}
 		// now move the dynamic files if found
 		$dynamicDir = str_replace('//', '/', $this->dir . '/dynamic');
-		if (JFolder::exists($dynamicDir))
+		if (is_dir($dynamicDir))
 		{
 			// get a list of folders
-			$folders = JFolder::folders($dynamicDir);
+			$folders = Folder::folders($dynamicDir);
 			// check if we have files
 			if(UtilitiesArrayHelper::check($folders))
 			{
@@ -981,7 +981,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				{
 					$destination = $this->setDynamicPath($folder);
 					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $folder);
-					if (!JFolder::exists($fullPath) || !JFolder::copy($fullPath, $destination,'',true))
+					if (!is_dir($fullPath) || !Folder::copy($fullPath, $destination,'',true))
 					{
 						$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_FOLDER_BSB_WAS_NOT_MOVED_TO_BSB', $folder, $destination), 'error');
 						$success = false;
@@ -994,7 +994,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				}
 			}
 			// get a list of files
-			$files = JFolder::files($dynamicDir);
+			$files = Folder::files($dynamicDir);
 			// check if we have files
 			if(UtilitiesArrayHelper::check($files))
 			{
@@ -1002,7 +1002,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 				{
 					$destination = $this->setDynamicPath($file);
 					$fullPath = str_replace('//', '/', $dynamicDir . '/' . $file);
-					if (!JFile::exists($fullPath) || !JFile::copy($fullPath, $destination))
+					if (!is_file($fullPath) || !File::copy($fullPath, $destination))
 					{
 						$this->app->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_FILE_BSB_WAS_NOT_MOVED_TO_BSB', $file, $destination), 'error');
 						$success = false;
@@ -1037,7 +1037,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 			{
 				$subPath = str_replace('//', '/', $this->dir . '/' . $folder);
 				// go to the package sub folder if found
-				if (JFolder::exists($subPath))
+				if (is_dir($subPath))
 				{
 					$this->unLockFile($subPath);
 				}
@@ -1057,7 +1057,7 @@ class ComponentbuilderModelImport_joomla_components extends BaseDatabaseModel
 		// we are changing the working directory to the tmp path (important)
 		chdir($tmpPath);
 		// get a list of files in the current directory tree (all)
-		$files = JFolder::files('.', '.', true, true);
+		$files = Folder::files('.', '.', true, true);
 		// read in the file content
 		foreach ($files as $file)
 		{

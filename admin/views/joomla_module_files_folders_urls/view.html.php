@@ -195,6 +195,11 @@ class ComponentbuilderViewJoomla_module_files_folders_urls extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_MODULE_FILES_FOLDERS_URLS_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_MODULE_FILES_FOLDERS_URLS_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/joomla_module_files_folders_urls.css", ['version' => 'auto']);

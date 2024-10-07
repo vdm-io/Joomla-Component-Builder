@@ -524,6 +524,9 @@ class ComponentbuilderModelSite_view extends AdminModel
 			}
 		}
 
+		// update the ajax_input (sub form) layout
+		$form->setFieldAttribute('ajax_input', 'layout', ComponentbuilderHelper::getSubformLayout('site_view', 'ajax_input'));
+
 		// update all editors to use this components global editor
 		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
 		// now get all the editor fields

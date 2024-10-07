@@ -24,6 +24,7 @@ use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Componentbuilder Api Item Model
@@ -251,7 +252,7 @@ class ComponentbuilderModelApi extends ItemModel
 						$config = Factory::getConfig();
 						$package = $config->get('tmp_path') . '/' . $this->compiler->componentFolderName.'.zip';
 						// just remove from temp
-						if (JFile::delete($package) && !is_file($package))
+						if (File::delete($package) && !is_file($package))
 						{
 							// component was installed
 							$this->messages[] = Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_NOT_INSTALLED_BY_YOUR_REQUEST_AND_IS_ALSO_REMOVED_FROM_TEMP_FOLDER', $this->compiler->componentFolderName);

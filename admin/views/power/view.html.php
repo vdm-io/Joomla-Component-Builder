@@ -205,6 +205,11 @@ class ComponentbuilderViewPower extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_POWER_NEW' : 'COM_COMPONENTBUILDER_POWER_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/power.css", ['version' => 'auto']);
@@ -229,9 +234,9 @@ class ComponentbuilderViewPower extends HtmlView
 		Html::_('script', 'media/com_componentbuilder/js/jstorage.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/js/strtotime.js', ['version' => 'auto']);
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) \JUri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
@@ -268,8 +273,8 @@ class ComponentbuilderViewPower extends HtmlView
 			$expire = 30000; // only 30 seconds
 		}
 		// Set the Time To Live To JavaScript
-		$this->document->addScriptDeclaration("var expire = ". (int) $expire.";");
-		$this->document->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
+		$this->getDocument()->addScriptDeclaration("var expire = ". (int) $expire.";");
+		$this->getDocument()->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
 		Text::script('view not acceptable. Error');
 	}
 

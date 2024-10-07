@@ -22,6 +22,8 @@ use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Snippets List Model
@@ -112,20 +114,20 @@ class ComponentbuilderModelSnippets extends ListModel
 					// get the shared paths
 					$this->fullPath = rtrim(ComponentbuilderHelper::getFolderPath('path', 'sharepath', Factory::getConfig()->get('tmp_path')), '/') . '/snippets';
 					// remove old folder with the same name
-					if (JFolder::exists($this->fullPath))
+					if (is_dir($this->fullPath))
 					{
 						// remove if old folder is found
 						ComponentbuilderHelper::removeFolder($this->fullPath);
 					}
 					// create the full path
-					JFolder::create($this->fullPath);
+					Folder::create($this->fullPath);
 					// set zip path
 					$this->zipPath = $this->fullPath .'.zip';
 					// remove old zip files with the same name
-					if (JFile::exists($this->zipPath))
+					if (is_file($this->zipPath))
 					{
 						// remove file if found
-						JFile::delete($this->zipPath);
+						File::delete($this->zipPath);
 					}
 					// prep the item
 					foreach($items as $item)

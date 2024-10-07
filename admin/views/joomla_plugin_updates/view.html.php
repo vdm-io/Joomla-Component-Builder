@@ -195,6 +195,11 @@ class ComponentbuilderViewJoomla_plugin_updates extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATES_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATES_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/joomla_plugin_updates.css", ['version' => 'auto']);
