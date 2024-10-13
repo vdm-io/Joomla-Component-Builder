@@ -167,7 +167,6 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_component&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
-
 			</div>
 		</td>
 		<td class="hidden-phone">

@@ -101,7 +101,6 @@
 			label="COM_COMPONENTBUILDER_COMPONENT_PLUGINS_JOOMLA_COMPONENT_LABEL"
 			description="COM_COMPONENTBUILDER_COMPONENT_PLUGINS_JOOMLA_COMPONENT_DESCRIPTION"
 			class="list_class"
-			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
 			readonly="true"

@@ -9,7 +9,7 @@ The Component Builder for [Joomla](https://extensions.joomla.org/extension/compo
 
 Whether you're a seasoned [Joomla](https://extensions.joomla.org/extension/component-builder/) developer, or have just started, Component Builder will save you lots of time and money. A real must have!
 
-You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.2.5-alpha2) with **ALL** its features and **ALL** concepts totally open-source and free! 
+You can install it quite easily and with no limitations. On [gitea](https://git.vdm.dev/joomla/Component-Builder/tags) is the latest release (3.2.5-alpha3) with **ALL** its features and **ALL** concepts totally open-source and free! 
 
 > Watch Quick Build of a Hello World component in [JCB on Youtube](https://www.youtube.com/watch?v=IQfsLYIeblk&list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE&index=45)
 
@@ -144,13 +144,13 @@ TODO
 + *Author*: [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 + *Name*: [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
 + *First Build*: 30th April, 2015
-+ *Last Build*: 7th October, 2024
-+ *Version*: 3.2.5-alpha2
++ *Last Build*: 13th October, 2024
++ *Version*: 3.2.5-alpha3
 + *Copyright*: Copyright (C) 2015 Vast Development Method. All rights reserved.
 + *License*: GNU General Public License version 2 or later; see LICENSE.txt
-+ *Line count*: **857064**
++ *Line count*: **859606**
 + *Field count*: **2098**
-+ *File count*: **5808**
++ *File count*: **5826**
 + *Folder count*: **505**
 
 > This **component** was build with a [Joomla](https://extensions.joomla.org/extension/component-builder/) [Automated Component Builder](https://www.joomlacomponentbuilder.com).

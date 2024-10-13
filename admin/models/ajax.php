@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use Joomla\CMS\Uri\Uri;
@@ -1595,7 +1596,7 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @var	array
 	 * @since 3.0.13
 	 */
-	protected $viewid = [];
+	protected array $viewid = [];
 
 	/**
 	 * Get the view details via the session
@@ -1615,7 +1616,7 @@ class ComponentbuilderModelAjax extends ListModel
 			if ($vdm)
 			{
 				// set view and id
-				if ($view = ComponentbuilderHelper::get($vdm))
+				if (($view = SessionHelper::get($vdm)) !== null)
 				{
 					$current = (array) explode('__', $view);
 					if (StringHelper::check($current[0]) && isset($current[1]) && is_numeric($current[1]))
@@ -1628,7 +1629,7 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// set GUID if found
-				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false)
+				if (($guid = SessionHelper::get($vdm . '__guid')) !== null)
 				{
 					if (GuidHelper::valid($guid))
 					{
@@ -1636,7 +1637,7 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// set return if found
-				if (($return = ComponentbuilderHelper::get($vdm . '__return')) !== false)
+				if (($return = SessionHelper::get($vdm . '__return')) !== null)
 				{
 					if (StringHelper::check($return))
 					{

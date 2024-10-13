@@ -52,6 +52,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\FOF\Encrypt\AES;
+use VDM\Joomla\Utilities\DateHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\FieldHelper as StringFieldHelper;
 use VDM\Joomla\Utilities\String\TypeHelper;
@@ -2164,7 +2165,7 @@ abstract class ComponentbuilderHelper
 	{
 		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
-			self::$session = Factory::getSession();
+			self::$session = Factory::getApplication()->getSession();
 		}
 		// set the defaults
 		self::setSessionDefaults();
@@ -2177,7 +2178,7 @@ abstract class ComponentbuilderHelper
 	{
 		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
-			self::$session = Factory::getSession();
+			self::$session = Factory::getApplication()->getSession();
 		}
 		// set to local memory to speed up program
 		self::$localSession[$key] = $value;
@@ -2192,7 +2193,7 @@ abstract class ComponentbuilderHelper
 	{
 		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
-			self::$session = Factory::getSession();
+			self::$session = Factory::getApplication()->getSession();
 		}
 		// check if in local memory
 		if (!isset(self::$localSession[$key]))
@@ -5228,193 +5229,245 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	 * Change to nice fancy date
+	 * Convert a date to a human-readable fancy format (e.g., "1st of January 2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDate($date, $checkStamp);
 	 */
-	public static function fancyDate($date, $check_stamp = true)
+	public static function fancyDate($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('jS \o\f F Y',$date);
+		return DateHelper::fancyDate($date, $checkStamp);
 	}
 
 	/**
-	 * get date based in period past
+	 * Get a formatted date based on the time period (dynamic format based on age of the date).
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDynamicDate($date, $checkStamp);
 	 */
-	public static function fancyDynamicDate($date, $check_stamp = true)
+	public static function fancyDynamicDate($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		// older then year
-		$lastyear = date("Y", strtotime("-1 year"));
-		$tragetyear = date("Y", $date);
-		if ($tragetyear <= $lastyear)
-		{
-			return date('m/d/y', $date);
-		}
-		// same day
-		$yesterday = strtotime("-1 day");
-		if ($date > $yesterday)
-		{
-			return date('g:i A', $date);
-		}
-		// just month day
-		return date('M j', $date);
+		return DateHelper::fancyDynamicDate($date, $checkStamp);
 	}
 
 	/**
-	 * Change to nice fancy day time and date
+	 * Convert a date to a human-readable day, time, and date format (e.g., "Mon 12am 1st of January 2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted day, time, and date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDayTimeDate($date, $checkStamp);
 	 */
-	public static function fancyDayTimeDate($time, $check_stamp = true)
+	public static function fancyDayTimeDate($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($time))
-		{
-			$time = strtotime($time);
-		}
-		return date('D ga jS \o\f F Y',$time);
+		return DateHelper::fancyDayTimeDate($date, $checkStamp);
 	}
 
 	/**
-	 * Change to nice fancy time and date
+	 * Convert a date to a human-readable time and date format (e.g., "(12:00) 1st of January 2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted time and date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDateTime($date, $checkStamp);
 	 */
-	public static function fancyDateTime($time, $check_stamp = true)
+	public static function fancyDateTime($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($time))
-		{
-			$time = strtotime($time);
-		}
-		return date('(G:i) jS \o\f F Y',$time);
+		return DateHelper::fancyDateTime($date, $checkStamp);
 	}
 
 	/**
-	 * Change to nice hour:minutes time
+	 * Convert a time to a human-readable format (e.g., "12:00").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted time.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyTime($date, $checkStamp);
 	 */
-	public static function fancyTime($time, $check_stamp = true)
+	public static function fancyTime($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($time))
-		{
-			$time = strtotime($time);
-		}
-		return date('G:i',$time);
+		return DateHelper::fancyTime($date, $checkStamp);
 	}
 
 	/**
-	 * set the date day as Sunday through Saturday
+	 * Convert a date to the day name (e.g., "Sunday").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Day name.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setDayName($date, $checkStamp);
 	 */
-	public static function setDayName($date, $check_stamp = true)
+	public static function setDayName($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('l', $date);
+		return DateHelper::setDayName($date, $checkStamp);
 	}
 
 	/**
-	 * set the date month as January through December
+	 * Convert a date to the month name (e.g., "January").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Month name.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setMonthName($date, $checkStamp);
 	 */
-	public static function setMonthName($date, $check_stamp = true)
+	public static function setMonthName($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('F', $date);
+		return DateHelper::setMonthName($date, $checkStamp);
 	}
 
 	/**
-	 * set the date day as 1st
+	 * Convert a date to the day with suffix (e.g., "1st").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Day with suffix.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setDay($date, $checkStamp);
 	 */
-	public static function setDay($date, $check_stamp = true)
+	public static function setDay($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('jS', $date);
+		return DateHelper::setDay($date, $checkStamp);
 	}
 
 	/**
-	 * set the date month as 5
+	 * Convert a date to the numeric month (e.g., "5").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Numeric month.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setMonth($date, $checkStamp);
 	 */
-	public static function setMonth($date, $check_stamp = true)
+	public static function setMonth($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('n', $date);
+		return DateHelper::setMonth($date, $checkStamp);
 	}
 
 	/**
-	 * set the date year as 2004 (for charts)
+	 * Convert a date to the full year (e.g., "2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Full year.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setYear($date, $checkStamp);
 	 */
-	public static function setYear($date, $check_stamp = true)
+	public static function setYear($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('Y', $date);
+		return DateHelper::setYear($date, $checkStamp);
 	}
 
 	/**
-	 * set the date as 2004/05 (for charts)
+	 * Convert a date to a year/month format (e.g., "2024/05").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param string      $spacer       The spacer between year and month.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Year/Month format.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setYearMonth($date, $spacer, $checkStamp);
 	 */
-	public static function setYearMonth($date, $spacer = '/', $check_stamp = true)
+	public static function setYearMonth($date, string $spacer = '/', bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('Y' . $spacer . 'm', $date);
+		return DateHelper::setYearMonth($date, $spacer, $checkStamp);
 	}
 
 	/**
-	 * set the date as 2004/05/03 (for charts)
+	 * Convert a date to a year/month/day format (e.g., "2024/05/03").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param string      $spacer       The spacer between year and month.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Year/Month/Day format.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setYearMonthDay($date, $spacer, $checkStamp);
 	 */
-	public static function setYearMonthDay($date, $spacer = '/', $check_stamp = true)
+	public static function setYearMonthDay($date, string $spacer = '/', bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('Y' . $spacer . 'm' . $spacer . 'd', $date);
+		return DateHelper::setYearMonthDay($date, $spacer, $checkStamp);
 	}
 
 	/**
-	 * set the date as 03/05/2004
+	 * Convert a date to a day/month/year format (e.g., "03/05/2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param string      $spacer       The spacer between year and month.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Day/Month/Year format.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setDayMonthYear($date, $spacer, $checkStamp);
 	 */
-	public static function setDayMonthYear($date, $spacer = '/', $check_stamp = true)
+	public static function setDayMonthYear($date, string $spacer = '/', bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('d' . $spacer . 'm' . $spacer . 'Y', $date);
+		return DateHelper::setDayMonthYear($date, $spacer, $checkStamp);
 	}
 
 	/**
-	 * Check if string is a valid time stamp
+	 * Convert a date string to a valid timestamp.
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return int The valid timestamp.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::getValidTimestamp($date, $checkStamp);
 	 */
-	public static function isValidTimeStamp($timestamp)
+	public static function getValidTimestamp($date, bool $checkStamp): int
 	{
-		return ((int) $timestamp === $timestamp)
-		&& ($timestamp <= PHP_INT_MAX)
-		&& ($timestamp >= ~PHP_INT_MAX);
+		return DateHelper::getValidTimestamp($date, $checkStamp);
 	}
 
 	/**
-	 * Check if string is a valid date
-	 * https://www.php.net/manual/en/function.checkdate.php#113205
+	 * Check if the input is a valid Unix timestamp.
+	 *
+	 * @param mixed $timestamp The timestamp to validate.
+	 *
+	 * @return bool True if valid timestamp, false otherwise.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::isValidTimeStamp($timestamp);
 	 */
-	public static function isValidateDate($date, $format = 'Y-m-d H:i:s')
+	public static function isValidTimeStamp($timestamp): bool
 	{
-		$d = DateTime::createFromFormat($format, $date);
-		return $d && $d->format($format) == $date;
+		return DateHelper::isValidTimeStamp($timestamp);
+	}
+
+	/**
+	 * Check if a string is a valid date according to the specified format.
+	 *
+	 * @param string $date The date string to validate.
+	 * @param string $format The format to check against (default is 'Y-m-d H:i:s').
+	 *
+	 * @return bool True if valid date, false otherwise.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::isValidateDate($date, $format);
+	 */
+	public static function isValidateDate($date, string $format = 'Y-m-d H:i:s'): bool
+	{
+		return DateHelper::isValidateDate($date, $format);
 	}
 
 	/**
