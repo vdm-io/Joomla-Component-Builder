@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Spreadsheet;
 
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
+use VDM\Joomla\Componentbuilder\Spreadsheet\ChunkReadFilter;
 
 
 /**
@@ -40,7 +40,7 @@ final class Header
 		}
 
 		try {
-			$chunkFilter = new ChunkReadFilter(2, 1);
+			$chunkFilter = new ChunkReadFilter(1, 20);
 			$inputFileType = IOFactory::identify($filePath);
 			$reader = IOFactory::createReader($inputFileType);
 			$reader->setReadFilter($chunkFilter);

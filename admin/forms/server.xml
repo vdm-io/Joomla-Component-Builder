@@ -166,7 +166,6 @@
 			label="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_LABEL"
 			rows="15"
 			cols="5"
-			default=""
 			description="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_DESCRIPTION"
 			class="input-xxlarge span12"
 			hint="COM_COMPONENTBUILDER_SERVER_PRIVATE_KEY_HINT"

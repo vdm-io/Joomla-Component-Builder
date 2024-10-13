@@ -143,7 +143,6 @@
 					label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATES_MYSQL_LABEL"
 					rows="30"
 					cols="15"
-					default=""
 					description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_UPDATES_MYSQL_DESCRIPTION"
 					class="text_area mysql_update"
 					filter="raw"

@@ -13,9 +13,9 @@ namespace VDM\Joomla\Componentbuilder\Spreadsheet;
 
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
 use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 use PhpOffice\PhpSpreadsheet\Exception as SpreadsheetException;
+use VDM\Joomla\Componentbuilder\Spreadsheet\ChunkReadFilter;
 
 
 /**
