@@ -34,6 +34,7 @@ final class Importer
 	 *
 	 * @return \Generator    A generator that yields each row as an array.
 	 * @throws \InvalidArgumentException If the file does not exist.
+	 * @throws \OutOfRangeException If the start row is beyond the highest row, no rows can be processed.
 	 * @throws ReaderException If there is an error identifying or reading the file.
 	 * @throws SpreadsheetException If there is an error working with the spreadsheet.
 	 * @since 3.2.0
@@ -47,23 +48,43 @@ final class Importer
 		}
 
 		try {
+			// Identify file type and create reader
+			$inputFileType = IOFactory::identify($filePath);
+			$reader = IOFactory::createReader($inputFileType);
+			$reader->setReadDataOnly(true);
+
+			// Load the entire spreadsheet to determine the highest row
+			$spreadsheet = $reader->load($filePath);
+			$worksheet = $spreadsheet->getActiveSheet();
+			$highestRow = $worksheet->getHighestRow(); // Get the highest row number in the sheet
+
+			// Disconnect and free memory after fetching the highest row
+			$spreadsheet->disconnectWorksheets();
+			unset($spreadsheet);
+
+			// If the start row is beyond the highest row, no rows can be processed
+			if ($startRow > $highestRow)
+			{
+				throw new \OutOfRangeException("Start row ($startRow) is beyond highest row ($highestRow)");
+			}
+
 			// Initialize variables for row processing
 			$totalRows = $startRow;
 
 			do {
-				// Set up a new chunk filter for the current chunk
-				$chunkFilter = new ChunkReadFilter($totalRows, $chunkSize);
-				$inputFileType = IOFactory::identify($filePath);
-				$reader = IOFactory::createReader($inputFileType);
-				$reader->setReadFilter($chunkFilter);
-				$reader->setReadDataOnly(true);
+				// Calculate the last row in the current chunk
+				$endRow = min($totalRows + $chunkSize - 1, $highestRow);
 
-				// Load the chunk into the spreadsheet
+				// Set up a new chunk filter for the current chunk
+				$chunkFilter = new ChunkReadFilter($totalRows, $endRow);
+				$reader->setReadFilter($chunkFilter);
+
+				// Reload the chunk into the spreadsheet
 				$spreadsheet = $reader->load($filePath);
 				$worksheet = $spreadsheet->getActiveSheet();
 
 				// Iterate through the rows in the current chunk
-				foreach ($worksheet->getRowIterator($totalRows) as $row)
+				foreach ($worksheet->getRowIterator($totalRows, $endRow) as $row)
 				{
 					$rowIndex = $row->getRowIndex();
 					$rowData = [];
@@ -87,7 +108,7 @@ final class Importer
 				$spreadsheet->disconnectWorksheets();
 				unset($spreadsheet);
 
-			} while (!empty($rowData)); // Continue reading until no more rows are available
+			} while ($totalRows <= $highestRow); // Continue reading while within the row limit
 
 		} catch (ReaderException $e) {
 			throw new ReaderException("Error reading the file: " . $e->getMessage(), $e->getCode(), $e);
