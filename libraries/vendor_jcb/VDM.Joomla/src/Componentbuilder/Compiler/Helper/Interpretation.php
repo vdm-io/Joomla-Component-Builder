@@ -17300,7 +17300,7 @@ class Interpretation extends Fields
 				. "\$form->setFieldAttribute(\$requiredField, 'required', 'false');";
 			$fix .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " also clear the data set";
-			$fix .= PHP_EOL . Indent::_(5) . "\$data[\$requiredField] = '';";
+			$fix .= PHP_EOL . Indent::_(5) . "unset(\$data[\$requiredField]);";
 			$fix .= PHP_EOL . Indent::_(4) . "}";
 			$fix .= PHP_EOL . Indent::_(3) . "}";
 			$fix .= PHP_EOL . Indent::_(2) . "}";

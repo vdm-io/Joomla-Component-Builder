@@ -12,6 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Spreadsheet;
 
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\User\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -105,7 +107,7 @@ final class Exporter
 			'font' => [
 				'bold' => true,
 				'color' => ['rgb' => '1171A3'],
-				'size' => 12,
+				'size' => 13,
 				'name' => 'Verdana'
 			]
 		];
@@ -289,6 +291,8 @@ final class Exporter
 			$sheet->getColumnDimension($columnIndex)->setAutoSize(true);
 			$sheet->getStyle($columnIndex . $rowIndex)->applyFromArray($this->headerStyles);
 			$sheet->getStyle($columnIndex . $rowIndex)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$row_height = ($this->headerStyles['font']['size'] ?? 13) + 5;
+			$sheet->getRowDimension($rowIndex)->setRowHeight($row_height);
 		}
 		elseif ($columnIndex === 'A')
 		{

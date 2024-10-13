@@ -329,14 +329,12 @@ class HtmlView extends BaseHtmlView
 		// add return_here
 		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// add the libs for subform (since not adding it via xml but ajax)
-		Factory::getApplication()
-			->getDocument()
+		$this->getDocument()
 			->getWebAssetManager()
 			->useScript('webcomponent.field-subform')
 			->usePreset('choicesjs')
 			->useScript('webcomponent.field-fancy-select');
-		Factory::getApplication()
-			->getDocument()
+		$this->getDocument()
 			->addStyleDeclaration('.subform-table-sublayout-section .controls { margin-left: 0px }');
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER');
