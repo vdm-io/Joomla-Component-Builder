@@ -57,19 +57,19 @@ class Sqldump
 	/**
 	 * Get SQL Dump
 	 *
-	 * @param   array   $tables   The tables to use in build
-	 * @param   string  $view     The target view/table to dump in
-	 * @param   int     $view_id  The id of the target view
+	 * @param   array   $tables     The tables to use in build
+	 * @param   string  $view       The target view/table to dump in
+	 * @param   string  $view_guid  The guid of the target view
 	 *
 	 * @return  string|null The data found with the alias
 	 * @since 3.2.0
 	 */
-	public function get(array $tables, string $view, int $view_id): ?string
+	public function get(array $tables, string $view, string $view_guid): ?string
 	{
 		// first build a query statement to get all the data (insure it must be added - check the tweaking)
 		if (ArrayHelper::check($tables)
 			&& $this->registry-> // default is to add
-			get('builder.sql_tweak.' . (int) $view_id . '.add', true))
+			get('builder.sql_tweak.' . $view_guid . '.add', true))
 		{
 			$counter = 'a';
 
@@ -126,7 +126,7 @@ class Sqldump
 								}
 								// we may need to filter the selection
 								if (($ids_ = $this->registry->
-									get('builder.sql_tweak.' . (int) $view_id . '.where', null)) !== null)
+									get('builder.sql_tweak.' . $view_guid . '.where', null)) !== null)
 								{
 									// add to query the where filter
 									$query->where(
@@ -313,6 +313,5 @@ class Sqldump
 		// if not array or string then return number
 		return $value;
 	}
-
 }
 

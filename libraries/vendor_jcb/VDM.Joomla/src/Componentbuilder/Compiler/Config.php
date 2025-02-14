@@ -18,7 +18,7 @@ use Joomla\Input\Input;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Utilities\RepoHelper;
-use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
+use VDM\Joomla\Componentbuilder\Abstraction\ComponentConfig;
 
 
 /**
@@ -32,7 +32,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
  * 
  * @since 3.2.0
  */
-class Config extends BaseConfig
+class Config extends ComponentConfig
 {
 	/**
 	 * The Global Joomla Configuration
@@ -234,6 +234,20 @@ class Config extends BaseConfig
 	protected function getComponentid(): int
 	{
 		return $this->input->post->get('component_id', 0, 'INT');
+	}
+
+	/**
+	 * get active component guid
+	 *
+	 * @return  string  Component guid
+	 * @since 3.2.0
+	 */
+	protected function getComponentguid(): string
+	{
+		// get components guid
+		return GetHelper::var(
+			'joomla_component', $this->component_id, 'id', 'guid'
+		);
 	}
 
 	/**

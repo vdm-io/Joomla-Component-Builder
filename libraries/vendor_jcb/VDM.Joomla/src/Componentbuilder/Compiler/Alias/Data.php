@@ -13,7 +13,6 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Alias;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
@@ -31,6 +30,22 @@ use VDM\Joomla\Utilities\StringHelper;
  */
 class Data
 {
+	/**
+	 * tracking GUID index
+	 *
+	 * @var    array
+	 * @since  5.0.4
+	 */
+	protected array $index = [];
+
+	/**
+	 * allowed tables
+	 *
+	 * @var    array
+	 * @since  5.0.4
+	 */
+	protected array $allowedTables = ['template', 'layout'];
+
 	/**
 	 * Compiler Config
 	 *
@@ -87,28 +102,26 @@ class Data
 	protected $db;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config           The compiler config object.
-	 * @param Registry|null             $registry         The compiler registry object.
-	 * @param Customcode|null           $customcode       The compiler customcode object.
-	 * @param Gui|null                  $gui              The compiler customcode gui.
-	 * @param Loader|null               $load             The compiler loader object.
-	 * @param Libraries|null            $libraries        The compiler libraries model object.
-	 * @param \JDatabaseDriver|null     $db               The database object.
+	 * @param Config       $config       The Config Class.
+	 * @param Registry     $registry     The Registry Class.
+	 * @param Customcode   $customcode   The Customcode Class.
+	 * @param Gui          $gui          The Gui Class.
+	 * @param Loader       $loader       The Loader Class.
+	 * @param Libraries    $libraries    The Libraries Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?Customcode $customcode = null, ?Gui $gui = null,
-		?Loader $loader = null, ?Libraries $libraries = null)
+	public function __construct(Config $config, Registry $registry, Customcode $customcode,
+		Gui $gui, Loader $loader, Libraries $libraries)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->loader = $loader ?: Compiler::_('Model.Loader');
-		$this->libraries = $libraries ?: Compiler::_('Model.Libraries');
+		$this->config = $config;
+		$this->registry = $registry;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->loader = $loader;
+		$this->libraries = $libraries;
 		$this->db = Factory::getDbo();
 	}
 
@@ -124,14 +137,7 @@ class Data
 	 */
 	public function get(string $alias, string $table, string $view): ?array
 	{
-		// if not set, get all keys in table and set by ID
-		$this->set($table);
-
-		// now check if key is found
-		$name = preg_replace("/[^A-Za-z]/", '', $alias);
-
-		if (($id = $this->registry->get('builder.data_with_alias_keys.' . $table . '.' . $name, null)) === null &&
-			($id = $this->registry->get('builder.data_with_alias_keys.' . $table . '.' . $alias, null)) === null)
+		if (($id = $this->getAliasId($alias, $table)) === null)
 		{
 			return null;
 		}
@@ -219,17 +225,39 @@ class Data
 	}
 
 	/**
+	 * Get the id of this alias
+	 *
+	 * @param   string  $alias  The alias name
+	 * @param   string  $table  The table where to find the alias
+	 *
+	 * @return  int|null
+	 * @since   5.0.4
+	 */
+	protected function getAliasId(string $alias, string $table): ?int
+	{
+		if ($this->set($table))
+		{
+			// now check if key is found
+			$name = preg_replace("/[^A-Za-z]/", '', $alias);
+
+			return $this->index[$table][$name] ?? $this->index[$table][$alias] ?? null;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Load all alias and ID's of a table
 	 *
 	 * @param   string  $table  The table where to find the alias
 	 *
-	 * @return  void
+	 * @return  bool   True if table was loaded
 	 * @since 3.2.0
 	 */
-	protected function set(string $table)
+	protected function set(string $table): bool
 	{
 		// now check if key is found
-		if (!$this->registry->get('builder.data_with_alias_keys.' . $table, null))
+		if (empty($this->index[$table]) && in_array($table, $this->allowedTables))
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
@@ -241,6 +269,7 @@ class Data
 			// check if we have an array
 			if (ArrayHelper::check($items))
 			{
+				$this->index[$table] = [];
 				foreach ($items as $item)
 				{
 					// build the key
@@ -248,16 +277,13 @@ class Data
 					$key  = preg_replace("/[^A-Za-z]/", '', (string) $k_ey);
 
 					// set the keys
-					$this->registry->
-						set('builder.data_with_alias_keys.' . $table . '.' . $item->alias, $item->id);
-					$this->registry->
-						set('builder.data_with_alias_keys.' . $table . '.' . $k_ey, $item->id);
-					$this->registry->
-						set('builder.data_with_alias_keys.' . $table . '.' . $key, $item->id);
+					$this->index[$table][$item->alias] = $item->id;
+					$this->index[$table][$k_ey] = $item->id;
+					$this->index[$table][$key] = $item->id;
 				}
 			}
 		}
+		return isset($this->index[$table]);
 	}
-
 }
 

@@ -24,7 +24,8 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Utilities\GuidHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -178,12 +179,21 @@ class LibraryController extends FormController
 	 */
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
-		// get the referral options (old method use return instead see parent)
+		// get int-defaults (to int new items with default values dynamically)
+		$init_defaults = $this->input->get('init_defaults', null, 'STRING');
+
+		// get the referral options (old method use init_defaults or return instead see parent)
 		$ref = $this->input->get('ref', 0, 'string');
 		$refid = $this->input->get('refid', 0, 'int');
 
 		// get redirect info.
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+		// set int-defaults
+		if (!empty($init_defaults))
+		{
+			$append = '&init_defaults='. (string) $init_defaults . $append;
+		}
 
 		// set the referral options
 		if ($refid && $ref)
@@ -355,27 +365,51 @@ class LibraryController extends FormController
 	 */
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
+		// linked tables to update
+		$_tables_array = [
+			'library_config' => 'library',
+			'library_files_folders_urls' => 'library'
+		];
+
 		// get the state object (Joomla\CMS\Object\CMSObject)
 		$state = $model->get('state');
+
 		// if we save2copy we need to also copy linked tables found!
-		if ($state->task === 'save2copy' && $state->{'library.new'})
+		if (!empty($_tables_array) && $state->task === 'save2copy' && $state->{'library.new'})
 		{
-			// get new ID
-			$newID = $state->{'library.id'};
-			// get old ID
-			$oldID = $this->input->get('id', 0, 'INT');
-			// linked tables to update
-			$_tablesArray = array(
-				'library_config',
-				'library_files_folders_urls'
+			// get new GUID
+			$new_guid = DataFactory::_('Load')->value(
+				['a.guid' => 'guid'], // select
+				['a' => 'library'], // tables
+				['a.id' => $state->{'library.id'}] // where
 			);
-			foreach($_tablesArray as $_updateTable)
+
+			// get old GUID
+			$old_guid = $validData['guid'] ?? $this->input->get('guid', null, 'STRING') ?? DataFactory::_('Load')->value(
+				['a.guid' => 'guid'], // select
+				['a' => 'library'], // tables
+				['a.id' => $validData['id'] ?? $this->input->get('id', 0, 'INT')] // where
+			);
+
+			// we only continue if we have valid GUIDs
+			if (!GuidHelper::valid($new_guid) || !GuidHelper::valid($old_guid))
+			{
+				return;
+			}
+
+			foreach($_tables_array as $_update_table => $_field_name)
 			{
 				// get the linked ID
-				if ($_value = GetHelper::var($_updateTable, $oldID, 'library', 'id'))
+				$_item_id = DataFactory::_('Load')->value(
+					['a.id' => 'id'], // select
+					['a' => $_update_table], // tables
+					['a.' . $_field_name => $old_guid] // where
+				);
+
+				if ($_item_id !== null)
 				{
-					// copy fields to new linked table
-					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array('library' => $newID));
+					// copy fields to new admin view
+					ComponentbuilderHelper::copyItem(/*id->*/ $_item_id, /*table->*/ $_update_table, /*change->*/ [$_field_name => $new_guid]);
 				}
 			}
 		}

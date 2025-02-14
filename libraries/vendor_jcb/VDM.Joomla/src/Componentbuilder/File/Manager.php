@@ -250,6 +250,7 @@ final class Manager
 			'entity' => $entity,
 			'access' => $fileType['download_access'] ?? 1,
 			'guid' => $this->getGuid('guid'),
+			'created_by' => $this->user->id
 		];
 	}
 }

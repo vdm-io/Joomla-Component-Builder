@@ -36,10 +36,10 @@ defined('_JEXEC') or die;
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_SYSTEM_NAME_LABEL', 'a.system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_NAMES', 'a.name', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_NAME_LABEL', 'a.name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS_DETAILS', 'a.description', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DESCRIPTION_LABEL', 'a.description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_LABEL', 'g.name', $this->listDirn, $this->listOrder); ?>

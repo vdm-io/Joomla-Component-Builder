@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -155,7 +156,7 @@ class Component_dashboardModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('component_dashboard__'.$id))
+			if (($vdm = SessionHelper::get('component_dashboard__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -163,17 +164,17 @@ class Component_dashboardModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'component_dashboard__'.$id);
-				ComponentbuilderHelper::set('component_dashboard__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'component_dashboard__'.$id);
+				SessionHelper::set('component_dashboard__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -233,7 +234,7 @@ class Component_dashboardModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('component_dashboard__'.$id))
+			if (($vdm = SessionHelper::get('component_dashboard__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -241,48 +242,18 @@ class Component_dashboardModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'component_dashboard__'.$id);
-				ComponentbuilderHelper::set('component_dashboard__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'component_dashboard__'.$id);
+				SessionHelper::set('component_dashboard__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
-			}
-			// update the fields
-			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $item->id;
-			// repeatable values to check
-			$arrayChecker = array(
-				'dashboard_tab' => 'name'
-			);
-			foreach ($arrayChecker as $_value => $checker)
-			{
-				// check what type of array we have here (should be subform... but just in case)
-				// This could happen due to huge data sets
-				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
-				{
-					$bucket = array();
-					foreach($item->{$_value} as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket[$_value.$nr][$option] = $value;
-						}
-					}
-					$item->{$_value} = $bucket;
-					$objectUpdate->{$_value} = json_encode($bucket);
-				}
-			}
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->_db->updateObject('#__componentbuilder_component_dashboard', $objectUpdate, 'id');
 			}
 		}
 
@@ -394,6 +365,19 @@ class Component_dashboardModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 
@@ -1009,7 +993,7 @@ class Component_dashboardModel extends AdminModel
 		if (isset($data['clone_me']) && $data['clone_me'] > 0)
 		{
 			// get the following data from clone_me (component_dashboard)
-			$keys = array('php_dashboard_methods','dashboard_tab','params');
+			$keys = ['php_dashboard_methods','dashboard_tab','params'];
 			foreach ($keys as $key)
 			{
 				$data[$key] = GetHelper::var('component_dashboard', $data['clone_me'], 'joomla_component', $key);

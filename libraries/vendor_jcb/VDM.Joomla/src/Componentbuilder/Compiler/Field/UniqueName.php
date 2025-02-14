@@ -55,15 +55,15 @@ class UniqueName
 	 */
 	public function set(string $name, string $view)
 	{
-		if (($number = $this->registry->get("unique.names.${view}.counter.${name}")) === null)
+		if (($number = $this->registry->get("unique.names.{$view}.counter.{$name}")) === null)
 		{
-			$this->registry->set("unique.names.${view}.counter.${name}", 1);
+			$this->registry->set("unique.names.{$view}.counter.{$name}", 1);
 
 			return;
 		}
 
 		// count how many times the field is used
-		$this->registry->set("unique.names.${view}.counter.${name}", ++$number);
+		$this->registry->set("unique.names.{$view}.counter.{$name}", ++$number);
 
 		return;
 	}
@@ -80,7 +80,7 @@ class UniqueName
 	public function get(string $name, string $view): string
 	{
 		// only increment if the field name is used multiple times
-		if ($this->registry->get("unique.names.${view}.counter.${name}") > 1)
+		if ($this->registry->get("unique.names.{$view}.counter.{$name}") > 1)
 		{
 			$counter = 1;
 			// set the unique name
@@ -88,7 +88,7 @@ class UniqueName
 				$name . '_' . $counter
 			);
 
-			while ($this->registry->get("unique.names.${view}.names.${unique_name}") !== null)
+			while ($this->registry->get("unique.names.{$view}.names.{$unique_name}") !== null)
 			{
 				// increment the number
 				$counter++;
@@ -99,7 +99,7 @@ class UniqueName
 			}
 
 			// set the new name number
-			$this->registry->set("unique.names.${view}.names.${unique_name}", $counter);
+			$this->registry->set("unique.names.{$view}.names.{$unique_name}", $counter);
 
 			// return the unique name
 			return $unique_name;

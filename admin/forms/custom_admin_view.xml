@@ -151,7 +151,6 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_MAIN_GET_DESCRIPTION"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="true"
 			button="true"
 		/>
@@ -611,7 +610,6 @@
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_DYNAMIC_GET_DESCRIPTION"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="false"
 		/>
 		<!-- Php_document Field. Type: Editor. (joomla) -->

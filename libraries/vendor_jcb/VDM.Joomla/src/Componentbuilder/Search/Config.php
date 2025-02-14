@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Search;
 
 use Joomla\CMS\Factory;
 use Joomla\Input\Input;
-use VDM\Joomla\Abstraction\BaseConfig;
+use VDM\Joomla\Abstraction\FunctionRegistry;
 
 
 /**
@@ -22,7 +22,7 @@ use VDM\Joomla\Abstraction\BaseConfig;
  * 
  * @since 3.2.0
  */
-class Config extends BaseConfig
+class Config extends FunctionRegistry
 {
 	/**
 	 * Hold a JInput object for easier access to the input variables.
@@ -43,9 +43,6 @@ class Config extends BaseConfig
 	public function __construct(?Input $input = null)
 	{
 		$this->input = $input ?: Factory::getApplication()->input;
-
-		// run parent constructor
-		parent::__construct();
 	}
 
 	/**
@@ -201,6 +198,5 @@ class Config extends BaseConfig
 	{
 		return ']=' . '|' . '+}';
 	}
-
 }
 

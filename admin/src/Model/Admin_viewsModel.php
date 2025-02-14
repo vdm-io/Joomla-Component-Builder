@@ -92,7 +92,6 @@ class Admin_viewsModel extends ListModel
 				'a.type','type',
 				'a.add_custom_button','add_custom_button',
 				'a.add_php_ajax','add_php_ajax',
-				'a.add_custom_import','add_custom_import',
 				'a.system_name','system_name',
 				'a.name_single','name_single',
 				'a.short_description','short_description'
@@ -224,13 +223,6 @@ class Admin_viewsModel extends ListModel
 			$this->setState('filter.add_php_ajax', $add_php_ajax);
 		}
 
-		$add_custom_import = $this->getUserStateFromRequest($this->context . '.filter.add_custom_import', 'filter_add_custom_import');
-		if ($formSubmited)
-		{
-			$add_custom_import = $app->input->post->get('add_custom_import');
-			$this->setState('filter.add_custom_import', $add_custom_import);
-		}
-
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
 		if ($formSubmited)
 		{
@@ -304,8 +296,6 @@ class Admin_viewsModel extends ListModel
 				$item->add_custom_button = $this->selectionTranslation($item->add_custom_button, 'add_custom_button');
 				// convert add_php_ajax
 				$item->add_php_ajax = $this->selectionTranslation($item->add_php_ajax, 'add_php_ajax');
-				// convert add_custom_import
-				$item->add_custom_import = $this->selectionTranslation($item->add_custom_import, 'add_custom_import');
 			}
 		}
 
@@ -373,19 +363,6 @@ class Admin_viewsModel extends ListModel
 				return $add_php_ajaxArray[$value];
 			}
 		}
-		// Array of add_custom_import language strings
-		if ($name === 'add_custom_import')
-		{
-			$add_custom_importArray = array(
-				1 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_YES',
-				0 => 'COM_COMPONENTBUILDER_ADMIN_VIEW_NO'
-			);
-			// Now check if value is found in this array
-			if (isset($add_custom_importArray[$value]) && StringHelper::check($add_custom_importArray[$value]))
-			{
-				return $add_custom_importArray[$value];
-			}
-		}
 		return $value;
 	}
 
@@ -409,22 +386,18 @@ class Admin_viewsModel extends ListModel
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 
-		// do not use these filters in the export method
-		if (!isset($_export) || !$_export)
+		// Filtering "joomla components"
+		$filter_joomla_component = $this->state->get("filter.joomla_component");
+		if ($filter_joomla_component !== null && !empty($filter_joomla_component))
 		{
-			// Filtering "joomla components"
-			$filter_joomla_component = $this->state->get("filter.joomla_component");
-			if ($filter_joomla_component !== null && !empty($filter_joomla_component))
+			if (($guids = JCBFilterHelper::linked($filter_joomla_component, 'joomla_component_admin_views')) !== null)
 			{
-				if (($ids = JCBFilterHelper::linked((int) $filter_joomla_component, 'joomla_component_admin_views')) !== null)
-				{
-					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
-				}
-				else
-				{
-					// there is none
-					$query->where($db->quoteName('a.id') . ' = ' . 0);
-				}
+				$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $guids) . '")');
+			}
+			else
+			{
+				// there is none
+				$query->where($db->quoteName('a.id') . ' = ' . 0);
 			}
 		}
 
@@ -472,7 +445,7 @@ class Admin_viewsModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name_single LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.description LIKE '.$search.' OR a.type LIKE '.$search.' OR a.name_list LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name_single LIKE '.$search.' OR a.short_description LIKE '.$search.' OR a.name_list LIKE '.$search.' OR a.description LIKE '.$search.' OR a.type LIKE '.$search.')');
 			}
 		}
 
@@ -567,26 +540,9 @@ class Admin_viewsModel extends ListModel
 		{
 			$query->where('a.add_php_ajax = ' . $db->quote($db->escape($_add_php_ajax)));
 		}
-		// Filter by Add_custom_import.
-		$_add_custom_import = $this->getState('filter.add_custom_import');
-		if (is_numeric($_add_custom_import))
-		{
-			if (is_float($_add_custom_import))
-			{
-				$query->where('a.add_custom_import = ' . (float) $_add_custom_import);
-			}
-			else
-			{
-				$query->where('a.add_custom_import = ' . (int) $_add_custom_import);
-			}
-		}
-		elseif (StringHelper::check($_add_custom_import))
-		{
-			$query->where('a.add_custom_import = ' . $db->quote($db->escape($_add_custom_import)));
-		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderCol = $this->getState('list.ordering', '');
 		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{
@@ -640,7 +596,6 @@ class Admin_viewsModel extends ListModel
 		}
 		$id .= ':' . $this->getState('filter.add_custom_button');
 		$id .= ':' . $this->getState('filter.add_php_ajax');
-		$id .= ':' . $this->getState('filter.add_custom_import');
 		$id .= ':' . $this->getState('filter.system_name');
 		$id .= ':' . $this->getState('filter.name_single');
 		$id .= ':' . $this->getState('filter.short_description');

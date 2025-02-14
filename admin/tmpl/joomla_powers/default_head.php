@@ -33,7 +33,7 @@ defined('_JEXEC') or die;
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_POWERS_NAME', 'a.system_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_POWER_SYSTEM_NAME_LABEL', 'a.system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

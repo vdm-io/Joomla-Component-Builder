@@ -398,12 +398,12 @@ class Joomla_pluginsModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
 
 		// From the componentbuilder_class_extends table.
-		$query->select($db->quoteName('g.name','class_extends_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'g') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['class_extends_name','class_extends_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'g') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// From the componentbuilder_joomla_plugin_group table.
-		$query->select($db->quoteName('h.name','joomla_plugin_group_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'h') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('h.id') . ')');
+		$query->select($db->quoteName(['h.name','h.id'],['joomla_plugin_group_name','joomla_plugin_group_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'h') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('h.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

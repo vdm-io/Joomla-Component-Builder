@@ -260,6 +260,19 @@ class Admin_custom_tabsModel extends AdminModel
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
+			}
 		}
 
 		// update the tabs (sub form) layout

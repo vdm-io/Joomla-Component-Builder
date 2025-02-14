@@ -204,8 +204,8 @@ class Joomla_modules_updatesModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_joomla_module_updates', 'a'));
 
 		// From the componentbuilder_joomla_module table.
-		$query->select($db->quoteName('g.system_name','joomla_module_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_module', 'g') . ' ON (' . $db->quoteName('a.joomla_module') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.system_name','g.id'],['joomla_module_system_name','joomla_module_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_module', 'g') . ' ON (' . $db->quoteName('a.joomla_module') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

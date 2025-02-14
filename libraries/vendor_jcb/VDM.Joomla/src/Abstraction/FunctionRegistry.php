@@ -12,41 +12,17 @@
 namespace VDM\Joomla\Abstraction;
 
 
-use Joomla\Registry\Registry as JoomlaRegistry;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use VDM\Joomla\Abstraction\Registry;
 
 
 /**
- * Config
+ * A Dynamic Function Registry
  * 
- * @since 3.2.0
+ * @since 5.0.4
  */
-abstract class BaseConfig extends JoomlaRegistry
+abstract class FunctionRegistry extends Registry
 {
-	/**
-	 * Constructor
-	 *
-	 * @since 3.2.0
-	 */
-	public function __construct()
-	{
-		// Instantiate the internal data object.
-		$this->data = new \stdClass();
-	}
-
-	/**
-	 * setting any config value
-	 *
-	 * @param   string  $key    The value's key/path name
-	 * @param  mixed    $value  Optional default value, returned if the internal value is null.
-	 *
-	 * @since 3.2.0
-	 */
-	public function __set($key, $value)
-	{
-		$this->set($key, $value);
-	}
-
 	/**
 	 * getting any valid value
 	 *
@@ -76,7 +52,7 @@ abstract class BaseConfig extends JoomlaRegistry
 	 *
 	 * @since 3.2.0
 	 */
-	public function get($path, $default = null)
+	public function get(string $path, $default = null): mixed
 	{
 		// function name with no underscores
 		$method = 'get' . ucfirst((string) ClassfunctionHelper::safe(str_replace('_', '', $path)));
@@ -86,7 +62,8 @@ abstract class BaseConfig extends JoomlaRegistry
 		{
 			return $value;
 		}
-		elseif (method_exists($this, $method))
+		// Use the method if it's callable and not excluded
+		elseif ($this->isCallableMethod($method))
 		{
 			$value = $this->{$method}($default);
 
@@ -104,19 +81,46 @@ abstract class BaseConfig extends JoomlaRegistry
 	 * @param  string  $path   Parent registry Path (e.g. joomla.content.showauthor)
 	 * @param  mixed   $value  Value of entry
 	 *
-	 * @return  mixed  The value of the that has been set.
+	 * @return  mixed  The values of the path that has been set.
 	 *
 	 * @since 3.2.0
 	 */
 	public function appendArray(string $path, $value)
 	{
-		// check if it does not exist
-		if (!$this->exists($path))
+		return $this->add($path, $value, true)->get($path);
+	}
+
+	/**
+	 * Determines if a method is callable on this object, excluding certain methods.
+	 *
+	 * This method checks if a method exists on this object and is callable, but excludes
+	 * certain methods to prevent unintended access or recursion. It helps to safely determine
+	 * if a dynamic getter method can be invoked without interfering with core methods.
+	 *
+	 * @param string $method The method name to check.
+	 *
+	 * @return bool True if the method is callable and not excluded, false otherwise.
+	 * @since  5.0.4
+	 */
+	protected function isCallableMethod(string $method): bool
+	{
+		// List of methods to exclude from dynamic access
+		$excludedMethods = [
+			'getActive',
+			'get',
+			'getSeparator',
+			'getIterator',
+			'getName',
+			'getActiveKeys'
+		];
+
+		// Check if the method exists and is not excluded
+		if (method_exists($this, $method) && !in_array($method, $excludedMethods, true))
 		{
-			$this->set($path, []);
+			return true;
 		}
 
-		return $this->append($path, $value);
+		return false;
 	}
 }
 

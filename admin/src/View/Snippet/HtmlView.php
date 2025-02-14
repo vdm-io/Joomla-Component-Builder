@@ -35,6 +35,7 @@ use VDM\Joomla\Utilities\StringHelper;
  *
  * @since  1.6
  */
+#[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
@@ -123,9 +124,10 @@ class HtmlView extends BaseHtmlView
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
 	 * @return  void
+	 * @throws \Exception
 	 * @since  1.6
 	 */
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		// set params
 		$this->params = ComponentHelper::getParams('com_componentbuilder');
@@ -303,6 +305,8 @@ class HtmlView extends BaseHtmlView
 		{
 			Html::_('stylesheet', $style, ['version' => 'auto']);
 		}
+		// Add Ajax Token
+		$this->getDocument()->addScriptDeclaration("var token = '" . Session::getFormToken() . "';");
 		// add scripts
 		foreach ($this->scripts as $script)
 		{

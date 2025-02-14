@@ -125,6 +125,20 @@
 			required="true"
 			button="true"
 		/>
+		<!-- Guid Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="guid"
+			label="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_GUID_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_GUID_HINT"
+		/>
 	</fieldset>
 
 	<!-- Access Control Fields. -->

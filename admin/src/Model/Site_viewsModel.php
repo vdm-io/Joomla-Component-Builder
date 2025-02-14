@@ -355,28 +355,24 @@ class Site_viewsModel extends ListModel
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_site_view', 'a'));
 
-		// do not use these filters in the export method
-		if (!isset($_export) || !$_export)
+		// Filtering "joomla components"
+		$filter_joomla_component = $this->state->get("filter.joomla_component");
+		if ($filter_joomla_component !== null && !empty($filter_joomla_component))
 		{
-			// Filtering "joomla components"
-			$filter_joomla_component = $this->state->get("filter.joomla_component");
-			if ($filter_joomla_component !== null && !empty($filter_joomla_component))
+			if (($guids = JCBFilterHelper::linked((string) $filter_joomla_component, 'joomla_component_site_views')) !== null)
 			{
-				if (($ids = JCBFilterHelper::linked((int) $filter_joomla_component, 'joomla_component_site_views')) !== null)
-				{
-					$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
-				}
-				else
-				{
-					// there is none
-					$query->where($db->quoteName('a.id') . ' = ' . 0);
-				}
+				$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $guids) . '")');
+			}
+			else
+			{
+				// there is none
+				$query->where($db->quoteName('a.id') . ' = ' . 0);
 			}
 		}
 
 		// From the componentbuilder_dynamic_get table.
-		$query->select($db->quoteName('g.name','main_get_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'g') . ' ON (' . $db->quoteName('a.main_get') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['main_get_name','main_get_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'g') . ' ON (' . $db->quoteName('a.main_get') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

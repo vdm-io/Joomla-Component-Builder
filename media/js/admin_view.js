@@ -10,13 +10,6 @@
 
 // Some Global Values
 jform_vvvvvybvwa_required = false;
-jform_vvvvvygvwb_required = false;
-jform_vvvvvygvwc_required = false;
-jform_vvvvvygvwd_required = false;
-jform_vvvvvygvwe_required = false;
-jform_vvvvvygvwf_required = false;
-jform_vvvvvygvwg_required = false;
-jform_vvvvvygvwh_required = false;
 
 // Initial Script
 document.addEventListener('DOMContentLoaded', function()
@@ -110,14 +103,8 @@ document.addEventListener('DOMContentLoaded', function()
 	var add_sql_vvvvvye = jQuery("#jform_add_sql input[type='radio']:checked").val();
 	vvvvvye(source_vvvvvye,add_sql_vvvvvye);
 
-	var add_custom_import_vvvvvyg = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	vvvvvyg(add_custom_import_vvvvvyg);
-
-	var add_custom_import_vvvvvyh = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	vvvvvyh(add_custom_import_vvvvvyh);
-
-	var add_custom_button_vvvvvyi = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvvyi(add_custom_button_vvvvvyi);
+	var add_custom_button_vvvvvyg = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvyg(add_custom_button_vvvvvyg);
 });
 
 // the vvvvvxb function
@@ -547,178 +534,10 @@ function vvvvvye(source_vvvvvye,add_sql_vvvvvye)
 }
 
 // the vvvvvyg function
-function vvvvvyg(add_custom_import_vvvvvyg)
+function vvvvvyg(add_custom_button_vvvvvyg)
 {
 	// set the function logic
-	if (add_custom_import_vvvvvyg == 1)
-	{
-		jQuery('#jform_html_import_view').closest('.control-group').show();
-		// add required attribute to html_import_view field
-		if (jform_vvvvvygvwb_required)
-		{
-			updateFieldRequired('html_import_view',0);
-			jQuery('#jform_html_import_view').prop('required','required');
-			jQuery('#jform_html_import_view').attr('aria-required',true);
-			jQuery('#jform_html_import_view').addClass('required');
-			jform_vvvvvygvwb_required = false;
-		}
-		jQuery('.note_advanced_import').closest('.control-group').show();
-		jQuery('#jform_php_import_display').closest('.control-group').show();
-		// add required attribute to php_import_display field
-		if (jform_vvvvvygvwc_required)
-		{
-			updateFieldRequired('php_import_display',0);
-			jQuery('#jform_php_import_display').prop('required','required');
-			jQuery('#jform_php_import_display').attr('aria-required',true);
-			jQuery('#jform_php_import_display').addClass('required');
-			jform_vvvvvygvwc_required = false;
-		}
-		jQuery('#jform_php_import_ext').closest('.control-group').show();
-		// add required attribute to php_import_ext field
-		if (jform_vvvvvygvwd_required)
-		{
-			updateFieldRequired('php_import_ext',0);
-			jQuery('#jform_php_import_ext').prop('required','required');
-			jQuery('#jform_php_import_ext').attr('aria-required',true);
-			jQuery('#jform_php_import_ext').addClass('required');
-			jform_vvvvvygvwd_required = false;
-		}
-		jQuery('#jform_php_import_headers').closest('.control-group').show();
-		// add required attribute to php_import_headers field
-		if (jform_vvvvvygvwe_required)
-		{
-			updateFieldRequired('php_import_headers',0);
-			jQuery('#jform_php_import_headers').prop('required','required');
-			jQuery('#jform_php_import_headers').attr('aria-required',true);
-			jQuery('#jform_php_import_headers').addClass('required');
-			jform_vvvvvygvwe_required = false;
-		}
-		jQuery('#jform_php_import').closest('.control-group').show();
-		// add required attribute to php_import field
-		if (jform_vvvvvygvwf_required)
-		{
-			updateFieldRequired('php_import',0);
-			jQuery('#jform_php_import').prop('required','required');
-			jQuery('#jform_php_import').attr('aria-required',true);
-			jQuery('#jform_php_import').addClass('required');
-			jform_vvvvvygvwf_required = false;
-		}
-		jQuery('#jform_php_import_save').closest('.control-group').show();
-		// add required attribute to php_import_save field
-		if (jform_vvvvvygvwg_required)
-		{
-			updateFieldRequired('php_import_save',0);
-			jQuery('#jform_php_import_save').prop('required','required');
-			jQuery('#jform_php_import_save').attr('aria-required',true);
-			jQuery('#jform_php_import_save').addClass('required');
-			jform_vvvvvygvwg_required = false;
-		}
-		jQuery('#jform_php_import_setdata').closest('.control-group').show();
-		// add required attribute to php_import_setdata field
-		if (jform_vvvvvygvwh_required)
-		{
-			updateFieldRequired('php_import_setdata',0);
-			jQuery('#jform_php_import_setdata').prop('required','required');
-			jQuery('#jform_php_import_setdata').attr('aria-required',true);
-			jQuery('#jform_php_import_setdata').addClass('required');
-			jform_vvvvvygvwh_required = false;
-		}
-	}
-	else
-	{
-		jQuery('#jform_html_import_view').closest('.control-group').hide();
-		// remove required attribute from html_import_view field
-		if (!jform_vvvvvygvwb_required)
-		{
-			updateFieldRequired('html_import_view',1);
-			jQuery('#jform_html_import_view').removeAttr('required');
-			jQuery('#jform_html_import_view').removeAttr('aria-required');
-			jQuery('#jform_html_import_view').removeClass('required');
-			jform_vvvvvygvwb_required = true;
-		}
-		jQuery('.note_advanced_import').closest('.control-group').hide();
-		jQuery('#jform_php_import_display').closest('.control-group').hide();
-		// remove required attribute from php_import_display field
-		if (!jform_vvvvvygvwc_required)
-		{
-			updateFieldRequired('php_import_display',1);
-			jQuery('#jform_php_import_display').removeAttr('required');
-			jQuery('#jform_php_import_display').removeAttr('aria-required');
-			jQuery('#jform_php_import_display').removeClass('required');
-			jform_vvvvvygvwc_required = true;
-		}
-		jQuery('#jform_php_import_ext').closest('.control-group').hide();
-		// remove required attribute from php_import_ext field
-		if (!jform_vvvvvygvwd_required)
-		{
-			updateFieldRequired('php_import_ext',1);
-			jQuery('#jform_php_import_ext').removeAttr('required');
-			jQuery('#jform_php_import_ext').removeAttr('aria-required');
-			jQuery('#jform_php_import_ext').removeClass('required');
-			jform_vvvvvygvwd_required = true;
-		}
-		jQuery('#jform_php_import_headers').closest('.control-group').hide();
-		// remove required attribute from php_import_headers field
-		if (!jform_vvvvvygvwe_required)
-		{
-			updateFieldRequired('php_import_headers',1);
-			jQuery('#jform_php_import_headers').removeAttr('required');
-			jQuery('#jform_php_import_headers').removeAttr('aria-required');
-			jQuery('#jform_php_import_headers').removeClass('required');
-			jform_vvvvvygvwe_required = true;
-		}
-		jQuery('#jform_php_import').closest('.control-group').hide();
-		// remove required attribute from php_import field
-		if (!jform_vvvvvygvwf_required)
-		{
-			updateFieldRequired('php_import',1);
-			jQuery('#jform_php_import').removeAttr('required');
-			jQuery('#jform_php_import').removeAttr('aria-required');
-			jQuery('#jform_php_import').removeClass('required');
-			jform_vvvvvygvwf_required = true;
-		}
-		jQuery('#jform_php_import_save').closest('.control-group').hide();
-		// remove required attribute from php_import_save field
-		if (!jform_vvvvvygvwg_required)
-		{
-			updateFieldRequired('php_import_save',1);
-			jQuery('#jform_php_import_save').removeAttr('required');
-			jQuery('#jform_php_import_save').removeAttr('aria-required');
-			jQuery('#jform_php_import_save').removeClass('required');
-			jform_vvvvvygvwg_required = true;
-		}
-		jQuery('#jform_php_import_setdata').closest('.control-group').hide();
-		// remove required attribute from php_import_setdata field
-		if (!jform_vvvvvygvwh_required)
-		{
-			updateFieldRequired('php_import_setdata',1);
-			jQuery('#jform_php_import_setdata').removeAttr('required');
-			jQuery('#jform_php_import_setdata').removeAttr('aria-required');
-			jQuery('#jform_php_import_setdata').removeClass('required');
-			jform_vvvvvygvwh_required = true;
-		}
-	}
-}
-
-// the vvvvvyh function
-function vvvvvyh(add_custom_import_vvvvvyh)
-{
-	// set the function logic
-	if (add_custom_import_vvvvvyh == 0)
-	{
-		jQuery('.note_beginner_import').closest('.control-group').show();
-	}
-	else
-	{
-		jQuery('.note_beginner_import').closest('.control-group').hide();
-	}
-}
-
-// the vvvvvyi function
-function vvvvvyi(add_custom_button_vvvvvyi)
-{
-	// set the function logic
-	if (add_custom_button_vvvvvyi == 1)
+	if (add_custom_button_vvvvvyg == 1)
 	{
 		jQuery('#jform_custom_button-lbl').closest('.control-group').show();
 		jQuery('#jform_php_controller-lbl').closest('.control-group').show();
@@ -944,8 +763,11 @@ function getDynamicScripts(id){
 
 function getCodeFrom_server(id, type, type_name, callingName) {
 	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
-	if (token.length > 0 && id > 0 && type.length > 0) {
+	if (token.length > 0 && getCodeFrom_isValidId(id) && type.length > 0) {
 		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
+	} else {
+		console.error('There was a issue with the values passed to the [getCodeFrom_server] method and we could not make the Ajax call.');
+		return;
 	}
 	var getUrl = JRouter(url);
 	return fetch(getUrl, {
@@ -964,6 +786,17 @@ function getCodeFrom_server(id, type, type_name, callingName) {
 	}).catch(function(error) {
 		console.error('There was a problem with the fetch operation:', error);
 	});
+}
+function getCodeFrom_isValidId(id) {
+    if (typeof id === 'number') {
+        // Check if it's a positive integer
+        return Number.isInteger(id) && id > 0;
+    } else if (typeof id === 'string') {
+        // Check if it's a string of length > 30
+        return id.length > 30;
+    }
+    // If neither a number nor a string, return false
+    return false;
 }
 
 function getEditCustomCodeButtons_server(id) {
@@ -1002,12 +835,16 @@ function getEditCustomCodeButtons() {
 
 				// Insert the div before .control-wrapper-{field}
 				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				if (insertBeforeElement) {
+					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				}
 
 				// Adding buttons to the div
 				Object.entries(buttons).forEach(([name, button]) => {
 					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					controlsDiv.innerHTML += button;
+					if (controlsDiv) {
+						controlsDiv.innerHTML += button;
+					}
 				});
 			});
 		}

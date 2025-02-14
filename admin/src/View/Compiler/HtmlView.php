@@ -37,6 +37,7 @@ use VDM\Joomla\Utilities\StringHelper;
  *
  * @since  1.6
  */
+#[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
@@ -77,9 +78,10 @@ class HtmlView extends BaseHtmlView
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
 	 * @return  void
+	 * @throws \Exception
 	 * @since  1.6
 	 */
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		// get component params
 		$this->params = ComponentHelper::getParams('com_componentbuilder');
@@ -154,10 +156,10 @@ class HtmlView extends BaseHtmlView
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
-		parent::display($tpl);
-
 		// Set the html view document stuff
 		$this->_prepareDocument();
+
+		parent::display($tpl);
 	}
 
 	// These are subform layouts used in JCB
@@ -347,51 +349,6 @@ class HtmlView extends BaseHtmlView
 
 			// add to form
 			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// Joomla Version 3 attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'joomla_version_note_three',
-				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_THREE',
-				'class' => 'alert alert-success',
-				'showon' => 'joomla_version:3'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// Joomla Version 4 and five attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'joomla_version_note_four',
-				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_FOUR',
-				'class' => 'alert alert-success',
-				'showon' => 'joomla_version:4'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// Joomla Version 5 and five attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'joomla_version_note_five',
-				'description' => 'COM_COMPONENTBUILDER_YOUR_COMPONENT_WILL_BE_COMPILED_TO_WORK_IN_JOOMLA_FIVE',
-				'class' => 'alert alert-success',
-				'showon' => 'joomla_version:5'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
 			if ($xml instanceof \SimpleXMLElement)
 			{
 				$form->setField($xml, null, true, 'builder');
@@ -632,6 +589,9 @@ class HtmlView extends BaseHtmlView
 		// Initialize the header checker.
 		$HeaderCheck = new HeaderCheck();
 
+		// Add View JavaScript File
+		Html::_('script', "administrator/components/com_componentbuilder/assets/js/compiler.js", ['version' => 'auto']);
+
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
 		// Set script size.
@@ -713,70 +673,6 @@ class HtmlView extends BaseHtmlView
 						}
 					}
 				});
-			}
-			
-			document.addEventListener('DOMContentLoaded', function() {
-				fetchNoticeboard(\"https://vdm.bz/componentbuilder-noticeboard-md\", \".noticeboard-md\", true);
-				fetchNoticeboard(\"https://vdm.bz/componentbuilder-pro-noticeboard-md\", \".proboard-md\", false);
-			});
-			function fetchNoticeboard(url, selector, processGetIS) {
-				fetch(url)
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-					return response.text();
-				})
-				.then(board => {
-					var elements = document.querySelectorAll(selector);
-					if (board.length > 5) {
-						let html_board = marked.parse(board);
-						elements.forEach(element => {
-							element.innerHTML = html_board;
-						});
-						if (processGetIS) {
-							getIS(1, board).then(result => {
-								if (result) {
-									document.querySelectorAll(\".vdm-new-notice\").forEach(element => {
-										element.style.display = 'block';
-									});
-									getIS(2, board);
-								}
-							});
-						}
-					} else {
-						elements.forEach(element => {
-							element.innerHTML = all_is_good;
-						});
-					}
-				})
-				.catch(error => {
-					console.error('There was an error!', error);
-					document.querySelectorAll(selector).forEach(element => {
-						element.innerHTML = all_is_good;
-					});
-				});
-			}
-			// to check is READ/NEW
-			function getIS(type, notice) {
-				let getUrl = \"\";
-				if (type === 1) {
-					getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true\");
-				} else if (type === 2) {
-					getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true\");
-				}
-				let request = new URLSearchParams();
-				if (token.length > 0 && notice.length) {
-					request.append(token, \"1\");
-					request.append(\"notice\", notice);
-				}
-				return fetch(getUrl, {
-					method: \"POST\",
-					headers: {
-						\"Content-Type\": \"application/x-www-form-urlencoded;charset=UTF-8\"
-					},
-					body: request
-				}).then(response => response.json());
 			}
 		");
 	}

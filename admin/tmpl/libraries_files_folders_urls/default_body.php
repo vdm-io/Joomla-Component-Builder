@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -24,8 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=libraries_files_folders_urls
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('library_files_folders_urls',$item,'libraries_files_folders_urls');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">

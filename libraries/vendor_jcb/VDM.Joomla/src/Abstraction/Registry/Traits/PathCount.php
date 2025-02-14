@@ -13,11 +13,12 @@ namespace VDM\Joomla\Abstraction\Registry\Traits;
 
 
 /**
- * Count Values
+ * Count Values in a Path
  * 
  * @since 3.2.0
+ * @since 5.0.2 name changed to PathCount to avoid collusion in core registry class
  */
-trait Count
+trait PathCount
 {
 	/**
 	 * Retrieves number of values (or sub-array) from the storage using multiple keys.
@@ -28,7 +29,7 @@ trait Count
 	 * @return int    The number of values
 	 * @since 3.2.0
 	 */
-	public function count(string $path): int
+	public function pathCount(string $path): int
 	{
 		if (($values = $this->get($path)) === null)
 		{

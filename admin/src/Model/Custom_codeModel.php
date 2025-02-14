@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -167,7 +168,7 @@ class Custom_codeModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('custom_code__'.$id))
+			if (($vdm = SessionHelper::get('custom_code__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -175,17 +176,17 @@ class Custom_codeModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'custom_code__'.$id);
-				ComponentbuilderHelper::set('custom_code__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'custom_code__'.$id);
+				SessionHelper::set('custom_code__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -237,7 +238,7 @@ class Custom_codeModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('custom_code__'.$id))
+			if (($vdm = SessionHelper::get('custom_code__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -245,17 +246,17 @@ class Custom_codeModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'custom_code__'.$id);
-				ComponentbuilderHelper::set('custom_code__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'custom_code__'.$id);
+				SessionHelper::set('custom_code__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -368,6 +369,19 @@ class Custom_codeModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 
@@ -604,7 +618,7 @@ class Custom_codeModel extends AdminModel
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
 					// also clear the data set
-					$data[$requiredField] = '';
+					unset($data[$requiredField]);
 				}
 			}
 		}
@@ -831,9 +845,9 @@ class Custom_codeModel extends AdminModel
 			}
 
 			// Only for strings
-			if (UtilitiesStringHelper::check($this->table->component) && !is_numeric($this->table->component))
+			if (UtilitiesStringHelper::check($this->table->system_name) && !is_numeric($this->table->system_name))
 			{
-				$this->table->component = $this->generateUnique('component',$this->table->component);
+				$this->table->system_name = $this->generateUnique('system_name',$this->table->system_name);
 			}
 
 			// insert all set values

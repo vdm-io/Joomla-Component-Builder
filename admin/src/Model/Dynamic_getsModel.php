@@ -364,7 +364,7 @@ class Dynamic_getsModel extends ListModel
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderCol = $this->getState('list.ordering', '');
 		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{

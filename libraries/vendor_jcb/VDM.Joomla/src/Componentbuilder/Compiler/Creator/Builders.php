@@ -733,7 +733,7 @@ final class Builders
 				|| $field['list'] == 4));
 		// set list join
 		$listJoin
-			= $this->listjoin->exists($nameListCode . '.' . (int) $field['field']);
+			= $this->listjoin->exists($nameListCode . '.' . $field['field']);
 		// add history to this view
 		if (isset($view['history']) && $view['history'])
 		{
@@ -815,7 +815,8 @@ final class Builders
 			{
 				// append values
 				$this->lists->add($nameListCode, [
-					'id'       => (int) $field['field'],
+					'id'       => $field['settings']->id,
+					'guid'       => $field['field'],
 					'type'     => $typeName,
 					'code'     => $name,
 					'lang'     => $listLangName,
@@ -842,8 +843,9 @@ final class Builders
 		// load the list join builder
 		if ($listJoin)
 		{
-			$this->listjoin->set($nameListCode . '.' . (int) $field['field'], [
+			$this->listjoin->set($nameListCode . '.' . $field['field'], [
 				'type'     => $typeName,
+				'id'     => $field['settings']->id,
 				'code'     => $name,
 				'lang'     => $listLangName,
 				'title'    => (isset($field['title']) && $field['title']) ? true
@@ -861,16 +863,18 @@ final class Builders
 		}
 		// update the field relations
 		if (($field_relations =
-				$this->fieldrelations->get($nameListCode . '.' . (int) $field['field'])) !== null)
+				$this->fieldrelations->get($nameListCode . '.' . $field['field'])) !== null)
 		{
 			$field_relations = (array) $field_relations;
 			foreach ($field_relations as $area => &$field_values)
 			{
+				$field_values['id']   = $field['settings']->id;
+				$field_values['guid']   = $field['field'];
 				$field_values['type']   = $typeName;
 				$field_values['code']   = $name;
 				$field_values['custom'] = $custom;
 			}
-			$this->fieldrelations->set($nameListCode . '.' . (int) $field['field'], $field_relations);
+			$this->fieldrelations->set($nameListCode . '.' . $field['field'], $field_relations);
 		}
 		// set the hidden field of this view
 		if ($dbSwitch && $typeName === 'hidden')
@@ -981,8 +985,8 @@ final class Builders
 								<br /><b>Please watch <a href="https://youtu.be/R4WQgcu6Xns" target="_blank" title="very important info on the topic">
 								this tutorial</a> before proceeding!!!</b>,
 								<a href="https://gist.github.com/Llewellynvdm/e053dc39ae3b2bf769c76a3e62c75b95" target="_blank" title="first watch the tutorial to understand how to use this code">code fix</a></p>',
-							$field['field'], $nameSingleCode, $_extension,
-							$field['field'], $correction
+							$field['settings']->id, $nameSingleCode, $_extension,
+							$field['settings']->id, $correction
 						), 'Error'
 					);
 				}
@@ -1263,7 +1267,8 @@ final class Builders
 
 			// add the filter details
 			$this->filter->add($nameListCode, [
-				'id'          => (int) $field['field'],
+				'id'             => $field['settings']->id,
+				'guid'          => $field['field'],
 				'type'        => $typeName,
 				'multi'       => $field['filter'],
 				'code'        => $name,
@@ -1306,7 +1311,8 @@ final class Builders
 					'list' => $nameListCode,
 					'store' => (isset($field['store'])) ? $field['store'] : null,
 					'tab_name' => $tabName,
-					'db' => $this->normalizeDatabaseValues($nameSingleCode, $name, $databaseuniquekey, $databasekey)
+					'db' => $this->normalizeDatabaseValues($nameSingleCode, $name, $databaseuniquekey, $databasekey),
+					'link' => $this->setLinkerRelations($custom ?? [])
 				]
 			);
 		}
@@ -1360,6 +1366,37 @@ final class Builders
 		unset($db_values['ID'], $db_values['lenght'], $db_values['lenght_other'], $db_values['other']);
 
 		return $db_values;
+	}
+
+	/**
+	 * Sets the linker relations for a field based on the provided link data.
+	 *
+	 * The method determines the type of link relation based on the presence of a table.
+	 * If no table is provided, it assigns a type 2 with a null table, otherwise it assigns type 1.
+	 * It also extracts additional values from the input array, such as component, entity, value, and key.
+	 *
+	 * @param array  $link  The link data which may contain 'table', 'component', 'view', 'text', and 'id'.
+	 *
+	 * @return array|null The structured linker relation array, or null if input is an empty array.
+	 * @since 5.0.3
+	 */
+	private function setLinkerRelations(array $link): ?array
+	{
+		if ($link === [])
+		{
+			return null;
+		}
+
+		$linker = [
+			'type' => empty($link['table']) ? 2 : 1,
+			'table' => $link['table'] ?? null,
+			'component' => $link['component'] ?? null,
+			'entity' => $link['view'] ?? null,
+			'value' => $link['text'] ?? null,
+			'key' => $link['id'] ?? null
+		];
+
+		return $linker;
 	}
 }
 

@@ -9,44 +9,44 @@
  */
 
 // Some Global Values
-jform_vvvvwahvwv_required = false;
-jform_vvvvwaivww_required = false;
-jform_vvvvwaivwx_required = false;
-jform_vvvvwaivwy_required = false;
+jform_vvvvwafvwo_required = false;
+jform_vvvvwagvwp_required = false;
+jform_vvvvwagvwq_required = false;
+jform_vvvvwagvwr_required = false;
 
 // Initial Script
 document.addEventListener('DOMContentLoaded', function()
 {
+	var target_vvvvwaf = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwaf(target_vvvvwaf);
+
+	var target_vvvvwag = jQuery("#jform_target input[type='radio']:checked").val();
+	vvvvwag(target_vvvvwag);
+
 	var target_vvvvwah = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwah(target_vvvvwah);
+	var type_vvvvwah = jQuery("#jform_type input[type='radio']:checked").val();
+	vvvvwah(target_vvvvwah,type_vvvvwah);
 
+	var type_vvvvwai = jQuery("#jform_type input[type='radio']:checked").val();
 	var target_vvvvwai = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwai(target_vvvvwai);
-
-	var target_vvvvwaj = jQuery("#jform_target input[type='radio']:checked").val();
-	var type_vvvvwaj = jQuery("#jform_type input[type='radio']:checked").val();
-	vvvvwaj(target_vvvvwaj,type_vvvvwaj);
-
-	var type_vvvvwak = jQuery("#jform_type input[type='radio']:checked").val();
-	var target_vvvvwak = jQuery("#jform_target input[type='radio']:checked").val();
-	vvvvwak(type_vvvvwak,target_vvvvwak);
+	vvvvwai(type_vvvvwai,target_vvvvwai);
 });
 
-// the vvvvwah function
-function vvvvwah(target_vvvvwah)
+// the vvvvwaf function
+function vvvvwaf(target_vvvvwaf)
 {
 	// set the function logic
-	if (target_vvvvwah == 2)
+	if (target_vvvvwaf == 2)
 	{
 		jQuery('#jform_function_name').closest('.control-group').show();
 		// add required attribute to function_name field
-		if (jform_vvvvwahvwv_required)
+		if (jform_vvvvwafvwo_required)
 		{
 			updateFieldRequired('function_name',0);
 			jQuery('#jform_function_name').prop('required','required');
 			jQuery('#jform_function_name').attr('aria-required',true);
 			jQuery('#jform_function_name').addClass('required');
-			jform_vvvvwahvwv_required = false;
+			jform_vvvvwafvwo_required = false;
 		}
 		jQuery('.note_jcb_placeholder').closest('.control-group').show();
 		jQuery('#jform_system_name').closest('.control-group').show();
@@ -55,102 +55,102 @@ function vvvvwah(target_vvvvwah)
 	{
 		jQuery('#jform_function_name').closest('.control-group').hide();
 		// remove required attribute from function_name field
-		if (!jform_vvvvwahvwv_required)
+		if (!jform_vvvvwafvwo_required)
 		{
 			updateFieldRequired('function_name',1);
 			jQuery('#jform_function_name').removeAttr('required');
 			jQuery('#jform_function_name').removeAttr('aria-required');
 			jQuery('#jform_function_name').removeClass('required');
-			jform_vvvvwahvwv_required = true;
+			jform_vvvvwafvwo_required = true;
 		}
 		jQuery('.note_jcb_placeholder').closest('.control-group').hide();
 		jQuery('#jform_system_name').closest('.control-group').hide();
 	}
 }
 
-// the vvvvwai function
-function vvvvwai(target_vvvvwai)
+// the vvvvwag function
+function vvvvwag(target_vvvvwag)
 {
 	// set the function logic
-	if (target_vvvvwai == 1)
+	if (target_vvvvwag == 1)
 	{
 		jQuery('#jform_component').closest('.control-group').show();
 		// add required attribute to component field
-		if (jform_vvvvwaivww_required)
+		if (jform_vvvvwagvwp_required)
 		{
 			updateFieldRequired('component',0);
 			jQuery('#jform_component').prop('required','required');
 			jQuery('#jform_component').attr('aria-required',true);
 			jQuery('#jform_component').addClass('required');
-			jform_vvvvwaivww_required = false;
+			jform_vvvvwagvwp_required = false;
 		}
 		jQuery('#jform_path').closest('.control-group').show();
 		// add required attribute to path field
-		if (jform_vvvvwaivwx_required)
+		if (jform_vvvvwagvwq_required)
 		{
 			updateFieldRequired('path',0);
 			jQuery('#jform_path').prop('required','required');
 			jQuery('#jform_path').attr('aria-required',true);
 			jQuery('#jform_path').addClass('required');
-			jform_vvvvwaivwx_required = false;
+			jform_vvvvwagvwq_required = false;
 		}
 		jQuery('#jform_from_line').closest('.control-group').show();
 		jQuery('#jform_hashtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
 		jQuery('#jform_type').closest('.control-group').show();
 		// add required attribute to type field
-		if (jform_vvvvwaivwy_required)
+		if (jform_vvvvwagvwr_required)
 		{
 			updateFieldRequired('type',0);
 			jQuery('#jform_type').prop('required','required');
 			jQuery('#jform_type').attr('aria-required',true);
 			jQuery('#jform_type').addClass('required');
-			jform_vvvvwaivwy_required = false;
+			jform_vvvvwagvwr_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_component').closest('.control-group').hide();
 		// remove required attribute from component field
-		if (!jform_vvvvwaivww_required)
+		if (!jform_vvvvwagvwp_required)
 		{
 			updateFieldRequired('component',1);
 			jQuery('#jform_component').removeAttr('required');
 			jQuery('#jform_component').removeAttr('aria-required');
 			jQuery('#jform_component').removeClass('required');
-			jform_vvvvwaivww_required = true;
+			jform_vvvvwagvwp_required = true;
 		}
 		jQuery('#jform_path').closest('.control-group').hide();
 		// remove required attribute from path field
-		if (!jform_vvvvwaivwx_required)
+		if (!jform_vvvvwagvwq_required)
 		{
 			updateFieldRequired('path',1);
 			jQuery('#jform_path').removeAttr('required');
 			jQuery('#jform_path').removeAttr('aria-required');
 			jQuery('#jform_path').removeClass('required');
-			jform_vvvvwaivwx_required = true;
+			jform_vvvvwagvwq_required = true;
 		}
 		jQuery('#jform_from_line').closest('.control-group').hide();
 		jQuery('#jform_hashtarget').closest('.control-group').hide();
 		jQuery('#jform_to_line').closest('.control-group').hide();
 		jQuery('#jform_type').closest('.control-group').hide();
 		// remove required attribute from type field
-		if (!jform_vvvvwaivwy_required)
+		if (!jform_vvvvwagvwr_required)
 		{
 			updateFieldRequired('type',1);
 			jQuery('#jform_type').removeAttr('required');
 			jQuery('#jform_type').removeAttr('aria-required');
 			jQuery('#jform_type').removeClass('required');
-			jform_vvvvwaivwy_required = true;
+			jform_vvvvwagvwr_required = true;
 		}
 	}
 }
 
-// the vvvvwaj function
-function vvvvwaj(target_vvvvwaj,type_vvvvwaj)
+// the vvvvwah function
+function vvvvwah(target_vvvvwah,type_vvvvwah)
 {
 	// set the function logic
-	if (target_vvvvwaj == 1 && type_vvvvwaj == 1)
+	if (target_vvvvwah == 1 && type_vvvvwah == 1)
 	{
 		jQuery('#jform_hashendtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
@@ -162,11 +162,11 @@ function vvvvwaj(target_vvvvwaj,type_vvvvwaj)
 	}
 }
 
-// the vvvvwak function
-function vvvvwak(type_vvvvwak,target_vvvvwak)
+// the vvvvwai function
+function vvvvwai(type_vvvvwai,target_vvvvwai)
 {
 	// set the function logic
-	if (type_vvvvwak == 1 && target_vvvvwak == 1)
+	if (type_vvvvwai == 1 && target_vvvvwai == 1)
 	{
 		jQuery('#jform_hashendtarget').closest('.control-group').show();
 		jQuery('#jform_to_line').closest('.control-group').show();
@@ -321,56 +321,165 @@ function checkFunctionName_server(functioName, ide){
 }
 
 
-// check where this Function is used
+/**
+ * Checks where a given function is used by iterating through a list of numeric targets (0–29).
+ * For each target, it calls usedin_server() concurrently and updates the UI based on the responses.
+ *
+ * @param {string} functioName - The functioName parameter to send to the server.
+ * @param {string|number} ide - The identifier to send.
+ */
 function usedin(functioName, ide) {
-	var found = false;
-	jQuery('#before-usedin').hide();
-	jQuery('#note-usedin-not').hide();
-	jQuery('#note-usedin-found').hide();
-	jQuery('#loading-usedin').show();
-	var targets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v']; // if you update this, also update (below 21) & [customcode-codeUsedInHtmlNote]!
-	var targetNumber = 21;
-	var run = 0;
-	var usedinChecker = setInterval(function(){ 
-		var target = targets[run];
-		usedin_server(functioName, ide, target).done(function(used) {
-			if (used.in) {
-				jQuery('#usedin-'+used.id).show();
-				jQuery('#area-'+used.id).html(used.in);
-				jQuery.UIkit.notify({message: used.in, timeout: 5000, status: 'success', pos: 'top-right'});
-				found = true;
-			} else {
-				jQuery('#usedin-'+target).hide();
-			}
-			if (run == targetNumber) {
-				jQuery('#loading-usedin').hide();
-				if (found) {
-					jQuery('#note-usedin-found').show();
-				} else {
-					jQuery('#note-usedin-not').show();
-				}
-			}
-		});
-		if (run == targetNumber) {
-			clearInterval(usedinChecker);
+	let found = false;
+
+	// Helper functions to show/hide elements by ID.
+	const hideElement = (id) => {
+		const el = document.getElementById(id);
+		if (el) {
+			el.style.display = 'none';
 		}
-		run++;
-	}, 800);
-}
-function usedin_server(functioName, ide, target){
-	var getUrl = "index.php?option=com_componentbuilder&task=ajax.usedin&format=json";
-	if(token.length > 0){
-		var request = token+'=1&functioName='+functioName+'&id='+ide+'&target='+target+'&raw=true&return_here='+return_here;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
+	};
+
+	const showElement = (id) => {
+		const el = document.getElementById(id);
+		if (el) {
+			el.style.display = 'block';
+		}
+	};
+
+	// Hide initial UI elements.
+	hideElement('before-usedin');
+	hideElement('note-usedin-not');
+	hideElement('note-usedin-found');
+	showElement('loading-usedin');
+
+	// Create a targets array of 30 integers (0 to 29).
+	const targets = Array.from({ length: 30 }, (_, i) => i);
+
+	// Map each target to a promise that makes an AJAX call.
+	const promises = targets.map((target) => {
+		return usedin_server(functioName, ide, target)
+			.then((used) => {
+				if (used && used.in) {
+					// Check if the element with id "usedin-{used.id}" exists.
+					let funcElement = document.getElementById('usedin-' + used.id);
+					if (!funcElement) {
+						// Create the main container div.
+						funcElement = document.createElement('div');
+						funcElement.id = 'usedin-' + used.id;
+
+						// Create the header element with the area name.
+						const header = document.createElement('h2');
+						header.textContent = used.area_name;
+
+						// Create the inner div element that will contain the result.
+						const innerDiv = document.createElement('div');
+						innerDiv.id = 'area-' + used.id;
+
+						// Append the header and inner div to the main element.
+						funcElement.appendChild(header);
+						funcElement.appendChild(innerDiv);
+
+						// Append this element to the container with id "usedin-targets".
+						const container = document.getElementById('usedin-targets');
+						if (container) {
+							container.appendChild(funcElement);
+						} else {
+							console.error(
+								"Container with id 'usedin-targets' not found. Appending to document.body instead."
+							);
+						}
+					}
+
+					// Ensure the element is visible.
+					showElement('usedin-' + used.id);
+
+					// Update the inner div's content with the response.
+					const areaEl = document.getElementById('area-' + used.id);
+					if (areaEl) {
+						areaEl.innerHTML = used.in;
+					}
+
+					// Notify the user using UIkit.notification if available, otherwise log to the console.
+					if (typeof UIkit !== 'undefined' && UIkit.notify) {
+						UIkit.notify({
+							message: used.in,
+							timeout: 5000,
+							status: 'success',
+							pos: 'top-right'
+						});
+					} else {
+						console.log('Notification:', used.in);
+					}
+					found = true;
+				} else {
+					// If no valid response, hide the element with id "usedin-{target}".
+					hideElement('usedin-' + target);
+				}
+			})
+			.catch((error) => {
+				console.error('Error in usedin_server for target ' + target + ':', error);
+			});
+	});
+
+	// Once all Ajax calls are completed, update the UI accordingly.
+	Promise.all(promises).then(() => {
+		hideElement('loading-usedin');
+		if (found) {
+			showElement('note-usedin-found');
+		} else {
+			showElement('note-usedin-not');
+		}
 	});
 }
 
+/**
+ * Sends an AJAX GET request to the server with the specified parameters.
+ * The function builds a URL with query parameters and returns a promise
+ * that resolves with the JSON response.
+ *
+ * @param {string} functioName - The functioName to send with the request.
+ * @param {string|number} ide - The identifier to send.
+ * @param {string|number} target - The target functioName to send.
+ *
+ * @returns {Promise<Object>} - A promise that resolves to the JSON response.
+ */
+function usedin_server(functioName, ide, target) {
+	// Check if the global variable 'token' exists and has a non-empty functioName.
+	// 'token', 'functioName', and 'return_here' are assumed to be defined elsewhere in your code.
+	if (token && token.length > 0) {
+		var request =
+			token +
+			'=1&functioName=' +
+			functioName +
+			'&id=' +
+			ide +
+			'&target=' +
+			target +
+			'&raw=true&return_here=' +
+			return_here;
+	} else {
+		console.error(
+			'There was a issue with the functioNames passed to the [usedin_server] method and we could not make the Ajax call.'
+		);
+		return Promise.reject(new Error('Invalid token or parameters.'));
+	}
+
+	// Base URL for the AJAX request.
+	const baseUrl = `index.php?option=com_componentbuilder&task=ajax.usedin&format=json&${request}`;
+
+	// Use the Fetch API to perform a GET request.
+	return fetch(baseUrl, {
+		method: "GET",
+		headers: {
+			"Accept": "application/json"
+		}
+	}).then(response => {
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		return response.json();
+	});
+}
 
 function getEditCustomCodeButtons_server(id) {
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
@@ -408,12 +517,16 @@ function getEditCustomCodeButtons() {
 
 				// Insert the div before .control-wrapper-{field}
 				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				if (insertBeforeElement) {
+					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				}
 
 				// Adding buttons to the div
 				Object.entries(buttons).forEach(([name, button]) => {
 					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					controlsDiv.innerHTML += button;
+					if (controlsDiv) {
+						controlsDiv.innerHTML += button;
+					}
 				});
 			});
 		}

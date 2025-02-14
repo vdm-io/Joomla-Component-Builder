@@ -16,6 +16,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -42,50 +46,52 @@ class ViewtabsField extends ListField
 	 */
 	protected function getOptions()
 	{
+		// load the db opbject
+		$db = Factory::getDBO();		
 		// get the input from url
 		$jinput = Factory::getApplication()->input;
-		// get the view name & id
-		$fieldsID = $jinput->getInt('id', 0);
-		$db = Factory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.addtabs'),array('id','addtabs')));
-		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
-		if ($fieldsID > 0)
+		// get the id
+		$ID = $jinput->getInt('id', 0);
+		$adminView = null;
+		if (is_numeric($ID) && $ID >= 1)
 		{
+			// get the view name
 			$viewName = $jinput->get('view', null, 'WORD');
-			// only allow for fields and custom tabs
-			if ('admin_fields' !== $viewName && 'admin_custom_tabs' !== $viewName)
-			{
-				return false;
-			}
-			$query->join('LEFT', $db->quoteName('#__componentbuilder_' . $viewName, 'b') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.admin_view') . ')');
-			$query->where($db->quoteName('b.id') . '  = ' . (int) $fieldsID);
+			// get the admin view GUID
+			$adminView = GetHelper::var($viewName, (int) $ID, 'id', 'admin_view');
 		}
 		else
 		{
-			// get the refs if found
-			$ref = $jinput->get('ref', null, 'WORD');
-			$refid = $jinput->getInt('refid', 0);
-			if ('admin_view' === $ref && $refid > 0)
+			// get the admin view GUID
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
 			{
-				$query->where($db->quoteName('a.id') . ' = ' . (int) $refid);
-			}
-			else
-			{
-				// kry maar niks
-				$query->where($db->quoteName('a.id') . ' = 0');
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				$adminView = $initDefaults['admin_view'] ?? null;
 			}
 		}
+		$db = Factory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(['a.addtabs'],['addtabs']));
+		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
+		if (GuidHelper::valid($adminView))
+		{
+			$query->where($db->quoteName('a.guid') . ' = ' . $db->quote($adminView));
+		}
+		else
+		{
+			// kry maar niks
+			$query->where($db->quoteName('a.id') . ' = 0');
+		}
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->order('a.addtabs ASC');
 		$db->setQuery((string)$query);
 		$item = $db->loadObject();
-		$options = array();
-		if (isset($item->addtabs) && ComponentbuilderHelper::checkJson($item->addtabs))
+		$options = [];
+		if (isset($item->addtabs) && JsonHelper::check($item->addtabs))
 		{
 			$items = json_decode($item->addtabs, true);
 			// check if the array has values
-			if (ComponentbuilderHelper::checkArray($items))
+			if (ArrayHelper::check($items))
 			{
 				$nr = 1;
 				foreach($items as $itemName)
@@ -96,7 +102,7 @@ class ViewtabsField extends ListField
 			}
 		}
 		// check if any were loaded
-		if (!ComponentbuilderHelper::checkArray($options))
+		if (!ArrayHelper::check($options))
 		{
 			$options[] = Html::_('select.option', 1, Text::_('COM_COMPONENTBUILDER_DETAILS'));
 		}

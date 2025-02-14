@@ -16,61 +16,75 @@ jQuery(document).ready(function()
 	// check and load all the customcode edit buttons
 	getEditCustomCodeButtons();
 });
-// little script to set the value
+
+// the isSet function
+function _isSet(value) {
+	return value !== undefined && value !== null && value !== '';
+}
+
+// Function to set the value
 function getCodeGlueOptions(field) {
-	// get the ID
-	var id = jQuery(field).attr('id');
+	// Get the ID
+	var id = field.id;
 	var target = id.split('__');
-	//set the subID
-	var subID = target[0]+'__'+target[1];
-	// get listfield value
-	var listfield = jQuery('#'+subID+'__listfield').val();
-	// get type value
-	var type = jQuery('#'+subID+'__join_type').val();
-	// get area value
-	var area = jQuery('#'+subID+'__area').val();
-	// check that values are set
+
+	// Set the subID
+	var subID = target[0] + '__' + target[1];
+
+	// Get listfield value
+	var listfield = document.getElementById(subID + '__listfield')?.value || '';
+	// Get type value
+	var type = document.getElementById(subID + '__join_type')?.value || '';
+	// Get area value
+	var area = document.getElementById(subID + '__area')?.value || '';
+
+	// Check that values are set
 	if (_isSet(listfield) && _isSet(type) && _isSet(area)) {
-		// get joinfields values
-		var joinfields = jQuery('#'+subID+'__joinfields').val();
-		// get codeGlueOptions
-		getCodeGlueOptions_server(listfield, joinfields, type, area).done(function(result) {
-			if(result){
-				jQuery('#'+subID+'__set').val(result);
-			} else {
-				jQuery('#'+subID+'__set').val('');
-			}
-		});
+		// Get joinfields values
+		var joinfields = document.getElementById(subID + '__joinfields')?.value || '';
+
+		// Fetch CodeGlueOptions
+		getCodeGlueOptions_server(listfield, joinfields, type, area)
+			.then(result => {
+				document.getElementById(subID + '__set').value = result || '';
+			})
+			.catch(() => {
+				document.getElementById(subID + '__set').value = '';
+			});
 	} else {
-		jQuery('#'+subID+'__set').val('');
+		document.getElementById(subID + '__set').value = '';
 	}
 }
 
-function getCodeGlueOptions_server(listfield, joinfields, type, area){
+// Function to fetch data from the server
+function getCodeGlueOptions_server(listfield, joinfields, type, area) {
 	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json");
-	// make sure the joinfields are set
+
+	// Ensure joinfields is set
 	if (!_isSet(joinfields)) {
 		joinfields = 'none';
 	}
-	if(token.length > 0 && listfield > 0 && type > 0 && area > 0) {
-		var request = token+'=1&listfield='+listfield+'&type='+type+'&area='+area+'&joinfields='+joinfields;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
-}
 
-// the isSet function
-function _isSet(val)
-{
-	if ((val != undefined) && (val != null) && 0 !== val.length){
-		return true;
+	if (typeof token !== 'undefined' && token.length > 0 && listfield.length > 0 && type > 0 && area > 0) {
+		var params = new URLSearchParams({
+			[token]: '1',
+			listfield: listfield,
+			type: type,
+			area: area,
+			joinfields: joinfields
+		});
+
+		return fetch(getUrl + '&' + params.toString(), {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.catch(() => null);
 	}
-	return false;
+
+	return Promise.resolve(null);
 }
 
 function getEditCustomCodeButtons_server(id) {
@@ -109,12 +123,16 @@ function getEditCustomCodeButtons() {
 
 				// Insert the div before .control-wrapper-{field}
 				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				if (insertBeforeElement) {
+					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				}
 
 				// Adding buttons to the div
 				Object.entries(buttons).forEach(([name, button]) => {
 					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					controlsDiv.innerHTML += button;
+					if (controlsDiv) {
+						controlsDiv.innerHTML += button;
+					}
 				});
 			});
 		}

@@ -33,7 +33,7 @@ defined('_JEXEC') or die;
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL', 'g.system_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL'); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_LABEL', 'a.path', $this->listDirn, $this->listOrder); ?>

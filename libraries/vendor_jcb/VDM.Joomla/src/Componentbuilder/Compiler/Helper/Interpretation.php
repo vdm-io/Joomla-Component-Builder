@@ -272,6 +272,20 @@ class Interpretation extends Fields
 	public $langSet = [];
 
 	/**
+	 * Component Image Type
+	 *
+	 * @var    string
+	 */
+	protected string $componentImageType;
+
+	/**
+	 * Only Function Button
+	 *
+	 * @var    array
+	 */
+	protected array $onlyFunctionButton;
+
+	/**
 	 * alignment names
 	 *
 	 * @var    array
@@ -1510,7 +1524,7 @@ class Interpretation extends Fields
 			. "protected static function loadArticleLink(\$id)";
 		$help[] = Indent::_(1) . "{";
 		$help[] = Indent::_(2)
-			. "return Uri::root() . 'index.php?option=com_content&view=article&id='.\$id.'&tmpl=component&layout=modal';";
+			. "return Joomla__"."_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root() . 'index.php?option=com_content&view=article&id='.\$id.'&tmpl=component&layout=modal';";
 		$help[] = Indent::_(1) . "}";
 		$help[] = PHP_EOL . Indent::_(1) . "/**";
 		$help[] = Indent::_(1) . " *	Get the Help Text Link.";
@@ -1518,7 +1532,7 @@ class Interpretation extends Fields
 		$help[] = Indent::_(1)
 			. "protected static function loadHelpTextLink(\$id)";
 		$help[] = Indent::_(1) . "{";
-		$help[] = Indent::_(2) . "\$token = Session::getFormToken();";
+		$help[] = Indent::_(2) . "\$token = Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken();";
 		$help[] = Indent::_(2) . "return 'index.php?option=com_"
 			. CFactory::_('Config')->component_code_name
 			. "&task=help.getText&id=' . (int) \$id . '&' . \$token . '=1';";
@@ -3216,7 +3230,7 @@ class Interpretation extends Fields
 				$redirectMessage = Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " redirect away to the home page if no access allowed.";
-				$redirectString  = 'Uri::root()';
+				$redirectString  = 'Joomla__'.'_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root()';
 			}
 			$accessCheck[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -3398,7 +3412,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$redirectString = 'Uri::root()';
+						$redirectString = 'Joomla__'.'_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root()';
 					}
 					$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 						. "\$app->redirect(" . $redirectString . ");";
@@ -4781,8 +4795,6 @@ class Interpretation extends Fields
 				}
 				$method .= PHP_EOL . Indent::_(2) . "}";
 			}
-			$method .= PHP_EOL . PHP_EOL . Indent::_(2)
-				. "parent::display(\$tpl);";
 		}
 
 		return $method;
@@ -6081,7 +6093,7 @@ class Interpretation extends Fields
 		// if there was any code added to document then set globally
 		if ($buildDoc && ArrayHelper::check($scripts))
 		{
-			CFactory::_('Registry')->set("builder.libraries.${id}.document", Indent::_(2) . "//"
+			CFactory::_('Registry')->set("builder.libraries.{$id}.document", Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " always load these files."
 				. PHP_EOL . Indent::_(2) . implode(
 					PHP_EOL . Indent::_(2), $scripts
@@ -8551,10 +8563,10 @@ class Interpretation extends Fields
 			);
 			$View             = StringHelper::safe($view, 'F');
 			$maintext         = CFactory::_('Compiler.Builder.Main.Text.Field')->get($view, 'null');
-			$hiddenFields     = CFactory::_('Compiler.Builder.Hidden.Fields')->toString($view, '');
-			$dynamicfields    = CFactory::_('Compiler.Builder.Dynamic.Fields')->toString($view, ',');
-			$intFields        = CFactory::_('Compiler.Builder.Integer.Fields')->toString($view, '');
-			$customfieldlinks = CFactory::_('Compiler.Builder.Custom.Field.Links')->toString($view, '');
+			$hiddenFields     = CFactory::_('Compiler.Builder.Hidden.Fields')->pathToString($view, '');
+			$dynamicfields    = CFactory::_('Compiler.Builder.Dynamic.Fields')->pathToString($view, ',');
+			$intFields        = CFactory::_('Compiler.Builder.Integer.Fields')->pathToString($view, '');
+			$customfieldlinks = CFactory::_('Compiler.Builder.Custom.Field.Links')->pathToString($view, '');
 			// build uninstall script for content types
 			$this->uninstallScriptBuilder[$View] = 'com_' . $component . '.' . $view;
 			$this->uninstallScriptContent[$view] = $view;
@@ -10039,14 +10051,30 @@ class Interpretation extends Fields
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.created_by'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1)
-						. "`created_by` INT(10) unsigned NULL DEFAULT 0,";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`created_by` INT(10) unsigned NULL DEFAULT 0,";
+					}
+					else
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`created_by` INT unsigned NULL,";
+					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.modified_by'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1)
-						. "`modified_by` INT(10) unsigned NULL DEFAULT 0,";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`modified_by` INT(10) unsigned NULL DEFAULT 0,";
+					}
+					else
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`modified_by` INT unsigned,";
+					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.created'))
@@ -10073,14 +10101,22 @@ class Interpretation extends Fields
 					else
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
-							. "`modified` DATETIME DEFAULT NULL,";
+							. "`modified` DATETIME,";
 					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.checked_out'))
 				{
-					$db_ .= PHP_EOL . Indent::_(1)
-						. "`checked_out` int(11) unsigned NULL DEFAULT 0,";
+					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`checked_out` int(11) unsigned NULL DEFAULT 0,";
+					}
+					else
+					{
+						$db_ .= PHP_EOL . Indent::_(1)
+							. "`checked_out` int unsigned,";
+					}
 				}
 				// check if default field was overwritten
 				if (!CFactory::_('Compiler.Builder.Field.Names')->isString($view . '.checked_out_time'))
@@ -10093,7 +10129,7 @@ class Interpretation extends Fields
 					else
 					{
 						$db_ .= PHP_EOL . Indent::_(1)
-							. "`checked_out_time` DATETIME DEFAULT NULL,";
+							. "`checked_out_time` DATETIME,";
 					}
 				}
 				// check if default field was overwritten
@@ -11079,9 +11115,9 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(2)
 					. "\$userChkOut = Factory::getContainer()->";
 				$body .= PHP_EOL . Indent::_(3)
-					. "get(\Joomla\CMS\User\UserFactoryInterface::class)->";
+					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
-					. "loadUserById(\$item->checked_out);";
+					. "loadUserById(\$item->checked_out ?? 0);";
 			}
 			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
 				. "::getActions('" . $nameSingleCode . "',\$item,'"
@@ -11258,7 +11294,7 @@ class Interpretation extends Fields
 	{
 		// check if we have relation fields
 		if (($field_relations =
-			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode . '.' . (int) $item['id'] . '.2')) !== null)
+			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode . '.' . (string) $item['guid'] . '.2')) !== null)
 		{
 			// set the fields array
 			$field = [];
@@ -11272,16 +11308,18 @@ class Interpretation extends Fields
 					$field_relations['set']
 				));
 			// load the main list view field
-			$field['[field=' . (int) $item['id'] . ']'] = $this->getListItem(
+			$field_list_item = $this->getListItem(
 				$item, $nameSingleCode, $nameListCode, $itemClass,
 				$doNotEscape,false, $ref, $escape, $user,
 				$refview
 			);
+			$field['[field=' . (int) $item['id'] . ']'] = $field_list_item;
+			$field['[field=' . (string) $item['guid'] . ']'] = $field_list_item;
 			// code name
-			if (isset($item['code']) && $useCustomCode)
+			if (isset($item['code']))
 			{
-				$field['$item->{' . (int) $item['id'] . '}'] = '$item->'
-					. $item['code'];
+				$field['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
+				$field['$item->{' . (string) $item['guid'] . '}'] = '$item->' . $item['code'];
 			}
 			// now load the relations
 			if (isset($field_relations['joinfields'])
@@ -11291,21 +11329,22 @@ class Interpretation extends Fields
 				{
 					$blankClass = '';
 					if (($join_item =
-						CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (int) $join)) !== null)
+						CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join)) !== null &&  is_array($join_item))
 					{
+						$join_id = CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join . '.id', 0);
 						// code block
-						$field['[field=' . (int) $join . ']']
-							= $this->getListItem(
+						$join_field_list_item = $this->getListItem(
 							$join_item, $nameSingleCode, $nameListCode, $blankClass,
 							$doNotEscape, false, $ref,
 							$escape, $user, $refview
 						);
+						$field['[field=' . (int) $join_id . ']'] = $join_field_list_item;
+						$field['[field=' . (string) $join . ']'] = $join_field_list_item;
 						// code name
-						if (isset($join_item['code'])
-							&& $useCustomCode)
+						if (isset($join_item['code']))
 						{
-							$field['$item->{' . (int) $join . '}'] = '$item->'
-								. $join_item['code'];
+							$field['$item->{' . (int) $join_id . '}'] = '$item->' . $join_item['code'];
+							$field['$item->{' . (string) $join . '}'] = '$item->' . $join_item['code'];
 						}
 					}
 				}
@@ -11562,8 +11601,8 @@ class Interpretation extends Fields
 			else
 			{
 				return 'Factory::getContainer()->'
-					. 'get(\Joomla\CMS\User\UserFactoryInterface::class)->'
-					. 'loadUserById((int) $item->' . $item['code'] . ')->name';
+					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
+					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
 			}
 		}
 		// check if custom user
@@ -11579,8 +11618,8 @@ class Interpretation extends Fields
 			else
 			{
 				return 'Factory::getContainer()->'
-					. 'get(\Joomla\CMS\User\UserFactoryInterface::class)->'
-					. 'loadUserById((int) $item->' . $item['id_code'] . ')->name';
+					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
+					. 'loadUserById((int) $item->' . $item['id_code'] . ' ?? 0)->name';
 			}
 		}
 		// check if translated value is used
@@ -11600,8 +11639,8 @@ class Interpretation extends Fields
 			else
 			{
 				return 'Factory::getContainer()->'
-					. 'get(\Joomla\CMS\User\UserFactoryInterface::class)->'
-					. 'loadUserById((int) $item->' . $item['code'] . ')->name';
+					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
+					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
 			}
 		}
 		elseif ($doNotEscape)
@@ -12290,10 +12329,10 @@ class Interpretation extends Fields
 					&& in_array($tabCodeName, $linkedViewIdentifier))
 				{
 					// get view name
-					$linkedViewId   = array_search(
+					$linkedViewGuid   = array_search(
 						$tabCodeName, $linkedViewIdentifier
 					);
-					$linkedViewData = CFactory::_('Adminview.Data')->get($linkedViewId);
+					$linkedViewData = CFactory::_('Adminview.Data')->get($linkedViewGuid);
 					$linkedCodeName = StringHelper::safe(
 						$linkedViewData->name_single
 					);
@@ -12536,10 +12575,10 @@ class Interpretation extends Fields
 			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $tabLangName, $tabName);
 			// check if linked view belongs to this tab
 			$buildLayout  = true;
-			$linkedViewId = '';
+			$linkedViewGuid = '';
 			if (ArrayHelper::check($linkedTab))
 			{
-				if (($linkedViewId = array_search($tabNr, $linkedTab))
+				if (($linkedViewGuid = array_search($tabNr, $linkedTab))
 					!== false)
 				{
 					// don't build (since this is a linked view)
@@ -12676,7 +12715,7 @@ class Interpretation extends Fields
 				// set layout code name
 				$layoutCodeName = $tabCodeName . '_fullwidth';
 				// set identifiers
-				$linkedViewIdentifier[$linkedViewId] = $tabCodeName;
+				$linkedViewIdentifier[$linkedViewGuid] = $tabCodeName;
 				//set function name
 				$codeName = StringHelper::safe(
 					$this->uniquekey(3) . $tabCodeName
@@ -12690,13 +12729,13 @@ class Interpretation extends Fields
 				$tabs[$tabCodeName]['lang'] = $tabLangName;
 				// set all the linked view stuff
 				$this->secondRunAdmin['setLinkedView'][] = array(
-					'viewId'         => $linkedViewId,
+					'viewGuid'         => $linkedViewGuid,
 					'nameSingleCode' => $nameSingleCode,
 					'codeName'       => $codeName,
 					'layoutCodeName' => $layoutCodeName,
-					'key'            => $keys[$linkedViewId]['key'],
-					'parentKey'      => $keys[$linkedViewId]['parentKey'],
-					'addNewButon'    => $keys[$linkedViewId]['addNewButton']);
+					'key'            => $keys[$linkedViewGuid]['key'],
+					'parentKey'      => $keys[$linkedViewGuid]['parentKey'],
+					'addNewButon'    => $keys[$linkedViewGuid]['addNewButton']);
 				// load the body
 				if (!isset($tabs[$tabCodeName][3]))
 				{
@@ -13372,7 +13411,7 @@ class Interpretation extends Fields
 	public function setLinkedView($args)
 	{
 		/**
-		 * @var $viewId
+		 * @var $viewGuid
 		 * @var $nameSingleCode
 		 * @var $codeName
 		 * @var $layoutCodeName
@@ -13385,7 +13424,7 @@ class Interpretation extends Fields
 		$name_list_code = '';
 		foreach (CFactory::_('Component')->get('admin_views') as $array)
 		{
-			if ($array['adminview'] == $viewId)
+			if ($array['adminview'] == $viewGuid)
 			{
 				$name_single_code = $array['settings']->name_single_code;
 				$name_list_code   = $array['settings']->name_list_code;
@@ -13710,9 +13749,9 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(2)
 					. "\$userChkOut = Factory::getContainer()->";
 				$body .= PHP_EOL . Indent::_(3)
-					. "get(\Joomla\CMS\User\UserFactoryInterface::class)->";
+					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
-					. "loadUserById(\$item->checked_out);";
+					. "loadUserById(\$item->checked_out ?? 0);";
 			}
 			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
 				. "::getActions('" . $nameSingleCode . "',\$item,'"
@@ -14277,11 +14316,13 @@ class Interpretation extends Fields
 			foreach (CFactory::_('Compiler.Builder.Views.Default.Ordering')->
 				get("$nameListCode.linked_ordering_fields", []) as $order_field)
 			{
-				if (($order_field_name = CFactory::_('Field.Database.Name')->get(
+				// We Removed This 'listJoinBuilder' as targetArea
+				// we will keep an eye on this
+				$order_field_name = CFactory::_('Field.Database.Name')->get(
 						$nameListCode, $order_field['field']
-					// We Removed This 'listJoinBuilder' as targetArea
-					// we will keep an eye on this
-					)) !== false)
+				);
+
+				if (!empty($order_field_name))
 				{
 					// default ordering is by publish and ordering
 					$query .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
@@ -14638,7 +14679,7 @@ class Interpretation extends Fields
 				$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Check for request forgeries";
 				$method[] = Indent::_(2)
-					. "Session::checkToken() or die(Text:"
+					. "Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken() or die(Text:"
 					. ":_('JINVALID_TOKEN'));";
 				$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " check if export is allowed for this user.";
@@ -14992,7 +15033,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(1) . "{";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check for request forgeries";
-			$method[] = Indent::_(2) . "Session::checkToken() or die(Text:"
+			$method[] = Indent::_(2) . "Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken() or die(Text:"
 				. ":_('JINVALID_TOKEN'));";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " check if export is allowed for this user.";
@@ -15060,7 +15101,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(1) . "{";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Check for request forgeries";
-			$method[] = Indent::_(2) . "Session::checkToken() or die(Text:"
+			$method[] = Indent::_(2) . "Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken() or die(Text:"
 				. ":_('JINVALID_TOKEN'));";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " check if import is allowed for this user.";
@@ -17302,7 +17343,7 @@ class Interpretation extends Fields
 				. "\$form->setFieldAttribute(\$requiredField, 'required', 'false');";
 			$fix .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " also clear the data set";
-			$fix .= PHP_EOL . Indent::_(5) . "\$data[\$requiredField] = '';";
+			$fix .= PHP_EOL . Indent::_(5) . "unset(\$data[\$requiredField]);";
 			$fix .= PHP_EOL . Indent::_(4) . "}";
 			$fix .= PHP_EOL . Indent::_(3) . "}";
 			$fix .= PHP_EOL . Indent::_(2) . "}";
@@ -17323,7 +17364,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add Ajax Token";
 			$fix .= PHP_EOL . Indent::_(2)
-				. "\$this->getDocument()->addScriptDeclaration(\"var token = '\" . Session::getFormToken() . \"';\");";
+				. "\$this->getDocument()->addScriptDeclaration(\"var token = '\" . Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken() . \"';\");";
 		}
 
 		return $fix;
@@ -17882,12 +17923,10 @@ class Interpretation extends Fields
 							$function[] = Indent::_(5)
 								. "Factory::getContainer()->";
 								$function[] = Indent::_(5)
-									. "get(\Joomla\CMS\User\UserFactoryInterface::class)->";
+									. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 								$function[] = Indent::_(5)
-									. "loadUserById(\$"
-									. $filter['code'] . ")->name";
-								$function[] = Indent::_(5)
-									. ");";
+									. "loadUserById(\$" . $filter['code'] . " ?? 0)->name";
+								$function[] = Indent::_(5) . ");";
 							}
 					}
 					else
@@ -19000,6 +19039,26 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(4)
 			. "\$form->setValue(\$redirectedField, null, \$redirectedValue);";
 		$getForm[] = Indent::_(3) . "}";
+
+		// new options v5.0.4 (init_defaults) to pass an array of form field defaults
+		$getForm[] = Indent::_(3)
+			. "\$initDefaults = \$jinput->get('init_defaults', null, 'STRING');";
+			// check init defaults value
+		$getForm[] = Indent::_(3)
+			. "if (!empty(\$initDefaults))";
+		$getForm[] = Indent::_(3) . "{";
+		$getForm[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+			. " Now check if this json values are valid";
+		$getForm[] = Indent::_(4) . "\$initDefaults = json_decode(urldecode(\$initDefaults), true);";
+		$getForm[] = Indent::_(4) . "if (is_array(\$initDefaults))";
+		$getForm[] = Indent::_(4) . "{";
+		$getForm[] = Indent::_(5) . "foreach (\$initDefaults as \$field => \$value)";
+		$getForm[] = Indent::_(5) . "{";
+		$getForm[] = Indent::_(6) . "\$form->setValue(\$field, null, \$value);";
+		$getForm[] = Indent::_(5) . "}";
+		$getForm[] = Indent::_(4) . "}";
+		$getForm[] = Indent::_(3) . "}";
+
 		// load custom script if found
 		$getForm[] = Indent::_(2) . "}" . CFactory::_('Customcode.Dispenser')->get(
 				'php_getform', $nameSingleCode, PHP_EOL
@@ -20310,7 +20369,7 @@ class Interpretation extends Fields
 		if (($field_relations =
 			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode)) !== null)
 		{
-			foreach ($field_relations as $field_id => $fields)
+			foreach ($field_relations as $field_guid => $fields)
 			{
 				foreach ($fields as $area => $field)
 				{
@@ -20956,9 +21015,11 @@ class Interpretation extends Fields
 		$fix = '';
 		// set fields
 		$field = [];
+
 		// set list field name
-		$field['$item->{' . (int) $item['listfield'] . '}'] = '$item->'
-			. $item['code'];
+		$field['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
+		$field['$item->{' . (string) $item['guid'] . '}'] = '$item->' . $item['code'];
+
 		// load joint field names
 		if (isset($item['joinfields'])
 			&& ArrayHelper::check(
@@ -20967,10 +21028,14 @@ class Interpretation extends Fields
 		{
 			foreach ($item['joinfields'] as $join)
 			{
-				$field['$item->{' . (int) $join . '}'] = '$item->'
-					. CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (int) $join . '.code', 'error');
+				$join_id = CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join . '.id', 0);
+				$join_string = '$item->' . CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join . '.code', 'error');
+
+				$field['$item->{' . (int) $join_id . '}'] = $join_string;
+				$field['$item->{' . $join . '}'] = $join_string;
 			}
 		}
+
 		// set based on join_type
 		if ($item['join_type'] == 2)
 		{
@@ -22902,9 +22967,9 @@ class Interpretation extends Fields
 			);
 			CFactory::_('Language')->setTarget($module->key, null);
 			// update insert the current lang in to DB
-			CFactory::_('Language.Set')->execute($values, $module->id, 'modules');
+			CFactory::_('Language.Set')->execute($values, $module->guid, 'modules');
 			// remove old unused language strings
-			CFactory::_('Language.Purge')->execute($values, $module->id, 'modules');
+			CFactory::_('Language.Purge')->execute($values, $module->guid, 'modules');
 			$total = count($values);
 			unset($values);
 

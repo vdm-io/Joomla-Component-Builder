@@ -270,8 +270,8 @@ class TemplatesModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_template', 'a'));
 
 		// From the componentbuilder_dynamic_get table.
-		$query->select($db->quoteName('g.name','dynamic_get_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'g') . ' ON (' . $db->quoteName('a.dynamic_get') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['dynamic_get_name','dynamic_get_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_dynamic_get', 'g') . ' ON (' . $db->quoteName('a.dynamic_get') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

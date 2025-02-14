@@ -60,13 +60,6 @@
 			multiple="false"
 			class="js-select-submit-on-change"
 		/>
-		<field
-			type="adminviewsfilteraddcustomimport"
-			name="add_custom_import"
-			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL"
-			multiple="false"
-			class="js-select-submit-on-change"
-		/>
 		<input type="hidden" name="form_submited" value="1"/>
 	</fields>
 
@@ -76,7 +69,7 @@
 			type="list"
 			label="JGLOBAL_SORT_BY"
 			class="js-select-submit-on-change"
-			default="a.id desc"
+			default=" desc"
 			validate="options"
 		>
 			<option value="">JGLOBAL_SORT_BY</option>

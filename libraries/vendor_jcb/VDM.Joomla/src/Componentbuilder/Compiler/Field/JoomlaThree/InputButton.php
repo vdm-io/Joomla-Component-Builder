@@ -181,7 +181,7 @@ final class InputButton implements InputButtonInterface
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " get the return value.";
 				$addButton[] = Indent::_(4)
-					. "\$_uri = (string) \Joomla\CMS\Uri\Uri::getInstance();";
+					. "\$_uri = (string) Joomla__"."_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::getInstance();";
 				$addButton[] = Indent::_(4)
 					. "\$_return = urlencode(base64_encode(\$_uri));";
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
@@ -206,7 +206,7 @@ final class InputButton implements InputButtonInterface
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 					. " get the return value.";
 				$addButton[] = Indent::_(4)
-					. "\$_uri = (string) \Joomla\CMS\Uri\Uri::getInstance();";
+					. "\$_uri = (string) Joomla__"."_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::getInstance();";
 				$addButton[] = Indent::_(4)
 					. "\$_return = urlencode(base64_encode(\$_uri));";
 				$addButton[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)

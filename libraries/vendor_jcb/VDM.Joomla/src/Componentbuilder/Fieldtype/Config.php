@@ -17,7 +17,7 @@ use Joomla\CMS\Factory as JoomlaFactory;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Utilities\RepoHelper;
-use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
+use VDM\Joomla\Componentbuilder\Abstraction\ComponentConfig;
 
 
 /**
@@ -31,7 +31,7 @@ use VDM\Joomla\Componentbuilder\Abstraction\BaseConfig;
  * 
  * @since  5.0.3
  */
-class Config extends BaseConfig
+class Config extends ComponentConfig
 {
 	/**
 	 * The Global Joomla Configuration

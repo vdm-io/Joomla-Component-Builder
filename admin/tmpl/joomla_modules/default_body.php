@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_modules&task=joomla_m
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('joomla_module',$item,'joomla_modules');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -99,10 +100,10 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_modules&task=joomla_m
 			?>
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons[0] as $_button): ?>
-				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->id, 'joomla_module', 'id')) !== false): ?>
+				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->guid, 'joomla_module', 'id')) !== false): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_module&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&init_defaults=<?php echo urlencode(json_encode(['joomla_module' => $item->guid])); ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>

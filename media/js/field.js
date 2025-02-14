@@ -9,58 +9,58 @@
  */
 
 // Some Global Values
-jform_vvvvwbfvxe_required = false;
-jform_vvvvwbgvxf_required = false;
-jform_vvvvwbhvxg_required = false;
-jform_vvvvwbivxh_required = false;
-jform_vvvvwblvxi_required = false;
-jform_vvvvwblvxj_required = false;
+jform_vvvvwbdvwx_required = false;
+jform_vvvvwbevwy_required = false;
+jform_vvvvwbfvwz_required = false;
+jform_vvvvwbgvxa_required = false;
+jform_vvvvwbjvxb_required = false;
+jform_vvvvwbjvxc_required = false;
 
 // Initial Script
 document.addEventListener('DOMContentLoaded', function()
 {
-	var datalenght_vvvvwbf = jQuery("#jform_datalenght").val();
-	vvvvwbf(datalenght_vvvvwbf);
+	var datalenght_vvvvwbd = jQuery("#jform_datalenght").val();
+	vvvvwbd(datalenght_vvvvwbd);
 
-	var datadefault_vvvvwbg = jQuery("#jform_datadefault").val();
-	vvvvwbg(datadefault_vvvvwbg);
+	var datadefault_vvvvwbe = jQuery("#jform_datadefault").val();
+	vvvvwbe(datadefault_vvvvwbe);
 
-	var datatype_vvvvwbh = jQuery("#jform_datatype").val();
-	vvvvwbh(datatype_vvvvwbh);
+	var datatype_vvvvwbf = jQuery("#jform_datatype").val();
+	vvvvwbf(datatype_vvvvwbf);
 
-	var datatype_vvvvwbi = jQuery("#jform_datatype").val();
-	vvvvwbi(datatype_vvvvwbi);
+	var datatype_vvvvwbg = jQuery("#jform_datatype").val();
+	vvvvwbg(datatype_vvvvwbg);
 
-	var store_vvvvwbl = jQuery("#jform_store").val();
-	vvvvwbl(store_vvvvwbl);
+	var store_vvvvwbj = jQuery("#jform_store").val();
+	vvvvwbj(store_vvvvwbj);
 
-	var add_css_view_vvvvwbm = jQuery("#jform_add_css_view input[type='radio']:checked").val();
-	vvvvwbm(add_css_view_vvvvwbm);
+	var add_css_view_vvvvwbk = jQuery("#jform_add_css_view input[type='radio']:checked").val();
+	vvvvwbk(add_css_view_vvvvwbk);
 
-	var add_css_views_vvvvwbn = jQuery("#jform_add_css_views input[type='radio']:checked").val();
-	vvvvwbn(add_css_views_vvvvwbn);
+	var add_css_views_vvvvwbl = jQuery("#jform_add_css_views input[type='radio']:checked").val();
+	vvvvwbl(add_css_views_vvvvwbl);
 
-	var add_javascript_view_footer_vvvvwbo = jQuery("#jform_add_javascript_view_footer input[type='radio']:checked").val();
-	vvvvwbo(add_javascript_view_footer_vvvvwbo);
+	var add_javascript_view_footer_vvvvwbm = jQuery("#jform_add_javascript_view_footer input[type='radio']:checked").val();
+	vvvvwbm(add_javascript_view_footer_vvvvwbm);
 
-	var add_javascript_views_footer_vvvvwbp = jQuery("#jform_add_javascript_views_footer input[type='radio']:checked").val();
-	vvvvwbp(add_javascript_views_footer_vvvvwbp);
+	var add_javascript_views_footer_vvvvwbn = jQuery("#jform_add_javascript_views_footer input[type='radio']:checked").val();
+	vvvvwbn(add_javascript_views_footer_vvvvwbn);
 });
 
-// the vvvvwbf function
-function vvvvwbf(datalenght_vvvvwbf)
+// the vvvvwbd function
+function vvvvwbd(datalenght_vvvvwbd)
 {
-	if (isSet(datalenght_vvvvwbf) && datalenght_vvvvwbf.constructor !== Array)
+	if (isSet(datalenght_vvvvwbd) && datalenght_vvvvwbd.constructor !== Array)
 	{
-		var temp_vvvvwbf = datalenght_vvvvwbf;
-		var datalenght_vvvvwbf = [];
-		datalenght_vvvvwbf.push(temp_vvvvwbf);
+		var temp_vvvvwbd = datalenght_vvvvwbd;
+		var datalenght_vvvvwbd = [];
+		datalenght_vvvvwbd.push(temp_vvvvwbd);
 	}
-	else if (!isSet(datalenght_vvvvwbf))
+	else if (!isSet(datalenght_vvvvwbd))
 	{
-		var datalenght_vvvvwbf = [];
+		var datalenght_vvvvwbd = [];
 	}
-	var datalenght = datalenght_vvvvwbf.some(datalenght_vvvvwbf_SomeFunc);
+	var datalenght = datalenght_vvvvwbd.some(datalenght_vvvvwbd_SomeFunc);
 
 
 	// set this function logic
@@ -68,55 +68,55 @@ function vvvvwbf(datalenght_vvvvwbf)
 	{
 		jQuery('#jform_datalenght_other').closest('.control-group').show();
 		// add required attribute to datalenght_other field
-		if (jform_vvvvwbfvxe_required)
+		if (jform_vvvvwbdvwx_required)
 		{
 			updateFieldRequired('datalenght_other',0);
 			jQuery('#jform_datalenght_other').prop('required','required');
 			jQuery('#jform_datalenght_other').attr('aria-required',true);
 			jQuery('#jform_datalenght_other').addClass('required');
-			jform_vvvvwbfvxe_required = false;
+			jform_vvvvwbdvwx_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_datalenght_other').closest('.control-group').hide();
 		// remove required attribute from datalenght_other field
-		if (!jform_vvvvwbfvxe_required)
+		if (!jform_vvvvwbdvwx_required)
 		{
 			updateFieldRequired('datalenght_other',1);
 			jQuery('#jform_datalenght_other').removeAttr('required');
 			jQuery('#jform_datalenght_other').removeAttr('aria-required');
 			jQuery('#jform_datalenght_other').removeClass('required');
-			jform_vvvvwbfvxe_required = true;
+			jform_vvvvwbdvwx_required = true;
 		}
 	}
 }
 
-// the vvvvwbf Some function
-function datalenght_vvvvwbf_SomeFunc(datalenght_vvvvwbf)
+// the vvvvwbd Some function
+function datalenght_vvvvwbd_SomeFunc(datalenght_vvvvwbd)
 {
 	// set the function logic
-	if (datalenght_vvvvwbf == 'Other')
+	if (datalenght_vvvvwbd == 'Other')
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwbg function
-function vvvvwbg(datadefault_vvvvwbg)
+// the vvvvwbe function
+function vvvvwbe(datadefault_vvvvwbe)
 {
-	if (isSet(datadefault_vvvvwbg) && datadefault_vvvvwbg.constructor !== Array)
+	if (isSet(datadefault_vvvvwbe) && datadefault_vvvvwbe.constructor !== Array)
 	{
-		var temp_vvvvwbg = datadefault_vvvvwbg;
-		var datadefault_vvvvwbg = [];
-		datadefault_vvvvwbg.push(temp_vvvvwbg);
+		var temp_vvvvwbe = datadefault_vvvvwbe;
+		var datadefault_vvvvwbe = [];
+		datadefault_vvvvwbe.push(temp_vvvvwbe);
 	}
-	else if (!isSet(datadefault_vvvvwbg))
+	else if (!isSet(datadefault_vvvvwbe))
 	{
-		var datadefault_vvvvwbg = [];
+		var datadefault_vvvvwbe = [];
 	}
-	var datadefault = datadefault_vvvvwbg.some(datadefault_vvvvwbg_SomeFunc);
+	var datadefault = datadefault_vvvvwbe.some(datadefault_vvvvwbe_SomeFunc);
 
 
 	// set this function logic
@@ -124,55 +124,55 @@ function vvvvwbg(datadefault_vvvvwbg)
 	{
 		jQuery('#jform_datadefault_other').closest('.control-group').show();
 		// add required attribute to datadefault_other field
-		if (jform_vvvvwbgvxf_required)
+		if (jform_vvvvwbevwy_required)
 		{
 			updateFieldRequired('datadefault_other',0);
 			jQuery('#jform_datadefault_other').prop('required','required');
 			jQuery('#jform_datadefault_other').attr('aria-required',true);
 			jQuery('#jform_datadefault_other').addClass('required');
-			jform_vvvvwbgvxf_required = false;
+			jform_vvvvwbevwy_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_datadefault_other').closest('.control-group').hide();
 		// remove required attribute from datadefault_other field
-		if (!jform_vvvvwbgvxf_required)
+		if (!jform_vvvvwbevwy_required)
 		{
 			updateFieldRequired('datadefault_other',1);
 			jQuery('#jform_datadefault_other').removeAttr('required');
 			jQuery('#jform_datadefault_other').removeAttr('aria-required');
 			jQuery('#jform_datadefault_other').removeClass('required');
-			jform_vvvvwbgvxf_required = true;
+			jform_vvvvwbevwy_required = true;
 		}
 	}
 }
 
-// the vvvvwbg Some function
-function datadefault_vvvvwbg_SomeFunc(datadefault_vvvvwbg)
+// the vvvvwbe Some function
+function datadefault_vvvvwbe_SomeFunc(datadefault_vvvvwbe)
 {
 	// set the function logic
-	if (datadefault_vvvvwbg == 'Other')
+	if (datadefault_vvvvwbe == 'Other')
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwbh function
-function vvvvwbh(datatype_vvvvwbh)
+// the vvvvwbf function
+function vvvvwbf(datatype_vvvvwbf)
 {
-	if (isSet(datatype_vvvvwbh) && datatype_vvvvwbh.constructor !== Array)
+	if (isSet(datatype_vvvvwbf) && datatype_vvvvwbf.constructor !== Array)
 	{
-		var temp_vvvvwbh = datatype_vvvvwbh;
-		var datatype_vvvvwbh = [];
-		datatype_vvvvwbh.push(temp_vvvvwbh);
+		var temp_vvvvwbf = datatype_vvvvwbf;
+		var datatype_vvvvwbf = [];
+		datatype_vvvvwbf.push(temp_vvvvwbf);
 	}
-	else if (!isSet(datatype_vvvvwbh))
+	else if (!isSet(datatype_vvvvwbf))
 	{
-		var datatype_vvvvwbh = [];
+		var datatype_vvvvwbf = [];
 	}
-	var datatype = datatype_vvvvwbh.some(datatype_vvvvwbh_SomeFunc);
+	var datatype = datatype_vvvvwbf.some(datatype_vvvvwbf_SomeFunc);
 
 
 	// set this function logic
@@ -181,13 +181,13 @@ function vvvvwbh(datatype_vvvvwbh)
 		jQuery('#jform_datadefault').closest('.control-group').show();
 		jQuery('#jform_indexes').closest('.control-group').show();
 		// add required attribute to indexes field
-		if (jform_vvvvwbhvxg_required)
+		if (jform_vvvvwbfvwz_required)
 		{
 			updateFieldRequired('indexes',0);
 			jQuery('#jform_indexes').prop('required','required');
 			jQuery('#jform_indexes').attr('aria-required',true);
 			jQuery('#jform_indexes').addClass('required');
-			jform_vvvvwbhvxg_required = false;
+			jform_vvvvwbfvwz_required = false;
 		}
 	}
 	else
@@ -195,42 +195,42 @@ function vvvvwbh(datatype_vvvvwbh)
 		jQuery('#jform_datadefault').closest('.control-group').hide();
 		jQuery('#jform_indexes').closest('.control-group').hide();
 		// remove required attribute from indexes field
-		if (!jform_vvvvwbhvxg_required)
+		if (!jform_vvvvwbfvwz_required)
 		{
 			updateFieldRequired('indexes',1);
 			jQuery('#jform_indexes').removeAttr('required');
 			jQuery('#jform_indexes').removeAttr('aria-required');
 			jQuery('#jform_indexes').removeClass('required');
-			jform_vvvvwbhvxg_required = true;
+			jform_vvvvwbfvwz_required = true;
 		}
 	}
 }
 
-// the vvvvwbh Some function
-function datatype_vvvvwbh_SomeFunc(datatype_vvvvwbh)
+// the vvvvwbf Some function
+function datatype_vvvvwbf_SomeFunc(datatype_vvvvwbf)
 {
 	// set the function logic
-	if (datatype_vvvvwbh == 'CHAR' || datatype_vvvvwbh == 'VARCHAR' || datatype_vvvvwbh == 'DATETIME' || datatype_vvvvwbh == 'DATE' || datatype_vvvvwbh == 'TIME' || datatype_vvvvwbh == 'INT' || datatype_vvvvwbh == 'TINYINT' || datatype_vvvvwbh == 'BIGINT' || datatype_vvvvwbh == 'FLOAT' || datatype_vvvvwbh == 'DECIMAL' || datatype_vvvvwbh == 'DOUBLE')
+	if (datatype_vvvvwbf == 'CHAR' || datatype_vvvvwbf == 'VARCHAR' || datatype_vvvvwbf == 'DATETIME' || datatype_vvvvwbf == 'DATE' || datatype_vvvvwbf == 'TIME' || datatype_vvvvwbf == 'INT' || datatype_vvvvwbf == 'TINYINT' || datatype_vvvvwbf == 'BIGINT' || datatype_vvvvwbf == 'FLOAT' || datatype_vvvvwbf == 'DECIMAL' || datatype_vvvvwbf == 'DOUBLE')
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwbi function
-function vvvvwbi(datatype_vvvvwbi)
+// the vvvvwbg function
+function vvvvwbg(datatype_vvvvwbg)
 {
-	if (isSet(datatype_vvvvwbi) && datatype_vvvvwbi.constructor !== Array)
+	if (isSet(datatype_vvvvwbg) && datatype_vvvvwbg.constructor !== Array)
 	{
-		var temp_vvvvwbi = datatype_vvvvwbi;
-		var datatype_vvvvwbi = [];
-		datatype_vvvvwbi.push(temp_vvvvwbi);
+		var temp_vvvvwbg = datatype_vvvvwbg;
+		var datatype_vvvvwbg = [];
+		datatype_vvvvwbg.push(temp_vvvvwbg);
 	}
-	else if (!isSet(datatype_vvvvwbi))
+	else if (!isSet(datatype_vvvvwbg))
 	{
-		var datatype_vvvvwbi = [];
+		var datatype_vvvvwbg = [];
 	}
-	var datatype = datatype_vvvvwbi.some(datatype_vvvvwbi_SomeFunc);
+	var datatype = datatype_vvvvwbg.some(datatype_vvvvwbg_SomeFunc);
 
 
 	// set this function logic
@@ -238,55 +238,55 @@ function vvvvwbi(datatype_vvvvwbi)
 	{
 		jQuery('#jform_datalenght').closest('.control-group').show();
 		// add required attribute to datalenght field
-		if (jform_vvvvwbivxh_required)
+		if (jform_vvvvwbgvxa_required)
 		{
 			updateFieldRequired('datalenght',0);
 			jQuery('#jform_datalenght').prop('required','required');
 			jQuery('#jform_datalenght').attr('aria-required',true);
 			jQuery('#jform_datalenght').addClass('required');
-			jform_vvvvwbivxh_required = false;
+			jform_vvvvwbgvxa_required = false;
 		}
 	}
 	else
 	{
 		jQuery('#jform_datalenght').closest('.control-group').hide();
 		// remove required attribute from datalenght field
-		if (!jform_vvvvwbivxh_required)
+		if (!jform_vvvvwbgvxa_required)
 		{
 			updateFieldRequired('datalenght',1);
 			jQuery('#jform_datalenght').removeAttr('required');
 			jQuery('#jform_datalenght').removeAttr('aria-required');
 			jQuery('#jform_datalenght').removeClass('required');
-			jform_vvvvwbivxh_required = true;
+			jform_vvvvwbgvxa_required = true;
 		}
 	}
 }
 
-// the vvvvwbi Some function
-function datatype_vvvvwbi_SomeFunc(datatype_vvvvwbi)
+// the vvvvwbg Some function
+function datatype_vvvvwbg_SomeFunc(datatype_vvvvwbg)
 {
 	// set the function logic
-	if (datatype_vvvvwbi == 'CHAR' || datatype_vvvvwbi == 'VARCHAR' || datatype_vvvvwbi == 'INT' || datatype_vvvvwbi == 'TINYINT' || datatype_vvvvwbi == 'BIGINT' || datatype_vvvvwbi == 'FLOAT' || datatype_vvvvwbi == 'DECIMAL' || datatype_vvvvwbi == 'DOUBLE')
+	if (datatype_vvvvwbg == 'CHAR' || datatype_vvvvwbg == 'VARCHAR' || datatype_vvvvwbg == 'INT' || datatype_vvvvwbg == 'TINYINT' || datatype_vvvvwbg == 'BIGINT' || datatype_vvvvwbg == 'FLOAT' || datatype_vvvvwbg == 'DECIMAL' || datatype_vvvvwbg == 'DOUBLE')
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwbl function
-function vvvvwbl(store_vvvvwbl)
+// the vvvvwbj function
+function vvvvwbj(store_vvvvwbj)
 {
-	if (isSet(store_vvvvwbl) && store_vvvvwbl.constructor !== Array)
+	if (isSet(store_vvvvwbj) && store_vvvvwbj.constructor !== Array)
 	{
-		var temp_vvvvwbl = store_vvvvwbl;
-		var store_vvvvwbl = [];
-		store_vvvvwbl.push(temp_vvvvwbl);
+		var temp_vvvvwbj = store_vvvvwbj;
+		var store_vvvvwbj = [];
+		store_vvvvwbj.push(temp_vvvvwbj);
 	}
-	else if (!isSet(store_vvvvwbl))
+	else if (!isSet(store_vvvvwbj))
 	{
-		var store_vvvvwbl = [];
+		var store_vvvvwbj = [];
 	}
-	var store = store_vvvvwbl.some(store_vvvvwbl_SomeFunc);
+	var store = store_vvvvwbj.some(store_vvvvwbj_SomeFunc);
 
 
 	// set this function logic
@@ -297,23 +297,23 @@ function vvvvwbl(store_vvvvwbl)
 		jQuery('.note_expert_field_save_mode').closest('.control-group').show();
 		jQuery('#jform_on_get_model_field').closest('.control-group').show();
 		// add required attribute to on_get_model_field field
-		if (jform_vvvvwblvxi_required)
+		if (jform_vvvvwbjvxb_required)
 		{
 			updateFieldRequired('on_get_model_field',0);
 			jQuery('#jform_on_get_model_field').prop('required','required');
 			jQuery('#jform_on_get_model_field').attr('aria-required',true);
 			jQuery('#jform_on_get_model_field').addClass('required');
-			jform_vvvvwblvxi_required = false;
+			jform_vvvvwbjvxb_required = false;
 		}
 		jQuery('#jform_on_save_model_field').closest('.control-group').show();
 		// add required attribute to on_save_model_field field
-		if (jform_vvvvwblvxj_required)
+		if (jform_vvvvwbjvxc_required)
 		{
 			updateFieldRequired('on_save_model_field',0);
 			jQuery('#jform_on_save_model_field').prop('required','required');
 			jQuery('#jform_on_save_model_field').attr('aria-required',true);
 			jQuery('#jform_on_save_model_field').addClass('required');
-			jform_vvvvwblvxj_required = false;
+			jform_vvvvwbjvxc_required = false;
 		}
 	}
 	else
@@ -323,43 +323,43 @@ function vvvvwbl(store_vvvvwbl)
 		jQuery('.note_expert_field_save_mode').closest('.control-group').hide();
 		jQuery('#jform_on_get_model_field').closest('.control-group').hide();
 		// remove required attribute from on_get_model_field field
-		if (!jform_vvvvwblvxi_required)
+		if (!jform_vvvvwbjvxb_required)
 		{
 			updateFieldRequired('on_get_model_field',1);
 			jQuery('#jform_on_get_model_field').removeAttr('required');
 			jQuery('#jform_on_get_model_field').removeAttr('aria-required');
 			jQuery('#jform_on_get_model_field').removeClass('required');
-			jform_vvvvwblvxi_required = true;
+			jform_vvvvwbjvxb_required = true;
 		}
 		jQuery('#jform_on_save_model_field').closest('.control-group').hide();
 		// remove required attribute from on_save_model_field field
-		if (!jform_vvvvwblvxj_required)
+		if (!jform_vvvvwbjvxc_required)
 		{
 			updateFieldRequired('on_save_model_field',1);
 			jQuery('#jform_on_save_model_field').removeAttr('required');
 			jQuery('#jform_on_save_model_field').removeAttr('aria-required');
 			jQuery('#jform_on_save_model_field').removeClass('required');
-			jform_vvvvwblvxj_required = true;
+			jform_vvvvwbjvxc_required = true;
 		}
 	}
 }
 
-// the vvvvwbl Some function
-function store_vvvvwbl_SomeFunc(store_vvvvwbl)
+// the vvvvwbj Some function
+function store_vvvvwbj_SomeFunc(store_vvvvwbj)
 {
 	// set the function logic
-	if (store_vvvvwbl == 6)
+	if (store_vvvvwbj == 6)
 	{
 		return true;
 	}
 	return false;
 }
 
-// the vvvvwbm function
-function vvvvwbm(add_css_view_vvvvwbm)
+// the vvvvwbk function
+function vvvvwbk(add_css_view_vvvvwbk)
 {
 	// set the function logic
-	if (add_css_view_vvvvwbm == 1)
+	if (add_css_view_vvvvwbk == 1)
 	{
 		jQuery('#jform_css_view-lbl').closest('.control-group').show();
 	}
@@ -369,11 +369,11 @@ function vvvvwbm(add_css_view_vvvvwbm)
 	}
 }
 
-// the vvvvwbn function
-function vvvvwbn(add_css_views_vvvvwbn)
+// the vvvvwbl function
+function vvvvwbl(add_css_views_vvvvwbl)
 {
 	// set the function logic
-	if (add_css_views_vvvvwbn == 1)
+	if (add_css_views_vvvvwbl == 1)
 	{
 		jQuery('#jform_css_views-lbl').closest('.control-group').show();
 	}
@@ -383,11 +383,11 @@ function vvvvwbn(add_css_views_vvvvwbn)
 	}
 }
 
-// the vvvvwbo function
-function vvvvwbo(add_javascript_view_footer_vvvvwbo)
+// the vvvvwbm function
+function vvvvwbm(add_javascript_view_footer_vvvvwbm)
 {
 	// set the function logic
-	if (add_javascript_view_footer_vvvvwbo == 1)
+	if (add_javascript_view_footer_vvvvwbm == 1)
 	{
 		jQuery('#jform_javascript_view_footer-lbl').closest('.control-group').show();
 	}
@@ -397,11 +397,11 @@ function vvvvwbo(add_javascript_view_footer_vvvvwbo)
 	}
 }
 
-// the vvvvwbp function
-function vvvvwbp(add_javascript_views_footer_vvvvwbp)
+// the vvvvwbn function
+function vvvvwbn(add_javascript_views_footer_vvvvwbn)
 {
 	// set the function logic
-	if (add_javascript_views_footer_vvvvwbp == 1)
+	if (add_javascript_views_footer_vvvvwbn == 1)
 	{
 		jQuery('#jform_javascript_views_footer-lbl').closest('.control-group').show();
 	}
@@ -760,8 +760,11 @@ function dbChecker(type){
 
 function getCodeFrom_server(id, type, type_name, callingName) {
 	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
-	if (token.length > 0 && id > 0 && type.length > 0) {
+	if (token.length > 0 && getCodeFrom_isValidId(id) && type.length > 0) {
 		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
+	} else {
+		console.error('There was a issue with the values passed to the [getCodeFrom_server] method and we could not make the Ajax call.');
+		return;
 	}
 	var getUrl = JRouter(url);
 	return fetch(getUrl, {
@@ -780,6 +783,17 @@ function getCodeFrom_server(id, type, type_name, callingName) {
 	}).catch(function(error) {
 		console.error('There was a problem with the fetch operation:', error);
 	});
+}
+function getCodeFrom_isValidId(id) {
+    if (typeof id === 'number') {
+        // Check if it's a positive integer
+        return Number.isInteger(id) && id > 0;
+    } else if (typeof id === 'string') {
+        // Check if it's a string of length > 30
+        return id.length > 30;
+    }
+    // If neither a number nor a string, return false
+    return false;
 }
 
 function getLinked() {
@@ -855,12 +869,16 @@ function getEditCustomCodeButtons() {
 
 				// Insert the div before .control-wrapper-{field}
 				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				if (insertBeforeElement) {
+					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				}
 
 				// Adding buttons to the div
 				Object.entries(buttons).forEach(([name, button]) => {
 					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					controlsDiv.innerHTML += button;
+					if (controlsDiv) {
+						controlsDiv.innerHTML += button;
+					}
 				});
 			});
 		}

@@ -139,7 +139,7 @@ final class Layout
 			if ($this->layout->exists($nameSingleCode . '.' . $tabName . '.'
 				. $field['alignment'] . '.' . $field['order_edit']))
 			{
-				$size = $this->layout->count($nameSingleCode . '.' . $tabName . '.'
+				$size = $this->layout->pathCount($nameSingleCode . '.' . $tabName . '.'
 							. $field['alignment']) + 1;
 				while ($this->layout->exists($nameSingleCode . '.' . $tabName . '.'
 					. $field['alignment'] . '.' . $size))
@@ -168,7 +168,7 @@ final class Layout
 				if ($this->newpublishingfields->exists($nameSingleCode . '.' .
 					$field['alignment'] . '.' . $field['order_edit']))
 				{
-					$size = $this->newpublishingfields->count($nameSingleCode . '.' .
+					$size = $this->newpublishingfields->pathCount($nameSingleCode . '.' .
 								$field['alignment']) + 1;
 					while ($this->newpublishingfields->exists($nameSingleCode . '.' .
 						$field['alignment'] . '.' . $size))
@@ -191,7 +191,7 @@ final class Layout
 			if ($this->layout->exists($nameSingleCode . '.Details.'
 				. $field['alignment'] . '.' . $field['order_edit']))
 			{
-				$size = $this->layout->count($nameSingleCode . '.Details.'
+				$size = $this->layout->pathCount($nameSingleCode . '.Details.'
 						. $field['alignment']) + 1;
 				while ($this->layout->exists($nameSingleCode . '.Details.'
 					. $field['alignment'] . '.' . $size))

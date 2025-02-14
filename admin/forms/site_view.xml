@@ -151,7 +151,6 @@
 			description="COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_DESCRIPTION"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="true"
 			button="true"
 		/>
@@ -449,7 +448,6 @@
 			description="COM_COMPONENTBUILDER_SITE_VIEW_DYNAMIC_GET_DESCRIPTION"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="false"
 		/>
 		<!-- Add_php_ajax Field. Type: Radio. (joomla) -->

@@ -147,16 +147,6 @@ defined('_JEXEC') or die;
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>
 
-	<?php echo Html::_('uitab.addTab', 'admin_viewTab', 'custom_import', Text::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_IMPORT', true)); ?>
-		<div class="row">
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<?php echo LayoutHelper::render('admin_view.custom_import_fullwidth', $this); ?>
-			</div>
-		</div>
-	<?php echo Html::_('uitab.endTab'); ?>
-
 	<?php $this->ignore_fieldsets = array('details','metadata','vdmmetadata','accesscontrol'); ?>
 	<?php $this->tab_name = 'admin_viewTab'; ?>
 	<?php echo LayoutHelper::render('joomla.edit.params', $this); ?>
@@ -677,48 +667,18 @@ jQuery('#adminForm').on('change', '#jform_add_sql',function (e)
 
 });
 
-// #jform_add_custom_import listeners for add_custom_import_vvvvvyg function
-jQuery('#jform_add_custom_import').on('keyup',function()
-{
-	var add_custom_import_vvvvvyg = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	vvvvvyg(add_custom_import_vvvvvyg);
-
-});
-jQuery('#adminForm').on('change', '#jform_add_custom_import',function (e)
-{
-	e.preventDefault();
-	var add_custom_import_vvvvvyg = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	vvvvvyg(add_custom_import_vvvvvyg);
-
-});
-
-// #jform_add_custom_import listeners for add_custom_import_vvvvvyh function
-jQuery('#jform_add_custom_import').on('keyup',function()
-{
-	var add_custom_import_vvvvvyh = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	vvvvvyh(add_custom_import_vvvvvyh);
-
-});
-jQuery('#adminForm').on('change', '#jform_add_custom_import',function (e)
-{
-	e.preventDefault();
-	var add_custom_import_vvvvvyh = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	vvvvvyh(add_custom_import_vvvvvyh);
-
-});
-
-// #jform_add_custom_button listeners for add_custom_button_vvvvvyi function
+// #jform_add_custom_button listeners for add_custom_button_vvvvvyg function
 jQuery('#jform_add_custom_button').on('keyup',function()
 {
-	var add_custom_button_vvvvvyi = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvvyi(add_custom_button_vvvvvyi);
+	var add_custom_button_vvvvvyg = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvyg(add_custom_button_vvvvvyg);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
 {
 	e.preventDefault();
-	var add_custom_button_vvvvvyi = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvvyi(add_custom_button_vvvvvyi);
+	var add_custom_button_vvvvvyg = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvyg(add_custom_button_vvvvvyg);
 
 });
 

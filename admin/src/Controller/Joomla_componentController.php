@@ -24,7 +24,8 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Utilities\GuidHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -78,31 +79,6 @@ class Joomla_componentController extends FormController
 	 * @since  5.0
 	 */
 	protected int $refid;
-
-	public function refresh()
-	{
-		// Check for request forgeries
-		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
-		// check if import is allowed for this user.
-		$user = Factory::getUser();
-		if ($user->authorise('joomla_component.import_jcb_packages', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
-		{
-			$session = Factory::getSession();
-			$session->set('backto_VDM_IMPORT', 'joomla_components');
-			$session->set('dataType_VDM_IMPORTINTO', 'smart_package');
-			// clear the session
-			ComponentbuilderHelper::set('vdmGithubPackages', null);
-			ComponentbuilderHelper::set('communityGithubPackages', null);
-			// Redirect to import view.
-			$message = Text::_('COM_COMPONENTBUILDER_YOU_CAN_NOW_SELECT_THE_COMPONENT_BZIPB_PACKAGE_YOU_WOULD_LIKE_TO_IMPORTBR_SMALLPLEASE_NOTE_THAT_SMART_COMPONENT_IMPORT_ONLY_WORKS_WITH_THE_FOLLOWING_FORMAT_BZIPBSMALL');
-			$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import_joomla_components&target=smartPackage', false), $message);
-			return;
-		}
-		// Redirect to the list screen with error.
-		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_A_COMPONENT_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_HELP');
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
-		return;
-	}
 
 	/**
 	 * Method override to check if you can add a new record.
@@ -203,12 +179,21 @@ class Joomla_componentController extends FormController
 	 */
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
-		// get the referral options (old method use return instead see parent)
+		// get int-defaults (to int new items with default values dynamically)
+		$init_defaults = $this->input->get('init_defaults', null, 'STRING');
+
+		// get the referral options (old method use init_defaults or return instead see parent)
 		$ref = $this->input->get('ref', 0, 'string');
 		$refid = $this->input->get('refid', 0, 'int');
 
 		// get redirect info.
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+		// set int-defaults
+		if (!empty($init_defaults))
+		{
+			$append = '&init_defaults='. (string) $init_defaults . $append;
+		}
 
 		// set the referral options
 		if ($refid && $ref)
@@ -380,37 +365,61 @@ class Joomla_componentController extends FormController
 	 */
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
+		// linked tables to update
+		$_tables_array = [
+			'component_admin_views' => 'joomla_component',
+			'component_site_views' => 'joomla_component',
+			'component_custom_admin_views' => 'joomla_component',
+			'component_updates' => 'joomla_component',
+			'component_mysql_tweaks' => 'joomla_component',
+			'component_custom_admin_menus' => 'joomla_component',
+			'component_config' => 'joomla_component',
+			'component_dashboard' => 'joomla_component',
+			'component_files_folders' => 'joomla_component',
+			'component_placeholders' => 'joomla_component',
+			'custom_code' => 'component',
+			'component_router' => 'joomla_component'
+		];
+
 		// get the state object (Joomla\CMS\Object\CMSObject)
 		$state = $model->get('state');
+
 		// if we save2copy we need to also copy linked tables found!
-		if ($state->task === 'save2copy' && $state->{'joomla_component.new'})
+		if (!empty($_tables_array) && $state->task === 'save2copy' && $state->{'joomla_component.new'})
 		{
-			// get new ID
-			$newID = $state->{'joomla_component.id'};
-			// get old ID
-			$oldID = $this->input->get('id', 0, 'INT');
-			// linked tables to update
-			$_tablesArray = array(
-				'component_admin_views' => 'joomla_component',
-				'component_site_views' => 'joomla_component',
-				'component_custom_admin_views' => 'joomla_component',
-				'component_updates' => 'joomla_component',
-				'component_mysql_tweaks' => 'joomla_component',
-				'component_custom_admin_menus' => 'joomla_component',
-				'component_config' => 'joomla_component',
-				'component_dashboard' => 'joomla_component',
-				'component_files_folders' => 'joomla_component',
-				'component_placeholders' => 'joomla_component',
-				'custom_code' => 'component',
-				'component_router' => 'joomla_component'
+			// get new GUID
+			$new_guid = DataFactory::_('Load')->value(
+				['a.guid' => 'guid'], // select
+				['a' => 'joomla_component'], // tables
+				['a.id' => $state->{'joomla_component.id'}] // where
 			);
-			foreach($_tablesArray as $_updateTable => $_key)
+
+			// get old GUID
+			$old_guid = $validData['guid'] ?? $this->input->get('guid', null, 'STRING') ?? DataFactory::_('Load')->value(
+				['a.guid' => 'guid'], // select
+				['a' => 'joomla_component'], // tables
+				['a.id' => $validData['id'] ?? $this->input->get('id', 0, 'INT')] // where
+			);
+
+			// we only continue if we have valid GUIDs
+			if (!GuidHelper::valid($new_guid) || !GuidHelper::valid($old_guid))
+			{
+				return;
+			}
+
+			foreach($_tables_array as $_update_table => $_field_name)
 			{
 				// get the linked ID
-				if ($_value = GetHelper::var($_updateTable, $oldID, $_key, 'id'))
+				$_item_id = DataFactory::_('Load')->value(
+					['a.id' => 'id'], // select
+					['a' => $_update_table], // tables
+					['a.' . $_field_name => $old_guid] // where
+				);
+
+				if ($_item_id !== null)
 				{
-					// copy fields to new linked table
-					ComponentbuilderHelper::copyItem(/*id->*/ $_value, /*table->*/ $_updateTable, /*change->*/ array($_key => $newID));
+					// copy fields to new admin view
+					ComponentbuilderHelper::copyItem(/*id->*/ $_item_id, /*table->*/ $_update_table, /*change->*/ [$_field_name => $new_guid]);
 				}
 			}
 		}

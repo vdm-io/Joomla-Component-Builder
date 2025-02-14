@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -24,8 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=custom_codes&task=custom_cod
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('custom_code',$item,'custom_codes');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -67,12 +68,12 @@ $edit = "index.php?option=com_componentbuilder&view=custom_codes&task=custom_cod
 		<td class="nowrap">
 			<div class="name">
 				<?php if ($canDo->get('custom_code.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->component_system_name); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'custom_codes.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
-					<?php echo $this->escape($item->component_system_name); ?>
+					<?php echo $this->escape($item->system_name); ?>
 				<?php endif; ?>
 			</div>
 		</td>

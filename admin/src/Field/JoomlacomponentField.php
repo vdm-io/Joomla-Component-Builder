@@ -153,7 +153,7 @@ class JoomlacomponentField extends ListField
 	{
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','component_system_name')));
+		$query->select($db->quoteName(array('a.guid','a.system_name'),array('guid','component_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.system_name ASC');
@@ -165,7 +165,7 @@ class JoomlacomponentField extends ListField
 			$options[] = Html::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->component_system_name);
+				$options[] = Html::_('select.option', $item->guid, $item->component_system_name);
 			}
 		}
 

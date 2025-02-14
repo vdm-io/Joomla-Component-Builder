@@ -155,12 +155,12 @@ class SnippetsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','b.name','c.name'),array('id','snippet_name','type','library')));
+		$query->select($db->quoteName(array('a.guid','a.name','b.name','c.name'),array('guid','snippet_name','type','library')));
 		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
 		// From the componentbuilder_snippet_type table.
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.guid') . ')');
 		// From the componentbuilder_library table.
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.guid') . ')');
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('c.ordering ASC');
 		$query->order('b.name ASC');
@@ -177,7 +177,7 @@ class SnippetsField extends ListField
 			{
 				$lib = (isset($item->library) && StringHelper::check($item->library)) ? ' (' . $item->library . ')' :'';
 				$type = (isset($item->type) && StringHelper::check($item->type)) ? $item->type :Text::_('COM_COMPONENTBUILDER_NO_TYPE');
-				$options[] = Html::_('select.option', $item->id, $type . ' - ' . $item->snippet_name . $lib);
+				$options[] = Html::_('select.option', $item->guid, $type . ' - ' . $item->snippet_name . $lib);
 			}
 		}
 		return $options;

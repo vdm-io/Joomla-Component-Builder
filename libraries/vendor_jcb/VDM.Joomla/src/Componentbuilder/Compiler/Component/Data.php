@@ -13,9 +13,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Placeholder as ComponentPlaceholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
@@ -49,169 +48,169 @@ use VDM\Joomla\Utilities\GetHelper;
 final class Data
 {
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Event
+	 * The Event Class.
 	 *
-	 * @var    EventInterface
+	 * @var   Event
 	 * @since 3.2.0
 	 */
-	protected EventInterface $event;
+	protected Event $event;
 
 	/**
-	 * Compiler Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    Placeholder
+	 * @var   Placeholder
 	 * @since 3.2.0
 	 */
 	protected Placeholder $placeholder;
 
 	/**
-	 * Compiler Component Placeholder
+	 * The Placeholder Class.
 	 *
-	 * @var    ComponentPlaceholder
+	 * @var   ComponentPlaceholder
 	 * @since 3.2.0
-	 **/
-	protected ComponentPlaceholder $componentPlaceholder;
+	 */
+	protected ComponentPlaceholder $componentplaceholder;
 
 	/**
-	 * Compiler Customcode Dispenser
+	 * The Dispenser Class.
 	 *
-	 * @var    Dispenser
+	 * @var   Dispenser
 	 * @since 3.2.0
 	 */
 	protected Dispenser $dispenser;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
+	 * @var   Gui
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Gui $gui;
 
 	/**
-	 * Compiler Field
+	 * The Field Class.
 	 *
-	 * @var    Field
+	 * @var   Field
 	 * @since 3.2.0
 	 */
 	protected Field $field;
 
 	/**
-	 * Compiler field name
+	 * The Name Class.
 	 *
-	 * @var    FieldName
+	 * @var   FieldName
 	 * @since 3.2.0
 	 */
-	protected FieldName $fieldName;
+	protected FieldName $fieldname;
 
 	/**
-	 * Compiler Field Unique Name
+	 * The UniqueName Class.
 	 *
-	 * @var    UniqueName
-	 * @since 3.2.0
-	 **/
-	protected UniqueName $uniqueName;
-
-	/**
-	 * Compiler Files Folders
-	 *
-	 * @var    Filesfolders
+	 * @var   UniqueName
 	 * @since 3.2.0
 	 */
-	protected Filesfolders $filesFolders;
+	protected UniqueName $uniquename;
 
 	/**
-	 * The modelling component history
+	 * The Filesfolders Class.
 	 *
-	 * @var    Historycomponent
+	 * @var   Filesfolders
+	 * @since 3.2.0
+	 */
+	protected Filesfolders $filesfolders;
+
+	/**
+	 * The History Component Class.
+	 *
+	 * @var   Historycomponent
 	 * @since 3.2.0
 	 */
 	protected Historycomponent $history;
 
 	/**
-	 * The modelling whmcs
+	 * The Whmcs Class.
 	 *
-	 * @var    Whmcs
+	 * @var   Whmcs
 	 * @since 3.2.0
 	 */
 	protected Whmcs $whmcs;
 
 	/**
-	 * The modelling Sql Tweaking
+	 * The Sqltweaking Class.
 	 *
-	 * @var    Sqltweaking
+	 * @var   Sqltweaking
 	 * @since 3.2.0
 	 */
 	protected Sqltweaking $sqltweaking;
 
 	/**
-	 * The modelling Admin Views
+	 * The Adminviews Class.
 	 *
-	 * @var    Adminviews
+	 * @var   Adminviews
 	 * @since 3.2.0
 	 */
 	protected Adminviews $adminviews;
 
 	/**
-	 * The modelling Site Views
+	 * The Siteviews Class.
 	 *
-	 * @var    Siteviews
+	 * @var   Siteviews
 	 * @since 3.2.0
 	 */
 	protected Siteviews $siteviews;
 
 	/**
-	 * The modelling Custom Admin Views
+	 * The Customadminviews Class.
 	 *
-	 * @var    Customadminviews
+	 * @var   Customadminviews
 	 * @since 3.2.0
 	 */
 	protected Customadminviews $customadminviews;
 
 	/**
-	 * The modelling Update Server
+	 * The Updateserver Class.
 	 *
-	 * @var    Updateserver
+	 * @var   Updateserver
 	 * @since 3.2.0
 	 */
 	protected Updateserver $updateserver;
 
 	/**
-	 * The modelling Joomla Modules
+	 * The Joomlamodules Class.
 	 *
-	 * @var    Joomlamodules
+	 * @var   Joomlamodules
 	 * @since 3.2.0
 	 */
 	protected Joomlamodules $modules;
 
 	/**
-	 * The modelling Joomla Plugins
+	 * The Joomlaplugins Class.
 	 *
-	 * @var    Joomlaplugins
+	 * @var   Joomlaplugins
 	 * @since 3.2.0
 	 */
 	protected Joomlaplugins $plugins;
 
 	/**
-	 * The modelling Joomla Site Router
+	 * The Router Class.
 	 *
-	 * @var    Router
+	 * @var   Router
 	 * @since 3.2.0
 	 */
 	protected Router $router;
@@ -224,62 +223,64 @@ final class Data
 	protected $db;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config                The compiler config object.
-	 * @param EventInterface|null       $event                 The compiler event api object.
-	 * @param Placeholder|null          $placeholder           The compiler placeholder object.
-	 * @param ComponentPlaceholder|null $componentPlaceholder  The compiler component placeholder object.
-	 * @param Dispenser|null            $dispenser             The compiler customcode dispenser object.
-	 * @param Customcode|null           $customcode            The compiler customcode object.
-	 * @param Gui|null                  $gui                   The compiler customcode gui.
-	 * @param Field|null                $field                 The compiler field object.
-	 * @param FieldName|null            $fieldName             The compiler field name object.
-	 * @param UniqueName|null           $uniqueName            The compiler field unique name object.
-	 * @param Filesfolders|null         $filesFolders          The compiler files folders object.
-	 * @param Historycomponent|null     $history               The modelling component history object.
-	 * @param Whmcs|null                $whmcs                 The modelling whmcs object.
-	 * @param Sqltweaking|null          $sqltweaking           The modelling sql tweaking object.
-	 * @param Adminviews|null           $adminviews            The modelling adminviews object.
-	 * @param Siteviews|null            $siteviews             The modelling siteviews object.
-	 * @param Customadminviews|null     $customadminviews      The modelling customadminviews object.
-	 * @param Updateserver|null         $updateserver          The modelling update server object.
-	 * @param Joomlamodules|null        $modules               The modelling modules object.
-	 * @param Joomlaplugins|null        $plugins               The modelling plugins object.
-	 * @param Router|null              $router                 The modelling router object.
+	 * @param Config                 $config                 The Config Class.
+	 * @param Event                  $event                  The EventInterface Class.
+	 * @param Placeholder            $placeholder            The Placeholder Class.
+	 * @param ComponentPlaceholder   $componentplaceholder   The Placeholder Class.
+	 * @param Dispenser              $dispenser              The Dispenser Class.
+	 * @param Customcode             $customcode             The Customcode Class.
+	 * @param Gui                    $gui                    The Gui Class.
+	 * @param Field                  $field                  The Field Class.
+	 * @param FieldName              $fieldname              The Name Class.
+	 * @param UniqueName             $uniquename             The UniqueName Class.
+	 * @param Filesfolders           $filesfolders           The Filesfolders Class.
+	 * @param Historycomponent       $historycomponent       The Historycomponent Class.
+	 * @param Whmcs                  $whmcs                  The Whmcs Class.
+	 * @param Sqltweaking            $sqltweaking            The Sqltweaking Class.
+	 * @param Adminviews             $adminviews             The Adminviews Class.
+	 * @param Siteviews              $siteviews              The Siteviews Class.
+	 * @param Customadminviews       $customadminviews       The Customadminviews Class.
+	 * @param Updateserver           $updateserver           The Updateserver Class.
+	 * @param Joomlamodules          $joomlamodules          The Joomlamodules Class.
+	 * @param Joomlaplugins          $joomlaplugins          The Joomlaplugins Class.
+	 * @param Router                 $router                 The Router Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?EventInterface $event = null,
-		?Placeholder $placeholder = null, ?ComponentPlaceholder $componentPlaceholder = null,
-		?Dispenser $dispenser = null, ?Customcode $customcode = null, ?Gui $gui = null,
-		?Field $field = null, ?FieldName $fieldName = null, ?UniqueName $uniqueName = null,
-		?Filesfolders $filesFolders = null, ?Historycomponent $history = null, ?Whmcs $whmcs = null,
-		?Sqltweaking $sqltweaking = null, ?Adminviews $adminviews = null, ?Siteviews $siteviews = null,
-		?Customadminviews $customadminviews = null, ?Updateserver $updateserver = null,
-		?Joomlamodules $modules = null, ?Joomlaplugins $plugins = null, ?Router $router = null)
+	public function __construct(Config $config, Event $event, Placeholder $placeholder,
+		ComponentPlaceholder $componentplaceholder,
+		Dispenser $dispenser, Customcode $customcode, Gui $gui,
+		Field $field, FieldName $fieldname,
+		UniqueName $uniquename, Filesfolders $filesfolders,
+		Historycomponent $historycomponent, Whmcs $whmcs,
+		Sqltweaking $sqltweaking, Adminviews $adminviews,
+		Siteviews $siteviews, Customadminviews $customadminviews,
+		Updateserver $updateserver, Joomlamodules $joomlamodules,
+		Joomlaplugins $joomlaplugins, Router $router)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->event = $event ?: Compiler::_('Event');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->componentPlaceholder = $componentPlaceholder ?: Compiler::_('Component.Placeholder');
-		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->field = $field ?: Compiler::_('Field');
-		$this->fieldName = $fieldName ?: Compiler::_('Field.Name');
-		$this->uniqueName = $uniqueName ?: Compiler::_('Field.Unique.Name');
-		$this->filesFolders = $filesFolders ?: Compiler::_('Model.Filesfolders');
-		$this->history = $history ?: Compiler::_('Model.Historycomponent');
-		$this->whmcs = $whmcs ?: Compiler::_('Model.Whmcs');
-		$this->sqltweaking = $sqltweaking ?: Compiler::_('Model.Sqltweaking');
-		$this->adminviews = $adminviews ?: Compiler::_('Model.Adminviews');
-		$this->siteviews = $siteviews ?: Compiler::_('Model.Siteviews');
-		$this->customadminviews = $customadminviews ?: Compiler::_('Model.Customadminviews');
-		$this->updateserver = $updateserver ?: Compiler::_('Model.Updateserver');
-		$this->modules = $modules ?: Compiler::_('Model.Joomlamodules');
-		$this->plugins = $plugins ?: Compiler::_('Model.Joomlaplugins');
-		$this->router = $router ?: Compiler::_('Model.Router');
+		$this->config = $config;
+		$this->event = $event;
+		$this->placeholder = $placeholder;
+		$this->componentplaceholder = $componentplaceholder;
+		$this->dispenser = $dispenser;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->field = $field;
+		$this->fieldname = $fieldname;
+		$this->uniquename = $uniquename;
+		$this->filesfolders = $filesfolders;
+		$this->history = $historycomponent;
+		$this->whmcs = $whmcs;
+		$this->sqltweaking = $sqltweaking;
+		$this->adminviews = $adminviews;
+		$this->siteviews = $siteviews;
+		$this->customadminviews = $customadminviews;
+		$this->updateserver = $updateserver;
+		$this->modules = $joomlamodules;
+		$this->plugins = $joomlaplugins;
+		$this->router = $router;
 		$this->db = Factory::getDbo();
 	}
 
@@ -290,6 +291,50 @@ final class Data
 	 * @since 3.2.0
 	 */
 	public function get(): ?object
+	{
+		// get the full query for the selected component
+		$query = $this->getQuery();
+
+		// Reset the query using our newly populated query object.
+		$this->db->setQuery($query);
+
+		// Load the results as a stdClass objects
+		$component = $this->db->loadObject();
+
+		// make sure we got a component loaded
+		if (empty($component) || !is_object($component) || !isset($component->system_name))
+		{
+			return null;
+		}
+
+		// Trigger Event: jcb_ce_onBeforeModelComponentData
+		$this->event->trigger(
+			'jcb_ce_onBeforeModelComponentData',
+			[&$component]
+		);
+
+		// load the global placeholders
+		$this->placeholder->active = $this->componentplaceholder->get();
+
+		// transform and load child entities
+		$this->energize($component);
+
+		// Trigger Event: jcb_ce_onAfterModelComponentData
+		$this->event->trigger(
+			'jcb_ce_onAfterModelComponentData',
+			[&$component]
+		);
+
+		return $component;
+	}
+
+	/**
+	 * get current component data query
+	 *
+	 * @return  string  The component data query
+	 * @since   5.0.4
+	 */
+	private function getQuery()
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
@@ -355,7 +400,7 @@ final class Data
 			$query->join(
 				'LEFT',
 				$this->db->quoteName('#__componentbuilder_' . $join, $as)
-				. ' ON (' . $this->db->quoteName('a.id') . ' = '
+				. ' ON (' . $this->db->quoteName('a.guid') . ' = '
 				. $this->db->quoteName($as . '.joomla_component') . ')'
 			);
 		}
@@ -368,127 +413,277 @@ final class Data
 			'jcb_ce_onBeforeQueryComponentData', [&$query, &$this->db]
 		);
 
-		// Reset the query using our newly populated query object.
-		$this->db->setQuery($query);
+		return $query;
+	}
 
-		// Load the results as a list of stdClass objects
-		$component = $this->db->loadObject();
+	/**
+	 * Transform the current component data by loading all children.
+	 *
+	 * This method orchestrates various transformations and settings
+	 * on the `$component` object. Since objects in PHP are passed
+	 * by reference, all changes to `$component` inside helper
+	 * methods directly update the same instance.
+	 *
+	 * @param  object  $component  The component object containing all the necessary data.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function energize(object $component)
+	{
+		$this->setComponentNames($component);
+		$this->setVersion($component);
+		$this->setImagePath($component);
+		$this->setGlobalConfig($component);
+		$this->setFilesFolders($component);
+		$this->setUiKit($component);
+		$this->setWhmcs($component);
+		$this->setFootable($component);
+		$this->setCustomMenus($component);
+		$this->setSqlTweaks($component);
+		$this->setViews($component);
+		$this->setConfigData($component);
+		$this->setContributors($component);
+		$this->setUpdateServer($component);
+		$this->setBuildDate($component);
+		$this->setHistory($component);
+		$this->setDispenserConfigs($component);
+		$this->setSql($component);
+		$this->setBom($component);
+		$this->setReadMe($component);
+		$this->setDashboardMethods($component);
+		$this->setServers($component);
+		$this->setIgnoreFolders($component);
+		$this->setModules($component);
+		$this->setPlugins($component);
+		$this->setRouter($component);
+	}
 
-		// make sure we got a component loaded
-		if (!is_object($component) || !isset($component->system_name))
-		{
-			return null;
-		}
+	/**
+	 * Sets the sales name and name code of the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setComponentNames(object $component): void
+	{
+		$component->sales_name = StringHelper::safe($component->system_name);
+		$component->name_code = StringHelper::safe($component->name_code);
+	}
 
-		// Trigger Event: jcb_ce_onBeforeModelComponentData
-		$this->event->trigger(
-			'jcb_ce_onBeforeModelComponentData', [&$component]
+	/**
+	 * Ensures the component version naming is correct.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setVersion(object $component): void
+	{
+		$this->config->set(
+			'component_version',
+			preg_replace('/^v/i', '', (string) $component->component_version)
 		);
+	}
 
-		// load the global placeholders
-		$this->placeholder->active = $this->componentPlaceholder->get();
-
-		// set component sales name
-		$component->sales_name = StringHelper::safe(
-			$component->system_name
-		);
-
-		// set the component name_code
-		$component->name_code = StringHelper::safe(
-			$component->name_code
-		);
-
-		// ensure version naming is correct
-		$this->config->set('component_version', preg_replace(
-				'/^v/i', '', (string) $component->component_version
-			)
-		);
-
-		// Make sure the image is only an image path
+	/**
+	 * Ensures the image field contains only the image path.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setImagePath(object $component): void
+	{
 		if (strpos($component->image, '#') !== false)
 		{
 			$component->image = strstr($component->image, '#', true);
 		}
+	}
 
-		// set the website and autor for global use (default to VDM if not found)
+	/**
+	 * Sets the global configuration for the project website and author.
+	 *
+	 * Defaults are provided if the website or author fields are not set.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setGlobalConfig(object $component): void
+	{
 		$this->config->set('project_website', $component->website ?? 'https://dev.vdm.io');
 		$this->config->set('project_author', $component->author ?? 'VDM');
+	}
 
-		// set the files and folders
-		$this->filesFolders->set($component);
+	/**
+	 * Sets the files and folders configuration for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setFilesFolders(object $component): void
+	{
+		$this->filesfolders->set($component);
+	}
 
-		// set the uikit switch
+	/**
+	 * Configures the UIkit switch for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setUiKit(object $component): void
+	{
 		$this->config->set('uikit', $component->adduikit);
+	}
 
-		// set whmcs links if needed
+	/**
+	 * Configures WHMCS links for the component if applicable.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setWhmcs(object $component): void
+	{
 		$this->whmcs->set($component);
+	}
 
-		// set the footable switch
+	/**
+	 * Configures Footable settings for the component.
+	 *
+	 * If `addfootable` is greater than 0, Footable is enabled, and its version
+	 * is set to either 2 or 3 based on the value of `addfootable`.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setFootable(object $component): void
+	{
 		if ($component->addfootable > 0)
 		{
-			// force add footable
 			$this->config->set('footable', true);
-			// add the version
-			$this->config->set('footable_version', (3 == $component->addfootable) ? 3 : 2);
+			$this->config->set('footable_version', ($component->addfootable == 3) ? 3 : 2);
 		}
+	}
 
-		// set the addcustommenus data
-		$component->addcustommenus = (isset($component->addcustommenus)
-			&& JsonHelper::check($component->addcustommenus))
-			? json_decode((string) $component->addcustommenus, true) : null;
+	/**
+	 * Configures custom menus for the component.
+	 *
+	 * If `addcustommenus` is a valid JSON string, it is decoded and set as
+	 * an array in the `custommenus` property. Otherwise, it is unset.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setCustomMenus(object $component): void
+	{
+		$component->addcustommenus = (isset($component->addcustommenus) && JsonHelper::check($component->addcustommenus))
+			? json_decode((string)$component->addcustommenus, true)
+			: null;
+
 		if (ArrayHelper::check($component->addcustommenus))
 		{
 			$component->custommenus = array_values($component->addcustommenus);
 		}
+
 		unset($component->addcustommenus);
+	}
 
-		// set the sql tweak data
+	/**
+	 * Applies SQL tweaking configurations to the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setSqlTweaks(object $component): void
+	{
 		$this->sqltweaking->set($component);
+	}
 
-		// set the admin view data
+	/**
+	 * Configures admin, site, and custom admin views for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setViews(object $component): void
+	{
 		$this->adminviews->set($component);
-
-		// set the site view data
 		$this->siteviews->set($component);
-
-		// set the custom_admin_views data
 		$this->customadminviews->set($component);
+	}
 
-		// set the config data
-		$component->addconfig = (isset($component->addconfig)
-			&& JsonHelper::check($component->addconfig))
-			? json_decode((string) $component->addconfig, true) : null;
-		if (ArrayHelper::check($component->addconfig))
-		{
-			$component->config = array_map(
-				function ($field) {
-					// make sure the alias and title is 0
-					$field['alias'] = 0;
-					$field['title'] = 0;
-					// set the field details
-					$this->field->set($field);
-					// set unique name counter
-					$this->uniqueName->set($field['base_name'], 'configs');
+	/**
+	 * Processes additional configuration data for the component.
+	 *
+	 * If `addconfig` is a valid JSON string, it is decoded and stored in the `config` property.
+	 * Fields are processed and validated, and unique names are set for each field.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setConfigData(object $component): void
+	{
+		$component->addconfig = (isset($component->addconfig) && JsonHelper::check($component->addconfig))
+			? json_decode((string) $component->addconfig, true)
+			: null;
 
-					// return field
-					return $field;
-				}, array_values($component->addconfig)
-			);
+		if (ArrayHelper::check($component->addconfig)) {
+			$component->config = array_map(function ($field) {
+				$field['alias'] = 0;
+				$field['title'] = 0;
+				$this->field->set($field);
+				$this->uniquename->set($field['base_name'], 'configs');
+				return $field;
+			}, array_values($component->addconfig));
 
-			// do some house cleaning (for fields)
 			foreach ($component->config as $field)
 			{
-				// so first we lock the field name in
-				$this->fieldName->get($field, 'configs');
+				$this->fieldname->get($field, 'configs');
 			}
-			// unset original value
+
 			unset($component->addconfig);
 		}
+	}
 
-		// set the add contributors
-		$component->addcontributors = (isset($component->addcontributors)
-			&& JsonHelper::check($component->addcontributors))
-			? json_decode((string) $component->addcontributors, true) : null;
+	/**
+	 * Processes and sets contributors for the component.
+	 *
+	 * If `addcontributors` is a valid JSON string, it is decoded and stored in the `contributors` property.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setContributors(object $component): void
+	{
+		$component->addcontributors = (isset($component->addcontributors) && JsonHelper::check($component->addcontributors))
+			? json_decode((string)$component->addcontributors, true)
+			: null;
+
 		if (ArrayHelper::check($component->addcontributors))
 		{
 			$this->config->set('add_contributors', true);
@@ -496,38 +691,106 @@ final class Data
 				$component->addcontributors
 			);
 		}
+
 		unset($component->addcontributors);
+	}
 
-		// set the version updates
+	/**
+	 * Configures the update server details for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setUpdateServer(object $component): void
+	{
 		$this->updateserver->set($component);
+	}
 
-		// build the build date
+	/**
+	 * Sets the build date for the component based on creation or modification date.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setBuildDate(object $component): void
+	{
 		if ($this->config->get('add_build_date', 1) == 3)
 		{
-			if (empty($this->component->modified) ||
-				$this->component->modified == '0000-00-00' ||
-				$this->component->modified == '0000-00-00 00:00:00')
-			{
-				$this->config->set('build_date', $this->component->created);
-			}
-			else
-			{
-				$this->config->set('build_date', $this->component->modified);
-			}
+			$buildDate = empty($this->component->modified) ||
+			$this->component->modified == '0000-00-00' ||
+			$this->component->modified == '0000-00-00 00:00:00'
+				? $this->component->created
+				: $this->component->modified;
+
+			$this->config->set('build_date', $buildDate);
 		}
+	}
 
-		// build update SQL
+	/**
+	 * Applies the history configuration to the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setHistory(object $component): void
+	{
 		$this->history->set($component);
+	}
 
-		// set GUI mapper
-		$guiMapper = [
+	/**
+	 * Configures dispenser settings for the component.
+	 *
+	 * This includes settings for JavaScript, CSS, PHP, and SQL files.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setDispenserConfigs(object $component): void
+	{
+		$gui_mapper = $this->initializeGuiMapper();
+
+		$this->configureJavaScript($component, $gui_mapper);
+		$this->configureGlobalCss($component);
+		$this->configurePhpScripts($component, $gui_mapper);
+		$this->configurePhpHelpers($component, $gui_mapper);
+		$this->configureAdminAndSiteEvents($component, $gui_mapper);
+	}
+
+	/**
+	 * Initializes the GUI mapper configuration.
+	 *
+	 * @return array The GUI mapper array.
+	 * @since  5.0.4
+	 */
+	private function initializeGuiMapper(): array
+	{
+		return [
 			'table' => 'joomla_component',
-			'id'    => (int) $this->config->component_id,
+			'id'	=> (int) $this->config->component_id,
 			'field' => 'javascript',
-			'type' => 'js'
+			'type'  => 'js',
 		];
+	}
 
-		// add_javascript
+	/**
+	 * Configures JavaScript settings for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 * @param  array   $guiMapper  The GUI mapper configuration.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function configureJavaScript(object $component, array $guiMapper): void
+	{
 		if ($component->add_javascript == 1)
 		{
 			$this->dispenser->set(
@@ -542,62 +805,71 @@ final class Data
 		{
 			$this->dispenser->hub['component_js'] = '';
 		}
-		unset($component->javascript);
 
-		// add global CSS
-		$addGlobalCss = ['admin', 'site'];
-		foreach ($addGlobalCss as $area)
+		unset($component->javascript);
+	}
+
+	/**
+	 * Configures global CSS settings for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function configureGlobalCss(object $component): void
+	{
+		$areas = ['admin', 'site'];
+
+		foreach ($areas as $area)
 		{
-			// add_css if found
-			if (isset($component->{'add_css_' . $area})
-				&& $component->{'add_css_' . $area} == 1
-				&& isset($component->{'css_' . $area})
-				&& StringHelper::check(
-					$component->{'css_' . $area}
-				))
+			$cssKey = 'css_' . $area;
+			$addCssKey = 'add_css_' . $area;
+
+			if (isset($component->$addCssKey) && $component->$addCssKey == 1 &&
+				isset($component->$cssKey) && StringHelper::check($component->$cssKey))
 			{
-				$this->dispenser->set(
-					$component->{'css_' . $area},
-					'component_css_' . $area
-				);
+				$this->dispenser->set($component->$cssKey, 'component_css_' . $area);
 			}
 			else
 			{
 				$this->dispenser->hub['component_css_' . $area] = '';
 			}
-			unset($component->{'css_' . $area});
+
+			unset($component->$cssKey);
 		}
+	}
 
-		// set the lang target
-		$this->config->lang_target = 'admin';
+	/**
+	 * Configures PHP script settings for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 * @param  array   $guiMapper  The GUI mapper configuration.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function configurePhpScripts(object $component, array $guiMapper): void
+	{
+		$scriptMethods = ['php_preflight', 'php_postflight', 'php_method'];
+		$scriptTypes = ['install', 'update', 'uninstall'];
 
-		// add PHP in ADMIN
-		$addScriptMethods = [
-			'php_preflight',
-			'php_postflight',
-			'php_method'
-		];
-		$addScriptTypes = [
-			'install',
-			'update',
-			'uninstall'
-		];
-		// update GUI mapper
 		$guiMapper['type'] = 'php';
-		foreach ($addScriptMethods as $scriptMethod)
+
+		foreach ($scriptMethods as $scriptMethod)
 		{
-			foreach ($addScriptTypes as $scriptType)
+			foreach ($scriptTypes as $scriptType)
 			{
-				if (isset($component->{'add_' . $scriptMethod . '_' . $scriptType})
-					&& $component->{'add_' . $scriptMethod . '_' . $scriptType} == 1
-					&& StringHelper::check(
-						$component->{$scriptMethod . '_' . $scriptType}
-					))
+				$key = $scriptMethod . '_' . $scriptType;
+				$addKey = 'add_' . $key;
+
+				if (isset($component->$addKey) && $component->$addKey == 1 &&
+					StringHelper::check($component->$key))
 				{
-					// set GUI mapper field
-					$guiMapper['field'] = $scriptMethod . '_' . $scriptType;
+					$guiMapper['field'] = $key;
+
 					$this->dispenser->set(
-						$component->{$scriptMethod . '_' . $scriptType},
+						$component->$key,
 						$scriptMethod,
 						$scriptType,
 						null,
@@ -608,122 +880,112 @@ final class Data
 				{
 					$this->dispenser->hub[$scriptMethod][$scriptType] = '';
 				}
-				unset($component->{$scriptMethod . '_' . $scriptType});
+
+				unset($component->$key);
 			}
 		}
+	}
 
-		// add_php_helper
-		if ($component->add_php_helper_admin == 1
-			&& StringHelper::check(
-				$component->php_helper_admin
-			))
-		{
-			$this->config->lang_target = 'admin';
-			// update GUI mapper
-			$guiMapper['field']  = 'php_helper_admin';
-			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-			$this->dispenser->set(
-				$component->php_helper_admin,
-				'component_php_helper_admin',
-				null,
-				null,
-				$guiMapper
-			);
-			unset($guiMapper['prefix']);
-		}
-		else
-		{
-			$this->dispenser->hub['component_php_helper_admin'] = '';
-		}
-		unset($component->php_helper);
+	/**
+	 * Configures PHP helper settings for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 * @param  array   $guiMapper  The GUI mapper configuration.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function configurePhpHelpers(object $component, array $guiMapper): void
+	{
+		$helperConfigurations = [
+			'admin' => 'php_helper_admin',
+			'both' => 'php_helper_both',
+			'site' => 'php_helper_site',
+		];
 
-		// add_admin_event
-		if ($component->add_admin_event == 1
-			&& StringHelper::check($component->php_admin_event))
+		foreach ($helperConfigurations as $target => $field)
 		{
-			$this->config->lang_target = 'admin';
-			// update GUI mapper field
-			$guiMapper['field'] = 'php_admin_event';
-			$this->dispenser->set(
-				$component->php_admin_event,
-				'component_php_admin_event',
-				null,
-				null,
-				$guiMapper
-			);
-		}
-		else
-		{
-			$this->dispenser->hub['component_php_admin_event'] = '';
-		}
-		unset($component->php_admin_event);
+			$addKey = 'add_' . $field;
 
-		// add_php_helper_both
-		if ($component->add_php_helper_both == 1
-			&& StringHelper::check($component->php_helper_both))
-		{
-			$this->config->lang_target = 'both';
-			// update GUI mapper field
-			$guiMapper['field']  = 'php_helper_both';
-			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-			$this->dispenser->set(
-				$component->php_helper_both,
-				'component_php_helper_both',
-				null,
-				null,
-				$guiMapper
-			);
-			unset($guiMapper['prefix']);
-		}
-		else
-		{
-			$this->dispenser->hub['component_php_helper_both'] = '';
-		}
+			if (isset($component->$addKey) && $component->$addKey == 1 &&
+				StringHelper::check($component->$field))
+			{
+				$this->config->lang_target = $target;
+				$guiMapper['field'] = $field;
+				$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
 
-		// add_php_helper_site
-		if ($component->add_php_helper_site == 1
-			&& StringHelper::check($component->php_helper_site))
-		{
-			$this->config->lang_target = 'site';
-			// update GUI mapper field
-			$guiMapper['field']  = 'php_helper_site';
-			$guiMapper['prefix'] = PHP_EOL . PHP_EOL;
-			$this->dispenser->set(
-				$component->php_helper_site,
-				'component_php_helper_site',
-				null,
-				null,
-				$guiMapper
-			);
-			unset($guiMapper['prefix']);
-		}
-		else
-		{
-			$this->dispenser->hub['component_php_helper_site'] = '';
-		}
-		unset($component->php_helper);
+				$this->dispenser->set(
+					$component->$field,
+					'component_' . $field,
+					null,
+					null,
+					$guiMapper
+				);
 
-		// add_site_event
-		if ($component->add_site_event == 1
-			&& StringHelper::check($component->php_site_event))
-		{
-			$this->config->lang_target = 'site';
-			// update GUI mapper field
-			$guiMapper['field'] = 'php_site_event';
-			$this->dispenser->set(
-				$component->php_site_event,
-				'component_php_site_event',
-				null,
-				null,
-				$guiMapper
-			);
-		}
-		else
-		{
-			$this->dispenser->hub['component_php_site_event'] = '';
-		}
-		unset($component->php_site_event);
+				unset($guiMapper['prefix']);
+			}
+			else
+			{
+				$this->dispenser->hub['component_' . $field] = '';
+			}
 
+			unset($component->$field);
+		}
+	}
+
+	/**
+	 * Configures admin and site events for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 * @param  array   $guiMapper  The GUI mapper configuration.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function configureAdminAndSiteEvents(object $component, array $guiMapper): void
+	{
+		$eventConfigurations = [
+			'admin' => 'php_admin_event',
+			'site' => 'php_site_event',
+		];
+
+		foreach ($eventConfigurations as $target => $field)
+		{
+			$addKey = 'add_' . $field;
+
+			if (isset($component->$addKey) && $component->$addKey == 1 &&
+				StringHelper::check($component->$field))
+			{
+				$this->config->lang_target = $target;
+				$guiMapper['field'] = $field;
+
+				$this->dispenser->set(
+					$component->$field,
+					'component_' . $field,
+					null,
+					null,
+					$guiMapper
+				);
+			}
+			else
+			{
+				$this->dispenser->hub['component_' . $field] = '';
+			}
+
+			unset($component->$field);
+		}
+	}
+
+	/**
+	 * Processes the SQL for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setSql(object $component): void
+	{
 		// add_sql
 		if ($component->add_sql == 1)
 		{
@@ -744,8 +1006,18 @@ final class Data
 			);
 		}
 		unset($component->sql_uninstall);
+	}
 
-		// bom
+	/**
+	 * Processes the bom for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setBom(object $component): void
+	{
 		if (StringHelper::check($component->bom))
 		{
 			$this->config->set('bom_path',
@@ -753,22 +1025,44 @@ final class Data
 			);
 		}
 		unset($component->bom);
+	}
 
-		// README
-		$component->readme =
-			$component->addreadme ?
-				$this->customcode->update(
-					base64_decode((string) $component->readme)
-				) : '';
+	/**
+	 * Processes the readme for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setReadMe(object $component): void
+	{
+		$component->readme = $component->addreadme
+			? $this->customcode->update(
+				base64_decode((string) $component->readme)
+			)
+			: '';
+	}
 
+	/**
+	 * Processes dashboard-related methods and configurations for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setDashboardMethods(object $component): void
+	{
 		// set lang now
 		$nowLang    = $this->config->lang_target;
 		$this->config->lang_target = 'admin';
 
 		// dashboard methods
-		$component->dashboard_tab = (isset($component->dashboard_tab)
-			&& JsonHelper::check($component->dashboard_tab))
-			? json_decode((string) $component->dashboard_tab, true) : null;
+		$component->dashboard_tab = (isset($component->dashboard_tab) && JsonHelper::check($component->dashboard_tab))
+			? json_decode((string) $component->dashboard_tab, true)
+			: null;
+
 		if (ArrayHelper::check($component->dashboard_tab))
 		{
 			$component->dashboard_tab = array_map(
@@ -810,7 +1104,18 @@ final class Data
 
 		// reset back to now lang
 		$this->config->lang_target = $nowLang;
+	}
 
+	/**
+	 * Configures the servers for update and sales handling.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setServers(object $component): void
+	{
 		// catch empty URL to update server TODO: we need to fix this in  better way later
 		if (empty($component->add_update_server) || ($component->add_update_server == 1 && $component->update_server_target != 3
 			&& (
@@ -824,72 +1129,87 @@ final class Data
 			$component->update_server_url = '';
 		}
 
-		// add the update/sales server FTP details if that is the expected protocol
-		$serverArray = array('update_server', 'sales_server');
+		$serverArray = ['update_server', 'sales_server'];
 		foreach ($serverArray as $server)
 		{
-			if ($component->{'add_' . $server} == 1
-				&& is_numeric($component->{$server})
-				&& $component->{$server} > 0)
+			if ($component->{'add_' . $server} == 1 &&
+				is_numeric($component->{$server}) &&
+				$component->{$server} > 0)
 			{
-				// get the server protocol
-				$component->{$server . '_protocol'}
-					= GetHelper::var(
-					'server', (int) $component->{$server}, 'id', 'protocol'
-				);
+				$component->{$server . '_protocol'} =
+					GetHelper::var('server', (int) $component->{$server}, 'id', 'protocol');
 			}
 			else
 			{
 				$component->{$server} = 0;
-				// only change this for sales server (update server can be added loacaly to the zip file)
-				if ('sales_server' === $server)
+				if ($server === 'sales_server')
 				{
 					$component->{'add_' . $server} = 0;
 				}
 				$component->{$server . '_protocol'} = 0;
 			}
 		}
+	}
 
-		// set the ignore folders for repo if found
-		if (isset($component->toignore)
-			&& StringHelper::check(
-				$component->toignore
-			))
+	/**
+	 * Configures the list of folders to ignore for the repository.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setIgnoreFolders(object $component): void
+	{
+		if (isset($component->toignore) && StringHelper::check($component->toignore))
 		{
-			if (strpos((string) $component->toignore, ',') !== false)
-			{
-				$component->toignore = array_map(
-					'trim', (array) explode(',', (string) $component->toignore)
-				);
-			}
-			else
-			{
-				$component->toignore = array(trim((string) $component->toignore));
-			}
+			$component->toignore = strpos((string)$component->toignore, ',') !== false
+				? array_map('trim', explode(',', (string)$component->toignore))
+				: [trim((string)$component->toignore)];
 		}
 		else
 		{
-			// the default is to ignore the repo folder
-			$component->toignore = array('.git');
+			$component->toignore = ['.git'];
 		}
+	}
 
-		// set all modules
+	/**
+	 * Configures all modules for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setModules(object $component): void
+	{
 		$this->modules->set($component);
+	}
 
-		// set all plugins
+	/**
+	 * Configures all plugins for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setPlugins(object $component): void
+	{
 		$this->plugins->set($component);
+	}
 
-		// set the site router
+	/**
+	 * Configures the site router for the component.
+	 *
+	 * @param  object  $component  The component object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setRouter(object $component): void
+	{
 		$this->router->set($component);
-
-		// Trigger Event: jcb_ce_onAfterModelComponentData
-		$this->event->trigger(
-			'jcb_ce_onAfterModelComponentData',
-			[&$component]
-		);
-
-		// return found component data
-		return $component;
 	}
 }
 

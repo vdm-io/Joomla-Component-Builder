@@ -340,7 +340,6 @@
 			description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_MAIN_DESCRIPTION"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="true"
 		/>
 		<!-- Add_php_getlistquery Field. Type: Radio. (joomla) -->
@@ -1243,7 +1242,6 @@
 					label="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_LABEL"
 					description="COM_COMPONENTBUILDER_DYNAMIC_GET_VIEW_TABLE_DESCRIPTION"
 					multiple="false"
-					default=""
 					required="true"
 					button="false"
 				/>

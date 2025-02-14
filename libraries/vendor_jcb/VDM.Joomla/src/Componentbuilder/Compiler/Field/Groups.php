@@ -28,7 +28,7 @@ final class Groups
 	 * Field Grouping https://docs.joomla.org/Form_field
 	 *
 	 * @var    array
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected array $groups = [
 		'default' => [
@@ -92,7 +92,7 @@ final class Groups
 	 * @param   string   $option The field grouping
 	 *
 	 * @return  bool    if the field was found
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function check(string $type, string $option = 'default'): bool
 	{
@@ -105,24 +105,26 @@ final class Groups
 	}
 
 	/**
-	 * get the field types id -> name of a group or groups
+	 * get the field types $key -> name of a group or groups
 	 *
 	 * @param   array   $groups  The groups
+	 * @param   string  $key     The return key
 	 *
-	 * @return  array|null  ids of the spacer field types
-	 * @since 3.2.0
+	 * @return  array|null  ids of the field types
+	 * @since   3.2.0
+	 * @since   5.0.4 (add $key arg)
 	 */
-	public function types(array $groups = []): ?array
+	public function types(array $groups = [], $key = 'id'): ?array
 	{
 		// make sure we have a group
 		if (($ids = $this->typesIds($groups)) !== null)
 		{
 			// Create a new query object.
 			$query = $this->db->getQuery(true);
-			$query->select($this->db->quoteName(array('id', 'name')));
+			$query->select($this->db->quoteName([$key, 'name']));
 			$query->from($this->db->quoteName('#__componentbuilder_fieldtype'));
 			$query->where($this->db->quoteName('published') . ' = 1');
-			$query->where($this->db->quoteName('id') . ' IN (' . implode(',',$ids) . ')');
+			$query->where($this->db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
 
 			// Reset the query using our newly populated query object.
 			$this->db->setQuery($query);
@@ -130,7 +132,7 @@ final class Groups
 
 			if ($this->db->getNumRows())
 			{
-				return $this->db->loadAssocList('id', 'name');
+				return $this->db->loadAssocList($key, 'name');
 			}
 		}
 
@@ -143,7 +145,7 @@ final class Groups
 	 * @param   array   $groups  The groups
 	 *
 	 * @return  array|null  ids of the spacer field types
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function typesIds(array $groups = []): ?array
 	{
@@ -181,11 +183,62 @@ final class Groups
 	 * get the spacer IDs
 	 *
 	 * @return  array|null  ids of the spacer field types
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function spacerIds(): ?array
 	{
 		return $this->typesIds(['spacer']);
+	}
+
+	/**
+	 * get the field types Guid's of a group or groups
+	 *
+	 * @param   array   $groups  The groups
+	 *
+	 * @return  array|null  Guid of the field types
+	 * @since   5.0.4
+	 */
+	public function typesGuids(array $groups = []): ?array
+	{
+		// make sure we have a group
+		if (ArrayHelper::check($groups))
+		{
+			$merge_groups = [];
+			foreach ($groups as $group)
+			{
+				if (isset($this->groups[$group]))
+				{
+					$merge_groups[] = $this->groups[$group];
+				}
+			}
+
+			// make sure we have these types of groups
+			if (ArrayHelper::check($merge_groups))
+			{
+				// get the database object to use quote
+				return GetHelper::vars(
+					'fieldtype',
+					(array) array_map(function($name) {
+						return $this->db->quote(ucfirst($name));
+					}, ArrayHelper::merge($merge_groups)),
+					'name',
+					'guid'
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * get the spacer Guid's
+	 *
+	 * @return  array|null  guid of the spacer field types
+	 * @since   5.0.4
+	 */
+	public function spacerGuids(): ?array
+	{
+		return $this->typesGuids(['spacer']);
 	}
 }
 

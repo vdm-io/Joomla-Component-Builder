@@ -153,20 +153,20 @@ class LibraryField extends ListField
 	{
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','library_name')));
+		$query->select($db->quoteName(['a.guid','a.name'], ['guid','library_name']));
 		$query->from($db->quoteName('#__componentbuilder_library', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->where($db->quoteName('a.type') . ' = 1');
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
 			$options[] = Html::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->library_name);
+				$options[] = Html::_('select.option', $item->guid, $item->library_name);
 			}
 		}
 

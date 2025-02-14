@@ -29,8 +29,10 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -250,7 +252,27 @@ class Snippet_typeModel extends AdminModel
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
+			}
 		}
+
+		// Only load the GUID if new item (or empty)
+		if (0 == $id || !($val = $form->getValue('guid')))
+		{
+			$form->setValue('guid', null, GuidHelper::get());
+		}
+ 
 		return $form;
 	}
 
@@ -448,7 +470,7 @@ class Snippet_typeModel extends AdminModel
 	 */
 	protected function getUniqueFields()
 	{
-		return false;
+		return array('guid');
 	}
 
 	/**
@@ -854,6 +876,21 @@ class Snippet_typeModel extends AdminModel
 			$metadata = new Registry;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
+		}
+
+
+		// Set the GUID if empty or not valid
+		if (empty($data['guid']) && $data['id'] > 0)
+		{
+			// get the existing one
+			$data['guid'] = (string) GetHelper::var('snippet_type', $data['id'], 'id', 'guid');
+		}
+
+		// Set the GUID if empty or not valid
+		while (!GuidHelper::valid($data['guid'], "snippet_type", $data['id']))
+		{
+			// must always be set
+			$data['guid'] = (string) GuidHelper::get();
 		}
 
 		// Set the Params Items to data

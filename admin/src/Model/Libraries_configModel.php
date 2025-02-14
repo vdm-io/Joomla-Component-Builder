@@ -204,8 +204,8 @@ class Libraries_configModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_library_config', 'a'));
 
 		// From the componentbuilder_library table.
-		$query->select($db->quoteName('g.name','library_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'g') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['library_name','library_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'g') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

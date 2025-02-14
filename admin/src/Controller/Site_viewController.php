@@ -177,12 +177,21 @@ class Site_viewController extends FormController
 	 */
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
-		// get the referral options (old method use return instead see parent)
+		// get int-defaults (to int new items with default values dynamically)
+		$init_defaults = $this->input->get('init_defaults', null, 'STRING');
+
+		// get the referral options (old method use init_defaults or return instead see parent)
 		$ref = $this->input->get('ref', 0, 'string');
 		$refid = $this->input->get('refid', 0, 'int');
 
 		// get redirect info.
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+		// set int-defaults
+		if (!empty($init_defaults))
+		{
+			$append = '&init_defaults='. (string) $init_defaults . $append;
+		}
 
 		// set the referral options
 		if ($refid && $ref)

@@ -168,8 +168,7 @@ class Adminviews
 						$array['view']
 					);
 
-					// set the filter option for this view | Side (old) [default for now]
-					$this->adminfiltertype->set($array['settings']->name_list_code, 1);
+					$this->adminfiltertype->set($array['settings']->name_list_code, 2);
 
 					if (isset($array['filter'])
 						&& is_numeric(

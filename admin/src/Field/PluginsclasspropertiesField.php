@@ -48,7 +48,7 @@ class PluginsclasspropertiesField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.visibility'),array('id','property_name','visibility')));
+		$query->select($db->quoteName(array('a.guid','a.name','a.visibility'),array('guid','property_name','visibility')));
 		$query->from($db->quoteName('#__componentbuilder_class_property', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->where($db->quoteName('a.extension_type') . ' = ' . $db->quote('plugins'));
@@ -86,7 +86,7 @@ class PluginsclasspropertiesField extends ListField
 					$select = $item->visibility  . ' $' . $item->property_name;
 				}
 
-				$options[] = Html::_('select.option', $item->id, $select);
+				$options[] = Html::_('select.option', $item->guid, $select);
 			}
 		}
 		return $options;

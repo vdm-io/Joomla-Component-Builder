@@ -11,3 +11,31 @@
 /* CSS Document */
 
 
+.namespace-code-container {
+    display: inline-block;
+    max-width: 300px; /* Limit visible width */
+    white-space: nowrap;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-family: monospace;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    scrollbar-width: thin; /* Firefox scrollbar */
+}
+
+/* Style the scrollbar for WebKit browsers */
+.namespace-code-container::-webkit-scrollbar {
+    height: 5px;
+}
+
+.namespace-code-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Ensure normal text direction while scrolling */
+.namespace-code-container {
+    direction: ltr;
+    text-align: left;
+}

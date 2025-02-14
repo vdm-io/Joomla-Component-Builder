@@ -21,6 +21,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\FieldRelations;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -121,10 +122,9 @@ class Relations
 			{
 				// only add if list view field is selected and joined fields are set
 				if (isset($relationsValue['listfield'])
-					&& is_numeric(
+					&& GuidHelper::valid(
 						$relationsValue['listfield']
 					)
-					&& $relationsValue['listfield'] > 0
 					&& isset($relationsValue['area'])
 					&& is_numeric($relationsValue['area'])
 					&& $relationsValue['area'] > 0)
@@ -141,8 +141,8 @@ class Relations
 					}
 
 					// load the field relations
-					$this->fieldrelations->set($item->name_list_code . '.' . (int) $relationsValue['listfield']
-						. '.' . (int) $relationsValue['area'], $relationsValue);
+					$this->fieldrelations->set($item->name_list_code . '.' . $relationsValue['listfield']
+						. '.' . $relationsValue['area'], $relationsValue);
 
 					// load the list joints
 					if (isset($relationsValue['joinfields'])
@@ -152,7 +152,7 @@ class Relations
 					{
 						foreach ($relationsValue['joinfields'] as $join)
 						{
-							$this->listjoin->set($item->name_list_code . '.' . (int) $join, (int) $join);
+							$this->listjoin->set($item->name_list_code . '.' . $join, $join);
 						}
 					}
 
@@ -180,7 +180,7 @@ class Relations
 								$relationsValue['column_name']
 							);
 							$this->listheadoverride->
-								set($item->name_list_code . '.' . (int) $relationsValue['listfield'],
+								set($item->name_list_code . '.' . $relationsValue['listfield'],
 									$column_name_lang
 							);
 

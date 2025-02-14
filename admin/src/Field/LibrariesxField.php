@@ -157,7 +157,7 @@ class LibrariesxField extends ListField
 		$libID = $jinput->getInt('id', 0);
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','libraries_name')));
+		$query->select($db->quoteName(array('a.guid','a.name'),array('guid','libraries_name')));
 		$query->from($db->quoteName('#__componentbuilder_library', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->where($db->quoteName('a.target') . ' = 1');
@@ -173,7 +173,7 @@ class LibrariesxField extends ListField
 		{
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->libraries_name);
+				$options[] = Html::_('select.option', $item->guid, $item->libraries_name);
 			}
 		}
 

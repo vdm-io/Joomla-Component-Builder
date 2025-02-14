@@ -29,10 +29,12 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -121,20 +123,6 @@ class Admin_viewModel extends AdminModel
 				'php_after_delete',
 				'add_php_document',
 				'php_document'
-			)
-		),
-		'custom_import' => array(
-			'fullwidth' => array(
-				'note_beginner_import',
-				'note_advanced_import',
-				'add_custom_import',
-				'php_import_display',
-				'html_import_view',
-				'php_import',
-				'php_import_headers',
-				'php_import_setdata',
-				'php_import_save',
-				'php_import_ext'
 			)
 		),
 		'mysql' => array(
@@ -296,7 +284,7 @@ class Admin_viewModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('admin_view__'.$id))
+			if (($vdm = SessionHelper::get('admin_view__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -304,17 +292,17 @@ class Admin_viewModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
-				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'admin_view__'.$id);
+				SessionHelper::set('admin_view__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -374,10 +362,10 @@ class Admin_viewModel extends AdminModel
 				$item->php_getlistquery = base64_decode($item->php_getlistquery);
 			}
 
-			if (!empty($item->php_import_ext))
+			if (!empty($item->php_getitems))
 			{
-				// base64 Decode php_import_ext.
-				$item->php_import_ext = base64_decode($item->php_import_ext);
+				// base64 Decode php_getitems.
+				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
 			if (!empty($item->php_after_publish))
@@ -404,10 +392,10 @@ class Admin_viewModel extends AdminModel
 				$item->php_after_delete = base64_decode($item->php_after_delete);
 			}
 
-			if (!empty($item->php_import))
+			if (!empty($item->php_getitem))
 			{
-				// base64 Decode php_import.
-				$item->php_import = base64_decode($item->php_import);
+				// base64 Decode php_getitem.
+				$item->php_getitem = base64_decode($item->php_getitem);
 			}
 
 			if (!empty($item->php_getitems_after_all))
@@ -468,18 +456,6 @@ class Admin_viewModel extends AdminModel
 			{
 				// base64 Decode sql.
 				$item->sql = base64_decode($item->sql);
-			}
-
-			if (!empty($item->php_import_display))
-			{
-				// base64 Decode php_import_display.
-				$item->php_import_display = base64_decode($item->php_import_display);
-			}
-
-			if (!empty($item->php_import_setdata))
-			{
-				// base64 Decode php_import_setdata.
-				$item->php_import_setdata = base64_decode($item->php_import_setdata);
 			}
 
 			if (!empty($item->css_view))
@@ -548,36 +524,6 @@ class Admin_viewModel extends AdminModel
 				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
 			}
 
-			if (!empty($item->html_import_view))
-			{
-				// base64 Decode html_import_view.
-				$item->html_import_view = base64_decode($item->html_import_view);
-			}
-
-			if (!empty($item->php_getitem))
-			{
-				// base64 Decode php_getitem.
-				$item->php_getitem = base64_decode($item->php_getitem);
-			}
-
-			if (!empty($item->php_import_headers))
-			{
-				// base64 Decode php_import_headers.
-				$item->php_import_headers = base64_decode($item->php_import_headers);
-			}
-
-			if (!empty($item->php_import_save))
-			{
-				// base64 Decode php_import_save.
-				$item->php_import_save = base64_decode($item->php_import_save);
-			}
-
-			if (!empty($item->php_getitems))
-			{
-				// base64 Decode php_getitems.
-				$item->php_getitems = base64_decode($item->php_getitems);
-			}
-
 			if (!empty($item->addpermissions))
 			{
 				// Convert the addpermissions field to an array.
@@ -644,7 +590,7 @@ class Admin_viewModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('admin_view__'.$id))
+			if (($vdm = SessionHelper::get('admin_view__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -652,55 +598,19 @@ class Admin_viewModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'admin_view__'.$id);
-				ComponentbuilderHelper::set('admin_view__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'admin_view__'.$id);
+				SessionHelper::set('admin_view__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
-			// update the fields
-			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $item->id;
-			// repeatable values to check
-			$arrayChecker = array(
-				'addlinked_views' => 'adminview',
-				'ajax_input' => 'value_name',
-				'custom_button' => 'name',
-				'addpermissions' => 'action',
-				'addtables' => 'table',
-				'addtabs' => 'name'
-			);
-			foreach ($arrayChecker as $_value => $checker)
-			{
-				// check what type of array we have here (should be subform... but just in case)
-				// This could happen due to huge data sets
-				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
-				{
-					$bucket = array();
-					foreach($item->{$_value} as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket[$_value.$nr][$option] = $value;
-						}
-					}
-					$item->{$_value} = $bucket;
-					$objectUpdate->{$_value} = json_encode($bucket);
-				}
-			}
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->_db->updateObject('#__componentbuilder_admin_view', $objectUpdate, 'id');
-			}
-
 			// update the mysql_table_engine defaults
 			if (isset($item->mysql_table_engine) && is_numeric($item->mysql_table_engine))
 			{
@@ -828,7 +738,23 @@ class Admin_viewModel extends AdminModel
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
+			}
 		}
+
+		// update the ajax_input (sub form) layout
+		$form->setFieldAttribute('ajax_input', 'layout', ComponentbuilderHelper::getSubformLayout('admin_view', 'ajax_input'));
 
 		// update all editors to use this components global editor
 		$global_editor = ComponentHelper::getParams('com_componentbuilder')->get('editor', 'none');
@@ -1070,7 +996,7 @@ class Admin_viewModel extends AdminModel
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
 					// also clear the data set
-					$data[$requiredField] = '';
+					unset($data[$requiredField]);
 				}
 			}
 		}
@@ -1104,23 +1030,46 @@ class Admin_viewModel extends AdminModel
 			return false;
 		}
 
-		// we must also delete the linked tables found
-		if (UtilitiesArrayHelper::check($pks))
+		// linked tables to update
+		$_tables_array = [
+			'admin_fields' => 'admin_view',
+			'admin_fields_conditions' => 'admin_view',
+			'admin_fields_relations' => 'admin_view',
+			'admin_custom_tabs' => 'admin_view'
+		];
+
+		// we must also update all linked tables
+		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
-			$_tablesArray = array(
-				'admin_fields',
-				'admin_fields_conditions',
-				'admin_fields_relations',
-				'admin_custom_tabs'
-			);
-			foreach($_tablesArray as $_updateTable)
+			foreach($_tables_array as $_delete_table => $_field_name)
 			{
+				// get the admin_view guid's
+				$_guids = DataFactory::_('Load')->values(
+					['a.guid' => 'guid'], // select
+					['a' => 'admin_view'], // tables
+					['a.id' =>
+						['value' => $pks, 'operator' => 'IN']
+					] // where
+				);
+
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'admin_view', 'id'))
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // select
+					['a' => $_delete_table], // tables
+					['a.' . $_field_name =>
+						['value' => $_guids, 'operator' => 'IN']
+					] // where
+				);
+
+				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_updateTable);
-					// change publish state
+					$_Model = ComponentbuilderHelper::getModel($_delete_table);
+
+					// change publish state to trash (in-case the state was not changed in sync with the parent)
+					$_Model->publish($_pks, -2);
+
+					// delete the items
 					$_Model->delete($_pks);
 				}
 			}
@@ -1145,22 +1094,42 @@ class Admin_viewModel extends AdminModel
 			return false;
 		}
 
+		// linked tables to update
+		$_tables_array = [
+			'admin_fields' => 'admin_view',
+			'admin_fields_conditions' => 'admin_view',
+			'admin_fields_relations' => 'admin_view',
+			'admin_custom_tabs' => 'admin_view'
+		];
+
 		// we must also update all linked tables
-		if (UtilitiesArrayHelper::check($pks))
+		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
-			$_tablesArray = array(
-				'admin_fields',
-				'admin_fields_conditions',
-				'admin_fields_relations',
-				'admin_custom_tabs'
-			);
-			foreach($_tablesArray as $_updateTable)
+			foreach($_tables_array as $_update_table => $_field_name)
 			{
+				// get the admin guid's
+				$_guids = DataFactory::_('Load')->values(
+					['a.guid' => 'guid'], // select
+					['a' => 'admin_view'], // tables
+					['a.id' =>
+						['value' => $pks, 'operator' => 'IN']
+					] // where
+				);
+
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, 'admin_view', 'id'))
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // select
+					['a' => $_update_table], // tables
+					['a.' . $_field_name =>
+						['value' => $_guids, 'operator' => 'IN']
+					] // where
+				);
+
+				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					$_Model = ComponentbuilderHelper::getModel($_update_table);
+
 					// change publish state
 					$_Model->publish($_pks, $value);
 				}
@@ -1338,6 +1307,12 @@ class Admin_viewModel extends AdminModel
 					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
+			}
+
+			// Only for strings
+			if (UtilitiesStringHelper::check($this->table->system_name) && !is_numeric($this->table->system_name))
+			{
+				$this->table->system_name = $this->generateUnique('system_name',$this->table->system_name);
 			}
 
 			// insert all set values
@@ -1673,10 +1648,10 @@ class Admin_viewModel extends AdminModel
 			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
 		}
 
-		// Set the php_import_ext string to base64 string.
-		if (isset($data['php_import_ext']))
+		// Set the php_getitems string to base64 string.
+		if (isset($data['php_getitems']))
 		{
-			$data['php_import_ext'] = base64_encode($data['php_import_ext']);
+			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
 		// Set the php_after_publish string to base64 string.
@@ -1703,10 +1678,10 @@ class Admin_viewModel extends AdminModel
 			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
 		}
 
-		// Set the php_import string to base64 string.
-		if (isset($data['php_import']))
+		// Set the php_getitem string to base64 string.
+		if (isset($data['php_getitem']))
 		{
-			$data['php_import'] = base64_encode($data['php_import']);
+			$data['php_getitem'] = base64_encode($data['php_getitem']);
 		}
 
 		// Set the php_getitems_after_all string to base64 string.
@@ -1767,18 +1742,6 @@ class Admin_viewModel extends AdminModel
 		if (isset($data['sql']))
 		{
 			$data['sql'] = base64_encode($data['sql']);
-		}
-
-		// Set the php_import_display string to base64 string.
-		if (isset($data['php_import_display']))
-		{
-			$data['php_import_display'] = base64_encode($data['php_import_display']);
-		}
-
-		// Set the php_import_setdata string to base64 string.
-		if (isset($data['php_import_setdata']))
-		{
-			$data['php_import_setdata'] = base64_encode($data['php_import_setdata']);
 		}
 
 		// Set the css_view string to base64 string.
@@ -1847,36 +1810,6 @@ class Admin_viewModel extends AdminModel
 			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
 		}
 
-		// Set the html_import_view string to base64 string.
-		if (isset($data['html_import_view']))
-		{
-			$data['html_import_view'] = base64_encode($data['html_import_view']);
-		}
-
-		// Set the php_getitem string to base64 string.
-		if (isset($data['php_getitem']))
-		{
-			$data['php_getitem'] = base64_encode($data['php_getitem']);
-		}
-
-		// Set the php_import_headers string to base64 string.
-		if (isset($data['php_import_headers']))
-		{
-			$data['php_import_headers'] = base64_encode($data['php_import_headers']);
-		}
-
-		// Set the php_import_save string to base64 string.
-		if (isset($data['php_import_save']))
-		{
-			$data['php_import_save'] = base64_encode($data['php_import_save']);
-		}
-
-		// Set the php_getitems string to base64 string.
-		if (isset($data['php_getitems']))
-		{
-			$data['php_getitems'] = base64_encode($data['php_getitems']);
-		}
-
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
@@ -1926,5 +1859,27 @@ class Admin_viewModel extends AdminModel
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Method to change the title
+	 *
+	 * @param   string   $title   The title.
+	 *
+	 * @return	array  Contains the modified title and alias.
+	 *
+	 */
+	protected function _generateNewTitle($title)
+	{
+
+		// Alter the title
+		$table = $this->getTable();
+
+		while ($table->load(['title' => $title]))
+		{
+			$title = StringHelper::increment($title);
+		}
+
+		return $title;
 	}
 }

@@ -45,7 +45,7 @@ class AdminviewsField extends ListField
 		// Get the database object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','adminview_system_name')));
+		$query->select($db->quoteName(array('a.guid','a.system_name'),array('guid','adminview_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.system_name ASC');
@@ -60,7 +60,7 @@ class AdminviewsField extends ListField
 			}
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->adminview_system_name);
+				$options[] = Html::_('select.option', $item->guid, $item->adminview_system_name);
 			}
 		}
 		return $options;

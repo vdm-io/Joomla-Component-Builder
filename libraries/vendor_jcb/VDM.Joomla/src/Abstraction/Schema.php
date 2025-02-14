@@ -14,7 +14,7 @@ namespace VDM\Joomla\Abstraction;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Version;
-use VDM\Joomla\Interfaces\Tableinterface as Table;
+use VDM\Joomla\Interfaces\TableInterface as Table;
 use VDM\Joomla\Interfaces\SchemaInterface;
 
 
@@ -97,6 +97,22 @@ abstract class Schema implements SchemaInterface
 	protected $currentVersion;
 
 	/**
+	 * Current DB Version We are IN
+	 *
+	 * @var     string
+	 * @since 5.0.4
+	 **/
+	protected string $dbVersion;
+
+	/**
+	 * Current DB Type We are IN
+	 *
+	 * @var     string
+	 * @since 5.0.4
+	 **/
+	protected string $dbType;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Table   $table   The Table Class.
@@ -112,10 +128,16 @@ abstract class Schema implements SchemaInterface
 			// set the database object
 			$this->db = Factory::getDbo();
 
-			// get current component tables
+			// current DB version
+			$this->dbVersion = $this->db->getVersion();
+
+			// current DB type
+			$this->dbType = $this->db->getServerType();
+
+			// get current website tables
 			$this->tables = $this->db->getTableList();
 
-			// set the component table
+			// set the component table prefix
 			$this->prefix = $this->db->getPrefix() . $this->getCode();
 
 			// set the current version
@@ -579,41 +601,57 @@ abstract class Schema implements SchemaInterface
 	 */
 	protected function isDataTypeChangeSignificant(string $currentType, string $expectedType): bool
 	{
-		// Normalize both input types to lowercase for case-insensitive comparison
-		$currentType = strtolower($currentType);
-		$expectedType = strtolower($expectedType);
+		// Normalize both input types to lowercase and remove extra spaces for comparison
+		$currentType = strtolower(trim($currentType));
+		$expectedType = strtolower(trim($expectedType));
 
-		// Regex to extract the base data type and numeric parameters with named groups
-		$typePattern = '/^(?<datatype>\w+)(\((?<params>\d+(,\d+)?)\))?/';
+		// Regex to extract the base data type and numeric parameters (size and precision) with named groups
+		$typePattern = '/^(?<datatype>\w+)(\((?<params>\s*\d+\s*(,\s*\d+\s*)?)\))?/';
 
 		// Match types and parameters
 		preg_match($typePattern, $currentType, $currentMatches);
 		preg_match($typePattern, $expectedType, $expectedMatches);
 
-		// Compare base types
+		// Compare base types (datatype without size/precision)
 		if ($currentMatches['datatype'] !== $expectedMatches['datatype'])
 		{
 			return true; // Base types differ
 		}
 
-		// Define types where size and other modifiers are irrelevant
+		// Define numeric types where display width is irrelevant but precision (for DECIMAL) matters
 		$sizeIrrelevantTypes = [
-			'int', 'tinyint', 'smallint', 'mediumint', 'bigint',
-			'float', 'double', 'decimal', 'numeric' // Numeric types where display width is irrelevant
+			'int', 'tinyint', 'smallint', 'mediumint', 'bigint', 
+			'float', 'double' // Numeric types where display width is irrelevant
 		];
 
-		// If the type is not in the size irrelevant list, compare full definitions
-		if (!in_array($currentMatches['datatype'], $sizeIrrelevantTypes))
+		// Handle DECIMAL and NUMERIC types explicitly (precision and scale are relevant)
+		if (in_array($currentMatches['datatype'], ['decimal', 'numeric']))
 		{
-			return $currentType !== $expectedType; // Use full definition for types where size matters
+			// Extract precision and scale (if present)
+			if ($currentMatches['params'] !== $expectedMatches['params'])
+			{
+				return true; // Precision or scale has changed
+			}
 		}
 
-		// For size irrelevant types, only compare base type, ignoring size and unsigned
-		$currentBaseType = preg_replace('/\(\d+(,\d+)?\)|unsigned/', '', $currentType);
-		$expectedBaseType = preg_replace('/\(\d+(,\d+)?\)|unsigned/', '', $expectedType);
+		// Check if the type is in the list of size-irrelevant types
+		if (in_array($currentMatches['datatype'], $sizeIrrelevantTypes))
+		{
+			// Remove irrelevant parts like display width and "unsigned" for size-irrelevant types, including extra spaces
+			$currentBaseType = preg_replace('/\s*\(\s*\d+(\s*,\s*\d+)?\s*\)\s*|\s*unsigned\s*/', '', $currentType);
+			$expectedBaseType = preg_replace('/\s*\(\s*\d+(\s*,\s*\d+)?\s*\)\s*|\s*unsigned\s*/', '', $expectedType);
 
-		// Perform a final comparison for numeric types ignoring size
-		return $currentBaseType !== $expectedBaseType;
+			// Compare base types after normalization
+			return $currentBaseType !== $expectedBaseType;
+		}
+
+		// For types where size is relevant (e.g., VARCHAR, CHAR, etc.), compare the full definitions
+		// Normalize size parameters by removing extra spaces around commas, e.g., "decimal(5 , 2)" -> "decimal(5,2)"
+		$normalizedCurrentType = preg_replace('/\s*,\s*/', ',', $currentType);
+		$normalizedExpectedType = preg_replace('/\s*,\s*/', ',', $expectedType);
+
+		// Perform a full comparison for types where size matters
+		return $normalizedCurrentType !== $normalizedExpectedType;
 	}
 
 	/**
@@ -624,7 +662,7 @@ abstract class Schema implements SchemaInterface
 	 * @param mixed  $currentDefault  Current default value.
 	 * @param mixed  $newDefault      The new default value to be set.
 	 *
-	 * @return void
+	 * @return bool True if update was successful, false if no update was needed.
 	 * @since  3.2.1
 	 * @throws \Exception If there is an error updating column defaults.
 	 */
@@ -640,13 +678,38 @@ abstract class Schema implements SchemaInterface
 				$updateTable = 'UPDATE ' . $this->db->quoteName($this->getTable($table));
 				$dbField = $this->db->quoteName($column);
 
-				// Update SQL to set new default on existing rows where the default is currently the old default
-				$sql = $updateTable . " SET $dbField = $sqlDefault WHERE $dbField IS NULL OR $dbField = ''";
+				if (isset($this->columns[$column]))
+				{
+					$fieldType = strtoupper($this->columns[$column]->Type);
 
-				// Execute the update
-				$this->db->setQuery($sql);
-				return $this->db->execute();
-			} catch (\Exception $e) {
+					// If the field is numeric, avoid comparing with empty string
+					if (strpos($fieldType, 'INT') !== false ||
+						strpos($fieldType, 'FLOAT') !== false ||
+						strpos($fieldType, 'DOUBLE') !== false ||
+						strpos($fieldType, 'DECIMAL') !== false)
+					{
+						$whereCondition = "$dbField IS NULL OR $dbField = 0";
+					}
+					else
+					{
+						// Default condition for non-numeric fields
+						$whereCondition = "$dbField IS NULL OR $dbField = ''";
+					}
+
+					// Update SQL to set new default on existing rows where the default is currently the old default
+					$sql = $updateTable . " SET $dbField = $sqlDefault WHERE $whereCondition";
+
+					// Execute the update
+					$this->db->setQuery($sql);
+					return $this->db->execute();
+				}
+				else
+				{
+					throw new \Exception("Error: Column $column does not exist in table $table.");
+				}
+			}
+			catch (\Exception $e)
+			{
 				throw new \Exception("Error: failed to update ($column) column defaults in $table table. " . $e->getMessage());
 			}
 		}
@@ -759,6 +822,7 @@ abstract class Schema implements SchemaInterface
 	 *
 	 * @return string      The SQL fragment to set the default value for a field.
 	 * @since 3.2.1
+	 * @throws \RuntimeException If the database unsupported
 	 */
 	protected function getDefaultValue(string $type, ?string $defaultValue, bool $pure = false): string
 	{
@@ -767,10 +831,31 @@ abstract class Schema implements SchemaInterface
 			return '';
 		}
 
-		// Set default for DATETIME fields in Joomla versions above 3
-		if (strtoupper($type) === 'DATETIME' && $this->currentVersion != 3)
+		// Logic to handle DATETIME default values based on database type
+		if (strtoupper($type) === 'DATETIME')
 		{
-			return $pure ? "CURRENT_TIMESTAMP" : " DEFAULT CURRENT_TIMESTAMP";
+			if ($this->dbType === 'mysql')
+			{
+				// MySQL-specific logic
+				if (version_compare($this->dbVersion, '5.6', '>='))
+				{
+					return $pure ? "CURRENT_TIMESTAMP" : " DEFAULT CURRENT_TIMESTAMP";
+				}
+				else
+				{
+					return $pure ? "'0000-00-00 00:00:00'" : " DEFAULT '0000-00-00 00:00:00'";
+				}
+			}
+			elseif ($this->dbType === 'pgsql')
+			{
+				// PostgreSQL supports CURRENT_TIMESTAMP universally
+				return $pure ? "CURRENT_TIMESTAMP" : " DEFAULT CURRENT_TIMESTAMP";
+			}
+			else
+			{
+				// Unsupported database type (at this point... we can grow this area)
+				throw new \RuntimeException("Unsupported database type: {$dbType}");
+			}
 		}
 
 		// Apply and quote the default value

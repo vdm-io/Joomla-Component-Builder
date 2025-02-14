@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Customview\Data as Customview;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -46,15 +45,15 @@ class Customadminviews
 	/**
 	 * Constructor
 	 *
-	 * @param Customview|null    $customadmin    The custom admin view data object.
-	 * @param Config|null        $config         The compiler config object.
+	 * @param Customview    $customadmin    The custom admin view data object.
+	 * @param Config        $config         The compiler config object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Customview $customadmin = null, ?Config $config = null)
+	public function __construct(Customview $customadmin, Config $config)
 	{
-		$this->customadmin = $customadmin ?: Compiler::_('Customview.Data');
-		$this->config = $config ?: Compiler::_('Config');
+		$this->customadmin = $customadmin;
+		$this->config = $config;
 	}
 
 	/**

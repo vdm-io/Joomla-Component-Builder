@@ -24,6 +24,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -180,12 +181,21 @@ class Component_updatesController extends FormController
 	 */
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
-		// get the referral options (old method use return instead see parent)
+		// get int-defaults (to int new items with default values dynamically)
+		$init_defaults = $this->input->get('init_defaults', null, 'STRING');
+
+		// get the referral options (old method use init_defaults or return instead see parent)
 		$ref = $this->input->get('ref', 0, 'string');
 		$refid = $this->input->get('refid', 0, 'int');
 
 		// get redirect info.
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+		// set int-defaults
+		if (!empty($init_defaults))
+		{
+			$append = '&init_defaults='. (string) $init_defaults . $append;
+		}
 
 		// set the referral options
 		if ($refid && $ref)
@@ -358,7 +368,7 @@ class Component_updatesController extends FormController
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
 		// update the component version to match the updated last version
-		if (isset($validData['joomla_component']) && is_numeric($validData['joomla_component']) && $validData['joomla_component'] > 0)
+		if (isset($validData['joomla_component']) && GuidHelper::valid($validData['joomla_component']))
 		{
 			// we must load the data (since if changed in the saved method, the $validData will not reflect this change)
 			if (($version_update = GetHelper::var(
@@ -370,7 +380,7 @@ class Component_updatesController extends FormController
 				$version_update = json_decode($version_update, true);
 
 				$objectUpdate = new \stdClass();
-				$objectUpdate->id = (int) $validData['joomla_component'];
+				$objectUpdate->guid = (string) $validData['joomla_component'];
 				if (UtilitiesArrayHelper::check($version_update)
 					&& ($component_version = end($version_update)['version'])
 					&& StringHelper::check($component_version))
@@ -380,7 +390,7 @@ class Component_updatesController extends FormController
 				// be sure to update the table if we have a value
 				if (isset($objectUpdate->component_version))
 				{
-					Factory::getDbo()->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
+					Factory::getDbo()->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'guid');
 				}
 			}
 		}

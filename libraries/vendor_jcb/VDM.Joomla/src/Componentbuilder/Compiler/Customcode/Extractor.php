@@ -630,7 +630,7 @@ class Extractor implements ExtractorInterface
 
 							$this->new[$pointer[$targetKey]][]
 								= $this->db->quote(
-								(int) $this->config->component_id
+								(string) $this->config->component_guid
 							); // 'component'
 
 							$this->new[$pointer[$targetKey]][]

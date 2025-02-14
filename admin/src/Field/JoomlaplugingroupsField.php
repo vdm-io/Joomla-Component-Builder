@@ -156,7 +156,7 @@ class JoomlaplugingroupsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','joomla_plugin_group_name')));
+		$query->select($db->quoteName(array('a.guid','a.name'),array('guid','joomla_plugin_group_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin_group', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
@@ -178,7 +178,7 @@ class JoomlaplugingroupsField extends ListField
 			$options[] = Html::_('select.option', '', 'Select a group');
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->joomla_plugin_group_name);
+				$options[] = Html::_('select.option', $item->guid, $item->joomla_plugin_group_name);
 			}
 		}
 		return $options;

@@ -97,17 +97,19 @@
 			default="componentbuilder custom_code"
 		/>
 		<!-- Dynamic Fields. -->
-		<!-- Component Field. Type: Joomlacomponent. (custom) -->
+		<!-- System_name Field. Type: Text. (joomla) -->
 		<field
-			type="joomlacomponent"
-			name="component"
-			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
-			class="list_class"
-			layout="joomla.form.field.list-fancy-select"
-			multiple="false"
-			default="0"
-			required="true"
-			button="true"
+			type="text"
+			name="system_name"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL"
+			size="10"
+			maxlength="50"
+			default=""
+			description="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_HINT"
 		/>
 		<!-- Path Field. Type: Text. (joomla) -->
 		<field
@@ -195,20 +197,6 @@
 			class="input-large-text"
 			required="true"
 		/>
-		<!-- System_name Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="system_name"
-			label="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL"
-			size="10"
-			maxlength="50"
-			default=""
-			description="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_DESCRIPTION"
-			class="text_area"
-			filter="STRING"
-			message="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_HINT"
-		/>
 		<!-- Note_placeholders_explained Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_placeholders_explained" label="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_PLACEHOLDERS_EXPLAINED_LABEL" description="COM_COMPONENTBUILDER_CUSTOM_CODE_NOTE_PLACEHOLDERS_EXPLAINED_DESCRIPTION" heading="h4" class="note_placeholders_explained" />
 		<!-- Code Field. Type: Editor. (joomla) -->
@@ -286,6 +274,18 @@
 			filter="STRING"
 			message="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_MESSAGE"
 			hint="COM_COMPONENTBUILDER_CUSTOM_CODE_HASHTARGET_HINT"
+		/>
+		<!-- Component Field. Type: Joomlacomponent. (custom) -->
+		<field
+			type="joomlacomponent"
+			name="component"
+			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
+			class="list_class"
+			layout="joomla.form.field.list-fancy-select"
+			multiple="false"
+			default="0"
+			required="true"
+			button="true"
 		/>
 	</fieldset>
 

@@ -121,7 +121,6 @@
 			description="COM_COMPONENTBUILDER_FIELD_FIELDTYPE_DESCRIPTION"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="true"
 			button="true"
 		/>

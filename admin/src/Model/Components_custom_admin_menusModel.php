@@ -204,8 +204,8 @@ class Components_custom_admin_menusModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_component_custom_admin_menus', 'a'));
 
 		// From the componentbuilder_joomla_component table.
-		$query->select($db->quoteName('g.system_name','joomla_component_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_component', 'g') . ' ON (' . $db->quoteName('a.joomla_component') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.system_name','g.id'],['joomla_component_system_name','joomla_component_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_component', 'g') . ' ON (' . $db->quoteName('a.joomla_component') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

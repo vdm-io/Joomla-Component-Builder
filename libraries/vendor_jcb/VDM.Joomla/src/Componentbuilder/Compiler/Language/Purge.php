@@ -62,13 +62,13 @@ final class Purge
 	 * conditions.
 	 *
 	 * @param array  $values     The active strings.
-	 * @param int    $targetId   The target component ID.
+	 * @param int    $targetGuid The target entity GUID.
 	 * @param string $target     The target extension type (default is 'components').
 	 *
 	 * @return void
 	 * @since  5.0.2
 	 */
-	public function execute(array $values, int $targetId, string $target = 'components'): void
+	public function execute(array $values, string $targetGuid, string $target = 'components'): void
 	{
 		$target_types = ['components' => 'components', 'modules' => 'modules', 'plugins' => 'plugins'];
 
@@ -98,7 +98,7 @@ final class Purge
 					{
 						$targets = (array) json_decode((string) $item[$target], true);
 
-						if (($key = array_search($targetId, $targets)) !== false)
+						if (($key = array_search($targetGuid, $targets)) !== false)
 						{
 							unset($targets[$key]);
 
@@ -130,7 +130,7 @@ final class Purge
 	 * archives, or deletes it based on the conditions.
 	 *
 	 * @param array  $item          The language string item.
-	 * @param array  $targetTypes  The target extension types.
+	 * @param array  $targetTypes   The target extension types.
 	 * @param array  $targets       The targets to update.
 	 * @param string $today         The current date.
 	 * @param int    $counter       The update counter.

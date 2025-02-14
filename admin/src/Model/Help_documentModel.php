@@ -272,6 +272,19 @@ class Help_documentModel extends AdminModel
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
 			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
+			}
 		}
 		return $form;
 	}
@@ -490,7 +503,7 @@ class Help_documentModel extends AdminModel
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
 					// also clear the data set
-					$data[$requiredField] = '';
+					unset($data[$requiredField]);
 				}
 			}
 		}

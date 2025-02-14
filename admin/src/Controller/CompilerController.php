@@ -20,6 +20,8 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use Joomla\CMS\Version;
 use VDM\Joomla\Componentbuilder\File\Factory as FileFactory;
+use VDM\Joomla\Componentbuilder\Import\Factory as ImportFactory;
+use VDM\Joomla\Abstraction\Console\Import;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\Uri\Uri;
@@ -73,6 +75,10 @@ class CompilerController extends AdminController
 	/**
 	 * Adding this so that the upload factory gets build for Super Powers
 	 * FileFactory
+	 * Adding this so that the import factory gets build for Super Powers
+	 * ImportFactory
+	 * Adding this so that the import cli gets build for Super Powers
+	 * Import
 	 */
 
 	/**
@@ -546,13 +552,16 @@ class CompilerController extends AdminController
 	 * Clear tmp folder
 	 *
 	 * @return  true on success
+	 * @since  3.0.0
 	 */
 	public function clearTmp()
 	{
 		// Check for request forgeries
 		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
+
 		// check if user has the right
 		$user = Factory::getUser();
+
 		// set page redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
 		$message = Text::_('COM_COMPONENTBUILDER_COULD_NOT_CLEAR_THE_TMP_FOLDER');
@@ -581,39 +590,4 @@ class CompilerController extends AdminController
 		$this->setRedirect($redirect_url, $message, 'error');
 		return false;
 	}
-
-
-	/**
-	 * Run the Translator
-	 *
-	 * @return  void
-	 */
-	public function runTranslator()
-	{
-		// Check for request forgeries
-		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
-		// check if user has the right
-		$user = Factory::getUser();
-		// set page redirect
-		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
-		// set massage
-		$message = Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RUN_THE_TRANSLATOR_MODULE');
-		// check if this user has the right to run expansion
-		if($user->authorise('compiler.run_translator', 'com_componentbuilder'))
-		{
-			// set massage
-			$message = Text::_('COM_COMPONENTBUILDER_TRANSLATION_FAILED_SINCE_THERE_ARE_NO_COMPONENTS_LINKED_WITH_TRANSLATION_TOOLS');
-			// run translator via API
-			$result = ComponentbuilderHelper::getFileContents(Uri::root() . 'index.php?option=com_componentbuilder&task=api.translator');
-			// is there a message returned
-			if (!is_numeric($result) && StringHelper::check($result))
-			{
-				$this->setRedirect($redirect_url, $result);
-				return true;
-			}
-		}
-		$this->setRedirect($redirect_url, $message, 'error');
-		return false;
-	}
-
 }

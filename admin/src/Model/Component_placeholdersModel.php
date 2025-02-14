@@ -31,6 +31,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -266,6 +267,19 @@ class Component_placeholdersModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 		return $form;
@@ -875,7 +889,7 @@ class Component_placeholdersModel extends AdminModel
 
 
 		// check if we have a clone moment
-		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		if (isset($data['clone_me']) && GuidHelper::valid($data['clone_me']))
 		{
 			// get addplaceholders data from clone_me (component_placeholders)
 			$data['addplaceholders'] = GetHelper::var('component_placeholders', $data['clone_me'], 'joomla_component', 'addplaceholders');

@@ -16,6 +16,11 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\String\FieldHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -48,49 +53,54 @@ class ListfieldsField extends ListField
 		$jinput = Factory::getApplication()->input;
 		// get the id
 		$ID = $jinput->getInt('id', 0);
-		// rest the fields ids
-		$fieldIds = array();
+		// rest the fields guids
+		$fieldGuids = [];
 		if (is_numeric($ID) && $ID >= 1)
 		{
-			// get the admin view ID
-			$adminView = ComponentbuilderHelper::getVar('admin_fields_relations', (int) $ID, 'id', 'admin_view');
+			// get the admin view GUID
+			$adminView = GetHelper::var('admin_fields_relations', (int) $ID, 'id', 'admin_view');
 		}
 		else
 		{
-			// get the admin view ID
-			$adminView = $jinput->getInt('refid', 0);
+			// get the admin view GUID
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				$adminView = $initDefaults['admin_view'] ?? null;
+			}
 		}
-		// make sure we have the admin view ID
-		if (is_numeric($adminView) && $adminView >= 1)
+		// make sure we have the admin view GUID
+		if (GuidHelper::valid($adminView))
 		{
 			// get all the fields linked to the admin view
-			if ($addFields = ComponentbuilderHelper::getVar('admin_fields', (int) $adminView, 'admin_view', 'addfields'))
+			if ($addFields = GetHelper::var('admin_fields',  $adminView, 'admin_view', 'addfields'))
 			{
-				if (ComponentbuilderHelper::checkJson($addFields))
+				if (JsonHelper::check($addFields))
 				{
 					$addFields = json_decode($addFields, true);
-					if (ComponentbuilderHelper::checkArray($addFields))
+					if (ArrayHelper::check($addFields))
 					{
 						foreach($addFields as $addField)
 						{
 							if (isset($addField['field']) && isset($addField['list']) && $addField['list'] == 1)
 							{
-								$fieldIds[] = (int) $addField['field'];
+								$fieldGuids[] = (string) $addField['field'];
 							}
 						}
 					}
 				}
 			}
 			// filter by fields linked
-			if (ComponentbuilderHelper::checkArray($fieldIds))
+			if (ArrayHelper::check($fieldGuids))
 			{
 				$query = $db->getQuery(true);
-				$query->select($db->quoteName(array('a.id','a.name', 'a.xml', 'b.name'),array('id','name', 'xml', 'type')));
+				$query->select($db->quoteName(array('a.guid','a.name', 'a.xml', 'b.name'),array('guid','name', 'xml', 'type')));
 				$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-				$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.id = a.fieldtype');
+				$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.guid = a.fieldtype');
 				$query->where($db->quoteName('a.published') . ' >= 1');
 				// only load these fields
-				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $fieldIds) . ')');
+				$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $fieldGuids) . '")');
 				$query->order('a.name ASC');
 				$db->setQuery((string)$query);
 				$items = $db->loadObjectList();
@@ -101,22 +111,22 @@ class ListfieldsField extends ListField
 					foreach($items as $item)
 					{
 						// get the field name (TODO this could slow down the system so we will need to improve on this)
-						if (isset($item->xml) && ComponentbuilderHelper::checkJson($item->xml))
+						if (isset($item->xml) && JsonHelper::check($item->xml))
 						{
 							$field_xml = json_decode($item->xml);
-							$field_name = ComponentbuilderHelper::getBetween($field_xml,'name="','"');
-							$field_name = ComponentbuilderHelper::safeFieldName($field_name);
-							$options[] = Html::_('select.option', $item->id, $item->name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
+							$field_name = GetHelper::between($field_xml,'name="','"');
+							$field_name = FieldHelper::safe($field_name);
+							$options[] = Html::_('select.option', $item->guid, $item->name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
 						}
 						else
 						{
-							$options[] = Html::_('select.option', $item->id, $item->name . ' [ empty - ' . $item->type . ' ]');
+							$options[] = Html::_('select.option', $item->guid, $item->name . ' [ empty - ' . $item->type . ' ]');
 						}
 					}
 				}
 				return $options;
 			}
 		}
-		return false;
+		return [];
 	}
 }

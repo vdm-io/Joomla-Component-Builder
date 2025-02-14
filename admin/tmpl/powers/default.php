@@ -80,4 +80,20 @@ jQuery('#toolbar').on('click',"button.custom-button-initpowers", function(e){
 jQuery('#toolbar').on('click',"button.custom-button-resetpowers", function(e){
 	loadingDiv.style.display = 'block';
 });
+// Function to auto-scroll to the right for all code blocks
+function scrollToRight() {
+    document.querySelectorAll(".namespace-code-container").forEach(codeBlock => {
+        codeBlock.scrollLeft = codeBlock.scrollWidth;
+    });
+}
+
+// Auto-scroll all code blocks on page load
+document.addEventListener("DOMContentLoaded", scrollToRight);
+
+// Also ensure clicking inside keeps it scrolled to the right
+document.querySelectorAll(".namespace-code-container").forEach(codeBlock => {
+    codeBlock.addEventListener("focus", function () {
+        this.scrollLeft = this.scrollWidth;
+    });
+});
 </script>

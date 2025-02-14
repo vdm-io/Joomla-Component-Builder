@@ -45,7 +45,7 @@ class LibraryreadonlyField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','library_name')));
+		$query->select($db->quoteName(array('a.guid','a.name'),array('guid','library_name')));
 		$query->from($db->quoteName('#__componentbuilder_library', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
@@ -60,7 +60,7 @@ class LibraryreadonlyField extends ListField
 			}
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->library_name);
+				$options[] = Html::_('select.option', $item->guid, $item->library_name);
 			}
 		}
 		return $options;

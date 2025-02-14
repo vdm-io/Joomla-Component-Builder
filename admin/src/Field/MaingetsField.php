@@ -154,7 +154,7 @@ class MaingetsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','main_get_name','type')));
+		$query->select($db->quoteName(array('a.guid','a.name','a.gettype'),array('guid','main_get_name','type')));
 		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
 		$query->where($db->quoteName('a.published') . ' = 1');
 		$query->where('( '.$db->quoteName('a.gettype') . ' = 1 OR ' . $db->quoteName('a.gettype') . ' = 2 )');
@@ -171,8 +171,8 @@ class MaingetsField extends ListField
 			}
 			foreach($items as $item)
 			{
-				$type = $model->selectionTranslation($item->type,'gettype');
-				$options[] = Html::_('select.option', $item->id, $item->main_get_name . ' (' . Text::_($type) . ')');
+				$type = $model->selectionTranslation($item->type, 'gettype');
+				$options[] = Html::_('select.option', $item->guid, $item->main_get_name . ' (' . Text::_($type) . ')');
 			}
 		}
 		return $options;

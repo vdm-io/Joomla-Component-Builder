@@ -52,26 +52,25 @@ if ($this->saveOrder)
 <script type="text/javascript">
 // layouts footer script
 
-jQuery.fn.selText = function() {
-    var obj = this[0];
-    if (jQuery.browser.msie) {
-        var range = obj.offsetParent.createTextRange();
-        range.moveToElementText(obj);
-        range.select();
-    } else if (jQuery.browser.mozilla || $.browser.opera) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        var range = obj.ownerDocument.createRange();
-        range.selectNodeContents(obj);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } else if (jQuery.browser.safari) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        selection.setBaseAndExtent(obj, 0, obj, 1);
-    }
+HTMLElement.prototype.selText = function() {
+    var obj = this;
+
+    // For modern browsers, handle the selection
+    var selection = window.getSelection();
+    var range = document.createRange();
+
+    // Select the content of the element
+    range.selectNodeContents(obj);
+    selection.removeAllRanges();  // Clear any previous selections
+    selection.addRange(range);    // Add the new selection range
+
     return this;
-}
+};
 // make sure the code bocks are active
-jQuery("code").click(function() {
-	jQuery(this).selText().addClass("selected");
+document.querySelectorAll("code").forEach(function(codeBlock) {
+    codeBlock.addEventListener("click", function() {
+        codeBlock.selText(); // Call the custom selText function
+        codeBlock.classList.add("selected"); // Add the "selected" class
+    });
 });
 </script>

@@ -116,9 +116,25 @@ $support_button = $button_names[random_int(0, 32)];
 ?>
 <?php echo $support_message; ?>
 <br /><br />
-<img src="https://opencollective.com/joomla-component-builder/tiers/badge.svg" />
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <a href="https://opencollective.com/joomla-component-builder/contribute/donation-15820/checkout?interval=month&amount=40&contributeAs=me" title="Support Joomla Component Builder">
+        <img src="https://opencollective.com/joomla-component-builder/tiers/badge.svg" alt="Joomla Component Builder Badge" />
+    </a>
+    <a href="https://status.vdm.dev/status/jcb" title="JCB Powers Uptime">
+        <img src="https://status.vdm.dev/api/badge/25/uptime?labelPrefix=JCB+Powers+" alt="JCB Powers Uptime">
+    </a>
+    <a href="https://git.vdm.dev/joomla/pkg-component-builder/src/branch/5.x" title="Joomla 5 Compatible">
+        <img src="https://img.shields.io/badge/Joomla-5.x%20Compatible-green.svg" alt="Joomla 5 Compatible">
+    </a>
+    <a href="https://git.vdm.dev/joomla/Component-Builder/src/branch/5.x/LICENSE.txt" title="GPLv3 License">
+        <img src="https://img.shields.io/badge/License-GPLv2-blue.svg" alt="GPLv3 License">
+    </a>
+    <a href="https://github.com/vdm-io/Joomla-Component-Builder/stargazers" title="GitHub Stars">
+        <img src="https://img.shields.io/github/stars/vdm-io/Joomla-Component-Builder.svg?style=flat&label=Star" alt="GitHub Stars">
+    </a>
+</div>
 <br /><br />
-<a class="btn btn-mini btn-success" href="https://opencollective.com/joomla-component-builder/donate?interval=month&amount=20" title="<?php echo $support_titles; ?>" trage="_blank">
+<a class="btn btn-mini btn-outline-dark" style="width: 100%;" href="https://opencollective.com/joomla-component-builder/contribute/donation-15820/checkout?interval=month&amount=40&contributeAs=me" title="<?php echo $support_titles; ?>" target="_blank">
 	<?php echo $support_button; ?>
 </a>
 <br />

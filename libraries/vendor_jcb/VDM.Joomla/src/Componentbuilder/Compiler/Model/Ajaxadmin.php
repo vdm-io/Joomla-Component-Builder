@@ -103,7 +103,7 @@ class Ajaxadmin
 
 			$add_ajax_site = false;
 
-			if ($this->siteeditview->exists($item->id))
+			if ($this->siteeditview->exists($item->guid))
 			{
 				// we should add this site ajax to front ajax
 				$add_ajax_site = true;

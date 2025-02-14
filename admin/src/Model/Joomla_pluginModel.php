@@ -29,10 +29,12 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -214,7 +216,7 @@ class Joomla_pluginModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('joomla_plugin__'.$id))
+			if (($vdm = SessionHelper::get('joomla_plugin__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -222,17 +224,17 @@ class Joomla_pluginModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_plugin__'.$id);
-				ComponentbuilderHelper::set('joomla_plugin__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'joomla_plugin__'.$id);
+				SessionHelper::set('joomla_plugin__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -374,7 +376,7 @@ class Joomla_pluginModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('joomla_plugin__'.$id))
+			if (($vdm = SessionHelper::get('joomla_plugin__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -382,17 +384,17 @@ class Joomla_pluginModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_plugin__'.$id);
-				ComponentbuilderHelper::set('joomla_plugin__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'joomla_plugin__'.$id);
+				SessionHelper::set('joomla_plugin__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -505,6 +507,19 @@ class Joomla_pluginModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 
@@ -746,27 +761,48 @@ class Joomla_pluginModel extends AdminModel
 			return false;
 		}
 
-		// we must also delete the linked tables found
-		if (UtilitiesArrayHelper::check($pks))
+		// linked tables to update
+		$_tables_array = [
+			'joomla_plugin_updates' => 'joomla_plugin',
+			'joomla_plugin_files_folders_urls' => 'joomla_plugin'
+		];
+
+		// we must also update all linked tables
+		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
-			// linked tables to update
-			$_tablesArray = array(
-				'joomla_plugin_updates' => 'joomla_plugin',
-				'joomla_plugin_files_folders_urls' => 'joomla_plugin'
-			);
-			foreach($_tablesArray as $_updateTable => $_key)
+			foreach($_tables_array as $_delete_table => $_field_name)
 			{
+				// get the joomla_plugin guid's
+				$_guids = DataFactory::_('Load')->values(
+					['a.guid' => 'guid'], // select
+					['a' => 'joomla_plugin'], // tables
+					['a.id' =>
+						['value' => $pks, 'operator' => 'IN']
+					] // where
+				);
+
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, $_key, 'id'))
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // select
+					['a' => $_delete_table], // tables
+					['a.' . $_field_name =>
+						['value' => $_guids, 'operator' => 'IN']
+					] // where
+				);
+
+				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_updateTable);
-					// change publish state
+					$_Model = ComponentbuilderHelper::getModel($_delete_table);
+
+					// change publish state to trash (in-case the state was not changed in sync with the parent)
+					$_Model->publish($_pks, -2);
+
+					// delete the items
 					$_Model->delete($_pks);
 				}
 			}
 		}
-
 
 		return true;
 	}
@@ -787,27 +823,45 @@ class Joomla_pluginModel extends AdminModel
 			return false;
 		}
 
+		// linked tables to update
+		$_tables_array = [
+			'joomla_plugin_updates' => 'joomla_plugin',
+			'joomla_plugin_files_folders_urls' => 'joomla_plugin'
+		];
+
 		// we must also update all linked tables
-		if (UtilitiesArrayHelper::check($pks))
+		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
-			// linked tables to update
-			$_tablesArray = array(
-				'joomla_plugin_updates' => 'joomla_plugin',
-				'joomla_plugin_files_folders_urls' => 'joomla_plugin'
-			);
-			foreach($_tablesArray as $_updateTable => $_key)
+			foreach($_tables_array as $_update_table => $_field_name)
 			{
+				// get the admin guid's
+				$_guids = DataFactory::_('Load')->values(
+					['a.guid' => 'guid'], // select
+					['a' => 'joomla_plugin'], // tables
+					['a.id' =>
+						['value' => $pks, 'operator' => 'IN']
+					] // where
+				);
+
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, $_key, 'id'))
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // select
+					['a' => $_update_table], // tables
+					['a.' . $_field_name =>
+						['value' => $_guids, 'operator' => 'IN']
+					] // where
+				);
+
+				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					$_Model = ComponentbuilderHelper::getModel($_update_table);
+
 					// change publish state
 					$_Model->publish($_pks, $value);
 				}
 			}
 		}
-
 
 		return true;
 	}

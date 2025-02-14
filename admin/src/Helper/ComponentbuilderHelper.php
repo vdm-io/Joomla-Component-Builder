@@ -38,6 +38,7 @@ use Joomla\Archive\Archive;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
 use VDM\Joomla\Openai\Factory as OpenaiFactory;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
@@ -49,14 +50,15 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\FOF\Encrypt\AES;
+use VDM\Joomla\Utilities\DateHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\FieldHelper as StringFieldHelper;
 use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
-use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\FormHelper;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 
 // No direct access to this file
@@ -88,8 +90,7 @@ abstract class ComponentbuilderHelper
 	**/
 	public static function globalEvent($document)
 	{
-		// the Session keeps track of all data related to the current session of this user
-		self::loadSession();
+
 	}
 
 
@@ -204,17 +205,31 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
-	* get the class method or property
-	*
-	* @input	int           The method/property ID
-	* @input	string      The target type
-	*
-	* @returns string on success
-	**/
-	public static function getClassCode($id, $type)
+	 * get the class method or property
+	 *
+	 * @input	mixed     The method/property ID|GUID
+	 * @input	string      The target type
+	 *
+	 * @returns string on success
+	 * @since  3.0.0
+	 */
+	public static function getClassCode($target, string $type): ?string
 	{
 		if ('property' === $type || 'method' === $type)
 		{
+			if (GuidHelper::valid($target))
+			{
+				$key = 'guid';
+			}
+			elseif (is_numeric($target))
+			{
+				$key = 'id';
+			}
+			else
+			{
+				return null;
+			}
+
 			// Get a db connection.
 			$db = Factory::getDbo();
 			// Get user object
@@ -224,15 +239,15 @@ abstract class ComponentbuilderHelper
 			// get method
 			if ('method' === $type)
 			{
-				$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.arguments','a.code')));
+				$query->select($db->quoteName(['a.comment','a.name','a.visibility','a.arguments','a.code']));
 			}
 			// get property
 			elseif ('property' === $type)
 			{
-				$query->select($db->quoteName(array('a.comment','a.name','a.visibility','a.default')));
+				$query->select($db->quoteName(['a.comment','a.name','a.visibility','a.default']));
 			}
-			$query->from($db->quoteName('#__componentbuilder_class_' . $type,'a'));
-			$query->where($db->quoteName('a.id') . ' = ' . (int) $id);
+			$query->from($db->quoteName('#__componentbuilder_class_' . $type, 'a'));
+			$query->where($db->quoteName('a.' . $key) . ' = ' . $db->quote($target));
 			// Implement View Level Access
 			if (!$user->authorise('core.options', 'com_componentbuilder'))
 			{
@@ -250,7 +265,7 @@ abstract class ComponentbuilderHelper
 				// get the code
 				$code = $db->loadObject();
 				// combine method values
-				$combinded = array();
+				$combinded = [];
 				// add comment if set
 				if (UtilitiesStringHelper::check($code->comment))
 				{
@@ -324,17 +339,18 @@ abstract class ComponentbuilderHelper
 				return implode(PHP_EOL, $combinded);
 			}
 		}
-		return false;
+		return null;
 	}
 
 	/**
-	* extract Boilerplate Class Extends
-	*
-	* @input	string       The class as a string
-	* @input	string       The type of class/extension
-	*
-	* @returns string on success
-	**/
+	 * extract Boilerplate Class Extends
+	 *
+	 * @input	string       The class as a string
+	 * @input	string       The type of class/extension
+	 *
+	 * @returns string on success
+	 * @since  3.0.0
+	 */
 	public static function extractBoilerplateClassExtends(&$class, $type)
 	{
 		if (($strings = GetHelper::allBetween($class, 'class ', '}')) !== false && UtilitiesArrayHelper::check($strings))
@@ -351,14 +367,15 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* extract Boilerplate Class Header
-	*
-	* @input	string       The class as a string
-	* @input	string       The class being extended
-	* @input	string       The type of class/extension
-	*
-	* @returns string on success
-	**/
+	 * extract Boilerplate Class Header
+	 *
+	 * @input	string       The class as a string
+	 * @input	string       The class being extended
+	 * @input	string       The type of class/extension
+	 *
+	 * @returns string on success
+	 * @since  3.0.0
+	 */
 	public static function extractBoilerplateClassHeader(&$class, $extends, $type)
 	{
 		if (($string = GetHelper::between($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && UtilitiesStringHelper::check($string))
@@ -396,14 +413,15 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* extract Boilerplate Class Comment
-	*
-	* @input	string       The class as a string
-	* @input	string       The class being extended
-	* @input	string       The type of class/extension
-	*
-	* @returns string on success
-	**/
+	 * extract Boilerplate Class Comment
+	 *
+	 * @input	string       The class as a string
+	 * @input	string       The class being extended
+	 * @input	string       The type of class/extension
+	 *
+	 * @returns string on success
+	 * @since  3.0.0
+	 */
 	public static function extractBoilerplateClassComment(&$class, $extends, $type)
 	{
 		if (($string = GetHelper::between($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && UtilitiesStringHelper::check($string))
@@ -444,15 +462,16 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* extract Boilerplate Class Properties & Methods
-	*
-	* @input	string       The class as a string
-	* @input	string       The class being extended
-	* @input	string       The type of class/extension
-	* @input	int            The plugin groups
-	*
-	* @returns string on success
-	**/
+	 * extract Boilerplate Class Properties & Methods
+	 *
+	 * @input	string       The class as a string
+	 * @input	string       The class being extended
+	 * @input	string       The type of class/extension
+	 * @input	int            The plugin groups
+	 *
+	 * @returns string on success
+	 * @since  3.0.0
+	 */
 	public static function extractBoilerplateClassPropertiesMethods(&$class, $extends, $type, $plugin_group = null)
 	{
 		$bucket = array('property' => array(), 'method' => array());
@@ -712,23 +731,21 @@ abstract class ComponentbuilderHelper
 	/*
 	 * Get the Array of Existing Validation Rule Names
 	 *
-	 * @return array
+	 * @return array|null
+	 * @since  3.0.0
 	 */
-	public static function getExistingValidationRuleNames($lowercase = false)
+	public static function getExistingValidationRuleNames(bool $lowercase = false): ?array
 	{
 		// get the items
 		$items = self::get('_existing_validation_rules_VDM', null);
 		if (!$items)
 		{
-			// load the file class
-			jimport('joomla.filesystem.file');
-			jimport('joomla.filesystem.folder');
 			// set the path to the form validation rules
 			$path = JPATH_LIBRARIES . '/src/Form/Rule';
 			// check if the path exist
 			if (!Folder::exists($path))
 			{
-				return false;
+				return null;
 			}
 			// we must first store the current working directory
 			$joomla = getcwd();
@@ -741,7 +758,7 @@ abstract class ComponentbuilderHelper
 			// make sure we have an array
 			if (!UtilitiesArrayHelper::check($items))
 			{
-				return false;
+				return null;
 			}
 			// remove the Rule.php from the name
 			$items = array_map( function ($name) {
@@ -762,22 +779,24 @@ abstract class ComponentbuilderHelper
 				return strtolower($item);
 			}, $items);
 		}
+
 		return $items;
 	}
 
 	/**
-	* Get the snippet contributor details
-	* 
-	* @param  string   $filename   The file name
-	* @param  string   $type         The type of file
-	*
-	* @return  array    On success the contributor details
-	* 
-	*/
-	public static function getContributorDetails($filename, $type = 'snippet')
+	 * Get the snippet contributor details
+	 * 
+	 * @param  string   $filename   The file name
+	 * @param  string   $type         The type of file
+	 *
+	 * @return  array    On success the contributor details
+	 * @since  3.0.0
+	 */
+	public static function getContributorDetails(string $filename, string $type = 'snippet'): ?array
 	{
 		// start loading the contributor details
-		$contributor = array();
+		$contributor = [];
+
 		// get the path & content
 		switch ($type)
 		{
@@ -792,9 +811,10 @@ abstract class ComponentbuilderHelper
 			break;
 			default:
 				// only allow types that are being targeted
-				return false;
+				return null;
 			break;
 		}
+
 		// see if we have content and all needed details
 		if (isset($content) && UtilitiesArrayHelper::check($content)
 				&& isset($content['contributor_company'])
@@ -803,13 +823,21 @@ abstract class ComponentbuilderHelper
 				&& isset($content['contributor_website']))
 		{
 			// got the details from file
-			return array('contributor_company' => $content['contributor_company'] ,'contributor_name' => $content['contributor_name'], 'contributor_email' => $content['contributor_email'], 'contributor_website' => $content['contributor_website'], 'origin' => 'file');
+			return [
+				'contributor_company' => $content['contributor_company'] ,
+				'contributor_name' => $content['contributor_name'],
+				'contributor_email' => $content['contributor_email'],
+				'contributor_website' => $content['contributor_website'],
+				'origin' => 'file'
+			];
 		}
+
 		// get the global settings
 		if (!ObjectHelper::check(self::$params))
 		{
 			self::$params = ComponentHelper::getParams('com_componentbuilder');
 		}
+
 		// get the global company details
 		if (!UtilitiesArrayHelper::check(self::$localCompany))
 		{
@@ -819,46 +847,64 @@ abstract class ComponentbuilderHelper
 			self::$localCompany['email']		= self::$params->get('export_email', 'joomla@vdm.io');
 			self::$localCompany['website']		= self::$params->get('export_website', 'https://www.vdm.io/');
 		}
+
 		// default global
-		return array('contributor_company' => self::$localCompany['company']	,'contributor_name' => self::$localCompany['owner'], 'contributor_email' => self::$localCompany['email'], 'contributor_website' => self::$localCompany['website'], 'origin' => 'global');
+		return [
+			'contributor_company' => self::$localCompany['company'],
+			'contributor_name' => self::$localCompany['owner'],
+			'contributor_email' => self::$localCompany['email'],
+			'contributor_website' => self::$localCompany['website'],
+			'origin' => 'global'
+		];
 	}
 
 	/**
-	* Get the library files
-	* 
-	* @param  int   $id   The library id to target
-	*
-	* @return  array    On success the array of files that belong to this library
-	* 
-	*/
-	public static function getLibraryFiles($id)
+	 * Get the library files
+	 * 
+	 * @param  string   $guid   The library guid to target
+	 *
+	 * @return  array    On success the array of files that belong to this library
+	 * @since   3.0.0
+	 */
+	public static function getLibraryFiles(string $guid): ?array
 	{
+		if (!GuidHelper::valid($guid))
+		{
+			return null;
+		}
+
 		// get the library files, folders, and urls
-		$files = array();
+		$files = [];
+
 		// Get a db connection.
 		$db = Factory::getDbo();
+
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('b.name','a.addurls','a.addfolders','a.addfiles')));
-		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls','a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'b') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('b.id') . ')');
-		$query->where($db->quoteName('a.library') . ' = ' . (int) $id);
+		$query->select($db->quoteName(['l.name','f.addurls','f.addfolders','f.addfiles']));
+		$query->from($db->quoteName('#__componentbuilder_library_files_folders_urls', 'f'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'l') . ' ON (' . $db->quoteName('f.library') . ' = ' . $db->quoteName('l.guid') . ')');
+		$query->where($db->quoteName('f.library') . ' = ' . $db->quote($guid));
+
 		$db->setQuery($query);
 		$db->execute();
 		if ($db->getNumRows())
 		{			
 			// prepare the files
  			$result = $db->loadObject();
+
  			// first we load the URLs
 			if (JsonHelper::check($result->addurls))
 			{
 				// convert to array
 				$result->addurls = json_decode($result->addurls, true);
+
 				// set urls
 				if (UtilitiesArrayHelper::check($result->addurls))
 				{
 					// build media folder path
 					$mediaPath = '/media/' . strtolower( preg_replace('/\s+/', '-', UtilitiesStringHelper::safe($result->name, 'filename', ' ', false)));
+
 					// load the urls
 					foreach($result->addurls as $url)
 					{
@@ -884,12 +930,14 @@ abstract class ComponentbuilderHelper
 								// set the path to library file
 								$url['path'] = $mediaPath . $path . '/' . $fileName; // we need this for later
 							}
+
 							// if local path is set, then use it first
 							if (isset($url['path']))
 							{
 								// load document script
 								$files[md5($url['path'])] =  '(' . Text::_('URL') . ') ' . basename($url['url']) . ' - ' . Text::_('COM_COMPONENTBUILDER_LOCAL');
 							}
+
 							// check if link must be added
 							if (isset($url['url']) && ((isset($url['type']) && $url['type'] == 1) || (isset($url['type']) && $url['type'] == 3) || !isset($url['type'])))
 							{
@@ -900,11 +948,13 @@ abstract class ComponentbuilderHelper
 					}
 				}
 			}
+
 			// load the local files
 			if (JsonHelper::check($result->addfiles))
 			{
 				// convert to array
 				$result->addfiles = json_decode($result->addfiles, true);
+
 				// set files
 				if (UtilitiesArrayHelper::check($result->addfiles))
 				{
@@ -913,7 +963,8 @@ abstract class ComponentbuilderHelper
 						if (isset($file['file']) && isset($file['path']))
 						{
 							$path = '/'.trim($file['path'], '/');
-							// check if path has new file name (has extetion)
+
+							// check if path has new file name (has extension)
 							$pathInfo = pathinfo($path);
 							if (isset($pathInfo['extension']) && $pathInfo['extension'])
 							{
@@ -929,11 +980,13 @@ abstract class ComponentbuilderHelper
 					}
 				}
 			}
+
  			// load the files in the folder	
 			if (JsonHelper::check($result->addfolders))
 			{
 				// convert to array
 				$result->addfolders = json_decode($result->addfolders, true);
+
 				// set folder
 				if (UtilitiesArrayHelper::check($result->addfolders))
 				{
@@ -942,10 +995,13 @@ abstract class ComponentbuilderHelper
 					{
 						self::$params = ComponentHelper::getParams('com_componentbuilder');
 					}
+
 					// reset bucket
-					$bucket = array();
+					$bucket = [];
+
 					// get custom folder path
 					$customPath = '/'.trim(self::$params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'), '/');
+
 					// get all the file paths
 					foreach ($result->addfolders as $folder)
 					{
@@ -970,6 +1026,7 @@ abstract class ComponentbuilderHelper
 							}
 						}
 					}
+
 					// now load the script
 					if (UtilitiesArrayHelper::check($bucket))
 					{
@@ -984,13 +1041,15 @@ abstract class ComponentbuilderHelper
 					}
 				}
 			}
+
 			// return files if found
 			if (UtilitiesArrayHelper::check($files))
 			{
 				return $files;
 			}
 		}
-		return false;
+
+		return null;
 	}
 
 	/**
@@ -1005,9 +1064,9 @@ abstract class ComponentbuilderHelper
 	 * @param   array  $targets  paths to target
 	 *
 	 * @return  string
-	 * 
+	 * @since  3.0.0
 	 */
-	public static function fixPath(&$values, $targets = array())
+	public static function fixPath(&$values, array $targets = [])
 	{
 		// if multiple to gets searched and fixed
 		if (UtilitiesArrayHelper::check($values) && UtilitiesArrayHelper::check($targets))
@@ -1028,53 +1087,79 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * get all component IDs
+	 * Retrieves all published component IDs.
+	 *
+	 * This static method fetches the IDs of all published components from the database.
+	 * It queries the `#__componentbuilder_joomla_component` table and excludes components that are trashed or unpublished.
+	 *
+	 * @return array|null Returns an array of component IDs on success. Returns `false` if no components are found or if an error occurs.
+	 *
+	 * @throws \RuntimeException If the database query fails.
+	 * @since  3.0.0
 	 */
-	public static function getComponentIDs()
+	public static function getComponentIDs(): ?array
 	{
-		// Get a db connection.
+		// Get a database connection
 		$db = Factory::getDbo();
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('id')));
-		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
-		$query->where($db->quoteName('published') . ' >= 1'); // do not backup trash
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{			
-				return $db->loadColumn();
+
+		try {
+			// Create a new query object
+			$query = $db->getQuery(true);
+
+			// Select the IDs of published components
+			$query->select($db->quoteName('id'))
+				  ->from($db->quoteName('#__componentbuilder_joomla_component'))
+				  ->where($db->quoteName('published') . ' >= 1'); // Exclude trashed and unpublished components
+
+			// Set and execute the query
+			$db->setQuery($query);
+			$componentIDs = $db->loadColumn();
+
+			// Return the result or false if no components are found
+			return !empty($componentIDs) ? $componentIDs : null;
+		} catch (\RuntimeException $e) {
+			// Log the error (optional) and rethrow for higher-level handling
+			Log::add('Database query failed: ' . $e->getMessage(), Log::ERROR, 'jerror');
+			throw new \RuntimeException(Text::_('COM_COMPONENTBUILDER_ERROR_FETCHING_COMPONENT_IDS_FROM_THE_DATABASE'));
 		}
-		return false;
 	}
 
 	/**
-	 * Autoloader
+	 * Retrieves all published component GUIDs.
+	 *
+	 * This static method fetches the GUIDs of all published components from the database.
+	 * It queries the `#__componentbuilder_joomla_component` table and excludes components that are trashed or unpublished.
+	 *
+	 * @return array|null Returns an array of component GUIDs on success. Returns `false` if no components are found or if an error occurs.
+	 *
+	 * @throws \RuntimeException If the database query fails.
+	 * @since  5.0.4
 	 */
-	public static function autoLoader($type = 'compiler')
+	public static function getComponentGUIDs(): ?array
 	{
-		// load the type classes
-		if ('smart' !== $type)
-		{
-			foreach (glob(JPATH_ADMINISTRATOR."/components/com_componentbuilder/helpers/".$type."/*.php") as $autoFile)
-			{
-				require_once $autoFile;
-			}
+		// Get a database connection
+		$db = Factory::getDbo();
+
+		try {
+			// Create a new query object
+			$query = $db->getQuery(true);
+
+			// Select the IDs of published components
+			$query->select($db->quoteName('guid'))
+				  ->from($db->quoteName('#__componentbuilder_joomla_component'))
+				  ->where($db->quoteName('published') . ' >= 1'); // Exclude trashed and unpublished components
+
+			// Set and execute the query
+			$db->setQuery($query);
+			$componentGUIDs = $db->loadColumn();
+
+			// Return the result or false if no components are found
+			return !empty($componentGUIDs) ? $componentGUIDs : null;
+		} catch (\RuntimeException $e) {
+			// Log the error (optional) and rethrow for higher-level handling
+			Log::add('Database query failed: ' . $e->getMessage(), Log::ERROR, 'jerror');
+			throw new \RuntimeException(Text::_('COM_COMPONENTBUILDER_ERROR_FETCHING_COMPONENT_GUIDS_FROM_THE_DATABASE'));
 		}
-		// load only if compiler
-		if ('compiler' === $type)
-		{
-			// import the Joomla librarys
-			jimport('joomla.application.component.modellist');
-		}
-		// load only if smart
-		if ('smart' === $type)
-		{
-			// import the Joomla libraries
-			jimport('joomla.application.component.modellist');
-		}
-		// load this for all
-		jimport('joomla.application');
 	}
 
 	/*
@@ -1218,21 +1303,22 @@ abstract class ComponentbuilderHelper
 	 * Copy Any Item (only use for direct database copying)
 	 * 
 	 * @param   int        $id         The item to copy
-	 * @param   string   $table     The table and model to copy from and with
+	 * @param   string   $type     The type and model to copy from and with
 	 * @param   array    $config   The values that should change
 	 *
 	 * @return  boolean   True if success
-	 * 
+	 * @since  3.0.0
 	 */
-	public static function copyItem($id, $type, $config = array())
+	public static function copyItem($id, string $type, array $config = [])
 	{
 		// only continue if we have an id
-		if ((int) $id > 0)
+		if (is_numeric($id) && (int) $id > 0)
 		{
 			// get the model
 			Helper::setOption('com_componentbuilder');
 			$model = Helper::getModel($type);
 			$app = Factory::getApplication();
+
 			// get item
 			if ($item = $model->getItem($id))
 			{
@@ -1247,12 +1333,14 @@ abstract class ComponentbuilderHelper
 						}
 					}
 				}
+
 				// clone the object
-				$data = array();
+				$data = [];
 				foreach ($item as $key => $value)
 				{
 					$data[$key] = $value;
-				}			
+				}
+
 				// reset some values
 				$data['id'] = 0;
 				$data['version'] = 1;
@@ -1264,11 +1352,13 @@ abstract class ComponentbuilderHelper
 				{
 					$data['associations'] = array();
 				}
+
 				// remove some unneeded values
 				unset($data['params']);
 				unset($data['asset_id']);
 				unset($data['checked_out']);
 				unset($data['checked_out_time']);
+
 				// Attempt to save the data.
 				if ($model->save($data))
 				{
@@ -1601,7 +1691,7 @@ abstract class ComponentbuilderHelper
 		if (UtilitiesArrayHelper::check($columns))
 		{
         		// build the return string
-			$tableColumns = array();
+			$tableColumns = [];
 			foreach ($columns as $column => $typeCast)
 			{
 				$tableColumns[] =  $as . "." . $column . ' AS ' . $unique . $column;
@@ -1623,9 +1713,9 @@ abstract class ComponentbuilderHelper
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.addfields', 'b.name_single')));
 		$query->from($db->quoteName('#__componentbuilder_admin_fields', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'b') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'b') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('b.guid') . ')');
 		$query->where($db->quoteName('b.published') . ' = 1');
-		$query->where($db->quoteName('a.admin_view') . ' = ' . (int) $admin_view);
+		$query->where($db->quoteName('a.admin_view') . ' = ' . $db->quote($admin_view));
 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
@@ -1642,12 +1732,12 @@ abstract class ComponentbuilderHelper
 			if (UtilitiesArrayHelper::check($addfields))
 			{
 				// reset all buckets
-				$field = array();
-				$fields = array();
+				$field = [];
+				$fields = [];
 				// get data
 				foreach ($addfields as $nr => $value)
 				{
-					$tmp = self::getFieldNameAndType((int) $value['field']);
+					$tmp = self::getFieldNameAndType($value['field']);
 					if (UtilitiesArrayHelper::check($tmp))
 					{
 						$field[$nr] = $tmp;
@@ -1694,8 +1784,41 @@ abstract class ComponentbuilderHelper
 		return false;
 	}
 
-	public static function getFieldNameAndType($id, $spacers = false)
+	/**
+	 * Retrieves the field name and its type based on the provided target.
+	 *
+	 * This method fetches a field's name and type from the database, processes additional metadata
+	 * from the field's XML definition, and returns a sanitized array containing the field's name 
+	 * and type. It supports options for excluding spacers and notes.
+	 *
+	 * @param mixed $target The field identifier. Can either be:
+	 *                      - A GUID (globally unique identifier) as a string, or
+	 *                      - A numeric ID (integer).
+	 * @param bool $spacers Optional. Whether to include spacers and notes in the result. Defaults to `false`.
+	 *
+	 * @return array|null Returns an associative array with the following keys on success:
+	 *                    - `name` (string): The sanitized field name.
+	 *                    - `type` (string): The sanitized field type.
+	 *                    Returns `null` if the target is invalid or no matching field is found.
+	 *
+	 * @throws \RuntimeException If the database query fails.
+	 * @since  3.0.9
+	 */
+	public static function getFieldNameAndType($target, bool $spacers = false): ?array
 	{
+		if (GuidHelper::valid($target))
+		{
+			$key = 'guid';
+		}
+		elseif (is_numeric($target))
+		{
+			$key = 'id';
+		}
+		else
+		{
+			return null;
+		}
+
 		// Get a db connection.
 		$db = Factory::getDbo();
 
@@ -1703,11 +1826,11 @@ abstract class ComponentbuilderHelper
 		$query = $db->getQuery(true);
 
 		// Order it by the ordering field.
-		$query->select($db->quoteName(array('a.name', 'a.xml')));
-		$query->select($db->quoteName(array('c.name'), array('type_name')));
+		$query->select($db->quoteName(['a.name', 'a.xml']));
+		$query->select($db->quoteName(['c.name'], ['type_name']));
 		$query->from('#__componentbuilder_field AS a');
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.id') . ')');
-		$query->where($db->quoteName('a.id') . ' = '. $db->quote($id));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'c') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('c.guid') . ')');
+		$query->where($db->quoteName('a.' . $key) . ' = '. $db->quote($target));
 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
@@ -1716,25 +1839,29 @@ abstract class ComponentbuilderHelper
 		{
 			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
 			$field = $db->loadObject();
+
 			// load the values form params
 			$field->xml = json_decode($field->xml);
 			$field->type_name = self::safeTypeName($field->type_name);
 			$load = true;
+
 			// if category then name must be catid (only one per view)
 			if ($field->type_name === 'category')
 			{
 				$name = 'catid';
 			}
+
 			// if tag is set then enable all tag options for this view (only one per view)
 			elseif ($field->type_name === 'tag')
 			{
 				$name = 'tags';
 			}
+
 			// don't add spacers or notes
 			elseif (!$spacers && ($field->type_name == 'spacer' || $field->type_name == 'note'))
 			{
 				// make sure the name is unique
-				return false;
+				return null;
 			}
 			else
 			{
@@ -1746,9 +1873,11 @@ abstract class ComponentbuilderHelper
 			{
 				$name = self::safeFieldName($field->name);
 			}
-			return array('name' => $name, 'type' => $field->type_name);
+
+			return ['name' => $name, 'type' => $field->type_name];
 		}
-		return false;
+
+		return null;
 	}
 
 	/**
@@ -2166,7 +2295,7 @@ abstract class ComponentbuilderHelper
 	{
 		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
-			self::$session = Factory::getSession();
+			self::$session = Factory::getApplication()->getSession();
 		}
 		// set the defaults
 		self::setSessionDefaults();
@@ -2179,7 +2308,7 @@ abstract class ComponentbuilderHelper
 	{
 		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
-			self::$session = Factory::getSession();
+			self::$session = Factory::getApplication()->getSession();
 		}
 		// set to local memory to speed up program
 		self::$localSession[$key] = $value;
@@ -2194,7 +2323,7 @@ abstract class ComponentbuilderHelper
 	{
 		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
 		{
-			self::$session = Factory::getSession();
+			self::$session = Factory::getApplication()->getSession();
 		}
 		// check if in local memory
 		if (!isset(self::$localSession[$key]))
@@ -2210,24 +2339,24 @@ abstract class ComponentbuilderHelper
 	 * get field type properties
 	 *
 	 * @return  array   on success
-	 * 
+	 * @since  3.0.0
 	 */
-	public static function getFieldTypeProperties($value, $type, $settings = [], $xml = null, $dbDefaults = false)
+	public static function getFieldTypeProperties($value, $type, $settings = [], $xml = null, bool $dbDefaults = false): ?array
 	{
 		// Get a db connection.
 		$db = Factory::getDbo();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('properties', 'short_description', 'description')));
+		$query->select($db->quoteName(['properties', 'short_description', 'description']));
 		// load database default values
 		if ($dbDefaults)
 		{
-			$query->select($db->quoteName(array('datadefault', 'datadefault_other', 'datalenght', 'datalenght_other', 'datatype', 'has_defaults', 'indexes', 'null_switch', 'store')));
+			$query->select($db->quoteName(['datadefault', 'datadefault_other', 'datalenght', 'datalenght_other', 'datatype', 'has_defaults', 'indexes', 'null_switch', 'store']));
 		}
 		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
 		$query->where($db->quoteName('published') . ' = 1');
-		$query->where($db->quoteName($type) . ' = '. $value);
+		$query->where($db->quoteName($type) . ' = ' . $db->quote($value));
 
 		// Reset the query using our newly populated query object.
 		$db->setQuery($query);
@@ -2236,18 +2365,19 @@ abstract class ComponentbuilderHelper
 		{
 			$result = $db->loadObject();
 			$properties = json_decode($result->properties, true);
-			$field = array(
-				'subform' => array(),
-				'nameListOptions' => array(),
-				'php' => array(),
+			$field = [
+				'subform' => [],
+				'nameListOptions' => [],
+				'php' => [],
 				'values' => "<field ", 
 				'values_description' => '<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">', 
 				'short_description' => $result->short_description, 
-				'description' => $result->description);
+				'description' => $result->description
+			];
 			// number pointer
 			$nr = 0;
 			// php tracker (we must try to load alteast 17 rows
-			$phpTracker = array();
+			$phpTracker = [];
 			// force load all properties
 			$forceAll = false;
 			if ($xml && strpos($xml, '..__FORCE_LOAD_ALL_PROPERTIES__..') !== false)
@@ -2276,8 +2406,8 @@ abstract class ComponentbuilderHelper
 					// start array if not already set
 					if (!isset($field['php'][$phpKey]))
 					{
-						$field['php'][$phpKey] = array();
-						$field['php'][$phpKey]['value'] = array();
+						$field['php'][$phpKey] = [];
+						$field['php'][$phpKey]['value'] = [];
 						$field['php'][$phpKey]['desc'] = $property['description'];
 						// start tracker
 						$phpTracker[$phpKey] = 1;
@@ -2346,7 +2476,7 @@ abstract class ComponentbuilderHelper
 			// load the database defaults if set and wanted
 			if ($dbDefaults && isset($result->has_defaults) && $result->has_defaults == 1)
 			{
-				$field['database'] = array(
+				$field['database'] = [
 					'datatype' => $result->datatype,
 					'datadefault' => $result->datadefault,
 					'datadefault_other' => $result->datadefault_other,
@@ -2355,12 +2485,12 @@ abstract class ComponentbuilderHelper
 					'indexes' => $result->indexes,
 					'null_switch' => $result->null_switch,
 					'store' => $result->store
-				);
+				];
 			}
 			// return found field options
 			return $field;
 		}
-		return false;
+		return null;
 	}
 
 	/**
@@ -2380,98 +2510,131 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	 * get field types properties
+	 * Retrieves field type properties from the database.
 	 *
-	 * @return  array   on success
-	 * 
+	 * This method fetches field types and their properties from the `#__componentbuilder_fieldtype` table.
+	 * It supports filtering, excluding, and querying by specific IDs or GUIDs. The method also decodes 
+	 * the `properties` JSON for each field type and processes additional attributes like `mandatory` and `translatable`.
+	 *
+	 * @param array  $targets   An array of target IDs or GUIDs to filter by. Leave empty to retrieve all.
+	 * @param array  $filter    Key-value pairs for filtering field properties. For example: ['mandatory' => 1].
+	 * @param array  $exclude   An array of property names to exclude.
+	 * @param string $type      The column to filter on (e.g., 'id' or 'guid').
+	 * @param string $operator  The SQL operator to use for filtering (`IN`, `NOT IN`, `IN_STRINGS`, `NOT IN_STRINGS`).
+	 *
+	 * @return array|false Returns an array with the following keys on success:
+	 *                     - `types` (array): An associative array where the key is the GUID and the value is 
+	 *                       an array of properties with their metadata (name, example, description, mandatory, translatable).
+	 *                     - `properties` (array): A flat associative array of property names (key) and their display names (value).
+	 *                     Returns `false` if no data is found or an error occurs.
+	 *
+	 * @throws \RuntimeException If the database query fails.
+	 * @since  3.0.0
 	 */
-	public static function getFieldTypesProperties($targets = array(), $filter = array(), $exclude = array(), $type = 'id', $operator = 'IN')
-	{
-		// Get a db connection.
+	public static function getFieldTypesProperties(
+		array $targets = [],
+		array $filter = [],
+		array $exclude = [],
+		string $type = 'id',
+		string $operator = 'IN'
+	) {
+		// Get a database connection
 		$db = Factory::getDbo();
 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('id','properties')));
-		$query->from($db->quoteName('#__componentbuilder_fieldtype'));
-		$query->where($db->quoteName('published') . ' = 1');
-		// make sure we have ids (or get all)
-		if ('IN_STRINGS' === $operator || 'NOT IN_STRINGS' === $operator)
-		{
-			$query->where($db->quoteName($type) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","',$targets) . '")');
-		}
-		else
-		{
-			$query->where($db->quoteName($type) . ' ' . $operator . ' (' . implode(',',$targets) . ')');
-		}
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$_types = array();
-			$_properties = array();
-			$types = $db->loadObjectList('id');
-			foreach ($types as $id => $type)
+		try {
+			// Create a new query object
+			$query = $db->getQuery(true);
+
+			// Select fields
+			$query->select($db->quoteName(['guid', 'properties']))
+				  ->from($db->quoteName('#__componentbuilder_fieldtype'))
+				  ->where($db->quoteName('published') . ' = 1');
+
+			// Add target filtering
+			if (!empty($targets))
 			{
-				$properties = json_decode($type->properties);
+				$operator = strtoupper($operator);
+
+				if ($operator === 'IN_STRINGS' || $operator === 'NOT IN_STRINGS')
+				{
+					$query->where(
+						$db->quoteName($type) . ' ' . str_replace('_STRINGS', '', $operator) . ' ("' . implode('","', $targets) . '")'
+					);
+				}
+				else
+				{
+					$query->where(
+						$db->quoteName($type) . ' ' . $operator . ' (' . implode(',', $targets) . ')'
+					);
+				}
+			}
+
+			// Set and execute the query
+			$db->setQuery($query);
+			$types = $db->loadObjectList('guid');
+
+			// Return early if no data is found
+			if (empty($types))
+			{
+				return null;
+			}
+
+			// Process field types and properties
+			$_types = [];
+			$_properties = [];
+
+			foreach ($types as $guid => $type)
+			{
+				$properties = json_decode($type->properties ?? '[]');
+
 				foreach ($properties as $property)
 				{
-					if (!isset($_types[$id]))
-					{
-						$_types[$id] = array();
-					}
-					// add if no objection is found
 					$add = true;
-					// check if we have exclude
+
+					// Skip excluded properties
 					if (UtilitiesArrayHelper::check($exclude) && in_array($property->name, $exclude))
 					{
 						continue;
 					}
+
 					// check if we have filter
 					if (UtilitiesArrayHelper::check($filter))
 					{
-						foreach($filter as $key => $val)
+						// Apply filters
+						foreach ($filter as $key => $val)
 						{
 							if (!isset($property->$key) || $property->$key != $val)
 							{
 								$add = false;
+								break;
 							}
 						}
 					}
-					// now add the property
+
+					// Add property if it passes all checks
 					if ($add)
 					{
-						$_types[$id][$property->name] = array('name' => ucfirst($property->name), 'example' => $property->example, 'description' => $property->description);
-						// set mandatory
-						if (isset($property->mandatory) && $property->mandatory == 1)
-						{
-							$_types[$id][$property->name]['mandatory'] = true;
-						}
-						else
-						{
-							$_types[$id][$property->name]['mandatory'] = false;
-						}
-						// set translatable
-						if (isset($property->translatable) && $property->translatable == 1)
-						{
-							$_types[$id][$property->name]['translatable'] = true;
-						}
-						else
-						{
-							$_types[$id][$property->name]['translatable'] = false;
-						}
-						$_properties[$property->name] = $_types[$id][$property->name]['name'];
+						$_types[$guid][$property->name] = [
+							'name' => ucfirst($property->name),
+							'example' => $property->example ?? '',
+							'description' => $property->description ?? '',
+							'mandatory' => isset($property->mandatory) && $property->mandatory == 1,
+							'translatable' => isset($property->translatable) && $property->translatable == 1,
+						];
+
+						$_properties[$property->name] = ucfirst($property->name);
 					}
 				}
 			}
 
-			// return found types & properties
-			return array('types' => $_types, 'properties' => $_properties);
+			// Return processed types and properties
+			return ['types' => $_types, 'properties' => $_properties];
+		} catch (\RuntimeException $e) {
+			// Log the error (optional) and rethrow
+			Log::add('Database query failed: ' . $e->getMessage(), Log::ERROR, 'jerror');
+			throw new \RuntimeException(Text::_('COM_COMPONENTBUILDER_ERROR_FETCHING_FIELD_TYPES_PROPERTIES_FROM_THE_DATABASE'));
 		}
-		return false;
 	}
-
 
 	/**
 	 * Remove folders with files
@@ -2480,6 +2643,7 @@ abstract class ComponentbuilderHelper
 	 * @param   array|null  $ignore  The folders and files to ignore and not remove
 	 *
 	 * @return  bool   True if all are removed
+	 * @since  3.0.0
 	 */
 	public static function removeFolder(string $path, ?array $ignore = null): bool
 	{
@@ -2775,7 +2939,7 @@ abstract class ComponentbuilderHelper
 	 * @param   string   $fieldName  The target field name of string
 	 * 
 	 * @return  void
-	 * 
+	 * @since  3.0.0
 	 */
 	public static function getDynamicScripts($type, $fieldName = false)
 	{
@@ -3561,20 +3725,20 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * get the field types id -> name of a group or groups
+	 * get the field types $key -> name of a group or groups
 	 *
-	 * @return  array  ids of the spacer field types
-	 * @deprecated 3.3 Use CompilerFactory::_('Field.Groups')->types($groups);
+	 * @return  array  the field types
+	 * @deprecated 3.3 Use CompilerFactory::_('Field.Groups')->types($groups, $key);
 	 */
-	public static function getFieldTypesByGroup($groups = array())
+	public static function getFieldTypesByGroup($groups = [], $key = 'id')
 	{
-		return CompilerFactory::_('Field.Groups')->types($groups);
+		return CompilerFactory::_('Field.Groups')->types($groups, $key);
 	}
 
 	/**
 	 * get the field types IDs of a group or groups
 	 *
-	 * @return  array  ids of the spacer field types
+	 * @return  array  ids of the field types
 	 * @deprecated 3.3 Use CompilerFactory::_('Field.Groups')->typesIds($groups);
 	 */
 	public static function getFieldTypesIdsByGroup($groups = array())
@@ -3593,6 +3757,27 @@ abstract class ComponentbuilderHelper
 		return CompilerFactory::_('Field.Groups')->spacerIds();
 	}
 
+	/**
+	 * get the field types Guid's of a group or groups
+	 *
+	 * @return  array  Guid of the field types
+	 * @deprecated 3.3 Use CompilerFactory::_('Field.Groups')->typesGuids($groups);
+	 */
+	public static function getFieldTypesGuidsByGroup($groups = [])
+	{
+		return CompilerFactory::_('Field.Groups')->typesGuids($groups);
+	}
+
+	/**
+	 * get the spacer Guid's
+	 *
+	 * @return  array  Guids of the spacer field types
+	 * @deprecated 3.3 Use CompilerFactory::_('Field.Groups')->spacerGuids();
+	 */
+	public static function getSpacerGuids()
+	{
+		return CompilerFactory::_('Field.Groups')->spacerGuids();
+	}
 
 	/**
 	 * open base64 string if stored as base64
@@ -4867,32 +5052,40 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get an edit button
-	* 
-	* @param  int      $item       The item to edit
-	* @param  string   $view       The type of item to edit
-	* @param  string   $views      The list view controller name
-	* @param  string   $ref        The return path
-	* @param  string   $component  The component these views belong to
-	* @param  string   $headsup    The message to show on click of button
-	*
-	* @return  string    On success the full html link
-	* 
-	*/
-	public static function getEditButton(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE')
+	 * Get an edit button
+	 * 
+	 * @param  mixed    $item       The item to edit
+	 * @param  string   $view       The type of item to edit
+	 * @param  string   $views      The list view controller name
+	 * @param  string   $ref        The return path
+	 * @param  string   $component  The component these views belong to
+	 * @param  string   $headsup    The message to show on click of button
+	 *
+	 * @return  string    On success the full html link
+	 * @since   3.0.9
+	 */
+	public static function getEditButton(
+		$item,
+		string $view,
+		string $views,
+		string $ref = '',
+		string $component = 'com_componentbuilder',
+		string $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE'
+	): string
 	{
 		// get URL
 		$url = self::getEditURL($item, $view, $views, $ref, $component);
-		// check if we found any
-		if (UtilitiesStringHelper::check($url))
+		if ($url !== null)
 		{
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
 			{
 				self::$params = ComponentHelper::getParams('com_componentbuilder');
 			}
+
 			// get UIKIT version
 			$uikit = self::$params->get('uikit_version', 2);
+
 			// check that we have the ID
 			if (ObjectHelper::check($item) && isset($item->id))
 			{
@@ -4903,7 +5096,7 @@ abstract class ComponentbuilderHelper
 				}
 				else
 				{
-					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+					$checked_out = GetHelper::var($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 				}
 			}
 			elseif (UtilitiesArrayHelper::check($item) && isset($item['id']))
@@ -4915,15 +5108,17 @@ abstract class ComponentbuilderHelper
 				}
 				else
 				{
-					$checked_out = self::getVar($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
+					$checked_out = GetHelper::var($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
 				}
 			}
 			elseif (is_numeric($item) && $item > 0)
 			{
-				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				$checked_out = GetHelper::var($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
+
 			// set the link title
 			$title = UtilitiesStringHelper::safe(Text::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
+
 			// check that there is a check message
 			if (UtilitiesStringHelper::check($headsup))
 			{
@@ -4940,6 +5135,7 @@ abstract class ComponentbuilderHelper
 			{
 				$href = 'href="' . $url . '"';
 			}
+
 			// return UIKIT version 3
 			if (3 == $uikit)
 			{
@@ -4956,6 +5152,7 @@ abstract class ComponentbuilderHelper
 				// return normal edit link
 				return ' <a ' . $href . ' uk-icon="icon: pencil" title="' . $title . '"></a>';
 			}
+
 			// check if it is checked out (return UIKIT version 2)
 			if (isset($checked_out) && $checked_out > 0)
 			{
@@ -4966,27 +5163,40 @@ abstract class ComponentbuilderHelper
 				}
 				return ' <a href="#" disabled class="uk-icon-lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '"></a>'; 
 			}
+
 			// return normal edit link
 			return ' <a ' . $href . ' class="uk-icon-pencil" title="' . $title . '"></a>';
 		}
+
 		return '';
 	}
 
 	/**
-	* Get an edit text button
-	* 
-	* @param  string   $text       The button text
-	* @param  int      $item       The item to edit
-	* @param  string   $view       The type of item to edit
-	* @param  string   $views      The list view controller name
-	* @param  string   $ref        The return path
-	* @param  string   $component  The component these views belong to
-	* @param  string   $headsup    The message to show on click of button
-	*
-	* @return  string    On success the full html link
-	* 
-	*/
-	public static function getEditTextButton($text, &$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true, $class = 'uk-button', $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE')
+	 * Get an edit text button
+	 * 
+	 * @param  string   $text       The button text
+	 * @param  mixed    $item       The item|id to edit
+	 * @param  string   $view       The type of item to edit
+	 * @param  string   $views      The list view controller name
+	 * @param  string   $ref        The return path
+	 * @param  string   $component  The component these views belong to
+	 * @param  bool     $jRoute     The switch to use the Route class
+	 * @param  string   $headsup    The message to show on click of button
+	 *
+	 * @return  string    On success the full html link
+	 * @since   3.0.9
+	 */
+	public static function getEditTextButton(
+		string $text,
+		&$item,
+		string $view,
+		string $views,
+		string $ref = '',
+		string $component = 'com_componentbuilder',
+		bool $jRoute = true,
+		string $class = 'uk-button',
+		string $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE'
+	): string
 	{
 		// make sure we have text
 		if (!UtilitiesStringHelper::check($text))
@@ -4995,8 +5205,7 @@ abstract class ComponentbuilderHelper
 		}
 		// get URL
 		$url = self::getEditURL($item, $view, $views, $ref, $component, $jRoute);
-		// check if we found any
-		if (UtilitiesStringHelper::check($url))
+		if ($url !== null)
 		{
 			// get the global settings
 			if (!ObjectHelper::check(self::$params))
@@ -5015,7 +5224,7 @@ abstract class ComponentbuilderHelper
 				}
 				else
 				{
-					$checked_out = self::getVar($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+					$checked_out = GetHelper::var($view, $item->id, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 				}
 			}
 			elseif (UtilitiesArrayHelper::check($item) && isset($item['id']))
@@ -5027,12 +5236,12 @@ abstract class ComponentbuilderHelper
 				}
 				else
 				{
-					$checked_out = self::getVar($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
+					$checked_out = GetHelper::var($view, $item['id'], 'id', 'checked_out', '=', str_replace('com_', '', $component));
 				}
 			}
 			elseif (is_numeric($item) && $item > 0)
 			{
-				$checked_out = self::getVar($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
+				$checked_out = GetHelper::var($view, $item, 'id', 'checked_out', '=', str_replace('com_', '', $component));
 			}
 			// set the link title
 			$title = UtilitiesStringHelper::safe(Text::_('COM_COMPONENTBUILDER_EDIT') . ' ' . $view, 'W');
@@ -5085,22 +5294,30 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	* Get the edit URL
-	* 
-	* @param  int      $item        The item to edit
-	* @param  string   $view        The type of item to edit
-	* @param  string   $views       The list view controller name
-	* @param  string   $ref         The return path
-	* @param  string   $component   The component these views belong to
-	* @param  bool     $jRoute      The switch to add use JRoute or not
-	*
-	* @return  string    On success the edit url
-	* 
-	*/
-	public static function getEditURL(&$item, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true)
+	 * Get the edit URL
+	 * 
+	 * @param  int      $item        The item to edit
+	 * @param  string   $view        The type of item to edit
+	 * @param  string   $views       The list view controller name
+	 * @param  string   $ref         The return path
+	 * @param  string   $component   The component these views belong to
+	 * @param  bool     $jRoute      The switch to add use JRoute or not
+	 *
+	 * @return  string|null    On success the edit url
+	 * @since   3.0.9
+	 */
+	public static function getEditURL(
+		&$item,
+		string $view,
+		string $views,
+		string $ref = '',
+		string $component = 'com_componentbuilder',
+		bool $jRoute = true
+	): ?string
 	{
 		// build record
 		$record = new \stdClass();
+
 		// check if user can edit
 		if (self::canEditItem($record, $item, $view, $views, $component))
 		{
@@ -5111,39 +5328,39 @@ abstract class ComponentbuilderHelper
 			}
 			return "index.php?option=" . $component . "&view=" . $views . "&task=" . $view . ".edit&id=" . $record->id . $ref;
 		}
-		return false;
+
+		return null;
 	}
 
 	/**
-	* Can Edit (either any, or own)
-	* 
-	* @param  int      $item        The item to edit
-	* @param  string   $view        The type of item to edit
-	* @param  string   $views       The list view controller name
-	* @param  string   $component   The component these views belong to
-	*
-	* @return  bool    if user can edit returns true els
-	* 
-	*/
-	public static function allowEdit(&$item, $view, $views, $component = 'com_componentbuilder')
+	 * Can Edit (either any, or own)
+	 * 
+	 * @param  int      $item        The item to edit
+	 * @param  string   $view        The type of item to edit
+	 * @param  string   $views       The list view controller name
+	 * @param  string   $component   The component these views belong to
+	 *
+	 * @return  bool    if user can edit returns true
+	 * @since   3.0.9
+	 */
+	public static function allowEdit(&$item, string $view, string $views, string $component = 'com_componentbuilder'): bool
 	{
 		// build record
 		$record = new \stdClass();
 		return self::canEditItem($record, $item, $view, $views, $component);
 	}
 
-
 	/**
-	* Can Edit (either any, or own)
-	* 
-	* @param  int      $item        The item to edit
-	* @param  string   $view        The type of item to edit
-	* @param  string   $views       The list view controller name
-	* @param  string   $component   The component these views belong to
-	*
-	* @return  bool    if user can edit returns true els
-	* 
-	*/
+	 * Can Edit (either any, or own)
+	 * 
+	 * @param  int      $item        The item to edit
+	 * @param  string   $view        The type of item to edit
+	 * @param  string   $views       The list view controller name
+	 * @param  string   $component   The component these views belong to
+	 *
+	 * @return  bool    if user can edit returns true
+	 * @since   3.0.9
+	 */
 	protected static function canEditItem(&$record, &$item, $view, $views, $component = 'com_componentbuilder')
 	{
 		// make sure the user has access to view
@@ -5151,8 +5368,10 @@ abstract class ComponentbuilderHelper
 		{
 			return false;
 		}
+
 		// we start with false.
 		$can_edit = false;
+
 		// check that we have the ID
 		if (ObjectHelper::check($item) && isset($item->id))
 		{
@@ -5176,6 +5395,7 @@ abstract class ComponentbuilderHelper
 		{
 			$record->id = (int) $item;
 		}
+
 		// check ID
 		if (isset($record->id) && $record->id > 0)
 		{
@@ -5188,8 +5408,111 @@ abstract class ComponentbuilderHelper
 				$can_edit = ($action->get('core.edit', false) || $action->get('core.edit.own', false));
 			}
 		}
+
 		return $can_edit;
 	}
+
+	/**
+	 * Get an edit button with GUID
+	 * 
+	 * @param  string   $guid       The GUID to edit
+	 * @param  string   $field       The item to edit
+	 * @param  string   $view       The type of item to edit
+	 * @param  string   $views      The list view controller name
+	 * @param  string   $ref        The return path
+	 * @param  string   $component  The component these views belong to
+	 * @param  string   $headsup    The message to show on click of button
+	 *
+	 * @return  string    On success the full html link
+	 * @since  3.0.9
+	 */
+	public static function getEditButtonGUID(
+		string $guid, 
+		string $field,
+		string $view,
+		string $views,
+		string $ref = '',
+		string $component = 'com_componentbuilder',
+		string $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE'
+	): string
+	{
+		// check that the validGUID
+		if (UtilitiesStringHelper::check($field) && GuidHelper::valid($guid))
+		{
+			$item = GetHelper::var($view, $guid, $field, 'id', '=', str_replace('com_', '', $component));
+			// now return the getEditButton string
+			return self::getEditButton($item, $view, $views, $ref, $component, $headsup);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get an edit text button with GUID
+	 * 
+	 * @param  string   $text       The button text
+	 * @param  string   $guid       The GUID to edit
+	 * @param  string   $field      The field name of the guid
+	 * @param  string   $view       The type of item to edit
+	 * @param  string   $views      The list view controller name
+	 * @param  string   $ref        The return path
+	 * @param  string   $component  The component these views belong to
+	 * @param  bool     $jRoute     The switch to use the Route class
+	 * @param  string   $headsup    The message to show on click of button
+	 *
+	 * @return  string|null   On success the full html link
+	 * @since   3.0.9
+	 */
+	public static function getEditTextButtonGUID(
+		string $text,
+		string $guid,
+		string $field,
+		string $view,
+		string $views,
+		string $ref = '',
+		string $component = 'com_componentbuilder',
+		bool $jRoute = true, 
+		string $class = 'uk-button',
+		string $headsup = 'COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE'
+	): ?string
+	{
+		// check that the validGUID
+		if (UtilitiesStringHelper::check($field) && GuidHelper::valid($guid))
+		{
+			$item = GetHelper::var($view, $guid, $field, 'id', '=', str_replace('com_', '', $component));
+			// now return the getEditButton string
+			return self::getEditTextButton($text, $item, $view, $views, $ref, $component, $jRoute, $class, $headsup);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the edit URL with GUID
+	 * 
+	 * @param  string   $guid        The GUID to edit
+	 * @param  string   $field        The item to edit
+	 * @param  string   $view        The type of item to edit
+	 * @param  string   $views       The list view controller name
+	 * @param  string   $ref           The return path
+	 * @param  string   $component   The component these views belong to
+	 * @param  bool     $jRoute      The switch to add use JRoute or not
+	 *
+	 * @return  string|null    On success the edit url
+	 * @since   3.0.9
+	 */
+	public static function getEditURLGUID($guid, $field, $view, $views, $ref = '', $component = 'com_componentbuilder', $jRoute = true): ?string
+	{
+		// check that the validGUID
+		if (UtilitiesStringHelper::check($field) && GuidHelper::valid($guid))
+		{
+			$item = GetHelper::var($view, $guid, $field, 'id', '=', str_replace('com_', '', $component));
+			// now return the getEditButton string
+			return self::getEditURL($item, $view, $views, $ref, $component, $jRoute);
+		}
+		return false;
+	}
+
 
 	/**
 	 * set subform type table
@@ -5230,193 +5553,245 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	 * Change to nice fancy date
+	 * Convert a date to a human-readable fancy format (e.g., "1st of January 2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDate($date, $checkStamp);
 	 */
-	public static function fancyDate($date, $check_stamp = true)
+	public static function fancyDate($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('jS \o\f F Y',$date);
+		return DateHelper::fancyDate($date, $checkStamp);
 	}
 
 	/**
-	 * get date based in period past
+	 * Get a formatted date based on the time period (dynamic format based on age of the date).
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDynamicDate($date, $checkStamp);
 	 */
-	public static function fancyDynamicDate($date, $check_stamp = true)
+	public static function fancyDynamicDate($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		// older then year
-		$lastyear = date("Y", strtotime("-1 year"));
-		$tragetyear = date("Y", $date);
-		if ($tragetyear <= $lastyear)
-		{
-			return date('m/d/y', $date);
-		}
-		// same day
-		$yesterday = strtotime("-1 day");
-		if ($date > $yesterday)
-		{
-			return date('g:i A', $date);
-		}
-		// just month day
-		return date('M j', $date);
+		return DateHelper::fancyDynamicDate($date, $checkStamp);
 	}
 
 	/**
-	 * Change to nice fancy day time and date
+	 * Convert a date to a human-readable day, time, and date format (e.g., "Mon 12am 1st of January 2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted day, time, and date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDayTimeDate($date, $checkStamp);
 	 */
-	public static function fancyDayTimeDate($time, $check_stamp = true)
+	public static function fancyDayTimeDate($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($time))
-		{
-			$time = strtotime($time);
-		}
-		return date('D ga jS \o\f F Y',$time);
+		return DateHelper::fancyDayTimeDate($date, $checkStamp);
 	}
 
 	/**
-	 * Change to nice fancy time and date
+	 * Convert a date to a human-readable time and date format (e.g., "(12:00) 1st of January 2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted time and date.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyDateTime($date, $checkStamp);
 	 */
-	public static function fancyDateTime($time, $check_stamp = true)
+	public static function fancyDateTime($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($time))
-		{
-			$time = strtotime($time);
-		}
-		return date('(G:i) jS \o\f F Y',$time);
+		return DateHelper::fancyDateTime($date, $checkStamp);
 	}
 
 	/**
-	 * Change to nice hour:minutes time
+	 * Convert a time to a human-readable format (e.g., "12:00").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Formatted time.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::fancyTime($date, $checkStamp);
 	 */
-	public static function fancyTime($time, $check_stamp = true)
+	public static function fancyTime($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($time))
-		{
-			$time = strtotime($time);
-		}
-		return date('G:i',$time);
+		return DateHelper::fancyTime($date, $checkStamp);
 	}
 
 	/**
-	 * set the date day as Sunday through Saturday
+	 * Convert a date to the day name (e.g., "Sunday").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Day name.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setDayName($date, $checkStamp);
 	 */
-	public static function setDayName($date, $check_stamp = true)
+	public static function setDayName($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('l', $date);
+		return DateHelper::setDayName($date, $checkStamp);
 	}
 
 	/**
-	 * set the date month as January through December
+	 * Convert a date to the month name (e.g., "January").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Month name.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setMonthName($date, $checkStamp);
 	 */
-	public static function setMonthName($date, $check_stamp = true)
+	public static function setMonthName($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('F', $date);
+		return DateHelper::setMonthName($date, $checkStamp);
 	}
 
 	/**
-	 * set the date day as 1st
+	 * Convert a date to the day with suffix (e.g., "1st").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Day with suffix.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setDay($date, $checkStamp);
 	 */
-	public static function setDay($date, $check_stamp = true)
+	public static function setDay($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('jS', $date);
+		return DateHelper::setDay($date, $checkStamp);
 	}
 
 	/**
-	 * set the date month as 5
+	 * Convert a date to the numeric month (e.g., "5").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Numeric month.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setMonth($date, $checkStamp);
 	 */
-	public static function setMonth($date, $check_stamp = true)
+	public static function setMonth($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('n', $date);
+		return DateHelper::setMonth($date, $checkStamp);
 	}
 
 	/**
-	 * set the date year as 2004 (for charts)
+	 * Convert a date to the full year (e.g., "2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Full year.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setYear($date, $checkStamp);
 	 */
-	public static function setYear($date, $check_stamp = true)
+	public static function setYear($date, bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('Y', $date);
+		return DateHelper::setYear($date, $checkStamp);
 	}
 
 	/**
-	 * set the date as 2004/05 (for charts)
+	 * Convert a date to a year/month format (e.g., "2024/05").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param string      $spacer       The spacer between year and month.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Year/Month format.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setYearMonth($date, $spacer, $checkStamp);
 	 */
-	public static function setYearMonth($date, $spacer = '/', $check_stamp = true)
+	public static function setYearMonth($date, string $spacer = '/', bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('Y' . $spacer . 'm', $date);
+		return DateHelper::setYearMonth($date, $spacer, $checkStamp);
 	}
 
 	/**
-	 * set the date as 2004/05/03 (for charts)
+	 * Convert a date to a year/month/day format (e.g., "2024/05/03").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param string      $spacer       The spacer between year and month.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Year/Month/Day format.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setYearMonthDay($date, $spacer, $checkStamp);
 	 */
-	public static function setYearMonthDay($date, $spacer = '/', $check_stamp = true)
+	public static function setYearMonthDay($date, string $spacer = '/', bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('Y' . $spacer . 'm' . $spacer . 'd', $date);
+		return DateHelper::setYearMonthDay($date, $spacer, $checkStamp);
 	}
 
 	/**
-	 * set the date as 03/05/2004
+	 * Convert a date to a day/month/year format (e.g., "03/05/2024").
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param string      $spacer       The spacer between year and month.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return string Day/Month/Year format.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::setDayMonthYear($date, $spacer, $checkStamp);
 	 */
-	public static function setDayMonthYear($date, $spacer = '/', $check_stamp = true)
+	public static function setDayMonthYear($date, string $spacer = '/', bool $checkStamp = true): string
 	{
-		if ($check_stamp && !self::isValidTimeStamp($date))
-		{
-			$date = strtotime($date);
-		}
-		return date('d' . $spacer . 'm' . $spacer . 'Y', $date);
+		return DateHelper::setDayMonthYear($date, $spacer, $checkStamp);
 	}
 
 	/**
-	 * Check if string is a valid time stamp
+	 * Convert a date string to a valid timestamp.
+	 *
+	 * @param string|int  $date         The date as a string or timestamp.
+	 * @param bool        $checkStamp   Whether to check if the input is a timestamp.
+	 *
+	 * @return int The valid timestamp.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::getValidTimestamp($date, $checkStamp);
 	 */
-	public static function isValidTimeStamp($timestamp)
+	public static function getValidTimestamp($date, bool $checkStamp): int
 	{
-		return ((int) $timestamp === $timestamp)
-		&& ($timestamp <= PHP_INT_MAX)
-		&& ($timestamp >= ~PHP_INT_MAX);
+		return DateHelper::getValidTimestamp($date, $checkStamp);
 	}
 
 	/**
-	 * Check if string is a valid date
-	 * https://www.php.net/manual/en/function.checkdate.php#113205
+	 * Check if the input is a valid Unix timestamp.
+	 *
+	 * @param mixed $timestamp The timestamp to validate.
+	 *
+	 * @return bool True if valid timestamp, false otherwise.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::isValidTimeStamp($timestamp);
 	 */
-	public static function isValidateDate($date, $format = 'Y-m-d H:i:s')
+	public static function isValidTimeStamp($timestamp): bool
 	{
-		$d = DateTime::createFromFormat($format, $date);
-		return $d && $d->format($format) == $date;
+		return DateHelper::isValidTimeStamp($timestamp);
+	}
+
+	/**
+	 * Check if a string is a valid date according to the specified format.
+	 *
+	 * @param string $date The date string to validate.
+	 * @param string $format The format to check against (default is 'Y-m-d H:i:s').
+	 *
+	 * @return bool True if valid date, false otherwise.
+	 * @since 3.0.0
+	 * @deprecated 4.0.0 Use DateHelper::isValidateDate($date, $format);
+	 */
+	public static function isValidateDate($date, string $format = 'Y-m-d H:i:s'): bool
+	{
+		return DateHelper::isValidateDate($date, $format);
 	}
 
 	/**

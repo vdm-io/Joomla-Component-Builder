@@ -100,6 +100,7 @@ class JoomlaPower implements ServiceProviderInterface
 	{
 		return new Grep(
 			$container->get('Gitea.Repository.Contents'),
+			$container->get('Network.Resolve'),
 			$container->get('Config')->approved_joomla_paths
 		);
 	}

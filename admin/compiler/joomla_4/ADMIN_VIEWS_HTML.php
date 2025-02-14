@@ -25,6 +25,7 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator
  *
  * @since  1.6
  */
+#[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
@@ -89,9 +90,10 @@ class HtmlView extends BaseHtmlView
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
 	 * @return  void
+	 * @throws \Exception
 	 * @since  1.6
 	 */
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		// Assign data to the view
 		$this->items = $this->get('Items');

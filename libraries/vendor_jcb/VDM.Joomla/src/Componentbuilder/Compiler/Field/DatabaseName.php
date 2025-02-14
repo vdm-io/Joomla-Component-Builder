@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Lists;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -58,13 +59,13 @@ class DatabaseName
 	 * get the field database name and AS prefix
 	 *
 	 * @param   string  $nameListCode  The list view name
-	 * @param   int     $fieldId       The field ID
+	 * @param   mixed   $field         The field ID|GUID
 	 * @param   string  $targetArea    The area being targeted
 	 *
 	 * @return  string|null
 	 * @since 3.2.0
 	 */
-	public function get(string $nameListCode, int $fieldId, string $targetArea = 'builder.list'): ?string
+	public function get(string $nameListCode, $field, string $targetArea = 'builder.list'): ?string
 	{
 		if ($targetArea === 'builder.list')
 		{
@@ -73,14 +74,14 @@ class DatabaseName
 				return null;
 			}
 		}
-		elseif (($fields = $this->registry->get("${targetArea}.${nameListCode}")) === null)
+		elseif (($fields = $this->registry->get("{$targetArea}.{$nameListCode}")) === null)
 		{
 			return null;
 		}
 
-		if ($fieldId < 0)
+		if (is_numeric($field) && $field < 0)
 		{
-			switch ($fieldId)
+			switch ($field)
 			{
 				case -1:
 					return 'a.id';
@@ -91,26 +92,39 @@ class DatabaseName
 			}
 		}
 
-		foreach ($fields as $field)
+		if (GuidHelper::valid($field))
 		{
-			if ($field['id'] == $fieldId)
+			$key = 'guid';
+		}
+		elseif (is_numeric($field))
+		{
+			$key = 'id';
+		}
+		else
+		{
+			return null;
+		}
+
+		foreach ($fields as $_field)
+		{
+			if ($_field[$key] == $field)
 			{
 				// now check if this is a category
-				if ($field['type'] === 'category')
+				if ($_field['type'] === 'category')
 				{
 					return 'c.title';
 				}
 				// set the custom code
-				elseif (ArrayHelper::check(
-					$field['custom']
+				elseif (isset($_field['custom']) && ArrayHelper::check(
+					$_field['custom']
 				))
 				{
-					return $field['custom']['db'] . "."
-						. $field['custom']['text'];
+					return $_field['custom']['db'] . "."
+						. $_field['custom']['text'];
 				}
-				else
+				elseif (isset($_field['code']))
 				{
-					return 'a.' . $field['code'];
+					return 'a.' . $_field['code'];
 				}
 			}
 		}

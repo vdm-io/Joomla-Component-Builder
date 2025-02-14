@@ -29,11 +29,13 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\String\ComponentCodeNameHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Extrusion\Helper\Extrusion;
@@ -331,7 +333,7 @@ class Joomla_componentModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('joomla_component__'.$id))
+			if (($vdm = SessionHelper::get('joomla_component__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -339,42 +341,23 @@ class Joomla_componentModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
-				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'joomla_component__'.$id);
+				SessionHelper::set('joomla_component__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
 		return $this->vastDevMod;
 	}
 
-	/**
-	 * The assistant form fields
-	 *
-	 * @var      array
-	 */
-	public $assistantForm = array(
-		'left' => array(
-			'name',
-			'short_description',
-			'guid',
-			'copyright'
-		),
-		'right' => array( 
-			'name_code',
-			'license',
-			'bom',
-			'image'
-		)
-	);
 
 
 	/**
@@ -560,7 +543,7 @@ class Joomla_componentModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('joomla_component__'.$id))
+			if (($vdm = SessionHelper::get('joomla_component__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -568,49 +551,18 @@ class Joomla_componentModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'joomla_component__'.$id);
-				ComponentbuilderHelper::set('joomla_component__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'joomla_component__'.$id);
+				SessionHelper::set('joomla_component__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
-			}
-
-			// update the fields
-			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $item->id;
-			// repeatable values to check
-			$arrayChecker = array(
-				'addcontributors' => 'name'
-			);
-			foreach ($arrayChecker as $_value => $checker)
-			{
-				// check what type of array we have here (should be subform... but just in case)
-				// This could happen due to huge data sets
-				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
-				{
-					$bucket = array();
-					foreach($item->{$_value} as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket[$_value.$nr][$option] = $value;
-						}
-					}
-					$item->{$_value} = $bucket;
-					$objectUpdate->{$_value} = json_encode($bucket, JSON_FORCE_OBJECT);
-				}
-			}
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->_db->updateObject('#__componentbuilder_joomla_component', $objectUpdate, 'id');
 			}
 		}
 
@@ -722,6 +674,19 @@ class Joomla_componentModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 		// Only load these values if no id is found
@@ -976,7 +941,7 @@ class Joomla_componentModel extends AdminModel
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
 					// also clear the data set
-					$data[$requiredField] = '';
+					unset($data[$requiredField]);
 				}
 			}
 		}
@@ -1010,31 +975,54 @@ class Joomla_componentModel extends AdminModel
 			return false;
 		}
 
-		// we must also delete the linked tables found
-		if (UtilitiesArrayHelper::check($pks))
+		// linked tables to update
+		$_tables_array = [
+			'component_admin_views' => 'joomla_component',
+			'component_site_views' => 'joomla_component',
+			'component_custom_admin_views' => 'joomla_component',
+			'component_updates' => 'joomla_component',
+			'component_mysql_tweaks' => 'joomla_component',
+			'component_custom_admin_menus' => 'joomla_component',
+			'component_config' => 'joomla_component',
+			'component_dashboard' => 'joomla_component',
+			'component_files_folders' => 'joomla_component',
+			'component_placeholders' => 'joomla_component',
+			'custom_code' => 'component',
+			'component_router' => 'joomla_component'
+		];
+
+		// we must also update all linked tables
+		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
-			$_tablesArray = array(
-				'component_admin_views' => 'joomla_component',
-				'component_site_views' => 'joomla_component',
-				'component_custom_admin_views' => 'joomla_component',
-				'component_updates' => 'joomla_component',
-				'component_mysql_tweaks' => 'joomla_component',
-				'component_custom_admin_menus' => 'joomla_component',
-				'component_config' => 'joomla_component',
-				'component_dashboard' => 'joomla_component',
-				'component_files_folders' => 'joomla_component',
-				'component_placeholders' => 'joomla_component',
-				'custom_code' => 'component',
-				'component_router' => 'joomla_component'
-			);
-			foreach($_tablesArray as $_updateTable => $_key)
+			foreach($_tables_array as $_delete_table => $_field_name)
 			{
+				// get the joomla_component guid's
+				$_guids = DataFactory::_('Load')->values(
+					['a.guid' => 'guid'], // select
+					['a' => 'joomla_component'], // tables
+					['a.id' =>
+						['value' => $pks, 'operator' => 'IN']
+					] // where
+				);
+
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, $_key, 'id'))
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // select
+					['a' => $_delete_table], // tables
+					['a.' . $_field_name =>
+						['value' => $_guids, 'operator' => 'IN']
+					] // where
+				);
+
+				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_updateTable);
-					// delete items
+					$_Model = ComponentbuilderHelper::getModel($_delete_table);
+
+					// change publish state to trash (in-case the state was not changed in sync with the parent)
+					$_Model->publish($_pks, -2);
+
+					// delete the items
 					$_Model->delete($_pks);
 				}
 			}
@@ -1059,30 +1047,50 @@ class Joomla_componentModel extends AdminModel
 			return false;
 		}
 
+		// linked tables to update
+		$_tables_array = [
+			'component_admin_views' => 'joomla_component',
+			'component_site_views' => 'joomla_component',
+			'component_custom_admin_views' => 'joomla_component',
+			'component_updates' => 'joomla_component',
+			'component_mysql_tweaks' => 'joomla_component',
+			'component_custom_admin_menus' => 'joomla_component',
+			'component_config' => 'joomla_component',
+			'component_dashboard' => 'joomla_component',
+			'component_files_folders' => 'joomla_component',
+			'component_placeholders' => 'joomla_component',
+			'custom_code' => 'component',
+			'component_router' => 'joomla_component'
+		];
+
 		// we must also update all linked tables
-		if (UtilitiesArrayHelper::check($pks))
+		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
-			$_tablesArray = array(
-				'component_admin_views' => 'joomla_component',
-				'component_site_views' => 'joomla_component',
-				'component_custom_admin_views' => 'joomla_component',
-				'component_updates' => 'joomla_component',
-				'component_mysql_tweaks' => 'joomla_component',
-				'component_custom_admin_menus' => 'joomla_component',
-				'component_config' => 'joomla_component',
-				'component_dashboard' => 'joomla_component',
-				'component_files_folders' => 'joomla_component',
-				'component_placeholders' => 'joomla_component',
-				'custom_code' => 'component',
-				'component_router' => 'joomla_component'
-			);
-			foreach($_tablesArray as $_updateTable => $_key)
+			foreach($_tables_array as $_update_table => $_field_name)
 			{
+				// get the admin guid's
+				$_guids = DataFactory::_('Load')->values(
+					['a.guid' => 'guid'], // select
+					['a' => 'joomla_component'], // tables
+					['a.id' =>
+						['value' => $pks, 'operator' => 'IN']
+					] // where
+				);
+
 				// get the linked IDs
-				if ($_pks = ComponentbuilderHelper::getVars($_updateTable, $pks, $_key, 'id'))
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // select
+					['a' => $_update_table], // tables
+					['a.' . $_field_name =>
+						['value' => $_guids, 'operator' => 'IN']
+					] // where
+				);
+
+				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_updateTable);
+					$_Model = ComponentbuilderHelper::getModel($_update_table);
+
 					// change publish state
 					$_Model->publish($_pks, $value);
 				}

@@ -16,6 +16,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -42,55 +46,64 @@ class MatchfieldField extends ListField
 	 */
 	protected function getOptions()
 	{
-		// load the db opbject
+		// load the db object
 		$db = Factory::getDBO();		
 		// get the input from url
 		$jinput = Factory::getApplication()->input;
 		// get the id
 		$ID = $jinput->getInt('id', 0);
-		// rest the fields ids
-		$fieldIds = array();
+
+		// rest the fields guids
+		$fieldGuids = [];
 		if (is_numeric($ID) && $ID >= 1)
 		{
 			// get the admin view ID
-			$adminView = ComponentbuilderHelper::getVar('admin_fields_conditions', (int) $ID, 'id', 'admin_view');
+			$adminView = GetHelper::var('admin_fields_conditions', (int) $ID, 'id', 'admin_view');
 		}
 		else
 		{
-			// get the admin view ID
-			$adminView = $jinput->getInt('refid', 0);
+			// get the admin view GUID
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				$adminView = $initDefaults['admin_view'] ?? null;
+			}
 		}
-		if (is_numeric($adminView) && $adminView >= 1)
+
+		// make sure we have the admin view GUID
+		if (GuidHelper::valid($adminView))
 		{
 			// get all the fields linked to the admin view
-			if ($addFields = ComponentbuilderHelper::getVar('admin_fields', (int) $adminView, 'admin_view', 'addfields'))
+			if ($addFields = GetHelper::var('admin_fields',  $adminView, 'admin_view', 'addfields'))
 			{
-				if (ComponentbuilderHelper::checkJson($addFields))
+				if (JsonHelper::check($addFields))
 				{
 					$addFields = json_decode($addFields, true);
-					if (ComponentbuilderHelper::checkArray($addFields))
+					if (ArrayHelper::check($addFields))
 					{
 						foreach($addFields as $addField)
 						{
 							if (isset($addField['field']))
 							{
-								$fieldIds[] = (int) $addField['field'];
+								$fieldGuids[] = (string) $addField['field'];
 							}
 						}
 					}
 				}
 			}
 		}
+
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','t.name'),array('id','name','type')));
+		$query->select($db->quoteName(['a.guid','a.name','t.name'], ['guid','name','type']));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 't') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('t.id') . ')');
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 't') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('t.guid') . ')');
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		// filter by fields linked
-		if (ComponentbuilderHelper::checkArray($fieldIds))
+		if (ArrayHelper::check($fieldGuids))
 		{
 			// only load these fields
-			$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $fieldIds) . ')');
+			$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $fieldGuids) . '")');
 		}
 		$query->order('a.name ASC');
 		$db->setQuery((string)$query);
@@ -101,7 +114,7 @@ class MatchfieldField extends ListField
 			$options[] = Html::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->name . ' [' . $item->type . ']');
+				$options[] = Html::_('select.option', $item->guid, $item->name . ' [' . $item->type . ']');
 			}
 		}
 

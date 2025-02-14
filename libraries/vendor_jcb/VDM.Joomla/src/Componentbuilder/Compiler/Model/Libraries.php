@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\LibraryManager;
 use VDM\Joomla\Componentbuilder\Compiler\Library\Data as Library;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -93,18 +94,23 @@ class Libraries
 		{
 			foreach ($item->libraries as $library)
 			{
-				if (!$this->librarymanager->exists($target . '.' . $key . '.' . (int) $library)
-					&& $this->library->get((int) $library))
+				if (!GuidHelper::valid($library))
 				{
-					$this->librarymanager->set($target . '.' . $key . '.' . (int) $library, true);
+					continue;
+				}
+
+				if (!$this->librarymanager->exists($target . '.' . $key . '.' . (string) $library)
+					&& $this->library->get((string) $library))
+				{
+					$this->librarymanager->set($target . '.' . $key . '.' . (string) $library, true);
 				}
 			}
 		}
-		elseif (is_numeric($item->libraries)
-			&& !$this->librarymanager->exists($target . '.' . $key . '.' . (int) $item->libraries)
-			&& $this->library->get((int) $item->libraries))
+		elseif (GuidHelper::valid($item->libraries)
+			&& !$this->librarymanager->exists($target . '.' . $key . '.' . (string) $item->libraries)
+			&& $this->library->get((string) $item->libraries))
 		{
-			$this->librarymanager->set($target . '.' . $key . '.' . (int) $item->libraries, true);
+			$this->librarymanager->set($target . '.' . $key . '.' . (string) $item->libraries, true);
 		}
 	}
 

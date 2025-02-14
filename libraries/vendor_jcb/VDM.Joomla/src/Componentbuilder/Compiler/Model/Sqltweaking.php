@@ -75,7 +75,7 @@ class Sqltweaking
 									intval($value)
 								))
 							{
-								return (int) $value;
+								return $value;
 							}
 
 							return $value;
@@ -161,7 +161,7 @@ class Sqltweaking
 							sort($id_array, SORT_NUMERIC);
 							// now set it to global
 							$this->registry->
-								set('builder.sql_tweak.' . (int) $setting['adminview'] . '.where', implode(',', $id_array));
+								set('builder.sql_tweak.' . $setting['adminview'] . '.where', implode(',', $id_array));
 						}
 					}
 				}
@@ -169,7 +169,7 @@ class Sqltweaking
 				{
 					// do not add sql dump options
 					$this->registry->
-						set('builder.sql_tweak.' . (int) $setting['adminview'] . '.add', false);
+						set('builder.sql_tweak.' . $setting['adminview'] . '.add', false);
 				}
 			}
 		}

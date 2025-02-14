@@ -27,6 +27,7 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Creator\Fieldtypeinterface;
 
 
@@ -518,9 +519,10 @@ final class FieldString implements Fieldtypeinterface
 				$field .= PHP_EOL . Indent::_(4)
 					. '<fieldset hidden="true" name="'
 					. $fieldAttributes['name'] . '_modal" repeat="true">';
+
 				if (strpos((string) $fieldAttributes['fields'], ',') !== false)
 				{
-					// mulitpal fields
+					// multiple fields
 					$fieldsSets = (array) explode(
 						',', (string) $fieldAttributes['fields']
 					);
@@ -529,6 +531,11 @@ final class FieldString implements Fieldtypeinterface
 				{
 					// single field
 					$fieldsSets[] = (int) $fieldAttributes['fields'];
+				}
+				elseif (GuidHelper::valid($fieldAttributes['fields']))
+				{
+					// single field
+					$fieldsSets[] = (string) $fieldAttributes['fields'];
 				}
 				// only continue if we have a field set
 				if (ArrayHelper::check($fieldsSets))
@@ -541,7 +548,7 @@ final class FieldString implements Fieldtypeinterface
 							$nameSingleCode, $nameListCode, $_resolverKey
 						) {
 							// start field
-							$field          = array();
+							$field          = [];
 							$field['field'] = $id;
 							// set the field details
 							$this->field->set(
@@ -697,6 +704,11 @@ final class FieldString implements Fieldtypeinterface
 					// single field
 					$fieldsSets[] = (int) $fieldAttributes['fields'];
 				}
+				elseif (GuidHelper::valid($fieldAttributes['fields']))
+				{
+					// single field
+					$fieldsSets[] = (string) $fieldAttributes['fields'];
+				}
 				// only continue if we have a field set
 				if (ArrayHelper::check($fieldsSets))
 				{
@@ -708,7 +720,7 @@ final class FieldString implements Fieldtypeinterface
 							$nameSingleCode, $nameListCode, $_resolverKey
 						) {
 							// start field
-							$field          = array();
+							$field          = [];
 							$field['field'] = $id;
 							// set the field details
 							$this->field->set(

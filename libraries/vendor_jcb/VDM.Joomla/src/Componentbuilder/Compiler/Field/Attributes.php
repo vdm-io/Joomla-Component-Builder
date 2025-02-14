@@ -116,6 +116,14 @@ final class Attributes
 	private int $alias;
 
 	/**
+	 * Field Settings
+	 *
+	 * @var object
+	 * @since 3.2.0
+	 */
+	private object $settings;
+
+	/**
 	 * Field Properties
 	 *
 	 * @var array

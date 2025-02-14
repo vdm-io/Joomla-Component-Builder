@@ -103,18 +103,18 @@ defined('_JEXEC') or die;
 
 <script type="text/javascript">
 
-// #jform_extension_type listeners for extension_type_vvvvwal function
+// #jform_extension_type listeners for extension_type_vvvvwaj function
 jQuery('#jform_extension_type').on('keyup',function()
 {
-	var extension_type_vvvvwal = jQuery("#jform_extension_type").val();
-	vvvvwal(extension_type_vvvvwal);
+	var extension_type_vvvvwaj = jQuery("#jform_extension_type").val();
+	vvvvwaj(extension_type_vvvvwaj);
 
 });
 jQuery('#adminForm').on('change', '#jform_extension_type',function (e)
 {
 	e.preventDefault();
-	var extension_type_vvvvwal = jQuery("#jform_extension_type").val();
-	vvvvwal(extension_type_vvvvwal);
+	var extension_type_vvvvwaj = jQuery("#jform_extension_type").val();
+	vvvvwaj(extension_type_vvvvwaj);
 
 });
 

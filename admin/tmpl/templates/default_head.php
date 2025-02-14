@@ -33,10 +33,10 @@ defined('_JEXEC') or die;
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_TEMPLATES_NAMES', 'a.name', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_TEMPLATE_NAME_LABEL', 'a.name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_TEMPLATES_DETAILS', 'a.description', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_TEMPLATE_DESCRIPTION_LABEL', 'a.description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_TEMPLATE_DYNAMIC_GET_LABEL', 'g.name', $this->listDirn, $this->listOrder); ?>

@@ -429,7 +429,7 @@ class Customcode implements CustomcodeInterface
 			);
 			$query->where(
 				$this->db->quoteName('a.component') . ' = '
-				. (int) $this->config->component_id
+				. $this->db->quote($this->config->component_guid)
 			);
 			$query->where(
 				$this->db->quoteName('a.target') . ' = 1'

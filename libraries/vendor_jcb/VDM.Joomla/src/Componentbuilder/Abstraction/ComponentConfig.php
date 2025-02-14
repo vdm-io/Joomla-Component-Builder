@@ -17,18 +17,18 @@ use Joomla\CMS\Factory;
 use Joomla\Input\Input;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
-use VDM\Joomla\Abstraction\BaseConfig as ExtendingBaseConfig;
+use VDM\Joomla\Abstraction\FunctionRegistry;
 
 
 /**
- * Config
+ * Component Configurations
  * 
  * @since 3.2.0
  */
-abstract class BaseConfig extends ExtendingBaseConfig
+abstract class ComponentConfig extends FunctionRegistry
 {
 	/**
-	 * Hold a JInput object for easier access to the input variables.
+	 * Hold a Input object for easier access to the input variables.
 	 *
 	 * @var    Input
 	 * @since 3.2.0
@@ -56,9 +56,6 @@ abstract class BaseConfig extends ExtendingBaseConfig
 	{
 		$this->input = $input ?: Factory::getApplication()->input;
 		$this->params = $params ?: Helper::getParams('com_componentbuilder');
-
-		// run parent constructor
-		parent::__construct();
 	}
 }
 

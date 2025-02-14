@@ -32,6 +32,11 @@ class Whmcs
 	 */
 	public function set(object &$item)
 	{
+		if (!isset($item->add_license))
+		{
+			return;
+		}
+
 		if (1 == $item->add_license
 			&& (!isset($item->whmcs_buy_link)
 				|| !StringHelper::check(

@@ -45,7 +45,7 @@ class SnippettypeField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','type_name')));
+		$query->select($db->quoteName(array('a.guid','a.name'),array('guid','type_name')));
 		$query->from($db->quoteName('#__componentbuilder_snippet_type', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
@@ -60,7 +60,7 @@ class SnippettypeField extends ListField
 			}
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->type_name);
+				$options[] = Html::_('select.option', $item->guid, $item->type_name);
 			}
 		}
 		return $options;

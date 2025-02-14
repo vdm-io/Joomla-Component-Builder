@@ -25,13 +25,17 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator
  *
  * @since  1.6
  */
+#[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
 	/**
 	 * View display method
+	 *
 	 * @return void
+	 * @throws \Exception
+	 * @since   1.6
 	 */
-	function display($tpl = null)
+	function display($tpl = null): void
 	{
 		// Assign data to the view
 		$this->icons          = $this->get('Icons');
@@ -93,7 +97,7 @@ class HtmlView extends BaseHtmlView
 		// set page title
 		$this->getDocument()->setTitle(Text::_('COM_###COMPONENT###_DASHBOARD'));
 		// add manifest to page JavaScript
-		$this->getDocument()->addScriptDeclaration("var manifest = JSON.parse('" . json_encode($this->manifest) . "');", "text/javascript");
+		$this->getDocument()->addScriptDeclaration("var manifest = JSON.parse(" . json_encode($this->manifest) . ");", "text/javascript");
 		// add styles
 		foreach ($this->styles as $style)
 		{

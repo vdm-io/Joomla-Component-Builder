@@ -33,6 +33,9 @@ class ###Component###View###SViews### extends HtmlView
 		$this->menu = $this->app->getMenu()->getActive();
 		// get the user object
 		$this->user = Factory::getUser();###SITE_DIPLAY_METHOD###
+
+		// Display the template
+		parent::display($tpl);
 	}###SITE_EXTRA_DIPLAY_METHODS###
 
 	/**

@@ -125,10 +125,10 @@ class SearchModel extends ItemModel
 	/**
 	 * A custom property for UI Kit components.
 	 *
-	 * @var   array|null  Property for storing UI Kit component-related data or objects.
+	 * @var   mixed  Property for storing UI Kit component-related data or objects.
 	 * @since 3.2.0
 	 */
-	protected ?array $uikitComp;
+	protected $uikitComp = [];
 
 	/**
 	 * @var     object item

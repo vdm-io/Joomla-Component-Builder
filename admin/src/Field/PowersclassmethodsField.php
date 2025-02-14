@@ -48,7 +48,7 @@ class PowersclassmethodsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.visibility'),array('id','method_name','visibility')));
+		$query->select($db->quoteName(array('a.guid','a.name','a.visibility'),array('guid','method_name','visibility')));
 		$query->from($db->quoteName('#__componentbuilder_class_method', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->where($db->quoteName('a.extension_type') . ' = ' . $db->quote('powers'));
@@ -86,7 +86,7 @@ class PowersclassmethodsField extends ListField
 					$select = $item->visibility  . ' $' . $item->method_name;
 				}
 
-				$options[] = Html::_('select.option', $item->id, $select);
+				$options[] = Html::_('select.option', $item->guid, $select);
 			}
 		}
 		return $options;

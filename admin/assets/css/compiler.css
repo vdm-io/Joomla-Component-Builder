@@ -10,10 +10,105 @@
 
 /* CSS Document */
 
-html, body {
-	background-color: #fefcfe !important;
+html[data-bs-theme="light"] .main-card {
+    background-color: #fefcfe;
 }
+
 .jcb-sponsor-banner {
 	-webkit-box-shadow: 0 0 7px 1px #f0f0f0;
 	box-shadow: 0 0 7px 1px #f0f0f0;
 }
+
+/* Spinning effect within the mastadon-display-block */
+.mastadon-display-block .spinning i {
+    animation: spin 1s linear infinite;
+}
+
+.mastadon-display-block .enlarge-and-disappear {
+    animation: enlarge-fade-out 1s forwards;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes enlarge-fade-out {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Placeholder container scoped to mastadon-display-block */
+.mastadon-display-block .placeholder {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.mastadon-display-block .placeholder-line {
+    height: 12px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite;
+}
+
+.mastadon-display-block .placeholder-line:nth-child(1) {
+    width: 80%;
+}
+.mastadon-display-block .placeholder-line:nth-child(2) {
+    width: 60%;
+}
+.mastadon-display-block .placeholder-line:nth-child(3) {
+    width: 40%;
+}
+
+.mastadon-display-block .placeholder-circle {
+    width: 50px;
+    height: 50px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+    margin-top: 10px;
+}
+
+@keyframes pulse {
+    0% {
+    opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.mastadon-display-block .loading {
+    visibility: visible;
+    position: relative;
+}
+
+.social-icon-details {
+	min-height: 50px;
+	width: 100%;
+	padding: 5px;
+	box-sizing: border-box;
+	font-size: 10px;
+	text-align: right;
+}
+

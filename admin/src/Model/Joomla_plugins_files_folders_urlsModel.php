@@ -204,8 +204,8 @@ class Joomla_plugins_files_folders_urlsModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin_files_folders_urls', 'a'));
 
 		// From the componentbuilder_joomla_plugin table.
-		$query->select($db->quoteName('g.system_name','joomla_plugin_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin', 'g') . ' ON (' . $db->quoteName('a.joomla_plugin') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.system_name','g.id'],['joomla_plugin_system_name','joomla_plugin_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin', 'g') . ' ON (' . $db->quoteName('a.joomla_plugin') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

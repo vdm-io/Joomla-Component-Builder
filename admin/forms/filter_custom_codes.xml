@@ -31,13 +31,6 @@
 			layout="joomla.form.field.list-fancy-select"
 		/>
 		<field
-			type="joomlacomponent"
-			name="component"
-			label="COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL"
-			multiple="false"
-			class="js-select-submit-on-change"
-		/>
-		<field
 			type="customcodesfiltertarget"
 			name="target"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_TARGET_LABEL"
@@ -75,8 +68,6 @@
 			<option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
 			<option value="a.published ASC">JSTATUS_ASC</option>
 			<option value="a.published DESC">JSTATUS_DESC</option>
-			<option value="g.system_name ASC">COM_COMPONENTBUILDER_FILTER_COMPONENT_ASCENDING</option>
-			<option value="g.system_name DESC">COM_COMPONENTBUILDER_FILTER_COMPONENT_DESCENDING</option>
 			<option value="a.path ASC">COM_COMPONENTBUILDER_FILTER_FILE_PATH_ASCENDING</option>
 			<option value="a.path DESC">COM_COMPONENTBUILDER_FILTER_FILE_PATH_DESCENDING</option>
 			<option value="a.target ASC">COM_COMPONENTBUILDER_FILTER_TARGET_ASCENDING</option>

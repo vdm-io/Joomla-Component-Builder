@@ -86,7 +86,6 @@ class Custom_codesModel extends ListModel
 				'a.ordering','ordering',
 				'a.created_by','created_by',
 				'a.modified_by','modified_by',
-				'g.system_name','component',
 				'a.target','target',
 				'a.type','type',
 				'a.comment_type','comment_type',
@@ -145,13 +144,6 @@ class Custom_codesModel extends ListModel
 
 		$search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
-
-		$component = $this->getUserStateFromRequest($this->context . '.filter.component', 'filter_component');
-		if ($formSubmited)
-		{
-			$component = $app->input->post->get('component');
-			$this->setState('filter.component', $component);
-		}
 
 		$target = $this->getUserStateFromRequest($this->context . '.filter.target', 'filter_target');
 		if ($formSubmited)
@@ -224,8 +216,8 @@ class Custom_codesModel extends ListModel
 					continue;
 				}
 
-				// [1641]=> Target (code action)
 				$item->target_code = $item->target;
+				// making sure we have the component details
 			}
 		}
 
@@ -235,13 +227,16 @@ class Custom_codesModel extends ListModel
 			{
 				if ($item->target == 2)
 				{
-					$item->component_system_name = $item->system_name;
-					$item->path = '[CUSTO'.'MCODE='.$item->id.']'; // so it is not detected
+					$item->path = '[CUSTO' . 'MCODE='.$item->id.']'; // so it is not detected
 					if (StringHelper::check($item->function_name))
 					{
-						$item->path =  '[CUSTO'.'MCODE='.$item->function_name.']'; // so it is not detected
+						$item->path =  '[CUSTO' . 'MCODE='.$item->function_name.']'; // so it is not detected
 					}
 					$item->type = 2;
+				}
+				elseif ($item->target == 1)
+				{
+					$item->system_name = $item->component_system_name;
 				}
 			}
 		}
@@ -335,8 +330,8 @@ class Custom_codesModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_custom_code', 'a'));
 
 		// From the componentbuilder_joomla_component table.
-		$query->select($db->quoteName('g.system_name','component_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_component', 'g') . ' ON (' . $db->quoteName('a.component') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.system_name','g.id'],['component_system_name','component_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_component', 'g') . ' ON (' . $db->quoteName('a.component') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -382,27 +377,10 @@ class Custom_codesModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.component LIKE '.$search.' OR g.system_name LIKE '.$search.' OR a.path LIKE '.$search.' OR a.comment_type LIKE '.$search.' OR a.joomla_version LIKE '.$search.' OR a.function_name LIKE '.$search.' OR a.system_name LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.path LIKE '.$search.' OR a.comment_type LIKE '.$search.' OR a.joomla_version LIKE '.$search.' OR a.function_name LIKE '.$search.' OR a.component LIKE '.$search.')');
 			}
 		}
 
-		// Filter by Component.
-		$_component = $this->getState('filter.component');
-		if (is_numeric($_component))
-		{
-			if (is_float($_component))
-			{
-				$query->where('a.component = ' . (float) $_component);
-			}
-			else
-			{
-				$query->where('a.component = ' . (int) $_component);
-			}
-		}
-		elseif (StringHelper::check($_component))
-		{
-			$query->where('a.component = ' . $db->quote($db->escape($_component)));
-		}
 		// Filter by Target.
 		$_target = $this->getState('filter.target');
 		if (is_numeric($_target))
@@ -495,7 +473,6 @@ class Custom_codesModel extends ListModel
 		$id .= ':' . $this->getState('filter.ordering');
 		$id .= ':' . $this->getState('filter.created_by');
 		$id .= ':' . $this->getState('filter.modified_by');
-		$id .= ':' . $this->getState('filter.component');
 		$id .= ':' . $this->getState('filter.target');
 		$id .= ':' . $this->getState('filter.type');
 		$id .= ':' . $this->getState('filter.comment_type');

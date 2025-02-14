@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Builder;
 
 
-use VDM\Joomla\Abstraction\Registry\Traits\Count;
+use VDM\Joomla\Abstraction\Registry\Traits\PathCount;
 use VDM\Joomla\Interfaces\Registryinterface;
 use VDM\Joomla\Abstraction\Registry;
 
@@ -25,10 +25,10 @@ use VDM\Joomla\Abstraction\Registry;
 final class NewPublishingFields extends Registry implements Registryinterface
 {
 	/**
-	 * Count Values
+	 * Path Count Values
 	 *
 	 * @since 3.2.0
 	 */
-	use Count;
+	use PathCount;
 }
 

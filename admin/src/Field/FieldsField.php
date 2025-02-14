@@ -44,9 +44,9 @@ class FieldsField extends ListField
 	{
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id', 'a.name', 'a.xml', 'b.name'), array('id', 'field_name', 'xml', 'type')));
+		$query->select($db->quoteName(['a.guid', 'a.name', 'a.xml', 'b.name'], ['guid', 'field_name', 'xml', 'type']));
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
-		$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.id = a.fieldtype');
+		$query->join('LEFT', '#__componentbuilder_fieldtype AS b ON b.guid = a.fieldtype');
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
 		$db->setQuery((string) $query);
@@ -63,11 +63,11 @@ class FieldsField extends ListField
 					$field_xml = json_decode($item->xml);
 					$field_name = ComponentbuilderHelper::getBetween($field_xml,'name="','"');
 					$field_name = ComponentbuilderHelper::safeFieldName($field_name);
-					$options[] = Html::_('select.option', $item->id, $item->field_name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
+					$options[] = Html::_('select.option', $item->guid, $item->field_name . ' [ ' . $field_name . ' - ' . $item->type . ' ]');
 				}
 				else
 				{
-					$options[] = Html::_('select.option', $item->id, $item->field_name . ' [ empty - ' . $item->type . ' ]');
+					$options[] = Html::_('select.option', $item->guid, $item->field_name . ' [ empty - ' . $item->type . ' ]');
 				}
 			}
 		}

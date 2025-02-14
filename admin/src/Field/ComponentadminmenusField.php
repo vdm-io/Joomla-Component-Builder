@@ -16,6 +16,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -48,59 +52,68 @@ class ComponentadminmenusField extends ListField
 		$jinput = Factory::getApplication()->input;
 		// get the id
 		$ID = $jinput->getInt('id', 0);
-		// rest the fields ids
-		$viewids = array();
+
+		// rest the fields guid's
+		$viewGuids = array();
 		if (is_numeric($ID) && $ID >= 1)
 		{
 			// get the joomla component ID
-			$joomlacomponent = ComponentbuilderHelper::getVar('component_custom_admin_menus', (int) $ID, 'id', 'joomla_component');
+			$joomlacomponent = GetHelper::var('component_custom_admin_menus', (int) $ID, 'id', 'joomla_component');
 		}
 		else
 		{
-			// get the joomla component ID
-			$joomlacomponent = $jinput->getInt('refid', 0);
+			// get the admin view GUID
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				$joomlacomponent = $initDefaults['joomla_component'] ?? null;
+			}
 		}
-		if (is_numeric($joomlacomponent) && $joomlacomponent >= 1)
+
+		// make sure we have the joomla component GUID
+		if (GuidHelper::valid($joomlacomponent))
 		{
 			// get all the admin views linked to the joomla component
-			if ($addAdminViews = ComponentbuilderHelper::getVar('component_admin_views', (int) $joomlacomponent, 'joomla_component', 'addadmin_views'))
+			if ($addAdminViews = GetHelper::var('component_admin_views', $joomlacomponent, 'joomla_component', 'addadmin_views'))
 			{
-				if (ComponentbuilderHelper::checkJson($addAdminViews))
+				if (JsonHelper::check($addAdminViews))
 				{
 					$addAdminViews = json_decode($addAdminViews, true);
-					if (ComponentbuilderHelper::checkArray($addAdminViews))
+					if (ArrayHelper::check($addAdminViews))
 					{
 						foreach($addAdminViews as $addAdminView)
 						{
 							if (isset($addAdminView['adminview']))
 							{
-								$viewids[] = (int) $addAdminView['adminview'];
+								$viewGuids[] = (string) $addAdminView['adminview'];
 							}
 						}
 					}
 				}
 			}
 		}
+
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','name')));
+		$query->select($db->quoteName(['a.guid','a.system_name'], ['guid','name']));
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
-		// filter by fields linked
-		if (ComponentbuilderHelper::checkArray($viewids))
+		// filter by views linked
+		if (ArrayHelper::check($viewGuids))
 		{
 			// only load these fields
-			$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $viewids) . ')');
+			$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $viewGuids) . '")');
 		}
 		$query->order('a.system_name ASC');
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
 			$options[] = Html::_('select.option', '', 'Select an option');
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->name);
+				$options[] = Html::_('select.option', $item->guid, $item->name);
 			}
 		}
 		

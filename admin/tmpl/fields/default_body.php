@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -24,8 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('field',$item,'fields');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -78,8 +79,8 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int) $item->fieldtype)): ?>
-					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->fieldtype_name); ?></a>
+				<?php if ($this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int) $item->fieldtype_id)): ?>
+					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->fieldtype_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->fieldtype_name); ?>
 				<?php endif; ?>

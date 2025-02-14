@@ -45,7 +45,7 @@ class CustomadminviewsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name'),array('id','customadminview_system_name')));
+		$query->select($db->quoteName(array('a.guid','a.system_name'),array('guid','customadminview_system_name')));
 		$query->from($db->quoteName('#__componentbuilder_custom_admin_view', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.system_name ASC');
@@ -60,7 +60,7 @@ class CustomadminviewsField extends ListField
 			}
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->customadminview_system_name);
+				$options[] = Html::_('select.option', $item->guid, $item->customadminview_system_name);
 			}
 		}
 		return $options;

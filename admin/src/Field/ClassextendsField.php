@@ -156,7 +156,7 @@ class ClassextendsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name'),array('id','class_extends_name')));
+		$query->select($db->quoteName(array('a.guid','a.name'),array('guid','class_extends_name')));
 		$query->from($db->quoteName('#__componentbuilder_class_extends', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
@@ -178,7 +178,7 @@ class ClassextendsField extends ListField
 			$options[] = Html::_('select.option', '', 'Select a class');
 			foreach($items as $item)
 			{
-				$options[] = Html::_('select.option', $item->id, $item->class_extends_name);
+				$options[] = Html::_('select.option', $item->guid, $item->class_extends_name);
 			}
 		}
 		return $options;

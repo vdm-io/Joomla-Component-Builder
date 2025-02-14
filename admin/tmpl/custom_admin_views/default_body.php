@@ -14,6 +14,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -25,8 +26,8 @@ $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=cust
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('custom_admin_view',$item,'custom_admin_views');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -101,8 +102,8 @@ $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=cust
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) $item->main_get)): ?>
-					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->main_get; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->main_get_name); ?></a>
+				<?php if ($this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) $item->main_get_id)): ?>
+					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->main_get_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->main_get_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->main_get_name); ?>
 				<?php endif; ?>

@@ -198,8 +198,8 @@ class Joomla_plugin_groupsModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin_group', 'a'));
 
 		// From the componentbuilder_class_extends table.
-		$query->select($db->quoteName('g.name','class_extends_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'g') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['class_extends_name','class_extends_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'g') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

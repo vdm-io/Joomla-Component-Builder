@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('admin_view',$item,'admin_views');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -109,10 +110,10 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			?>
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons as $_button): ?>
-				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->id, 'admin_view', 'id')) !== false): ?>
+				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->guid, 'admin_view', 'id')) !== false): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=admin_view&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&init_defaults=<?php echo urlencode(json_encode(['admin_view' => $item->guid])); ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>
@@ -130,8 +131,6 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 			<ul style="list-style: none">
 				<li><?php echo Text::_("COM_COMPONENTBUILDER_CUSTOM_BUTTON"); ?>: <b>
 			<?php echo Text::_($item->add_custom_button); ?></b></li>
-				<li><?php echo Text::_("COM_COMPONENTBUILDER_CUSTOM_IMPORT"); ?>: <b>
-			<?php echo Text::_($item->add_custom_import); ?></b></li>
 				<li><?php echo Text::_("COM_COMPONENTBUILDER_FADE_IN"); ?>: <b>
 			<?php echo Text::_($item->add_fadein); ?></b></li>
 				<li><?php echo Text::_("COM_COMPONENTBUILDER_AJAX"); ?>: <b>

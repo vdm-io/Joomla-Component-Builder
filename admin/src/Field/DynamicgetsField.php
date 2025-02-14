@@ -45,7 +45,7 @@ class DynamicgetsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.name','a.gettype'),array('id','dynamic_get_name','type')));
+		$query->select($db->quoteName(array('a.guid','a.name','a.gettype'),array('guid','dynamic_get_name','type')));
 		$query->from($db->quoteName('#__componentbuilder_dynamic_get', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.name ASC');
@@ -62,7 +62,7 @@ class DynamicgetsField extends ListField
 			foreach($items as $item)
 			{
 				$type = $model->selectionTranslation($item->type, 'gettype');
-				$options[] = Html::_('select.option', $item->id, $item->dynamic_get_name . ' (' . Text::_($type) . ')');
+				$options[] = Html::_('select.option', $item->guid, $item->dynamic_get_name . ' (' . Text::_($type) . ')');
 			}
 		}
 		return $options;

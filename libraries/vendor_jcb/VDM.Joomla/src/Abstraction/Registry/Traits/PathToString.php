@@ -13,11 +13,12 @@ namespace VDM\Joomla\Abstraction\Registry\Traits;
 
 
 /**
- * To String Values
+ * Path To String Values
  * 
  * @since 3.2.0
+ * @since 5.0.2 name changed to PathToString to avoid collusion in core registry class
  */
-trait ToString
+trait PathToString
 {
 	/**
 	 * Convert an array of values to a string (or return string)
@@ -26,9 +27,9 @@ trait ToString
 	 * @param  string  $seperator  Return string separator
 	 *
 	 * @return  string
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
-	public function toString(string $path, string $separator = ''): string
+	public function pathToString(string $path, string $separator = ''): string
 	{
 		// Return default value if path is empty
 		if (empty($path))

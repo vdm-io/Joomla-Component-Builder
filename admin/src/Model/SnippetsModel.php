@@ -26,6 +26,8 @@ use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -161,20 +163,20 @@ class SnippetsModel extends ListModel
 					// get the shared paths
 					$this->fullPath = rtrim(ComponentbuilderHelper::getFolderPath('path', 'sharepath', Factory::getConfig()->get('tmp_path')), '/') . '/snippets';
 					// remove old folder with the same name
-					if (JFolder::exists($this->fullPath))
+					if (is_dir($this->fullPath))
 					{
 						// remove if old folder is found
 						ComponentbuilderHelper::removeFolder($this->fullPath);
 					}
 					// create the full path
-					JFolder::create($this->fullPath);
+					Folder::create($this->fullPath);
 					// set zip path
 					$this->zipPath = $this->fullPath .'.zip';
 					// remove old zip files with the same name
-					if (JFile::exists($this->zipPath))
+					if (is_file($this->zipPath))
 					{
 						// remove file if found
-						JFile::delete($this->zipPath);
+						File::delete($this->zipPath);
 					}
 					// prep the item
 					foreach($items as $item)
@@ -358,12 +360,12 @@ class SnippetsModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
 
 		// From the componentbuilder_snippet_type table.
-		$query->select($db->quoteName('g.name','type_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['type_name','type_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'g') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// From the componentbuilder_library table.
-		$query->select($db->quoteName('h.name','library_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'h') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('h.id') . ')');
+		$query->select($db->quoteName(['h.name','h.id'],['library_name','library_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'h') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('h.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

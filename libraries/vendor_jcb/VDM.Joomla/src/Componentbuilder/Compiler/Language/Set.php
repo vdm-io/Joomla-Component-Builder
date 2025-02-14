@@ -110,14 +110,14 @@ final class Set
 	 *
 	 * This method inserts or updates language strings in the database based on the current state.
 	 *
-	 * @param array  $strings The language strings to process.
-	 * @param int $target_id  The target component ID.
-	 * @param string $target The target extension type (default is 'components').
+	 * @param array  $strings     The language strings to process.
+	 * @param string $target_guid The target component GUID.
+	 * @param string $target      The target extension type (default is 'components').
 	 *
 	 * @return void
 	 * @since 5.0.2
 	 */
-	public function execute(array $strings, int $target_id, string $target = 'components'): void
+	public function execute(array $strings, string $target_guid, string $target = 'components'): void
 	{
 		$counterInsert = 0;
 		$counterUpdate = 0;
@@ -132,7 +132,7 @@ final class Set
 				if (StringHelper::check($string))
 				{
 					$this->processString(
-						$string, $strings, $area, $placeholder, $multiLangString, $target, $target_id, $today, $counterInsert, $counterUpdate
+						$string, $strings, $area, $placeholder, $multiLangString, $target, $target_guid, $today, $counterInsert, $counterUpdate
 					);
 				}
 			}
@@ -152,7 +152,7 @@ final class Set
 	 * @param string $placeholder      The placeholder.
 	 * @param array  &$multiLangString The multilingual string array.
 	 * @param string $target           The target extension type.
-	 * @param int    $target_id        The target component ID.
+	 * @param string $target_guid      The target component GUID.
 	 * @param string $today            The current date.
 	 * @param int    &$counterInsert   The insert counter.
 	 * @param int    &$counterUpdate   The update counter.
@@ -162,7 +162,7 @@ final class Set
 	 */
 	protected function processString(string $string, array &$strings, string $area,
 		string $placeholder, array &$multiLangString, string $target,
-		int $target_id, string $today, int &$counterInsert, int &$counterUpdate): void
+		string $target_guid, string $today, int &$counterInsert, int &$counterUpdate): void
 	{
 		$remove = false;
 
@@ -192,7 +192,7 @@ final class Set
 
 		if (StringHelper::check($string) && ($key = array_search($string, $strings)) !== false)
 		{
-			$this->updateOrInsertString($string, $multiLangString, $target, $target_id, $today, $counterInsert, $counterUpdate);
+			$this->updateOrInsertString($string, $multiLangString, $target, $target_guid, $today, $counterInsert, $counterUpdate);
 
 			if ($remove)
 			{
@@ -209,7 +209,7 @@ final class Set
 	 * @param string $string           The language string to update or insert.
 	 * @param array  &$multiLangString The multilingual string array.
 	 * @param string $target           The target extension type.
-	 * @param int    $target_id        The target component ID.
+	 * @param string $target_guid      The target component GUID.
 	 * @param string $today            The current date.
 	 * @param int    &$counterInsert   The insert counter.
 	 * @param int    &$counterUpdate   The update counter.
@@ -217,12 +217,12 @@ final class Set
 	 * @return void
 	 * @since 5.0.2
 	 */
-	protected function updateOrInsertString(string $string, array &$multiLangString, string $target, int $target_id, string $today, int &$counterInsert, int &$counterUpdate): void
+	protected function updateOrInsertString(string $string, array &$multiLangString, string $target, string $target_guid, string $today, int &$counterInsert, int &$counterUpdate): void
 	{
 		if (isset($multiLangString[$string]))
 		{
 			$id = $multiLangString[$string]['id'];
-			$targets = $this->getTargets($multiLangString[$string], $target, $target_id);
+			$targets = $this->getTargets($multiLangString[$string], $target, $target_guid);
 
 			$this->update->set($id, $target, $targets, 1, $today, $counterUpdate);
 
@@ -232,7 +232,7 @@ final class Set
 		}
 		else
 		{
-			$this->insert->set($target, $counterInsert, json_encode([$target_id]));
+			$this->insert->set($target, $counterInsert, json_encode([$target_guid]));
 			$this->insert->set($target, $counterInsert, $string);
 			$this->insert->set($target, $counterInsert, 1);
 			$this->insert->set($target, $counterInsert, $today);
@@ -251,24 +251,24 @@ final class Set
 	 *
 	 * @param array  $multiLangString  The multilingual string array.
 	 * @param string $target           The target extension type.
-	 * @param int    $target_id        The target component ID.
+	 * @param string $target_guid      The target component GUID.
 	 *
 	 * @return array The updated targets array.
 	 * @since 5.0.2
 	 */
-	protected function getTargets(array $multiLangString, string $target, int $target_id): array
+	protected function getTargets(array $multiLangString, string $target, string $target_guid): array
 	{
 		if (JsonHelper::check($multiLangString[$target]))
 		{
 			$targets = (array) json_decode((string) $multiLangString[$target], true);
-			if (!in_array($target_id, $targets))
+			if (!in_array($target_guid, $targets))
 			{
-				$targets[] = $target_id;
+				$targets[] = $target_guid;
 			}
 		}
 		else
 		{
-			$targets = [$target_id];
+			$targets = [$target_guid];
 		}
 
 		return $targets;

@@ -13,16 +13,16 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Dynamicget;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Dynamicget;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -46,57 +46,57 @@ class Data
 	];
 
 	/**
-	 * Compiler Config
+	 * The Config Class.
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * The compiler registry
+	 * The Registry Class.
 	 *
-	 * @var    Registry
+	 * @var   Registry
 	 * @since 3.2.0
 	 */
 	protected Registry $registry;
 
 	/**
-	 * Compiler Event
+	 * The EventInterface Class.
 	 *
-	 * @var    EventInterface
+	 * @var   Event
 	 * @since 3.2.0
 	 */
-	protected EventInterface $event;
+	protected Event $event;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode Dispenser
+	 * The Dispenser Class.
 	 *
-	 * @var    Dispenser
+	 * @var   Dispenser
 	 * @since 3.2.0
 	 */
 	protected Dispenser $dispenser;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
+	 * @var   Gui
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Gui $gui;
 
 	/**
-	 * Compiler Dynamicget Model
+	 * The Dynamicget Class.
 	 *
-	 * @var    Dynamicget
+	 * @var   Dynamicget
 	 * @since 3.2.0
 	 */
 	protected Dynamicget $dynamic;
@@ -109,57 +109,71 @@ class Data
 	protected $db;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null               $config          The compiler config object.
-	 * @param Registry|null             $registry        The compiler registry object.
-	 * @param EventInterface|null       $event           The compiler event api object.
-	 * @param Customcode|null           $customcode      The compiler customcode object.
-	 * @param Dispenser|null            $dispenser       The compiler customcode dispenser object.
-	 * @param Gui|null                  $gui             The compiler customcode gui.
-	 * @param Dynamicget|null           $dynamic         The compiler dynamicget modeller object.
+	 * @param Config       $config       The Config Class.
+	 * @param Registry     $registry     The Registry Class.
+	 * @param Event        $event        The EventInterface Class.
+	 * @param Customcode   $customcode   The Customcode Class.
+	 * @param Dispenser    $dispenser    The Dispenser Class.
+	 * @param Gui          $gui          The Gui Class.
+	 * @param Dynamicget   $dynamicget   The Dynamicget Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?EventInterface $event = null, ?Customcode $customcode = null,
-		?Dispenser $dispenser = null, ?Gui $gui = null,
-		?Dynamicget $dynamic = null)
+	public function __construct(Config $config, Registry $registry, Event $event,
+		Customcode $customcode, Dispenser $dispenser, Gui $gui,
+		Dynamicget $dynamicget)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->event = $event ?: Compiler::_('Event');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->dynamic = $dynamic ?: Compiler::_('Model.Dynamicget');
+		$this->config = $config;
+		$this->registry = $registry;
+		$this->event = $event;
+		$this->customcode = $customcode;
+		$this->dispenser = $dispenser;
+		$this->gui = $gui;
+		$this->dynamic = $dynamicget;
 		$this->db = Factory::getDbo();
 	}
 
 	/**
 	 * Get Dynamic Get Data
 	 *
-	 * @param   array   $ids        The ids of the dynamic get
+	 * @param   array   $ids        The ids/guids of the dynamic get
 	 * @param   string  $view_code  The view code name
 	 * @param   string  $context    The context for events
 	 *
 	 * @return  array|null    array of object/s on success
 	 * @since 3.2.0
 	 */
-	public function get(array $ids, string $view_code, string $context): ?array
+	public function get(array $keys, string $view_code, string $context): ?array
 	{
-		if ($ids === [])
+		if ($keys === [])
 		{
 			return null;
 		}
 
-		$ids = implode(',', $ids);
+		$types = $this->getKeyTypes($keys);
+
+		if ($types === [])
+		{
+			return null;
+		}
 
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
 		$query->select('a.*');
 		$query->from('#__componentbuilder_dynamic_get AS a');
-		$query->where('a.id IN (' . $ids . ')');
+
+		if (isset($types['id']))
+		{
+			$query->where('a.id IN (' . $types['id'] . ')');
+		}
+
+		if (isset($types['guid']))
+		{
+			$query->where('a.guid IN (' . $types['guid'] . ')');
+		}
+
 		$this->db->setQuery($query);
 		$this->db->execute();
 
@@ -313,5 +327,43 @@ class Data
 		return null;
 	}
 
+	/**
+	 * Get the key types
+	 *
+	 * @param   array   $keys The ids/guids of the dynamic get
+	 *
+	 * @return  array   array of the keys in the correct key type grouping
+	 * @since   5.0.4
+	 */
+	private function getKeyTypes(array $keys): array
+	{
+		$guids = [];
+		$ids = [];
+		foreach ($keys as $key)
+		{
+			if (GuidHelper::valid($key))
+			{
+				$guids[] = $key;
+			}
+			elseif (is_numeric($key))
+			{
+				$ids[] = (int) $key;
+			}
+		}
+
+		$types = [];
+
+		if ($guids !== [])
+		{
+			$types['guid'] = '"' . implode('","', $guids) . '"';
+		}
+
+		if ($ids !== [])
+		{
+			$types['id'] = implode(',', $ids);
+		}
+
+		return $types;
+	}
 }
 

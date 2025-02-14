@@ -204,8 +204,8 @@ class Admins_fields_relationsModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_admin_fields_relations', 'a'));
 
 		// From the componentbuilder_admin_view table.
-		$query->select($db->quoteName('g.system_name','admin_view_system_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'g') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.system_name','g.id'],['admin_view_system_name','admin_view_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_admin_view', 'g') . ' ON (' . $db->quoteName('a.admin_view') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

@@ -254,6 +254,14 @@ final class CustomFieldTypeFile
 	protected string $extends;
 
 	/**
+	 * The j-prefix
+	 *
+	 * @var   string
+	 * @since 3.2.0
+	 */
+	protected string $jprefix;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config                  $config                  The Config Class.

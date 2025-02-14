@@ -71,11 +71,11 @@ abstract class FilterHelper
 			}
 			else
 			{
-				foreach (${$extension} as $id => $element)
+				foreach (${$extension} as $guid => $element)
 				{
 					$extension_node
 						->appendChild($xml->createElement('option', $element))
-						->setAttributeNode(new \DOMAttr('value', $extension . '__' . $id));
+						->setAttributeNode(new \DOMAttr('value', $extension . '__' . $guid));
 				}
 			}
 			$root->appendChild($extension_node);
@@ -86,12 +86,12 @@ abstract class FilterHelper
 	}
 
 	/**
-	 * Get by type the ids and system names
+	 * Get by type the guids and system names
 	 *
 	 * @param string       $type       The table name to get system names for
 	 * @param string|null  $limiter    The to limit by limiter table
 	 *
-	 * @return array|null   The array of system name and IDs
+	 * @return array|null   The array of system name and GUIDs
 	 * @since 3.2.0
 	 */
 	public static function names(string $type, ?string $limiter = null): ?array
@@ -100,7 +100,7 @@ abstract class FilterHelper
 		$query = $db->getQuery(true);
 
 		$query
-			->select($db->quoteName(array('id', 'system_name')))
+			->select($db->quoteName(array('guid', 'system_name')))
 			->from($db->quoteName('#__componentbuilder_' . $type))
 			->where($db->quoteName('published') . ' >= 1')
 			->order($db->quoteName('modified') . ' desc')
@@ -110,14 +110,14 @@ abstract class FilterHelper
 		if ($type === 'admin_view' && $limiter)
 		{
 			// first get all views
-			$admin_view_ids = array();
+			$admin_view_guids = array();
 
 			// if this is a plugin or a module, then no views
 			if (strpos($limiter, 'joomla_component') !== false)
 			{
-				$component = (int) str_replace('joomla_component__', '', $limiter);
+				$component = str_replace('joomla_component__', '', $limiter);
 				// get the views of this component
-				if ($add_views = GetHelper::var('component_admin_views', (int) $component, 'joomla_component', 'addadmin_views'))
+				if ($add_views = GetHelper::var('component_admin_views', $component, 'joomla_component', 'addadmin_views'))
 				{
 					if (JsonHelper::check($add_views))
 					{
@@ -128,7 +128,7 @@ abstract class FilterHelper
 							{
 								if (isset($add_view['adminview']))
 								{
-									$admin_view_ids[(int) $add_view['adminview']] = (int) $add_view['adminview'];
+									$admin_view_guids[$add_view['adminview']] = $add_view['adminview'];
 								}
 							}
 						}
@@ -136,9 +136,9 @@ abstract class FilterHelper
 				}
 			}
 			// now check if we still have admin views
-			if (ArrayHelper::check($admin_view_ids))
+			if (ArrayHelper::check($admin_view_guids))
 			{
-				$query->where($db->quoteName('id') . ' IN (' . implode(',', $admin_view_ids) . ')');
+				$query->where($db->quoteName('guid') . ' IN ("' . implode('","', $admin_view_guids) . '")');
 			}
 			else
 			{
@@ -151,27 +151,28 @@ abstract class FilterHelper
 
 		if ($db->getNumRows())
 		{
-			return $db->loadAssocList('id', 'system_name');
+			return $db->loadAssocList('guid', 'system_name');
 		}
 
 		return null;
 	}
 
 	/**
-	 * get any area linked IDs
+	 * get any area linked GUIDs
 	 *
-	 * @param int      $id        The target ID
+	 * @param string   $guid      The target GUID
 	 * @param string   $method    The target method
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null   The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 **/
-	public static function linked(int $id, string $method): ?array
+	public static function linked($guid, string $method): ?array
 	{
 		// check if method exist
 		if (method_exists(__CLASS__, $method))
 		{
-			return self::{$method}($id);
+			return self::{$method}($guid);
 		}
 
 		return null;
@@ -261,15 +262,15 @@ abstract class FilterHelper
 	}
 
 	/**
-	 * get translation extension ids
+	 * get translation extension guids
 	 *
-	 * @param int      $extension    The target ID
+	 * @param string   $extension    The target GUID
 	 * @param string   $type         The target method
 	 *
 	 * @return array|null   The result ids
 	 * @since 3.2.0
 	 **/
-	public static function translation(int $extension, string $type): ?array
+	public static function translation(string $extension, string $type): ?array
 	{
 		// only allow these columns (extension types)
 		$columns = array(
@@ -285,7 +286,7 @@ abstract class FilterHelper
 			$db = Factory::getDbo();
 			$query = $db->getQuery(true);
 			$query
-				->select($db->quoteName(array('id', $column)))
+				->select($db->quoteName(['id', $column]))
 				->from($db->quoteName('#__componentbuilder_language_translation'))
 				->where($db->quoteName($column) . ' != ' . $db->quote(''));
 
@@ -298,10 +299,10 @@ abstract class FilterHelper
 				$matches = [];
 				foreach ($results as $k => $v)
 				{
-					$value = json_decode($v[$column], true);
-					if (in_array($extension, $value))
+					$values = json_decode($v[$column], true);
+					if (in_array($extension, $values))
 					{
-						$matches[$v['id']] = $v['id'];
+						$matches[(int) $v['id']] = (int) $v['id'];
 					}
 				}
 
@@ -319,12 +320,13 @@ abstract class FilterHelper
 	/**
 	 * get translation ids
 	 *
-	 * @param int   $id    The target ID
+	 * @param string   $language    The target language(s)
+	 * @param bool     $translated    The target language(s)
 	 *
 	 * @return array|null   The result ids
 	 * @since 3.2.0
 	 **/
-	public static function translations($language, $translated = true): ?array
+	public static function translations(string $language, bool $translated = true): ?array
 	{
 		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
@@ -493,7 +495,7 @@ abstract class FilterHelper
 			foreach($items as $item)
 			{
 				$path = $item->organisation . '/' . $item->repository;
-				$options[$path] =  $path;
+				$options[$path] = $path;
 			}
 			return $options;
 		}
@@ -502,20 +504,21 @@ abstract class FilterHelper
 	}
 
 	/**
-	 * Get a component admin views IDs
+	 * Get a component admin views GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function joomla_component_admin_views(int $id): ?array
+	private static function joomla_component_admin_views(string $guid): ?array
 	{
 		// get all this components views
-		$admin_view_ids = [];
+		$admin_view_guids = [];
 
 		// get the views of this component
-		if ($add_views = GetHelper::var('component_admin_views', (int) $id, 'joomla_component', 'addadmin_views'))
+		if ($add_views = GetHelper::var('component_admin_views', $guid, 'joomla_component', 'addadmin_views'))
 		{
 			if (JsonHelper::check($add_views))
 			{
@@ -526,7 +529,7 @@ abstract class FilterHelper
 					{
 						if (isset($add_view['adminview']))
 						{
-							$admin_view_ids[(int) $add_view['adminview']] = (int) $add_view['adminview'];
+							$admin_view_guids[$add_view['adminview']] = $add_view['adminview'];
 						}
 					}
 				}
@@ -534,29 +537,30 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($admin_view_ids))
+		if (ArrayHelper::check($admin_view_guids))
 		{
-			return array_values($admin_view_ids);
+			return array_values($admin_view_guids);
 		}
 
 		return null;
 	}
 
 	/**
-	 * get a component custom admin views IDs
+	 * get a component custom admin views GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function joomla_component_custom_admin_views($id): ?array
+	private static function joomla_component_custom_admin_views(string $guid): ?array
 	{
 		// get all this components views
-		$admin_view_ids = [];
+		$admin_view_guids = [];
 
 		// get the views of this component
-		if ($add_views = GetHelper::var('component_custom_admin_views', (int) $id, 'joomla_component', 'addcustom_admin_views'))
+		if ($add_views = GetHelper::var('component_custom_admin_views', $guid, 'joomla_component', 'addcustom_admin_views'))
 		{
 			if (JsonHelper::check($add_views))
 			{
@@ -567,7 +571,7 @@ abstract class FilterHelper
 					{
 						if (isset($add_view['customadminview']))
 						{
-							$admin_view_ids[(int) $add_view['customadminview']] = (int) $add_view['customadminview'];
+							$admin_view_guids[$add_view['customadminview']] = $add_view['customadminview'];
 						}
 					}
 				}
@@ -575,29 +579,30 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($admin_view_ids))
+		if (ArrayHelper::check($admin_view_guids))
 		{
-			return array_values($admin_view_ids);
+			return array_values($admin_view_guids);
 		}
 
 		return null;
 	}
 
 	/**
-	 * get a component site views IDs
+	 * get a component site views GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function joomla_component_site_views($id): ?array
+	private static function joomla_component_site_views(string $guid): ?array
 	{
 		// get all this components views
-		$admin_view_ids = [];
+		$admin_view_guids = [];
 
 		// get the views of this component
-		if ($add_views = GetHelper::var('component_site_views', (int) $id, 'joomla_component', 'addsite_views'))
+		if ($add_views = GetHelper::var('component_site_views', $guid, 'joomla_component', 'addsite_views'))
 		{
 			if (JsonHelper::check($add_views))
 			{
@@ -608,7 +613,7 @@ abstract class FilterHelper
 					{
 						if (isset($add_view['siteview']))
 						{
-							$admin_view_ids[(int) $add_view['siteview']] = (int) $add_view['siteview'];
+							$admin_view_guids[$add_view['siteview']] = $add_view['siteview'];
 						}
 					}
 				}
@@ -616,32 +621,33 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($admin_view_ids))
+		if (ArrayHelper::check($admin_view_guids))
 		{
-			return array_values($admin_view_ids);
+			return array_values($admin_view_guids);
 		}
 
 		return null;
 	}
 
 	/**
-	 * get a component fields IDs
+	 * get a component fields GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function joomla_component($id): ?array
+	private static function joomla_component(string $guid): ?array
 	{
 		// we start the field array
-		$field_ids = [];
+		$field_guids = [];
 
 		// first get all views
-		$admin_view_ids = [];
+		$admin_view_guids = [];
 
 		// get the views of this component
-		if ($add_views = GetHelper::var('component_admin_views', (int) $id, 'joomla_component', 'addadmin_views'))
+		if ($add_views = GetHelper::var('component_admin_views', $guid, 'joomla_component', 'addadmin_views'))
 		{
 			if (JsonHelper::check($add_views))
 			{
@@ -652,7 +658,7 @@ abstract class FilterHelper
 					{
 						if (isset($add_view['adminview']))
 						{
-							$admin_view_ids[(int) $add_view['adminview']] = (int) $add_view['adminview'];
+							$admin_view_guids[$add_view['adminview']] = $add_view['adminview'];
 						}
 					}
 				}
@@ -660,12 +666,12 @@ abstract class FilterHelper
 		}
 
 		// check that we have views
-		if (ArrayHelper::check($admin_view_ids))
+		if (ArrayHelper::check($admin_view_guids))
 		{
-			foreach ($admin_view_ids as $admin_view)
+			foreach ($admin_view_guids as $admin_view)
 			{
 				// get all the fields linked to the admin view
-				if ($add_fields = GetHelper::var('admin_fields', (int) $admin_view, 'admin_view', 'addfields'))
+				if ($add_fields = GetHelper::var('admin_fields', $admin_view, 'admin_view', 'addfields'))
 				{
 					if (JsonHelper::check($add_fields))
 					{
@@ -676,7 +682,7 @@ abstract class FilterHelper
 							{
 								if (isset($add_field['field']))
 								{
-									$field_ids[(int) $add_field['field']] = (int) $add_field['field'];
+									$field_guids[$add_field['field']] = $add_field['field'];
 								}
 							}
 						}
@@ -686,7 +692,7 @@ abstract class FilterHelper
 		}
 
 		// get config values
-		if ($add_config = GetHelper::var('component_config', (int) $id, 'joomla_component', 'addconfig'))
+		if ($add_config = GetHelper::var('component_config', $guid, 'joomla_component', 'addconfig'))
 		{
 			if (JsonHelper::check($add_config))
 			{
@@ -697,7 +703,7 @@ abstract class FilterHelper
 					{
 						if (isset($add_conf['field']))
 						{
-							$field_ids[(int) $add_conf['field']] = (int) $add_conf['field'];
+							$field_guids[$add_conf['field']] = $add_conf['field'];
 						}
 					}
 				}
@@ -705,28 +711,29 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($field_ids))
+		if (ArrayHelper::check($field_guids))
 		{
-			return array_values($field_ids);
+			return array_values($field_guids);
 		}
 
 		return null;
 	}
 
 	/**
-	 * get a module fields IDs
+	 * get a module fields GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function joomla_module($id): ?array
+	private static function joomla_module(string $guid): ?array
 	{
 		// we start the field array
-		$field_ids = [];
+		$field_guids = [];
 
-		if ($fields = GetHelper::var('joomla_module', (int) $id, 'id', 'fields'))
+		if ($fields = GetHelper::var('joomla_module', $guid, 'guid', 'fields'))
 		{
 			if (JsonHelper::check($fields))
 			{
@@ -741,7 +748,7 @@ abstract class FilterHelper
 							{
 								if (isset($field['field']))
 								{
-									$field_ids[(int) $field['field']] = (int) $field['field'];
+									$field_guids[$field['field']] = $field['field'];
 								}
 							}
 						}
@@ -751,28 +758,29 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($field_ids))
+		if (ArrayHelper::check($field_guids))
 		{
-			return array_values($field_ids);
+			return array_values($field_guids);
 		}
 
 		return null;
 	}
 
 	/**
-	 * get a plugin fields IDs
+	 * get a plugin fields GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function joomla_plugin($id): ?array
+	private static function joomla_plugin(string $guid): ?array
 	{
 		// we start the field array
-		$field_ids = [];
+		$field_guids = [];
 
-		if ($fields = GetHelper::var('joomla_plugin', (int) $id, 'id', 'fields'))
+		if ($fields = GetHelper::var('joomla_plugin', $guid, 'guid', 'fields'))
 		{
 			if (JsonHelper::check($fields))
 			{
@@ -787,7 +795,7 @@ abstract class FilterHelper
 							{
 								if (isset($field['field']))
 								{
-									$field_ids[(int) $field['field']] = (int) $field['field'];
+									$field_guids[$field['field']] = $field['field'];
 								}
 							}
 						}
@@ -797,29 +805,30 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($field_ids))
+		if (ArrayHelper::check($field_guids))
 		{
-			return array_values($field_ids);
+			return array_values($field_guids);
 		}
 
 		return null;
 	}
 
 	/**
-	 * get an admin view fields IDs
+	 * get an admin view fields GUIDs
 	 *
-	 * @param int   $id    The target ID
+	 * @param string  $guid  The target GUID
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
+	 * @return array|null  The result guids
+	 * @since  3.2.0
+	 * @since  5.0.4 (changed to guid)
 	 */
-	private static function admin_view($id): ?array
+	private static function admin_view(string $guid): ?array
 	{
 		// we start the field array
-		$field_ids = [];
+		$field_guids = [];
 
 		// get all the fields linked to the admin view
-		if ($add_fields = GetHelper::var('admin_fields', (int) $id, 'admin_view', 'addfields'))
+		if ($add_fields = GetHelper::var('admin_fields', $guid, 'admin_view', 'addfields'))
 		{
 			if (JsonHelper::check($add_fields))
 			{
@@ -830,7 +839,7 @@ abstract class FilterHelper
 					{
 						if (isset($add_field['field']))
 						{
-							$field_ids[(int) $add_field['field']] = (int) $add_field['field'];
+							$field_guids[$add_field['field']] = $add_field['field'];
 						}
 					}
 				}
@@ -838,13 +847,12 @@ abstract class FilterHelper
 		}
 
 		// check that we have fields
-		if (ArrayHelper::check($field_ids))
+		if (ArrayHelper::check($field_guids))
 		{
-			return array_values($field_ids);
+			return array_values($field_guids);
 		}
 
 		return null;
 	}
-
 }
 

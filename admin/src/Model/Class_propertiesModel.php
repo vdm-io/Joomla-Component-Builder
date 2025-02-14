@@ -284,8 +284,8 @@ class Class_propertiesModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_class_property', 'a'));
 
 		// From the componentbuilder_joomla_plugin_group table.
-		$query->select($db->quoteName('g.name','joomla_plugin_group_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'g') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['joomla_plugin_group_name','joomla_plugin_group_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'g') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -371,7 +371,7 @@ class Class_propertiesModel extends ListModel
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->getState('list.ordering', 'a.id');
+		$orderCol = $this->getState('list.ordering', '');
 		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{

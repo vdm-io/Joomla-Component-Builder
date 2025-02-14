@@ -106,7 +106,6 @@
 			class="list_class"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default=""
 			required="true"
 			readonly="true"
 			button="false"
@@ -130,7 +129,6 @@
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_TARGET_FIELD_DESCRIPTION"
 					layout="joomla.form.field.list-fancy-select"
 					multiple="true"
-					default=""
 					required="true"
 					button="false"
 				/>

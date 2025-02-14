@@ -93,11 +93,11 @@ class Conditions
 						$conditionValue['target_field']
 					) && ArrayHelper::check($item->fields))
 				{
-					foreach ( $conditionValue['target_field'] as $fieldKey => $fieldId)
+					foreach ($conditionValue['target_field'] as $fieldKey => $fieldId)
 					{
 						foreach ($item->fields as $fieldValues)
 						{
-							if ((int) $fieldValues['field'] == (int) $fieldId)
+							if ($fieldValues['field'] === $fieldId)
 							{
 								// load the field details
 								$required = GetHelper::between(
@@ -141,7 +141,7 @@ class Conditions
 				{
 					foreach ($item->fields as $fieldValue)
 					{
-						if ((int) $fieldValue['field'] == (int) $conditionValue['match_field'])
+						if ($fieldValue['field'] === $conditionValue['match_field'])
 						{
 							// set the type
 							$type = $this->typeName->get($fieldValue);

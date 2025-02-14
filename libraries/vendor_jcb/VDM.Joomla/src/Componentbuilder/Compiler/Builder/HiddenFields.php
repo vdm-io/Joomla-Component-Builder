@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Builder;
 
 
-use VDM\Joomla\Abstraction\Registry\Traits\ToString;
+use VDM\Joomla\Abstraction\Registry\Traits\PathToString;
 use VDM\Joomla\Interfaces\Registryinterface;
 use VDM\Joomla\Abstraction\Registry;
 
@@ -25,10 +25,10 @@ use VDM\Joomla\Abstraction\Registry;
 final class HiddenFields extends Registry implements Registryinterface
 {
 	/**
-	 * To String Values
+	 * Path To String Values
 	 *
 	 * @since 3.2.0
 	 */
-	use ToString;
+	use PathToString;
 }
 

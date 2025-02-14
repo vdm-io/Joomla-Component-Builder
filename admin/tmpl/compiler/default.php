@@ -154,17 +154,17 @@ document.addEventListener('DOMContentLoaded', function() {
 							<?php echo $this->form->renderFieldset('builder'); ?>
 						<?php endif; ?>
 					</div>
-					<button class="btn btn-primary btn-lg px-4 me-sm-3" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
+					<button class="btn btn-primary btn-lg px-4 me-sm-3" style="width: 100%;" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
 						<?php echo Text::_('COM_COMPONENTBUILDER_COMPILE_COMPONENT'); ?>
 					</button>
 					<input type="hidden" name="install_item_id" value="0"> 
 					<input type="hidden" name="version" value="3" />
 				</div>
 			</div>
-			<div class="col-md-7 p-md-3">
+			<div class="col-md-8 p-md-3">
 				<div id="advance-details"><?php echo $this->form->renderFieldset('advanced'); ?></div>
 				<div id="component-details"><?php echo $selectNotice; ?></div>
-				<?php echo LayoutHelper::render('jcbnoticeboardtabs', array('id' => 'noticeboard' , 'active' => $noticeboardOptions[array_rand($noticeboardOptions)])); ?>
+				<?php echo LayoutHelper::render('jcbnoticeboard', null); ?>
 			</div>
 		</div>
 		<div id="get-compiler-animations" style="display:none;" class="row p-md-3">
@@ -184,9 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					<p style="font-size: smaller;"><?php echo Text::_('COM_COMPONENTBUILDER_DURING_THE_INITIAL_COMPILATION_OF_ANY_COMPONENT_THE_PROCESS_MAY_TAKE_ADDITIONAL_TIME_AS_WE_RETRIEVE_AND_CONFIGURE_THE_ASSOCIATED_SUPERPOWERS_'); ?></p>
 					<div style="text-align: center;"><?php echo ComponentbuilderHelper::getDynamicContent('builder-gif', $this->builder_gif_size); ?></div>
 				</div>
-				<div id="compiler-notice" class="col-md-6 p-md-3" style="display:none;">
-					<?php echo LayoutHelper::render('jcbnoticeboard' . $noticeboardOptions[array_rand($noticeboardOptions)], null); ?>
-					<div class="p-md-3"><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+				<div id="compiler-notice" class="col-md-8 p-md-3" style="display:none;">
+					<?php echo LayoutHelper::render('jcbnoticeboard',  ['id' => 'mastodon-feed-2', 'button_id' => 'refresh-feed-2', 'posts' => 7]); ?>
 				</div>
 			</div>
 		</div>

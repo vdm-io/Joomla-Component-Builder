@@ -129,6 +129,7 @@ class Power implements ServiceProviderInterface
 	{
 		return new Grep(
 			$container->get('Gitea.Repository.Contents'),
+			$container->get('Network.Resolve'),
 			$container->get('Config')->approved_paths,
 			$container->get('Config')->local_powers_repository_path
 		);

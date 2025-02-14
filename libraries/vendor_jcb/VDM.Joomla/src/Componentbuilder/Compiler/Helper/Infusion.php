@@ -109,7 +109,7 @@ class Infusion extends Interpretation
 			// COMPANYNAME
 			$companyname = CFactory::_('Component')->get('companyname');
 			CFactory::_('Compiler.Builder.Content.One')->set('COMPANYNAME', trim(
-				(string) \JFilterOutput::cleanText($companyname)
+				(string) OutputFilter::cleanText($companyname)
 			));
 
 			// POWER_LIBRARY_FOLDER
@@ -2445,9 +2445,9 @@ class Infusion extends Interpretation
 			CFactory::_('Language.Multilingual')->get($values)
 		);
 		// update insert the current lang in to DB
-		CFactory::_('Language.Set')->execute($values, CFactory::_('Config')->component_id);
+		CFactory::_('Language.Set')->execute($values, CFactory::_('Config')->component_guid);
 		// remove old unused language strings
-		CFactory::_('Language.Purge')->execute($values, CFactory::_('Config')->component_id);
+		CFactory::_('Language.Purge')->execute($values, CFactory::_('Config')->component_guid);
 		// path to INI file
 		$getPAth = CFactory::_('Utilities.Paths')->template_path . '/en-GB.com_admin.ini';
 

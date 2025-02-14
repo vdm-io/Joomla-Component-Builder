@@ -519,8 +519,8 @@ final class MainXML implements MainXMLInterface
 		$this->languages->set("plugins.{$langTag}.all", $langContent);
 		$this->language->setTarget($plugin->key, null);
 
-		$this->set->execute($values, $plugin->id, 'plugins');
-		$this->purge->execute($values, $plugin->id, 'plugins');
+		$this->set->execute($values, $plugin->guid, 'plugins');
+		$this->purge->execute($values, $plugin->guid, 'plugins');
 
 		$this->event->trigger('jcb_ce_onBeforeBuildPluginLangFiles', [&$plugin]);
 

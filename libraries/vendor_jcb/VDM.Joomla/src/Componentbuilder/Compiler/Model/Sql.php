@@ -67,7 +67,7 @@ class Sql
 		{
 			if ($item->source == 1 && isset($item->tables) &&
 				($string = $this->dump->get(
-					$item->tables, $item->name_single_code, $item->id
+					$item->tables, $item->name_single_code, $item->guid
 				)) !== null)
 			{
 				// build and add the SQL dump

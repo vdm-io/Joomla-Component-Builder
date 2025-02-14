@@ -22,31 +22,31 @@ interface PluginDataInterface
 	/**
 	 * Get the Joomla Plugin/s
 	 *
-	 * @param   int|null   $id   the plugin id
+	 * @param   int|string|null   $plugin  The plugin ID/GUID
 	 *
-	 * @return  object|array|null    if ID found it returns object, if no ID given it returns all set
+	 * @return  object|array|null    if ID|GUID found it returns object, if no ID|GUID given it returns all set
 	 * @since 3.2.0
 	 */
-	public function get(int $id = null);
+	public function get($plugin = null);
 
 	/**
 	 * Check if the Joomla Plugin/s exists
 	 *
-	 * @param   int|null   $id   the plugin id
+	 * @param   int|string|null   $plugin  The plugin ID/GUID
 	 *
-	 * @return  bool    if ID found it returns true, if no ID given it returns true if any are set
+	 * @return  bool    if ID|GUID found it returns true, if no ID|GUID given it returns true if any are set
 	 * @since 3.2.0
 	 */
-	public function exists(int $id = null): bool;
+	public function exists($plugin = null): bool;
 
 	/**
-	 * Set the Joomla Plugin
+	 * Set the plugin
 	 *
-	 * @param   int      $id   the plugin id
+	 * @param   int|string|null   $plugin  The plugin ID/GUID
 	 *
 	 * @return  bool    true on success
-	 * @since 3.2.0
+	 * @since   5.0.4
 	 */
-	public function set(int $id): bool;
+	public function set($plugin): bool;
 }
 

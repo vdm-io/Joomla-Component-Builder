@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\Data as Module;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -42,7 +41,7 @@ class Joomlamodules
 	 */
 	public function __construct(?Module $module = null)
 	{
-		$this->module = $module ?: Compiler::_('Joomlamodule.Data');
+		$this->module = $module;
 	}
 
 	/**

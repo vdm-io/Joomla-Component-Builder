@@ -54,9 +54,9 @@ final class FieldsetExtension
 	}
 
 	/**
-	 * build field set for an extention
+	 * build field set for an extension
 	 *
-	 * @param   object  $extension  The extention object
+	 * @param   object  $extension  The extension object
 	 * @param   array   $fields     The fields to build
 	 * @param   string  $dbkey      The database key
 	 *

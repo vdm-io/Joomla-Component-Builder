@@ -105,7 +105,6 @@
 			class="list_class span12"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
-			default="0"
 			readonly="true"
 		/>
 		<!-- Version_update Field. Type: Subform. (joomla) -->
@@ -143,7 +142,6 @@
 					label="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATES_MYSQL_LABEL"
 					rows="30"
 					cols="15"
-					default=""
 					description="COM_COMPONENTBUILDER_JOOMLA_MODULE_UPDATES_MYSQL_DESCRIPTION"
 					class="text_area mysql_update"
 					filter="raw"

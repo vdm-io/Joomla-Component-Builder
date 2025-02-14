@@ -192,38 +192,6 @@ class Component_files_foldersModel extends AdminModel
 				$addfiles->loadString($item->addfiles);
 				$item->addfiles = $addfiles->toArray();
 			}
-
-			// update the fields
-			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $item->id;
-			// repeatable values to check
-			$arrayChecker = array(
-				'addfiles' => 'file',
-				'addfolders' => 'folder'
-			);
-			foreach ($arrayChecker as $_value => $checker)
-			{
-				// check what type of array we have here (should be subform... but just in case)
-				// This could happen due to huge data sets
-				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
-				{
-					$bucket = array();
-					foreach($item->{$_value} as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket[$_value.$nr][$option] = $value;
-						}
-					}
-					$item->{$_value} = $bucket;
-					$objectUpdate->{$_value} = json_encode($bucket);
-				}
-			}
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->_db->updateObject('#__componentbuilder_component_files_folders', $objectUpdate, 'id');
-			}
 		}
 
 		return $item;
@@ -334,6 +302,19 @@ class Component_files_foldersModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 		return $form;
@@ -946,7 +927,7 @@ class Component_files_foldersModel extends AdminModel
 		if (isset($data['clone_me']) && $data['clone_me'] > 0)
 		{
 			// get the following data from clone_me (component_files_folders)
-			$keys = array('addfiles','addfolders','addfilesfullpath','addfoldersfullpath');
+			$keys = ['addfiles','addfolders','addfilesfullpath','addfoldersfullpath'];
 			foreach ($keys as $key)
 			{
 				$data[$key] = GetHelper::var('component_files_folders', $data['clone_me'], 'joomla_component', $key);

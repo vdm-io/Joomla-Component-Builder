@@ -21,6 +21,7 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -265,22 +266,28 @@ class Selection
 	/**
 	 * Get the Admin view table name
 	 *
-	 * @param   int        $id  The item id to add
+	 * @param   mixed    $value  The item id|guid to add
 	 *
 	 * @return string   the admin view code name
 	 * @since 3.2.0
 	 */
-	protected function name(int $id): string
+	protected function name($value): string
 	{
-		// get name if not set
-		if (!isset($this->name[$id]))
+		$key = 'id';
+		if (GuidHelper::valid($value))
 		{
-			$this->name[$id] = StringHelper::safe(
-				GetHelper::var('admin_view', $id, 'id', 'name_single')
+			$key = 'guid';
+		}
+
+		// get name if not set
+		if (!isset($this->name[$value]))
+		{
+			$this->name[$value] = StringHelper::safe(
+				GetHelper::var('admin_view', $value, $key, 'name_single')
 			);
 		}
 
-		return $this->name[$id] ?? 'error';
+		return $this->name[$value] ?? 'error';
 	}
 }
 

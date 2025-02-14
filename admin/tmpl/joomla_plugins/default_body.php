@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('joomla_plugin',$item,'joomla_plugins');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -99,18 +100,18 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 			?>
 			<div class="btn-group" style="margin: 5px 0 0 0;">
 			<?php foreach ($_buttons[0] as $_button): ?>
-				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->id, 'joomla_plugin', 'id')) !== false): ?>
+				<?php if ($canDo->get($_button['view'].'.edit') && ($id = GetHelper::var($_button['view'], $item->guid, 'joomla_plugin', 'id')) !== false): ?>
 					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&id=<?php echo $id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php elseif ($canDo->get($_button['view'].'.create')): ?>
-					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&ref=joomla_plugin&refid=<?php echo $item->id; ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
+					<a class="hasTooltip btn btn-mini" href="index.php?option=com_componentbuilder&view=<?php echo $_button['views'] ?>&task=<?php echo $_button['view'] ?>.edit&init_defaults=<?php echo urlencode(json_encode(['joomla_plugin' => $item->guid])); ?>&return=<?php echo $this->return_here; ?>" title="<?php echo $_button['title']; ?>" ><span class="icon-<?php echo $_button['icon']; ?>"></span></a>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int) $item->class_extends)): ?>
-					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
+				<?php if ($this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int) $item->class_extends_id)): ?>
+					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->class_extends_name); ?>
 				<?php endif; ?>
@@ -118,8 +119,8 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.joomla_plugin_group.' . (int) $item->joomla_plugin_group)): ?>
-					<a href="index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=joomla_plugin_group.edit&id=<?php echo $item->joomla_plugin_group; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->joomla_plugin_group_name); ?></a>
+				<?php if ($this->user->authorise('core.edit', 'com_componentbuilder.joomla_plugin_group.' . (int) $item->joomla_plugin_group_id)): ?>
+					<a href="index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=joomla_plugin_group.edit&id=<?php echo $item->joomla_plugin_group_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->joomla_plugin_group_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->joomla_plugin_group_name); ?>
 				<?php endif; ?>

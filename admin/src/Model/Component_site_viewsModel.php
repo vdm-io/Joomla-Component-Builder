@@ -31,6 +31,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -157,37 +158,6 @@ class Component_site_viewsModel extends AdminModel
 				$addsite_views->loadString($item->addsite_views);
 				$item->addsite_views = $addsite_views->toArray();
 			}
-
-			// update the fields
-			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $item->id;
-			// repeatable values to check
-			$arrayChecker = array(
-				'addsite_views' => 'siteview'
-			);
-			foreach ($arrayChecker as $_value => $checker)
-			{
-				// check what type of array we have here (should be subform... but just in case)
-				// This could happen due to huge data sets
-				if (isset($item->{$_value}) && isset($item->{$_value}[$checker]))
-				{
-					$bucket = array();
-					foreach($item->{$_value} as $option => $values)
-					{
-						foreach($values as $nr => $value)
-						{
-							$bucket[$_value.$nr][$option] = $value;
-						}
-					}
-					$item->{$_value} = $bucket;
-					$objectUpdate->{$_value} = json_encode($bucket);
-				}
-			}
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->_db->updateObject('#__componentbuilder_component_site_views', $objectUpdate, 'id');
-			}
 		}
 
 		return $item;
@@ -298,6 +268,19 @@ class Component_site_viewsModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 
@@ -910,7 +893,7 @@ class Component_site_viewsModel extends AdminModel
 
 
 		// check if we have a clone moment
-		if (isset($data['clone_me']) && $data['clone_me'] > 0)
+		if (isset($data['clone_me']) && GuidHelper::valid($data['clone_me']))
 		{
 			// get addsite_views data from clone_me (component_site_views)
 			$data['addsite_views'] = GetHelper::var('component_site_views', $data['clone_me'], 'joomla_component', 'addsite_views');

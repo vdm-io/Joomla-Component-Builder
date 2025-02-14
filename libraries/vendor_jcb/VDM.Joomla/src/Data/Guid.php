@@ -63,6 +63,24 @@ trait Guid
 	}
 
 	/**
+	 * Validate the Globally Unique Identifier
+	 *
+	 * @param string $guid
+	 *
+	 * @return bool
+	 * @since  5.0.4
+	 */
+	public static function validateGuid($guid)
+	{
+		// check if we have a string
+		if (!empty($guid) && is_string($guid))
+		{
+			return preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid);
+		}
+		return false;
+	}
+
+	/**
 	 * Generates a fallback GUIDv4 using less secure methods.
 	 *
 	 * @param string $key The key to check and modify values.

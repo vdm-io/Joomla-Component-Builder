@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -174,7 +175,7 @@ class FieldtypeModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('fieldtype__'.$id))
+			if (($vdm = SessionHelper::get('fieldtype__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -182,17 +183,17 @@ class FieldtypeModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'fieldtype__'.$id);
-				ComponentbuilderHelper::set('fieldtype__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'fieldtype__'.$id);
+				SessionHelper::set('fieldtype__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 		}
@@ -246,7 +247,7 @@ class FieldtypeModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if ($vdm = ComponentbuilderHelper::get('fieldtype__'.$id))
+			if (($vdm = SessionHelper::get('fieldtype__'.$id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -254,17 +255,17 @@ class FieldtypeModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				ComponentbuilderHelper::set($this->vastDevMod, 'fieldtype__'.$id);
-				ComponentbuilderHelper::set('fieldtype__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'fieldtype__'.$id);
+				SessionHelper::set('fieldtype__'.$id, $this->vastDevMod);
 				// set a return value if found
 				$jinput = Factory::getApplication()->input;
 				$return = $jinput->get('return', null, 'base64');
-				ComponentbuilderHelper::set($this->vastDevMod . '__return', $return);
+				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
 					&& GuidHelper::valid($item->guid))
 				{
-					ComponentbuilderHelper::set($this->vastDevMod . '__guid', $item->guid);
+					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
 			// check what type of properties array we have here (should be subform... but just incase)
@@ -287,7 +288,7 @@ class FieldtypeModel extends AdminModel
 				$this->db->updateObject('#__componentbuilder_fieldtype', $objectUpdate, 'id');
 			}
 		}
-		$this->fieldtypevvvv = $item->id;
+		$this->fieldtypevvvv = $item->guid;
 
 		return $item;
 	}
@@ -297,7 +298,7 @@ class FieldtypeModel extends AdminModel
 	 *
 	 * @return mixed  An array of data items on success, false on failure.
 	 */
-	public function getVxsfields()
+	public function getVxlfields()
 	{
 		// Get the user object.
 		$user = Factory::getApplication()->getIdentity();
@@ -313,55 +314,51 @@ class FieldtypeModel extends AdminModel
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
 		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
 
-		// do not use these filters in the export method
-		if (!isset($_export) || !$_export)
+		// Filtering "extension"
+		$filter_extension = $this->state->get("filter.extension");
+		$field_guids = [];
+		$get_ids = true;
+		if ($get_ids && $filter_extension !== null && !empty($filter_extension))
 		{
-			// Filtering "extension"
-			$filter_extension = $this->state->get("filter.extension");
-			$field_ids = array();
-			$get_ids = true;
-			if ($get_ids && $filter_extension !== null && !empty($filter_extension))
+			// column name, and id
+			$type_extension = explode('__', $filter_extension);
+			if (($guids = JCBFilterHelper::linked((string) $type_extension[1], (string) $type_extension[0])) !== null)
 			{
-				// column name, and id
-				$type_extension = explode('__', $filter_extension);
-				if (($ids = JCBFilterHelper::linked((int) $type_extension[1], (string) $type_extension[0])) !== null)
-				{
-					$field_ids = $ids;
-				}
-				else
-				{
-					// there is none
-					$query->where($db->quoteName('a.id') . ' = ' . 0);
-					$get_ids = false;
-				}
+				$field_guids = $guids;
 			}
-
-			// Filtering "admin_view"
-			$filter_admin_view = $this->state->get("filter.admin_view");
-			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
+			else
 			{
-				if (($ids = JCBFilterHelper::linked((int) $filter_admin_view, 'admin_view')) !== null)
-				{
-					// view will return less fields, so we ignore the component
-					$field_ids = $ids;
-				}
-				else
-				{
-					// there is none
-					$query->where($db->quoteName('a.id') . ' = ' . 0);
-					$get_ids = false;
-				}
-			}
-			// now check if we have IDs
-			if ($get_ids && UtilitiesArrayHelper::check($field_ids))
-			{
-				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $field_ids) . ')');
+				// there is none
+				$query->where($db->quoteName('a.id') . ' = ' . 0);
+				$get_ids = false;
 			}
 		}
 
+		// Filtering "admin_view"
+		$filter_admin_view = $this->state->get("filter.admin_view");
+		if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
+		{
+			if (($guids = JCBFilterHelper::linked((string) $filter_admin_view, 'admin_view')) !== null)
+			{
+				// view will return less fields, so we ignore the component
+				$field_guids = $guids;
+			}
+			else
+			{
+				// there is none
+				$query->where($db->quoteName('a.id') . ' = ' . 0);
+				$get_ids = false;
+			}
+		}
+		// now check if we have GUIDs
+		if ($get_ids && UtilitiesArrayHelper::check($field_guids))
+		{
+			$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $field_guids) . '")');
+		}
+
 		// From the componentbuilder_fieldtype table.
-		$query->select($db->quoteName('g.name','fieldtype_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['fieldtype_name','fieldtype_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by fieldtypevvvv global.
 		$fieldtypevvvv = $this->fieldtypevvvv;
@@ -439,13 +436,13 @@ class FieldtypeModel extends AdminModel
 				foreach ($items as $nr => &$item)
 				{
 					// convert datatype
-					$item->datatype = $this->selectionTranslationVxsfields($item->datatype, 'datatype');
+					$item->datatype = $this->selectionTranslationVxlfields($item->datatype, 'datatype');
 					// convert indexes
-					$item->indexes = $this->selectionTranslationVxsfields($item->indexes, 'indexes');
+					$item->indexes = $this->selectionTranslationVxlfields($item->indexes, 'indexes');
 					// convert null_switch
-					$item->null_switch = $this->selectionTranslationVxsfields($item->null_switch, 'null_switch');
+					$item->null_switch = $this->selectionTranslationVxlfields($item->null_switch, 'null_switch');
 					// convert store
-					$item->store = $this->selectionTranslationVxsfields($item->store, 'store');
+					$item->store = $this->selectionTranslationVxlfields($item->store, 'store');
 				}
 			}
 
@@ -459,7 +456,7 @@ class FieldtypeModel extends AdminModel
 	 *
 	 * @return  string   The translatable string.
 	 */
-	public function selectionTranslationVxsfields($value,$name)
+	public function selectionTranslationVxlfields($value,$name)
 	{
 		// Array of datatype language strings
 		if ($name === 'datatype')
@@ -641,6 +638,19 @@ class FieldtypeModel extends AdminModel
 			{
 				// Now set the local-redirected field default value
 				$form->setValue($redirectedField, null, $redirectedValue);
+			}
+			$initDefaults = $jinput->get('init_defaults', null, 'STRING');
+			if (!empty($initDefaults))
+			{
+				// Now check if this json values are valid
+				$initDefaults = json_decode(urldecode($initDefaults), true);
+				if (is_array($initDefaults))
+				{
+					foreach ($initDefaults as $field => $value)
+					{
+						$form->setValue($field, null, $value);
+					}
+				}
 			}
 		}
 
@@ -870,7 +880,7 @@ class FieldtypeModel extends AdminModel
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
 					// also clear the data set
-					$data[$requiredField] = '';
+					unset($data[$requiredField]);
 				}
 			}
 		}

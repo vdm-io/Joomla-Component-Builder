@@ -115,59 +115,59 @@ class Data
 	/**
 	 * Get Media Library Data and store globally in registry
 	 *
-	 * @param   int  $id  the library id
+	 * @param   string  $guid  the library guid
 	 *
 	 * @return  object|bool    object on success
 	 * @since 3.2.0
 	 */
-	public function get(int $id)
+	public function get(string $guid)
 	{
 		// check if the lib has already been set
-		if (!$this->registry->exists("builder.libraries.$id"))
+		if (!$this->registry->exists("builder.libraries.$guid"))
 		{
 			// get some switches
 			$uikit = $this->config->get('uikit', 0);
 			$footable_version = $this->config->get('footable_version', 0);
 
 			// make sure we should continue and that the lib is not already being loaded
-			switch ($id)
+			switch ($guid)
 			{
-				case 1: // No Library
+				case 'bc8e675d-7536-4a68-b186-fb4b988fa3e2': // No Library (id:1)
 					return false;
 					break;
-				case 3: // Uikit v3
+				case '5eeee148-cebd-4a92-bc0e-56efea3cffdc': // Uikit v3 (id: 3)
 					if (2 == $uikit || 3 == $uikit)
 					{
 						// already being loaded
-						$this->registry->set("builder.libraries.$id", false);
+						$this->registry->set("builder.libraries.$guid", false);
 					}
 					break;
-				case 4: // Uikit v2
+				case '367fbf66-890e-42a7-a82d-f780d2f86786': // Uikit v2 (id: 4)
 					if (2 == $uikit || 1 == $uikit)
 					{
 						// already being loaded
-						$this->registry->set("builder.libraries.$id", false);
+						$this->registry->set("builder.libraries.$guid", false);
 					}
 					break;
-				case 5: // FooTable v2
+				case 'a90edd5a-8521-4fb1-b6b3-9a21e9f56642': // FooTable v2 (id: 5)
 					if (2 == $footable_version)
 					{
 						// already being loaded
-						$this->registry->set("builder.libraries.$id", false);
+						$this->registry->set("builder.libraries.$guid", false);
 					}
 					break;
-				case 6: // FooTable v3
+				case '86829029-dc8a-424e-b046-b189a92565d9': // FooTable v3 (id: 6)
 					if (3 == $footable_version)
 					{
 						// already being loaded
-						$this->registry->set("builder.libraries.$id", false);
+						$this->registry->set("builder.libraries.$guid", false);
 					}
 					break;
 			}
 		}
 
 		// check if the lib has already been set
-		if (!$this->registry->exists("builder.libraries.$id"))
+		if (!$this->registry->exists("builder.libraries.$guid"))
 		{
 			$query = $this->db->getQuery(true);
 
@@ -209,16 +209,16 @@ class Data
 			$query->join(
 				'LEFT',
 				$this->db->quoteName('#__componentbuilder_library_config', 'b')
-				. ' ON (' . $this->db->quoteName('a.id') . ' = '
+				. ' ON (' . $this->db->quoteName('a.guid') . ' = '
 				. $this->db->quoteName('b.library') . ')'
 			);
 			$query->join(
 				'LEFT', $this->db->quoteName(
 					'#__componentbuilder_library_files_folders_urls', 'c'
-				) . ' ON (' . $this->db->quoteName('a.id') . ' = '
+				) . ' ON (' . $this->db->quoteName('a.guid') . ' = '
 				. $this->db->quoteName('c.library') . ')'
 			);
-			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			$query->where($this->db->quoteName('a.guid') . ' = ' . $this->db->quote($guid));
 			$query->where($this->db->quoteName('a.target') . ' = 1');
 
 			// Reset the query using our newly populated query object.
@@ -308,7 +308,7 @@ class Data
 							array(
 								'table' => 'library',
 								'field' => 'php_setdocument',
-								'id'    => (int) $id,
+								'id'    => (int) $library->id,
 								'type'  => 'php')
 						);
 					}
@@ -337,16 +337,16 @@ class Data
 				unset($library->addconfig);
 
 				// load to global lib
-				$this->registry->set("builder.libraries.$id", $library);
+				$this->registry->set("builder.libraries.$guid", $library);
 			}
 			else
 			{
-				$this->registry->set("builder.libraries.$id", false);
+				$this->registry->set("builder.libraries.$guid", false);
 			}
 		}
 
 		// if set return
-		return $this->registry->get("builder.libraries.$id", false);
+		return $this->registry->get("builder.libraries.$guid", false);
 	}
 
 }

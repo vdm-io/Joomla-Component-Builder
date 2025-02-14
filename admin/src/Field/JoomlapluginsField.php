@@ -156,7 +156,7 @@ class JoomlapluginsField extends ListField
 		// Get the databse object.
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id','a.system_name','a.name','b.name','c.name'),array('id','plugin_system_name','name','class_extends_name','joomla_plugin_group_name')));
+		$query->select($db->quoteName(array('a.guid','a.system_name','a.name','b.name','c.name'),array('guid','plugin_system_name','name','class_extends_name','joomla_plugin_group_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_class_extends', 'b') . ' ON (' . $db->quoteName('a.class_extends') . ' = ' . $db->quoteName('b.id') . ')');
 		$query->join('LEFT', $db->quoteName('#__componentbuilder_joomla_plugin_group', 'c') . ' ON (' . $db->quoteName('a.joomla_plugin_group') . ' = ' . $db->quoteName('c.id') . ')');
@@ -183,7 +183,7 @@ class JoomlapluginsField extends ListField
 				// set a full class name
 				$group_name = $item->joomla_plugin_group_name ?? '';
 				$name = $item->name ?? '';
-				$options[] = Html::_('select.option', $item->id, '( ' . $item->plugin_system_name . ' ) class Plg' . $group_name . $name . ' extends ' . $item->class_extends_name);
+				$options[] = Html::_('select.option', $item->guid, '( ' . $item->plugin_system_name . ' ) class Plg' . $group_name . $name . ' extends ' . $item->class_extends_name);
 			}
 		}
 		return $options;

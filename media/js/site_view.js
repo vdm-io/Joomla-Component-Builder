@@ -11,45 +11,45 @@
 // Initial Script
 document.addEventListener('DOMContentLoaded', function()
 {
-	var add_php_view_vvvvvyt = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvyt(add_php_view_vvvvvyt);
+	var add_php_view_vvvvvyr = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvyr(add_php_view_vvvvvyr);
 
-	var add_php_jview_display_vvvvvyu = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
-	vvvvvyu(add_php_jview_display_vvvvvyu);
+	var add_php_jview_display_vvvvvys = jQuery("#jform_add_php_jview_display input[type='radio']:checked").val();
+	vvvvvys(add_php_jview_display_vvvvvys);
 
-	var add_php_jview_vvvvvyv = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
-	vvvvvyv(add_php_jview_vvvvvyv);
+	var add_php_jview_vvvvvyt = jQuery("#jform_add_php_jview input[type='radio']:checked").val();
+	vvvvvyt(add_php_jview_vvvvvyt);
 
-	var add_php_document_vvvvvyw = jQuery("#jform_add_php_document input[type='radio']:checked").val();
-	vvvvvyw(add_php_document_vvvvvyw);
+	var add_php_document_vvvvvyu = jQuery("#jform_add_php_document input[type='radio']:checked").val();
+	vvvvvyu(add_php_document_vvvvvyu);
 
-	var add_css_document_vvvvvyx = jQuery("#jform_add_css_document input[type='radio']:checked").val();
-	vvvvvyx(add_css_document_vvvvvyx);
+	var add_css_document_vvvvvyv = jQuery("#jform_add_css_document input[type='radio']:checked").val();
+	vvvvvyv(add_css_document_vvvvvyv);
 
-	var add_javascript_file_vvvvvyy = jQuery("#jform_add_javascript_file input[type='radio']:checked").val();
-	vvvvvyy(add_javascript_file_vvvvvyy);
+	var add_javascript_file_vvvvvyw = jQuery("#jform_add_javascript_file input[type='radio']:checked").val();
+	vvvvvyw(add_javascript_file_vvvvvyw);
 
-	var add_js_document_vvvvvyz = jQuery("#jform_add_js_document input[type='radio']:checked").val();
-	vvvvvyz(add_js_document_vvvvvyz);
+	var add_js_document_vvvvvyx = jQuery("#jform_add_js_document input[type='radio']:checked").val();
+	vvvvvyx(add_js_document_vvvvvyx);
 
-	var add_css_vvvvvza = jQuery("#jform_add_css input[type='radio']:checked").val();
-	vvvvvza(add_css_vvvvvza);
+	var add_css_vvvvvyy = jQuery("#jform_add_css input[type='radio']:checked").val();
+	vvvvvyy(add_css_vvvvvyy);
 
-	var add_php_ajax_vvvvvzb = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
-	vvvvvzb(add_php_ajax_vvvvvzb);
+	var add_php_ajax_vvvvvyz = jQuery("#jform_add_php_ajax input[type='radio']:checked").val();
+	vvvvvyz(add_php_ajax_vvvvvyz);
 
-	var add_custom_button_vvvvvzc = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
-	vvvvvzc(add_custom_button_vvvvvzc);
+	var add_custom_button_vvvvvza = jQuery("#jform_add_custom_button input[type='radio']:checked").val();
+	vvvvvza(add_custom_button_vvvvvza);
 
-	var button_position_vvvvvzd = jQuery("#jform_button_position").val();
-	vvvvvzd(button_position_vvvvvzd);
+	var button_position_vvvvvzb = jQuery("#jform_button_position").val();
+	vvvvvzb(button_position_vvvvvzb);
 });
 
-// the vvvvvyt function
-function vvvvvyt(add_php_view_vvvvvyt)
+// the vvvvvyr function
+function vvvvvyr(add_php_view_vvvvvyr)
 {
 	// set the function logic
-	if (add_php_view_vvvvvyt == 1)
+	if (add_php_view_vvvvvyr == 1)
 	{
 		jQuery('#jform_php_view-lbl').closest('.control-group').show();
 	}
@@ -59,11 +59,11 @@ function vvvvvyt(add_php_view_vvvvvyt)
 	}
 }
 
-// the vvvvvyu function
-function vvvvvyu(add_php_jview_display_vvvvvyu)
+// the vvvvvys function
+function vvvvvys(add_php_jview_display_vvvvvys)
 {
 	// set the function logic
-	if (add_php_jview_display_vvvvvyu == 1)
+	if (add_php_jview_display_vvvvvys == 1)
 	{
 		jQuery('#jform_php_jview_display-lbl').closest('.control-group').show();
 	}
@@ -73,11 +73,11 @@ function vvvvvyu(add_php_jview_display_vvvvvyu)
 	}
 }
 
-// the vvvvvyv function
-function vvvvvyv(add_php_jview_vvvvvyv)
+// the vvvvvyt function
+function vvvvvyt(add_php_jview_vvvvvyt)
 {
 	// set the function logic
-	if (add_php_jview_vvvvvyv == 1)
+	if (add_php_jview_vvvvvyt == 1)
 	{
 		jQuery('#jform_php_jview-lbl').closest('.control-group').show();
 	}
@@ -87,11 +87,11 @@ function vvvvvyv(add_php_jview_vvvvvyv)
 	}
 }
 
-// the vvvvvyw function
-function vvvvvyw(add_php_document_vvvvvyw)
+// the vvvvvyu function
+function vvvvvyu(add_php_document_vvvvvyu)
 {
 	// set the function logic
-	if (add_php_document_vvvvvyw == 1)
+	if (add_php_document_vvvvvyu == 1)
 	{
 		jQuery('#jform_php_document-lbl').closest('.control-group').show();
 	}
@@ -101,11 +101,11 @@ function vvvvvyw(add_php_document_vvvvvyw)
 	}
 }
 
-// the vvvvvyx function
-function vvvvvyx(add_css_document_vvvvvyx)
+// the vvvvvyv function
+function vvvvvyv(add_css_document_vvvvvyv)
 {
 	// set the function logic
-	if (add_css_document_vvvvvyx == 1)
+	if (add_css_document_vvvvvyv == 1)
 	{
 		jQuery('#jform_css_document-lbl').closest('.control-group').show();
 	}
@@ -115,11 +115,11 @@ function vvvvvyx(add_css_document_vvvvvyx)
 	}
 }
 
-// the vvvvvyy function
-function vvvvvyy(add_javascript_file_vvvvvyy)
+// the vvvvvyw function
+function vvvvvyw(add_javascript_file_vvvvvyw)
 {
 	// set the function logic
-	if (add_javascript_file_vvvvvyy == 1)
+	if (add_javascript_file_vvvvvyw == 1)
 	{
 		jQuery('#jform_javascript_file-lbl').closest('.control-group').show();
 	}
@@ -129,11 +129,11 @@ function vvvvvyy(add_javascript_file_vvvvvyy)
 	}
 }
 
-// the vvvvvyz function
-function vvvvvyz(add_js_document_vvvvvyz)
+// the vvvvvyx function
+function vvvvvyx(add_js_document_vvvvvyx)
 {
 	// set the function logic
-	if (add_js_document_vvvvvyz == 1)
+	if (add_js_document_vvvvvyx == 1)
 	{
 		jQuery('#jform_js_document-lbl').closest('.control-group').show();
 	}
@@ -143,11 +143,11 @@ function vvvvvyz(add_js_document_vvvvvyz)
 	}
 }
 
-// the vvvvvza function
-function vvvvvza(add_css_vvvvvza)
+// the vvvvvyy function
+function vvvvvyy(add_css_vvvvvyy)
 {
 	// set the function logic
-	if (add_css_vvvvvza == 1)
+	if (add_css_vvvvvyy == 1)
 	{
 		jQuery('#jform_css-lbl').closest('.control-group').show();
 	}
@@ -157,11 +157,11 @@ function vvvvvza(add_css_vvvvvza)
 	}
 }
 
-// the vvvvvzb function
-function vvvvvzb(add_php_ajax_vvvvvzb)
+// the vvvvvyz function
+function vvvvvyz(add_php_ajax_vvvvvyz)
 {
 	// set the function logic
-	if (add_php_ajax_vvvvvzb == 1)
+	if (add_php_ajax_vvvvvyz == 1)
 	{
 		jQuery('#jform_ajax_input-lbl').closest('.control-group').show();
 		jQuery('#jform_php_ajaxmethod-lbl').closest('.control-group').show();
@@ -173,11 +173,11 @@ function vvvvvzb(add_php_ajax_vvvvvzb)
 	}
 }
 
-// the vvvvvzc function
-function vvvvvzc(add_custom_button_vvvvvzc)
+// the vvvvvza function
+function vvvvvza(add_custom_button_vvvvvza)
 {
 	// set the function logic
-	if (add_custom_button_vvvvvzc == 1)
+	if (add_custom_button_vvvvvza == 1)
 	{
 		jQuery('#jform_custom_button-lbl').closest('.control-group').show();
 		jQuery('#jform_php_controller-lbl').closest('.control-group').show();
@@ -191,20 +191,20 @@ function vvvvvzc(add_custom_button_vvvvvzc)
 	}
 }
 
-// the vvvvvzd function
-function vvvvvzd(button_position_vvvvvzd)
+// the vvvvvzb function
+function vvvvvzb(button_position_vvvvvzb)
 {
-	if (isSet(button_position_vvvvvzd) && button_position_vvvvvzd.constructor !== Array)
+	if (isSet(button_position_vvvvvzb) && button_position_vvvvvzb.constructor !== Array)
 	{
-		var temp_vvvvvzd = button_position_vvvvvzd;
-		var button_position_vvvvvzd = [];
-		button_position_vvvvvzd.push(temp_vvvvvzd);
+		var temp_vvvvvzb = button_position_vvvvvzb;
+		var button_position_vvvvvzb = [];
+		button_position_vvvvvzb.push(temp_vvvvvzb);
 	}
-	else if (!isSet(button_position_vvvvvzd))
+	else if (!isSet(button_position_vvvvvzb))
 	{
-		var button_position_vvvvvzd = [];
+		var button_position_vvvvvzb = [];
 	}
-	var button_position = button_position_vvvvvzd.some(button_position_vvvvvzd_SomeFunc);
+	var button_position = button_position_vvvvvzb.some(button_position_vvvvvzb_SomeFunc);
 
 
 	// set this function logic
@@ -218,11 +218,11 @@ function vvvvvzd(button_position_vvvvvzd)
 	}
 }
 
-// the vvvvvzd Some function
-function button_position_vvvvvzd_SomeFunc(button_position_vvvvvzd)
+// the vvvvvzb Some function
+function button_position_vvvvvzb_SomeFunc(button_position_vvvvvzb)
 {
 	// set the function logic
-	if (button_position_vvvvvzd == 5)
+	if (button_position_vvvvvzb == 5)
 	{
 		return true;
 	}
@@ -249,8 +249,11 @@ jQuery(document).ready(function()
 
 function getCodeFrom_server(id, type, type_name, callingName) {
 	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
-	if (token.length > 0 && id > 0 && type.length > 0) {
+	if (token.length > 0 && getCodeFrom_isValidId(id) && type.length > 0) {
 		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
+	} else {
+		console.error('There was a issue with the values passed to the [getCodeFrom_server] method and we could not make the Ajax call.');
+		return;
 	}
 	var getUrl = JRouter(url);
 	return fetch(getUrl, {
@@ -269,6 +272,17 @@ function getCodeFrom_server(id, type, type_name, callingName) {
 	}).catch(function(error) {
 		console.error('There was a problem with the fetch operation:', error);
 	});
+}
+function getCodeFrom_isValidId(id) {
+    if (typeof id === 'number') {
+        // Check if it's a positive integer
+        return Number.isInteger(id) && id > 0;
+    } else if (typeof id === 'string') {
+        // Check if it's a string of length > 30
+        return id.length > 30;
+    }
+    // If neither a number nor a string, return false
+    return false;
 }
 
 function getLinked() {
@@ -316,69 +330,99 @@ function getSnippetDetails(id){
 	})
 }
 
-function getDynamicValues_server(dynamicId){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json");
-	if(token.length > 0 && dynamicId > 0){
-		var request = token+'=1&view=site_view&id='+dynamicId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
+function getDynamicValuesServer(dynamicId) {
+    var getUrl = 'index.php?option=com_componentbuilder&task=ajax.getDynamicValues&raw=true&format=json';
+    if (token.length > 0 && (dynamicId > 0 || dynamicId.length > 0)) {
+        var request = token + '=1&view=site_view&id=' + dynamicId;
+    }
+
+    return fetch(getUrl + '&' + request, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json());
 }
 
-function getDynamicValues(id){
-	getDynamicValues_server(id).done(function(result) {
-		if(result){
-			jQuery('#dynamic_values').remove();
-			jQuery('.dynamic_values').append('<div id="dynamic_values">'+result+'</div>');
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
+function getDynamicValues(id) {
+    getDynamicValuesServer(id).then(function(result) {
+        if (result) {
+            var dynamicValuesElement = document.getElementById('dynamic_values');
+            if (dynamicValuesElement) {
+                dynamicValuesElement.remove();
+            }
+            document.querySelector('.dynamic_values').insertAdjacentHTML('beforeend', '<div id="dynamic_values">' + result + '</div>');
+
+            // Event listener for code blocks
+            document.querySelectorAll("code").forEach(function(codeBlock) {
+                codeBlock.addEventListener("click", function() {
+                    codeBlock.selText(); // Call the custom selText function
+                    codeBlock.classList.add("selected");  // Add the "selected" class
+                });
+            });
+        }
+    }).catch(function(error) {
+        console.error('Error fetching dynamic values:', error);
+    });
 }
 
-function getLayoutDetails_server(id){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod);
-	if(token.length > 0 && id > 0){
-		var request = token+'=1&id='+id;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
+function getLayoutDetails_server(id) {
+    var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&raw=true&vdm=" + vastDevMod);
+    var request = '';
+
+    // Ensure token and id are present
+    if (token.length > 0 && id > 0) {
+        request = token + '=1&id=' + id;
+    }
+
+    // Return a fetch promise (fetch does not support JSONP, so I assume the server can return JSON)
+    return fetch(getUrl + '&' + request, {
+        method: 'GET'
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();  // Assuming the server returns JSON
+    });
 }
 
-function getLayoutDetails(id){
-	getLayoutDetails_server(id).done(function(result) {
-		if(result){
-			jQuery('#details').append(result);
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
+function getLayoutDetails(id) {
+    getLayoutDetails_server(id)
+        .then(function(result) {
+            if (result) {
+                document.querySelector('#details').insertAdjacentHTML('beforeend', result);
+
+                // Re-enable code block text selection functionality
+                document.querySelectorAll("code").forEach(function(codeBlock) {
+                    codeBlock.addEventListener("click", function() {
+                        codeBlock.selText();
+                        codeBlock.classList.add("selected");
+                    });
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('There was a problem with the fetch operation:', error);
+        });
 }
 
-function getTemplateDetails(id){
-	getCodeFrom_server(id, 'type', 'type', 'templateDetails').then(function(result) {
-		if(result){
-			jQuery('#details').append(result);
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
+
+function getTemplateDetails(id) {
+    getCodeFrom_server(id, 'type', 'type', 'templateDetails').then(function(result) {
+        if (result) {
+            document.querySelector('#details').insertAdjacentHTML('beforeend', result);
+
+            // Re-enable code block text selection functionality
+            document.querySelectorAll("code").forEach(function(codeBlock) {
+                codeBlock.addEventListener("click", function() {
+                    codeBlock.selText();
+                    codeBlock.classList.add("selected");
+                });
+            });
+        }
+    });
 }
 
 // set snippets that are on the page
@@ -476,12 +520,16 @@ function getEditCustomCodeButtons() {
 
 				// Insert the div before .control-wrapper-{field}
 				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				if (insertBeforeElement) {
+					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				}
 
 				// Adding buttons to the div
 				Object.entries(buttons).forEach(([name, button]) => {
 					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					controlsDiv.innerHTML += button;
+					if (controlsDiv) {
+						controlsDiv.innerHTML += button;
+					}
 				});
 			});
 		}

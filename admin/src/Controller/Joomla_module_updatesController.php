@@ -24,6 +24,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
@@ -179,12 +180,21 @@ class Joomla_module_updatesController extends FormController
 	 */
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
-		// get the referral options (old method use return instead see parent)
+		// get int-defaults (to int new items with default values dynamically)
+		$init_defaults = $this->input->get('init_defaults', null, 'STRING');
+
+		// get the referral options (old method use init_defaults or return instead see parent)
 		$ref = $this->input->get('ref', 0, 'string');
 		$refid = $this->input->get('refid', 0, 'int');
 
 		// get redirect info.
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+		// set int-defaults
+		if (!empty($init_defaults))
+		{
+			$append = '&init_defaults='. (string) $init_defaults . $append;
+		}
 
 		// set the referral options
 		if ($refid && $ref)
@@ -357,10 +367,10 @@ class Joomla_module_updatesController extends FormController
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
 		// update the component version to match the updated last version
-		if (isset($validData['joomla_plugin']) && is_numeric($validData['joomla_plugin']) && $validData['joomla_plugin'] > 0)
+		if (isset($validData['joomla_plugin']) && GuidHelper::valid($validData['joomla_plugin']))
 		{
 			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $validData['joomla_plugin'];
+			$objectUpdate->guid = (string) $validData['joomla_plugin'];
 			if (isset($validData['version_update']) && UtilitiesArrayHelper::check($validData['version_update'])
 				&& ($plugin_version = end($validData['version_update'])['version'])
 				&& StringHelper::check($plugin_version))
@@ -370,7 +380,7 @@ class Joomla_module_updatesController extends FormController
 			// be sure to update the table if we have a value
 			if (isset($objectUpdate->plugin_version))
 			{
-				Factory::getDbo()->updateObject('#__componentbuilder_joomla_plugin', $objectUpdate, 'id');
+				Factory::getDbo()->updateObject('#__componentbuilder_joomla_plugin', $objectUpdate, 'guid');
 			}
 		}
 

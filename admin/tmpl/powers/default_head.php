@@ -33,13 +33,13 @@ defined('_JEXEC') or die;
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_POWERS_NAME', 'a.system_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_POWER_SYSTEM_NAME_LABEL', 'a.system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_POWER_NAMESPACE_LABEL', 'a.namespace', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_POWERS_DETAILS', 'a.type', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_POWER_TYPE_LABEL', 'a.type', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_POWER_POWER_VERSION_LABEL', 'a.power_version', $this->listDirn, $this->listOrder); ?>

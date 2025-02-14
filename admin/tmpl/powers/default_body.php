@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -24,8 +25,8 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 	<?php
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
-			get(\Joomla\CMS\User\UserFactoryInterface::class)->
-				loadUserById($item->checked_out);
+			get(UserFactoryInterface::class)->
+				loadUserById($item->checked_out ?? 0);
 		$canDo = ComponentbuilderHelper::getActions('power',$item,'powers');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -78,7 +79,9 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $item->namespace; ?>
+			<div><code class="namespace-code-container">
+			<?php echo $item->namespace; ?></code>
+			</div>
 		</td>
 		<td class="hidden-phone">
 			<div><?php echo Text::_('COM_COMPONENTBUILDER_TYPE'); ?>: 

@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder;
 
 
-use VDM\Joomla\Interfaces\Tableinterface;
+use VDM\Joomla\Interfaces\TableInterface;
 use VDM\Joomla\Abstraction\BaseTable;
 
 
@@ -21,7 +21,7 @@ use VDM\Joomla\Abstraction\BaseTable;
  * 
  * @since 3.2.0
  */
-final class Table extends BaseTable implements Tableinterface
+final class Table extends BaseTable implements TableInterface
 {
 	/**
 	 * All areas/views/tables with their field details
@@ -42,10 +42,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'name_code' => [
 				'name' => 'name_code',
@@ -58,10 +59,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'short_description' => [
 				'name' => 'short_description',
@@ -74,10 +76,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'companyname' => [
 				'name' => 'companyname',
@@ -90,10 +93,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'created' => [
 				'name' => 'created',
@@ -105,11 +109,12 @@ final class Table extends BaseTable implements Tableinterface
 				'tab_name' => 'publishing',
 				'db' => [
 					'type' => 'DATETIME',
-					'default' => '0000-00-00 00:00:00',
-					'null_switch' => 'NOT NULL',
+					'default' => 'CURRENT_TIMESTAMP',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'crowdin_project_identifier' => [
 				'name' => 'crowdin_project_identifier',
@@ -122,10 +127,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'backup_folder_path' => [
 				'name' => 'backup_folder_path',
@@ -138,10 +144,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'sql_uninstall' => [
 				'name' => 'sql_uninstall',
@@ -154,10 +161,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postflight_update' => [
 				'name' => 'php_postflight_update',
@@ -170,10 +178,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'css_site' => [
 				'name' => 'css_site',
@@ -186,10 +195,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'mvc_versiondate' => [
 				'name' => 'mvc_versiondate',
@@ -206,6 +216,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'remove_line_breaks' => [
 				'name' => 'remove_line_breaks',
@@ -222,6 +233,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_placeholders' => [
 				'name' => 'add_placeholders',
@@ -238,6 +250,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_helper_site' => [
 				'name' => 'php_helper_site',
@@ -250,10 +263,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'javascript' => [
 				'name' => 'javascript',
@@ -266,10 +280,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -286,6 +301,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'debug_linenr' => [
 				'name' => 'debug_linenr',
@@ -302,6 +318,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'author' => [
 				'name' => 'author',
@@ -314,10 +331,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_method_install' => [
 				'name' => 'php_method_install',
@@ -330,10 +348,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'email' => [
 				'name' => 'email',
@@ -346,10 +365,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'website' => [
 				'name' => 'website',
@@ -366,6 +386,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_sales_server' => [
 				'name' => 'add_sales_server',
@@ -382,6 +403,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'license' => [
 				'name' => 'license',
@@ -394,10 +416,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_jcb_powers_path' => [
 				'name' => 'add_jcb_powers_path',
@@ -414,6 +437,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'bom' => [
 				'name' => 'bom',
@@ -430,6 +454,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'image' => [
 				'name' => 'image',
@@ -446,6 +471,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_admin_event' => [
 				'name' => 'php_admin_event',
@@ -458,10 +484,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'copyright' => [
 				'name' => 'copyright',
@@ -474,10 +501,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_site_event' => [
 				'name' => 'php_site_event',
@@ -490,10 +518,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'css_admin' => [
 				'name' => 'css_admin',
@@ -506,10 +535,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_update' => [
 				'name' => 'php_preflight_update',
@@ -522,10 +552,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'component_version' => [
 				'name' => 'component_version',
@@ -538,10 +569,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_install' => [
 				'name' => 'php_preflight_install',
@@ -554,10 +586,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'preferred_joomla_version' => [
 				'name' => 'preferred_joomla_version',
@@ -574,6 +607,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postflight_install' => [
 				'name' => 'php_postflight_install',
@@ -586,10 +620,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_powers' => [
 				'name' => 'add_powers',
@@ -606,6 +641,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_method_uninstall' => [
 				'name' => 'php_method_uninstall',
@@ -618,10 +654,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'sql' => [
 				'name' => 'sql',
@@ -634,10 +671,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addreadme' => [
 				'name' => 'addreadme',
@@ -654,6 +692,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'update_server_url' => [
 				'name' => 'update_server_url',
@@ -670,6 +709,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_backup_folder_path' => [
 				'name' => 'add_backup_folder_path',
@@ -686,6 +726,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'translation_tool' => [
 				'name' => 'translation_tool',
@@ -702,6 +743,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'crowdin_username' => [
 				'name' => 'crowdin_username',
@@ -714,10 +756,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'buildcompsql' => [
 				'name' => 'buildcompsql',
@@ -730,10 +773,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_namespace_prefix' => [
 				'name' => 'add_namespace_prefix',
@@ -750,6 +794,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'namespace_prefix' => [
 				'name' => 'namespace_prefix',
@@ -762,10 +807,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_helper_site' => [
 				'name' => 'add_php_helper_site',
@@ -782,6 +828,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_site_event' => [
 				'name' => 'add_site_event',
@@ -798,6 +845,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_menu_prefix' => [
 				'name' => 'add_menu_prefix',
@@ -814,6 +862,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_javascript' => [
 				'name' => 'add_javascript',
@@ -830,6 +879,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'menu_prefix' => [
 				'name' => 'menu_prefix',
@@ -842,10 +892,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(100)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_css_admin' => [
 				'name' => 'add_css_admin',
@@ -862,6 +913,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_css_site' => [
 				'name' => 'add_css_site',
@@ -878,6 +930,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'dashboard_type' => [
 				'name' => 'dashboard_type',
@@ -894,6 +947,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'toignore' => [
 				'name' => 'toignore',
@@ -906,10 +960,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'dashboard' => [
 				'name' => 'dashboard',
@@ -925,6 +980,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_custom_admin_view',
+					'component' => 'com_componentbuilder',
+					'entity' => 'custom_admin_view',
+					'value' => 'system_name',
+					'key' => '',
 				],
 			],
 			'add_php_preflight_install' => [
@@ -942,6 +1005,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_update' => [
 				'name' => 'add_php_preflight_update',
@@ -958,6 +1022,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'export_key' => [
 				'name' => 'export_key',
@@ -970,10 +1035,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_postflight_install' => [
 				'name' => 'add_php_postflight_install',
@@ -990,6 +1056,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'joomla_source_link' => [
 				'name' => 'joomla_source_link',
@@ -1006,6 +1073,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_postflight_update' => [
 				'name' => 'add_php_postflight_update',
@@ -1022,6 +1090,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'export_buy_link' => [
 				'name' => 'export_buy_link',
@@ -1038,6 +1107,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_method_uninstall' => [
 				'name' => 'add_php_method_uninstall',
@@ -1054,6 +1124,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_method_install' => [
 				'name' => 'add_php_method_install',
@@ -1070,6 +1141,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_sql' => [
 				'name' => 'add_sql',
@@ -1086,6 +1158,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'addcontributors' => [
 				'name' => 'addcontributors',
@@ -1098,10 +1171,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_sql_uninstall' => [
 				'name' => 'add_sql_uninstall',
@@ -1118,6 +1192,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'emptycontributors' => [
 				'name' => 'emptycontributors',
@@ -1134,6 +1209,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'assets_table_fix' => [
 				'name' => 'assets_table_fix',
@@ -1150,6 +1226,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'number' => [
 				'name' => 'number',
@@ -1166,6 +1243,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'readme' => [
 				'name' => 'readme',
@@ -1178,10 +1256,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_update_server' => [
 				'name' => 'add_update_server',
@@ -1198,6 +1277,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'update_server_target' => [
 				'name' => 'update_server_target',
@@ -1214,6 +1294,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'update_server' => [
 				'name' => 'update_server',
@@ -1229,6 +1310,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_server',
+					'component' => 'com_componentbuilder',
+					'entity' => 'server',
+					'value' => 'name',
+					'key' => 'id',
 				],
 			],
 			'sales_server' => [
@@ -1246,6 +1335,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_server',
+					'component' => 'com_componentbuilder',
+					'entity' => 'server',
+					'value' => 'name',
+					'key' => 'id',
+				],
 			],
 			'creatuserhelper' => [
 				'name' => 'creatuserhelper',
@@ -1262,6 +1359,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_git_folder_path' => [
 				'name' => 'add_git_folder_path',
@@ -1274,10 +1372,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TINYINT(1)',
 					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'adduikit' => [
 				'name' => 'adduikit',
@@ -1294,6 +1393,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'git_folder_path' => [
 				'name' => 'git_folder_path',
@@ -1306,10 +1406,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfootable' => [
 				'name' => 'addfootable',
@@ -1326,6 +1427,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'jcb_powers_path' => [
 				'name' => 'jcb_powers_path',
@@ -1338,10 +1440,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_email_helper' => [
 				'name' => 'add_email_helper',
@@ -1358,6 +1461,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_helper_both' => [
 				'name' => 'add_php_helper_both',
@@ -1374,6 +1478,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'crowdin_project_api_key' => [
 				'name' => 'crowdin_project_api_key',
@@ -1386,10 +1491,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_helper_both' => [
 				'name' => 'php_helper_both',
@@ -1402,10 +1508,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'crowdin_account_api_key' => [
 				'name' => 'crowdin_account_api_key',
@@ -1418,10 +1525,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_helper_admin' => [
 				'name' => 'add_php_helper_admin',
@@ -1438,6 +1546,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'buildcomp' => [
 				'name' => 'buildcomp',
@@ -1454,6 +1563,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_helper_admin' => [
 				'name' => 'php_helper_admin',
@@ -1466,10 +1576,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -1482,10 +1593,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_admin_event' => [
 				'name' => 'add_admin_event',
@@ -1502,6 +1614,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'modified' => [
 				'name' => 'modified',
@@ -1513,11 +1626,12 @@ final class Table extends BaseTable implements Tableinterface
 				'tab_name' => 'publishing',
 				'db' => [
 					'type' => 'DATETIME',
-					'default' => '0000-00-00 00:00:00',
-					'null_switch' => 'NOT NULL',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'name' => [
 				'name' => 'name',
@@ -1530,10 +1644,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -1595,10 +1710,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'target' => [
 				'name' => 'target',
@@ -1615,6 +1731,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -1631,6 +1748,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_method_uninstall' => [
 				'name' => 'add_php_method_uninstall',
@@ -1647,6 +1765,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_postflight_update' => [
 				'name' => 'add_php_postflight_update',
@@ -1663,6 +1782,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_postflight_install' => [
 				'name' => 'add_php_postflight_install',
@@ -1679,6 +1799,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_uninstall' => [
 				'name' => 'add_php_preflight_uninstall',
@@ -1695,6 +1816,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'addreadme' => [
 				'name' => 'addreadme',
@@ -1711,6 +1833,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'default' => [
 				'name' => 'default',
@@ -1723,10 +1846,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'snippet' => [
 				'name' => 'snippet',
@@ -1737,11 +1861,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'HTML',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_snippet',
+					'component' => 'com_componentbuilder',
+					'entity' => 'snippet',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_sql' => [
@@ -1759,6 +1891,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'update_server_target' => [
 				'name' => 'update_server_target',
@@ -1775,6 +1908,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_sql_uninstall' => [
 				'name' => 'add_sql_uninstall',
@@ -1791,6 +1925,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'update_server' => [
 				'name' => 'update_server',
@@ -1806,6 +1941,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_server',
+					'component' => 'com_componentbuilder',
+					'entity' => 'server',
+					'value' => 'name',
+					'key' => 'id',
 				],
 			],
 			'add_update_server' => [
@@ -1823,6 +1966,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'libraries' => [
 				'name' => 'libraries',
@@ -1835,9 +1979,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'module_version' => [
@@ -1851,10 +2003,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'sales_server' => [
 				'name' => 'sales_server',
@@ -1871,6 +2024,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_server',
+					'component' => 'com_componentbuilder',
+					'entity' => 'server',
+					'value' => 'name',
+					'key' => 'id',
+				],
 			],
 			'custom_get' => [
 				'name' => 'custom_get',
@@ -1883,9 +2044,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'php_preflight_update' => [
@@ -1899,10 +2068,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_uninstall' => [
 				'name' => 'php_preflight_uninstall',
@@ -1915,10 +2085,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'mod_code' => [
 				'name' => 'mod_code',
@@ -1931,10 +2102,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postflight_install' => [
 				'name' => 'php_postflight_install',
@@ -1947,10 +2119,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_class_helper' => [
 				'name' => 'add_class_helper',
@@ -1967,6 +2140,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postflight_update' => [
 				'name' => 'php_postflight_update',
@@ -1979,10 +2153,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_class_helper_header' => [
 				'name' => 'add_class_helper_header',
@@ -1999,6 +2174,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_method_uninstall' => [
 				'name' => 'php_method_uninstall',
@@ -2011,10 +2187,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'class_helper_header' => [
 				'name' => 'class_helper_header',
@@ -2027,10 +2204,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'sql' => [
 				'name' => 'sql',
@@ -2043,10 +2221,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'class_helper_code' => [
 				'name' => 'class_helper_code',
@@ -2059,10 +2238,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'sql_uninstall' => [
 				'name' => 'sql_uninstall',
@@ -2075,10 +2255,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'fields' => [
 				'name' => 'fields',
@@ -2095,6 +2276,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'readme' => [
 				'name' => 'readme',
@@ -2107,10 +2289,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_script_construct' => [
 				'name' => 'add_php_script_construct',
@@ -2127,6 +2310,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'update_server_url' => [
 				'name' => 'update_server_url',
@@ -2143,6 +2327,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_script_construct' => [
 				'name' => 'php_script_construct',
@@ -2155,10 +2340,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_install' => [
 				'name' => 'add_php_preflight_install',
@@ -2175,6 +2361,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_install' => [
 				'name' => 'php_preflight_install',
@@ -2187,10 +2374,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_sales_server' => [
 				'name' => 'add_sales_server',
@@ -2207,6 +2395,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_update' => [
 				'name' => 'add_php_preflight_update',
@@ -2223,6 +2412,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -2235,10 +2425,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'name' => [
 				'name' => 'name',
@@ -2251,10 +2442,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -2283,10 +2475,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'class_extends' => [
 				'name' => 'class_extends',
@@ -2297,11 +2490,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Code',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_class_extends',
+					'component' => 'com_componentbuilder',
+					'entity' => 'class_extends',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'joomla_plugin_group' => [
@@ -2313,11 +2514,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Code',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_plugin_group',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_plugin_group',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_sql' => [
@@ -2335,6 +2544,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_method_uninstall' => [
 				'name' => 'add_php_method_uninstall',
@@ -2351,6 +2561,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_postflight_update' => [
 				'name' => 'add_php_postflight_update',
@@ -2367,6 +2578,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_postflight_install' => [
 				'name' => 'add_php_postflight_install',
@@ -2383,6 +2595,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'sales_server' => [
 				'name' => 'sales_server',
@@ -2398,6 +2611,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_server',
+					'component' => 'com_componentbuilder',
+					'entity' => 'server',
+					'value' => 'name',
+					'key' => 'id',
 				],
 			],
 			'add_update_server' => [
@@ -2415,6 +2636,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'method_selection' => [
 				'name' => 'method_selection',
@@ -2431,6 +2653,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'property_selection' => [
 				'name' => 'property_selection',
@@ -2447,6 +2670,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_head' => [
 				'name' => 'add_head',
@@ -2463,6 +2687,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_sql_uninstall' => [
 				'name' => 'add_sql_uninstall',
@@ -2479,6 +2704,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'addreadme' => [
 				'name' => 'addreadme',
@@ -2495,6 +2721,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'head' => [
 				'name' => 'head',
@@ -2511,6 +2738,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'update_server_target' => [
 				'name' => 'update_server_target',
@@ -2527,6 +2755,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'main_class_code' => [
 				'name' => 'main_class_code',
@@ -2539,10 +2768,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'update_server' => [
 				'name' => 'update_server',
@@ -2558,6 +2788,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_server',
+					'component' => 'com_componentbuilder',
+					'entity' => 'server',
+					'value' => 'name',
+					'key' => 'id',
 				],
 			],
 			'description' => [
@@ -2575,6 +2813,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postflight_install' => [
 				'name' => 'php_postflight_install',
@@ -2587,10 +2826,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'plugin_version' => [
 				'name' => 'plugin_version',
@@ -2603,10 +2843,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postflight_update' => [
 				'name' => 'php_postflight_update',
@@ -2619,10 +2860,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'fields' => [
 				'name' => 'fields',
@@ -2639,6 +2881,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_method_uninstall' => [
 				'name' => 'php_method_uninstall',
@@ -2651,10 +2894,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_script_construct' => [
 				'name' => 'add_php_script_construct',
@@ -2671,6 +2915,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'sql' => [
 				'name' => 'sql',
@@ -2683,10 +2928,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_script_construct' => [
 				'name' => 'php_script_construct',
@@ -2699,10 +2945,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'sql_uninstall' => [
 				'name' => 'sql_uninstall',
@@ -2715,10 +2962,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_install' => [
 				'name' => 'add_php_preflight_install',
@@ -2735,6 +2983,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'readme' => [
 				'name' => 'readme',
@@ -2747,10 +2996,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_install' => [
 				'name' => 'php_preflight_install',
@@ -2763,10 +3013,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'update_server_url' => [
 				'name' => 'update_server_url',
@@ -2783,6 +3034,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_update' => [
 				'name' => 'add_php_preflight_update',
@@ -2799,6 +3051,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_update' => [
 				'name' => 'php_preflight_update',
@@ -2811,10 +3064,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_preflight_uninstall' => [
 				'name' => 'add_php_preflight_uninstall',
@@ -2831,6 +3085,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_sales_server' => [
 				'name' => 'add_sales_server',
@@ -2847,6 +3102,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_preflight_uninstall' => [
 				'name' => 'php_preflight_uninstall',
@@ -2859,10 +3115,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -2875,10 +3132,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'name' => [
 				'name' => 'name',
@@ -2891,10 +3149,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -2923,10 +3182,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'settings' => [
 				'name' => 'settings',
@@ -2943,6 +3203,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -2955,10 +3216,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -2975,6 +3237,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -3003,10 +3266,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'namespace' => [
 				'name' => 'namespace',
@@ -3019,10 +3283,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'type' => [
 				'name' => 'type',
@@ -3039,6 +3304,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'power_version' => [
 				'name' => 'power_version',
@@ -3051,10 +3317,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'load_selection' => [
 				'name' => 'load_selection',
@@ -3071,6 +3338,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -3087,6 +3355,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'composer' => [
 				'name' => 'composer',
@@ -3103,6 +3372,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'licensing_template' => [
 				'name' => 'licensing_template',
@@ -3119,6 +3389,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'approved' => [
 				'name' => 'approved',
@@ -3135,6 +3406,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'extendsinterfaces_custom' => [
 				'name' => 'extendsinterfaces_custom',
@@ -3151,6 +3423,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_head' => [
 				'name' => 'add_head',
@@ -3167,6 +3440,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'extends' => [
 				'name' => 'extends',
@@ -3182,6 +3456,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_power',
+					'component' => 'com_componentbuilder',
+					'entity' => 'power',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'extends_custom' => [
@@ -3199,6 +3481,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'implements_custom' => [
 				'name' => 'implements_custom',
@@ -3211,10 +3494,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(1024)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'implements' => [
 				'name' => 'implements',
@@ -3230,6 +3514,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_power',
+					'component' => 'com_componentbuilder',
+					'entity' => 'power',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'property_selection' => [
@@ -3247,6 +3539,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'extendsinterfaces' => [
 				'name' => 'extendsinterfaces',
@@ -3262,6 +3555,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_power',
+					'component' => 'com_componentbuilder',
+					'entity' => 'power',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'method_selection' => [
@@ -3279,6 +3580,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'approved_paths' => [
 				'name' => 'approved_paths',
@@ -3294,6 +3596,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 2,
+					'table' => NULL,
+					'component' => NULL,
+					'entity' => NULL,
+					'value' => NULL,
+					'key' => NULL,
 				],
 			],
 			'head' => [
@@ -3311,6 +3621,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'use_selection' => [
 				'name' => 'use_selection',
@@ -3327,6 +3638,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_licensing_template' => [
 				'name' => 'add_licensing_template',
@@ -3343,6 +3655,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'main_class_code' => [
 				'name' => 'main_class_code',
@@ -3355,10 +3668,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -3371,10 +3685,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'name' => [
 				'name' => 'name',
@@ -3387,10 +3702,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -3412,17 +3728,18 @@ final class Table extends BaseTable implements Tableinterface
 				'name' => 'system_name',
 				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_SYSTEM_NAME_LABEL',
 				'type' => 'text',
-				'title' => false,
+				'title' => true,
 				'list' => 'admin_views',
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'name_single' => [
 				'name' => 'name_single',
@@ -3435,10 +3752,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'short_description' => [
 				'name' => 'short_description',
@@ -3451,10 +3769,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_allowedit' => [
 				'name' => 'php_allowedit',
@@ -3467,10 +3786,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_postsavehook' => [
 				'name' => 'php_postsavehook',
@@ -3483,10 +3803,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_before_save' => [
 				'name' => 'php_before_save',
@@ -3499,10 +3820,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_getlistquery' => [
 				'name' => 'php_getlistquery',
@@ -3515,26 +3837,45 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
-			'php_import_ext' => [
-				'name' => 'php_import_ext',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_EXT_LABEL',
-				'type' => 'textarea',
+			'php_getitems' => [
+				'name' => 'php_getitems',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL',
+				'type' => 'editor',
 				'title' => false,
 				'list' => 'admin_views',
 				'store' => 'base64',
-				'tab_name' => 'Custom Import',
+				'tab_name' => 'PHP',
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
+			],
+			'name_list' => [
+				'name' => 'name_list',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'Details',
+				'db' => [
+					'type' => 'CHAR(64)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
 			],
 			'icon' => [
 				'name' => 'icon',
@@ -3551,6 +3892,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_after_publish' => [
 				'name' => 'php_after_publish',
@@ -3563,10 +3905,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_fadein' => [
 				'name' => 'add_fadein',
@@ -3583,6 +3926,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -3599,6 +3943,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'icon_category' => [
 				'name' => 'icon_category',
@@ -3615,6 +3960,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'icon_add' => [
 				'name' => 'icon_add',
@@ -3631,6 +3977,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_after_cancel' => [
 				'name' => 'php_after_cancel',
@@ -3643,10 +3990,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'mysql_table_charset' => [
 				'name' => 'mysql_table_charset',
@@ -3663,6 +4011,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_batchmove' => [
 				'name' => 'php_batchmove',
@@ -3675,10 +4024,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'type' => [
 				'name' => 'type',
@@ -3695,6 +4045,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_after_delete' => [
 				'name' => 'php_after_delete',
@@ -3707,10 +4058,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'source' => [
 				'name' => 'source',
@@ -3727,22 +4079,24 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
-			'php_import' => [
-				'name' => 'php_import',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_LABEL',
-				'type' => 'textarea',
+			'php_getitem' => [
+				'name' => 'php_getitem',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL',
+				'type' => 'editor',
 				'title' => false,
 				'list' => 'admin_views',
 				'store' => 'base64',
-				'tab_name' => 'Custom Import',
+				'tab_name' => 'PHP',
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addpermissions' => [
 				'name' => 'addpermissions',
@@ -3755,10 +4109,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_getitems_after_all' => [
 				'name' => 'php_getitems_after_all',
@@ -3771,10 +4126,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_getform' => [
 				'name' => 'php_getform',
@@ -3787,10 +4143,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addtabs' => [
 				'name' => 'addtabs',
@@ -3803,10 +4160,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_save' => [
 				'name' => 'php_save',
@@ -3819,10 +4177,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_allowadd' => [
 				'name' => 'php_allowadd',
@@ -3835,10 +4194,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_before_cancel' => [
 				'name' => 'php_before_cancel',
@@ -3851,10 +4211,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addlinked_views' => [
 				'name' => 'addlinked_views',
@@ -3867,10 +4228,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_batchcopy' => [
 				'name' => 'php_batchcopy',
@@ -3883,10 +4245,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_before_publish' => [
 				'name' => 'php_before_publish',
@@ -3899,10 +4262,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'alias_builder_type' => [
 				'name' => 'alias_builder_type',
@@ -3919,6 +4283,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_before_delete' => [
 				'name' => 'php_before_delete',
@@ -3931,10 +4296,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_document' => [
 				'name' => 'php_document',
@@ -3947,10 +4313,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'mysql_table_row_format' => [
 				'name' => 'mysql_table_row_format',
@@ -3967,6 +4334,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'alias_builder' => [
 				'name' => 'alias_builder',
@@ -3983,6 +4351,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_field',
+					'component' => 'com_componentbuilder',
+					'entity' => 'field',
+					'value' => 'name',
+					'key' => 'id',
+				],
 			],
 			'sql' => [
 				'name' => 'sql',
@@ -3995,746 +4371,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
-			],
-			'php_import_display' => [
-				'name' => 'php_import_display',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_DISPLAY_LABEL',
-				'type' => 'textarea',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Import',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_category_submenu' => [
-				'name' => 'add_category_submenu',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CATEGORY_SUBMENU_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'Fields',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '1',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'php_import_setdata' => [
-				'name' => 'php_import_setdata',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SETDATA_LABEL',
-				'type' => 'textarea',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Import',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'name_list' => [
-				'name' => 'name_list',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_LIST_LABEL',
-				'type' => 'text',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'Details',
-				'db' => [
-					'type' => 'CHAR(64)',
-					'default' => '',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_getlistquery' => [
-				'name' => 'add_php_getlistquery',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_css_view' => [
-				'name' => 'add_css_view',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEW_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'CSS',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_getform' => [
-				'name' => 'add_php_getform',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETFORM_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'css_view' => [
-				'name' => 'css_view',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'CSS',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_before_save' => [
-				'name' => 'add_php_before_save',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_SAVE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_css_views' => [
-				'name' => 'add_css_views',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEWS_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'CSS',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_save' => [
-				'name' => 'add_php_save',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'css_views' => [
-				'name' => 'css_views',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'CSS',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_postsavehook' => [
-				'name' => 'add_php_postsavehook',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_javascript_view_file' => [
-				'name' => 'add_javascript_view_file',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FILE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_allowadd' => [
-				'name' => 'add_php_allowadd',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWADD_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'javascript_view_file' => [
-				'name' => 'javascript_view_file',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_allowedit' => [
-				'name' => 'add_php_allowedit',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_javascript_view_footer' => [
-				'name' => 'add_javascript_view_footer',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FOOTER_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_before_cancel' => [
-				'name' => 'add_php_before_cancel',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_CANCEL_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'javascript_view_footer' => [
-				'name' => 'javascript_view_footer',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_after_cancel' => [
-				'name' => 'add_php_after_cancel',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_CANCEL_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_javascript_views_file' => [
-				'name' => 'add_javascript_views_file',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FILE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_batchcopy' => [
-				'name' => 'add_php_batchcopy',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'javascript_views_file' => [
-				'name' => 'javascript_views_file',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_batchmove' => [
-				'name' => 'add_php_batchmove',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_javascript_views_footer' => [
-				'name' => 'add_javascript_views_footer',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FOOTER_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_before_publish' => [
-				'name' => 'add_php_before_publish',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_PUBLISH_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'javascript_views_footer' => [
-				'name' => 'javascript_views_footer',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'JavaScript',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_after_publish' => [
-				'name' => 'add_php_after_publish',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_PUBLISH_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_custom_button' => [
-				'name' => 'add_custom_button',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'Custom Buttons',
-				'db' => [
-					'type' => 'INT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_before_delete' => [
-				'name' => 'add_php_before_delete',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'custom_button' => [
-				'name' => 'custom_button',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_LABEL',
-				'type' => 'subform',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'json',
-				'tab_name' => 'Custom Buttons',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_after_delete' => [
-				'name' => 'add_php_after_delete',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'php_controller' => [
-				'name' => 'php_controller',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Buttons',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_php_document' => [
-				'name' => 'add_php_document',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'php_model' => [
-				'name' => 'php_model',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Buttons',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'mysql_table_engine' => [
-				'name' => 'mysql_table_engine',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ENGINE_LABEL',
-				'type' => 'list',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'MySQL',
-				'db' => [
-					'type' => 'VARCHAR(64)',
-					'default' => '1',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'php_controller_list' => [
-				'name' => 'php_controller_list',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Buttons',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'mysql_table_collate' => [
-				'name' => 'mysql_table_collate',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_COLLATE_LABEL',
-				'type' => 'list',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'MySQL',
-				'db' => [
-					'type' => 'VARCHAR(64)',
-					'default' => '1',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'php_model_list' => [
-				'name' => 'php_model_list',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LIST_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Buttons',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_sql' => [
-				'name' => 'add_sql',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'MySQL',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'add_php_ajax' => [
-				'name' => 'add_php_ajax',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
-			],
-			'addtables' => [
-				'name' => 'addtables',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL',
-				'type' => 'subform',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'json',
-				'tab_name' => 'MySQL',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'php_ajaxmethod' => [
-				'name' => 'php_ajaxmethod',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'ajax_input' => [
-				'name' => 'ajax_input',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_LABEL',
-				'type' => 'subform',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'json',
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'TEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'add_custom_import' => [
-				'name' => 'add_custom_import',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_IMPORT_LABEL',
-				'type' => 'radio',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'Custom Import',
-				'db' => [
-					'type' => 'TINYINT(1)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
+				'link' => NULL,
 			],
 			'add_php_getitem' => [
 				'name' => 'add_php_getitem',
@@ -4751,54 +4392,24 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
-			'html_import_view' => [
-				'name' => 'html_import_view',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_HTML_IMPORT_VIEW_LABEL',
-				'type' => 'textarea',
+			'add_category_submenu' => [
+				'name' => 'add_category_submenu',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CATEGORY_SUBMENU_LABEL',
+				'type' => 'radio',
 				'title' => false,
 				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Import',
+				'store' => NULL,
+				'tab_name' => 'Fields',
 				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
+					'type' => 'TINYINT(1)',
+					'default' => '1',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
 				],
-			],
-			'php_getitem' => [
-				'name' => 'php_getitem',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEM_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'php_import_headers' => [
-				'name' => 'php_import_headers',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_HEADERS_LABEL',
-				'type' => 'textarea',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Import',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
+				'link' => NULL,
 			],
 			'add_php_getitems' => [
 				'name' => 'add_php_getitems',
@@ -4815,54 +4426,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
-			],
-			'php_import_save' => [
-				'name' => 'php_import_save',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_IMPORT_SAVE_LABEL',
-				'type' => 'textarea',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'Custom Import',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'php_getitems' => [
-				'name' => 'php_getitems',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_GETITEMS_LABEL',
-				'type' => 'editor',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => 'base64',
-				'tab_name' => 'PHP',
-				'db' => [
-					'type' => 'MEDIUMTEXT',
-					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
-			],
-			'guid' => [
-				'name' => 'guid',
-				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_GUID_LABEL',
-				'type' => 'text',
-				'title' => false,
-				'list' => 'admin_views',
-				'store' => NULL,
-				'tab_name' => 'publishing',
-				'db' => [
-					'type' => 'VARCHAR(36)',
-					'default' => '',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => true,
-				],
+				'link' => NULL,
 			],
 			'add_php_getitems_after_all' => [
 				'name' => 'add_php_getitems_after_all',
@@ -4879,6 +4443,721 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
+			],
+			'add_php_getlistquery' => [
+				'name' => 'add_php_getlistquery',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETLISTQUERY_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_css_view' => [
+				'name' => 'add_css_view',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEW_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'CSS',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_getform' => [
+				'name' => 'add_php_getform',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_GETFORM_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'css_view' => [
+				'name' => 'css_view',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEW_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'CSS',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_before_save' => [
+				'name' => 'add_php_before_save',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_SAVE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_css_views' => [
+				'name' => 'add_css_views',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CSS_VIEWS_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'CSS',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_save' => [
+				'name' => 'add_php_save',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_SAVE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'css_views' => [
+				'name' => 'css_views',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_CSS_VIEWS_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'CSS',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_postsavehook' => [
+				'name' => 'add_php_postsavehook',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_POSTSAVEHOOK_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_javascript_view_file' => [
+				'name' => 'add_javascript_view_file',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FILE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_allowadd' => [
+				'name' => 'add_php_allowadd',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWADD_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'javascript_view_file' => [
+				'name' => 'javascript_view_file',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FILE_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_allowedit' => [
+				'name' => 'add_php_allowedit',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_ALLOWEDIT_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_javascript_view_footer' => [
+				'name' => 'add_javascript_view_footer',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEW_FOOTER_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_before_cancel' => [
+				'name' => 'add_php_before_cancel',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_CANCEL_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'javascript_view_footer' => [
+				'name' => 'javascript_view_footer',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEW_FOOTER_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_after_cancel' => [
+				'name' => 'add_php_after_cancel',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_CANCEL_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_javascript_views_file' => [
+				'name' => 'add_javascript_views_file',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FILE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_batchcopy' => [
+				'name' => 'add_php_batchcopy',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHCOPY_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'javascript_views_file' => [
+				'name' => 'javascript_views_file',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FILE_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_batchmove' => [
+				'name' => 'add_php_batchmove',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BATCHMOVE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_javascript_views_footer' => [
+				'name' => 'add_javascript_views_footer',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_JAVASCRIPT_VIEWS_FOOTER_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_before_publish' => [
+				'name' => 'add_php_before_publish',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_PUBLISH_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'javascript_views_footer' => [
+				'name' => 'javascript_views_footer',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_JAVASCRIPT_VIEWS_FOOTER_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'JavaScript',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_after_publish' => [
+				'name' => 'add_php_after_publish',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_PUBLISH_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_custom_button' => [
+				'name' => 'add_custom_button',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_CUSTOM_BUTTON_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'Custom Buttons',
+				'db' => [
+					'type' => 'INT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_before_delete' => [
+				'name' => 'add_php_before_delete',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_BEFORE_DELETE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'custom_button' => [
+				'name' => 'custom_button',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTON_LABEL',
+				'type' => 'subform',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'json',
+				'tab_name' => 'Custom Buttons',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_after_delete' => [
+				'name' => 'add_php_after_delete',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AFTER_DELETE_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'php_controller' => [
+				'name' => 'php_controller',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'Custom Buttons',
+				'db' => [
+					'type' => 'MEDIUMTEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_php_document' => [
+				'name' => 'add_php_document',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_DOCUMENT_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'php_model' => [
+				'name' => 'php_model',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'Custom Buttons',
+				'db' => [
+					'type' => 'MEDIUMTEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'mysql_table_engine' => [
+				'name' => 'mysql_table_engine',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_ENGINE_LABEL',
+				'type' => 'list',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'MySQL',
+				'db' => [
+					'type' => 'VARCHAR(64)',
+					'default' => '1',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'php_controller_list' => [
+				'name' => 'php_controller_list',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_CONTROLLER_LIST_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'Custom Buttons',
+				'db' => [
+					'type' => 'MEDIUMTEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'mysql_table_collate' => [
+				'name' => 'mysql_table_collate',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_MYSQL_TABLE_COLLATE_LABEL',
+				'type' => 'list',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'MySQL',
+				'db' => [
+					'type' => 'VARCHAR(64)',
+					'default' => '1',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'php_model_list' => [
+				'name' => 'php_model_list',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_MODEL_LIST_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'Custom Buttons',
+				'db' => [
+					'type' => 'MEDIUMTEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'add_sql' => [
+				'name' => 'add_sql',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_SQL_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'MySQL',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'add_php_ajax' => [
+				'name' => 'add_php_ajax',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADD_PHP_AJAX_LABEL',
+				'type' => 'radio',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TINYINT(1)',
+					'default' => '0',
+					'null_switch' => 'NOT NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'addtables' => [
+				'name' => 'addtables',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_ADDTABLES_LABEL',
+				'type' => 'subform',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'json',
+				'tab_name' => 'MySQL',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'php_ajaxmethod' => [
+				'name' => 'php_ajaxmethod',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_PHP_AJAXMETHOD_LABEL',
+				'type' => 'editor',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'base64',
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'MEDIUMTEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'guid' => [
+				'name' => 'guid',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_GUID_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => NULL,
+				'tab_name' => 'publishing',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
+			],
+			'ajax_input' => [
+				'name' => 'ajax_input',
+				'label' => 'COM_COMPONENTBUILDER_ADMIN_VIEW_AJAX_INPUT_LABEL',
+				'type' => 'subform',
+				'title' => false,
+				'list' => 'admin_views',
+				'store' => 'json',
+				'tab_name' => 'PHP',
+				'db' => [
+					'type' => 'TEXT',
+					'default' => 'EMPTY',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => false,
+				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -4907,10 +5186,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'name' => [
 				'name' => 'name',
@@ -4923,10 +5203,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -4939,10 +5220,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'main_get' => [
 				'name' => 'main_get',
@@ -4953,11 +5235,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_php_jview_display' => [
@@ -4975,6 +5265,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'css_document' => [
 				'name' => 'css_document',
@@ -4987,10 +5278,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'css' => [
 				'name' => 'css',
@@ -5003,10 +5295,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'js_document' => [
 				'name' => 'js_document',
@@ -5019,10 +5312,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'javascript_file' => [
 				'name' => 'javascript_file',
@@ -5035,10 +5329,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'codename' => [
 				'name' => 'codename',
@@ -5051,10 +5346,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'default' => [
 				'name' => 'default',
@@ -5067,10 +5363,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'snippet' => [
 				'name' => 'snippet',
@@ -5081,11 +5378,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_snippet',
+					'component' => 'com_componentbuilder',
+					'entity' => 'snippet',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'icon' => [
@@ -5103,6 +5408,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_jview' => [
 				'name' => 'add_php_jview',
@@ -5119,6 +5425,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'context' => [
 				'name' => 'context',
@@ -5131,10 +5438,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_js_document' => [
 				'name' => 'add_js_document',
@@ -5151,6 +5459,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'custom_get' => [
 				'name' => 'custom_get',
@@ -5163,9 +5472,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_javascript_file' => [
@@ -5183,6 +5500,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_ajaxmethod' => [
 				'name' => 'php_ajaxmethod',
@@ -5195,10 +5513,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_css_document' => [
 				'name' => 'add_css_document',
@@ -5215,6 +5534,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_document' => [
 				'name' => 'add_php_document',
@@ -5231,6 +5551,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_css' => [
 				'name' => 'add_css',
@@ -5247,6 +5568,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_view' => [
 				'name' => 'add_php_view',
@@ -5263,6 +5585,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_ajax' => [
 				'name' => 'add_php_ajax',
@@ -5279,6 +5602,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'libraries' => [
 				'name' => 'libraries',
@@ -5291,9 +5615,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'ajax_input' => [
@@ -5307,10 +5639,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'dynamic_get' => [
 				'name' => 'dynamic_get',
@@ -5321,11 +5654,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'php_document' => [
@@ -5339,10 +5680,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_view' => [
 				'name' => 'php_view',
@@ -5355,10 +5697,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_custom_button' => [
 				'name' => 'add_custom_button',
@@ -5375,6 +5718,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_jview_display' => [
 				'name' => 'php_jview_display',
@@ -5387,10 +5731,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'custom_button' => [
 				'name' => 'custom_button',
@@ -5403,10 +5748,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_jview' => [
 				'name' => 'php_jview',
@@ -5419,10 +5765,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_controller' => [
 				'name' => 'php_controller',
@@ -5435,10 +5782,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -5451,10 +5799,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_model' => [
 				'name' => 'php_model',
@@ -5467,10 +5816,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -5499,10 +5849,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'name' => [
 				'name' => 'name',
@@ -5515,10 +5866,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -5531,10 +5883,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'main_get' => [
 				'name' => 'main_get',
@@ -5545,11 +5898,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_php_jview_display' => [
@@ -5567,6 +5928,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_document' => [
 				'name' => 'add_php_document',
@@ -5583,6 +5945,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_view' => [
 				'name' => 'add_php_view',
@@ -5599,6 +5962,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'js_document' => [
 				'name' => 'js_document',
@@ -5611,10 +5975,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'codename' => [
 				'name' => 'codename',
@@ -5627,10 +5992,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'javascript_file' => [
 				'name' => 'javascript_file',
@@ -5643,10 +6009,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'context' => [
 				'name' => 'context',
@@ -5659,10 +6026,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'default' => [
 				'name' => 'default',
@@ -5675,10 +6043,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'snippet' => [
 				'name' => 'snippet',
@@ -5689,11 +6058,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_snippet',
+					'component' => 'com_componentbuilder',
+					'entity' => 'snippet',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_php_jview' => [
@@ -5711,6 +6088,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'custom_get' => [
 				'name' => 'custom_get',
@@ -5723,9 +6101,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'css_document' => [
@@ -5739,10 +6125,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_javascript_file' => [
 				'name' => 'add_javascript_file',
@@ -5759,6 +6146,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'css' => [
 				'name' => 'css',
@@ -5771,10 +6159,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_js_document' => [
 				'name' => 'add_js_document',
@@ -5791,6 +6180,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_ajaxmethod' => [
 				'name' => 'php_ajaxmethod',
@@ -5803,10 +6193,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_css_document' => [
 				'name' => 'add_css_document',
@@ -5823,6 +6214,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'libraries' => [
 				'name' => 'libraries',
@@ -5835,9 +6227,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_css' => [
@@ -5855,6 +6255,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'dynamic_get' => [
 				'name' => 'dynamic_get',
@@ -5865,11 +6266,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'add_php_ajax' => [
@@ -5887,6 +6296,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'ajax_input' => [
 				'name' => 'ajax_input',
@@ -5899,10 +6309,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_custom_button' => [
 				'name' => 'add_custom_button',
@@ -5919,6 +6330,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_document' => [
 				'name' => 'php_document',
@@ -5931,10 +6343,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'button_position' => [
 				'name' => 'button_position',
@@ -5951,6 +6364,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_view' => [
 				'name' => 'php_view',
@@ -5963,10 +6377,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_jview_display' => [
 				'name' => 'php_jview_display',
@@ -5979,10 +6394,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'custom_button' => [
 				'name' => 'custom_button',
@@ -5995,10 +6411,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_jview' => [
 				'name' => 'php_jview',
@@ -6011,10 +6428,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_controller' => [
 				'name' => 'php_controller',
@@ -6027,10 +6445,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -6043,10 +6462,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_model' => [
 				'name' => 'php_model',
@@ -6059,10 +6479,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -6091,10 +6512,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -6107,10 +6529,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'dynamic_get' => [
 				'name' => 'dynamic_get',
@@ -6121,12 +6544,37 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
+				],
+			],
+			'guid' => [
+				'name' => 'guid',
+				'label' => 'COM_COMPONENTBUILDER_TEMPLATE_GUID_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'templates',
+				'store' => NULL,
+				'tab_name' => 'publishing',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
 			],
 			'php_view' => [
 				'name' => 'php_view',
@@ -6139,10 +6587,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_view' => [
 				'name' => 'add_php_view',
@@ -6159,6 +6608,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'template' => [
 				'name' => 'template',
@@ -6171,10 +6621,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'snippet' => [
 				'name' => 'snippet',
@@ -6185,11 +6636,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_snippet',
+					'component' => 'com_componentbuilder',
+					'entity' => 'snippet',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'libraries' => [
@@ -6203,9 +6662,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'alias' => [
@@ -6219,10 +6686,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -6251,10 +6719,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -6267,10 +6736,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'dynamic_get' => [
 				'name' => 'dynamic_get',
@@ -6281,11 +6751,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_dynamic_get',
+					'component' => 'com_componentbuilder',
+					'entity' => 'dynamic_get',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'snippet' => [
@@ -6297,12 +6775,37 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
-					'key' => false,
+					'key' => true,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_snippet',
+					'component' => 'com_componentbuilder',
+					'entity' => 'snippet',
+					'value' => 'name',
+					'key' => 'guid',
+				],
+			],
+			'guid' => [
+				'name' => 'guid',
+				'label' => 'COM_COMPONENTBUILDER_LAYOUT_GUID_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'layouts',
+				'store' => NULL,
+				'tab_name' => 'publishing',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
 			],
 			'php_view' => [
 				'name' => 'php_view',
@@ -6315,10 +6818,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_view' => [
 				'name' => 'add_php_view',
@@ -6335,6 +6839,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'layout' => [
 				'name' => 'layout',
@@ -6347,10 +6852,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'libraries' => [
 				'name' => 'libraries',
@@ -6363,9 +6869,17 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'alias' => [
@@ -6379,10 +6893,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -6411,10 +6926,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'main_source' => [
 				'name' => 'main_source',
@@ -6431,6 +6947,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'gettype' => [
 				'name' => 'gettype',
@@ -6447,6 +6964,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_calculation' => [
 				'name' => 'php_calculation',
@@ -6459,10 +6977,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_router_parse' => [
 				'name' => 'php_router_parse',
@@ -6475,10 +6994,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_after_getitems' => [
 				'name' => 'add_php_after_getitems',
@@ -6495,6 +7015,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_router_parse' => [
 				'name' => 'add_php_router_parse',
@@ -6511,6 +7032,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'view_selection' => [
 				'name' => 'view_selection',
@@ -6523,10 +7045,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_php_before_getitems' => [
 				'name' => 'add_php_before_getitems',
@@ -6543,6 +7066,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_before_getitem' => [
 				'name' => 'add_php_before_getitem',
@@ -6559,6 +7083,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_php_after_getitem' => [
 				'name' => 'add_php_after_getitem',
@@ -6575,6 +7100,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'db_table_main' => [
 				'name' => 'db_table_main',
@@ -6591,6 +7117,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 2,
+					'table' => '',
+					'component' => '',
+					'entity' => '',
+					'value' => '',
+					'key' => '',
+				],
 			],
 			'php_custom_get' => [
 				'name' => 'php_custom_get',
@@ -6603,10 +7137,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'plugin_events' => [
 				'name' => 'plugin_events',
@@ -6623,6 +7158,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'db_selection' => [
 				'name' => 'db_selection',
@@ -6635,10 +7171,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'view_table_main' => [
 				'name' => 'view_table_main',
@@ -6649,11 +7186,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Main',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_admin_view',
+					'component' => 'com_componentbuilder',
+					'entity' => 'admin_view',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'add_php_getlistquery' => [
@@ -6671,6 +7216,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'join_db_table' => [
 				'name' => 'join_db_table',
@@ -6683,10 +7229,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'select_all' => [
 				'name' => 'select_all',
@@ -6703,6 +7250,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_before_getitem' => [
 				'name' => 'php_before_getitem',
@@ -6715,10 +7263,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'getcustom' => [
 				'name' => 'getcustom',
@@ -6731,10 +7280,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_after_getitem' => [
 				'name' => 'php_after_getitem',
@@ -6747,10 +7297,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'pagination' => [
 				'name' => 'pagination',
@@ -6767,6 +7318,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'php_getlistquery' => [
 				'name' => 'php_getlistquery',
@@ -6779,10 +7331,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_before_getitems' => [
 				'name' => 'php_before_getitems',
@@ -6795,10 +7348,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'filter' => [
 				'name' => 'filter',
@@ -6811,10 +7365,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_after_getitems' => [
 				'name' => 'php_after_getitems',
@@ -6827,10 +7382,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'where' => [
 				'name' => 'where',
@@ -6843,10 +7399,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'order' => [
 				'name' => 'order',
@@ -6859,10 +7416,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addcalculation' => [
 				'name' => 'addcalculation',
@@ -6879,6 +7437,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'group' => [
 				'name' => 'group',
@@ -6895,6 +7454,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'global' => [
 				'name' => 'global',
@@ -6907,10 +7467,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -6923,10 +7484,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'join_view_table' => [
 				'name' => 'join_view_table',
@@ -6939,10 +7501,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -6960,21 +7523,22 @@ final class Table extends BaseTable implements Tableinterface
 			],
 		],
 		'custom_code' => [
-			'component' => [
-				'name' => 'component',
-				'label' => 'COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL',
-				'type' => 'joomlacomponent',
+			'system_name' => [
+				'name' => 'system_name',
+				'label' => 'COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL',
+				'type' => 'text',
 				'title' => true,
 				'list' => 'custom_codes',
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(255)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'path' => [
 				'name' => 'path',
@@ -6987,10 +7551,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'target' => [
 				'name' => 'target',
@@ -7007,6 +7572,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'type' => [
 				'name' => 'type',
@@ -7023,6 +7589,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'comment_type' => [
 				'name' => 'comment_type',
@@ -7039,6 +7606,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'joomla_version' => [
 				'name' => 'joomla_version',
@@ -7055,6 +7623,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'function_name' => [
 				'name' => 'function_name',
@@ -7067,26 +7636,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
-			],
-			'system_name' => [
-				'name' => 'system_name',
-				'label' => 'COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL',
-				'type' => 'text',
-				'title' => false,
-				'list' => 'custom_codes',
-				'store' => NULL,
-				'tab_name' => 'Details',
-				'db' => [
-					'type' => 'VARCHAR(255)',
-					'default' => '',
-					'null_switch' => 'NOT NULL',
-					'unique_key' => false,
-					'key' => false,
-				],
+				'link' => NULL,
 			],
 			'code' => [
 				'name' => 'code',
@@ -7099,10 +7653,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'hashendtarget' => [
 				'name' => 'hashendtarget',
@@ -7115,10 +7670,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'to_line' => [
 				'name' => 'to_line',
@@ -7131,10 +7687,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(100)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'from_line' => [
 				'name' => 'from_line',
@@ -7147,10 +7704,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(100)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'hashtarget' => [
 				'name' => 'hashtarget',
@@ -7163,9 +7721,34 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => NULL,
+			],
+			'component' => [
+				'name' => 'component',
+				'label' => 'COM_COMPONENTBUILDER_CUSTOM_CODE_COMPONENT_LABEL',
+				'type' => 'joomlacomponent',
+				'title' => false,
+				'list' => 'custom_codes',
+				'store' => NULL,
+				'tab_name' => 'Details',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'access' => [
@@ -7195,10 +7778,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'visibility' => [
 				'name' => 'visibility',
@@ -7215,6 +7799,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'extension_type' => [
 				'name' => 'extension_type',
@@ -7231,6 +7816,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -7243,10 +7829,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'comment' => [
 				'name' => 'comment',
@@ -7259,10 +7846,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'joomla_plugin_group' => [
 				'name' => 'joomla_plugin_group',
@@ -7273,11 +7861,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_plugin_group',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_plugin_group',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'default' => [
@@ -7291,10 +7887,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -7323,10 +7920,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'visibility' => [
 				'name' => 'visibility',
@@ -7343,6 +7941,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'extension_type' => [
 				'name' => 'extension_type',
@@ -7359,6 +7958,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -7371,10 +7971,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'code' => [
 				'name' => 'code',
@@ -7387,10 +7988,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'comment' => [
 				'name' => 'comment',
@@ -7403,10 +8005,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'joomla_plugin_group' => [
 				'name' => 'joomla_plugin_group',
@@ -7417,11 +8020,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_plugin_group',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_plugin_group',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'arguments' => [
@@ -7435,10 +8046,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -7467,10 +8079,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'value' => [
 				'name' => 'value',
@@ -7483,10 +8096,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -7515,10 +8129,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'target' => [
 				'name' => 'target',
@@ -7535,6 +8150,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'how' => [
 				'name' => 'how',
@@ -7550,6 +8166,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 2,
+					'table' => '',
+					'component' => '',
+					'entity' => '',
+					'value' => '',
+					'key' => '',
 				],
 			],
 			'type' => [
@@ -7567,6 +8191,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -7579,10 +8204,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'libraries' => [
 				'name' => 'libraries',
@@ -7599,6 +8225,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
+				],
 			],
 			'php_setdocument' => [
 				'name' => 'php_setdocument',
@@ -7611,10 +8245,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addconditions' => [
 				'name' => 'addconditions',
@@ -7631,6 +8266,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -7643,10 +8279,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -7675,10 +8312,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'url' => [
 				'name' => 'url',
@@ -7695,6 +8333,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'type' => [
 				'name' => 'type',
@@ -7705,11 +8344,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_snippet_type',
+					'component' => 'com_componentbuilder',
+					'entity' => 'snippet_type',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'heading' => [
@@ -7723,10 +8370,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'library' => [
 				'name' => 'library',
@@ -7737,11 +8385,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'guid' => [
@@ -7755,10 +8411,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'contributor_email' => [
 				'name' => 'contributor_email',
@@ -7771,10 +8428,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'contributor_name' => [
 				'name' => 'contributor_name',
@@ -7787,10 +8445,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'contributor_website' => [
 				'name' => 'contributor_website',
@@ -7803,10 +8462,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'contributor_company' => [
 				'name' => 'contributor_company',
@@ -7819,10 +8479,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'snippet' => [
 				'name' => 'snippet',
@@ -7835,10 +8496,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'usage' => [
 				'name' => 'usage',
@@ -7851,10 +8513,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -7871,6 +8534,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -7899,10 +8563,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'short_description' => [
 				'name' => 'short_description',
@@ -7915,10 +8580,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'inherit' => [
 				'name' => 'inherit',
@@ -7935,6 +8601,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_validation_rule',
+					'component' => 'com_componentbuilder',
+					'entity' => 'validation_rule',
+					'value' => 'name',
+					'key' => 'id',
+				],
 			],
 			'php' => [
 				'name' => 'php',
@@ -7947,10 +8621,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -7979,10 +8654,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'fieldtype' => [
 				'name' => 'fieldtype',
@@ -7993,11 +8669,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Set Properties',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_fieldtype',
+					'component' => 'com_componentbuilder',
+					'entity' => 'fieldtype',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'datatype' => [
@@ -8015,6 +8699,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'indexes' => [
 				'name' => 'indexes',
@@ -8031,6 +8716,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'null_switch' => [
 				'name' => 'null_switch',
@@ -8047,6 +8733,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'store' => [
 				'name' => 'store',
@@ -8063,6 +8750,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'catid' => [
 				'name' => 'catid',
@@ -8079,6 +8767,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'on_get_model_field' => [
 				'name' => 'on_get_model_field',
@@ -8091,10 +8780,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'on_save_model_field' => [
 				'name' => 'on_save_model_field',
@@ -8107,10 +8797,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'initiator_on_get_model' => [
 				'name' => 'initiator_on_get_model',
@@ -8123,10 +8814,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'xml' => [
 				'name' => 'xml',
@@ -8139,10 +8831,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'datalenght' => [
 				'name' => 'datalenght',
@@ -8159,6 +8852,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'javascript_view_footer' => [
 				'name' => 'javascript_view_footer',
@@ -8171,10 +8865,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'css_views' => [
 				'name' => 'css_views',
@@ -8187,10 +8882,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'css_view' => [
 				'name' => 'css_view',
@@ -8203,10 +8899,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'datadefault_other' => [
 				'name' => 'datadefault_other',
@@ -8219,10 +8916,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'datadefault' => [
 				'name' => 'datadefault',
@@ -8239,6 +8937,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'datalenght_other' => [
 				'name' => 'datalenght_other',
@@ -8251,10 +8950,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'javascript_views_footer' => [
 				'name' => 'javascript_views_footer',
@@ -8267,10 +8967,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'add_css_view' => [
 				'name' => 'add_css_view',
@@ -8287,6 +8988,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_css_views' => [
 				'name' => 'add_css_views',
@@ -8303,6 +9005,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_javascript_view_footer' => [
 				'name' => 'add_javascript_view_footer',
@@ -8319,6 +9022,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'add_javascript_views_footer' => [
 				'name' => 'add_javascript_views_footer',
@@ -8335,6 +9039,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'initiator_on_save_model' => [
 				'name' => 'initiator_on_save_model',
@@ -8347,10 +9052,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -8363,10 +9069,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -8395,10 +9102,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'store' => [
 				'name' => 'store',
@@ -8415,6 +9123,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'null_switch' => [
 				'name' => 'null_switch',
@@ -8431,6 +9140,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'indexes' => [
 				'name' => 'indexes',
@@ -8447,6 +9157,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'datadefault_other' => [
 				'name' => 'datadefault_other',
@@ -8459,10 +9170,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'datadefault' => [
 				'name' => 'datadefault',
@@ -8479,6 +9191,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'short_description' => [
 				'name' => 'short_description',
@@ -8491,10 +9204,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'datatype' => [
 				'name' => 'datatype',
@@ -8511,6 +9225,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'has_defaults' => [
 				'name' => 'has_defaults',
@@ -8527,6 +9242,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'properties' => [
 				'name' => 'properties',
@@ -8539,10 +9255,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -8559,6 +9276,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'datalenght' => [
 				'name' => 'datalenght',
@@ -8575,6 +9293,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'datalenght_other' => [
 				'name' => 'datalenght_other',
@@ -8587,10 +9306,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -8603,10 +9323,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'catid' => [
 				'name' => 'catid',
@@ -8623,6 +9344,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -8651,10 +9373,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'plugins' => [
 				'name' => 'plugins',
@@ -8670,6 +9393,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_plugin',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_plugin',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'modules' => [
@@ -8687,6 +9418,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_module',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_module',
+					'value' => 'system_name',
+					'key' => 'guid',
+				],
 			],
 			'components' => [
 				'name' => 'components',
@@ -8702,6 +9441,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'translation' => [
@@ -8719,6 +9466,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -8747,10 +9495,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'langtag' => [
 				'name' => 'langtag',
@@ -8763,10 +9512,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -8795,10 +9545,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'protocol' => [
 				'name' => 'protocol',
@@ -8815,6 +9566,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'signature' => [
 				'name' => 'signature',
@@ -8827,10 +9579,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'private_key' => [
 				'name' => 'private_key',
@@ -8843,10 +9596,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'secret' => [
 				'name' => 'secret',
@@ -8863,6 +9617,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'password' => [
 				'name' => 'password',
@@ -8879,6 +9634,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'private' => [
 				'name' => 'private',
@@ -8891,10 +9647,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'authentication' => [
 				'name' => 'authentication',
@@ -8911,6 +9668,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'path' => [
 				'name' => 'path',
@@ -8923,10 +9681,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'port' => [
 				'name' => 'port',
@@ -8939,10 +9698,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'host' => [
 				'name' => 'host',
@@ -8955,10 +9715,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'username' => [
 				'name' => 'username',
@@ -8971,10 +9732,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9003,10 +9765,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'organisation' => [
 				'name' => 'organisation',
@@ -9019,10 +9782,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'repository' => [
 				'name' => 'repository',
@@ -9035,10 +9799,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'target' => [
 				'name' => 'target',
@@ -9055,6 +9820,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'type' => [
 				'name' => 'type',
@@ -9071,6 +9837,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'base' => [
 				'name' => 'base',
@@ -9087,6 +9854,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'guid' => [
 				'name' => 'guid',
@@ -9099,10 +9867,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(36)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'addplaceholders' => [
 				'name' => 'addplaceholders',
@@ -9119,6 +9888,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access_repo' => [
 				'name' => 'access_repo',
@@ -9135,6 +9905,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'write_branch' => [
 				'name' => 'write_branch',
@@ -9151,6 +9922,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'read_branch' => [
 				'name' => 'read_branch',
@@ -9167,6 +9939,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'token' => [
 				'name' => 'token',
@@ -9183,6 +9956,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'username' => [
 				'name' => 'username',
@@ -9199,6 +9973,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9227,10 +10002,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'type' => [
 				'name' => 'type',
@@ -9247,6 +10023,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'groups' => [
 				'name' => 'groups',
@@ -9259,10 +10036,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'location' => [
 				'name' => 'location',
@@ -9279,6 +10057,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'admin_view' => [
 				'name' => 'admin_view',
@@ -9294,6 +10073,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => false,
+				],
+				'link' => [
+					'type' => 2,
+					'table' => '',
+					'component' => '',
+					'entity' => '',
+					'value' => '',
+					'key' => '',
 				],
 			],
 			'site_view' => [
@@ -9311,6 +10098,14 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => [
+					'type' => 2,
+					'table' => '',
+					'component' => '',
+					'entity' => '',
+					'value' => '',
+					'key' => '',
+				],
 			],
 			'alias' => [
 				'name' => 'alias',
@@ -9323,10 +10118,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'CHAR(64)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'content' => [
 				'name' => 'content',
@@ -9339,10 +10135,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'article' => [
 				'name' => 'article',
@@ -9358,6 +10155,14 @@ final class Table extends BaseTable implements Tableinterface
 					'null_switch' => 'NOT NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__content',
+					'component' => 'com_content',
+					'entity' => 'article',
+					'value' => 'title',
+					'key' => 'id',
 				],
 			],
 			'url' => [
@@ -9375,6 +10180,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'target' => [
 				'name' => 'target',
@@ -9391,6 +10197,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 		],
 		'admin_fields' => [
@@ -9403,11 +10210,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Fields',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_admin_view',
+					'component' => 'com_componentbuilder',
+					'entity' => 'admin_view',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addfields' => [
@@ -9425,6 +10240,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9451,11 +10267,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Conditions',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_admin_view',
+					'component' => 'com_componentbuilder',
+					'entity' => 'admin_view',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addconditions' => [
@@ -9473,6 +10297,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9499,11 +10324,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Relations',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_admin_view',
+					'component' => 'com_componentbuilder',
+					'entity' => 'admin_view',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addrelations' => [
@@ -9521,6 +10354,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9547,11 +10381,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Tabs',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_admin_view',
+					'component' => 'com_componentbuilder',
+					'entity' => 'admin_view',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'tabs' => [
@@ -9569,6 +10411,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9595,11 +10438,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Views',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addadmin_views' => [
@@ -9613,10 +10464,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9643,11 +10495,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Views',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addsite_views' => [
@@ -9661,10 +10521,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9691,11 +10552,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Views',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addcustom_admin_views' => [
@@ -9709,10 +10578,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9739,11 +10609,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Updates',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'version_update' => [
@@ -9761,6 +10639,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9787,11 +10666,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Mysql Tweaks',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'sql_tweak' => [
@@ -9809,6 +10696,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9835,11 +10723,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Menus',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addcustommenus' => [
@@ -9853,10 +10749,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -9883,11 +10780,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Settings',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'mode_constructor_before_parent' => [
@@ -9905,6 +10810,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'mode_constructor_after_parent' => [
 				'name' => 'mode_constructor_after_parent',
@@ -9921,6 +10827,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'mode_methods' => [
 				'name' => 'mode_methods',
@@ -9937,6 +10844,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'methods_code' => [
 				'name' => 'methods_code',
@@ -9949,10 +10857,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'constructor_after_parent_code' => [
 				'name' => 'constructor_after_parent_code',
@@ -9965,10 +10874,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'constructor_before_parent_manual' => [
 				'name' => 'constructor_before_parent_manual',
@@ -9985,6 +10895,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'constructor_before_parent_code' => [
 				'name' => 'constructor_before_parent_code',
@@ -9997,10 +10908,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10027,11 +10939,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Options',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addconfig' => [
@@ -10045,10 +10965,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10075,11 +10996,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Dashboard',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'dashboard_tab' => [
@@ -10093,10 +11022,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'php_dashboard_methods' => [
 				'name' => 'php_dashboard_methods',
@@ -10109,10 +11039,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10139,11 +11070,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Basic',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addfoldersfullpath' => [
@@ -10161,6 +11100,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfilesfullpath' => [
 				'name' => 'addfilesfullpath',
@@ -10177,6 +11117,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfolders' => [
 				'name' => 'addfolders',
@@ -10189,10 +11130,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfiles' => [
 				'name' => 'addfiles',
@@ -10205,10 +11147,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10235,11 +11178,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addplaceholders' => [
@@ -10257,6 +11208,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10283,11 +11235,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Plugins',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addjoomla_plugins' => [
@@ -10305,6 +11265,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10331,11 +11292,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Modules',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_component',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_component',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addjoomla_modules' => [
@@ -10353,6 +11322,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10381,10 +11351,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'description' => [
 				'name' => 'description',
@@ -10397,10 +11368,28 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
+			],
+			'guid' => [
+				'name' => 'guid',
+				'label' => 'COM_COMPONENTBUILDER_SNIPPET_TYPE_GUID_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'snippet_types',
+				'store' => NULL,
+				'tab_name' => 'publishing',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10427,11 +11416,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Tweaks',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'addconfig' => [
@@ -10445,10 +11442,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10475,11 +11473,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Basic',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_library',
+					'component' => 'com_componentbuilder',
+					'entity' => 'library',
+					'value' => 'name',
+					'key' => 'guid',
 				],
 			],
 			'addfoldersfullpath' => [
@@ -10497,6 +11503,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfilesfullpath' => [
 				'name' => 'addfilesfullpath',
@@ -10513,6 +11520,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfolders' => [
 				'name' => 'addfolders',
@@ -10525,10 +11533,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfiles' => [
 				'name' => 'addfiles',
@@ -10541,10 +11550,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addurls' => [
 				'name' => 'addurls',
@@ -10561,6 +11571,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10589,10 +11600,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'extension_type' => [
 				'name' => 'extension_type',
@@ -10609,6 +11621,24 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
+			],
+			'guid' => [
+				'name' => 'guid',
+				'label' => 'COM_COMPONENTBUILDER_CLASS_EXTENDS_GUID_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'class_extendings',
+				'store' => NULL,
+				'tab_name' => 'publishing',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
 			],
 			'head' => [
 				'name' => 'head',
@@ -10625,6 +11655,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'comment' => [
 				'name' => 'comment',
@@ -10637,10 +11668,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10667,11 +11699,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Updates',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_module',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_module',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'version_update' => [
@@ -10689,6 +11729,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10715,11 +11756,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Basic',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_module',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_module',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addfoldersfullpath' => [
@@ -10737,6 +11786,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfilesfullpath' => [
 				'name' => 'addfilesfullpath',
@@ -10753,6 +11803,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfolders' => [
 				'name' => 'addfolders',
@@ -10765,10 +11816,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfiles' => [
 				'name' => 'addfiles',
@@ -10781,10 +11833,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addurls' => [
 				'name' => 'addurls',
@@ -10801,6 +11854,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10829,10 +11883,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'VARCHAR(255)',
 					'default' => '',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => NULL,
 			],
 			'class_extends' => [
 				'name' => 'class_extends',
@@ -10843,12 +11898,37 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
 				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_class_extends',
+					'component' => 'com_componentbuilder',
+					'entity' => 'class_extends',
+					'value' => 'name',
+					'key' => 'guid',
+				],
+			],
+			'guid' => [
+				'name' => 'guid',
+				'label' => 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_GROUP_GUID_LABEL',
+				'type' => 'text',
+				'title' => false,
+				'list' => 'joomla_plugin_groups',
+				'store' => NULL,
+				'tab_name' => 'publishing',
+				'db' => [
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
+					'unique_key' => false,
+					'key' => true,
+				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10875,11 +11955,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Updates',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_plugin',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_plugin',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'version_update' => [
@@ -10897,6 +11985,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',
@@ -10923,11 +12012,19 @@ final class Table extends BaseTable implements Tableinterface
 				'store' => NULL,
 				'tab_name' => 'Basic',
 				'db' => [
-					'type' => 'INT(11)',
-					'default' => '0',
-					'null_switch' => 'NOT NULL',
+					'type' => 'VARCHAR(36)',
+					'default' => '',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => true,
+				],
+				'link' => [
+					'type' => 1,
+					'table' => '#__componentbuilder_joomla_plugin',
+					'component' => 'com_componentbuilder',
+					'entity' => 'joomla_plugin',
+					'value' => 'system_name',
+					'key' => 'guid',
 				],
 			],
 			'addfoldersfullpath' => [
@@ -10945,6 +12042,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfilesfullpath' => [
 				'name' => 'addfilesfullpath',
@@ -10961,6 +12059,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfolders' => [
 				'name' => 'addfolders',
@@ -10973,10 +12072,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addfiles' => [
 				'name' => 'addfiles',
@@ -10989,10 +12089,11 @@ final class Table extends BaseTable implements Tableinterface
 				'db' => [
 					'type' => 'TEXT',
 					'default' => 'EMPTY',
-					'null_switch' => 'NOT NULL',
+					'null_switch' => 'NULL',
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'addurls' => [
 				'name' => 'addurls',
@@ -11009,6 +12110,7 @@ final class Table extends BaseTable implements Tableinterface
 					'unique_key' => false,
 					'key' => false,
 				],
+				'link' => NULL,
 			],
 			'access' => [
 				'name' => 'access',

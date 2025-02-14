@@ -429,55 +429,51 @@ class FieldsModel extends ListModel
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
 		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
 
-		// do not use these filters in the export method
-		if (!isset($_export) || !$_export)
+		// Filtering "extension"
+		$filter_extension = $this->state->get("filter.extension");
+		$field_guids = [];
+		$get_ids = true;
+		if ($get_ids && $filter_extension !== null && !empty($filter_extension))
 		{
-			// Filtering "extension"
-			$filter_extension = $this->state->get("filter.extension");
-			$field_ids = array();
-			$get_ids = true;
-			if ($get_ids && $filter_extension !== null && !empty($filter_extension))
+			// column name, and id
+			$type_extension = explode('__', $filter_extension);
+			if (($guids = JCBFilterHelper::linked((string) $type_extension[1], (string) $type_extension[0])) !== null)
 			{
-				// column name, and id
-				$type_extension = explode('__', $filter_extension);
-				if (($ids = JCBFilterHelper::linked((int) $type_extension[1], (string) $type_extension[0])) !== null)
-				{
-					$field_ids = $ids;
-				}
-				else
-				{
-					// there is none
-					$query->where($db->quoteName('a.id') . ' = ' . 0);
-					$get_ids = false;
-				}
+				$field_guids = $guids;
 			}
-
-			// Filtering "admin_view"
-			$filter_admin_view = $this->state->get("filter.admin_view");
-			if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
+			else
 			{
-				if (($ids = JCBFilterHelper::linked((int) $filter_admin_view, 'admin_view')) !== null)
-				{
-					// view will return less fields, so we ignore the component
-					$field_ids = $ids;
-				}
-				else
-				{
-					// there is none
-					$query->where($db->quoteName('a.id') . ' = ' . 0);
-					$get_ids = false;
-				}
-			}
-			// now check if we have IDs
-			if ($get_ids && UtilitiesArrayHelper::check($field_ids))
-			{
-				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $field_ids) . ')');
+				// there is none
+				$query->where($db->quoteName('a.id') . ' = ' . 0);
+				$get_ids = false;
 			}
 		}
 
+		// Filtering "admin_view"
+		$filter_admin_view = $this->state->get("filter.admin_view");
+		if ($get_ids && $filter_admin_view !== null && !empty($filter_admin_view))
+		{
+			if (($guids = JCBFilterHelper::linked((string) $filter_admin_view, 'admin_view')) !== null)
+			{
+				// view will return less fields, so we ignore the component
+				$field_guids = $guids;
+			}
+			else
+			{
+				// there is none
+				$query->where($db->quoteName('a.id') . ' = ' . 0);
+				$get_ids = false;
+			}
+		}
+		// now check if we have GUIDs
+		if ($get_ids && UtilitiesArrayHelper::check($field_guids))
+		{
+			$query->where($db->quoteName('a.guid') . ' IN ("' . implode('","', $field_guids) . '")');
+		}
+
 		// From the componentbuilder_fieldtype table.
-		$query->select($db->quoteName('g.name','fieldtype_name'));
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.id') . ')');
+		$query->select($db->quoteName(['g.name','g.id'],['fieldtype_name','fieldtype_id']));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'g') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('g.guid') . ')');
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

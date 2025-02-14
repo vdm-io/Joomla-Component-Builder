@@ -38,6 +38,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -47,6 +48,22 @@ use VDM\Joomla\Utilities\ArrayHelper;
  */
 class Data
 {
+	/**
+	 * The cache
+	 *
+	 * @var   array
+	 * @since 3.2.0
+	 */
+	protected array $data = [];
+
+	/**
+	 *  Tracking GUID index
+	 *
+	 * @var    array
+	 * @since  5.0.4
+	 */
+	protected array $index = [];
+
 	/**
 	 * The Config Class.
 	 *
@@ -291,108 +308,159 @@ class Data
 	/**
 	 * Get Admin View Data
 	 *
-	 * @param   int  $id  The view ID
+	 * @param   mixed  $view  The view ID/GUID
 	 *
 	 * @return  object|null The view data
 	 * @since 3.2.0
 	 */
-	public function get(int $id): ?object
+	public function get($view): ?object
 	{
-		if (!isset($this->data[$id]))
+		if (isset($this->index[$view]))
 		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
+			$id = $this->index[$view];
 
-			$query->select('a.*');
-			$query->select(
-				$this->db->quoteName(
-					array(
-						'b.addfields',
-						'b.id',
-						'c.addconditions',
-						'c.id',
-						'r.addrelations',
-						't.tabs'
-					), array(
-						'addfields',
-						'addfields_id',
-						'addconditions',
-						'addconditions_id',
-						'addrelations',
-						'customtabs'
-					)
+			return $this->data[$id];
+		}
+
+		$this->set($view);
+
+		if (isset($this->index[$view]))
+		{
+			$id = $this->index[$view];
+
+			return $this->data[$id];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the admin view
+	 *
+	 * @param   mixed  $view  The view ID/GUID
+	 *
+	 * @return  void
+	 * @since   5.0.4
+	 */
+	private function set($view): void
+	{
+		if (GuidHelper::valid($view))
+		{
+			$query = $this->getQuery($view, 'guid');
+		}
+		else
+		{
+			$query = $this->getQuery($view);
+		}
+
+		$data = $this->getData($query);
+
+		if ($data !== null)
+		{
+			$this->data[$data->id] = $data;
+			$this->index[$data->id] = $data->id;
+			$this->index[$data->guid] = $data->id;
+		}
+	}
+
+	/**
+	 * get current admin view data query
+	 *
+	 * @param   mixed    $value   The field ID/GUID
+	 * @param   string   $key     The type of value
+	 *
+	 * @return  string  The admin view data query
+	 * @since   5.0.4
+	 */
+	private function getQuery($value, string $key = 'id')
+	{
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+
+		$query->select('a.*');
+		$query->select(
+			$this->db->quoteName(
+				array(
+					'b.addfields',
+					'b.id',
+					'c.addconditions',
+					'c.id',
+					'r.addrelations',
+					't.tabs'
+				), array(
+					'addfields',
+					'addfields_id',
+					'addconditions',
+					'addconditions_id',
+					'addrelations',
+					'customtabs'
 				)
-			);
+			)
+		);
 
-			$query->from('#__componentbuilder_admin_view AS a');
-			$query->join(
-				'LEFT',
-				$this->db->quoteName('#__componentbuilder_admin_fields', 'b')
-				. ' ON (' . $this->db->quoteName('a.id') . ' = '
-				. $this->db->quoteName('b.admin_view') . ')'
-			);
+		$query->from('#__componentbuilder_admin_view AS a');
+		$query->join(
+			'LEFT',
+			$this->db->quoteName('#__componentbuilder_admin_fields', 'b')
+			. ' ON (' . $this->db->quoteName('a.guid') . ' = '
+			. $this->db->quoteName('b.admin_view') . ')'
+		);
 
-			$query->join(
-				'LEFT', $this->db->quoteName(
-					'#__componentbuilder_admin_fields_conditions', 'c'
-				) . ' ON (' . $this->db->quoteName('a.id') . ' = '
-				. $this->db->quoteName('c.admin_view') . ')'
-			);
+		$query->join(
+			'LEFT', $this->db->quoteName(
+				'#__componentbuilder_admin_fields_conditions', 'c'
+			) . ' ON (' . $this->db->quoteName('a.guid') . ' = '
+			. $this->db->quoteName('c.admin_view') . ')'
+		);
 
-			$query->join(
-				'LEFT', $this->db->quoteName(
-					'#__componentbuilder_admin_fields_relations', 'r'
-				) . ' ON (' . $this->db->quoteName('a.id') . ' = '
-				. $this->db->quoteName('r.admin_view') . ')'
-			);
+		$query->join(
+			'LEFT', $this->db->quoteName(
+				'#__componentbuilder_admin_fields_relations', 'r'
+			) . ' ON (' . $this->db->quoteName('a.guid') . ' = '
+			. $this->db->quoteName('r.admin_view') . ')'
+		);
 
-			$query->join(
-				'LEFT', $this->db->quoteName(
-					'#__componentbuilder_admin_custom_tabs', 't'
-				) . ' ON (' . $this->db->quoteName('a.id') . ' = '
-				. $this->db->quoteName('t.admin_view') . ')'
-			);
+		$query->join(
+			'LEFT', $this->db->quoteName(
+				'#__componentbuilder_admin_custom_tabs', 't'
+			) . ' ON (' . $this->db->quoteName('a.guid') . ' = '
+			. $this->db->quoteName('t.admin_view') . ')'
+		);
 
-			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+		$query->where($this->db->quoteName('a.' . $key) . ' = ' . $this->db->quote($value));
 
-			// Trigger Event: jcb_ce_onBeforeQueryViewData
-			$this->event->trigger(
-				'jcb_ce_onBeforeQueryViewData', [&$id, &$query, &$this->db]
-			);
+		// Trigger Event: jcb_ce_onBeforeQueryViewData
+		$this->event->trigger(
+			'jcb_ce_onBeforeQueryViewData', [&$value, &$query, &$this->db]
+		);
 
-			// Reset the query using our newly populated query object.
-			$this->db->setQuery($query);
+		return $query;
+	}
 
-			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
+	/**
+	 * get admin view data
+	 *
+	 * @param   string   $query   The field query
+	 *
+	 * @return  object|null  The admin view data
+	 * @since   5.0.4
+	 */
+	private function getData($query): ?object
+	{
+		// Reset the query using our newly populated query object.
+		$this->db->setQuery($query);
+		$this->db->execute();
+
+		if ($this->db->getNumRows())
+		{
 			$view = $this->db->loadObject();
+			$id = $view->id;
 
-			// setup single view code names to use in storing the data
-			$view->name_single_code = 'oops_hmm_' . $id;
-			if (isset($view->name_single) && $view->name_single != 'null')
-			{
-				$view->name_single_code = StringHelper::safe(
-					$view->name_single
-				);
-			}
+			// set code names
+			$this->setCodeNames($view, $id);
 
-			// setup list view code name to use in storing the data
-			$view->name_list_code = 'oops_hmmm_' . $id;
-			if (isset($view->name_list) && $view->name_list != 'null')
-			{
-				$view->name_list_code = StringHelper::safe(
-					$view->name_list
-				);
-			}
-
-			// check the length of the view name (+5 for com_ and _)
-			$name_length = $this->config->component_code_name_length + strlen(
-					(string) $view->name_single_code
-				) + 5;
-			// when the name is larger than 49 we need to add the assets' table name fix
-			if ($name_length > 49)
-			{
-				$this->config->set('add_assets_table_name_fix', true);
-			}
+			// set table fix
+			$this->setAssetsTableFix($view);
 
 			// setup token check
 			if (!isset($this->dispenser->hub['token']))
@@ -402,21 +470,8 @@ class Data
 			$this->dispenser->hub['token'][$view->name_single_code] = false;
 			$this->dispenser->hub['token'][$view->name_list_code] = false;
 
-			// set some placeholders
-			$this->placeholder->set('view', $view->name_single_code);
-			$this->placeholder->set('views', $view->name_list_code);
-			$this->placeholder->set('View', StringHelper::safe(
-				$view->name_single, 'F'
-			));
-			$this->placeholder->set('Views', StringHelper::safe(
-				$view->name_list, 'F'
-			));
-			$this->placeholder->set('VIEW', StringHelper::safe(
-				$view->name_single, 'U'
-			));
-			$this->placeholder->set('VIEWS', StringHelper::safe(
-				$view->name_list, 'U'
-			));
+			// set the placeholders
+			$this->setPlaceholders($view);
 
 			// Trigger Event: jcb_ce_onBeforeModelViewData
 			$this->event->trigger(
@@ -424,9 +479,10 @@ class Data
 			);
 
 			// add the tables
-			$view->addtables = (isset($view->addtables)
-				&& JsonHelper::check($view->addtables))
-				? json_decode((string) $view->addtables, true) : null;
+			$view->addtables = (isset($view->addtables) && JsonHelper::check($view->addtables))
+				? json_decode((string) $view->addtables, true)
+				: null;
+
 			if (ArrayHelper::check($view->addtables))
 			{
 				$view->tables = array_values($view->addtables);
@@ -475,7 +531,7 @@ class Data
 
 			// set the lang target
 			$this->config->lang_target = 'admin';
-			if ($this->siteeditview->exists($id))
+			if ($this->siteeditview->exists($view->guid))
 			{
 				$this->config->lang_target = 'both';
 			}
@@ -512,20 +568,107 @@ class Data
 				'jcb_ce_onAfterModelViewData', [&$view]
 			);
 
-			// clear placeholders
-			$this->placeholder->remove('view');
-			$this->placeholder->remove('views');
-			$this->placeholder->remove('View');
-			$this->placeholder->remove('Views');
-			$this->placeholder->remove('VIEW');
-			$this->placeholder->remove('VIEWS');
+			// clear all placeholders related to this view
+			$this->clearPlaceholders();
 
-			// store this view to class object
-			$this->data[$id] = $view;
+			return $view;
 		}
 
-		// return the found view data
-		return $this->data[$id];
+		return null;
+	}
+
+	/**
+	 * Sets code names for this view.
+	 *
+	 * @param  object  $view  The view object.
+	 * @param  int     $id    The view id.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setCodeNames(object $view, int $id): void
+	{
+		// setup single view code names to use in storing the data
+		$view->name_single_code = 'oops_hmm_' . $id;
+		if (isset($view->name_single) && $view->name_single != 'null')
+		{
+			$view->name_single_code = StringHelper::safe(
+				$view->name_single
+			);
+		}
+
+		// setup list view code name to use in storing the data
+		$view->name_list_code = 'oops_hmmm_' . $id;
+		if (isset($view->name_list) && $view->name_list != 'null')
+		{
+			$view->name_list_code = StringHelper::safe(
+				$view->name_list
+			);
+		}
+	}
+
+	/**
+	 * Sets code names for this view.
+	 *
+	 * @param  object  $view  The view object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setAssetsTableFix(object $view): void
+	{
+		// check the length of the view name (+5 for com_ and _)
+		$name_length = $this->config->component_code_name_length + strlen(
+				(string) $view->name_single_code
+			) + 5;
+
+		// when the name is larger than 49 we need to add the assets' table name fix
+		if ($name_length > 49)
+		{
+			$this->config->set('add_assets_table_name_fix', true);
+		}
+	}
+
+	/**
+	 * Sets the placeholders for this view
+	 *
+	 * @param  object  $view  The view object.
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function setPlaceholders(object $view): void
+	{
+		$this->placeholder->set('view', $view->name_single_code);
+		$this->placeholder->set('views', $view->name_list_code);
+		$this->placeholder->set('View', StringHelper::safe(
+			$view->name_single, 'F'
+		));
+		$this->placeholder->set('Views', StringHelper::safe(
+			$view->name_list, 'F'
+		));
+		$this->placeholder->set('VIEW', StringHelper::safe(
+			$view->name_single, 'U'
+		));
+		$this->placeholder->set('VIEWS', StringHelper::safe(
+			$view->name_list, 'U'
+		));
+	}
+
+	/**
+	 * Clear the placeholders for this view
+	 *
+	 * @return void
+	 * @since  5.0.4
+	 */
+	private function clearPlaceholders(): void
+	{
+		$this->placeholder->remove('view');
+		$this->placeholder->remove('views');
+		$this->placeholder->remove('View');
+		$this->placeholder->remove('Views');
+		$this->placeholder->remove('VIEW');
+		$this->placeholder->remove('VIEWS');
 	}
 }
 

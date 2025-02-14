@@ -15,7 +15,7 @@ namespace VDM\Joomla\Interfaces;
 /**
  * The VDM Core Table Interface
  */
-interface Tableinterface
+interface TableInterface
 {
 	/**
 	 * Get any value from a item/field/column of an area/view/table

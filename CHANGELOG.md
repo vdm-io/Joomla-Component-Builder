@@ -1,3 +1,33 @@
+# v4.1.0
+
+- Add [AllowDynamicProperties] in the base view class for J5
+- Move the _prepareDocument  above the display call in the base view class
+- Remove all backward compatibility issues, so JCB will not need the [Backward Compatibility] plugin to run.
+- Added new import powers for custom import of spreadsheets.
+- Move the setDocument and _prepareDocument above the display in the site view and custom admin view.
+- Update the trashhelper layout to work in Joomla 5.
+- Add AllowDynamicProperties (Joomla 4+5) to view class to allow Custom Dynamic Get methods to work without issues.
+- Fix Save failed issue in dynamicGet. #1148
+- Move all [TEXT, EDITOR, TEXTAREA] fields from [NOT NULL] to [NULL]
+- Add the DateHelper class and improve the date methods.
+- Add simple SessionHelper class.
+- Add first classes for the new import engine.
+- Improve the [VDM Registry] to be Joomla Registry Compatible
+- Move all registries to the [VDM Registry] class
+- Fix Checked Out to be null and not 0. (#1194)
+- Fix created_by, modified_by, checked_out fields in the compiler of the SQL. (#1194)
+- Update all core date fields in table class. (#1188)
+- Update created_by, modified_by, checked_out fields in table class.
+- Implementation of the decentralized Super-Power CORE repository network. (#1190)
+- Fix the noticeboard to display Llewellyn's Joomla Social feed
+- Started compiling JCB4 on Joomla 5 with PHP 8.2
+- Add init_defaults option for dynamic form selection setup (to int new items with default values dynamically)
+- Update all JCB 4 tables to utf8mb4_unicode_ci collation if misaligned
+- Move all internal ID linking to GUID inside of JCB 4
+- Updated the admin-tab-fields in add-fields view. #1205
+- Remove Custom Import Tab from admin view
+- Improved the customcode and placeholder search features
+
 # v4.0.3
 
 - Add [push] option to powers area.
@@ -111,23 +141,25 @@
 - Add the BaseDatabaseModel use statement to custom site view controller. #1119
 - Fix the customfolderlist field. #1120
 
-# v3.2.4
+# v3.2.5
 
-- Add [push] option to Powers area.
-- Fix [Save As Copy] error in library. #1162
-- Fix error when no components exist. #1164
-- Fix search page error caused by File class.
-- Fix UserGroupList compiler triggers. #1100
-- Add Power field type integration: init, reset, push.
-- Fix database default fields to allow NULL. #1169
-- Fix Power List field to allow searching. #1167
-- Remove Demo component from JCB v3; add Hello World component as demo.
-- Fix missing working path in ZIP.
-- Fix demo site view to display files.
-- Fix message for Field Type init.
-- Ensure type-agnostic comparisons by casting to CHAR in joins for dynamic retrieval.
-- Fix dynamic download in site area with correct namespace.
-- Fix missing edit button on fields in related views.
-- Fix dashboard display issues.
-- Re-add search option in use field of related views.
-- Fix namespace issue that broke the linker.
+- Add [AllowDynamicProperties] in the base view class for J5
+- Move the _prepareDocument  above the display call in the base view class
+- Remove all backward compatibility issues, so JCB will not need the [Backward Compatibility] plugin to run.
+- Added new import powers for custom import of spreadsheets.
+- Move the setDocument and _prepareDocument above the display in the site view and custom admin view.
+- Update the trashhelper layout to work in Joomla 5.
+- Add AllowDynamicProperties (Joomla 4+5) to view class to allow Custom Dynamic Get methods to work without issues.
+- Fix Save failed issue in dynamicGet. #1148
+- Move all [TEXT, EDITOR, TEXTAREA] fields from [NOT NULL] to [NULL]
+- Add the DateHelper class and improve the date methods.
+- Add simple SessionHelper class.
+- Add first classes for the new import engine.
+- Improve the [VDM Registry] to be Joomla Registry Compatible
+- Move all registries to the [VDM Registry] class
+- Fix Checked Out to be null and not 0. (#1194)
+- Fix created_by, modified_by, checked_out fields in the compiler of the SQL. (#1194)
+- Update all core date fields in table class. (#1188)
+- Update created_by, modified_by, checked_out fields in table class.
+- Implementation of the decentralized Super-Power CORE repository network. (#1190)
+- Fix the noticeboard to display Llewellyn's Joomla Social feed

@@ -113,10 +113,10 @@ class Rule
 			);
 
 			// link this field to this validation (don't move this down)
-			$this->registry->set("validation.linked.${id}", $validation_rule);
+			$this->registry->set("validation.linked.{$id}", $validation_rule);
 
 			// make sure it is not already set
-			if ($this->registry->get("validation.rules.${validation_rule}") === null)
+			if ($this->registry->get("validation.rules.{$validation_rule}") === null)
 			{
 				// get joomla core validation names  and make sure this rule is not a core validation rule
 				if (!in_array($validation_rule, (array) $this->corerule->get(true)))
@@ -127,7 +127,7 @@ class Rule
 					)) !== false)
 					{
 						// open and set the validation rule
-						$this->registry->set("validation.rules.${validation_rule}",
+						$this->registry->set("validation.rules.{$validation_rule}",
 							$this->gui->set(
 								$this->placeholder->update_(
 									$this->customcode->update(
@@ -151,13 +151,13 @@ class Rule
 					else
 					{
 						// TODO set the notice that this validation rule is custom and was not found
-						$this->registry->remove("validation.linked.${id}");
+						$this->registry->remove("validation.linked.{$id}");
 					}
 				}
 				else
 				{
 					// remove link (we only want custom validations linked)
-					$this->registry->remove("validation.linked.${id}");
+					$this->registry->remove("validation.linked.{$id}");
 				}
 			}
 		}

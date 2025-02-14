@@ -13,9 +13,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customview;
 
 
 use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Libraries;
@@ -31,6 +30,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
@@ -44,113 +44,121 @@ class Data
 	 * Admin views
 	 *
 	 * @var    array
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
-	protected array $data;
+	protected array $data = [];
 
 	/**
-	 * Compiler Config
+	 *  Tracking GUID index
 	 *
-	 * @var    Config
+	 * @var    array
+	 * @since  5.0.4
+	 */
+	protected array $index = [];
+
+	/**
+	 * The Config Class.
+	 *
+	 * @var   Config
 	 * @since 3.2.0
 	 */
 	protected Config $config;
 
 	/**
-	 * Compiler Event
+	 * The EventInterface Class.
 	 *
-	 * @var    EventInterface
+	 * @var   Event
 	 * @since 3.2.0
 	 */
-	protected EventInterface $event;
+	protected Event $event;
 
 	/**
-	 * Compiler Customcode
+	 * The Customcode Class.
 	 *
-	 * @var    Customcode
+	 * @var   Customcode
 	 * @since 3.2.0
 	 */
 	protected Customcode $customcode;
 
 	/**
-	 * Compiler Customcode in Gui
+	 * The Gui Class.
 	 *
-	 * @var    Gui
+	 * @var   Gui
 	 * @since 3.2.0
-	 **/
+	 */
 	protected Gui $gui;
 
 	/**
-	 * Compiler Libraries Model
+	 * The Libraries Class.
 	 *
-	 * @var    Libraries
+	 * @var   Libraries
 	 * @since 3.2.0
 	 */
 	protected Libraries $libraries;
 
 	/**
-	 * Compiler Template Layout
+	 * The Data Class.
 	 *
-	 * @var    Templatelayout
+	 * @var   Templatelayout
 	 * @since 3.2.0
 	 */
-	protected Templatelayout $templateLayout;
+	protected Templatelayout $templatelayout;
 
 	/**
-	 * Compiler Dynamic Get Data
+	 * The Data Class.
 	 *
-	 * @var    Dynamicget
+	 * @var   Dynamicget
 	 * @since 3.2.0
 	 */
 	protected Dynamicget $dynamic;
 
 	/**
-	 * Compiler Auto Loader
+	 * The Loader Class.
 	 *
-	 * @var    Loader
+	 * @var   Loader
 	 * @since 3.2.0
 	 */
 	protected Loader $loader;
 
 	/**
-	 * The modelling javascript
+	 * The Javascriptcustomview Class.
 	 *
-	 * @var    Javascriptcustomview
+	 * @var   Javascriptcustomview
 	 * @since 3.2.0
 	 */
 	protected Javascriptcustomview $javascript;
 
 	/**
-	 * The modelling css
+	 * The Csscustomview Class.
 	 *
-	 * @var    Csscustomview
+	 * @var   Csscustomview
 	 * @since 3.2.0
 	 */
 	protected Csscustomview $css;
 
 	/**
-	 * The modelling php admin view
+	 * The Phpcustomview Class.
 	 *
-	 * @var    Phpcustomview
+	 * @var   Phpcustomview
 	 * @since 3.2.0
 	 */
 	protected Phpcustomview $php;
 
 	/**
-	 * The modelling custom buttons
+	 * The Ajaxcustomview Class.
 	 *
-	 * @var    Custombuttons
-	 * @since 3.2.0
-	 */
-	protected Custombuttons $custombuttons;
-
-	/**
-	 * The modelling ajax
-	 *
-	 * @var    Ajaxcustomview
+	 * @var   Ajaxcustomview
 	 * @since 3.2.0
 	 */
 	protected Ajaxcustomview $ajax;
+
+	/**
+	 * The Custombuttons Class.
+	 *
+	 * @var   Custombuttons
+	 * @since 3.2.0
+	 */
+	protected Custombuttons $custombuttons;
 
 	/**
 	 * Database object to query local DB
@@ -160,76 +168,160 @@ class Data
 	protected $db;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null                   $config           The compiler config object.
-	 * @param EventInterface|null           $event            The compiler event api object.
-	 * @param Customcode|null               $customcode       The compiler customcode object.
-	 * @param Gui|null                      $gui              The compiler customcode gui.
-	 * @param Libraries|null                $libraries        The compiler libraries model object.
-	 * @param Templatelayout|null           $templateLayout   The compiler template layout object.
-	 * @param Dynamicget|null               $dynamic          The compiler dynamic get data object.
-	 * @param Loader|null                   $loader           The compiler loader object.
-	 * @param Javascriptcustomview|null     $javascript       The modelling javascript object.
-	 * @param Csscustomview|null            $css              The modelling css object.
-	 * @param Phpcustomview|null            $php              The modelling php admin view object.
-	 * @param Ajaxcustomview|null           $ajax             The modelling ajax object.
-	 * @param Custombuttons|null            $custombuttons    The modelling custombuttons object.
+	 * @param Config                 $config                 The Config Class.
+	 * @param Event                  $event                  The EventInterface Class.
+	 * @param Customcode             $customcode             The Customcode Class.
+	 * @param Gui                    $gui                    The Gui Class.
+	 * @param Libraries              $libraries              The Libraries Class.
+	 * @param Templatelayout         $templatelayout         The Data Class.
+	 * @param Dynamicget             $dynamicget             The Data Class.
+	 * @param Loader                 $loader                 The Loader Class.
+	 * @param Javascriptcustomview   $javascriptcustomview   The Javascriptcustomview Class.
+	 * @param Csscustomview          $csscustomview          The Csscustomview Class.
+	 * @param Phpcustomview          $phpcustomview          The Phpcustomview Class.
+	 * @param Ajaxcustomview         $ajaxcustomview         The Ajaxcustomview Class.
+	 * @param Custombuttons          $custombuttons          The Custombuttons Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?EventInterface $event = null,
-		?Customcode $customcode = null, ?Gui $gui = null, ?Libraries $libraries = null,
-		?Templatelayout $templateLayout = null, ?Dynamicget $dynamic = null, ?Loader $loader = null,
-		?Javascriptcustomview $javascript = null, ?Csscustomview $css = null, ?Phpcustomview $php = null,
-		?Ajaxcustomview $ajax = null, ?Custombuttons $custombuttons = null)
+	public function __construct(Config $config, Event $event, Customcode $customcode,
+		Gui $gui, Libraries $libraries,
+		Templatelayout $templatelayout, Dynamicget $dynamicget,
+		Loader $loader,
+		Javascriptcustomview $javascriptcustomview,
+		Csscustomview $csscustomview,
+		Phpcustomview $phpcustomview,
+		Ajaxcustomview $ajaxcustomview,
+		Custombuttons $custombuttons)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->event = $event ?: Compiler::_('Event');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->libraries = $libraries ?: Compiler::_('Model.Libraries');
-		$this->templateLayout = $templateLayout ?: Compiler::_('Templatelayout.Data');
-		$this->dynamic = $dynamic ?: Compiler::_('Dynamicget.Data');
-		$this->loader = $loader ?: Compiler::_('Model.Loader');
-		$this->javascript = $javascript ?: Compiler::_('Model.Javascriptcustomview');
-		$this->css = $css ?: Compiler::_('Model.Csscustomview');
-		$this->php = $php ?: Compiler::_('Model.Phpcustomview');
-		$this->ajax = $ajax ?: Compiler::_('Model.Ajaxcustomview');
-		$this->custombuttons = $custombuttons ?: Compiler::_('Model.Custombuttons');
+		$this->config = $config;
+		$this->event = $event;
+		$this->customcode = $customcode;
+		$this->gui = $gui;
+		$this->libraries = $libraries;
+		$this->templatelayout = $templatelayout;
+		$this->dynamic = $dynamicget;
+		$this->loader = $loader;
+		$this->javascript = $javascriptcustomview;
+		$this->css = $csscustomview;
+		$this->php = $phpcustomview;
+		$this->ajax = $ajaxcustomview;
+		$this->custombuttons = $custombuttons;
 		$this->db = Factory::getDbo();
 	}
 
 	/**
-	 * Get all Custom View Data
+	 * Get Custom/Site View Data
 	 *
-	 * @param   int     $id     The view ID
-	 * @param   string  $table  The view table
+	 * @param   mixed  $view  The view ID/GUID
+	 * @param   string $table The view table
 	 *
-	 * @return  object|null The view data
-	 * @since 3.2.0
+	 * @return  object|null The custom/site view data
+	 * @since   3.2.0
 	 */
-	public function get(int $id, string $table = 'site_view'): ?object
+	public function get($view, string $table = 'site_view'): ?object
 	{
-		if (!isset($this->data[$id . $table]))
+		$key = $view . $table;
+		if (isset($this->index[$key]))
 		{
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
+			$key_id = $this->index[$key];
 
-			$query->select('a.*');
-			$query->from('#__componentbuilder_' . $table . ' AS a');
-			$query->where($this->db->quoteName('a.id') . ' = ' . (int) $id);
+			return $this->data[$key_id];
+		}
 
-			// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
-			$this->event->trigger(
-				'jcb_ce_onBeforeQueryCustomViewData', [&$id, &$table, &$query, &$this->db]
-			);
+		$this->set($view, $table);
 
-			// Reset the query using our newly populated query object.
-			$this->db->setQuery($query);
+		if (isset($this->index[$key]))
+		{
+			$key_id = $this->index[$key];
 
-			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
+			return $this->data[$key_id];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the admin view
+	 *
+	 * @param   mixed  $view  The view ID/GUID
+	 * @param   string $table The view table
+	 *
+	 * @return  void
+	 * @since   5.0.4
+	 */
+	private function set($view, string $table): void
+	{
+		if (GuidHelper::valid($view))
+		{
+			$query = $this->getQuery($view, $table, 'guid');
+		}
+		else
+		{
+			$query = $this->getQuery($view, $table);
+		}
+
+		$data = $this->getData($query, $table);
+
+		if ($data !== null)
+		{
+			$key_id = $data->id . $table;
+			$key_guid = $data->guid . $table;
+
+			$this->data[$key_id] = $data;
+			$this->index[$key_id] = $key_id;
+			$this->index[$key_guid] = $key_id;
+		}
+	}
+
+	/**
+	 * get current custom/site view data query
+	 *
+	 * @param   mixed    $value   The field ID/GUID
+	 * @param   string   $table   The view table
+	 * @param   string   $key     The type of value
+	 *
+	 * @return  string  The custom/site view data query
+	 * @since   5.0.4
+	 */
+	private function getQuery($value, string $table, string $key = 'id')
+	{
+		// Create a new query object.
+		$query = $this->db->getQuery(true);
+
+		$query->select('a.*');
+		$query->from('#__componentbuilder_' . $table . ' AS a');
+		$query->where($this->db->quoteName('a.' . $key) . ' = ' . $this->db->quote($value));
+
+		// Trigger Event: jcb_ce_onBeforeQueryCustomViewData
+		$this->event->trigger(
+			'jcb_ce_onBeforeQueryCustomViewData', [&$value, &$table, &$query, &$this->db]
+		);
+
+		return $query;
+	}
+
+	/**
+	 * get custom/site view data
+	 *
+	 * @param   string   $query   The field query
+	 * @param   string   $table   The view table
+	 *
+	 * @return  object|null  The custom/site view data
+	 * @since   5.0.4
+	 */
+	private function getData($query, string $table): ?object
+	{
+		// Reset the query using our newly populated query object.
+		$this->db->setQuery($query);
+		$this->db->execute();
+
+		if ($this->db->getNumRows())
+		{
 			$item = $this->db->loadObject();
+			$id = $item->id;
 
 			// fix alias to use in code
 			$item->code = Unique::code(
@@ -281,7 +373,7 @@ class Data
 			$this->libraries->set($item->code, $item);
 
 			// setup template and layout data
-			$this->templateLayout->set($item->default, $item->code);
+			$this->templatelayout->set($item->default, $item->code);
 
 			// set uikit version 2
 			$this->loader->uikit($item->code, $item->default);
@@ -296,9 +388,9 @@ class Data
 			$item->main_get = ArrayHelper::check($main_get) ? $main_get[0] : null;
 
 			// set the custom_get data
-			$item->custom_get = (isset($item->custom_get)
-				&& JsonHelper::check($item->custom_get))
-				? json_decode((string) $item->custom_get, true) : null;
+			$item->custom_get = (isset($item->custom_get) && JsonHelper::check($item->custom_get))
+				? json_decode((string) $item->custom_get, true)
+				: null;
 
 			if (ArrayHelper::check($item->custom_get))
 			{
@@ -327,13 +419,10 @@ class Data
 				'jcb_ce_onAfterModelCustomViewData', [&$item]
 			);
 
-			// set the found data
-			$this->data[$id . $table] = $item;
+			return $item;
 		}
 
-		// return the found data
-		return $this->data[$id . $table];
+		return null;
 	}
-
 }
 
