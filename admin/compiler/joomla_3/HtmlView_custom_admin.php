@@ -35,6 +35,9 @@ class ###Component###View###SView### extends HtmlView
 		$this->user = Factory::getUser();
 		// get global action permissions
 		$this->canDo = ###Component###Helper::getActions('###sview###');###CUSTOM_ADMIN_DIPLAY_METHOD###
+
+		// Display the template
+		parent::display($tpl);
 	}###CUSTOM_ADMIN_EXTRA_DIPLAY_METHODS###
 
 	/**
@@ -96,7 +99,7 @@ class ###Component###View###SView### extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

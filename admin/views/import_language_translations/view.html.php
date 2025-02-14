@@ -98,4 +98,14 @@ class ComponentbuilderViewImport_language_translations extends HtmlView
 			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= Factory::getDocument();
+
+		return $this->document;
+	}
 }

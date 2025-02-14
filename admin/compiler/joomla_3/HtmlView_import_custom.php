@@ -51,4 +51,14 @@ class ###Component###View###View### extends HtmlView
 			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 	}
+
+	/**
+	 * Get the Document (helper method toward Joomla 4 and 5)
+	 */
+	public function getDocument()
+	{
+		$this->document ??= Factory::getDocument();
+
+		return $this->document;
+	}
 }

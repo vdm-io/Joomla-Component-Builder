@@ -15,6 +15,12 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
 
 ?>
-<?php echo $this->noticeboard; ?>
+<?php
+Html::_('script', "administrator/components/com_componentbuilder/assets/js/compiler.js", ['version' => 'auto']);
+Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/compiler.css", ['version' => 'auto']);
+Html::_('script', "media/com_componentbuilder/js/marked.js", ['version' => 'auto']);
+echo LayoutHelper::render('jcbnoticeboard', null);
+?>

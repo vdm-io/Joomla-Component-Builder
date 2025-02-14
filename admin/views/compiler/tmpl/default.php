@@ -170,7 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			<div class="span7">
 				<div id="advance-details"><?php echo $this->form->renderFieldset('advanced'); ?></div>
 				<div id="component-details"><?php echo $selectNotice; ?></div>
-				<?php echo LayoutHelper::render('jcbnoticeboardtabs', array('id' => 'noticeboard' , 'active' => $noticeboardOptions[array_rand($noticeboardOptions)])); ?>
+				<div class="clearfix"></div>
+				<?php echo LayoutHelper::render('jcbnoticeboard', null); ?>
 			</div>
 		</div>
 		<div id="get-compiler-animations" style="display:none;">
@@ -193,8 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				<div class="clearfix"></div>
 			</div>
 			<div id="compiler-notice" class="span7" style="display:none;">
-				<?php echo LayoutHelper::render('jcbnoticeboard' . $noticeboardOptions[array_rand($noticeboardOptions)], null); ?>
-				<div><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+				<?php echo LayoutHelper::render('jcbnoticeboard',  ['id' => 'mastodon-feed-2', 'button_id' => 'refresh-feed-2', 'posts' => 7]); ?>
 			</div>
 		</div>
 		<input type="hidden" name="task" value="" />

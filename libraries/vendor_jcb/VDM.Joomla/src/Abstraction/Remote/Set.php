@@ -416,6 +416,8 @@ abstract class Set implements SetInterface
 
 		$settings = $this->mergeIndexSettings($repoGuid, $settings);
 
+		$this->grep->loadApi($this->git, $repo->base ?? null, $repo->token ?? null);
+
 		$this->updateIndexMainFile(
 			$repo,
 			$this->getIndexSettingsPath(),
@@ -429,6 +431,8 @@ abstract class Set implements SetInterface
 			$this->mainReadme->get($settings),
 			'Update main readme file'
 		);
+
+		$this->git->reset_();
 	}
 
 	/**
@@ -580,7 +584,7 @@ abstract class Set implements SetInterface
 
 			$this->setRepoPlaceholders($repo);
 
-			$this->git->load_($repo->base ?? null, $repo->token ?? null);
+			$this->grep->loadApi($this->git, $repo->base ?? null, $repo->token ?? null);
 
 			if (($existing = $this->grep->get($item->guid, ['remote'], $repo)) !== null)
 			{

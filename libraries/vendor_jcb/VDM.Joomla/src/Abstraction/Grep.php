@@ -17,6 +17,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Application\CMSApplication;
 use VDM\Joomla\Gitea\Repository\Contents;
+use VDM\Joomla\Interfaces\Git\ApiInterface as Api;
+use VDM\Joomla\Componentbuilder\Network\Resolve;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Interfaces\GrepInterface;
@@ -51,6 +53,14 @@ abstract class Grep implements GrepInterface
 	public ?array $paths;
 
 	/**
+	 * The Grep target [network]
+	 *
+	 * @var    string
+	 * @since  5.0.4
+	 **/
+	protected ?string $target = null;
+
+	/**
 	 * Order of global search
 	 *
 	 * @var    array
@@ -83,12 +93,28 @@ abstract class Grep implements GrepInterface
 	protected string $index_path = 'index.json';
 
 	/**
+	 * The VDM global API base
+	 *
+	 * @var    string
+	 * @since 5.0.4
+	 **/
+	protected string $api_base = '//git.vdm.dev/';
+
+	/**
 	 * Gitea Repository Contents
 	 *
 	 * @var    Contents
 	 * @since 3.2.0
 	 **/
 	protected Contents $contents;
+
+	/**
+	 * The Resolve Class.
+	 *
+	 * @var   Resolve
+	 * @since 5.0.4
+	 */
+	protected Resolve $resolve;
 
 	/**
 	 * Joomla Application object
@@ -101,17 +127,22 @@ abstract class Grep implements GrepInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Contents               $contents  The Gitea Repository Contents object.
-	 * @param array                  $paths     The approved paths
-	 * @param string|null            $path      The local path
-	 * @param CMSApplication|null    $app       The CMS Application object.
+	 * @param Contents              $contents  The Gitea Repository Contents object.
+	 * @param Resolve               $resolve   The Resolve Class.
+	 * @param array                 $paths     The approved paths
+	 * @param string|null           $path      The local path
+	 * @param CMSApplication|null   $app       The CMS Application object.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(Contents $contents, array $paths, ?string $path = null, ?CMSApplication $app = null)
+	public function __construct(
+		Contents $contents, Resolve $resolve,
+		array $paths, ?string $path = null,
+		?CMSApplication $app = null)
 	{
 		$this->contents = $contents;
+		$this->resolve = $resolve;
 		$this->paths = $paths;
 		$this->path = $path;
 		$this->app = $app ?: Factory::getApplication();
@@ -262,6 +293,38 @@ abstract class Grep implements GrepInterface
 		}
 
 		return null;
+	}
+
+	/**
+	 * Loads API config using the provided base URL and token.
+	 *
+	 * This method checks if the base URL contains 'https://git.vdm.dev/'.
+	 * If it does, it uses the token as is (which may be null).
+	 * If not, it ensures the token is not null by defaulting to an empty string.
+	 *
+	 * @param Api          $api    The api object with a load_ method.
+	 * @param string|null  $base   The base URL path.
+	 * @param string|null  $token  The token for authentication (can be null).
+	 *
+	 * @return void
+	 * @since 5.0.4
+	 */
+	public function loadApi(Api $api, ?string $base, ?string $token): void
+	{
+		// Determine the token to use based on the base URL
+		if ($base && strpos($base, $this->api_base) !== false)
+		{
+			// If base contains $this->api_base = https://git.vdm.dev/, use the token as is
+			$tokenToUse = $token;
+		}
+		else
+		{
+			// Otherwise, ensure the token is not null (use empty string if null)
+			$tokenToUse = $token ?? '';
+		}
+
+		// Load the content with the determined base and token
+		$api->load_($base, $tokenToUse);
 	}
 
 	/**
@@ -584,7 +647,7 @@ abstract class Grep implements GrepInterface
 		try
 		{
 			// load the base and token if set
-			$this->contents->load_($path->base ?? null, $path->token ?? null);
+			$this->loadApi($this->contents, $path->base ?? null, $path->token ?? null);
 			$path->index = $this->contents->get($path->organisation, $path->repository, $this->getIndexPath(), $this->getBranchName($path));
 		}
 		catch (\Exception $e)
@@ -640,6 +703,12 @@ abstract class Grep implements GrepInterface
 				if (isset($path->organisation) && strlen($path->organisation) > 1 &&
 						isset($path->repository) && strlen($path->repository) > 1)
 				{
+					// resolve API if needed
+					if (!empty($path->base))
+					{
+						$this->resolve->api($this->target ?? $path->repository, $path->base, $path->organisation, $path->repository);
+					}
+
 					// build the path
 					$path->path = trim($path->organisation) . '/' . trim($path->repository);
 

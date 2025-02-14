@@ -39,6 +39,14 @@ abstract class Database
 	protected string $table;
 
 	/**
+	 * Date format to return
+	 *
+	 * @var   string
+	 * @since 5.0.2
+	 */
+	protected string $dateFormat = 'Y-m-d H:i:s';
+
+	/**
 	 * Constructor
 	 *
 	 * @throws \Exception
@@ -62,23 +70,32 @@ abstract class Database
 	 **/
 	protected function quote($value)
 	{
-		if ($value === null) // hmm the null does pose an issue (will keep an eye on this)
+		if ($value === null)
 		{
 			return 'NULL';
 		}
 
 		if (is_numeric($value))
 		{
+			// If the value is a numeric string (e.g., "0123"), treat it as a string to preserve the format
+			if (is_string($value) && ltrim($value, '0') !== $value)
+			{
+				return $this->db->quote($value);
+			}
+
 			if (filter_var($value, FILTER_VALIDATE_INT))
 			{
 				return (int) $value;
 			}
-			elseif (filter_var($value, FILTER_VALIDATE_FLOAT))
+
+			if (filter_var($value, FILTER_VALIDATE_FLOAT))
 			{
 				return (float) $value;
 			}
 		}
-		elseif (is_bool($value)) // not sure if this will work well (but its correct)
+
+		// Handle boolean values
+		if (is_bool($value))
 		{
 			return $value ? 'TRUE' : 'FALSE';
 		}
@@ -86,10 +103,10 @@ abstract class Database
 		// For date and datetime values
 		if ($value instanceof \DateTime)
 		{
-			return $this->db->quote($value->format('Y-m-d H:i:s'));
+			return $this->db->quote($value->format($this->getDateFormat()));
 		}
 
-		// For other data types, just escape it
+		// For other types of values, quote as string
 		return $this->db->quote($value);
 	}
 
@@ -110,6 +127,17 @@ abstract class Database
 		}
 
 		return $table;
+	}
+
+	/**
+	 * Get the date format to return in the quote
+	 *
+	 * @return  string
+	 * @since   5.0.2
+	 **/
+	protected function getDateFormat(): string
+	{
+		return $this->dateFormat;
 	}
 }
 

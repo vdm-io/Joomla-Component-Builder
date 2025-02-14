@@ -311,6 +311,9 @@ final class Data implements PluginDataInterface
 					$plugin->name
 				);
 
+				// catch empty group name
+				$plugin->group ??= 'ErrorGroupMissing';
+
 				// set official name
 				$plugin->official_name = ucwords(
 					$plugin->group . ' - ' . $plugin->name

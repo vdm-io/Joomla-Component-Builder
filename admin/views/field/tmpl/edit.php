@@ -286,31 +286,15 @@ jQuery('#adminForm').on('change', '#jform_add_javascript_views_footer',function 
 jQuery(function() {
 	setTimeout(
 		function() {
-			// load the on click event
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
+			// make sure the code bocks are active
+			document.querySelectorAll("code").forEach(function(codeBlock) {
+				codeBlock.addEventListener("click", function() {
+					codeBlock.selText();
+					codeBlock.classList.add("selected");
+				});
 			});
 		}, 2000);
 });
-
-jQuery.fn.selText = function() {
-    var obj = this[0];
-    if (jQuery.browser.msie) {
-        var range = obj.offsetParent.createTextRange();
-        range.moveToElementText(obj);
-        range.select();
-    } else if (jQuery.browser.mozilla || $.browser.opera) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        var range = obj.ownerDocument.createRange();
-        range.selectNodeContents(obj);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } else if (jQuery.browser.safari) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        selection.setBaseAndExtent(obj, 0, obj, 1);
-    }
-    return this;
-}
 
 jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
 	e.preventDefault();
@@ -323,6 +307,21 @@ jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
 	dbChecker(fieldText);
 });
 
+
+HTMLElement.prototype.selText = function() {
+    var obj = this;
+
+    // For modern browsers, handle the selection
+    var selection = window.getSelection();
+    var range = document.createRange();
+
+    // Select the content of the element
+    range.selectNodeContents(obj);
+    selection.removeAllRanges();  // Clear any previous selections
+    selection.addRange(range);    // Add the new selection range
+
+    return this;
+};
 
 <?php
 	$app = Factory::getApplication();

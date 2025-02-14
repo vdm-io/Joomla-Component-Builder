@@ -21,6 +21,9 @@ use VDM\Joomla\Componentbuilder\Power\Service\Generator;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Componentbuilder\Power\Service\Gitea as GiteaPower;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
+use VDM\Joomla\Componentbuilder\Service\Network;
+use VDM\Joomla\Componentbuilder\Service\Api;
+use VDM\Joomla\Componentbuilder\Service\Utilities;
 use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
@@ -32,6 +35,14 @@ use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
  */
 abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
+	/**
+	 * Package Container
+	 *
+	 * @var   Container|null
+	 * @since 5.0.3
+	 **/
+	protected static ?Container $container = null;
+
 	/**
 	 * Create a container object
 	 *
@@ -48,7 +59,10 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Generator())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaPower())
-			->registerServiceProvider(new GiteaUtilities());
+			->registerServiceProvider(new GiteaUtilities())
+			->registerServiceProvider(new Api())
+			->registerServiceProvider(new Network())
+			->registerServiceProvider(new Utilities());
 	}
 }
 

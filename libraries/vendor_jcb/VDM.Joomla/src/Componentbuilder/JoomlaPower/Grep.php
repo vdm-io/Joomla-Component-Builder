@@ -30,6 +30,14 @@ use VDM\Joomla\Abstraction\Grep as ExtendingGrep;
 final class Grep extends ExtendingGrep implements GrepInterface
 {
 	/**
+	 * The Grep target [network]
+	 *
+	 * @var    string
+	 * @since  5.0.4
+	 **/
+	protected ?string $target = 'joomla-powers';
+
+	/**
 	 * Order of global search
 	 *
 	 * @var    array
@@ -77,7 +85,7 @@ final class Grep extends ExtendingGrep implements GrepInterface
 		$branch = $this->getBranchName($path);
 
 		// load the base and token if set
-		$this->contents->load_($path->base ?? null, $path->token ?? null);
+		$this->loadApi($this->contents, $path->base ?? null, $path->token ?? null);
 
 		// get the settings
 		if (($power = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->path . '/item.json', $branch)) !== null &&

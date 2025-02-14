@@ -79,11 +79,11 @@ class ComponentbuilderViewAdmin_fields_conditions extends HtmlView
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// Display the template
-		parent::display($tpl);
-
 		// Set the document
 		$this->setDocument();
+
+		// Display the template
+		parent::display($tpl);
 	}
 
 
@@ -195,6 +195,11 @@ class ComponentbuilderViewAdmin_fields_conditions extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_CONDITIONS_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/admin_fields_conditions.css", ['version' => 'auto']);
@@ -216,7 +221,7 @@ class ComponentbuilderViewAdmin_fields_conditions extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

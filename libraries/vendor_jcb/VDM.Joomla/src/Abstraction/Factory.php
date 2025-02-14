@@ -36,14 +36,6 @@ use VDM\Joomla\Interfaces\FactoryInterface;
 abstract class Factory implements FactoryInterface
 {
 	/**
-	 * Global Package Container
-	 *
-	 * @var   Container|null
-	 * @since 0.0.0
-	 **/
-	protected static ?Container $container = null;
-
-	/**
 	 * Get any class from the package container
 	 *
 	 * @param   string  $key  The container class key

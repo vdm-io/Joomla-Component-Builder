@@ -12,6 +12,9 @@
 namespace VDM\Joomla\Interfaces;
 
 
+use VDM\Joomla\Interfaces\Git\ApiInterface as Api;
+
+
 /**
  * Global Resource Empowerment Platform
  * 
@@ -78,5 +81,21 @@ interface GrepInterface
 	 * @since 3.2.2
 	 */
 	public function getRemoteIndex(string $guid): ?object;
+
+	/**
+	 * Loads API config using the provided base URL and token.
+	 *
+	 * This method checks if the base URL contains 'https://git.vdm.dev/'.
+	 * If it does, it uses the token as is (which may be null).
+	 * If not, it ensures the token is not null by defaulting to an empty string.
+	 *
+	 * @param Api          $api    The api object with a load_ method.
+	 * @param string|null  $base   The base URL path.
+	 * @param string|null  $token  The token for authentication (can be null).
+	 *
+	 * @return void
+	 * @since 5.0.4
+	 */
+	public function loadApi(Api $api, ?string $base, ?string $token): void;
 }
 

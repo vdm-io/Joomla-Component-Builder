@@ -24,10 +24,12 @@ use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Joomla_components List Model
@@ -125,14 +127,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 
 			// has any data been set for this component
-			if (JCBArrayHelper::check($pks))
+			if (UtilitiesArrayHelper::check($pks))
 			{
 				// load the linked stuff
 				$this->getLinkedToComponents($pks);
 			}
 
 			// has any data been set for this component
-			if (isset($this->smartBox['joomla_component']) && JCBArrayHelper::check($this->smartBox['joomla_component']))
+			if (isset($this->smartBox['joomla_component']) && UtilitiesArrayHelper::check($this->smartBox['joomla_component']))
 			{
 				// set the folder and move the files of each component to the folder
 				return $this->smartCloner();
@@ -205,7 +207,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 
 			// create the folders
-			JFolder::create($this->packagePath);
+			Folder::create($this->packagePath);
 
 			// update $pks with returned IDs
 			$pks = array();
@@ -293,14 +295,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			}
 
 			// has any data been set for this component
-			if (JCBArrayHelper::check($pks))
+			if (UtilitiesArrayHelper::check($pks))
 			{
 				// load the linked stuff
 				$this->getLinkedToComponents($pks);
 			}
 
 			// has any data been set for this component
-			if (isset($this->smartBox['joomla_component']) && JCBArrayHelper::check($this->smartBox['joomla_component']))
+			if (isset($this->smartBox['joomla_component']) && UtilitiesArrayHelper::check($this->smartBox['joomla_component']))
 			{
 				// set the folder and move the files of each component to the folder
 				return $this->smartExportBuilder();
@@ -337,7 +339,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->setData($table, $pks, $field);
 		}
 		// add fields conditions and relations
-		if (isset($this->smartIDs['admin_view']) && JCBArrayHelper::check($this->smartIDs['admin_view']))
+		if (isset($this->smartIDs['admin_view']) && UtilitiesArrayHelper::check($this->smartIDs['admin_view']))
 		{
 			$this->setData('admin_fields', array_values($this->smartIDs['admin_view']), 'admin_view');
 			$this->setData('admin_fields_conditions', array_values($this->smartIDs['admin_view']), 'admin_view');
@@ -345,41 +347,41 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->setData('admin_custom_tabs', array_values($this->smartIDs['admin_view']), 'admin_view');
 		}
 		// add joomla module
-		if (isset($this->smartIDs['joomla_module']) && JCBArrayHelper::check($this->smartIDs['joomla_module']))
+		if (isset($this->smartIDs['joomla_module']) && UtilitiesArrayHelper::check($this->smartIDs['joomla_module']))
 		{
 			$this->setData('joomla_module', array_values($this->smartIDs['joomla_module']), 'id');
 			$this->setData('joomla_module_updates', array_values($this->smartIDs['joomla_module']), 'joomla_module');
 			$this->setData('joomla_module_files_folders_urls', array_values($this->smartIDs['joomla_module']), 'joomla_module');
 		}
 		// add joomla plugin
-		if (isset($this->smartIDs['joomla_plugin']) && JCBArrayHelper::check($this->smartIDs['joomla_plugin']))
+		if (isset($this->smartIDs['joomla_plugin']) && UtilitiesArrayHelper::check($this->smartIDs['joomla_plugin']))
 		{
 			$this->setData('joomla_plugin', array_values($this->smartIDs['joomla_plugin']), 'id');
 			$this->setData('joomla_plugin_updates', array_values($this->smartIDs['joomla_plugin']), 'joomla_plugin');
 			$this->setData('joomla_plugin_files_folders_urls', array_values($this->smartIDs['joomla_plugin']), 'joomla_plugin');
 		}
 		// add validation rules
-		if (isset($this->smartIDs['validation_rule']) && JCBArrayHelper::check($this->smartIDs['validation_rule']))
+		if (isset($this->smartIDs['validation_rule']) && UtilitiesArrayHelper::check($this->smartIDs['validation_rule']))
 		{
 			$this->setData('validation_rule', array_values($this->smartIDs['validation_rule']), 'name');
 		}
 		// add field types
-		if (isset($this->smartIDs['fieldtype']) && JCBArrayHelper::check($this->smartIDs['fieldtype']))
+		if (isset($this->smartIDs['fieldtype']) && UtilitiesArrayHelper::check($this->smartIDs['fieldtype']))
 		{
 			$this->setData('fieldtype', array_values($this->smartIDs['fieldtype']), 'id');
 		}
 		// add templates
-		if (isset($this->smartIDs['template']) && JCBArrayHelper::check($this->smartIDs['template']))
+		if (isset($this->smartIDs['template']) && UtilitiesArrayHelper::check($this->smartIDs['template']))
 		{
 			$this->setData('template', array_values($this->smartIDs['template']), 'id');
 		}
 		// add layouts
-		if (isset($this->smartIDs['layout']) && JCBArrayHelper::check($this->smartIDs['layout']))
+		if (isset($this->smartIDs['layout']) && UtilitiesArrayHelper::check($this->smartIDs['layout']))
 		{
 			$this->setData('layout', array_values($this->smartIDs['layout']), 'id');
 		}
 		// add dynamic get
-		if (isset($this->smartIDs['dynamic_get']) && JCBArrayHelper::check($this->smartIDs['dynamic_get']))
+		if (isset($this->smartIDs['dynamic_get']) && UtilitiesArrayHelper::check($this->smartIDs['dynamic_get']))
 		{
 			$this->setData('dynamic_get', array_values($this->smartIDs['dynamic_get']), 'id');
 		}
@@ -387,49 +389,49 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if ('clone' !== $this->activeType)
 		{
 			// add class_property
-			if (isset($this->smartIDs['class_property']) && JCBArrayHelper::check($this->smartIDs['class_property']))
+			if (isset($this->smartIDs['class_property']) && UtilitiesArrayHelper::check($this->smartIDs['class_property']))
 			{
 				$this->setData('class_property', array_values($this->smartIDs['class_property']), 'id');
 			}
 			// add class_method
-			if (isset($this->smartIDs['class_method']) && JCBArrayHelper::check($this->smartIDs['class_method']))
+			if (isset($this->smartIDs['class_method']) && UtilitiesArrayHelper::check($this->smartIDs['class_method']))
 			{
 				$this->setData('class_method', array_values($this->smartIDs['class_method']), 'id');
 			}
 			// add joomla_plugin_group
-			if (isset($this->smartIDs['joomla_plugin_group']) && JCBArrayHelper::check($this->smartIDs['joomla_plugin_group']))
+			if (isset($this->smartIDs['joomla_plugin_group']) && UtilitiesArrayHelper::check($this->smartIDs['joomla_plugin_group']))
 			{
 				$this->setData('joomla_plugin_group', array_values($this->smartIDs['joomla_plugin_group']), 'id');
 			}
 			// add class_extends
-			if (isset($this->smartIDs['class_extends']) && JCBArrayHelper::check($this->smartIDs['class_extends']))
+			if (isset($this->smartIDs['class_extends']) && UtilitiesArrayHelper::check($this->smartIDs['class_extends']))
 			{
 				$this->setData('class_extends', array_values($this->smartIDs['class_extends']), 'id');
 			}
 			// add snippets
-			if (isset($this->smartIDs['snippet']) && JCBArrayHelper::check($this->smartIDs['snippet']))
+			if (isset($this->smartIDs['snippet']) && UtilitiesArrayHelper::check($this->smartIDs['snippet']))
 			{
 				$this->setData('snippet', array_values($this->smartIDs['snippet']), 'id');
 			}
 			// add custom code
-			if (isset($this->smartIDs['custom_code']) && JCBArrayHelper::check($this->smartIDs['custom_code']))
+			if (isset($this->smartIDs['custom_code']) && UtilitiesArrayHelper::check($this->smartIDs['custom_code']))
 			{
 				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
 			}
 			// add placeholder
-			if (isset($this->smartIDs['placeholder']) && JCBArrayHelper::check($this->smartIDs['placeholder']))
+			if (isset($this->smartIDs['placeholder']) && UtilitiesArrayHelper::check($this->smartIDs['placeholder']))
 			{
 				$this->setData('placeholder', array_values($this->smartIDs['placeholder']), 'id');
 			}
 			// add powers
-			if (isset($this->smartIDs['power']) && JCBArrayHelper::check($this->smartIDs['power']))
+			if (isset($this->smartIDs['power']) && UtilitiesArrayHelper::check($this->smartIDs['power']))
 			{
 				$this->setData('power', array_values($this->smartIDs['power']), 'guid');
 			}
 			// set limiter
 			$limit = 0;
 			// and add those custom codes found in custom codes
-			while (isset($this->smartIDs['custom_code']) && JCBArrayHelper::check($this->smartIDs['custom_code']) && $limit < 100)
+			while (isset($this->smartIDs['custom_code']) && UtilitiesArrayHelper::check($this->smartIDs['custom_code']) && $limit < 100)
 			{
 				$this->setData('custom_code', array_values($this->smartIDs['custom_code']), 'id');
 				// make sure we break
@@ -446,7 +448,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function getComponents($pks)
 	{
 		// setup the query
-		if (JCBArrayHelper::check($pks))
+		if (UtilitiesArrayHelper::check($pks))
 		{
 			// Get the user object.
 			if (!ObjectHelper::check($this->user))
@@ -485,7 +487,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				// load the items from db
 				$items = $this->_db->loadObjectList();
 				// check if we have items
-				if (JCBArrayHelper::check($items))
+				if (UtilitiesArrayHelper::check($items))
 				{
 					// set params
 					if (!ObjectHelper::check($this->params))
@@ -538,7 +540,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$value = json_decode($value, true);
 		}
 		// now update the fields
-		if (JCBArrayHelper::check($value))
+		if (UtilitiesArrayHelper::check($value))
 		{
 			foreach ($value as $id)
 			{
@@ -577,7 +579,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$values = json_decode($values, true);
 		}
 		// check that the array has values
-		if (JCBArrayHelper::check($values))
+		if (UtilitiesArrayHelper::check($values))
 		{
 			// check if the key is an array (targeting subform)
 			if ('subform' === $type && $key)
@@ -604,7 +606,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					}
 				}
 				// only return if we set the ids
-				if (JCBArrayHelper::check($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					// now set the values back
 					return array_unique($bucket);
@@ -616,7 +618,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$_key = explode('.', $key);
 				foreach ($values as $value)
 				{
-					if (isset($value[$_key[0]]) && JCBArrayHelper::check($value[$_key[0]]))
+					if (isset($value[$_key[0]]) && UtilitiesArrayHelper::check($value[$_key[0]]))
 					{
 						foreach ($value[$_key[0]] as $_value)
 						{
@@ -639,7 +641,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					}
 				}
 				// only return if we set the ids
-				if (JCBArrayHelper::check($bucket))
+				if (UtilitiesArrayHelper::check($bucket))
 				{
 					// now set the values back
 					return array_unique($bucket);
@@ -676,11 +678,11 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				{
 					foreach ($values[$key] as $k => $val)
 					{
-						if (strpos($k, 'power_') !== false && JCBArrayHelper::check($val))
+						if (strpos($k, 'power_') !== false && UtilitiesArrayHelper::check($val))
 						{
 							foreach ($val as $v)
 							{
-								if (JCBArrayHelper::check($v) && isset($v['power']))
+								if (UtilitiesArrayHelper::check($v) && isset($v['power']))
 								{
 									$bucket[$v['power']] = $v['power'];
 								}
@@ -688,7 +690,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						}
 					}
 					// only return if we set the ids
-					if (JCBArrayHelper::check($bucket))
+					if (UtilitiesArrayHelper::check($bucket))
 					{
 						// now return the values back
 						return array_values($bucket);
@@ -718,7 +720,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		}
 
 		// make sure we have an array of values
-		if (!JCBArrayHelper::check($values, true) || !StringHelper::check($table) || !StringHelper::check($key))
+		if (!UtilitiesArrayHelper::check($values, true) || !StringHelper::check($table) || !StringHelper::check($key))
 		{
 			return false;
 		}
@@ -769,7 +771,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			// reset the search array (only search for template/layouts)
 			$searchTLArray = array();
 			// check if we have items
-			if (JCBArrayHelper::check($items))
+			if (UtilitiesArrayHelper::check($items))
 			{
 				// set search array if site/custom admin view
 				if ('site_view' === $table || 'custom_admin_view' === $table)
@@ -1018,7 +1020,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 								$fieldsSets[] = (int) $fields;
 							}
 							// get fields
-							if (JCBArrayHelper::check($fieldsSets))
+							if (UtilitiesArrayHelper::check($fieldsSets))
 							{
 								$this->setData('field', $fieldsSets, 'id');
 							}
@@ -1042,7 +1044,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						}
 					}
 					// check if a search is required
-					if (isset($searchTLArray) && JCBArrayHelper::check($searchTLArray)){
+					if (isset($searchTLArray) && UtilitiesArrayHelper::check($searchTLArray)){
 
 						// add search array templates and layouts
 						foreach ($searchTLArray as $scripter => $add)
@@ -1198,7 +1200,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function smartCloner()
 	{
 		// check if data is set
-		if (isset($this->smartBox) && JCBArrayHelper::check($this->smartBox))
+		if (isset($this->smartBox) && UtilitiesArrayHelper::check($this->smartBox))
 		{
 			// get the import_joomla_components
 			$model = ComponentbuilderHelper::getModel('import_joomla_components');
@@ -1256,7 +1258,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function smartExportBuilder()
 	{
 		// check if data is set
-		if (isset($this->smartBox) && JCBArrayHelper::check($this->smartBox))
+		if (isset($this->smartBox) && UtilitiesArrayHelper::check($this->smartBox))
 		{
 			// set db data
 			$data = serialize($this->smartBox);
@@ -1271,7 +1273,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->info['source']['copyright'] = $this->params->get('export_copyright', null);
 
 			// lock the data if set
-			if (JCBArrayHelper::check($this->key))
+			if (UtilitiesArrayHelper::check($this->key))
 			{
 				// lock the data
 				$this->key = md5(implode('', $this->key));
@@ -1289,7 +1291,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				$this->info['getKeyFrom']['copyright'] = $this->info['source']['copyright'];
 				// add buy link if only one link is set
 				if (isset($this->info['export_buy_link'])
-					&& JCBArrayHelper::check($this->info['export_buy_link'])
+					&& UtilitiesArrayHelper::check($this->info['export_buy_link'])
 					&& count((array) $this->info['export_buy_link']) == 1)
 				{
 					$this->info['getKeyFrom']['buy_link'] = array_values($this->info['export_buy_link'])[0];
@@ -1347,10 +1349,10 @@ class ComponentbuilderModelJoomla_components extends ListModel
 			$this->lockFiles();
 
 			// remove old zip files with the same name
-			if (JFile::exists($this->zipPath))
+			if (is_file($this->zipPath))
 			{
 				// remove file if found
-				JFile::delete($this->zipPath);
+				File::delete($this->zipPath);
 			}
 
 			// zip the folder
@@ -1372,7 +1374,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 
 				// remove the local file
-				JFile::delete($this->zipPath);
+				File::delete($this->zipPath);
 			}
 
 			// remove the folder
@@ -1431,7 +1433,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		chdir($tmpPath);
 
 		// get a list of files in the current directory tree (all)
-		$files = JFolder::files('.', '.', true, true);
+		$files = Folder::files('.', '.', true, true);
 
 		// read in the file content
 		foreach ($files as $file)
@@ -1455,7 +1457,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 	protected function moveIt($paths, $type, $dynamic = false)
 	{
 		// make sure we have an array
-		if (!JCBArrayHelper::check($paths))
+		if (!UtilitiesArrayHelper::check($paths))
 		{
 			return false;
 		}
@@ -1486,7 +1488,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if (!FileHelper::exists($tmpPath))
 		{
 			// create the folders if not found
-			JFolder::create($tmpPath);
+			Folder::create($tmpPath);
 		}
 
 		// now move it
@@ -1510,10 +1512,10 @@ class ComponentbuilderModelJoomla_components extends ListModel
 						$customFilePath = str_replace('//', '/', $this->customPath.'/'.$item);
 					}
 					// now check if file exist
-					if (!JFile::exists($tmpFilePath) && JFile::exists($customFilePath))
+					if (!is_file($tmpFilePath) && is_file($customFilePath))
 					{
 						// move the file to its place
-						JFile::copy($customFilePath, $tmpFilePath);
+						File::copy($customFilePath, $tmpFilePath);
 					}
 				}
 
@@ -1528,14 +1530,14 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					if (!FileHelper::exists($imageFolderPath))
 					{
 						// create the folders if not found
-						JFolder::create($imageFolderPath);
+						Folder::create($imageFolderPath);
 					}
 					$tmpImagePath = str_replace('//', '/', $this->packagePath.'/'.$item);
 					$customImagePath = str_replace('//', '/', JPATH_ROOT.'/'.$item);
-					if (!JFile::exists($tmpImagePath) && JFile::exists($customImagePath))
+					if (!is_file($tmpImagePath) && is_file($customImagePath))
 					{
 						// move the file to its place
-						JFile::copy($customImagePath, $tmpImagePath);
+						File::copy($customImagePath, $tmpImagePath);
 					}
 				}
 
@@ -1557,7 +1559,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 					if (!FileHelper::exists($tmpFolderPath) && FileHelper::exists($customFolderPath))
 					{
 						// move the folder to its place
-						JFolder::copy($customFolderPath, $tmpFolderPath,'',true);
+						Folder::copy($customFolderPath, $tmpFolderPath,'',true);
 					}
 				}
 			}
@@ -1656,27 +1658,27 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		$temp2 = GetHelper::allBetween($default, '$this->loadTemplate("','")');
 		$templates = array();
 		$again = array();
-		if (JCBArrayHelper::check($temp1) && JCBArrayHelper::check($temp2))
+		if (UtilitiesArrayHelper::check($temp1) && UtilitiesArrayHelper::check($temp2))
 		{
 			$templates = array_merge($temp1,$temp2);
 		}
 		else
 		{
-			if (JCBArrayHelper::check($temp1))
+			if (UtilitiesArrayHelper::check($temp1))
 			{
 				$templates = $temp1;
 			}
-			elseif (JCBArrayHelper::check($temp2))
+			elseif (UtilitiesArrayHelper::check($temp2))
 			{
 				$templates = $temp2;
 			}
 		}
-		if (JCBArrayHelper::check($templates))
+		if (UtilitiesArrayHelper::check($templates))
 		{
 			foreach ($templates as $template)
 			{
 				$data = $this->getDataWithAlias($template, 'template');
-				if (JCBArrayHelper::check($data))
+				if (UtilitiesArrayHelper::check($data))
 				{
 					if (!isset($this->smartIDs['template']) || !isset($this->smartIDs['template'][$data['id']]))
 					{
@@ -1691,27 +1693,27 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		// set  the layout data
 		$lay1 = GetHelper::allBetween($default, "LayoutHelper::render('","',");
 		$lay2 = GetHelper::allBetween($default, 'LayoutHelper::render("','",');
-		if (JCBArrayHelper::check($lay1) && JCBArrayHelper::check($lay2))
+		if (UtilitiesArrayHelper::check($lay1) && UtilitiesArrayHelper::check($lay2))
 		{
 			$layouts = array_merge($lay1,$lay2);
 		}
 		else
 		{
-			if (JCBArrayHelper::check($lay1))
+			if (UtilitiesArrayHelper::check($lay1))
 			{
 				$layouts = $lay1;
 			}
-			elseif (JCBArrayHelper::check($lay2))
+			elseif (UtilitiesArrayHelper::check($lay2))
 			{
 				$layouts = $lay2;
 			}
 		}
-		if (isset($layouts) && JCBArrayHelper::check($layouts))
+		if (isset($layouts) && UtilitiesArrayHelper::check($layouts))
 		{
 			foreach ($layouts as $layout)
 			{
 				$data = $this->getDataWithAlias($layout, 'layout');
-				if (JCBArrayHelper::check($data))
+				if (UtilitiesArrayHelper::check($data))
 				{
 					if (!isset($this->smartIDs['layout']) || !isset($this->smartIDs['layout'][$data['id']]))
 					{
@@ -1723,7 +1725,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				}
 			}
 		}
-		if (JCBArrayHelper::check($again))
+		if (UtilitiesArrayHelper::check($again))
 		{
 			foreach ($again as $get)
 			{
@@ -1734,12 +1736,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		if ($user)
 		{
 			// add templates
-			if (isset($this->smartIDs['template']) && JCBArrayHelper::check($this->smartIDs['template']))
+			if (isset($this->smartIDs['template']) && UtilitiesArrayHelper::check($this->smartIDs['template']))
 			{
 				$this->setData('template', array_values($this->smartIDs['template']), 'id');
 			}
 			// add layouts
-			if (isset($this->smartIDs['layout']) && JCBArrayHelper::check($this->smartIDs['layout']))
+			if (isset($this->smartIDs['layout']) && UtilitiesArrayHelper::check($this->smartIDs['layout']))
 			{
 				$this->setData('layout', array_values($this->smartIDs['layout']), 'id');
 			}
@@ -1828,7 +1830,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				{
 					// search the value to see if it has custom code
 					$codeArray = GetHelper::allBetween($value, '[CUSTOMC' . 'ODE=',']');
-					if (JCBArrayHelper::check($codeArray))
+					if (UtilitiesArrayHelper::check($codeArray))
 					{
 						foreach ($codeArray as $func)
 						{
@@ -1864,12 +1866,12 @@ class ComponentbuilderModelJoomla_components extends ListModel
 				elseif ('placeholder' === $type)
 				{
 					// check if we already have the placeholder search array
-					if (!JCBArrayHelper::check($this->placeholderM) && !JCBArrayHelper::check($this->placeholderS))
+					if (!UtilitiesArrayHelper::check($this->placeholderM) && !UtilitiesArrayHelper::check($this->placeholderS))
 					{
 						$this->placeholderS = ComponentbuilderHelper::getVars($type, 1, 'published', 'target');
 					}
 					// only continue search if placeholders found
-					if (JCBArrayHelper::check($this->placeholderS))
+					if (UtilitiesArrayHelper::check($this->placeholderS))
 					{
 						foreach ($this->placeholderS as $remove => $placeholder)
 						{
@@ -1932,7 +1934,7 @@ class ComponentbuilderModelJoomla_components extends ListModel
 		{
 			$items = $this->_db->loadObjectList();
 			// check if we have items
-			if (JCBArrayHelper::check($items))
+			if (UtilitiesArrayHelper::check($items))
 			{
 				if (!isset($this->smartBox['language_translation']))
 				{

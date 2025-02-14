@@ -192,7 +192,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			// Sanitize the input
 			ArrayHelper::toInteger($pks);
 			// check if there is any selections
-			if (!JCBArrayHelper::check($pks))
+			if (!UtilitiesArrayHelper::check($pks))
 			{
 				// Redirect to the list screen with error.
 				$message = Text::_('COM_COMPONENTBUILDER_NO_COMPONENTS_WERE_SELECTED_PLEASE_MAKE_A_SELECTION_AND_TRY_AGAIN');
@@ -431,7 +431,7 @@ class ComponentbuilderControllerJoomla_components extends AdminController
 			// Sanitize the input
 			ArrayHelper::toInteger($pks);
 			// check if there is any selections
-			if (!JCBArrayHelper::check($pks))
+			if (!UtilitiesArrayHelper::check($pks))
 			{
 				// Redirect to the list screen with error.
 				$message = Text::_('COM_COMPONENTBUILDER_NO_COMPONENT_WAS_SELECTED_PLEASE_MAKE_A_SELECTION_OF_ONE_COMPONENT_AND_TRY_AGAIN');

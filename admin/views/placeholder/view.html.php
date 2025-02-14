@@ -79,11 +79,11 @@ class ComponentbuilderViewPlaceholder extends HtmlView
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// Display the template
-		parent::display($tpl);
-
 		// Set the document
 		$this->setDocument();
+
+		// Display the template
+		parent::display($tpl);
 	}
 
 
@@ -195,6 +195,11 @@ class ComponentbuilderViewPlaceholder extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_PLACEHOLDER_NEW' : 'COM_COMPONENTBUILDER_PLACEHOLDER_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/placeholder.css", ['version' => 'auto']);
@@ -218,9 +223,9 @@ class ComponentbuilderViewPlaceholder extends HtmlView
 		Text::script('COM_COMPONENTBUILDER_PLACEHOLDER_ALREADY_TAKEN_PLEASE_TRY_AGAIN');
 		Text::script('COM_COMPONENTBUILDER_YOU_MUST_ADD_AN_UNIQUE_PLACEHOLDER');
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		Text::script('view not acceptable. Error');
 	}
 
@@ -229,7 +234,7 @@ class ComponentbuilderViewPlaceholder extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

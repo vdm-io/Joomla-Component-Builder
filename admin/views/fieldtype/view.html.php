@@ -82,11 +82,11 @@ class ComponentbuilderViewFieldtype extends HtmlView
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// Display the template
-		parent::display($tpl);
-
 		// Set the document
 		$this->setDocument();
+
+		// Display the template
+		parent::display($tpl);
 	}
 
 
@@ -208,6 +208,11 @@ class ComponentbuilderViewFieldtype extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_FIELDTYPE_NEW' : 'COM_COMPONENTBUILDER_FIELDTYPE_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/fieldtype.css", ['version' => 'auto']);
@@ -276,9 +281,9 @@ class ComponentbuilderViewFieldtype extends HtmlView
 			Html::_('script', 'media/com_componentbuilder/uikit-v3/js/uikit-icons'.$size.'.js', ['version' => 'auto']);
 		}
 		// add var key
-		$this->document->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->document->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		Text::script('view not acceptable. Error');
 	}
 
@@ -287,7 +292,7 @@ class ComponentbuilderViewFieldtype extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

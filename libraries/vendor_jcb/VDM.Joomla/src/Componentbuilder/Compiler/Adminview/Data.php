@@ -48,6 +48,14 @@ use VDM\Joomla\Utilities\ArrayHelper;
 class Data
 {
 	/**
+	 * The cache
+	 *
+	 * @var   array
+	 * @since 3.2.0
+	 */
+	protected array $data;
+
+	/**
 	 * The Config Class.
 	 *
 	 * @var   Config

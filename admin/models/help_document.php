@@ -433,7 +433,7 @@ class ComponentbuilderModelHelp_document extends AdminModel
 					// change to false
 					$form->setFieldAttribute($requiredField, 'required', 'false');
 					// also clear the data set
-					$data[$requiredField] = '';
+					unset($data[$requiredField]);
 				}
 			}
 		}

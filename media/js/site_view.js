@@ -316,69 +316,99 @@ function getSnippetDetails(id){
 	})
 }
 
-function getDynamicValues_server(dynamicId){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getDynamicValues&format=json");
-	if(token.length > 0 && dynamicId > 0){
-		var request = token+'=1&view=site_view&id='+dynamicId;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
+function getDynamicValuesServer(dynamicId) {
+    var getUrl = 'index.php?option=com_componentbuilder&task=ajax.getDynamicValues&raw=true&format=json';
+    if (token.length > 0 && dynamicId > 0) {
+        var request = token + '=1&view=site_view&id=' + dynamicId;
+    }
+
+    return fetch(getUrl + '&' + request, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json());
 }
 
-function getDynamicValues(id){
-	getDynamicValues_server(id).done(function(result) {
-		if(result){
-			jQuery('#dynamic_values').remove();
-			jQuery('.dynamic_values').append('<div id="dynamic_values">'+result+'</div>');
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
+function getDynamicValues(id) {
+    getDynamicValuesServer(id).then(function(result) {
+        if (result) {
+            var dynamicValuesElement = document.getElementById('dynamic_values');
+            if (dynamicValuesElement) {
+                dynamicValuesElement.remove();
+            }
+            document.querySelector('.dynamic_values').insertAdjacentHTML('beforeend', '<div id="dynamic_values">' + result + '</div>');
+
+            // Event listener for code blocks
+            document.querySelectorAll("code").forEach(function(codeBlock) {
+                codeBlock.addEventListener("click", function() {
+                    codeBlock.selText(); // Call the custom selText function
+                    codeBlock.classList.add("selected");  // Add the "selected" class
+                });
+            });
+        }
+    }).catch(function(error) {
+        console.error('Error fetching dynamic values:', error);
+    });
 }
 
-function getLayoutDetails_server(id){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&vdm="+vastDevMod);
-	if(token.length > 0 && id > 0){
-		var request = token+'=1&id='+id;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'jsonp',
-		data: request,
-		jsonp: 'callback'
-	});
+function getLayoutDetails_server(id) {
+    var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getLayoutDetails&format=json&raw=true&vdm=" + vastDevMod);
+    var request = '';
+
+    // Ensure token and id are present
+    if (token.length > 0 && id > 0) {
+        request = token + '=1&id=' + id;
+    }
+
+    // Return a fetch promise (fetch does not support JSONP, so I assume the server can return JSON)
+    return fetch(getUrl + '&' + request, {
+        method: 'GET'
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();  // Assuming the server returns JSON
+    });
 }
 
-function getLayoutDetails(id){
-	getLayoutDetails_server(id).done(function(result) {
-		if(result){
-			jQuery('#details').append(result);
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
+function getLayoutDetails(id) {
+    getLayoutDetails_server(id)
+        .then(function(result) {
+            if (result) {
+                document.querySelector('#details').insertAdjacentHTML('beforeend', result);
+
+                // Re-enable code block text selection functionality
+                document.querySelectorAll("code").forEach(function(codeBlock) {
+                    codeBlock.addEventListener("click", function() {
+                        codeBlock.selText();
+                        codeBlock.classList.add("selected");
+                    });
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('There was a problem with the fetch operation:', error);
+        });
 }
 
-function getTemplateDetails(id){
-	getCodeFrom_server(id, 'type', 'type', 'templateDetails').then(function(result) {
-		if(result){
-			jQuery('#details').append(result);
-			// make sure the code bocks are active
-			jQuery("code").click(function() {
-				jQuery(this).selText().addClass("selected");
-			});
-		}
-	})
+
+function getTemplateDetails(id) {
+    getCodeFrom_server(id, 'type', 'type', 'templateDetails').then(function(result) {
+        if (result) {
+            document.querySelector('#details').insertAdjacentHTML('beforeend', result);
+
+            // Re-enable code block text selection functionality
+            document.querySelectorAll("code").forEach(function(codeBlock) {
+                codeBlock.addEventListener("click", function() {
+                    codeBlock.selText();
+                    codeBlock.classList.add("selected");
+                });
+            });
+        }
+    });
 }
 
 // set snippets that are on the page
@@ -476,12 +506,16 @@ function getEditCustomCodeButtons() {
 
 				// Insert the div before .control-wrapper-{field}
 				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				if (insertBeforeElement) {
+					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+				}
 
 				// Adding buttons to the div
 				Object.entries(buttons).forEach(([name, button]) => {
 					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					controlsDiv.innerHTML += button;
+					if (controlsDiv) {
+						controlsDiv.innerHTML += button;
+					}
 				});
 			});
 		}

@@ -1,0 +1,61 @@
+<?php
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    30th April, 2015
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
+ * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+// No direct access to this file
+defined('JPATH_BASE') or die('Restricted access');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\CMS\Layout\LayoutHelper;
+
+
+
+?>
+<div id="llewellyns-social-icons" class="social-icons" style="float: right;">
+	<a href="https://volunteers.joomla.org/joomlers/1396-llewellyn-van-der-merwe" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_JOIN_LLEWELLYN_ON_THE_JOOMLA_VOLUNTEER_PORTAL_SHAPING_THE_FUTURE_TOGETHER'); ?>">
+		<i class="icon-joomla"></i>
+	</a>
+	<a href="https://git.vdm.dev/octoleo" class="text-decoration-none me-2" data-description="--quiet">
+		<i class="icon-shield"></i>
+	</a>
+	<a href="https://git.vdm.dev/Llewellyn" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_COLLABORATE_AND_INNOVATE_WITH_LLEWELLYN_ON_GIT_BUILDING_A_BETTER_CODE_FUTURE'); ?>">
+		<i class="icon-tree"></i>
+	</a>
+	<a href="https://joomla.social/@llewellyn" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_CONNECT_AND_ENGAGE_WITH_LLEWELLYN_ON_JOOMLA_SOCIAL_EMPOWERING_COMMUNITIES_ONE_POST_AT_A_TIME'); ?>">
+		<i class="icon-puzzle"></i>
+	</a>
+	<a href="https://x.com/llewellynvdm" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_JOIN_THE_CONVERSATION_WITH_LLEWELLYN_ON_X_WHERE_IDEAS_TAKE_FLIGHT'); ?>">
+		<i class="icon-signup"></i>
+	</a>
+	<a href="https://github.com/Llewellynvdm" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_BUILD_INNOVATE_AND_THRIVE_WITH_LLEWELLYN_ON_GITHUB_TURNING_IDEAS_INTO_IMPACT'); ?>">
+		<i class="icon-cog"></i>
+	</a>
+	<a href="https://www.youtube.com/@OctoYou" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_EXPLORE_LEARN_AND_CREATE_WITH_LLEWELLYN_ON_YOUTUBE_YOUR_GATEWAY_TO_INSPIRATION'); ?>">
+		<i class="icon-youtube"></i>
+	</a>
+	<a href="https://hub.docker.com/u/llewellyn" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_LLEWELLYN_ON_DOCKER_CONTAINERIZE_YOUR_CREATIVITY'); ?>">
+		<i class="icon-box-add"></i>
+	</a>
+	<a href="https://opencollective.com/joomla-component-builder" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_DONATE_TOWARDS_JCB_HELP_LLEWELLYN_FINANCIALLY_SO_HE_CAN_CONTINUE_DEVELOPING_THIS_GREAT_TOOL'); ?>">
+		<i class="icon-heart"></i>
+	</a>
+	<a href="https://git.vdm.dev/Llewellyn/gpg" class="text-decoration-none" data-description="<?php echo Text::_("COM_COMPONENTBUILDER_UNLOCK_TRUST_AND_SECURITY_WITH_LLEWELLYNS_GPG_KEY_YOUR_GATEWAY_TO_VERIFIED_CONNECTIONS"); ?>">
+		<i class="icon-key"></i>
+	</a>
+</div>
+<br>
+<div id="llewellyns-social-icon-details" class="social-icon-details" style="float: right;"></div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  new IconWaveAnimator("llewellyns-social-icons", "llewellyns-social-icon-details");
+});
+</script>

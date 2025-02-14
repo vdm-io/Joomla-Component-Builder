@@ -85,11 +85,11 @@ class ComponentbuilderViewComponents_routers extends HtmlView
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// Display the template
-		parent::display($tpl);
-
 		// Set the document
 		$this->setDocument();
+
+		// Display the template
+		parent::display($tpl);
 	}
 
 	/**
@@ -251,6 +251,11 @@ class ComponentbuilderViewComponents_routers extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		if (!isset($this->document))
 		{
 			$this->document = Factory::getDocument();
@@ -296,7 +301,7 @@ class ComponentbuilderViewComponents_routers extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

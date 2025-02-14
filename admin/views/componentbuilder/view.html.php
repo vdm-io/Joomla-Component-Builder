@@ -34,7 +34,6 @@ class ComponentbuilderViewComponentbuilder extends HtmlView
 		$this->icons          = $this->get('Icons');
 		$this->contributors   = ComponentbuilderHelper::getContributors();
 		$this->wiki = $this->get('Wiki');
-		$this->noticeboard = $this->get('Noticeboard');
 		$this->readme = $this->get('Readme');
 		$this->version = $this->get('Version');
 

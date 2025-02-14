@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use Joomla\CMS\Uri\Uri;
@@ -164,35 +165,73 @@ class ComponentbuilderModelAjax extends ListModel
 	}
 
 	/**
-	* 	set the component display
-	**/
+	 * Generate the component details display in HTML.
+	 *
+	 * @param object $object The component object containing details.
+	 * @return string The HTML string for displaying component details.
+	 */
 	protected function componentDetailsDisplay($object)
 	{
-		// set some vars
-		$image = (StringHelper::check($object->image)) ? '<img alt="Joomla Component Image" src="'. Uri::root() . $object->image . '" style="float: right;">': '';
-		$desc = (StringHelper::check($object->description)) ? $object->description : $object->short_description;
-		$placeholder = ($object->add_placeholders == 1) ? '<span class="btn btn-small btn-success"> ' . Text::_('COM_COMPONENTBUILDER_YES') . ' </span>' : '<span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
-		$debug = ($object->debug_linenr == 1) ? '<span class="btn btn-small btn-success"> ' .Text::_('COM_COMPONENTBUILDER_YES') . '</span>'  : ' <span class="btn btn-small btn-danger"> ' .Text::_('COM_COMPONENTBUILDER_NO') . ' </span>' ;
-		$html = array();
-		$html[] = '<h3>' . $object->name . ' (v' . $object->component_version . ')</h3>';
-		$html[] = '<p>' . $desc . $image . '</p>';
-		$html[] = '<ul>';
-		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_COMPANY') . ': <b>' . $object->companyname . '</b></li>';
-		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_AUTHOR') . ': <b>' . $object->author . '</b></li>';
-		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_EMAIL') . ': <b>' . $object->email . '</b></li>';
-		$html[] = '<li>' . Text::_('COM_COMPONENTBUILDER_WEBSITE') . ': <b>' . $object->website . '</b></li>';
-		$html[] = '</ul>';
-		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_COMPONENT_GLOBAL_SETTINGS') . '</h4>';
+		// Helper variables with null coalescing to ensure robust value assignment
+		$imageSrc = !empty($object->image) ? htmlspecialchars($object->image, ENT_QUOTES) : null;
+		$image = $imageSrc 
+			? '<img alt="' . Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_IMAGE') . '" src="' . Uri::root() . $imageSrc . '" style="float: right; max-width: 250px; margin-left: 15px;">'
+			: '';
+
+		$description = htmlspecialchars(!empty($object->description) ? $object->description : $object->short_description, ENT_QUOTES);
+
+		$placeholderStatus = $object->add_placeholders
+			? '<span class="badge badge-success">' . Text::_('COM_COMPONENTBUILDER_YES') . '</span>'
+			: '<span class="badge badge-danger">' . Text::_('COM_COMPONENTBUILDER_NO') . '</span>';
+
+		$debugStatus = $object->debug_linenr
+			? '<span class="badge badge-success">' . Text::_('COM_COMPONENTBUILDER_YES') . '</span>'
+			: '<span class="badge badge-danger">' . Text::_('COM_COMPONENTBUILDER_NO') . '</span>';
+
+		// Author and company details
+		$company = '<ul>';
+		$company .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_COMPANY') . ':</strong> ' . htmlspecialchars($object->companyname, ENT_QUOTES) . '</li>';
+		$company .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_AUTHOR') . ':</strong> ' . htmlspecialchars($object->author, ENT_QUOTES) . '</li>';
+		$company .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_EMAIL') . ':</strong> <a href="mailto:' . htmlspecialchars($object->email, ENT_QUOTES) . '">' . htmlspecialchars($object->email, ENT_QUOTES) . '</a></li>';
+		$company .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_WEBSITE') . ':</strong> <a href="' . htmlspecialchars($object->website, ENT_QUOTES) . '" target="_blank" rel="noopener">' . htmlspecialchars($object->website, ENT_QUOTES) . '</a></li>';
+		$company .= '</ul>';
+
+		// Build HTML output
+		$html = [];
+
+		// Header with component name and version
+		$html[] = '<div class="component-details">';
+		$html[] = '<h3>' . htmlspecialchars($object->name, ENT_QUOTES) . ' (v' . htmlspecialchars($object->component_version, ENT_QUOTES) . ')</h3>';
+
+		// Description with optional image
+		$html[] = '<div class="description" style="overflow: hidden;">';
+		$html[] = '<p>' . $image . $description . $company . '</p>';
+		$html[] = '</div>';
+
+		// Component settings
+		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_COMPONENT_SETTINGS') . '</h4>';
 		$html[] = '<p>';
-		$html[] = Text::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS') . '<br />' . $placeholder . '<br />';
-		$html[] = Text::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS') . '<br />' . $debug ;
+		$html[] = Text::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS') . ': ' . $placeholderStatus . '<br>';
+		$html[] = Text::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS') . ': ' . $debugStatus;
 		$html[] = '</p>';
+
+		// License details
 		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_LICENSE') . '</h4>';
-		$html[] = '<p>' . $object->license . '</p>';
+		$html[] = '<p>' . nl2br(htmlspecialchars($object->license, ENT_QUOTES)) . '</p>';
+
+		// Copyright
 		$html[] = '<h4>' . Text::_('COM_COMPONENTBUILDER_COPYRIGHT') . '</h4>';
-		$html[] = '<p>' . $object->copyright . '<br /><br />';
-		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-small span12"><span class="icon-edit"></span> ' . Text::_('COM_COMPONENTBUILDER_EDIT') . ' ' .$object->system_name . '</a></p>';
-		// now return the diplay
+		$html[] = '<p>' . nl2br(htmlspecialchars($object->copyright, ENT_QUOTES)) . '</p>';
+
+		// Edit button
+		$html[] = '<p>';
+		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-primary btn-block">';
+		$html[] = '<span class="icon-edit"></span> ' . Text::_('COM_COMPONENTBUILDER_EDIT') . ' ' . htmlspecialchars($object->system_name, ENT_QUOTES);
+		$html[] = '</a>';
+		$html[] = '</p>';
+
+		$html[] = '</div>'; // Close component-details
+
 		return implode("\n", $html);
 	}
 
@@ -1595,7 +1634,7 @@ class ComponentbuilderModelAjax extends ListModel
 	 * @var	array
 	 * @since 3.0.13
 	 */
-	protected $viewid = [];
+	protected array $viewid = [];
 
 	/**
 	 * Get the view details via the session
@@ -1615,7 +1654,7 @@ class ComponentbuilderModelAjax extends ListModel
 			if ($vdm)
 			{
 				// set view and id
-				if ($view = ComponentbuilderHelper::get($vdm))
+				if (($view = SessionHelper::get($vdm)) !== null)
 				{
 					$current = (array) explode('__', $view);
 					if (StringHelper::check($current[0]) && isset($current[1]) && is_numeric($current[1]))
@@ -1628,7 +1667,7 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// set GUID if found
-				if (($guid = ComponentbuilderHelper::get($vdm . '__guid')) !== false)
+				if (($guid = SessionHelper::get($vdm . '__guid')) !== null)
 				{
 					if (GuidHelper::valid($guid))
 					{
@@ -1636,7 +1675,7 @@ class ComponentbuilderModelAjax extends ListModel
 					}
 				}
 				// set return if found
-				if (($return = ComponentbuilderHelper::get($vdm . '__return')) !== false)
+				if (($return = SessionHelper::get($vdm . '__return')) !== null)
 				{
 					if (StringHelper::check($return))
 					{

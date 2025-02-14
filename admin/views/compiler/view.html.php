@@ -115,6 +115,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
+		// Display the template
 		parent::display($tpl);
 	}
 
@@ -588,6 +589,9 @@ class ComponentbuilderViewCompiler extends HtmlView
 		// Initialize the header checker.
 		$HeaderCheck = new componentbuilderHeaderCheck();
 
+		// Add View JavaScript File
+		Html::_('script', "administrator/components/com_componentbuilder/assets/js/compiler.js", ['version' => 'auto']);
+
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
 		// Set script size.
@@ -684,70 +688,6 @@ class ComponentbuilderViewCompiler extends HtmlView
 					}
 				});
 			}
-			
-			document.addEventListener('DOMContentLoaded', function() {
-				fetchNoticeboard(\"https://vdm.bz/componentbuilder-noticeboard-md\", \".noticeboard-md\", true);
-				fetchNoticeboard(\"https://vdm.bz/componentbuilder-pro-noticeboard-md\", \".proboard-md\", false);
-			});
-			function fetchNoticeboard(url, selector, processGetIS) {
-				fetch(url)
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-					return response.text();
-				})
-				.then(board => {
-					var elements = document.querySelectorAll(selector);
-					if (board.length > 5) {
-						let html_board = marked.parse(board);
-						elements.forEach(element => {
-							element.innerHTML = html_board;
-						});
-						if (processGetIS) {
-							getIS(1, board).then(result => {
-								if (result) {
-									document.querySelectorAll(\".vdm-new-notice\").forEach(element => {
-										element.style.display = 'block';
-									});
-									getIS(2, board);
-								}
-							});
-						}
-					} else {
-						elements.forEach(element => {
-							element.innerHTML = all_is_good;
-						});
-					}
-				})
-				.catch(error => {
-					console.error('There was an error!', error);
-					document.querySelectorAll(selector).forEach(element => {
-						element.innerHTML = all_is_good;
-					});
-				});
-			}
-			// to check is READ/NEW
-			function getIS(type, notice) {
-				let getUrl = \"\";
-				if (type === 1) {
-					getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isNew&format=json&raw=true\");
-				} else if (type === 2) {
-					getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.isRead&format=json&raw=true\");
-				}
-				let request = new URLSearchParams();
-				if (token.length > 0 && notice.length) {
-					request.append(token, \"1\");
-					request.append(\"notice\", notice);
-				}
-				return fetch(getUrl, {
-					method: \"POST\",
-					headers: {
-						\"Content-Type\": \"application/x-www-form-urlencoded;charset=UTF-8\"
-					},
-					body: request
-				}).then(response => response.json());
-			}
 		");
 	}
 
@@ -810,7 +750,7 @@ class ComponentbuilderViewCompiler extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

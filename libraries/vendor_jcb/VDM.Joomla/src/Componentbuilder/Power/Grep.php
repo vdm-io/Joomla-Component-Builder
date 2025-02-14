@@ -131,7 +131,7 @@ final class Grep extends ExtendingGrep implements GrepInterface
 		$branch = $this->getBranchName($path);
 
 		// load the base and token if set
-		$this->contents->load_($path->base ?? null, $path->token ?? null);
+		$this->loadApi($this->contents, $path->base ?? null, $path->token ?? null);
 
 		// get the settings
 		if (($power = $this->loadRemoteFile($path->organisation, $path->repository, $path->index->{$guid}->settings, $branch)) !== null &&

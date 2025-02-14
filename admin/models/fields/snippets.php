@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Uri\Uri;
 
 // import the list field type
 jimport('joomla.form.helper');
@@ -69,7 +70,7 @@ class JFormFieldSnippets extends JFormFieldList
 				$ref = '&amp;ref=' . $values['view'] . '&amp;refid=' . $values['id'];
 				$refJ = '&ref=' . $values['view'] . '&refid=' . $values['id'];
 				// get the return value.
-				$_uri = (string) \Joomla\CMS\Uri\Uri::getInstance();
+				$_uri = (string) Uri::getInstance();
 				$_return = urlencode(base64_encode($_uri));
 				// load return value.
 				$ref .= '&amp;return=' . $_return;

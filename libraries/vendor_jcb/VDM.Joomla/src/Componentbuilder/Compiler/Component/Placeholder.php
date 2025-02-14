@@ -124,6 +124,8 @@ final class Placeholder implements PlaceholderInterface
 		$bucket[Placefix::_('NamespacePrefix')] = $config->namespace_prefix;
 		$bucket[Placefix::_h('NAMESPACEPREFIX')] = $config->namespace_prefix;
 		$bucket[Placefix::_('NAMESPACEPREFIX')] = $config->namespace_prefix;
+		$bucket[Placefix::_('POWERLOADERPATH')] = $config->component_autoloader_path;
+		$bucket[Placefix::_h('POWERLOADERPATH')] = $config->component_autoloader_path;
 
 		// get the current components overrides
 		if (($_placeholders = GetHelper::var(

@@ -1306,7 +1306,8 @@ final class Builders
 					'list' => $nameListCode,
 					'store' => (isset($field['store'])) ? $field['store'] : null,
 					'tab_name' => $tabName,
-					'db' => $this->normalizeDatabaseValues($nameSingleCode, $name, $databaseuniquekey, $databasekey)
+					'db' => $this->normalizeDatabaseValues($nameSingleCode, $name, $databaseuniquekey, $databasekey),
+					'link' => $this->setLinkerRelations($custom ?? [])
 				]
 			);
 		}
@@ -1360,6 +1361,37 @@ final class Builders
 		unset($db_values['ID'], $db_values['lenght'], $db_values['lenght_other'], $db_values['other']);
 
 		return $db_values;
+	}
+
+	/**
+	 * Sets the linker relations for a field based on the provided link data.
+	 *
+	 * The method determines the type of link relation based on the presence of a table.
+	 * If no table is provided, it assigns a type 2 with a null table, otherwise it assigns type 1.
+	 * It also extracts additional values from the input array, such as component, entity, value, and key.
+	 *
+	 * @param array  $link  The link data which may contain 'table', 'component', 'view', 'text', and 'id'.
+	 *
+	 * @return array|null The structured linker relation array, or null if input is an empty array.
+	 * @since 5.0.3
+	 */
+	private function setLinkerRelations(array $link): ?array
+	{
+		if ($link === [])
+		{
+			return null;
+		}
+
+		$linker = [
+			'type' => empty($link['table']) ? 2 : 1,
+			'table' => $link['table'] ?? null,
+			'component' => $link['component'] ?? null,
+			'entity' => $link['view'] ?? null,
+			'value' => $link['text'] ?? null,
+			'key' => $link['id'] ?? null
+		];
+
+		return $linker;
 	}
 }
 

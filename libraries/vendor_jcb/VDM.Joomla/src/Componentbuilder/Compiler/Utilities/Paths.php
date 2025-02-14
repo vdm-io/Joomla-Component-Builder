@@ -75,13 +75,13 @@ class Paths extends Registry
 	/**
 	 * getting any valid paths
 	 *
-	 * @param   string       $key     The value's key/path name
+	 * @param   string  $key The value's key/path name
 	 *
 	 * @return  string    The path found as a string
 	 * @since 3.2.0
 	 * @throws  \InvalidArgumentException If $key is not a valid function name.
 	 */
-	public function __get(string $key): string
+	public function __get($key)
 	{
 		// check if it has been set
 		if ($this->exists($key))

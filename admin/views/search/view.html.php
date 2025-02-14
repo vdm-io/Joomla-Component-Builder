@@ -108,6 +108,7 @@ class ComponentbuilderViewSearch extends HtmlView
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
+		// Display the template
 		parent::display($tpl);
 	}
 
@@ -449,7 +450,7 @@ class ComponentbuilderViewSearch extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

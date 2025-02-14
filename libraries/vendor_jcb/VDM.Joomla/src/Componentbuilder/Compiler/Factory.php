@@ -15,6 +15,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 use Joomla\DI\Container;
 use VDM\Joomla\Componentbuilder\Service\Crypt;
 use VDM\Joomla\Componentbuilder\Service\Server;
+use VDM\Joomla\Componentbuilder\Service\Api;
+use VDM\Joomla\Componentbuilder\Service\Network;
 use VDM\Joomla\Service\Database;
 use VDM\Joomla\Service\Model as BaseModel;
 use VDM\Joomla\Service\Data;
@@ -69,6 +71,14 @@ use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 abstract class Factory extends ExtendingFactory implements FactoryInterface
 {
 	/**
+	 * Package Container
+	 *
+	 * @var   Container|null
+	 * @since 5.0.3
+	 **/
+	protected static ?Container $container = null;
+
+	/**
 	 * Current Joomla Version Being Build
 	 *
 	 * @var     int
@@ -116,6 +126,8 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 		return (new Container())
 			->registerServiceProvider(new Crypt())
 			->registerServiceProvider(new Server())
+			->registerServiceProvider(new Api())
+			->registerServiceProvider(new Network())
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new BaseModel())
 			->registerServiceProvider(new Data())

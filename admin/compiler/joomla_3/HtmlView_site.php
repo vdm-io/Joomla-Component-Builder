@@ -33,6 +33,9 @@ class ###Component###View###SView### extends HtmlView
 		$this->menu = $this->app->getMenu()->getActive();
 		// get the user object
 		$this->user = Factory::getUser();###SITE_DIPLAY_METHOD###
+
+		// Display the template
+		parent::display($tpl);
 	}###SITE_EXTRA_DIPLAY_METHODS###
 
 	/**
@@ -78,7 +81,7 @@ class ###Component###View###SView### extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

@@ -79,11 +79,11 @@ class ComponentbuilderViewComponent_files_folders extends HtmlView
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// Display the template
-		parent::display($tpl);
-
 		// Set the document
 		$this->setDocument();
+
+		// Display the template
+		parent::display($tpl);
 	}
 
 
@@ -195,6 +195,11 @@ class ComponentbuilderViewComponent_files_folders extends HtmlView
 	 */
 	protected function setDocument()
 	{
+		// Load Core
+		Html::_('behavior.core');
+		// Load jQuery
+		Html::_('jquery.framework');
+
 		$isNew = ($this->item->id < 1);
 		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_FILES_FOLDERS_EDIT'));
 		Html::_('stylesheet', "administrator/components/com_componentbuilder/assets/css/component_files_folders.css", ['version' => 'auto']);
@@ -208,7 +213,7 @@ class ComponentbuilderViewComponent_files_folders extends HtmlView
 	 */
 	public function getDocument()
 	{
-		$this->document ??= JFactory::getDocument();
+		$this->document ??= Factory::getDocument();
 
 		return $this->document;
 	}

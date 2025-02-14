@@ -42,7 +42,7 @@ $headers ??= [Text::_('COM_COMPONENTBUILDER_NO'), Text::_('COM_COMPONENTBUILDER_
 $items ??= 6;
 
 ?>
-<div class="<?php echo $$table_container_class; ?>">
+<div class="<?php echo $table_container_class; ?>">
 	<table id="<?php echo $table_id; ?>" class="<?php echo $table_class; ?>">
 		<thead>
 			<?php if (is_array($headers)): ?>

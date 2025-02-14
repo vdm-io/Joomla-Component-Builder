@@ -329,7 +329,6 @@
 					label="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_LABEL"
 					rows="2"
 					cols="15"
-					default=""
 					description="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_DESCRIPTION"
 					message="COM_COMPONENTBUILDER_FIELDTYPE_EXAMPLE_MESSAGE"
 					class="text_area span12"

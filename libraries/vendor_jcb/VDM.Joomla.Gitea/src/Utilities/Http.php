@@ -28,10 +28,10 @@ final class Http extends JoomlaHttp
 	/**
 	 * The token
 	 *
-	 * @var    string
+	 * @var    string|null
 	 * @since 3.2.0
 	 */
-	protected string $_token_; // to avoid collisions (but allow swapping)
+	protected ?string $_token_; // to avoid collisions (but allow swapping)
 
 	/**
 	 * Constructor.
@@ -41,7 +41,7 @@ final class Http extends JoomlaHttp
 	 * @since   3.2.0
 	 * @throws  \InvalidArgumentException
 	 **/
-	public function __construct(?string $token)
+	public function __construct(?string $token = null)
 	{
 		// setup config
 		$config = [
@@ -52,7 +52,7 @@ final class Http extends JoomlaHttp
 		];
 
 		// add the token if given
-		if (is_string($token))
+		if (is_string($token) && !empty($token))
 		{
 			$config['headers']['Authorization'] = 'token ' . $token;
 			$this->_token_ = $token;
@@ -79,9 +79,16 @@ final class Http extends JoomlaHttp
 			]
 		);
 
-		// add the token
-		$headers['Authorization'] = 'token ' . $token;
-		$this->_token_ = $token;
+		if (empty($token))
+		{
+			unset($headers['Authorization']);
+		}
+		else
+		{
+			// add the token
+			$headers['Authorization'] = 'token ' . $token;
+			$this->_token_ = $token;
+		}
 
 		$this->setOption('headers', $headers);
 	}

@@ -21,11 +21,14 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\FileInjector;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
-use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Dynamicpath;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Structure;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Xml;
+use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
+use VDM\Joomla\Componentbuilder\Utilities\Uri;
+use VDM\Joomla\Componentbuilder\Utilities\Http;
+use VDM\Joomla\Componentbuilder\Utilities\Response;
 
 
 /**
@@ -41,7 +44,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  void
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function register(Container $container)
 	{
@@ -63,9 +66,6 @@ class Utilities implements ServiceProviderInterface
 		$container->alias(Files::class, 'Utilities.Files')
 			->share('Utilities.Files', [$this, 'getFiles'], true);
 
-		$container->alias(Constantpaths::class, 'Utilities.Constantpaths')
-			->share('Utilities.Constantpaths', [$this, 'getConstantpaths'], true);
-
 		$container->alias(Dynamicpath::class, 'Utilities.Dynamicpath')
 			->share('Utilities.Dynamicpath', [$this, 'getDynamicpath'], true);
 
@@ -77,6 +77,18 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Xml::class, 'Utilities.Xml')
 			->share('Utilities.Xml', [$this, 'getXml'], true);
+
+		$container->alias(Constantpaths::class, 'Utilities.Constantpaths')
+			->share('Utilities.Constantpaths', [$this, 'getConstantpaths'], true);
+
+		$container->alias(Uri::class, 'Utilities.Uri')
+			->share('Utilities.Uri', [$this, 'getUri'], true);
+
+		$container->alias(Http::class, 'Utilities.Http')
+			->share('Utilities.Http', [$this, 'getHttp'], true);
+
+		$container->alias(Response::class, 'Utilities.Response')
+			->share('Utilities.Response', [$this, 'getResponse'], true);
 	}
 
 	/**
@@ -85,7 +97,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Folder
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getFolder(Container $container): Folder
 	{
@@ -101,7 +113,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  File
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getFile(Container $container): File
 	{
@@ -116,7 +128,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  FileInjector
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getFileInjector(Container $container): FileInjector
 	{
@@ -132,7 +144,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Counter
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getCounter(Container $container): Counter
 	{
@@ -147,7 +159,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Paths
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getPaths(Container $container): Paths
 	{
@@ -163,24 +175,11 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Files
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getFiles(Container $container): Files
 	{
 		return new Files();
-	}
-
-	/**
-	 * Get the Constant Paths
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Constantpaths
-	 * @since 3.2.0
-	 */
-	public function getConstantpaths(Container $container): Constantpaths
-	{
-		return new Constantpaths();
 	}
 
 	/**
@@ -189,7 +188,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Dynamicpath
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getDynamicpath(Container $container): Dynamicpath
 	{
@@ -205,7 +204,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Pathfix
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getPathfix(Container $container): Pathfix
 	{
@@ -218,7 +217,7 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Structure
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getStructure(Container $container): Structure
 	{
@@ -238,13 +237,65 @@ class Utilities implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  Xml
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getXml(Container $container): Xml
 	{
 		return new Xml(
 			$container->get('Config')
 		);
+	}
+
+	/**
+	 * Get the Constant Paths
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Constantpaths
+	 * @since   3.2.0
+	 */
+	public function getConstantpaths(Container $container): Constantpaths
+	{
+		return new Constantpaths();
+	}
+
+	/**
+	 * Get The Uri Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Uri
+	 * @since   5.0.4
+	 */
+	public function getUri(Container $container): Uri
+	{
+		return new Uri();
+	}
+
+	/**
+	 * Get The Http Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Http
+	 * @since   5.0.4
+	 */
+	public function getHttp(Container $container): Http
+	{
+		return new Http();
+	}
+
+	/**
+	 * Get The Response Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Response
+	 * @since   5.0.4
+	 */
+	public function getResponse(Container $container): Response
+	{
+		return new Response();
 	}
 }
 
