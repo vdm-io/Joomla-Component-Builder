@@ -371,7 +371,7 @@ class Class_propertiesModel extends ListModel
 		}
 
 		// Add the list ordering clause.
-		$orderCol = $this->getState('list.ordering', '');
+		$orderCol = $this->getState('list.ordering', 'a.name');
 		$orderDirn = $this->getState('list.direction', 'desc');
 		if ($orderCol != '')
 		{

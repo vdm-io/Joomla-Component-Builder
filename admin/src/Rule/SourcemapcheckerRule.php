@@ -58,7 +58,7 @@ class SourcemapcheckerRule extends FormRule
 			$status = false;
 		}
 		// we only test if we have a table name
-		elseif (($table = $input->get('table')) !== null)
+		elseif (($table = $input->get('table')) !== null && !empty($table))
 		{
 			// the fields to ignore Since 3.2
 			$ignore = [

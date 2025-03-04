@@ -50,7 +50,7 @@
 			type="list"
 			label="JGLOBAL_SORT_BY"
 			class="js-select-submit-on-change"
-			default="a.id DESC"
+			default="a.name asc"
 			validate="options"
 		>
 			<option value="">JGLOBAL_SORT_BY</option>

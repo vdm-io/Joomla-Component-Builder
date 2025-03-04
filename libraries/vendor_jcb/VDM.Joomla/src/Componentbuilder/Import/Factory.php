@@ -20,6 +20,7 @@ use VDM\Joomla\Service\Data;
 use VDM\Joomla\Componentbuilder\Import\Service\Import;
 use VDM\Joomla\Componentbuilder\File\Service\File;
 use VDM\Joomla\Componentbuilder\Service\Spreadsheet;
+use VDM\Joomla\Componentbuilder\Service\Item\Import as ItemImport;
 use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
@@ -54,7 +55,8 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Data())
 			->registerServiceProvider(new Import())
 			->registerServiceProvider(new File())
-			->registerServiceProvider(new Spreadsheet());
+			->registerServiceProvider(new Spreadsheet())
+			->registerServiceProvider(new ItemImport());
 	}
 }
 

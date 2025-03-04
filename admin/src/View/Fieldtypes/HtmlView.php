@@ -118,8 +118,8 @@ class HtmlView extends BaseHtmlView
 		// Load the active filters.
 		$this->activeFilters = $this->get('ActiveFilters');
 		// Add the list ordering clause.
-		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
+		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.name'));
+		$this->listDirn = $this->escape($this->state->get('list.direction', 'asc'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));

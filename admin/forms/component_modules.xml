@@ -140,7 +140,6 @@
 					type="joomlamodules"
 					name="module"
 					label="COM_COMPONENTBUILDER_COMPONENT_MODULES_MODULE_LABEL"
-					class="list_class span12"
 					multiple="false"
 					default="0"
 					button="false"

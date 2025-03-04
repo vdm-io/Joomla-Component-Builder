@@ -1,3 +1,11 @@
+# v4.1.1-alpha1
+
+- Move all banners to GitHub.
+- Adds library phpspreadsheet to JCB.
+- Add import item example to demo component.
+- Updates the Superpower class with the GetRemote class in the plugin.
+- Ensures the super power autoloader triggers the correct repositories.
+
 # v4.1.0
 
 - Add [AllowDynamicProperties] in the base view class for J5

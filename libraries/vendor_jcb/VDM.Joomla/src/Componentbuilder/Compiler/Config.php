@@ -117,51 +117,55 @@ class Config extends ComponentConfig
 		}
 
 		$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'super-powers',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.jcb-compiler'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'jcb-compiler',
 			'read_branch' => 'master'
 		];
-		$repos[$this->super_powers_core_organisation . '.jcb-packager'] = (object) [
-			'organisation' => $this->super_powers_core_organisation,
-			'repository' => 'jcb-packager',
-			'read_branch' => 'master'
-		];
 		$repos[$this->super_powers_core_organisation . '.phpseclib'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'phpseclib',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.search'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'search',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.gitea'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'gitea',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.openai'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'openai',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.minify'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'minify',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.psr'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'psr',
 			'read_branch' => 'master'
 		];
 		$repos[$this->super_powers_core_organisation . '.fof'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
 			'repository' => 'fof',
 			'read_branch' => 'master'
@@ -867,6 +871,7 @@ class Config extends ComponentConfig
 			];
 		}
 		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) [
+			'base' => 'https://codeberg.org',
 			'organisation' => $this->joomla_powers_core_organisation,
 			'repository' => 'joomla-powers',
 			'read_branch' => 'master'

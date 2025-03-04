@@ -58,7 +58,7 @@ final class ChunkReadFilter implements IReadFilter
 	 *
 	 * @return bool Whether the cell should be read.
 	 */
-	public function readCell(string $columnAddress, int $row, string $worksheetName = ''): bool
+	public function readCell($columnAddress, $row, $worksheetName = '')
 	{
 		// Only read rows that fall within the chunk range
 		if ($row >= $this->startRow && $row <= $this->endRow)

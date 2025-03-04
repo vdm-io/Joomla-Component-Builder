@@ -69,7 +69,7 @@
 			type="list"
 			label="JGLOBAL_SORT_BY"
 			class="js-select-submit-on-change"
-			default=" desc"
+			default="a.id desc"
 			validate="options"
 		>
 			<option value="">JGLOBAL_SORT_BY</option>

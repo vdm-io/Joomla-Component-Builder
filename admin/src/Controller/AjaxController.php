@@ -1906,7 +1906,7 @@ class AjaxController extends BaseController
 					try
 					{
 						$propertyValue = $jinput->get('property', NULL, 'WORD');
-						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'ALNUM');
+						$fieldtypeValue = $jinput->get('fieldtype', NULL, 'STRING');
 						if($propertyValue && $user->id != 0 && $fieldtypeValue)
 						{
 							$ajaxModule = $this->getModel('ajax', 'Administrator');

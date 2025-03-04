@@ -215,7 +215,7 @@ abstract class UploadHelper
 	 * @return  array|string
 	 * @since  3.0.11
 	 */
-	public static function getError($toString = false)
+	public static function getError(bool $toString = false)
 	{
 		if ($toString)
 		{
@@ -231,7 +231,7 @@ abstract class UploadHelper
 	 * @param  string        $type          The file type
 	 *
 	 * @return  array|null  of elements
-	 *
+	 * @since   3.0.11
 	 */
 	protected static function check(array $upload, string $type): ?array
 	{
@@ -251,7 +251,7 @@ abstract class UploadHelper
 		$checking_mime = MimeHelper::mimeType($upload_path);
 
 		// Legal file formats
-		$legal = [];
+		$legal_extensions = [];
 
 		// check if the file format is even in the list
 		if (in_array($extension, $extensions))
@@ -265,7 +265,10 @@ abstract class UploadHelper
 		if (!in_array($extension, $legal_extensions))
 		{
 			// Cleanup the import file
-			static::remove($upload['full_path']);
+			if (!static::remove($upload['full_path']))
+			{
+				static::setError(Text::_('COM_COMPONENTBUILDER_UPLOAD_COULD_NOT_BE_REMOVED_WITH_THE_GIVEN_FULL_PATH'));
+			}
 
 			static::setError(Text::_('COM_COMPONENTBUILDER_UPLOAD_IS_NOT_A_VALID_TYPE'));
 
@@ -288,20 +291,21 @@ abstract class UploadHelper
 	 * @param   string  $fullPath    The full path of the uploaded file
 	 *
 	 * @return  boolean  True on success
-	 *
+	 * @since  3.0.11
 	 */
-	protected static function remove($fullPath)
+	protected static function remove(string $fullPath): bool
 	{
 		// Is the package file a valid file?
 		if (is_file($fullPath))
 		{
-			File::delete($fullPath);
+			return File::delete($fullPath);
 		}
 		elseif (is_file(Path::clean($fullPath)))
 		{
 			// It might also be just a base filename
-			File::delete(Path::clean($fullPath));
+			return File::delete(Path::clean($fullPath));
 		}
+		return false;
 	}
 
 	/**
@@ -312,7 +316,7 @@ abstract class UploadHelper
 	 * @return  void
 	 * @since  3.0.11
 	 */
-	protected static function setError($message)
+	protected static function setError(string $message): void
 	{
 		if (static::$enqueueError)
 		{

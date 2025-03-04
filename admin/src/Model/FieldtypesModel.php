@@ -309,12 +309,12 @@ class FieldtypesModel extends ListModel
 
 
 		// Add the list ordering clause.
-		$orderCol = $this->getState('list.ordering', 'a.id');
-		$orderDirn = $this->getState('list.direction', 'desc');
+		$orderCol = $this->getState('list.ordering', 'a.name');
+		$orderDirn = $this->getState('list.direction', 'asc');
 		if ($orderCol != '')
 		{
 			// Check that the order direction is valid encase we have a field called direction as part of filers.
-			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'desc';
+			$orderDirn = (is_string($orderDirn) && in_array(strtolower($orderDirn), ['asc', 'desc'])) ? $orderDirn : 'asc';
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 

@@ -3840,7 +3840,7 @@ class Interpretation extends Fields
 				. "public static function getUikitComp(\$content,\$classes = array())";
 			$ukit[] = Indent::_(1) . "{";
 			$ukit[] = Indent::_(2)
-				. "if (strpos(\$content,'class=\"uk-') !== false)";
+				. "if (strpos(\$content ?? '','class=\"uk-') !== false)";
 			$ukit[] = Indent::_(2) . "{";
 			$ukit[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__) . " reset";
 			$ukit[] = Indent::_(3) . "\$temp = [];";

@@ -329,7 +329,7 @@ class Fields
 								);
 								$this->app->enqueueMessage(
 									Text::sprintf(
-										'You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normaly we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manualy if it actualy did change!',
+										'You have a field called <b>%s</b> that has been added multiple times to the <b>%s</b> view, the name of that field has changed to <b>%s</b>. Normally we would automaticly add the update SQL to your component, but with multiple fields this does not work automaticly since it could be that noting changed and it just seems like it did. Therefore you will have to do this manually if it actually did change!',
 										$field_name,
 										$item->name_single_code,
 										$old_field_name

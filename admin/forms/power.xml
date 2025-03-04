@@ -182,7 +182,7 @@
 					type="namespaces"
 					name="load"
 					label="COM_COMPONENTBUILDER_POWER_LOAD_LABEL"
-					class="list_class span12"
+					layout="joomla.form.field.list-fancy-select"
 					multiple="false"
 					default="0"
 					button="false"

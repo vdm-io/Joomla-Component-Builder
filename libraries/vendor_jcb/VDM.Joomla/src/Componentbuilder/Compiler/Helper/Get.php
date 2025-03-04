@@ -1546,27 +1546,17 @@ class Get
 	 * @return void
 	 * @deprecated 3.3
 	 */
-	protected function setAddSQL(string $type, int $item, ?int $key = null)
+	protected function setAddSQL(string $type, $item, ?int $key = null)
 	{
-		// add key if found
-		if ($key)
-		{
-			CFactory::_('Registry')->set('builder.add_sql.' . $type . '.' . $key . '.' . $item, $item);
-		}
-		else
-		{
-			// convert adminview id to name
-			if ('adminview' === $type)
-			{
-				CFactory::_('Registry')->set('builder.add_sql.' . $type, StringHelper::safe(
-					$this->getAdminViewData($item)->name_single
-				));
-			}
-			else
-			{
-				CFactory::_('Registry')->set('builder.add_sql.' . $type, $item);
-			}
-		}
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
