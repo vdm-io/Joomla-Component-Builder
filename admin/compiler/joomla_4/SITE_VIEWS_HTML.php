@@ -87,7 +87,7 @@ class HtmlView extends BaseHtmlView
 	public function display($tpl = null): void
 	{
 		// get combined params of both component and menu
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->params = $this->app->getParams();
 		$this->menu = $this->app->getMenu()->getActive();
 		$this->styles = $this->get('Styles');
@@ -109,12 +109,12 @@ class HtmlView extends BaseHtmlView
 		// add styles
 		foreach ($this->styles as $style)
 		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
 		}###SITE_DOCUMENT_CUSTOM_CSS###
 		// add scripts
 		foreach ($this->scripts as $script)
 		{
-			Html::_('script', $script, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
 		}###SITE_DOCUMENT_CUSTOM_JS######SITE_JAVASCRIPT_FOR_BUTTONS###
 	}
 
@@ -131,7 +131,7 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
 		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// now initiate the toolbar

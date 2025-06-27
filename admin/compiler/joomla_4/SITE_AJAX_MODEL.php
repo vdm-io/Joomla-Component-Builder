@@ -56,7 +56,7 @@ class AjaxModel extends ListModel
 	{
 		parent::__construct($config, $factory);
 
-		$this->app_params = ComponentHelper::getParams('com_###component###');
-		$this->app ??= Factory::getApplication();
+		$this->app_params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 	}###AJAX_SITE_MODEL_METHODS###
 }

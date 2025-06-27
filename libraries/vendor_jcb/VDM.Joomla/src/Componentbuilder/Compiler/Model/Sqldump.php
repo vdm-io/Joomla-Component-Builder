@@ -13,10 +13,10 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface as JoomlaDatabase;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
-use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Database\QuoteTrait;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
-use VDM\Joomla\Utilities\StringHelper;
 
 
 /**
@@ -26,6 +26,13 @@ use VDM\Joomla\Utilities\StringHelper;
  */
 class Sqldump
 {
+	/**
+	 * Function to quote values
+	 *
+	 * @since 5.1.1
+	 */
+	use QuoteTrait;
+
 	/**
 	 * The compiler registry
 	 *
@@ -37,245 +44,91 @@ class Sqldump
 	/**
 	 * Database object to query local DB
 	 *
+	 * @var    JoomlaDatabase
 	 * @since 3.2.0
 	 **/
-	protected $db;
+	protected JoomlaDatabase $db;
 
 	/**
 	 * Constructor
 	 *
-	 * @param Registry    $registry    The compiler registry object.
-	 
+	 * @param Registry             $registry  The compiler registry object.
+	 * @param JoomlaDatabase|null  $db        The joomla database object.
 	 * @since 3.2.0
 	 */
-	public function __construct(Registry $registry)
+	public function __construct(Registry $registry, ?JoomlaDatabase $db = null)
 	{
 		$this->registry = $registry;
-		$this->db = Factory::getDbo();
+		$this->db = $db ?: Factory::getContainer()->get(JoomlaDatabase::class);
 	}
 
 	/**
-	 * Get SQL Dump
+	 * Generate SQL dump for given view data.
 	 *
-	 * @param   array   $tables     The tables to use in build
-	 * @param   string  $view       The target view/table to dump in
-	 * @param   string  $view_guid  The guid of the target view
+	 * @param   array   $tables     Tables configuration array.
+	 * @param   string  $view       Target view name.
+	 * @param   string  $viewGuid   Unique GUID for view (used in registry path).
 	 *
-	 * @return  string|null The data found with the alias
-	 * @since 3.2.0
+	 * @return  string|null         SQL dump or null on failure.
+	 * @since   3.2.0
 	 */
-	public function get(array $tables, string $view, string $view_guid): ?string
+	public function get(array $tables, string $view, string $viewGuid): ?string
 	{
-		// first build a query statement to get all the data (insure it must be added - check the tweaking)
-		if (ArrayHelper::check($tables)
-			&& $this->registry-> // default is to add
-			get('builder.sql_tweak.' . $view_guid . '.add', true))
+		if (empty($tables) || !$this->shouldBuildDump($viewGuid))
 		{
-			$counter = 'a';
+			return null;
+		}
 
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
+		$query = $this->db->getQuery(true);
+		$runQuery = false;
+		$alias = 'a';
+		$fieldsAdded = false;
 
-			// switch to only trigger the run of the query if we have tables to query
-			$run_query = false;
-			foreach ($tables as $table)
+		foreach ($tables as $tableConfig)
+		{
+			if (empty($tableConfig['table']) || empty($tableConfig['sourcemap']))
 			{
-				if (isset($table['table']))
+				continue;
+			}
+
+			$fieldMappings = $this->parseFieldMappings($tableConfig['sourcemap'], $alias);
+
+			if ($alias === 'a')
+			{
+				if (!empty($fieldMappings['select']))
 				{
-					if ($counter === 'a')
-					{
-						// the main table fields
-						if (strpos((string) $table['sourcemap'], PHP_EOL) !== false)
-						{
-							$fields = explode(PHP_EOL, (string) $table['sourcemap']);
-							if (ArrayHelper::check($fields))
-							{
-								// reset array buckets
-								$sourceArray = [];
-								$targetArray = [];
-								foreach ($fields as $field)
-								{
-									if (strpos($field, "=>") !== false)
-									{
-										list($source, $target) = explode(
-											"=>", $field
-										);
-										$sourceArray[] = $counter . '.' . trim(
-												$source
-											);
-										$targetArray[] = trim($target);
-									}
-								}
-								if (ArrayHelper::check(
-										$sourceArray
-									)
-									&& ArrayHelper::check(
-										$targetArray
-									))
-								{
-									// add to query
-									$query->select(
-										$this->db->quoteName(
-											$sourceArray, $targetArray
-										)
-									);
-									$query->from(
-										'#__' . $table['table'] . ' AS a'
-									);
-									$run_query = true;
-								}
-								// we may need to filter the selection
-								if (($ids_ = $this->registry->
-									get('builder.sql_tweak.' . $view_guid . '.where', null)) !== null)
-								{
-									// add to query the where filter
-									$query->where(
-										'a.id IN (' . $ids_ . ')'
-									);
-								}
-							}
-						}
-					}
-					else
-					{
-						// the other tables
-						if (strpos((string) $table['sourcemap'], PHP_EOL) !== false)
-						{
-							$fields = explode(PHP_EOL, (string) $table['sourcemap']);
-							if (ArrayHelper::check($fields))
-							{
-								// reset array buckets
-								$sourceArray = [];
-								$targetArray = [];
-								foreach ($fields as $field)
-								{
-									if (strpos($field, "=>") !== false)
-									{
-										list($source, $target) = explode(
-											"=>", $field
-										);
-										$sourceArray[] = $counter . '.' . trim(
-												$source
-											);
-										$targetArray[] = trim($target);
-									}
-									if (strpos($field, "==") !== false)
-									{
-										list($aKey, $bKey) = explode(
-											"==", $field
-										);
-										// add to query
-										$query->join(
-											'LEFT', $this->db->quoteName(
-												'#__' . $table['table'],
-												$counter
-											) . ' ON (' . $this->db->quoteName(
-												'a.' . trim($aKey)
-											) . ' = ' . $this->db->quoteName(
-												$counter . '.' . trim($bKey)
-											) . ')'
-										);
-									}
-								}
-								if (ArrayHelper::check(
-										$sourceArray
-									)
-									&& ArrayHelper::check(
-										$targetArray
-									))
-								{
-									// add to query
-									$query->select(
-										$this->db->quoteName(
-											$sourceArray, $targetArray
-										)
-									);
-								}
-							}
-						}
-					}
-					$counter++;
+					$query->select($this->db->quoteName($fieldMappings['select'], $fieldMappings['alias']));
+					$query->from($this->db->quoteName('#__' . $tableConfig['table'], $alias));
+					$this->applyWhereFilter($query, $viewGuid);
+					$fieldsAdded = true;
+					$runQuery = true;
 				}
-				else
+			}
+			else
+			{
+				$this->applyJoins($query, $tableConfig['table'], $alias, $fieldMappings['joins']);
+				if (!empty($fieldMappings['select']))
 				{
-					// see where
-					// var_dump($view);
-					// jexit();
+					$query->select($this->db->quoteName($fieldMappings['select'], $fieldMappings['alias']));
+					$fieldsAdded = true;
 				}
 			}
 
-			// check if we should run query
-			if ($run_query)
-			{
-				// now get the data
-				$this->db->setQuery($query);
-				$this->db->execute();
+			$alias++;
+		}
+
+		if ($runQuery && $fieldsAdded)
+		{
+			try {
+				$this->db->setQuery($query)->execute();
+
 				if ($this->db->getNumRows())
 				{
-					// get the data
 					$data = $this->db->loadObjectList();
-
-					// start building the MySql dump
-					$dump = "--";
-					$dump .= PHP_EOL . "-- Dumping data for table `#__"
-						. Placefix::_("component") . "_" . $view
-						. "`";
-					$dump .= PHP_EOL . "--";
-					$dump .= PHP_EOL . PHP_EOL . "INSERT INTO `#__" . Placefix::_("component") . "_" . $view . "` (";
-					foreach ($data as $line)
-					{
-						$comaSet = 0;
-						foreach ($line as $fieldName => $fieldValue)
-						{
-							if ($comaSet == 0)
-							{
-								$dump .= $this->db->quoteName($fieldName);
-							}
-							else
-							{
-								$dump .= ", " . $this->db->quoteName(
-										$fieldName
-									);
-							}
-							$comaSet++;
-						}
-						break;
-					}
-					$dump .= ") VALUES";
-					$coma = 0;
-					foreach ($data as $line)
-					{
-						if ($coma == 0)
-						{
-							$dump .= PHP_EOL . "(";
-						}
-						else
-						{
-							$dump .= "," . PHP_EOL . "(";
-						}
-						$comaSet = 0;
-						foreach ($line as $fieldName => $fieldValue)
-						{
-							if ($comaSet == 0)
-							{
-								$dump .= $this->escape($fieldValue);
-							}
-							else
-							{
-								$dump .= ", " . $this->escape(
-										$fieldValue
-									);
-							}
-							$comaSet++;
-						}
-						$dump .= ")";
-						$coma++;
-					}
-					$dump .= ";";
-
-					// return build dump query
-					return $dump;
+					return $this->buildSqlDump($view, $data);
 				}
+			} catch (\Throwable $e) {
+				// Log or handle exception if needed
 			}
 		}
 
@@ -283,35 +136,141 @@ class Sqldump
 	}
 
 	/**
-	 * Escape the values for a SQL dump
+	 * Determine if a dump should be built.
 	 *
-	 * @param   string|array  $value  the value to escape
+	 * @param   string  $viewGuid
 	 *
-	 * @return  string|array on success with escaped string
-	 * @since 3.2.0
+	 * @return  bool
+	 * @since   5.1.1
+	 */
+	protected function shouldBuildDump(string $viewGuid): bool
+	{
+		return (bool) $this->registry->get("builder.sql_tweak.{$viewGuid}.add", true);
+	}
+
+	/**
+	 * Apply optional WHERE clause if set in registry.
+	 *
+	 * @param   $query
+	 * @param   string     $viewGuid
+	 *
+	 * @return  void
+	 * @since   5.1.1
+	 */
+	protected function applyWhereFilter($query, string $viewGuid): void
+	{
+		if ($ids = $this->registry->get("builder.sql_tweak.{$viewGuid}.where"))
+		{
+			$query->where("a.id IN ({$ids})");
+		}
+	}
+
+	/**
+	 * Parse sourcemap lines into SELECT and JOIN definitions.
+	 *
+	 * @param   string  $map
+	 * @param   string  $alias
+	 *
+	 * @return  array{select: string[], alias: string[], joins: array<int, array{from: string, to: string}>}
+	 * @since   5.1.1
+	 */
+	protected function parseFieldMappings(string $map, string $alias): array
+	{
+		$lines = explode(PHP_EOL, trim($map));
+		$select = [];
+		$aliasFields = [];
+		$joins = [];
+
+		foreach ($lines as $line)
+		{
+			$line = trim($line);
+
+			if (str_contains($line, '=>'))
+			{
+				[$from, $to] = array_map('trim', explode('=>', $line));
+				$select[] = "{$alias}.{$from}";
+				$aliasFields[] = $to;
+			}
+			elseif (str_contains($line, '=='))
+			{
+				[$left, $right] = array_map('trim', explode('==', $line));
+				$joins[] = ['from' => $left, 'to' => $right];
+			}
+		}
+
+		return [
+			'select' => $select,
+			'alias' => $aliasFields,
+			'joins' => $joins,
+		];
+	}
+
+	/**
+	 * Apply JOINs to the query.
+	 *
+	 * @param   $query
+	 * @param   string           $table
+	 * @param   string           $alias
+	 * @param   array            $joins
+	 *
+	 * @return  void
+	 * @since   5.1.1
+	 */
+	protected function applyJoins($query, string $table, string $alias, array $joins): void
+	{
+		foreach ($joins as $join)
+		{
+			$query->join(
+				'LEFT',
+				$this->db->quoteName("#__{$table}", $alias) . ' ON (' .
+				$this->db->quoteName("a.{$join['from']}") . ' = ' .
+				$this->db->quoteName("{$alias}.{$join['to']}") . ')'
+			);
+		}
+	}
+
+	/**
+	 * Build the SQL INSERT DUMP statement from data.
+	 *
+	 * @param   string         $view
+	 * @param   array<object>  $data
+	 *
+	 * @return  string
+	 * @since   5.1.1
+	 */
+	protected function buildSqlDump(string $view, array $data): string
+	{
+		$tableName = "#__" . Placefix::_("component") . "_{$view}";
+		$fields = array_keys((array) $data[0]);
+
+		$header = "--\n-- Dumping data for table `{$tableName}`\n--\n";
+		$insert = "INSERT INTO `{$tableName}` (" . implode(', ', array_map([$this->db, 'quoteName'], $fields)) . ") VALUES\n";
+
+		$rows = array_map(function ($row)
+		{
+			$values = array_map([$this, 'escape'], (array) $row);
+			return '(' . implode(', ', $values) . ')';
+		}, $data);
+
+		return $header . $insert . implode(",\n", $rows) . ";";
+	}
+
+	/**
+	 * Escape SQL value for safe dump using strict quoting rules.
+	 *
+	 * @param   mixed  $value  The value to escape.
+	 *
+	 * @return  mixed         Escaped SQL-safe literal or quoted string.
+	 * @since   3.2.0
 	 */
 	protected function escape($value)
 	{
-		// if array then return mapped
-		if (ArrayHelper::check($value))
+		if (is_array($value))
 		{
-			return array_map(__METHOD__, $value);
+			return implode(', ', array_map([$this, 'escape'], $value));
 		}
 
-		// if string make sure it is correctly escaped
-		if (StringHelper::check($value) && !is_numeric($value))
-		{
-			return $this->db->quote($value);
-		}
-
-		// if empty value return place holder
-		if (empty($value))
-		{
-			return "''";
-		}
-
-		// if not array or string then return number
-		return $value;
+		return $this->quote($value);
 	}
 }
 

@@ -13,9 +13,10 @@ namespace VDM\Joomla\Database;
 
 
 use Joomla\CMS\Date\Date;
+use VDM\Joomla\Database\DefaultTrait;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Interfaces\InsertInterface;
-use VDM\Joomla\Abstraction\Database;
+use VDM\Joomla\Interfaces\Database\InsertInterface;
+use VDM\Joomla\Abstraction\Versioning;
 
 
 /**
@@ -23,28 +24,22 @@ use VDM\Joomla\Abstraction\Database;
  * 
  * @since 3.2.0
  */
-final class Insert extends Database implements InsertInterface
+final class Insert extends Versioning implements InsertInterface
 {
 	/**
-	 * Switch to set the defaults
+	 * Default Switch
 	 *
-	 * @var    bool
-	 * @since  1.2.0
-	 **/
-	protected bool $defaults = true;
+	 * @since 5.1.1
+	 */
+	use DefaultTrait;
 
 	/**
-	 * Switch to prevent/allow defaults from being added.
+	 * The history tracker bucket
 	 *
-	 * @param   bool    $trigger      toggle the defaults
-	 *
-	 * @return  void
-	 * @since   3.2.0
+	 * @var      array
+	 * @since  5.1.1
 	 **/
-	public function defaults(bool $trigger = true)
-	{
-		$this->defaults = $trigger;
-	}
+	protected array $historyGuid;
 
 	/**
 	 * Insert rows to the database (with remapping and filtering columns option)
@@ -183,6 +178,7 @@ final class Insert extends Database implements InsertInterface
 	{
 		// set joomla default columns
 		$add_created = false;
+		$add_created_by = false;
 		$add_version = false;
 		$add_published = false;
 
@@ -196,6 +192,12 @@ final class Insert extends Database implements InsertInterface
 			{
 				$columns['created'] = ' (o_O) ';
 				$add_created = true;
+			}
+
+			if (!isset($columns['created_by']))
+			{
+				$columns['created_by'] = ' (o_O) ';
+				$add_created_by = true;
 			}
 
 			if (!isset($columns['version']))
@@ -212,11 +214,16 @@ final class Insert extends Database implements InsertInterface
 			// the (o_O) prevents an empty value from being loaded
 		}
 
+		// set history vars
+		$this->entity = $this->getTableEntityName($table);
+		$this->historyGuid = [];
+
 		// get a query object
 		$query = $this->db->getQuery(true);
+		$table = $this->getTable($table);
 
 		// set the query targets
-		$query->insert($this->db->quoteName($this->getTable($table)))->columns($this->db->quoteName(array_keys($columns)));
+		$query->insert($this->db->quoteName($table))->columns($this->db->quoteName(array_keys($columns)));
 
 		// limiting factor on the amount of rows to insert before we reset the query
 		$limit = 300;
@@ -238,23 +245,38 @@ final class Insert extends Database implements InsertInterface
 				$query = $this->db->getQuery(true);
 
 				// set the query targets
-				$query->insert($this->db->quoteName($this->getTable($table)))->columns($this->db->quoteName(array_keys($columns)));
+				$query->insert($this->db->quoteName($table))->columns($this->db->quoteName(array_keys($columns)));
 			}
 
 			$row = [];
 			foreach ($columns as $column => $key)
 			{
-				if (' (o_O) ' !== $key)
+				if (' (o_O) ' === $key)
 				{
-					$row[] = ($isArray && isset($value[$key])) ? $this->quote($value[$key])
-						: ((!$isArray && isset($value->{$key})) ? $this->quote($value->{$key}) : '');
+					continue;
 				}
+
+				$val = ($isArray && isset($value[$key])) ? $value[$key]
+					: ((!$isArray && isset($value->{$key})) ? $value->{$key} : '');
+
+				// we can only set history if we have a guid in the data set
+				if ($column === 'guid' && !empty($this->entity) && $this->history && !empty($val))
+				{
+					$this->historyGuid[$val] = 1;
+				}
+
+				$row[] = $this->quote($val);
 			}
 
 			// set joomla default columns
 			if ($add_created)
 			{
 				$row[] = $this->db->quote($date);
+			}
+
+			if ($add_created_by)
+			{
+				$row[] = $this->userId;
 			}
 
 			if ($add_version)
@@ -281,10 +303,60 @@ final class Insert extends Database implements InsertInterface
 		$this->db->setQuery($query);
 		$this->db->execute();
 
-		// always reset the default switch
-		$this->defaults();
+		// track version history
+		if ($this->history && !empty($this->entity) && $this->historyGuid !== [])
+		{
+			$this->trackHistory(array_keys($this->historyGuid), $table);
+		}
+
+		// always reset the switch's
+		$this->defaults()->history();
 
 		return true;
+	}
+
+	/**
+	 * Attempt to set history records for the specified entity.
+	 *
+	 * This method checks if history tracking is enabled and the provided `$entity` has
+	 * corresponding GUIDs in the `$history` array. It then fetches the IDs for the
+	 * matching GUIDs from the database and triggers history setting on them.
+	 *
+	 * Any exceptions during this process are silently caught and ignored.
+	 *
+	 * @param  array   $history  The history map with entity GUIDs as values.
+	 * @param  string  $table    The full table name.
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected function trackHistory(array $history, string $table): void
+	{
+		try
+		{
+			$query = $this->db->getQuery(true)
+				->select($this->db->quoteName('id'))
+				->from($this->db->quoteName($table))
+				->where(
+					$this->db->quoteName('guid') . ' IN (' .
+					implode(',', array_map(fn($v) => $this->quote($v), $history)) .
+					')'
+				);
+
+			$this->db->setQuery($query);
+			$this->db->execute();
+
+			if ($this->db->getNumRows())
+			{
+				$this->setMultipleHistory(
+					$this->db->loadColumn()
+				);
+			}
+		}
+		catch (\Throwable $e)
+		{
+			// Silently ignore all errors
+		}
 	}
 }
 

@@ -315,6 +315,11 @@ class Data
 	 */
 	public function get($view): ?object
 	{
+		if (empty($view))
+		{
+			return null;
+		}
+
 		if (isset($this->index[$view]))
 		{
 			$id = $this->index[$view];
@@ -477,6 +482,13 @@ class Data
 			$this->event->trigger(
 				'jcb_ce_onBeforeModelViewData', [&$view]
 			);
+
+			// should we add sql?
+			if ($view->add_sql !== 1)
+			{
+				unset($view->addtables);
+				unset($view->sql);
+			}
 
 			// add the tables
 			$view->addtables = (isset($view->addtables) && JsonHelper::check($view->addtables))

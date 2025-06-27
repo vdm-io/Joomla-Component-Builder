@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour;
 
 
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreRuleInterface;
 
@@ -95,7 +95,7 @@ final class CoreRule implements CoreRuleInterface
 	private function set(string $path): void
 	{
 		// Check if the path exists
-		if (!Folder::exists($path))
+		if (!is_dir($path))
 		{
 			return;
 		}

@@ -321,7 +321,7 @@ class Structure implements StructureInterface
 	 */
 	protected function pluginPath(object &$plugin): void
 	{
-		$plugin->folder_path = $this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+		$plugin->folder_path = $this->config->get('compiler_path', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/compiler') . '/'
 			. $plugin->folder_name;
 	}
 

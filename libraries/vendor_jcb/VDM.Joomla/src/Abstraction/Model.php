@@ -62,11 +62,11 @@ abstract class Model implements ModelInterface
 	 *
 	 * @param Table         $table        The search table object.
 	 * @param string|null   $tableName    The table
-	 * @param bool|null          $allowEmpty   The switch to control the behaviour of empty values (default true)
+	 * @param bool|null     $allowEmpty   The switch to control the behaviour of empty values (default true)
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Table $table, ?string $tableName = null, bool $allowEmpty = null)
+	public function __construct(Table $table, ?string $tableName = null, ?bool $allowEmpty = null)
 	{
 		$this->table = $table;
 		if ($tableName !== null)

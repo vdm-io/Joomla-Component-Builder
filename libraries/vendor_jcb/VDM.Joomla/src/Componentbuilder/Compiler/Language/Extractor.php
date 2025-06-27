@@ -198,6 +198,7 @@ final class Extractor
 			{
 				// need some special treatment here
 				if ($lang_string_target === 'Joomla' . '.JText._('
+					|| $lang_string_target === 'Joomla' . '.Text._('
 					|| $lang_string_target === 'JText:' . ':script('
 					|| $lang_string_target === 'Text:' . ':script('
 					|| $lang_string_target === 'Joomla__' . '_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power:' . ':script('

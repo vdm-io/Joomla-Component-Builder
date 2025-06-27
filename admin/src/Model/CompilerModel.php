@@ -25,7 +25,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Helper\Compiler;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Installer\InstallerHelper;
 use Joomla\CMS\Installer\Installer;

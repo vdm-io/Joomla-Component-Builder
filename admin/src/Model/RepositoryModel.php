@@ -58,7 +58,9 @@ class RepositoryModel extends AdminModel
 				'type',
 				'base',
 				'username',
-				'token'
+				'token',
+				'author_name',
+				'author_email'
 			),
 			'right' => array(
 				'organisation',

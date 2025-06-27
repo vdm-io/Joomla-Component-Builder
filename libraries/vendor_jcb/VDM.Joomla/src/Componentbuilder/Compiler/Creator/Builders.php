@@ -460,6 +460,46 @@ final class Builders
 	protected CMSApplication $app;
 
 	/**
+	 * The current field id.
+	 *
+	 * @var    int
+	 * @since  5.1.1
+	 **/
+	protected int $id;
+
+	/**
+	 * The current field guid.
+	 *
+	 * @var    string
+	 * @since  5.1.1
+	 **/
+	protected string $guid;
+
+	/**
+	 * The current field.
+	 *
+	 * @var    array
+	 * @since  5.1.1
+	 **/
+	protected array $field;
+
+	/**
+	 * The current field settings.
+	 *
+	 * @var    object
+	 * @since  5.1.1
+	 **/
+	protected object $settings;
+
+	/**
+	 * The current view.
+	 *
+	 * @var    object
+	 * @since  5.1.1
+	 **/
+	protected array $view;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config                      $config                      The Config Class.
@@ -596,725 +636,1057 @@ final class Builders
 	}
 
 	/**
-	 * set Builders
+	 * Configure a field, its database schema, list/view behaviour,
+	 * multilingual labels and every other builder that depends on the
+	 * field definition.
 	 *
-	 * @param   string       $langLabel       The language string for field label
-	 * @param   string       $langView        The language string of the view
-	 * @param   string       $nameSingleCode  The single view name
-	 * @param   string       $nameListCode    The list view name
-	 * @param   string       $name            The field name
-	 * @param   array        $view            The view data
-	 * @param   array        $field           The field data
-	 * @param   string       $typeName        The field type
-	 * @param   bool         $multiple        The switch to set multiple selection option
-	 * @param   array|null   $custom          The custom field switch
-	 * @param   array|null   $options         The options switch
+	 * @param     string        $langLabel         Language key for the field label
+	 * @param     string        $langView          Language key for the view
+	 * @param     string        $nameSingleCode    Code-name of the single-item view / DB table
+	 * @param     string        $nameListCode      Code-name of the list view
+	 * @param     string        $name              Field code (column name)
+	 * @param     array         $view              View meta-data
+	 * @param     array         $field             Field meta-data (includes $field['settings'] object)
+	 * @param     string        $typeName          JCB field-type identifier
+	 * @param     bool          $multiple          True if multiple/array values are allowed
+	 * @param     array|null    $custom            Custom-field definition (extends, table …)
+	 * @param     array|null    $options           <option> set for list/choice fields
 	 *
-	 * @return  void
-	 * @since 3.2.0
+	 * @return   void
+	 * @since   3.2.0
 	 */
-	public function set(string $langLabel, string $langView, string $nameSingleCode,
-		string $nameListCode, string $name, array $view, array $field,
-		string $typeName, bool $multiple, ?array $custom = null,
-		?array $options = null): void
+	public function set(
+		string	$langLabel,
+		string	$langView,
+		string	$nameSingleCode,
+		string	$nameListCode,
+		string	$name,
+		array	$view,
+		array	$field,
+		string	$typeName,
+		bool	$multiple,
+		?array	$custom = null,
+		?array	$options = null
+	): void
 	{
-		// check if this is a tag field
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 1: basic pre-processing & guard-clauses
+		 * ───────────────────────────────────────────────────────────── */
+		$this->init($view, $field);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 2: tag behaviour, DB-switch & schema configuration
+		 * ───────────────────────────────────────────────────────────── */
+		$this->applyTagBehaviour($typeName, $nameSingleCode);
+
+		$dbSwitch = $this->determineDbPersistence();
+
+		[$databaseUniqueKey, $databaseKey] = $dbSwitch
+			? $this->configureDatabaseSchema(
+				$nameSingleCode, $name, $typeName
+			)
+			: [false, false];
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 3: list switch, joins, history, alias & title
+		 * ───────────────────────────────────────────────────────────── */
+		$listSwitch = $this->appearsInList();
+		$listJoin   = $this->listjoin->exists($nameListCode . '.' . $this->guid);
+
+		$this->applyHistoryFlag($nameSingleCode);
+		$this->applyAliasAndTitleFlags(
+			$dbSwitch, $nameSingleCode, $name
+		);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 4: language strings (category special-case included)
+		 * ───────────────────────────────────────────────────────────── */
+		[$listLangName, $listFieldName] = $this->resolveLangAndFieldNames(
+			$langLabel,
+			$langView,
+			$name,
+			$nameListCode,
+			$nameSingleCode,
+			$typeName
+		);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 5: list builders, custom-list, list-join
+		 * ───────────────────────────────────────────────────────────── */
+		$this->configureListsAndJoins(
+			$typeName,
+			$listSwitch,
+			$listJoin,
+			$nameListCode,
+			$nameSingleCode,
+			$name,
+			$listLangName,
+			$multiple,
+			$custom,
+			$options
+		);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 6: field-relation sync
+		 * ───────────────────────────────────────────────────────────── */
+		$this->synchroniseFieldRelations(
+			$nameListCode,
+			$typeName,
+			$name,
+			$custom
+		);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 7: type-specific builders (hidden/int/dynamic/custom/…)
+		 * ───────────────────────────────────────────────────────────── */
+		$storeString = $this->applyTypeSpecificBuilders(
+			$dbSwitch,
+			$typeName,
+	 		$listLangName,
+			$nameListCode,
+			$nameSingleCode,
+			$name,
+			$custom,
+			$multiple,
+			$listSwitch,
+			$listJoin,
+			$options
+		);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 8: category builder (order preserved from original)
+		 * ───────────────────────────────────────────────────────────── */
+		if ($dbSwitch && $typeName === 'category')
+		{
+			$this->configureCategoryField(
+				$nameListCode,
+				$nameSingleCode,
+				$name,
+				$listLangName
+			);
+		}
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 9: sort / search / filter
+		 * ───────────────────────────────────────────────────────────── */
+		$this->configureSortSearchFilter(
+			$dbSwitch,
+			$typeName,
+			$multiple,
+			$listSwitch,
+			$listJoin,
+			$langLabel,
+			$listLangName,
+			$listFieldName,
+			$nameSingleCode,
+			$nameListCode,
+			$name,
+			$custom,
+			$options
+		);
+
+		/* ───────────────────────────────────────────────────────────────
+		 * STEP 10: layout + final component-field map
+		 * ───────────────────────────────────────────────────────────── */
+		$this->configureLayoutAndComponentField(
+			$dbSwitch,
+			$nameSingleCode,
+			$name,
+			$typeName,
+			$databaseUniqueKey,
+			$databaseKey,
+			$langLabel,
+			$nameListCode,
+			$storeString,
+			$custom
+		);
+	}
+
+	/* ========================================================================
+	 *                       ───  PRIVATE HELPERS  ───
+	 *   (All helpers strictly preserve side-effect order of the legacy code)
+	 * ===================================================================== */
+
+	/**
+	 * Add Tags-builder entry if the field type is “tag”.
+	 *
+	 * @param string $typeName         Field type
+	 * @param string $nameSingleCode   Single-item view / DB table code
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function applyTagBehaviour(string $typeName, string $nameSingleCode): void
+	{
 		if ($typeName === 'tag')
 		{
-			// set tags for this view but don't load to DB
 			$this->tags->set($nameSingleCode, true);
 		}
-		// dbSwitch
-		$dbSwitch = true;
-		if (isset($field['list']) && $field['list'] == 2)
+	}
+
+	/**
+	 * Decide whether the field should be persisted to the database table.
+	 *
+	 * Fields explicitly marked with 'list' = 2 are excluded from persistence.
+	 * All other cases (including when 'list' is not set) result in persistence.
+	 *
+	 * @return bool  True if the column must exist in the database, false otherwise.
+	 * @since  5.1.1
+	 */
+	private function determineDbPersistence(): bool
+	{
+		if (isset($this->field['list']) && $this->field['list'] == 2)
 		{
-			// do not add this field to the database
-			$dbSwitch = false;
+		   return false;
 		}
-		elseif (isset($field['settings']->datatype))
+		return true;
+	}
+
+	/**
+	 * Populate $this->databasetables, unique/key builders and numeric defaults.
+	 *
+	 * @param string    $table     DB table code
+	 * @param string    $column    Column name
+	 * @param string    $typeName  Field type
+	 *
+	 * @return array{0:bool,1:bool} [isUniqueKey, isKey]
+	 * @since  5.1.1
+	 */
+	private function configureDatabaseSchema(
+		string    $table,
+		string    $column,
+		string    $typeName
+	): array
+	{
+		static $NUMBER = ['INT','TINYINT','BIGINT','FLOAT','DECIMAL','DOUBLE'];
+		static $TEXT   = ['TEXT','TINYTEXT','MEDIUMTEXT','LONGTEXT', 'BLOB','TINYBLOB','MEDIUMBLOB','LONGBLOB'];
+
+		$this->databasetables->set("{$table}.{$column}.type", $this->settings->datatype);
+
+		if (in_array($this->settings->datatype, $NUMBER))
 		{
-			// insure default not none if number type
-			$numberKeys = array('INT', 'TINYINT', 'BIGINT', 'FLOAT', 'DECIMAL',
-				'DOUBLE');
-			// don't use these as index or uniqe keys
-			$textKeys = array('TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT',
-				'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB');
-			// build the query values
-			$this->databasetables->set($nameSingleCode . '.' . $name . '.type',
-				$field['settings']->datatype);
-			// check if this is a number
-			if (in_array($field['settings']->datatype, $numberKeys))
+			if ($this->settings->datadefault === 'Other')
 			{
-				if ($field['settings']->datadefault === 'Other')
+				$n = $this->settings->datadefault_other;
+				if ($this->settings->datatype === 'DECIMAL' && !is_numeric($n))
 				{
-					// setup the checking
-					$number_check = $field['settings']->datadefault_other;
-					// Decimals in SQL needs some help
-					if ('DECIMAL' === $field['settings']->datatype
-						&& !is_numeric($number_check))
-					{
-						$number_check = str_replace(
-							',', '.', (string) $field['settings']->datadefault_other
-						);
-					}
-					// check if we have a valid number value
-					if (!is_numeric($number_check))
-					{
-						$field['settings']->datadefault_other = '0';
-					}
+					$n = str_replace(',', '.', (string) $n);
 				}
-				elseif (!is_numeric($field['settings']->datadefault))
-				{
-					$field['settings']->datadefault = '0';
-				}
+				$this->settings->datadefault_other = is_numeric($n) ? $n : '0';
 			}
-			// check if this is not text
-			if (!in_array($field['settings']->datatype, $textKeys))
+			elseif (!is_numeric($this->settings->datadefault))
 			{
-				$this->databasetables->set($nameSingleCode . '.' . $name . '.lenght',
-					$field['settings']->datalenght);
-				$this->databasetables->set($nameSingleCode . '.' . $name . '.lenght_other',
-					$field['settings']->datalenght_other);
-				$this->databasetables->set($nameSingleCode . '.' . $name . '.default',
-					$field['settings']->datadefault);
-				$this->databasetables->set($nameSingleCode . '.' . $name . '.other',
-					$field['settings']->datadefault_other);
-			}
-			// fall back unto EMPTY for text
-			else
-			{
-				$this->databasetables->set($nameSingleCode . '.' . $name . '.default',
-					'EMPTY');
-			}
-			// to identify the field
-			$this->databasetables->set($nameSingleCode . '.' . $name . '.ID',
-				$field['settings']->id);
-			$this->databasetables->set($nameSingleCode . '.' . $name . '.null_switch',
-				$field['settings']->null_switch);
-			// set index types
-			$_guid = true;
-			$databaseuniquekey = false;
-			$databasekey = false;
-			if ($field['settings']->indexes == 1
-				&& !in_array(
-					$field['settings']->datatype, $textKeys
-				))
-			{
-				// build unique keys of this view for db
-				$this->databaseuniquekeys->add($nameSingleCode, $name, true);
-				$databaseuniquekey = true;
-				// prevent guid from being added twice
-				if ('guid' === $name)
-				{
-					$_guid = false;
-				}
-			}
-			elseif (($field['settings']->indexes == 2
-					|| (isset($field['alias'])
-						&& $field['alias'])
-					|| (isset($field['title']) && $field['title'])
-					|| $typeName === 'category')
-				&& !in_array($field['settings']->datatype, $textKeys))
-			{
-				// build keys of this view for db
-				$this->databasekeys->add($nameSingleCode, $name, true);
-				$databasekey = true;
-			}
-			// special treatment for GUID
-			if ('guid' === $name && $_guid)
-			{
-				$this->databaseuniqueguid->set($nameSingleCode, true);
+				$this->settings->datadefault = '0';
 			}
 		}
-		// set list switch
-		$listSwitch = (isset($field['list'])
-			&& ($field['list'] == 1
-				|| $field['list'] == 3
-				|| $field['list'] == 4));
-		// set list join
-		$listJoin
-			= $this->listjoin->exists($nameListCode . '.' . $field['field']);
-		// add history to this view
-		if (isset($view['history']) && $view['history'])
+
+		$isText = in_array($this->settings->datatype, $TEXT);
+		if (!$isText)
 		{
-			$this->history->set($nameSingleCode, true);
-		}
-		// set Alias (only one title per view)
-		if ($dbSwitch && isset($field['alias']) && $field['alias']
-			&& !$this->alias->get($nameSingleCode))
-		{
-			$this->alias->set($nameSingleCode, $name);
-		}
-		// set Titles (only one title per view)
-		if ($dbSwitch && isset($field['title']) && $field['title']
-			&& !$this->title->get($nameSingleCode))
-		{
-			$this->title->set($nameSingleCode, $name);
-		}
-		// category name fix
-		if ($typeName === 'category')
-		{
-			$tempName = $this->categoryothername->
-				get($nameListCode . '.name', $nameListCode . ' categories');
-			// set lang
-			$listLangName = $langView . '_'
-				. FieldHelper::safe($tempName, true);
-			// set field name
-			$listFieldName = StringHelper::safe($tempName, 'W');
-			// add to lang array
-			$this->language->set(
-				$this->config->lang_target, $listLangName, $listFieldName
-			);
+			$this->databasetables->set("{$table}.{$column}.lenght", $this->settings->datalenght);
+			$this->databasetables->set("{$table}.{$column}.lenght_other", $this->settings->datalenght_other);
+			$this->databasetables->set("{$table}.{$column}.default", $this->settings->datadefault);
+			$this->databasetables->set("{$table}.{$column}.other", $this->settings->datadefault_other);
 		}
 		else
 		{
-			// if label was set use instead
-			if (StringHelper::check($langLabel))
+			$this->databasetables->set("{$table}.{$column}.default", 'EMPTY');
+		}
+
+		$this->databasetables->set("{$table}.{$column}.ID", $this->id);
+		$this->databasetables->set("{$table}.{$column}.GUID", $this->guid);
+		$this->databasetables->set("{$table}.{$column}.null_switch", $this->settings->null_switch);
+
+		$addGuid = true;
+		$databaseUniqueKey = false;
+		$databaseKey = false;
+
+		if ($this->settings->indexes == 1 && !$isText)
+		{
+			$this->databaseuniquekeys->add($table, $column, true);
+			$databaseUniqueKey = true;
+
+		        // prevent guid from being added twice
+		        if ('guid' === $column)
+		        {
+		            $addGuid = false;
+		        }
+		}
+		elseif (
+			(($this->settings->indexes == 2) ||
+			 ($this->field['alias'] ?? false) ||
+			 ($this->field['title'] ?? false) ||
+			 $typeName === 'category') && !$isText
+		)
+		{
+			$this->databasekeys->add($table, $column, true);
+			$databaseKey = true;
+		}
+
+		if ($column === 'guid' && $addGuid)
+		{
+			$this->databaseuniqueguid->set($table, true);
+		}
+
+		return [$databaseUniqueKey, $databaseKey];
+	}
+
+	/**
+	 * Check whether a field should appear in the list view.
+	 *
+	 * @return bool True if field is shown in list
+	 * @since  5.1.1
+	 */
+	private function appearsInList(): bool
+	{
+		return isset($this->field['list']) && in_array($this->field['list'], [1,3,4]);
+	}
+
+	/**
+	 * Activate history tracking for a view when enabled.
+	 *
+	 * @param string $table Single-item view / DB table code
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function applyHistoryFlag(string $table): void
+	{
+		if (!empty($this->view['history']))
+		{
+			$this->history->set($table, true);
+		}
+	}
+
+	/**
+	 * Ensure view-singleton alias/title markers are registered once.
+	 *
+	 * @param bool   $dbSwitch       True if column exists in DB
+	 * @param string $table          DB table code
+	 * @param string $column         Column name
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function applyAliasAndTitleFlags(
+		bool	$dbSwitch,
+		string	$table,
+		string	$column
+	): void
+	{
+		if (!$dbSwitch)
+		{
+			return;
+		}
+
+		if (!empty($this->field['alias']) && !$this->alias->get($table))
+		{
+			$this->alias->set($table, $column);
+		}
+
+		if (!empty($this->field['title']) && !$this->title->get($table))
+		{
+			$this->title->set($table, $column);
+		}
+	}
+
+	/**
+	 * Resolve list-language key and human-readable field name, inserting
+	 * translation entries when necessary.
+	 *
+	 * @param string $langLabel      Explicit language key for the label
+	 * @param string $langView       Language key for the view
+	 * @param string $name           Raw field code
+	 * @param string $nameListCode   List view code
+	 * @param string $nameSingleCode Single-item view code
+	 * @param string $typeName       Field type
+	 *
+	 * @return array{0:string,1:string} [$listLangName,$listFieldName]
+	 * @since  5.1.1
+	 */
+	private function resolveLangAndFieldNames(
+		string	$langLabel,
+		string	$langView,
+		string	$name,
+		string	$nameListCode,
+		string	$nameSingleCode,
+		string	$typeName
+	): array
+	{
+		if ($typeName === 'category')
+		{
+			$tmp = $this->categoryothername->get(
+				"{$nameListCode}.name", $nameListCode . ' categories'
+			);
+			$listLangName	 = $langView . '_' . FieldHelper::safe($tmp, true);
+			$listFieldName	 = StringHelper::safe($tmp, 'W');
+			$this->language->set($this->config->lang_target, $listLangName, $listFieldName);
+
+			return [$listLangName, $listFieldName];
+		}
+
+		if (StringHelper::check($langLabel))
+		{
+			$listLangName = $langLabel;
+
+			if ($this->language->exist($this->config->lang_target, $langLabel))
 			{
-				$listLangName = $langLabel;
-				// get field label from the lang label
-				if ($this->language->exist($this->config->lang_target, $langLabel))
-				{
-					$listFieldName
-						= $this->language->get($this->config->lang_target, $langLabel);
-				}
-				else
-				{
-					// get it from the field xml string
-					$listFieldName = (string) $this->placeholder->update_(
-						GetHelper::between(
-							$field['settings']->xml, 'label="',
-							'"'
-						)
-					);
-				}
-				// make sure there is no html in the list field name
-				$listFieldName = strip_tags($listFieldName);
+				$listFieldName = $this->language->get($this->config->lang_target, $langLabel);
 			}
 			else
 			{
-				// set lang (just in case)
-				$listLangName = $langView . '_'
-					. FieldHelper::safe($name, true);
-				// set field name
-				$listFieldName = StringHelper::safe($name, 'W');
-				// add to lang array
-				$this->language->set(
-					$this->config->lang_target, $listLangName, $listFieldName
+				$listFieldName = (string) $this->placeholder->update_(
+					GetHelper::between($this->settings->xml, 'label="', '"')
 				);
 			}
+
+			return [strip_tags($listLangName), strip_tags($listFieldName)];
 		}
-		// extends value
-		$extends_field = $custom['extends'] ?? '';
-		// build the list values
-		if (($listSwitch || $listJoin) && $typeName != 'repeatable'
-			&& $typeName != 'subform')
+
+		$listLangName  = $langView . '_' . FieldHelper::safe($name, true);
+		$listFieldName = StringHelper::safe($name, 'W');
+		$this->language->set($this->config->lang_target, $listLangName, $listFieldName);
+
+		return [$listLangName, $listFieldName];
+	}
+
+	/**
+	 * Populate list-, customlist- and listjoin-builders.
+	 *
+	 * @param string     $typeName
+	 * @param bool       $listSwitch
+	 * @param bool       $listJoin
+	 * @param string     $nameListCode
+	 * @param string     $nameSingleCode
+	 * @param string     $name
+	 * @param string     $listLangName
+	 * @param bool       $multiple
+	 * @param array|null $custom
+	 * @param array|null $options
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function configureListsAndJoins(
+		string	$typeName,
+		bool	$listSwitch,
+		bool	$listJoin,
+		string	$nameListCode,
+		string	$nameSingleCode,
+		string	$name,
+		string	$listLangName,
+		bool	$multiple,
+		?array	$custom,
+		?array	$options
+	): void
+	{
+		if (in_array($typeName, ['repeatable','subform']))
 		{
-			// load to list builder
-			if ($listSwitch)
-			{
-				// append values
-				$this->lists->add($nameListCode, [
-					'id'       => $field['settings']->id,
-					'guid'       => $field['field'],
-					'type'     => $typeName,
-					'code'     => $name,
-					'lang'     => $listLangName,
-					'title'    => (isset($field['title']) && $field['title'])
-						? true : false,
-					'alias'    => (isset($field['alias']) && $field['alias'])
-						? true : false,
-					'link'     => (isset($field['link']) && $field['link'])
-						? true : false,
-					'sort'     => (isset($field['sort']) && $field['sort'])
-						? true : false,
-					'custom'   => $custom,
-					'multiple' => $multiple,
-					'options'  => $options,
-					'target'   => (int) $field['list']
-				], true);
-			}
-			// build custom builder list
-			if ($listSwitch || $listJoin)
-			{
-				$this->customlist->set($nameSingleCode . '.' . $name, true);
-			}
+			return;
 		}
-		// load the list join builder
+
+		$title = !empty($this->field['title']);
+		$alias = !empty($this->field['alias']);
+		$link = !empty($this->field['link']);
+		$sort = !empty($this->field['sort']);
+
+		if ($listSwitch)
+		{
+			$this->lists->add($nameListCode, [
+				'id' => $this->id,
+				'guid' => $this->guid,
+				'type' => $typeName,
+				'code' => $name,
+				'lang' => $listLangName,
+				'title' => $title,
+				'alias' => $alias,
+				'link' => $link,
+				'sort' => $sort,
+				'custom' => $custom,
+				'multiple' => $multiple,
+				'options' => $options,
+				'target' => (int) ($this->field['list'] ?? 0)
+			], true);
+		}
+
+		if ($listSwitch || $listJoin)
+		{
+			$this->customlist->set("{$nameSingleCode}.{$name}", true);
+		}
+
 		if ($listJoin)
 		{
-			$this->listjoin->set($nameListCode . '.' . $field['field'], [
-				'type'     => $typeName,
-				'id'     => $field['settings']->id,
-				'code'     => $name,
-				'lang'     => $listLangName,
-				'title'    => (isset($field['title']) && $field['title']) ? true
-					: false,
-				'alias'    => (isset($field['alias']) && $field['alias']) ? true
-					: false,
-				'link'     => (isset($field['link']) && $field['link']) ? true
-					: false,
-				'sort'     => (isset($field['sort']) && $field['sort']) ? true
-					: false,
-				'custom'   => $custom,
+			$this->listjoin->set($nameListCode . '.' . $this->guid, [
+				'type' => $typeName,
+				'id' => $this->id,
+				'code' => $name,
+				'lang' => $listLangName,
+				'title' => $title,
+				'alias' => $alias,
+				'link' => $link,
+				'sort' => $sort,
+				'custom' => $custom,
 				'multiple' => $multiple,
-				'options'  => $options
+				'options' => $options
 			]);
 		}
-		// update the field relations
-		if (($field_relations =
-				$this->fieldrelations->get($nameListCode . '.' . $field['field'])) !== null)
+	}
+
+	/**
+	 * Update $this->fieldrelations after full meta is known.
+	 *
+	 * @param string     $nameListCode List view code
+	 * @param string     $typeName     Field type
+	 * @param string     $name         Column name
+	 * @param array|null $custom       Custom meta
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function synchroniseFieldRelations(
+		string	$nameListCode,
+		string	$typeName,
+		string	$name,
+		?array	$custom
+	): void
+	{
+		$key = $nameListCode . '.' . $this->guid;
+
+		if (($relations = $this->fieldrelations->get($key)) !== null)
 		{
-			$field_relations = (array) $field_relations;
-			foreach ($field_relations as $area => &$field_values)
+			$relations = (array) $relations;
+			foreach ($relations as &$v)
 			{
-				$field_values['id']   = $field['settings']->id;
-				$field_values['guid']   = $field['field'];
-				$field_values['type']   = $typeName;
-				$field_values['code']   = $name;
-				$field_values['custom'] = $custom;
+				$v['id'] = $this->id;
+				$v['guid'] = $this->guid;
+				$v['type'] = $typeName;
+				$v['code'] = $name;
+				$v['custom'] = $custom;
 			}
-			$this->fieldrelations->set($nameListCode . '.' . $field['field'], $field_relations);
+			$this->fieldrelations->set($key, $relations);
 		}
-		// set the hidden field of this view
-		if ($dbSwitch && $typeName === 'hidden')
+	}
+
+	/**
+	 * Register hidden/int/dynamic/editor/media/checkbox/custom/JSON/encryption
+	 * builders and ItemMethods housekeeping.
+	 *
+	 * @param bool       $dbSwitch
+	 * @param string     $typeName
+	 * @param string     $listLangName
+	 * @param string     $nameListCode
+	 * @param string     $nameSingleCode
+	 * @param string     $column
+	 * @param array|null $custom
+	 * @param bool       $multiple
+	 * @param bool       $listSwitch
+	 * @param bool       $listJoin
+	 * @param array|null $options
+	 *
+	 * @return string|null  The store string name of this field (null if none set)
+	 * @since  5.1.1
+	 */
+	private function applyTypeSpecificBuilders(
+		bool	  $dbSwitch,
+		string	  $typeName,
+		string	  $listLangName,
+		string	  $nameListCode,
+		string	  $nameSingleCode,
+		string	  $column,
+		?array	  $custom,
+		bool	  $multiple,
+		bool	  $listSwitch,
+		bool	  $listJoin,
+		?array	  $options
+	): ?string
+	{
+		$defaultFields = $this->config->default_fields;
+		$storeString = null;
+
+		if ($dbSwitch)
 		{
-			$this->hiddenfields->add($nameSingleCode, ',"' . $name . '"', true);
-		}
-		// set all int fields of this view
-		if ($dbSwitch && isset($field['settings']->datatype)
-			&& ($field['settings']->datatype === 'INT'
-				|| $field['settings']->datatype === 'TINYINT'
-				|| $field['settings']->datatype === 'BIGINT'))
-		{
-			$this->integerfields->add($nameSingleCode, ',"' . $name . '"', true);
-		}
-		// Get the default fields
-		$default_fields = $this->config->default_fields;
-		// set all dynamic field of this view
-		if ($dbSwitch && $typeName != 'category' && $typeName != 'repeatable'
-			&& $typeName != 'subform' && !in_array($name, $default_fields))
-		{
-			$this->dynamicfields->add($nameSingleCode, '"' . $name . '":"' . $name . '"', true);
-		}
-		// TODO we may need to add a switch instead (since now it uses the first editor field)
-		// set the main(biggest) text field of this view
-		if ($dbSwitch && $typeName === 'editor')
-		{
-			if (!$this->maintextfield->exists($nameSingleCode))
+			if ($typeName === 'hidden')
 			{
-				$this->maintextfield->set($nameSingleCode, $name);
+				$this->hiddenfields->add($nameSingleCode, ',"' . $column . '"', true);
+			}
+
+			if (in_array($this->settings->datatype, ['INT','TINYINT','BIGINT']))
+			{
+				$this->integerfields->add($nameSingleCode, ',"' . $column . '"', true);
+			}
+
+			if (
+				$typeName !== 'category' &&
+				!in_array($column, $defaultFields) &&
+				!in_array($typeName, ['repeatable','subform'])
+			)
+			{
+				$this->dynamicfields->add($nameSingleCode, '"' . $column . '":"' . $column . '"', true);
+			}
+
+			if ($typeName === 'editor' && !$this->maintextfield->exists($nameSingleCode))
+			{
+				$this->maintextfield->set($nameSingleCode, $column);
+			}
+
+			if (
+				$typeName === 'checkbox' ||
+				(ArrayHelper::check($custom) && ($custom['extends'] ?? '') === 'checkboxes')
+			)
+			{
+				$this->checkbox->add($nameSingleCode, $column, true);
 			}
 		}
-		// set the custom builder
-		if (ArrayHelper::check($custom)
-			&& $typeName != 'category'
-			&& $typeName != 'repeatable'
-			&& $typeName != 'subform')
+
+		if (ArrayHelper::check($custom) && !in_array($typeName, ['category','repeatable','subform']))
 		{
 			$this->customfield->add($nameListCode, [
-				'type'   => $typeName,
-				'code'   => $name,
-				'lang'   => $listLangName,
+				'type' => $typeName,
+				'code' => $column,
+				'lang' => $listLangName ?? '',
 				'custom' => $custom,
-				'method' => $field['settings']->store
+				'method' => $this->settings->store
 			], true);
 
-			// only load this if table is set
-			if (isset($custom['table'])
-				&& StringHelper::check(
-					$custom['table']
-				))
+			if (!empty($custom['table']))
 			{
-				// set the custom fields needed in content type data
 				$this->customfieldlinks->add(
 					$nameSingleCode,
-					',{"sourceColumn": "' . $name . '","targetTable": "' . $custom['table']
+					',{"sourceColumn": "' . $column . '","targetTable": "' . $custom['table']
 					. '","targetColumn": "' . $custom['id'] . '","displayColumn": "' . $custom['text'] . '"}',
 					true
 				);
 			}
+
 			// build script switch for user
-			if ($extends_field === 'user')
+			if (($custom['extends'] ?? '') === 'user')
 			{
 				$this->scriptuserswitch->set($typeName, $typeName);
 			}
 		}
+
 		if ($typeName === 'media')
 		{
 			$this->scriptmediaswitch->set($typeName, $typeName);
 		}
-		// setup category for this view
-		if ($dbSwitch && $typeName === 'category')
+
+		if (
+			($dbSwitch || $this->settings->store == 6) &&
+			(
+				$typeName === 'subform'  ||
+				$typeName === 'checkboxes' ||
+				$multiple || $this->settings->store != 0
+			)
+			&& $typeName !== 'tag'
+		)
 		{
-			$otherViews = $this->categoryothername->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = $this->categoryothername->
-				get($nameListCode . '.view', $nameSingleCode);
-			// get the xml extension name
-			$_extension = $this->placeholder->update_(
-				GetHelper::between(
-					$field['settings']->xml, 'extension="', '"'
-				)
+			$storeString = $this->handleStoreBehaviour(
+				$typeName,
+				$nameSingleCode,
+				$column,
+				$custom,
+				$listSwitch || $listJoin,
+				$options
 			);
-			// if they left out the extension for some reason
-			if (!StringHelper::check($_extension))
-			{
-				$_extension = 'com_' . $this->config->component_code_name . '.'
-					. $otherView;
-			}
-			// check the context (does our target match)
-			if (strpos((string) $_extension, '.') !== false)
-			{
-				$target_view = trim(explode('.', (string) $_extension)[1]);
-				// from my understanding the target extension view and the otherView must align
-				// so I will here check that it does, and if not raise an error message to fix this
-				if ($target_view !== $otherView)
-				{
-					$target_extension = trim(explode('.', (string) $_extension)[0]);
-					$correction       = $target_extension . '.' . $otherView;
-					$this->app->enqueueMessage(
-						Text::sprintf(
-							'<hr /><h3>Category targeting view mismatch</h3>
-								<p>The <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open field">
-								category field</a> in <b>(%s) admin view</b> has a mismatching target view.
-								<br />To correct the mismatch, the <b>extension</b> value <code>%s</code> in the <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s" target="_blank" title="open category field">
-								field</a> must be changed to <code>%s</code>
-								for <a href="https://github.com/vdm-io/Joomla-Component-Builder/issues/561" target="_blank" title="view issue on gitHub">
-								best category integration with Joomla</a>.
-								<br /><b>Please watch <a href="https://youtu.be/R4WQgcu6Xns" target="_blank" title="very important info on the topic">
-								this tutorial</a> before proceeding!!!</b>,
-								<a href="https://gist.github.com/Llewellynvdm/e053dc39ae3b2bf769c76a3e62c75b95" target="_blank" title="first watch the tutorial to understand how to use this code">code fix</a></p>',
-							$field['settings']->id, $nameSingleCode, $_extension,
-							$field['settings']->id, $correction
-						), 'Error'
-					);
-				}
-			}
-			// load the category builder - TODO must move all to single view
-			$this->category->set($nameListCode, [
-				'code'      => $name,
-				'name'      => $listLangName,
-				'extension' => $_extension,
-				'filter'    => $field['filter'],
-				'add_icon'  => StringHelper::check($view['settings']->icon_category)
-			]);
-			// also set code name for title alias fix
-			$this->categorycode->set($nameSingleCode, [
-				'code'  => $name,
-				'views' => $otherViews,
-				'view'  => $otherView
-			]);
 		}
-		// setup checkbox for this view
-		if ($dbSwitch && ($typeName === 'checkbox' ||
-				(ArrayHelper::check($custom) && $extends_field === 'checkboxes')))
-		{
-			$this->checkbox->add($nameSingleCode, $name, true);
-		}
-		// setup checkboxes and other json items for this view
-		// if we have advance field modeling and the field is not being set in the DB
-		// this could mean that field is modeled manually (so we add it)
-		if (($dbSwitch || $field['settings']->store == 6)
-			&& (($typeName === 'subform' || $typeName === 'checkboxes'
-					|| $multiple
-					|| $field['settings']->store != 0)
-				&& $typeName != 'tag'))
-		{
-			$subformJsonSwitch = true;
-			switch ($field['settings']->store)
-			{
-				case 1:
-					// JSON_STRING_ENCODE
-					$this->jsonstring->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'json', $typeName
-					);
-					// add open close method to field data
-					$field['store'] = 'json';
-					break;
-				case 2:
-					// BASE_SIXTY_FOUR
-					$this->basesixfour->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'base64', $typeName
-					);
-					// add open close method to field data
-					$field['store'] = 'base64';
-					break;
-				case 3:
-					// BASIC_ENCRYPTION_LOCALKEY
-					$this->modelbasicfield->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'basic_encryption', $typeName
-					);
-					// make sure to load FOF encryption (power)
-					$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
-					// add open close method to field data
-					$field['store'] = 'basic_encryption';
-					break;
-				case 4:
-					// WHMCS_ENCRYPTION_VDMKEY (DUE REMOVAL)
-					$this->modelwhmcsfield->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'whmcs_encryption', $typeName
-					);
-					// make sure to load FOF encryption (power)
-					$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
-					// add open close method to field data
-					$field['store'] = 'whmcs_encryption';
-					break;
-				case 5:
-					// MEDIUM_ENCRYPTION_LOCALFILE
-					$this->modelmediumfield->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'medium_encryption', $typeName
-					);
-					// make sure to load FOF encryption (power)
-					$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
-					// add open close method to field data
-					$field['store'] = 'medium_encryption';
-					break;
-				case 6:
-					// EXPERT_MODE
-					if (isset($field['settings']->model_field))
-					{
-						if (isset($field['settings']->initiator_save_key))
-						{
-							$this->modelexpertfieldinitiator->set(
-								$nameSingleCode . '.save.' . $field['settings']->initiator_save_key
-								, $field['settings']->initiator_save
-							);
-						}
-						if (isset($field['settings']->initiator_get_key))
-						{
-							$this->modelexpertfieldinitiator->set(
-								$nameSingleCode . '.get.' . $field['settings']->initiator_get_key
-								, $field['settings']->initiator_get
-							);
-						}
-						$this->modelexpertfield->set(
-							$nameSingleCode . '.' . $name, $field['settings']->model_field
-						);
-						// Site settings of each field if needed
-						$this->sitefielddata->set(
-							$nameSingleCode, $name, 'expert_mode', $typeName
-						);
-					}
-					break;
-				default:
-					// JSON_ARRAY_ENCODE
-					$this->jsonitem->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'json', $typeName
-					);
-					// no londer add the json again (already added)
-					$subformJsonSwitch = false;
-					// add open close method to field data
-					$field['store'] = 'json';
-					break;
-			}
-			// just a heads-up for usergroups set to multiple
-			if ($typeName === 'usergroup' || $typeName === 'usergrouplist')
-			{
-				$this->sitefielddata->set(
-					$nameSingleCode, $name, 'json', $typeName
-				);
-			}
 
-			// load the model list display fix
-			if (($listSwitch || $listJoin)
-				&& (($typeName != 'repeatable' && $typeName != 'subform') || $field['settings']->store == 6))
-			{
-				$this->itemsmethodliststring->add($nameSingleCode, [
-					'name' => $name,
-					'type' => $typeName,
-					'translation' => (bool) ArrayHelper::check($options),
-					'custom' => $custom,
-					'method' => $field['settings']->store
-				], true);
-			}
-
-			// subform housekeeping (only if not advance modeling)
-			if ('subform' === $typeName && $field['settings']->store != 6)
-			{
-				// the values must revert to array
-				$this->jsonitemarray->add($nameSingleCode, $name, true);
-				// should the json builder still be added
-				if ($subformJsonSwitch)
-				{
-					// and insure the if is converted to json
-					$this->jsonitem->add($nameSingleCode, $name, true);
-					// Site settings of each field if needed
-					$this->sitefielddata->set(
-						$nameSingleCode, $name, 'json', $typeName
-					);
-				}
-			}
-		}
-		// build the data for the export & import methods $typeName === 'repeatable' ||
-		if ($dbSwitch && (($typeName === 'checkboxes' || $multiple || $field['settings']->store != 0)
-				&& !ArrayHelper::check($options)))
+		if (
+			$dbSwitch &&
+			(
+				($typeName === 'checkboxes' || $multiple || $this->settings->store != 0)
+				&& !ArrayHelper::check($options)
+			)
+		)
 		{
 			$this->itemsmethodeximportstring->add($nameSingleCode, [
-				'name' => $name,
+				'name' => $column,
 				'type' => $typeName,
 				'translation' => false,
 				'custom' => $custom,
-				'method' => $field['settings']->store
+				'method' => $this->settings->store
 			], true);
 		}
-		// check if field should be added to uikit
-		$this->sitefielddata->set($nameSingleCode, $name, 'uikit', $typeName);
-		// load the selection translation fix
-		if (ArrayHelper::check($options) && ($listSwitch || $listJoin)
-			&& $typeName != 'repeatable' && $typeName != 'subform')
+
+		$this->sitefielddata->set($nameSingleCode, $column, 'uikit', $typeName);
+
+		if (
+			ArrayHelper::check($options) && ($listSwitch || $listJoin) &&
+			!in_array($typeName, ['repeatable','subform'])
+		)
 		{
-			$this->selectiontranslation->set($nameListCode . '.' . $name, $options);
+			$this->selectiontranslation->set($nameListCode . '.' . $column, $options);
 		}
-		// main lang filter prefix
-		$lang_filter_ = $this->config->lang_prefix . '_FILTER_';
-		// build the sort values
-		if ($dbSwitch && (isset($field['sort']) && $field['sort'] == 1)
-			&& ($listSwitch || $listJoin)
-			&& (!$multiple && $typeName != 'checkbox' && $typeName != 'checkboxes'
-				&& $typeName != 'repeatable' && $typeName != 'subform'))
+
+		return $storeString;
+	}
+
+	/**
+	 * Handle storage-mode specific behaviour (JSON, Base64, encryption, expert).
+	 *
+	 * @param string      $typeName
+	 * @param string      $table
+	 * @param string      $column
+	 * @param array|null  $custom
+	 * @param bool        $inList
+	 * @param array|null  $options
+	 *
+	 * @return string|null  The store string name of this field (null if none set)
+	 * @since  5.1.1
+	 */
+	private function handleStoreBehaviour(
+		string    $typeName,
+		string    $table,
+		string    $column,
+		?array    $custom,
+		bool      $inList,
+		?array    $options
+	): ?string
+	{
+		$subformJsonSwitch = true;
+		$storeString = null;
+
+		switch ((int) $this->settings->store)
 		{
-			// add the language only for new filter option
-			$filter_name_asc_lang  = '';
-			$filter_name_desc_lang = '';
-			if ($this->adminfiltertype->get($nameListCode, 1) == 2)
-			{
-				// set the language strings for ascending
-				$filter_name_asc      = $listFieldName . ' ascending';
-				$filter_name_asc_lang = $lang_filter_
-					. StringHelper::safe(
-						$filter_name_asc, 'U'
-					);
-				// and to translation
-				$this->language->set(
-					$this->config->lang_target, $filter_name_asc_lang, $filter_name_asc
-				);
-				// set the language strings for descending
-				$filter_name_desc      = $listFieldName . ' descending';
-				$filter_name_desc_lang = $lang_filter_
-					. StringHelper::safe(
-						$filter_name_desc, 'U'
-					);
-				// and to translation
-				$this->language->set(
-					$this->config->lang_target, $filter_name_desc_lang, $filter_name_desc
-				);
-			}
-			$this->sort->add($nameListCode, [
-				'type'      => $typeName,
-				'code'      => $name,
-				'lang'      => $listLangName,
-				'lang_asc'  => $filter_name_asc_lang,
-				'lang_desc' => $filter_name_desc_lang,
-				'custom'    => $custom,
-				'options'   => $options
-			], true);
+			case 1:	// JSON_STRING_ENCODE
+				$this->jsonstring->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'json', $typeName);
+				$storeString = 'json';
+				break;
+
+			case 2:	// BASE_SIXTY_FOUR
+				$this->basesixfour->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'base64', $typeName);
+				$storeString = 'base64';
+				break;
+
+			case 3:	// BASIC_ENCRYPTION_LOCALKEY
+				$this->modelbasicfield->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'basic_encryption', $typeName);
+				$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
+				$storeString = 'basic_encryption';
+				break;
+
+			case 4:	// WHMCS_ENCRYPTION_VDMKEY
+				$this->modelwhmcsfield->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'whmcs_encryption', $typeName);
+				$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
+				$storeString = 'whmcs_encryption';
+				break;
+
+			case 5:	// MEDIUM_ENCRYPTION_LOCALFILE
+				$this->modelmediumfield->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'medium_encryption', $typeName);
+				$this->power->get('99175f6d-dba8-4086-8a65-5c4ec175e61d', 1);
+				$storeString = 'medium_encryption';
+				break;
+
+			case 6:	// EXPERT_MODE
+				if (isset($this->settings->model_field))
+				{
+					if (isset($this->settings->initiator_save_key))
+					{
+						$this->modelexpertfieldinitiator->set(
+							$table . '.save.' . $this->settings->initiator_save_key,
+							$this->settings->initiator_save
+						);
+					}
+					if (isset($this->settings->initiator_get_key))
+					{
+						$this->modelexpertfieldinitiator->set(
+							$table . '.get.' . $this->settings->initiator_get_key,
+							$this->settings->initiator_get
+						);
+					}
+					$this->modelexpertfield->set("$table.$column", $this->settings->model_field);
+					$this->sitefielddata->set($table, $column, 'expert_mode', $typeName);
+				}
+				break;
+
+			default: // JSON_ARRAY_ENCODE
+				$this->jsonitem->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'json', $typeName);
+				$storeString = 'json';
+				$subformJsonSwitch = false;
+				break;
 		}
-		// build the search values
-		if ($dbSwitch && isset($field['search']) && $field['search'] == 1)
+
+		// just a heads-up for usergroups set to multiple
+		if ($typeName === 'usergroup' || $typeName === 'usergrouplist')
 		{
-			$_list = (isset($field['list'])) ? $field['list'] : 0;
-			$this->search->add($nameListCode, [
-				'type'   => $typeName,
-				'code'   => $name,
+			$this->sitefielddata->set($table, $column, 'json', $typeName);
+		}
+
+		if ($inList && (!in_array($typeName, ['repeatable','subform']) || $this->settings->store == 6))
+		{
+			$this->itemsmethodliststring->add($table, [
+				'name' => $column,
+				'type' => $typeName,
+				'translation' => (bool) ArrayHelper::check($options),
 				'custom' => $custom,
-				'list'   => $_list
+				'method' => $this->settings->store
 			], true);
 		}
-		// build the filter values
-		if ($dbSwitch && (isset($field['filter']) && $field['filter'] >= 1)
-			&& ($listSwitch || $listJoin)
-			&& (!$multiple && $typeName != 'checkbox'
-				&& $typeName != 'checkboxes'
-				&& $typeName != 'repeatable'
-				&& $typeName != 'subform'))
+
+		if ($typeName === 'subform' && $this->settings->store != 6)
 		{
-			// this pains me... but to avoid collusion
-			$filter_type_code     = StringHelper::safe(
-				$nameListCode . 'filter' . $name
-			);
-			$filter_type_code     = preg_replace('/_+/', '', (string) $filter_type_code);
-			$filter_function_name = StringHelper::safe(
-				$name, 'F'
-			);
-			// add the language only for new filter option
-			$filter_name_select_lang = '';
-			if ($this->adminfiltertype->get($nameListCode, 1) == 2)
+			$this->jsonitemarray->add($table, $column, true);
+			if ($subformJsonSwitch)
 			{
-				// set the language strings for selection
-				$filter_name_select      = 'Select ' . $listFieldName;
-				$filter_name_select_lang = $lang_filter_
-					. StringHelper::safe(
-						$filter_name_select, 'U'
-					);
-				// and to translation
-				$this->language->set(
-					$this->config->lang_target, $filter_name_select_lang, $filter_name_select
+				$this->jsonitem->add($table, $column, true);
+				$this->sitefielddata->set($table, $column, 'json', $typeName);
+				$storeString = 'json';
+			}
+		}
+
+		return $storeString;
+	}
+
+	/**
+	 * Validate category field attributes, show mismatch warning and
+	 * populate category builders.
+	 *
+	 * @param string $nameListCode
+	 * @param string $nameSingleCode
+	 * @param string $column
+	 * @param string $listLangName
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function configureCategoryField(
+		string	$nameListCode,
+		string	$nameSingleCode,
+		string	$column,
+		string	$listLangName
+	): void
+	{
+		$otherViews = $this->categoryothername->get("{$nameListCode}.views", $nameListCode);
+		$otherView = $this->categoryothername->get("{$nameListCode}.view",  $nameSingleCode);
+
+		$_extension = $this->placeholder->update_(
+			GetHelper::between($this->settings->xml, 'extension="', '"')
+		);
+
+		if (!StringHelper::check($_extension))
+		{
+			$_extension = 'com_' . $this->config->component_code_name . '.' . $otherView;
+		}
+
+		if (str_contains($_extension, '.'))
+		{
+			[$targetExtension, $targetView] = array_map('trim', explode('.', $_extension, 2));
+			if ($targetView !== $otherView)
+			{
+				$correction = $targetExtension . '.' . $otherView;
+				$this->app->enqueueMessage(
+					Text::sprintf(
+						'<hr /><h3>Category targeting view mismatch</h3>
+						 <p>The <a href="index.php?option=com_componentbuilder&view=fields&task=field.edit&id=%s"
+						 target="_blank">category field</a> in <b>(%s) admin view</b>
+						 has a mismatching target view.<br />
+						 Change <code>%s</code> to <code>%s</code> for best practice.</p>',
+						$this->id,
+						$nameSingleCode,
+						$_extension,
+						$correction
+					),
+					'Error'
 				);
 			}
+		}
 
-			// add the filter details
-			$this->filter->add($nameListCode, [
-				'id'             => $field['settings']->id,
-				'guid'          => $field['field'],
-				'type'        => $typeName,
-				'multi'       => $field['filter'],
-				'code'        => $name,
-				'label'       => $langLabel,
-				'lang'        => $listLangName,
-				'lang_select' => $filter_name_select_lang,
-				'database'    => $nameSingleCode,
-				'function'    => $filter_function_name,
-				'custom'      => $custom,
-				'options'     => $options,
-				'filter_type' => $filter_type_code
+		$this->category->set($nameListCode, [
+			'code' => $column,
+			'name' => $listLangName,
+			'extension' => $_extension,
+			'filter' => $this->field['filter'],
+			'add_icon' => StringHelper::check($this->view['settings']->icon_category)
+		]);
+
+		$this->categorycode->set($nameSingleCode, [
+			'code' => $column,
+			'views' => $otherViews,
+			'view' => $otherView
+		]);
+	}
+
+	/**
+	 * Build sort, search, filter options and associated language strings.
+	 *
+	 * @param bool       $dbSwitch
+	 * @param string     $typeName
+	 * @param bool       $multiple
+	 * @param bool       $listSwitch
+	 * @param bool       $listJoin
+	 * @param string     $langLabel
+	 * @param string     $listLangName
+	 * @param string     $listFieldName
+	 * @param string     $nameSingleCode
+	 * @param string     $nameListCode
+	 * @param string     $column
+	 * @param array|null $custom
+	 * @param array|null $options
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function configureSortSearchFilter(
+		bool	$dbSwitch,
+		string	$typeName,
+		bool	$multiple,
+		bool	$listSwitch,
+		bool	$listJoin,
+		string	$langLabel,
+		string	$listLangName,
+		string	$listFieldName,
+		string	$nameSingleCode,
+		string	$nameListCode,
+		string	$column,
+		?array	$custom,
+		?array	$options
+	): void
+	{
+		$langFilterPrefix = $this->config->lang_prefix . '_FILTER_';
+
+		$isSortable = $dbSwitch && !empty($this->field['sort']) &&
+			!$multiple && !in_array($typeName, ['checkbox','checkboxes','repeatable','subform']) &&
+			($listSwitch || $listJoin);
+
+		if ($isSortable)
+		{
+			$filterAscLang  = '';
+			$filterDescLang = '';
+
+			if ($this->adminfiltertype->get($nameListCode, 1) == 2)
+			{
+				$asc = $listFieldName . ' ascending';
+				$desc = $listFieldName . ' descending';
+
+				$filterAscLang = $langFilterPrefix . StringHelper::safe($asc, 'U');
+				$filterDescLang = $langFilterPrefix . StringHelper::safe($desc, 'U');
+
+				$this->language->set($this->config->lang_target, $filterAscLang, $asc);
+				$this->language->set($this->config->lang_target, $filterDescLang, $desc);
+			}
+
+			$this->sort->add($nameListCode, [
+				'type' => $typeName,
+				'code' => $column,
+				'lang' => $listLangName,
+				'lang_asc' => $filterAscLang,
+				'lang_desc' => $filterDescLang,
+				'custom' => $custom,
+				'options' => $options
 			], true);
 		}
 
-		// build the layout
-		$tabName = '';
-		if (isset($view['settings']->tabs)
-			&& isset($view['settings']->tabs[(int) $field['tab']]))
+		if ($dbSwitch && !empty($this->field['search']))
 		{
-			$tabName = $view['settings']->tabs[(int) $field['tab']];
+			$this->search->add($nameListCode, [
+				'type' => $typeName,
+				'code' => $column,
+				'custom'=> $custom,
+				'list' => (int) ($this->field['list'] ?? 0)
+			], true);
 		}
-		elseif ((int) $field['tab'] == 15)
+
+		$isFilterable = $dbSwitch && !empty($this->field['filter']) && $this->field['filter'] >= 1 && ($listSwitch || $listJoin) &&
+			!$multiple && !in_array($typeName, ['checkbox','checkboxes','repeatable','subform']);
+
+		if ($isFilterable)
 		{
-			// set to publishing tab
+			$filterTypeCode = preg_replace('/_+/', '',
+				StringHelper::safe($nameListCode . 'filter' . $column)
+			);
+			$functionName = StringHelper::safe($column, 'F');
+			$filterSelectLang = '';
+
+			if ($this->adminfiltertype->get($nameListCode, 1) == 2)
+			{
+				$txt = 'Select ' . $listFieldName;
+				$filterSelectLang = $langFilterPrefix . StringHelper::safe($txt, 'U');
+				$this->language->set($this->config->lang_target, $filterSelectLang, $txt);
+			}
+
+			$this->filter->add($nameListCode, [
+				'id' => $this->id,
+				'guid' => $this->guid,
+				'type' => $typeName,
+				'multi' => $this->field['filter'],
+				'code' => $column,
+				'label' => $langLabel,
+				'lang' => $listLangName,
+				'lang_select' => $filterSelectLang,
+				'database' => $nameSingleCode,
+				'function' => $functionName,
+				'custom' => $custom,
+				'options' => $options,
+				'filter_type' => $filterTypeCode
+			], true);
+		}
+	}
+
+	/**
+	 * Decide tab placement, push data into $this->layout and finalise
+	 * $this->componentfields map.
+	 *
+	 * @param bool        $dbSwitch
+	 * @param string      $nameSingleCode
+	 * @param string      $column
+	 * @param string      $typeName
+	 * @param bool        $uniqueKey
+	 * @param bool        $key
+	 * @param string      $langLabel
+	 * @param string      $nameListCode
+	 * @param string|null $storeString
+	 * @param array|null  $custom
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function configureLayoutAndComponentField(
+		bool	$dbSwitch,
+		string	$nameSingleCode,
+		string	$column,
+		string	$typeName,
+		bool	$uniqueKey,
+		bool	$key,
+		string	$langLabel,
+		string	$nameListCode,
+		?string $storeString,
+		?array	$custom
+	): void
+	{
+		$tabName = '';
+		if (isset($this->view['settings']->tabs[$this->field['tab']]))
+		{
+			$tabName = $this->view['settings']->tabs[$this->field['tab']];
+		}
+		elseif ((int) $this->field['tab'] === 15)
+		{
 			$tabName = 'publishing';
 		}
-		$this->layout->set($nameSingleCode, $tabName, $name, $field);
 
-		// load all fields that are in the database
+		$this->layout->set($nameSingleCode, $tabName, $column, $this->field);
+
 		if ($dbSwitch)
 		{
-			// load array of view, field, and [encryption, type, tab]
-			$title_ = $this->title->get($nameSingleCode);
-			$this->componentfields->set($nameSingleCode . '.' . $name,
-				[
-					'name' => $name,
-					'label' => $langLabel,
-					'type' => $typeName,
-					'title' => (is_string($title_) && $name === $title_) ? true : false,
-					'list' => $nameListCode,
-					'store' => (isset($field['store'])) ? $field['store'] : null,
-					'tab_name' => $tabName,
-					'db' => $this->normalizeDatabaseValues($nameSingleCode, $name, $databaseuniquekey, $databasekey),
-					'link' => $this->setLinkerRelations($custom ?? [])
-				]
-			);
+			$this->componentfields->set("$nameSingleCode.$column", [
+				'name' => $column,
+				'label' => $langLabel,
+				'type' => $typeName,
+				'title' => $column === $this->title->get($nameSingleCode),
+				'list' => $nameListCode,
+				'store' => $storeString,
+				'tab_name' => $tabName,
+				'db' => $this->normalizeDatabaseValues(
+					$nameSingleCode,
+					$column,
+					$uniqueKey,
+					$key
+				),
+				'link' => $this->setLinkerRelations($custom ?? [])
+			]);
 		}
 	}
 
@@ -1397,6 +1769,24 @@ final class Builders
 		];
 
 		return $linker;
+	}
+
+	/**
+	 * Initialise this field
+	 *
+	 * @param array  $view   View meta-data
+	 * @param array  $field  Field meta-data (includes $field['settings'] object)
+	 *
+	 * @return   void
+	 * @since    5.1.1
+	 */
+	private function init(array &$view, array &$field): void
+	{
+		$this->field = $field;
+		$this->settings = $this->field['settings'];
+		$this->id = $field['settings']->id;
+		$this->guid = $field['field'] ?? $field['settings']->guid;
+		$this->view = $view;
 	}
 }
 

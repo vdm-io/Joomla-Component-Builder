@@ -139,7 +139,7 @@ class ###SView###Model extends ItemModel
 	{
 		parent::__construct($config, $factory);
 
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->input ??= $this->app->getInput();
 
 		// Set the current user for authorisation checks (for those calling this model directly)
@@ -185,7 +185,7 @@ class ###SView###Model extends ItemModel
 		// check if this user has permission to access item
 		if (!$this->user->authorise('###sview###.access', 'com_###component###'))
 		{
-			$this->app->enqueueMessage(Text::_('Not authorised!'), 'error');
+			$this->app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Not authorised!'), 'error');
 			// redirect away if not a correct to cPanel/default view
 			$this->app->redirect('index.php?option=com_###component###');
 			return false;

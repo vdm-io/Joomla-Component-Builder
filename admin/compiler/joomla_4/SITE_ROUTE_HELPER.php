@@ -36,7 +36,7 @@ abstract class RouteHelper
 
 	protected static function _findItem($needles = null,$type = null)
 	{
-		$app      = Factory::getApplication();
+		$app      = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$menus    = $app->getMenu('site');
 		$language = isset($needles['language']) ? $needles['language'] : '*';
 
@@ -45,7 +45,7 @@ abstract class RouteHelper
 		{
 			self::$lookup[$language] = [];
 
-			$component  = ComponentHelper::getComponent('com_###component###');
+			$component  = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getComponent('com_###component###');
 
 			$attributes = array('component_id');
 			$values     = array($component->id);
@@ -116,7 +116,7 @@ abstract class RouteHelper
 		if ($type)
 		{
 			// Check if the global menu item has been set.
-			$params = ComponentHelper::getParams('com_###component###');
+			$params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 			if ($item = $params->get($type.'_menu', 0))
 			{
 				return $item;

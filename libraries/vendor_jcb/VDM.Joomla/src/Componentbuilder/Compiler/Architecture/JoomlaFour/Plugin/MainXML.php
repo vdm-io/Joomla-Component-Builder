@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Plugin;
 
 
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Set;
@@ -542,7 +542,7 @@ final class MainXML implements MainXMLInterface
 
 						$path = "{$plugin->folder_path}/language/{$tag}/";
 
-						if (!Folder::exists($path))
+						if (!is_dir($path))
 						{
 							Folder::create($path);
 							$this->counter->folder++;

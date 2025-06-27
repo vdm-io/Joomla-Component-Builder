@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Data\Action;
 
 
-use VDM\Joomla\Interfaces\DeleteInterface as Database;
+use VDM\Joomla\Interfaces\Database\DeleteInterface as Database;
 use VDM\Joomla\Interfaces\Data\DeleteInterface;
 
 

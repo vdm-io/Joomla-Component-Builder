@@ -243,7 +243,6 @@
 			name="icon"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_DESCRIPTION"
-			directory=""
 		/>
 		<!-- Php_after_publish Field. Type: Editor. (joomla) -->
 		<field
@@ -295,7 +294,6 @@
 			name="icon_category"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_CATEGORY_DESCRIPTION"
-			directory=""
 		/>
 		<!-- Icon_add Field. Type: Media. (joomla) -->
 		<field
@@ -303,7 +301,6 @@
 			name="icon_add"
 			label="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_LABEL"
 			description="COM_COMPONENTBUILDER_ADMIN_VIEW_ICON_ADD_DESCRIPTION"
-			directory=""
 		/>
 		<!-- Php_after_cancel Field. Type: Editor. (joomla) -->
 		<field

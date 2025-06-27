@@ -249,7 +249,7 @@ function getClassCode(field, type){
 		jQuery('#'+id).val('');
 		jQuery('#'+id).trigger("liszt:updated");
 		// give out a notice
-		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
+		jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
 	} else {
 		// set the active removed value
 		selectedIdRemoved[type] = id;

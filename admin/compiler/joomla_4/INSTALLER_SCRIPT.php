@@ -16,12 +16,12 @@ defined('_JCB_TEMPLATE') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\InstallerScriptInterface;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Version;
 use Joomla\CMS\HTML\HTMLHelper as Html;
+use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
 use Joomla\Database\DatabaseInterface;
 
@@ -122,8 +122,8 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 	{
 		$this->minimumJoomla = '4.3';
 		$this->minimumPhp = JOOMLA_MINIMUM_PHP;
-		$this->app ??= Factory::getApplication();
-		$this->db = Factory::getContainer()->get(DatabaseInterface::class);
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
+		$this->db = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);
 
 		// check if the files exist
 		if (is_file(JPATH_ROOT . '/administrator/components/com_###component###/###component###.php'))
@@ -212,7 +212,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		// Check for the minimum PHP version before continuing
 		if (!empty($this->minimumPhp) && version_compare(PHP_VERSION, $this->minimumPhp, '<'))
 		{
-			Log::add(Text::sprintf('JLIB_INSTALLER_MINIMUM_PHP', $this->minimumPhp), Log::WARNING, 'jerror');
+			Log::add(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('JLIB_INSTALLER_MINIMUM_PHP', $this->minimumPhp), Log::WARNING, 'jerror');
 
 			return false;
 		}
@@ -220,7 +220,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		// Check for the minimum Joomla version before continuing
 		if (!empty($this->minimumJoomla) && version_compare(JVERSION, $this->minimumJoomla, '<'))
 		{
-			Log::add(Text::sprintf('JLIB_INSTALLER_MINIMUM_JOOMLA', $this->minimumJoomla), Log::WARNING, 'jerror');
+			Log::add(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('JLIB_INSTALLER_MINIMUM_JOOMLA', $this->minimumJoomla), Log::WARNING, 'jerror');
 
 			return false;
 		}
@@ -361,7 +361,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				if (is_file(JPATH_ROOT . $file) && !File::delete(JPATH_ROOT . $file))
 				{
-					echo Text::sprintf('JLIB_INSTALLER_ERROR_FILE_FOLDER', $file) . '<br>';
+					echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('JLIB_INSTALLER_ERROR_FILE_FOLDER', $file) . '<br>';
 				}
 			}
 		}
@@ -372,7 +372,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				if (is_dir(JPATH_ROOT . $folder) && !Folder::delete(JPATH_ROOT . $folder))
 				{
-					echo Text::sprintf('JLIB_INSTALLER_ERROR_FILE_FOLDER', $folder) . '<br>';
+					echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('JLIB_INSTALLER_ERROR_FILE_FOLDER', $folder) . '<br>';
 				}
 			}
 		}
@@ -394,7 +394,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 
 				if (file_exists(JPATH_ROOT . $file) && !File::move(JPATH_ROOT . $file, JPATH_ROOT . '/cli/' . $name))
 				{
-					echo Text::sprintf('JLIB_INSTALLER_FILE_ERROR_MOVE', $name);
+					echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('JLIB_INSTALLER_FILE_ERROR_MOVE', $name);
 				}
 			}
 		}
@@ -450,7 +450,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				// If its successfully update.
 				$this->app->enqueueMessage(
-					Text::sprintf('The (%s) was found in the <b>#__content_types</b> table, and updated.', $content->type_alias)
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) was found in the <b>#__content_types</b> table, and updated.', $content->type_alias)
 				);
 			}
 		}
@@ -458,7 +458,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If its successfully added.
 			$this->app->enqueueMessage(
-				Text::sprintf('The (%s) was added to the <b>#__content_types</b> table.', $content->type_alias)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) was added to the <b>#__content_types</b> table.', $content->type_alias)
 			);
 		}
 	}
@@ -510,7 +510,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				// If its successfully update.
 				$this->app->enqueueMessage(
-					Text::sprintf('The (%s) was found in the <b>#__action_log_config</b> table, and updated.', $content->type_alias)
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) was found in the <b>#__action_log_config</b> table, and updated.', $content->type_alias)
 				);
 			}
 		}
@@ -518,7 +518,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If its successfully added.
 			$this->app->enqueueMessage(
-				Text::sprintf('The (%s) was added to the <b>#__action_log_config</b> table.', $content->type_alias)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) was added to the <b>#__action_log_config</b> table.', $content->type_alias)
 			);
 		}
 	}
@@ -549,14 +549,14 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If its already set don't set it again.
 			$this->app->enqueueMessage(
-				Text::_('The (com_###component###) is already in the <b>#__action_logs_extensions</b> table.')
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (com_###component###) is already in the <b>#__action_logs_extensions</b> table.')
 			);
 		}
 		elseif ($this->db->insertObject('#__action_logs_extensions', $data))
 		{
 			// give a success message
 			$this->app->enqueueMessage(
-				Text::_('The (com_###component###) was successfully added to the <b>#__action_logs_extensions</b> table.')
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (com_###component###) was successfully added to the <b>#__action_logs_extensions</b> table.')
 			);
 		}
 	}
@@ -594,7 +594,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// give a success message
 			$this->app->enqueueMessage(
-				Text::_('The (com_###component###) rules was successfully added to the <b>#__assets</b> table.')
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (com_###component###) rules was successfully added to the <b>#__assets</b> table.')
 			);
 		}
 	}
@@ -632,7 +632,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// give a success message
 			$this->app->enqueueMessage(
-				Text::_('The (com_###component###) params was successfully added to the <b>#__extensions</b> table.')
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (com_###component###) params was successfully added to the <b>#__extensions</b> table.')
 			);
 		}
 	}
@@ -670,7 +670,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 				if ($done)
 				{
 					$this->app->enqueueMessage(
-						Text::sprintf('The <b>#__assets</b> table rules column was resized to the %s datatype for the components possible large permission rules.', $dataType)
+						Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The <b>#__assets</b> table rules column was resized to the %s datatype for the components possible large permission rules.', $dataType)
 					);
 				}
 			}
@@ -749,7 +749,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				// If successfully remove Item add queued success message.
 				$this->app->enqueueMessage(
-					Text::sprintf('The (%s) type alias was removed from the <b>#__content_type</b> table.', $context)
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) type alias was removed from the <b>#__content_type</b> table.', $context)
 				);
 			}
 
@@ -810,7 +810,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				// If successfully remove context add queued success message.
 				$this->app->enqueueMessage(
-					Text::sprintf('The fields with context (%s) was removed from the <b>#__fields</b> table.', $context)
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The fields with context (%s) was removed from the <b>#__fields</b> table.', $context)
 				);
 			}
 
@@ -846,7 +846,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully remove release_check add queued success message.
 			$this->app->enqueueMessage(
-				Text::sprintf('The fields values for (%s) was removed from the <b>#__fields_values</b> table.', $context)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The fields values for (%s) was removed from the <b>#__fields_values</b> table.', $context)
 			);
 		}
 	}
@@ -900,7 +900,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			{
 				// If successfully remove context add queued success message.
 				$this->app->enqueueMessage(
-					Text::sprintf('The fields with context (%s) was removed from the <b>#__fields_groups</b> table.', $context)
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The fields with context (%s) was removed from the <b>#__fields_groups</b> table.', $context)
 				);
 			}
 		}
@@ -933,7 +933,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully removed Items add queued success message.
 			$this->app->enqueueMessage(
-				Text::sprintf('The (%s) items were removed from the <b>#__history</b> table.', $context)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) items were removed from the <b>#__history</b> table.', $context)
 			);
 		}
 	}
@@ -967,7 +967,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		}
 
 		$this->app->enqueueMessage(
-			Text::_('All related items was removed from the <b>#__ucm_base</b> table.')
+			Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('All related items was removed from the <b>#__ucm_base</b> table.')
 		);
 	}
 
@@ -998,7 +998,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully removed Item add queued success message.
 			$this->app->enqueueMessage(
-				Text::sprintf('The (%s) type alias was removed from the <b>#__ucm_content</b> table.', $context)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) type alias was removed from the <b>#__ucm_content</b> table.', $context)
 			);
 		}
 	}
@@ -1033,7 +1033,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully remove Item add queued success message.
 			$this->app->enqueueMessage(
-				Text::sprintf('The (%s) type alias was removed from the <b>#__contentitem_tag_map</b> table.', $context)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) type alias was removed from the <b>#__contentitem_tag_map</b> table.', $context)
 			);
 		}
 	}
@@ -1065,7 +1065,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully removed ###component### view add queued success message.
 			$this->app->enqueueMessage(
-				Text::sprintf('The (%s) type alias was removed from the <b>#__action_log_config</b> table.', $context)
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('The (%s) type alias was removed from the <b>#__action_log_config</b> table.', $context)
 			);
 		}
 	}
@@ -1093,7 +1093,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully removed ###component### add queued success message.
 			$this->app->enqueueMessage(
-				Text::_('All related (com_###component###) items was removed from the <b>#__assets</b> table.')
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('All related (com_###component###) items was removed from the <b>#__assets</b> table.')
 			);
 		}
 	}
@@ -1123,7 +1123,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 		{
 			// If successfully remove ###component### add queued success message.
 			$this->app->enqueueMessage(
-				Text::_('The (com_###component###) extension was removed from the <b>#__action_logs_extensions</b> table.')
+				Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (com_###component###) extension was removed from the <b>#__action_logs_extensions</b> table.')
 			);
 		}
 	}
@@ -1151,13 +1151,13 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 				$this->db->execute();
 
 				$this->app->enqueueMessage(
-					Text::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120).')
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Reverted the <b>#__assets</b> table rules column back to its default size of varchar(5120).')
 				);
 			}
 			else
 			{
 				$this->app->enqueueMessage(
-					Text::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.')
+					Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.')
 				);
 			}
 		}

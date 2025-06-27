@@ -54,141 +54,143 @@ final class Purge
 	}
 
 	/**
-	 * Purge the unused language strings.
+	 * Purge unused language strings linked to a component.
 	 *
 	 * This method removes or updates language strings that are no longer linked
 	 * to the specified component. It checks if the strings are linked to other
 	 * extensions and either updates, archives, or deletes them based on the
 	 * conditions.
 	 *
-	 * @param array  $values     The active strings.
-	 * @param int    $targetGuid The target entity GUID.
-	 * @param string $target     The target extension type (default is 'components').
+	 * @param array  $values     Active string sources.
+	 * @param string $targetGuid The GUID of the target entity.
+	 * @param string $target     Target extension type. Default: 'components'.
 	 *
 	 * @return void
 	 * @since  5.0.2
 	 */
 	public function execute(array $values, string $targetGuid, string $target = 'components'): void
 	{
-		$target_types = ['components' => 'components', 'modules' => 'modules', 'plugins' => 'plugins'];
+		$validTargets = ['components' => 'components', 'modules' => 'modules', 'plugins' => 'plugins'];
 
-		if (isset($target_types[$target]))
+		if (!isset($validTargets[$target]))
 		{
-			unset($target_types[$target]);
+			return;
+		}
 
-			// Create a new query object.
-			$query = $this->db->getQuery(true);
-			$query->from($this->db->quoteName('#__componentbuilder_language_translation', 'a'))
-				  ->select($this->db->quoteName(['a.id', 'a.translation', 'a.components', 'a.modules', 'a.plugins']))
-				  ->where($this->db->quoteName('a.source') . ' NOT IN (' . implode(',', array_map(fn($a) => $this->db->quote($a), $values)) . ')')
-				  ->where($this->db->quoteName('a.published') . ' = 1');
+		$otherTargets = array_diff_key($validTargets, [$target => $target]);
 
-			$this->db->setQuery($query);
-			$this->db->execute();
+		$query = $this->db->getQuery(true)
+			->select($this->db->quoteName(['id', 'translation', 'components', 'modules', 'plugins']))
+			->from($this->db->quoteName('#__componentbuilder_language_translation', 'a'))
+			->where($this->db->quoteName('a.source') . ' NOT IN (' . implode(',', array_map([$this->db, 'quote'], $values)) . ')')
+			->where($this->db->quoteName('a.published') . ' = 1');
 
-			if ($this->db->getNumRows())
+		$this->db->setQuery($query);
+		$this->db->execute();
+
+		if (!$this->db->getNumRows())
+		{
+			return;
+		}
+
+		$today         = Factory::getDate()->toSql();
+		$items         = $this->db->loadAssocList();
+		$counterUpdate = 0;
+
+		foreach ($items as $item)
+		{
+			if (!JsonHelper::check($item[$target]))
 			{
-				$counterUpdate = 0;
-				$otherStrings = $this->db->loadAssocList();
-				$today = Factory::getDate()->toSql();
+				continue;
+			}
 
-				foreach ($otherStrings as $item)
-				{
-					if (JsonHelper::check($item[$target]))
-					{
-						$targets = (array) json_decode((string) $item[$target], true);
+			$targets = (array) json_decode((string) $item[$target], true);
 
-						if (($key = array_search($targetGuid, $targets)) !== false)
-						{
-							unset($targets[$key]);
+			if (($key = array_search($targetGuid, $targets, true)) === false)
+			{
+				continue;
+			}
 
-							if (ArrayHelper::check($targets))
-							{
-								$this->update->set($item['id'], $target, $targets, 1, $today, $counterUpdate);
+			unset($targets[$key]);
 
-								$counterUpdate++;
-
-								$this->update->execute(50);
-							}
-							else
-							{
-								$this->handleUnlinkedString($item, $target_types, $targets, $today, $counterUpdate);
-							}
-						}
-					}
-				}
-
-				$this->update->execute();
+			if (ArrayHelper::check($targets))
+			{
+				$this->update->set($item['id'], $target, $targets, 1, $today, $counterUpdate);
+				$counterUpdate++;
+				$this->update->execute(50);
+			}
+			else
+			{
+				$this->handleUnlinkedString($item, $otherTargets, $target, $targets, $today, $counterUpdate);
 			}
 		}
+
+		$this->update->execute();
 	}
 
 	/**
-	 * Handle strings that are unlinked from the current component.
+	 * Handle strings no longer linked to the current component.
 	 *
-	 * This method checks if a string is linked to other extensions and either updates,
-	 * archives, or deletes it based on the conditions.
-	 *
-	 * @param array  $item          The language string item.
-	 * @param array  $targetTypes   The target extension types.
-	 * @param array  $targets       The targets to update.
-	 * @param string $today         The current date.
-	 * @param int    $counter       The update counter.
+	 * @param array  $item        The language string item.
+	 * @param array  $otherTypes  Other extension types.
+	 * @param string $target      The current target extension type.
+	 * @param array  $targets     Remaining targets to update.
+	 * @param string $today       Current date in SQL format.
+	 * @param int    $counter     Counter for updates.
 	 *
 	 * @return void
 	 * @since  5.0.2
 	 */
-	protected function handleUnlinkedString(array $item, array $targetTypes, array $targets, string $today, int &$counter): void
+	protected function handleUnlinkedString(array $item, array $otherTypes, string $target,
+		array $targets, string $today, int &$counter): void
 	{
-		// the action (1 = remove, 2 = archive, 0 = do nothing)
-		$action_with_string = 1;
+		$action = 1; // 1 = remove, 2 = archive, 0 = keep
 
-		foreach ($targetTypes as $other_target)
+		foreach ($otherTypes as $type)
 		{
-			if ($action_with_string && JsonHelper::check($item[$other_target]))
+			if (JsonHelper::check($item[$type]))
 			{
-				$other_targets = (array) json_decode((string) $item[$other_target], true);
-
-				if (ArrayHelper::check($other_targets))
+				$linked = json_decode((string) $item[$type], true);
+				if (ArrayHelper::check($linked))
 				{
-					$action_with_string = 0;
+					$action = 0;
+					break;
 				}
 			}
 		}
 
-		if ($action_with_string && JsonHelper::check($item['translation']))
+		if ($action && JsonHelper::check($item['translation']))
 		{
 			$translation = json_decode((string) $item['translation'], true);
 
 			if (ArrayHelper::check($translation))
 			{
-				$this->update->set($item['id'], $targets, $targets, 2, $today, 	$counter);
+				$this->update->set($item['id'], $target, $targets, 2, $today, $counter);
 				$counter++;
 				$this->update->execute(50);
-				$action_with_string = 2;
+				$action = 2; // just to show intent :)
+				return;
 			}
 		}
 
-		if ($action_with_string == 1)
+		if ($action === 1)
 		{
-			$this->removeExitingLangString($item['id']);
+			$this->removeLanguageString($item['id']);
 		}
 	}
 
 	/**
-	 * Remove existing language translation strings.
+	 * Delete a language string by ID.
 	 *
-	 * This method deletes a language string from the database based on its ID.
-	 *
-	 * @param int $id The string ID to remove.
+	 * @param int $id The ID of the string.
 	 *
 	 * @return void
 	 * @since  5.0.2
 	 */
-	protected function removeExitingLangString(int $id): void
+	protected function removeLanguageString(int $id): void
 	{
-		$query = $this->db->getQuery(true);
-		$query->delete($this->db->quoteName('#__componentbuilder_language_translation'))
+		$query = $this->db->getQuery(true)
+			->delete($this->db->quoteName('#__componentbuilder_language_translation'))
 			->where($this->db->quoteName('id') . ' = ' . (int) $id);
 
 		$this->db->setQuery($query);

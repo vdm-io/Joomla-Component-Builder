@@ -15,9 +15,10 @@ namespace VDM\Joomla\Utilities;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\Path;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Log\Log;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\Path;
 use Joomla\Archive\Archive;
 use VDM\Joomla\Utilities\Component\Helper;
 
@@ -39,12 +40,12 @@ abstract class FileHelper
 	protected static $curlError = false;
 
 	/**
-	 * The zipper method
+	 *  Zips all contents of a directory without including full system paths.
 	 * 
 	 * @param  string   $workingDirectory    The directory where the items must be zipped
 	 * @param  string   $filepath          The path to where the zip file must be placed
 	 *
-	 * @return  bool true   On success
+	 * @return  bool    True on success, false on failure.
 	 *
 	 * @since  3.0.9
 	 */
@@ -56,40 +57,52 @@ abstract class FileHelper
 			return false;
 		}
 
-		// store the current joomla working directory
-		$joomla = getcwd();
-
-		// we are changing the working directory to the component temp folder
-		chdir($workingDirectory);
-
-		// the full file path of the zip file
-		$filepath = Path::clean($filepath);
-
-		// delete an existing zip file (or use an exclusion parameter in Folder::files()
-		File::delete($filepath);
-
-		// get a list of files in the current directory tree (also the hidden files)
-		$files = Folder::files('.', '', true, true, array('.svn', 'CVS', '.DS_Store', '__MACOSX'), array('.*~'));
-
-		$zipArray = [];
-		// setup the zip array
-		foreach ($files as $file)
+		// Backup original working directory and change to target
+		$original_dir = getcwd();
+		if (!@chdir($workingDirectory))
 		{
-			$tmp = [];
-			$tmp['name'] = str_replace('./', '', (string) $file);
-			$tmp['data'] = self::getContent($file);
-			$tmp['time'] = filemtime($file);
-			$zipArray[] = $tmp;
+			return false;
 		}
 
-		// change back to joomla working directory
-		chdir($joomla);
+		// Normalize file path
+		$filepath = Path::clean($filepath);
 
-		// get the zip adapter
-		$zip = (new Archive())->getAdapter('zip');
+		// delete an existing zip file
+		if (is_file($filepath))
+		{
+			if (!File::delete($filepath))
+			{
+				return false;
+			}
+		}
 
-		//create the zip file
-		return (bool) $zip->create($filepath, $zipArray);
+		try {
+			// Collect files recursively (excluding common unwanted files)
+			$files = Folder::files('.', '', true, true, ['.svn', 'CVS', '.DS_Store', '__MACOSX'], ['.*~']);
+
+			$zipArray = [];
+			foreach ($files as $file)
+			{
+				$zipArray[] = [
+					'name' => str_replace('./', '', (string) $file),
+					'data' => self::getContent($file),
+					'time' => @filemtime($file) ?: time(),
+				];
+			}
+
+			// Get ZIP archive adapter
+			$zip = (new Archive())->getAdapter('zip');
+
+			// Create the ZIP file
+			return (bool) $zip->create($filepath, $zipArray);
+		} catch (\Throwable $e) {
+			// Log the error for diagnostics
+			Log::add('ZIP creation failed: ' . $e->getMessage(), Log::ERROR, 'zip');
+			return false;
+		} finally {
+			// Always return to original working directory
+			@chdir($original_dir);
+		}
 	}
 
 	/**
@@ -147,36 +160,43 @@ abstract class FileHelper
 	}
 
 	/**
-	 * Write a file to the server
+	 * Write a file to the server safely and efficiently.
+	 * This function will always overwrite the existing file with new data.
 	 *
-	 * @param  string   $path    The path and file name where to safe the data
-	 * @param  string   $data    The data to safe
+	 * @param  string  $path  The full path and file name where to save the data.
+	 * @param  string  $data  The data to save.
 	 *
-	 * @return  bool true   On success
-	 *
+	 * @return bool  Returns true on success, false on failure.
 	 * @since  3.0.9
 	 */
 	public static function write($path, $data): bool
 	{
-		$klaar = false;
-		if (StringHelper::check($data))
+		if (!is_string($path) || !is_string($data) || trim($path) === '')
 		{
-			// open the file
-			$fh = fopen($path, "w");
-			if (!is_resource($fh))
-			{
-				return $klaar;
-			}
-			// write to the file
-			if (fwrite($fh, $data))
-			{
-				// has been done
-				$klaar = true;
-			}
-			// close file.
-			fclose($fh);
+			return false;
 		}
-		return $klaar;
+
+		$handle = null;
+		$success = false;
+
+		try {
+			$handle = fopen($path, "wb"); // Open in write-binary mode to ensure full overwrite
+			if (!is_resource($handle))
+			{
+				return false;
+			}
+
+			$success = fwrite($handle, $data) !== false;
+		} catch (\Throwable $e) {
+			return false;
+		} finally {
+			if (is_resource($handle))
+			{
+				fclose($handle);
+			}
+		}
+
+		return $success;
 	}
 
 	/**
@@ -191,7 +211,7 @@ abstract class FileHelper
 	 */
 	public static function getPaths($folder, $fileTypes = array('\.php', '\.js', '\.css', '\.less'), $recurse = true, $full = true): ?array
 	{
-		if (Folder::exists($folder))
+		if (is_dir($folder))
 		{
 			// we must first store the current woking directory
 			$joomla = getcwd();
@@ -260,7 +280,7 @@ abstract class FileHelper
 		}
 
 		// create the folder if it does not exist
-		if ($createIfNotSet && !Folder::exists($filePath))
+		if ($createIfNotSet && !is_dir($filePath))
 		{
 			Folder::create($filePath);
 		}

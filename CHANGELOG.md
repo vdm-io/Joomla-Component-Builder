@@ -1,10 +1,31 @@
-# v4.1.1-alpha1
+# v4.1.1-beta2
+
+- Adds new JCB package engine.
+- Fix issue with loading the Component Builder Wiki.
+- Adds advanced version update notice to the Component Builder Dashboard.
+- Completely refactors the class that builds the Component Dashboard. #1134
+- Adds Initialize, Reset, and Push functionality to the Repository entities.
+- Completely refactors the SQL teaks and SQL dump classes.
+- Changes J4 fields to allow NULL.
+- Fix a bug in Dynamic Get JavaScript that causes table columns to not load.
+
+# v4.1.1-beta
+
+- Refactor the FieldString and FieldXML classes.
+
+# v4.1.1-alpha
 
 - Move all banners to GitHub.
 - Adds library phpspreadsheet to JCB.
 - Add import item example to demo component.
 - Updates the Superpower class with the GetRemote class in the plugin.
 - Ensures the super power autoloader triggers the correct repositories.
+- Adds the Import Function to the Demo Component.
+- Resolves the Database Updating issue in the compiler. #1212,#1209
+- Adds the Component Commands Plugin to the  CLI for Import of spreadsheet data-sets.
+- Add all needed Powers to the release package, to speed-up the build of the demo component.
+- Refactored initialization flow to accommodate future scalability and integration with all designated areas.
+- Refactor the Creator Builders class.
 
 # v4.1.0
 

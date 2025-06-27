@@ -15,9 +15,9 @@ namespace VDM\Joomla\Componentbuilder\JoomlaPower\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Config;
-use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Grep;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Get;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Config as RemoteConfig;
+use VDM\Joomla\Componentbuilder\Remote\Get;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Set;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Readme\Item as ItemReadme;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Readme\Main as MainReadme;
@@ -40,14 +40,14 @@ class JoomlaPower implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(Config::class, 'Config')
-			->share('Config', [$this, 'getConfig'], true);
-
-		$container->alias(Table::class, 'Table')
-			->share('Table', [$this, 'getTable'], true);
+		$container->alias(Config::class, 'Joomla.Power.Config')->alias('Config', 'Joomla.Power.Config')
+			->share('Joomla.Power.Config', [$this, 'getConfig'], true);
 
 		$container->alias(Grep::class, 'Joomla.Power.Grep')
 			->share('Joomla.Power.Grep', [$this, 'getGrep'], true);
+
+		$container->alias(RemoteConfig::class, 'Joomla.Power.Remote.Config')
+			->share('Joomla.Power.Remote.Config', [$this, 'getRemoteConfig'], true);
 
 		$container->alias(Get::class, 'Joomla.Power.Remote.Get')
 			->share('Joomla.Power.Remote.Get', [$this, 'getRemoteGet'], true);
@@ -76,19 +76,6 @@ class JoomlaPower implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get The Table Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Table
-	 * @since 3.2.1
-	 */
-	public function getTable(Container $container): Table
-	{
-		return new Table();
-	}
-
-	/**
 	 * Get The Grep Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -99,9 +86,26 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getGrep(Container $container): Grep
 	{
 		return new Grep(
-			$container->get('Gitea.Repository.Contents'),
+			$container->get('Joomla.Power.Remote.Config'),
+			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Config')->approved_joomla_paths
+			$container->get('Power.Tracker'),
+			$container->get('Joomla.Power.Config')->approved_joomla_paths
+		);
+	}
+
+	/**
+	 * Get The Remote Config Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  RemoteConfig
+	 * @since  5.1.1
+	 */
+	public function getRemoteConfig(Container $container): RemoteConfig
+	{
+		return new RemoteConfig(
+			$container->get('Power.Table')
 		);
 	}
 
@@ -116,8 +120,11 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getRemoteGet(Container $container): Get
 	{
 		return new Get(
+			$container->get('Joomla.Power.Remote.Config'),
 			$container->get('Joomla.Power.Grep'),
-			$container->get('Data.Item')
+			$container->get('Data.Item'),
+			$container->get('Power.Tracker'),
+			$container->get('Power.Message')
 		);
 	}
 
@@ -132,12 +139,15 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getRemoteSet(Container $container): Set
 	{
 		return new Set(
-			$container->get('Config')->approved_joomla_paths,
+			$container->get('Joomla.Power.Remote.Config'),
 			$container->get('Joomla.Power.Grep'),
 			$container->get('Data.Items'),
 			$container->get('Joomla.Power.Readme.Item'),
 			$container->get('Joomla.Power.Readme.Main'),
-			$container->get('Gitea.Repository.Contents')
+			$container->get('Git.Repository.Contents'),
+			$container->get('Power.Tracker'),
+			$container->get('Power.Message'),
+			$container->get('Joomla.Power.Config')->approved_joomla_paths
 		);
 	}
 

@@ -22,7 +22,7 @@ defined('_JEXEC') or die;###LICENSE_LOCKED_DEFINED###
 if ($this->saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_###component###&task=###views###.saveOrderAjax&tmpl=component';
-	Html::_('sortablelist.sortable', '###view###List', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
+	Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('sortablelist.sortable', '###view###List', 'adminForm', strtolower($this->listDirn), $saveOrderingUrl);
 }
 ?>
 ###VIEWS_DEFAULT_BODY######VIEWS_FOOTER_SCRIPT###

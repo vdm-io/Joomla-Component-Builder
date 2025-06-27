@@ -13,8 +13,9 @@ namespace VDM\Joomla\Abstraction;
 
 
 use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
+use Joomla\Database\DatabaseInterface as JoomlaDatabase;
 use VDM\Joomla\Utilities\Component\Helper;
+use VDM\Joomla\Database\QuoteTrait;
 
 
 /**
@@ -25,11 +26,27 @@ use VDM\Joomla\Utilities\Component\Helper;
 abstract class Database
 {
 	/**
+	 * Function to quote values
+	 *
+	 * @since 5.1.1
+	 */
+	use QuoteTrait;
+
+	/**
 	 * Database object to query local DB
 	 *
+	 * @var JoomlaDatabase
 	 * @since 3.2.0
 	 */
-	protected $db;
+	protected JoomlaDatabase $db;
+
+	/**
+	 * Current component code name
+	 *
+	 * @var     string
+	 * @since 5.1.1
+	 */
+	protected string $componentCode;
 
 	/**
 	 * Core Component Table Name
@@ -40,75 +57,17 @@ abstract class Database
 	protected string $table;
 
 	/**
-	 * Date format to return
-	 *
-	 * @var   string
-	 * @since 5.0.2
-	 */
-	protected string $dateFormat = 'Y-m-d H:i:s';
-
-	/**
 	 * Constructor
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct()
+	public function __construct(?JoomlaDatabase $db = null)
 	{
-		$this->db = Factory::getContainer()->get(DatabaseInterface::class);
+		$this->db = $db ?: Factory::getContainer()->get(JoomlaDatabase::class);
 
-		// set the component table
-		$this->table = '#__' . Helper::getCode();
-	}
-
-	/**
-	 * Set a value based on data type
-	 *
-	 * @param   mixed  $value   The value to set
-	 *
-	 * @return  mixed
-	 * @since   3.2.0
-	 **/
-	protected function quote($value)
-	{
-		if ($value === null)
-		{
-			return 'NULL';
-		}
-
-		if (is_numeric($value))
-		{
-			// If the value is a numeric string (e.g., "0123"), treat it as a string to preserve the format
-			if (is_string($value) && ltrim($value, '0') !== $value)
-			{
-				return $this->db->quote($value);
-			}
-
-			if (filter_var($value, FILTER_VALIDATE_INT))
-			{
-				return (int) $value;
-			}
-
-			if (filter_var($value, FILTER_VALIDATE_FLOAT))
-			{
-				return (float) $value;
-			}
-		}
-
-		// Handle boolean values
-		if (is_bool($value))
-		{
-			return $value ? 'TRUE' : 'FALSE';
-		}
-
-		// For date and datetime values
-		if ($value instanceof \DateTime)
-		{
-			return $this->db->quote($value->format($this->getDateFormat()));
-		}
-
-		// For other types of values, quote as string
-		return $this->db->quote($value);
+		$this->componentCode = Helper::getCode();
+		$this->table = '#__' . $this->componentCode;
 	}
 
 	/**
@@ -128,17 +87,6 @@ abstract class Database
 		}
 
 		return $table;
-	}
-
-	/**
-	 * Get the date format to return in the quote
-	 *
-	 * @return  string
-	 * @since   5.0.2
-	 **/
-	protected function getDateFormat(): string
-	{
-		return $this->dateFormat;
 	}
 }
 

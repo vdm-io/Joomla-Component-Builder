@@ -36,11 +36,7 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'spacer_hr_6',
 	'to_ignore_note',
 	'toignore',
-	'spacer_hr_7',
-	'jcb_export_package_note',
-	'export_key',
-	'joomla_source_link',
-	'export_buy_link'
+	'spacer_hr_7'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: [];

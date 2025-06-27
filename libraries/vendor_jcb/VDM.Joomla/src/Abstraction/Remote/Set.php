@@ -12,13 +12,19 @@
 namespace VDM\Joomla\Abstraction\Remote;
 
 
+use Joomla\CMS\Language\Text;
+use VDM\Joomla\Interfaces\Remote\ConfigInterface as Config;
 use VDM\Joomla\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
 use VDM\Joomla\Interfaces\Readme\ItemInterface as ItemReadme;
 use VDM\Joomla\Interfaces\Readme\MainInterface as MainReadme;
 use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface as Git;
+use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
+use VDM\Joomla\Componentbuilder\Package\MessageBus;
+use VDM\Joomla\Interfaces\Remote\Dependency\ResolverInterface as Resolver;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Interfaces\Remote\SetInterface;
+use VDM\Joomla\Abstraction\Remote\Base;
 
 
 /**
@@ -26,7 +32,7 @@ use VDM\Joomla\Interfaces\Remote\SetInterface;
  * 
  * @since 3.2.2
  */
-abstract class Set implements SetInterface
+abstract class Set extends Base implements SetInterface
 {
 	/**
 	 * The Grep Class.
@@ -69,6 +75,33 @@ abstract class Set implements SetInterface
 	protected Git $git;
 
 	/**
+	 * The Tracker Class.
+	 *
+	 * @var   Tracker
+	 * @since 5.1.1
+	 */
+	protected Tracker $tracker;
+
+	/**
+	 * The Message Bus Class.
+	 *
+	 * @var   MessageBus
+	 * @since 5.1.1
+	 */
+	protected MessageBus $messages;
+
+	/**
+	 * The Resolver Class
+	 *
+	 *   Only set in some child classes
+	 *      that has dependencies
+	 *
+	 * @var   Resolver
+	 * @since 5.1.1
+	 */
+	protected ?Resolver $resolver = null;
+
+	/**
 	 * All active repos
 	 *
 	 * @var   array
@@ -77,89 +110,12 @@ abstract class Set implements SetInterface
 	public array $repos;
 
 	/**
-	 * Table Name
-	 *
-	 * @var   string
-	 * @since 3.2.2
-	 */
-	protected string $table;
-
-	/**
-	 * Area Name
-	 *
-	 * @var   string
-	 * @since 3.2.2
-	 */
-	protected string $area;
-
-	/**
-	 * The item map
-	 *
-	 * @var   array
-	 * @since 3.2.2
-	 */
-	protected array $map;
-
-	/**
-	 * The index map
-	 *
-	 * @var   array
-	 * @since 3.2.2
-	 */
-	protected array $index_map;
-
-	/**
 	 * The repo main settings
 	 *
 	 * @var   array
 	 * @since 3.2.2
 	 */
-	protected array $settings;
-
-	/**
-	 * Prefix Key
-	 *
-	 * @var    string
-	 * @since 3.2.2
-	 */
-	protected string $prefix_key = 'Super---';
-
-	/**
-	 * Suffix Key
-	 *
-	 * @var    string
-	 * @since 3.2.2
-	 */
-	protected string $suffix_key = '---Power';
-
-	/**
-	 * The item settings file path
-	 *
-	 * @var   string
-	 * @since 3.2.2
-	 */
-	protected string $settings_path = 'item.json';
-
-	/**
-	 * The index settings file path
-	 *
-	 * @var    string
-	 * @since 3.2.2
-	 */
-	protected string $index_settings_path = 'index.json';
-
-	/**
-	 * Core Placeholders
-	 *
-	 * @var    array
-	 * @since  5.0.3
-	 */
-	protected array $placeholders = [
-		'[['.'[NamespacePrefix]]]' => 'VDM',
-		'[['.'[ComponentNamespace]]]' => 'Componentbuilder',
-		'[['.'[Component]]]' => 'Componentbuilder', 
-		'[['.'[component]]]' => 'componentbuilder'
-	];
+	protected array $settings = [];
 
 	/**
 	 * Repo Placeholders
@@ -172,113 +128,57 @@ abstract class Set implements SetInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param array        $repos               The active repos
+	 * @param Config       $config              The Config Class.
 	 * @param Grep         $grep                The Grep Class.
 	 * @param Items        $items               The Items Class.
 	 * @param ItemReadme   $itemReadme          The Item Readme Class.
 	 * @param MainReadme   $mainReadme          The Main Readme Class.
 	 * @param Git          $git                 The Contents Class.
+	 * @param Tracker      $tracker             The Tracker Class.
+	 * @param MessageBus   $messages            The MessageBus Class.
+	 * @param array        $repos               The active repos.
 	 * @param string|null  $table               The table name.
-	 * @param string|null  $settingsPath        The settings path.
-	 * @param string|null  $settingsIndexPath   The index settings path.
+	 * @param string|null  $settingsName        The settings name.
+	 * @param string|null  $indexPath           The index path.
 	 *
 	 * @since 3.2.2
 	 */
-	public function __construct(array $repos, Grep $grep, Items $items,
-		ItemReadme $itemReadme, MainReadme $mainReadme, Git $git,
-		?string $table = null, ?string $settingsPath = null, ?string $settingsIndexPath = null)
+	public function __construct(Config $config, Grep $grep, Items $items, ItemReadme $itemReadme,
+		MainReadme $mainReadme, Git $git, Tracker $tracker, MessageBus $messages,
+		array $repos, ?string $table = null, ?string $settingsName = null, ?string $indexPath = null)
 	{
-		$this->repos = $repos;
+		parent::__construct($config);
+
 		$this->grep = $grep;
 		$this->items = $items;
 		$this->itemReadme = $itemReadme;
 		$this->mainReadme = $mainReadme;
 		$this->git = $git;
+		$this->tracker = $tracker;
+		$this->messages = $messages;
+		$this->repos = $repos;
 
 		if ($table !== null)
 		{
-			$this->table = $table;
+			$this->table($table);
 		}
 
-		if ($settingsPath !== null)
+		if ($settingsName !== null)
 		{
-			$this->settings_path = $settingsPath;
+			$this->setSettingsName($settingsName);
 		}
 
-		if ($settingsIndexPath !== null)
+		if ($indexPath !== null)
 		{
-			$this->setIndexSettingsPath($settingsIndexPath);
+			$this->setIndexPath($indexPath);
 		}
 
-		if (empty($this->area))
+		if ($this->getArea() === null)
 		{
-			$this->area = ucfirst(str_replace('_', ' ', $this->table));
+			$this->area(ucfirst(str_replace('_', ' ', $this->getTable())));
 		}
 
-		// set the branch to writing
 		$this->grep->setBranchField('write_branch');
-	}
-
-	/**
-	 * Set the current active table
-	 *
-	 * @param string $table The table that should be active
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function table(string $table): self
-	{
-		$this->table = $table;
-
-		return $this;
-	}
-
-	/**
-	 * Set the current active area
-	 *
-	 * @param string $area The area that should be active
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function area(string $area): self
-	{
-		$this->area = ucfirst(str_replace('_', ' ', $area));
-
-		return $this;
-	}
-
-	/**
-	 * Set the settings path
-	 *
-	 * @param string    $settingsPath    The repository settings path
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function setSettingsPath(string $settingsPath): self
-	{
-		$this->settings_path = $settingsPath;
-
-		return $this;
-	}
-
-	/**
-	 * Set the index settings path
-	 *
-	 * @param string    $settingsIndexPath    The repository index settings path
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function setIndexSettingsPath(string $settingsIndexPath): self
-	{
-		$this->index_settings_path = $settingsIndexPath;
-
-		$this->grep->setIndexPath($settingsIndexPath);
-
-		return $this;
 	}
 
 	/**
@@ -287,27 +187,39 @@ abstract class Set implements SetInterface
 	 * @param array   $guids    The global unique id of the item
 	 *
 	 * @return bool
-	 * @throws \Exception
 	 * @since 3.2.2
 	 */
 	public function items(array $guids): bool
 	{
-		if (!$this->canWrite())
+		if (empty($guids))
 		{
-			throw new \Exception("At least one [{$this->getArea()}] content repository must be configured with a [Write Branch] value in the repositories area for the push function to operate correctly.");
+			return false;
 		}
 
-		// we reset the index settings
-		$this->settings = [];
+		$this->grep->setBranchField('write_branch');
+		$area = $this->getArea();
+		$table = $this->getTable();
+
+		if (!$this->canWrite())
+		{
+			$target_network = $this->grep->getNetworkTarget() ?? $this->getArea();
+			$this->messages->add('error', Text::sprintf('COM_COMPONENTBUILDER_AT_LEAST_ONE_S_CONTENT_REPOSITORY_MUST_BE_CONFIGURED_WITH_A_WRITE_BRANCH_VALUE_IN_THE_REPOSITORIES_AREA_FOR_THE_PUSH_FUNCTION_TO_OPERATE_CORRECTLY', $target_network));
+			return false;
+		}
 
 		if (($items = $this->getLocalItems($guids)) === null)
 		{
-			throw new \Exception("At least one valid local [{$this->getArea()}] must exist for the push function to operate correctly.");
+			$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_THE_S_ITEMS_COULD_NOT_BE_FOUND', strtolower($area)));
+			return false;
 		}
 
+		$counter = 0;
 		foreach ($items as $item)
 		{
-			$this->save($item);
+			if ($this->save($item))
+			{
+				$counter++;
+			}
 		}
 
 		// update the repos main readme and index settings
@@ -319,7 +231,15 @@ abstract class Set implements SetInterface
 			}
 		}
 
-		return true;
+		// add a message per area once
+		if ($counter > 0 && !$this->tracker->exists("message.{$table}"))
+		{
+			$this->tracker->set("message.{$table}", true);
+			$item_name = $counter == 1 ? 'item has' : 'items have';
+			$this->messages->add('success', Text::sprintf('COM_COMPONENTBUILDER_S_S_BEEN_PUSHED_SUCCESSFULLY', $area, $item_name));
+		}
+
+		return $counter === count($items);
 	}
 
 	/**
@@ -340,10 +260,10 @@ abstract class Set implements SetInterface
 	 * @param object  $item
 	 * @param object  $repo
 	 *
-	 * @return void
+	 * @return bool
 	 * @since 3.2.2
 	 */
-	abstract protected function createItem(object $item, object $repo): void;
+	abstract protected function createItem(object $item, object $repo): bool;
 
 	/**
 	 * update an existing item readme
@@ -367,28 +287,6 @@ abstract class Set implements SetInterface
 	 * @since 3.2.2
 	 */
 	abstract protected function createItemReadme(object $item, object $repo): void;
-
-	/**
-	 * Get the current active table
-	 *
-	 * @return  string
-	 * @since 3.2.2
-	 */
-	protected function getTable(): string
-	{
-		return $this->table;
-	}
-
-	/**
-	 * Get the current active area
-	 *
-	 * @return  string
-	 * @since 3.2.2
-	 */
-	protected function getArea(): string
-	{
-		return $this->area;
-	}
 
 	/**
 	 * Update/Create the repo main readme and index
@@ -416,23 +314,42 @@ abstract class Set implements SetInterface
 
 		$settings = $this->mergeIndexSettings($repoGuid, $settings);
 
-		$this->grep->loadApi($this->git, $repo->base ?? null, $repo->token ?? null);
+		// set the target system
+		$target = $repo->target ?? 'gitea';
+		$this->git->setTarget($target);
 
-		$this->updateIndexMainFile(
-			$repo,
-			$this->getIndexSettingsPath(),
-			json_encode($settings, JSON_PRETTY_PRINT),
-			'Update main index file'
+		// load the base and token if set
+		$this->grep->loadApi(
+			$this->git,
+			$repo->base ?? null,
+			$repo->token ?? null
 		);
 
-		$this->updateIndexMainFile(
-			$repo,
-			'README.md',
-			$this->mainReadme->get($settings),
-			'Update main readme file'
-		);
-
-		$this->git->reset_();
+		try {
+			$indexPath = $this->getIndexPath();
+			if (!empty($indexPath))
+			{
+				$this->setMainRepoFile(
+					$repo,
+					$indexPath,
+					json_encode($settings, JSON_PRETTY_PRINT),
+					'Update main index file', 'Create main index file'
+				);
+			}
+			if ($this->hasMainReadme())
+			{
+				$this->setMainRepoFile(
+					$repo,
+					$this->getMainReadmePath(),
+					$this->mainReadme->get($settings),
+					'Update main readme file', 'Create main readme file'
+				);
+			}
+		} catch (\Throwable $e) {
+			$this->messages->add('error',  $e->getMessage());
+		} finally {
+			$this->git->reset_();
+		}
 	}
 
 	/**
@@ -487,32 +404,69 @@ abstract class Set implements SetInterface
 	 * @param object $repo
 	 * @param string $path
 	 * @param string $content
-	 * @param string $message
+	 * @param string $updateMessage
+	 * @param string $createMessage
 	 * 
 	 * @return void
 	 * @since 3.2.2
 	 */
-	protected function updateIndexMainFile(object $repo, string $path,
-		string $content, string $message): void
+	protected function setMainRepoFile(object $repo, string $path,
+		string $content, string $updateMessage, string $createMessage): void
 	{
-		$meta = $this->git->metadata(
-			$repo->organisation,
-			$repo->repository,
-			$path,
-			$repo->write_branch
-		);
-
-		if ($meta !== null && isset($meta->sha))
-		{
-			$this->git->update(
+		try {
+			$meta = $this->git->metadata(
 				$repo->organisation,
 				$repo->repository,
 				$path,
-				$content,
-				$message,
-				$meta->sha,
 				$repo->write_branch
 			);
+		} catch (\Throwable $e) {
+			$meta = null;
+		}
+
+		if ($meta !== null && isset($meta->sha))
+		{
+			// Calculate the new SHA from the current content
+			$newSha = sha1("blob " . strlen($content) . "\0" . $content);
+
+			// Check if the new SHA matches the existing SHA
+			if ($meta->sha === $newSha)
+			{
+				return;
+			}
+
+			try {
+				$this->git->update(
+					$repo->organisation, // The owner name.
+					$repo->repository, // The repository name.
+					$path, // The file path.
+					$content, // The file content.
+					$updateMessage, // The commit message.
+					$meta->sha, // The previous sha value.
+					$repo->write_branch, // The branch name.
+					$repo->author_name, // The author name.
+					$repo->author_email // The author name.
+				);
+			} catch (\Throwable $e) {
+				$this->messages->add('error',  $e->getMessage());
+			}
+		}
+		else
+		{
+			try {
+				$this->git->create(
+					$repo->organisation, // The owner name.
+					$repo->repository, // The repository name.
+					$path, // The file path.
+					$content, // The file content.
+					$createMessage, // The commit message.
+					$repo->write_branch, // The branch name.
+					$repo->author_name, // The author name.
+					$repo->author_email // The author name.
+				);
+			} catch (\Throwable $e) {
+				$this->messages->add('error',  $e->getMessage());
+			}
 		}
 	}
 
@@ -526,93 +480,126 @@ abstract class Set implements SetInterface
 	 */
 	protected function getLocalItems(array $guids): ?array
 	{
-		return $this->items->table($this->getTable())->get($guids);
-	}
-
-	/**
-	 * Map a single item to its properties
-	 *
-	 * @param object $item The item to be mapped
-	 *
-	 * @return object
-	 * @since 3.2.2
-	 */
-	protected function mapItem(object $item): object
-	{
-		$power = [];
-
-		foreach ($this->map as $key => $map)
-		{
-			$methodName = "mapItemValue_{$key}";
-			if (method_exists($this, $methodName))
-			{
-				$this->{$methodName}($item, $power);
-			}
-			else
-			{
-				$power[$key] = $item->{$map} ?? null;
-			}
-		}
-
-		return (object) $power;
+		$guid_field = $this->getGuidField();
+		return $this->items->table($this->getTable())->get($guids, $guid_field);
 	}
 
 	/**
 	 * Save an item remotely
 	 *
-	 * @param  object   $item    The item to save
+	 * @param  object   $rawItem    The item to save
 	 *
-	 * @return void
+	 * @return bool
 	 * @since 3.2.2
 	 */
-	protected function save(object $item): void
+	protected function save(object $rawItem): bool
 	{
-		if (empty($item->guid))
+		$index_item = null;
+		$item = $this->mapItem($rawItem);
+		$area = $this->getArea();
+		$item_id = $rawItem->id ?? '_no_id_found_';
+		$item_name = $this->index_map_IndexName($item);
+
+		$guid_field = $this->getGuidField();
+		if (empty($item->{$guid_field}))
 		{
-			return;
+			$this->messages->add('error', Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_MISSING_THE_S_KEY_VALUE', $area, $item_name, $item_id, $guid_field));
+			return false;
+		}
+		$table = $this->getTable();
+		$guid = $item->{$guid_field};
+
+		// check if we have saved this entity already
+		if ($this->tracker->exists("save.{$table}.{$guid_field}|{$guid}"))
+		{
+			return $this->tracker->get("save.{$table}.{$guid_field}|{$guid}");
 		}
 
-		$index_item = null;
+		// pass item to the inspector/resolver to get all dependencies
+		$dependencies = $this->getDependencies($item);
+		if ($dependencies !== null)
+		{
+			foreach ($dependencies as $key => $dependency)
+			{
+				$item->{$key} = $dependency;
+			}
+		}
+
+		$at_least_once = false;
+		$not_approved = true;
 		foreach ($this->repos as $key => $repo)
 		{
-			if (empty($repo->write_branch) || $repo->write_branch === 'default' || !$this->targetRepo($item, $repo))
+			if (empty($repo->write_branch) || $repo->write_branch === 'default' || !$this->targetRepo($rawItem, $repo))
 			{
 				continue;
 			}
-
-			$item = $this->mapItem($item);
+			$not_approved = false;
 
 			$this->setRepoPlaceholders($repo);
 
-			$this->grep->loadApi($this->git, $repo->base ?? null, $repo->token ?? null);
+			// set the target system
+			$target_system = $repo->target ?? 'gitea';
+			$this->git->setTarget($target_system);
 
-			if (($existing = $this->grep->get($item->guid, ['remote'], $repo)) !== null)
-			{
-				if ($this->updateItem($item, $existing, $repo))
+			// load the base and token if set
+			$this->grep->loadApi(
+				$this->git,
+				$repo->base ?? null,
+				$repo->token ?? null
+			);
+
+			try {
+				if (($existing = $this->grep->get($guid, ['remote'], $repo)) !== null)
 				{
-					$this->updateItemReadme($item, $existing, $repo);
+					if ($this->updateItem($item, $existing, $repo))
+					{
+						$this->updateItemReadme($item, $existing, $repo);
+						$at_least_once = true;
+					}
 				}
-			}
-			else
-			{
-				$this->createItem($item, $repo);
-
-				$this->createItemReadme($item, $repo);
-
-				$index_item ??= $this->getIndexItem($item);
-
-				if (!isset($this->settings[$key]))
+				elseif ($this->createItem($item, $repo))
 				{
-					$this->settings[$key] = ['repo' => $repo, 'items' => [$item->guid => $index_item]];
+					$this->createItemReadme($item, $repo);
+
+					$index_item ??= $this->getIndexItem($item);
+
+					$at_least_once = true;
+
+					if (!isset($this->settings[$key]))
+					{
+						$this->settings[$key] = ['repo' => $repo, 'items' => [$guid => $index_item]];
+					}
+					else
+					{
+						$this->settings[$key]['items'][$guid] = $index_item;
+						$this->settings[$key]['repo'] = $repo;
+					}
 				}
 				else
 				{
-					$this->settings[$key]['items'][$item->guid] = $index_item;
+					$repo_name = $this->getRepoName($repo);
+					$this->messages->add('error',
+						Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_COULD_NOT_BE_CREATED_OR_FOUND_IN_REPOS',
+							$area, $item_name, $item_id, $repo_name));
 				}
+			} catch (\Throwable $e) {
+				$repo_name = $this->getRepoName($repo);
+				$this->messages->add('error',
+					Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_ENCOUNTERED_AN_ERROR_IN_REPOSBRERROR_MESSAGEBRS',
+						$area, $item_name, $item_id, $repo_name, $e->getMessage()));
+			} finally {
+				$this->git->reset_();
 			}
-
-			$this->git->reset_();
 		}
+
+		if (!$at_least_once && $not_approved)
+		{
+			$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_IS_NOT_APPROVED_AND_THEREFORE_NOT_LINKED_TO_ANY_REPOSITORY', $area, $item_name, $item_id));
+		}
+
+		$this->tracker->set("save.{$table}.{$guid_field}|{$guid}", $at_least_once);
+
+		return $at_least_once;
 	}
 
 	/**
@@ -625,7 +612,7 @@ abstract class Set implements SetInterface
 	 */
 	protected function setRepoPlaceholders(object $repo): void
 	{
-		$this->repoPlaceholders = $this->placeholders;
+		$this->repoPlaceholders = $this->getPlaceholders();
 		if (!empty($repo->placeholders) && is_array($repo->placeholders))
 		{
 			foreach ($repo->placeholders as $key => $value)
@@ -633,6 +620,23 @@ abstract class Set implements SetInterface
 				$this->repoPlaceholders[$key] = $value;
 			}
 		}
+	}
+
+	/**
+	 * Get the dependencies of this item
+	 *
+	 * @param  object   $item    The item to resolve the dependencies
+	 *
+	 * @return array|null  The array of relationships or null for none
+	 * @since 3.2.2
+	 */
+	protected function getDependencies($item): ?array
+	{
+		if ($this->resolver instanceof Resolver)
+		{
+			return $this->resolver->extract($item);
+		}
+		return null;
 	}
 
 	/**
@@ -650,33 +654,6 @@ abstract class Set implements SetInterface
 			array_values($this->repoPlaceholders), 
 			$string
 		);
-	}
-
-	/**
-	 * Get index values
-	 *
-	 * @param object  $item  The item
-	 *
-	 * @return array|null
-	 * @since 3.2.2
-	 */
-	protected function getIndexItem(object $item): ?array
-	{
-		if (empty($this->index_map))
-		{
-			return null;
-		}
-
-		$index_item = [];
-		foreach ($this->index_map as $key => $function_name)
-		{
-			if (method_exists($this, $function_name))
-			{
-				$index_item[$key] = $this->{$function_name}($item);
-			}
-		}
-
-		return $index_item ?? null;
 	}
 
 	/**
@@ -713,6 +690,23 @@ abstract class Set implements SetInterface
 	}
 
 	/**
+	 * get the name of the repo
+	 *
+	 * @param object  $repo  The current repo
+	 *
+	 * @return string
+	 * @since  5.1.1
+	 */
+	protected function getRepoName(object $repo): string
+	{
+		$base = $repo->base ?? '[core]';
+		$organisation = $repo->organisation ?? '[organisation]';
+		$repository = $repo->repository ?? '[repository]';
+
+		return "{$base}/{$organisation}/{$repository}";
+	}
+
+	/**
 	 * Checks if two objects are equal by comparing their properties and values.
 	 *
 	 *  This method converts both input objects to associative arrays, sorts the arrays by keys,
@@ -728,96 +722,7 @@ abstract class Set implements SetInterface
 	 */
 	protected function areObjectsEqual(?object $obj1, ?object $obj2): bool
 	{
-		return ObjectHelper::equal($obj1, $obj2); // basic comparison
-	}
-
-	/**
-	 * Get the settings path
-	 *
-	 * @return string
-	 * @since 3.2.2
-	 */
-	protected function getSettingsPath(): string
-	{
-		return $this->settings_path;
-	}
-
-	/**
-	 * Get the index settings path
-	 *
-	 * @return string
-	 * @since 3.2.2
-	 */
-	protected function getIndexSettingsPath(): string
-	{
-		return $this->index_settings_path;
-	}
-
-	//// index_map_ (area) /////////////////////////////////////////////
-
-	/**
-	 * Get the item name for the index values
-	 *
-	 * @param object $item
-	 *
-	 * @return string|null
-	 * @since 3.2.2
-	 */
-	protected function index_map_IndexName(object $item): ?string
-	{
-		return $item->system_name ?? null;
-	}
-
-	/**
-	 * Get the item settings path for the index values
-	 *
-	 * @param object $item
-	 *
-	 * @return string
-	 * @since 3.2.2
-	 */
-	protected function index_map_IndexSettingsPath(object $item): string
-	{
-		return "src/{$item->guid}/" . $this->getSettingsPath();
-	}
-
-	/**
-	 * Get the item path for the index values
-	 *
-	 * @param object $item
-	 *
-	 * @return string
-	 * @since 3.2.2
-	 */
-	protected function index_map_IndexPath(object $item): string
-	{
-		return "src/{$item->guid}";
-	}
-
-	/**
-	 * Get the item JPK for the index values
-	 *
-	 * @param object $item
-	 *
-	 * @return string
-	 * @since 3.2.2
-	 */
-	protected function index_map_IndexKey(object $item): string
-	{
-		return $this->prefix_key . str_replace('-', '_', $item->guid) . $this->suffix_key;
-	}
-
-	/**
-	 * Get the item GUID for the index values
-	 *
-	 * @param object $item
-	 *
-	 * @return string
-	 * @since 3.2.2
-	 */
-	protected function index_map_IndexGUID(object $item): string
-	{
-		return $item->guid;
+		return ObjectHelper::equal($obj1, $obj2, ['@dependencies']); // basic comparison
 	}
 }
 

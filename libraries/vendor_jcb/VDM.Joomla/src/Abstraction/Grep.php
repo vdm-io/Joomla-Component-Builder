@@ -14,11 +14,13 @@ namespace VDM\Joomla\Abstraction;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Application\CMSApplication;
-use VDM\Joomla\Gitea\Repository\Contents;
-use VDM\Joomla\Interfaces\Git\ApiInterface as Api;
+use VDM\Joomla\Interfaces\Remote\ConfigInterface as Config;
+use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface as Contents;
 use VDM\Joomla\Componentbuilder\Network\Resolve;
+use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
+use VDM\Joomla\Interfaces\Git\ApiInterface as Api;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Interfaces\GrepInterface;
@@ -27,9 +29,9 @@ use VDM\Joomla\Interfaces\GrepInterface;
 /**
  * Global Resource Empowerment Platform
  * 
- *    The Grep feature will try to find your power in the repositories listed in the global
- *    Options of JCB in the super powers tab, and if it can't be found there will try the global core
- *    Super powers of JCB. All searches are performed according the [algorithm:cascading]
+ *    The Grep feature will try to find your power in the repositories
+ *    linked to this [area], and if it can't be found there will try the global core
+ *    Super Powers of JCB. All searches are performed according the [algorithm:cascading]
  *    See documentation for more details: https://git.vdm.dev/joomla/super-powers/wiki
  * 
  * @since 3.2.1
@@ -40,7 +42,7 @@ abstract class Grep implements GrepInterface
 	 * The local path
 	 *
 	 * @var    string|null
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	public ?string $path;
 
@@ -48,7 +50,7 @@ abstract class Grep implements GrepInterface
 	 * All approved paths
 	 *
 	 * @var    array|null
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	public ?array $paths;
 
@@ -61,50 +63,58 @@ abstract class Grep implements GrepInterface
 	protected ?string $target = null;
 
 	/**
-	 * Order of global search
+	 * The Grep target [entity]
 	 *
-	 * @var    array
-	 * @since 3.2.1
+	 * @var    string
+	 * @since  5.0.4
 	 **/
-	protected array $order = ['local', 'remote'];
+	protected string $entity;
 
 	/**
 	 * The target branch field name ['read_branch', 'write_branch']
 	 *
 	 * @var    string
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 **/
 	protected string $branch_field = 'read_branch';
+
+	/**
+	 * Order of global search
+	 *
+	 * @var    array
+	 * @since  3.2.1
+	 **/
+	protected array $order = ['local', 'remote'];
 
 	/**
 	 * The target default branch name
 	 *
 	 * @var    string|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 **/
 	protected ?string $branch_name = null;
-
-	/**
-	 * The index file path
-	 *
-	 * @var    string
-	 * @since 3.2.2
-	 */
-	protected string $index_path = 'index.json';
 
 	/**
 	 * The VDM global API base
 	 *
 	 * @var    string
-	 * @since 5.0.4
+	 * @since  5.0.4
 	 **/
 	protected string $api_base = '//git.vdm.dev/';
+
+	/**
+	 * The Config Class.
+	 *
+	 * @var   Config
+	 * @since 5.1.1
+	 */
+	protected Config $config;
 
 	/**
 	 * Gitea Repository Contents
 	 *
 	 * @var    Contents
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected Contents $contents;
 
@@ -117,34 +127,47 @@ abstract class Grep implements GrepInterface
 	protected Resolve $resolve;
 
 	/**
+	 * The Tracker Class.
+	 *
+	 * @var   Tracker
+	 * @since 5.1.1
+	 */
+	protected Tracker $tracker;
+
+	/**
 	 * Joomla Application object
 	 *
 	 * @var    CMSApplication
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	protected CMSApplication $app;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Contents              $contents  The Gitea Repository Contents object.
-	 * @param Resolve               $resolve   The Resolve Class.
-	 * @param array                 $paths     The approved paths
-	 * @param string|null           $path      The local path
-	 * @param CMSApplication|null   $app       The CMS Application object.
+	 * @param Config                $config     The Config Class.
+	 * @param Contents              $contents   The Contents Class.
+	 * @param Resolve               $resolve    The Resolve Class.
+	 * @param Tracker               $tracker    The Tracker Class.
+	 * @param array                 $paths      The approved paths
+	 * @param string|null           $path       The local path
+	 * @param CMSApplication|null   $app        The Application Class.
 	 *
-	 * @throws \Exception
-	 * @since 3.2.0
+	 * @since 3.2.1
 	 */
-	public function __construct(
-		Contents $contents, Resolve $resolve,
-		array $paths, ?string $path = null,
-		?CMSApplication $app = null)
+	public function __construct(Config $config, Contents $contents,
+		Resolve $resolve, Tracker $tracker, array $paths,
+		?string $path = null, ?CMSApplication $app = null)
 	{
+		$this->entity = $config->getTable();
+		$this->config = $config;
 		$this->contents = $contents;
 		$this->resolve = $resolve;
+		$this->tracker = $tracker;
+
 		$this->paths = $paths;
 		$this->path = $path;
+
 		$this->app = $app ?: Factory::getApplication();
 
 		$this->initializeInstances();
@@ -158,7 +181,7 @@ abstract class Grep implements GrepInterface
 	 * @param object|null  $repo    The repository object to search. If null, all repos will be searched.
 	 *
 	 * @return object|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	public function get(string $guid, ?array $order = null, ?object $repo = null): ?object
 	{
@@ -173,34 +196,56 @@ abstract class Grep implements GrepInterface
 	}
 
 	/**
-	 * Check if an item exists in any repo or in a specific repo.
+	 * Get the path/repo object
 	 *
-	 * @param string $guid The unique identifier for the item.
-	 * @param object|null $repo The repository object to check against. If null, all repos will be checked.
-	 * @param array|null $order The order of the targets to check. If null, the default order will be used.
+	 * @param string   $guid  The target repository guid.
 	 *
-	 * @return bool True if the item exists, false otherwise.
-	 * @since 3.2.2
+	 * @return object|null
+	 * @since  5.1.1
 	 */
-	public function exists(string $guid, ?object $repo = null, ?array $order = null): bool
+	public function getPath(string $guid): ?object
 	{
-		$order = $order ?? $this->order;
-
-		if ($repo !== null)
+		if (!is_array($this->paths) || $this->paths === [] || empty($guid))
 		{
-			return $this->itemExistsInRepo($guid, $repo, $order);
+			return null;
 		}
 
-		return $this->itemExistsInAllRepos($guid, $order);
+		foreach ($this->paths as $path)
+		{
+			if (!isset($path->guid) || $guid !== $path->guid)
+			{
+				continue;
+			}
+
+			return $path;
+		}
+
+		return null;
 	}
 
 	/**
-	 * Get all remote GUID's
+	 * Get all the available repos
 	 *
 	 * @return array|null
-	 * @since 3.2.0
+	 * @since  5.1.1
 	 */
-	public function getRemoteGuid(): ?array
+	public function getPaths(): ?array
+	{
+		if (!is_array($this->paths) || $this->paths === [])
+		{
+			return null;
+		}
+
+		return $this->paths;
+	}
+
+	/**
+	 * Get all paths + indexes (the active set)
+	 *
+	 * @return array|null
+	 * @since  5.1.1
+	 */
+	public function getPathsIndexes(): ?array
 	{
 		if (!is_array($this->paths) || $this->paths === [])
 		{
@@ -213,52 +258,47 @@ abstract class Grep implements GrepInterface
 			// Get remote index
 			$this->indexRemote($path);
 
-			if (isset($path->index) && is_object($path->index))
+			if (is_array($path->index ?? null) && is_object($path->index[$this->entity] ?? null))
 			{
-				$powers = array_merge($powers, array_keys((array) $path->index));
+				$powers[] = $path;
 			}
 		}
 
-		return empty($powers) ? null : array_unique($powers);
+		return $powers;
 	}
 
 	/**
-	 * Set the branch field
+	 * Get the a path + indexes
 	 *
-	 * @param string    $field   The field to use to get the branch name from the data set
+	 * @param string $guid The unique identifier for the repo.
 	 *
-	 * @return void
-	 * @since 3.2.2
+	 * @return object|null
+	 * @since  5.1.1
 	 */
-	public function setBranchField(string $field): void
+	public function getPathIndexes(string $guid): ?object
 	{
-		$this->branch_field = $field;
-	}
+		if (!is_array($this->paths) || $this->paths === [] || empty($guid))
+		{
+			return null;
+		}
 
-	/**
-	 * Set the DEFAULT branch name (only used if branch field is not found)
-	 *
-	 * @param string|null    $name   The default branch to use if no name could be found
-	 *
-	 * @return void
-	 * @since 3.2.2
-	 */
-	public function setBranchDefaultName(?string $name): void
-	{
-		$this->branch_name = $name;
-	}
+		foreach ($this->paths as $path)
+		{
+			if (!isset($path->guid) || $guid !== $path->guid)
+			{
+				continue;
+			}
 
-	/**
-	 * Set the index path
-	 *
-	 * @param string    $indexPath    The repository index path
-	 *
-	 * @return void
-	 * @since 3.2.2
-	 */
-	public function setIndexPath(string $indexPath): void
-	{
-		$this->index_path = $indexPath;
+			// Get remote index
+			$this->indexRemote($path);
+
+			if (is_array($path->index ?? null) && is_object($path->index[$this->entity] ?? null))
+			{
+				return $path;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -267,7 +307,7 @@ abstract class Grep implements GrepInterface
 	 * @param string $guid The unique identifier for the repo.
 	 *
 	 * @return object|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	public function getRemoteIndex(string $guid): ?object
 	{
@@ -286,13 +326,85 @@ abstract class Grep implements GrepInterface
 			// Get remote index
 			$this->indexRemote($path);
 
-			if (isset($path->index) && is_object($path->index))
+			if (is_array($path->index ?? null) && is_object($path->index[$this->entity] ?? null))
 			{
-				return $path->index;
+				return $path->index[$this->entity];
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the network target name
+	 *
+	 * @return string|null
+	 * @since  5.1.1
+	 */
+	public function getNetworkTarget(): ?string
+	{
+		return $this->target ?? null;
+	}
+
+	/**
+	 * Check if an item exists in any repo or in a specific repo.
+	 *
+	 * @param string $guid The unique identifier for the item.
+	 * @param object|null $repo The repository object to check against. If null, all repos will be checked.
+	 * @param array|null $order The order of the targets to check. If null, the default order will be used.
+	 *
+	 * @return bool True if the item exists, false otherwise.
+	 * @since  3.2.2
+	 */
+	public function exists(string $guid, ?object $repo = null, ?array $order = null): bool
+	{
+		$order = $order ?? $this->order;
+
+		if ($repo !== null)
+		{
+			return $this->itemExistsInRepo($guid, $repo, $order);
+		}
+
+		return $this->itemExistsInAllRepos($guid, $order);
+	}
+
+	/**
+	 * Set the branch field
+	 *
+	 * @param string    $field   The field to use to get the branch name from the data set
+	 *
+	 * @return void
+	 * @since  3.2.2
+	 */
+	public function setBranchField(string $field): void
+	{
+		$this->branch_field = $field;
+	}
+
+	/**
+	 * Set the DEFAULT branch name (only used if branch field is not found)
+	 *
+	 * @param string|null    $name   The default branch to use if no name could be found
+	 *
+	 * @return void
+	 * @since  3.2.2
+	 */
+	public function setBranchDefaultName(?string $name): void
+	{
+		$this->branch_name = $name;
+	}
+
+	/**
+	 * Set the index path
+	 *
+	 * @param string    $indexPath    The repository index path
+	 *
+	 * @return void
+	 * @since  3.2.2
+	 */
+	public function setIndexPath(string $indexPath): void
+	{
+		$this->config->setIndexPath($indexPath);
 	}
 
 	/**
@@ -307,14 +419,18 @@ abstract class Grep implements GrepInterface
 	 * @param string|null  $token  The token for authentication (can be null).
 	 *
 	 * @return void
-	 * @since 5.0.4
+	 * @since  5.0.4
 	 */
 	public function loadApi(Api $api, ?string $base, ?string $token): void
 	{
-		// Determine the token to use based on the base URL
-		if ($base && strpos($base, $this->api_base) !== false)
+		// If we have global tokens for a base system we must not reset on an empty token
+		if ($base && (
+			strpos($base. '/', $this->api_base) !== false ||
+			strpos($base, 'api.github.com') !== false
+		))
 		{
 			// If base contains $this->api_base = https://git.vdm.dev/, use the token as is
+			// If base contains api.github.com, use the token as is
 			$tokenToUse = $token;
 		}
 		else
@@ -337,9 +453,54 @@ abstract class Grep implements GrepInterface
 	 * @param string|null  $base          Base URL
 	 *
 	 * @return void
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	abstract protected function setRemoteIndexMessage(string $message, string $path, string $repository, string $organisation, ?string $base): void;
+
+	/**
+	 * Injects metadata SHA into the power params object.
+	 *
+	 * @param object $power        The object to modify
+	 * @param object $path         The repository path
+	 * @param string $targetPath   The target path inside the repo
+	 * @param string $branch       The branch to use
+	 * @param string $sourceKey    The key to set inside params->source
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected function setRepoItemSha(object &$power, object $path,
+		string $targetPath, string $branch, string $sourceKey): void
+	{
+		try {
+			$meta = $this->contents->metadata(
+				$path->organisation,
+				$path->repository,
+				$targetPath,
+				$branch
+			);
+		} catch (\Throwable $e) {
+			$meta = null;
+		}
+
+		if ($meta === null || !isset($meta->sha))
+		{
+			return;
+		}
+
+		if (!isset($power->params) || !is_object($power->params))
+		{
+			$power->params = (object) ['source' => [$sourceKey => $meta->sha]];
+			return;
+		}
+
+		if (!isset($power->params->source) || !is_array($power->params->source))
+		{
+			$power->params->source = [];
+		}
+
+		$power->params->source[$sourceKey] = $meta->sha;
+	}
 
 	/**
 	 * Get function name
@@ -348,7 +509,7 @@ abstract class Grep implements GrepInterface
 	 * @param string     $type   The type of function name
 	 *
 	 * @return string|null
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected function getFunctionName(string $name, string $type = 'search'): ?string
 	{
@@ -365,7 +526,7 @@ abstract class Grep implements GrepInterface
 	 * @param object      $repo  The repository object to check against.
 	 *
 	 * @return object|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function searchSingleRepo(string $guid, array $order, object $repo): ?object
 	{
@@ -391,7 +552,7 @@ abstract class Grep implements GrepInterface
 	 * @param object      $repo  The repository object to check against.
 	 *
 	 * @return object|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function searchAllRepos(string $guid, array $order): ?object
 	{
@@ -418,7 +579,7 @@ abstract class Grep implements GrepInterface
 	 * @param array $order The order of the targets to check.
 	 *
 	 * @return bool True if the item exists, false otherwise.
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function itemExistsInRepo(string $guid, object $repo, array $order): bool
 	{
@@ -439,7 +600,7 @@ abstract class Grep implements GrepInterface
 	 * @param array $order The order of the targets to check.
 	 *
 	 * @return bool True if the item exists, false otherwise.
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function itemExistsInAllRepos(string $guid, array $order): bool
 	{
@@ -464,7 +625,7 @@ abstract class Grep implements GrepInterface
 	 * Get the branch field
 	 *
 	 * @return string
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function getBranchField(): string
 	{
@@ -475,7 +636,7 @@ abstract class Grep implements GrepInterface
 	 * Get the branch default name
 	 *
 	 * @return string|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function getBranchDefaultName(): ?string
 	{
@@ -488,7 +649,7 @@ abstract class Grep implements GrepInterface
 	 * @param object    $item    The item path
 	 *
 	 * @return string|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function getBranchName(object $item): ?string
 	{
@@ -502,11 +663,55 @@ abstract class Grep implements GrepInterface
 	 * Get the index path
 	 *
 	 * @return string
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function getIndexPath(): string
 	{
-		return $this->index_path;
+		return $this->config->getIndexPath();
+	}
+
+	/**
+	 * Get the settings name
+	 *
+	 * @return string
+	 * @since  3.2.2
+	 */
+	protected function getSettingsName(): string
+	{
+		return $this->config->getSettingsName();
+	}
+
+	/**
+	 * Get GUID field
+	 *
+	 * @return string
+	 * @since  5.1.1
+	 */
+	protected function getGuidField(): string
+	{
+		return $this->config->getGuidField();
+	}
+
+	/**
+	 * Get GUID field
+	 *
+	 * @return string
+	 * @since  5.1.1
+	 */
+	protected function getItemReadmeName(): string
+	{
+		return $this->config->getItemReadmeName();
+	}
+
+	/**
+	 * Has item readme
+	 *
+	 * @return bool
+	 * @since  5.1.1
+	 */
+	protected function hasItemReadme(): bool
+	{
+		return $this->config->hasItemReadme();
 	}
 
 	/**
@@ -517,7 +722,7 @@ abstract class Grep implements GrepInterface
 	 * @param string $target The target to check within the repo.
 	 *
 	 * @return bool True if the item exists, false otherwise.
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function itemExists(string $guid, object &$repo, string $target): bool
 	{
@@ -541,7 +746,7 @@ abstract class Grep implements GrepInterface
 	 * @param string   $guid  The global unique id of the item
 	 *
 	 * @return object|null   return path object
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function existsLocally(string $guid): ?object
 	{
@@ -569,7 +774,7 @@ abstract class Grep implements GrepInterface
 	 * @param string   $guid  The global unique id of the item
 	 *
 	 * @return object|null   return path object
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function existsRemotely(string $guid): ?object
 	{
@@ -598,11 +803,12 @@ abstract class Grep implements GrepInterface
 	 * @param object   $path  The path object
 	 *
 	 * @return bool   true if it exists
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function existsLocal(string $guid, object $path): bool
 	{
-		if (!empty($path->local) && isset($path->local->{$guid}))
+		if (is_array($path->local ?? null) && is_object($path->local[$this->entity] ?? null) &&
+			isset($path->local[$this->entity]->{$guid}))
 		{
 			return true;
 		}
@@ -617,11 +823,12 @@ abstract class Grep implements GrepInterface
 	 * @param object   $path  The path object
 	 *
 	 * @return bool   true if it exists
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
 	protected function existsRemote(string $guid, object $path): bool
 	{
-		if (!empty($path->index) && isset($path->index->{$guid}))
+		if (is_array($path->index ?? null) && is_object($path->index[$this->entity] ?? null) &&
+			isset($path->index[$this->entity]->{$guid}))
 		{
 			return true;
 		}
@@ -635,25 +842,44 @@ abstract class Grep implements GrepInterface
 	 * @param object    $path    The repository path details
 	 *
 	 * @return void
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected function indexRemote(object &$path): void
 	{
-		if (isset($path->index))
+		if (is_array($path->index ?? null) && isset($path->index[$this->entity]))
 		{
 			return; // already set
 		}
 
+		if (!is_array($path->index ?? null))
+		{
+			$path->index = [];
+		}
+
 		try
 		{
+			// set the target system
+			$target = $path->target ?? 'gitea';
+			$this->contents->setTarget($target);
+
 			// load the base and token if set
-			$this->loadApi($this->contents, $path->base ?? null, $path->token ?? null);
-			$path->index = $this->contents->get($path->organisation, $path->repository, $this->getIndexPath(), $this->getBranchName($path));
+			$this->loadApi(
+				$this->contents,
+				$path->base ?? null,
+				$path->token ?? null
+			);
+
+			$path->index[$this->entity] = $this->contents->get($path->organisation, $path->repository, $this->getIndexPath(), $this->getBranchName($path));
 		}
 		catch (\Exception $e)
 		{
-			$path->index = null;
-			$this->setRemoteIndexMessage($e->getMessage(), $path->path, $path->repository, $path->organisation, $path->base ?? null);
+			$path->index[$this->entity] = null;
+
+			// only when searching (read_branch) do we show this error message
+			if ($this->getBranchField() === 'read_branch')
+			{
+				$this->setRemoteIndexMessage($e->getMessage(), $path->path, $path->repository, $path->organisation, $path->base ?? null);
+			}
 		}
 		finally
 		{
@@ -668,45 +894,53 @@ abstract class Grep implements GrepInterface
 	 * @param object    $path    The repository path details
 	 *
 	 * @return void
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected function indexLocal(object &$path): void
 	{
-		if (isset($path->local) || !isset($path->full_path))
+		if (is_array($path->local ?? null) && isset($path->local[$this->entity]))
 		{
-			return;
+			return; // already set
+		}
+
+		if (!is_array($path->local ?? null))
+		{
+			$path->local = [];
 		}
 
 		if (($content = FileHelper::getContent($path->full_path . '/' . $this->getIndexPath(), null)) !== null &&
 			JsonHelper::check($content))
 		{
-			$path->local = json_decode($content);
+			$path->local[$this->entity] = json_decode($content);
 
 			return;
 		}
 
-		$path->local = null;
+		$path->local[$this->entity] = null;
 	}
 
 	/**
 	 * Set path details
 	 *
 	 * @return void
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected function initializeInstances(): void
 	{
 		if (is_array($this->paths) && $this->paths !== [])
 		{
+			$network_target = $this->getNetworkTarget();
 			foreach ($this->paths as $n => &$path)
 			{
 				if (isset($path->organisation) && strlen($path->organisation) > 1 &&
 						isset($path->repository) && strlen($path->repository) > 1)
 				{
-					// resolve API if needed
-					if (!empty($path->base))
+					$target = $path->target ?? 'gitea';
+
+					// resolve API if a gitea (core) endpoint
+					if (!empty($path->base) && $target === 'gitea')
 					{
-						$this->resolve->api($this->target ?? $path->repository, $path->base, $path->organisation, $path->repository);
+						$this->resolve->api($network_target ?? $path->repository, $path->base, $path->organisation, $path->repository);
 					}
 
 					// build the path
@@ -724,7 +958,7 @@ abstract class Grep implements GrepInterface
 					}
 
 					// set local path
-					if ($this->path && Folder::exists($this->path . '/' . $path->path))
+					if ($this->path && is_dir($this->path . '/' . $path->path))
 					{
 						$path->full_path = $this->path . '/' . $path->path;
 					}
@@ -746,7 +980,7 @@ abstract class Grep implements GrepInterface
 	 * @param string|null    $branch         The repository branch name
 	 *
 	 * @return mixed
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected function loadRemoteFile(string $organisation, string $repository, string $path, ?string $branch)
 	{
@@ -757,7 +991,7 @@ abstract class Grep implements GrepInterface
 		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $path, $e->getMessage()),
+				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $organisation, $repository, $path, $e->getMessage()),
 				'Error'
 			);
 

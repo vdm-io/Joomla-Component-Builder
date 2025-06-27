@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customcode\Extractor;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -178,7 +178,7 @@ class Paths
 		// check if the local install is found
 		foreach ($local_paths as $key => $localPath)
 		{
-			if (!Folder::exists($localPath))
+			if (!is_dir($localPath))
 			{
 				unset($local_paths[$key]);
 			}

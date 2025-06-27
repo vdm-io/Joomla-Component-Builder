@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Gitea\Utilities;
 
 
-use Joomla\CMS\Http\Response as JoomlaResponse;
+use Joomla\Http\Response as JoomlaResponse;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
@@ -36,7 +36,7 @@ final class Response
 	 * @since   3.2.0
 	 * @throws  \DomainException
 	 **/
-	public function get($response, int  $expectedCode = 200, $default = null)
+	public function get(JoomlaResponse $response, int  $expectedCode = 200, $default = null)
 	{
 		// Validate the response code.
 		if ($response->code != $expectedCode)
@@ -44,8 +44,7 @@ final class Response
 			// Decode the error response and throw an exception.
 			$message =  $this->error($response);
 
-			throw new \DomainException("Invalid response received from API. $message", $response->code);
-
+			throw new \DomainException("Invalid response received from Gitea API. $message", $response->code);
 		}
 
 		return $this->body($response, $default);
@@ -62,7 +61,7 @@ final class Response
 	 * @since   3.2.0
 	 * @throws  \DomainException
 	 **/
-	public function get_($response, array $validate = [200 => null])
+	public function get_(JoomlaResponse $response, array $validate = [200 => null])
 	{
 		// Validate the response code.
 		if (!isset($validate[$response->code]))
@@ -70,8 +69,7 @@ final class Response
 			// Decode the error response and throw an exception.
 			$message =  $this->error($response);
 
-			throw new \DomainException("Invalid response received from API. $message", $response->code);
-
+			throw new \DomainException("Invalid response received from Gitea API. $message", $response->code);
 		}
 
 		return $this->body($response, $validate[$response->code]);
@@ -86,11 +84,14 @@ final class Response
 	 * @return  mixed
 	 * @since   3.2.0
 	 **/
-	protected function body($response, $default = null)
+	protected function body(JoomlaResponse $response, $default = null)
 	{
-		$body = $response->body ?? null;
+		$body = is_object($response) && method_exists($response, 'getBody')
+			? (string) $response->getBody()
+			: (isset($response->body) ? (string) $response->body : null);
+
 		// check that we have a body
-		if (StringHelper::check($body))
+		if ($body !== null && StringHelper::check($body))
 		{
 			if (JsonHelper::check($body))
 			{
@@ -109,36 +110,51 @@ final class Response
 	}
 
 	/**
-	 * Get the error message from the return object
+	 * Extract an error message from a response object.
 	 *
-	 * @param   JoomlaResponse  $response   The response.
+	 * @param   JoomlaResponse  $response  The response object.
 	 *
-	 * @return  string
+	 * @return  string  The extracted error message, or an empty string.
 	 * @since   3.2.0
-	 **/
-	protected function error($response): string
+	 */
+	protected function error(JoomlaResponse $response): string
 	{
-		// do we have a json string
-		if (isset($response->body) && JsonHelper::check($response->body))
+		// Try to get the raw response body
+		$body = method_exists($response, 'getBody') ? (string) $response->getBody() : '';
+
+		// Try to decode as JSON object
+		$errorData = JsonHelper::check($body) ? json_decode($body) : null;
+
+		if (is_object($errorData))
 		{
-			$error = json_decode($response->body);
-		}
-		else
-		{
-			return '';
+			// Try to extract a useful error field
+			if (!empty($errorData->error))
+			{
+				return $errorData->error;
+			}
+
+			if (!empty($errorData->message))
+			{
+				return $errorData->message;
+			}
+
+			// Fallback to a serialized message
+			return json_encode($errorData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 		}
 
-		// check
-		if (isset($error->error))
+		// Fallback to reason phrase or body
+		if (!empty($body))
 		{
-			return $error->error;
-		}
-		elseif (isset($error->message))
-		{
-			return $error->message;
+			return $body;
 		}
 
-		return '';
+		// Try getting the reason phrase from response
+		if (method_exists($response, 'getReasonPhrase'))
+		{
+			return $response->getReasonPhrase();
+		}
+
+		return 'No error information found in Gitea API response.';
 	}
 }
 

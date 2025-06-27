@@ -257,7 +257,7 @@ class Joomla_powersModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.guid LIKE '.$search.' OR a.description LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.guid LIKE '.$search.' OR a.description LIKE '.$search.' OR a.settings LIKE '.$search.')');
 			}
 		}
 

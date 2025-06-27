@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Table;
 
 
-use VDM\Joomla\Componentbuilder\Table;
+use VDM\Joomla\Interfaces\TableInterface as Table;
 use VDM\Joomla\Interfaces\TableValidatorInterface;
 
 

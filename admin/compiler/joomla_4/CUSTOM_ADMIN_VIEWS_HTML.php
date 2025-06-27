@@ -72,9 +72,9 @@ class HtmlView extends BaseHtmlView
 	public function display($tpl = null): void
 	{
 		// get component params
-		$this->params = ComponentHelper::getParams('com_###component###');
+		$this->params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		// get the application
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		// get the user object
 		$this->user ??= $this->getCurrentUser();
 		// get global action permissions
@@ -99,12 +99,12 @@ class HtmlView extends BaseHtmlView
 		// add styles
 		foreach ($this->styles as $style)
 		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
 		}###CUSTOM_ADMIN_DOCUMENT_CUSTOM_CSS###
 		// add scripts
 		foreach ($this->scripts as $script)
 		{
-			Html::_('script', $script, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
 		}###CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
 	}
 
@@ -117,19 +117,19 @@ class HtmlView extends BaseHtmlView
 	protected function addToolbar(): void
 	{###HIDEMAINMENU###
 		// add title to the page
-		ToolbarHelper::title(Text::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
+		Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
 		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
 		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_###component###');
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::preferences('com_###component###');
 		}
 	}###CUSTOM_ADMIN_GET_MODULE###
 

@@ -18,7 +18,6 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Factory as JoomlaPowerFactory;
-use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -56,16 +55,10 @@ class Joomla_powersController extends AdminController
 
 
 	/**
-	 * Initializes all remote Joomla Powers and syncs them with the local database.
-	 *
-	 * This function performs several checks and operations:
-	 * 1. It verifies the authenticity of the request to prevent request forgery.
-	 * 2. It checks whether the current user has the necessary permissions to initialize the Joomla Powers.
-	 * 3. If the user is authorized, it attempts to initialize the remote Joomla Powers.
-	 * 4. Depending on the result of the initialization operation, it sets the appropriate success or error message.
-	 * 5. It redirects the user to a specified URL with the result message and status.
+	 * Redirect the request to the Initialization selection page.
 	 *
 	 * @return bool True on successful initialization, false on failure.
+	 * @since  5.1.1
 	 */
 	public function initPowers()
 	{
@@ -73,7 +66,7 @@ class Joomla_powersController extends AdminController
 		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 
 		// check if user has the right
-		$user = Factory::getUser();
+		$user = $this->app->getIdentity();
 
 		// set default error message
 		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
@@ -83,29 +76,20 @@ class Joomla_powersController extends AdminController
 
 		if($user->authorise('joomla_power.init', 'com_componentbuilder'))
 		{
-			try {
-				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->init())
-				{
-					// set success message
-					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFULLY_INITIALIZED_ALL_REMOTE_JOOMLA_POWERS') . '</h1>';
-					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_LOCAL_DATABASE_JOOMLA_POWERS_HAS_SUCCESSFULLY_BEEN_SYNCED_WITH_THE_REMOTE_REPOSITORIES') . '</p>';
+			// set success message
+			$message = null;
 
-					$status = 'success';
-					$success = true;
-				}
-				else
-				{
-					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_INITIALIZATION_FAILED') . '</h1>';
-					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_INITIALIZATION_OF_THIS_JOOMLA_POWERS_HAS_FAILED') . '</p>';
-				}
-			} catch (\Exception $e) {
-				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_INITIALIZATION_FAILED') . '</h1>';
-				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
-			}
+			$status = null;
+			$success = true;
+
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=initialization_selection&power=Joomla.Power&target=Joomla Powers', false);
 		}
-
-		// set redirect
-		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', $success);
+		else
+		{
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', false);
+		}
 		$this->setRedirect($redirect_url, $message, $status);
 
 		return $success;
@@ -125,6 +109,7 @@ class Joomla_powersController extends AdminController
 	 * 8. It redirects the user to a specified URL with the result message and status.
 	 *
 	 * @return bool True on successful reset, false on failure.
+	 * @since  5.1.1
 	 */
 	public function resetPowers()
 	{
@@ -141,8 +126,8 @@ class Joomla_powersController extends AdminController
 		if ($pks === [])
 		{
 			// set error message
-			$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED').'</h1>';
-			$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_PLEASE_FIRST_MAKE_A_SELECTION_FROM_THE_LIST').'</p>';
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED') . '</h1>';
+			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_PLEASE_FIRST_MAKE_A_SELECTION_FROM_THE_LIST') . '</p>';
 			// set redirect
 			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', false);
 			$this->setRedirect($redirect_url, $message, 'error');
@@ -153,17 +138,19 @@ class Joomla_powersController extends AdminController
 		$success = false;
 
 		// check if user has the right
-		$user = Factory::getUser();
+		$user = $this->app->getIdentity();
 		if($user->authorise('joomla_power.reset', 'com_componentbuilder'))
 		{
-			$guids = GetHelper::vars('joomla_power', $pks, 'id', 'guid');
+			// get the guid field of this entity
+			$key_field = JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->getGuidField();
+			$guids = JoomlaPowerFactory::_('Load')->values([$key_field], ['joomla_power'], ['id' => ['value' => $pks, 'operator' => 'IN']]);
 
 			try {
 				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset($guids))
 				{
 					// set success message
-					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
-					$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THESE_JOOMLA_POWERS_HAVE_SUCCESSFULLY_BEEN_RESET').'</p>';
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESS') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THESE_JOOMLA_POWERS_HAVE_SUCCESSFULLY_BEEN_RESET') . '</p>';
 					$status = 'success';
 					$success = true;
 				}
@@ -178,7 +165,7 @@ class Joomla_powersController extends AdminController
 			}
 
 			// set redirect
-			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', $success);
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', false);
 			$this->setRedirect($redirect_url, $message, $status);
 
 			return $success;
@@ -204,6 +191,7 @@ class Joomla_powersController extends AdminController
 	 * 8. It redirects the user to a specified URL with the result message and status.
 	 *
 	 * @return bool True on successful push, false on failure.
+	 * @since  5.1.1
 	 */
 	public function pushPowers()
 	{
@@ -220,8 +208,8 @@ class Joomla_powersController extends AdminController
 		if ($pks === [])
 		{
 			// set error message
-			$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED').'</h1>';
-			$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_PLEASE_FIRST_MAKE_A_SELECTION_FROM_THE_LIST').'</p>';
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NO_SELECTION_DETECTED') . '</h1>';
+			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_PLEASE_FIRST_MAKE_A_SELECTION_FROM_THE_LIST') . '</p>';
 			// set redirect
 			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', false);
 			$this->setRedirect($redirect_url, $message, 'error');
@@ -230,26 +218,64 @@ class Joomla_powersController extends AdminController
 
 		$status = 'error';
 		$success = false;
+		$message_bus = ['warning', 'error'];
 
 		// check if user has the right
-		$user = Factory::getUser();
+		$user = $this->app->getIdentity();
 		if($user->authorise('joomla_power.push', 'com_componentbuilder'))
 		{
-			$guids = GetHelper::vars('joomla_power', $pks, 'id', 'guid');
+			// get the guid field of this entity
+			$key_field = JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->getGuidField();
+			$guids = JoomlaPowerFactory::_('Load')->values([$key_field], ['joomla_power'], ['id' => ['value' => $pks, 'operator' => 'IN']]);
 
 			try {
 				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->items($guids))
 				{
 					// set success message
-					$message = '<h1>'.Text::_('COM_COMPONENTBUILDER_SUCCESS').'</h1>';
-					$message .= '<p>'.Text::_('COM_COMPONENTBUILDER_THESE_JOOMLA_POWERS_HAVE_SUCCESSFULLY_BEEN_PUSHED').'</p>';
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESS') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THESE_JOOMLA_POWERS_HAVE_SUCCESSFULLY_BEEN_PUSHED') . '</p>';
 					$status = 'success';
 					$success = true;
 				}
 				else
 				{
+					// Load any messages from the message bus
+					$message_bucket = [];
+
+					foreach ($message_bus as $message_key)
+					{
+						if (($messages = JoomlaPowerFactory::_('Power.Message')->get($message_key, null)) !== null)
+						{
+							$message_bucket[$message_key] = $messages;
+						}
+					}
+
+					// Initialize base values
 					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
-					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THESE_JOOMLA_POWERS_HAS_FAILED') . '</p>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_JOOMLA_POWERS_HAS_FAILED') . '</p>';
+					$status = 'error';
+
+					// Handle both error and warning
+					if (isset($message_bucket['error'], $message_bucket['warning']))
+					{
+						$message .= '<p>' . implode('<br>', $message_bucket['error']) . '</p>';
+
+						foreach ($message_bucket['warning'] as $warning)
+						{
+							$this->app->enqueueMessage($warning, 'warning');
+						}
+					}
+					elseif (isset($message_bucket['error']))
+					{
+						$message .= '<p>' . implode('<br>', $message_bucket['error']) . '</p>';
+					}
+					elseif (isset($message_bucket['warning']))
+					{
+						$status = 'warning';
+						$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_WAS_UNSUCCESSFUL') . '</h1>';
+						$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THESE_JOOMLA_POWERS_COULD_NOT_BE_COMPLETED') . '</p>';
+						$message .= '<p>' . implode('<br>', $message_bucket['warning']) . '</p>';
+					}
 				}
 			} catch (\Exception $e) {
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
@@ -257,7 +283,7 @@ class Joomla_powersController extends AdminController
 			}
 
 			// set redirect
-			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', $success);
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_powers', false);
 			$this->setRedirect($redirect_url, $message, $status);
 
 			return $success;

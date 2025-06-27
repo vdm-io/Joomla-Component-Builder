@@ -22,7 +22,7 @@ defined('_JEXEC') or die;
 ?>
 <div class="###component###-###view###">
 <?php echo $this->toolbar->render(); ?>
-<form action="<?php echo Route::_('index.php?option=com_###component###&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 ###EDITBODY###
 </form>
 </div>###EDITBODYSCRIPT###

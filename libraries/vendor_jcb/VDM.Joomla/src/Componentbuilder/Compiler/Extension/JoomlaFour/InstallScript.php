@@ -231,7 +231,7 @@ final class InstallScript implements GetScriptInterface
 		$script = PHP_EOL . 'use Joomla\CMS\Factory;';
 		$script .= PHP_EOL . 'use Joomla\CMS\Language\Text;';
 		$script .= PHP_EOL . 'use Joomla\CMS\Filesystem\File;';
-		$script .= PHP_EOL . 'use Joomla\CMS\Filesystem\Folder;' . PHP_EOL;
+		$script .= PHP_EOL . 'use Joomla\Filesystem\Folder;' . PHP_EOL;
 		$script .= PHP_EOL . '/**';
 		$script .= PHP_EOL . ' * ' . $extension->official_name
 			. ' script file.';

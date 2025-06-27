@@ -26,7 +26,6 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'spacer_hr_8',
 	'note_on_contributors',
 	'addcontributors',
 	'emptycontributors',

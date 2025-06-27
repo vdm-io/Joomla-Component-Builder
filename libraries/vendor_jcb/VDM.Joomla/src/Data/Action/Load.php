@@ -13,7 +13,7 @@ namespace VDM\Joomla\Data\Action;
 
 
 use VDM\Joomla\Interfaces\ModelInterface as Model;
-use VDM\Joomla\Interfaces\LoadInterface as Database;
+use VDM\Joomla\Interfaces\Database\LoadInterface as Database;
 use VDM\Joomla\Interfaces\Data\LoadInterface;
 
 

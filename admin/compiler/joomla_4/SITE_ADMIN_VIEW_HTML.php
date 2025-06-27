@@ -118,7 +118,7 @@ class HtmlView extends BaseHtmlView
 	public function display($tpl = null)
 	{
 		// set params
-		$this->params = ComponentHelper::getParams('com_###component###');
+		$this->params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		$this->useCoreUI = true;
 		// Assign the variables
 		$this->form ??= $this->get('Form');
@@ -129,7 +129,7 @@ class HtmlView extends BaseHtmlView
 		// get action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
 		// get input
-		$jinput = Factory::getApplication()->input;
+		$jinput = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;
 		$this->ref = $jinput->get('ref', 0, 'word');
 		$this->refid = $jinput->get('refid', 0, 'int');
 		$return = $jinput->get('return', null, 'base64');
@@ -211,16 +211,16 @@ class HtmlView extends BaseHtmlView
 	protected function _prepareDocument(): void
 	{###JQUERY###
 		$isNew = ($this->item->id < 1);
-		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
+		$this->getDocument()->setTitle(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
 		// add styles
 		foreach ($this->styles as $style)
 		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
 		}###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
 		// add scripts
 		foreach ($this->scripts as $script)
 		{
-			Html::_('script', $script, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
 		}###DOCUMENT_CUSTOM_PHP###
 	}
 }

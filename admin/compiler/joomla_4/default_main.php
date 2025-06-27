@@ -26,12 +26,12 @@ defined('_JEXEC') or die;
 			<div class="dashboard-content">
 				<a class="icon" href="<?php echo $icon->url; ?>">
 					<img alt="<?php echo $icon->alt; ?>" src="components/com_###component###/assets/images/icons/<?php  echo $icon->image; ?>">
-					<span class="dashboard-title"><?php echo Text::_($icon->name); ?></span>
+					<span class="dashboard-title"><?php echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_($icon->name); ?></span>
 				</a>
 			 </div>
 		</div>
 	<?php endforeach; ?>
 	<div class="clearfix"></div>
 <?php else: ?>
-	<div class="alert alert-error"><h4 class="alert-heading"><?php echo Text::_("Permission denied, or not correctly set"); ?></h4><div class="alert-message"><?php echo Text::_("Please notify your System Administrator if result is unexpected."); ?></div></div>
+	<div class="alert alert-error"><h4 class="alert-heading"><?php echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_("Permission denied, or not correctly set"); ?></h4><div class="alert-message"><?php echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_("Please notify your System Administrator if result is unexpected."); ?></div></div>
 <?php endif; ?>

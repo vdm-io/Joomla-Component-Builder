@@ -13,7 +13,7 @@ namespace VDM\Joomla\Database;
 
 
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Interfaces\DeleteInterface;
+use VDM\Joomla\Interfaces\Database\DeleteInterface;
 use VDM\Joomla\Abstraction\Database;
 
 

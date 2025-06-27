@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 
 ?>
 <tr>
-	<?php if ($this->canEdit&& $this->canState): ?>
+	<?php if (!$this->isModal && $this->canEdit && $this->canState): ?>
 		<th width="1%" class="nowrap center hidden-phone">
 			<?php echo Html::_('searchtools.sort', '', 'a.ordering', $this->listDirn, $this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 		</th>

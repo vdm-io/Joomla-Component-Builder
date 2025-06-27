@@ -26,6 +26,7 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\Input\Input;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -45,6 +46,14 @@ class HtmlView extends BaseHtmlView
 	 * @since  3.10.11
 	 */
 	public mixed $item;
+
+	/**
+	 * The input class
+	 *
+	 * @var    Input
+	 * @since  5.2.1
+	 */
+	public Input $input;
 
 	/**
 	 * The state object
@@ -119,6 +128,14 @@ class HtmlView extends BaseHtmlView
 	public string $referral;
 
 	/**
+	 * The modal state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	public bool $isModal;
+
+	/**
 	 * Language_translation view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -141,10 +158,10 @@ class HtmlView extends BaseHtmlView
 		// get action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('language_translation', $this->item);
 		// get input
-		$jinput = Factory::getApplication()->input;
-		$this->ref = $jinput->get('ref', 0, 'word');
-		$this->refid = $jinput->get('refid', 0, 'int');
-		$return = $jinput->get('return', null, 'base64');
+		$this->input ??= Factory::getApplication()->input;
+		$this->ref = $this->input->get('ref', 0, 'word');
+		$this->refid = $this->input->get('refid', 0, 'int');
+		$return = $this->input->get('return', null, 'base64');
 		// set the referral string
 		$this->referral = '';
 		if ($this->refid && $this->ref)
@@ -165,7 +182,16 @@ class HtmlView extends BaseHtmlView
 		}
 
 		// Set the toolbar
-		$this->addToolBar();
+		if ($this->getLayout() !== 'modal')
+		{
+			$this->isModal = false;
+			$this->addToolbar();
+		}
+		else
+		{
+			$this->isModal = true;
+			$this->addModalToolbar();
+		}
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -180,17 +206,17 @@ class HtmlView extends BaseHtmlView
 		parent::display($tpl);
 	}
 
-
 	/**
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
 		Factory::getApplication()->input->set('hidemainmenu', true);
-		$user = Factory::getApplication()->getIdentity();
+		$user = $this->getCurrentUser();
 		$userId	= $user->id;
 		$isNew = $this->item->id == 0;
 
@@ -265,6 +291,71 @@ class HtmlView extends BaseHtmlView
 		if (StringHelper::check($this->help_url))
 		{
 			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+		}
+	}
+
+	/**
+	 * Add the modal toolbar.
+	 *
+	 * @return  void
+	 * @throws  \Exception
+	 * @since   5.0.0
+	 */
+	protected function addModalToolbar()
+	{
+		Factory::getApplication()->input->set('hidemainmenu', true);
+		$user = $this->getCurrentUser();
+		$userId	= $user->id;
+		$isNew = $this->item->id == 0;
+
+		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_NEW' : 'COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_EDIT'), 'pencil-2 article-add');
+		// Built the actions for new and existing records.
+		if (StringHelper::check($this->referral))
+		{
+			if ($this->canDo->get('language_translation.create') && $isNew)
+			{
+				// We can create the record.
+				ToolbarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
+			}
+			elseif ($this->canDo->get('language_translation.edit'))
+			{
+				// We can save the record.
+				ToolbarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
+			}
+			if ($isNew)
+			{
+				// Do not creat but cancel.
+				ToolbarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CANCEL');
+			}
+			else
+			{
+				// We can close it.
+				ToolbarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CLOSE');
+			}
+		}
+		else
+		{
+			if ($isNew)
+			{
+				// For new records, check the create permission.
+				if ($this->canDo->get('language_translation.create'))
+				{
+					ToolbarHelper::apply('language_translation.apply', 'JTOOLBAR_APPLY');
+					ToolbarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
+					ToolbarHelper::custom('language_translation.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+				};
+				ToolbarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CANCEL');
+			}
+			else
+			{
+				if ($this->canDo->get('language_translation.edit'))
+				{
+					// We can save the new record
+					ToolbarHelper::apply('language_translation.apply', 'JTOOLBAR_APPLY');
+					ToolbarHelper::save('language_translation.save', 'JTOOLBAR_SAVE');
+				}
+				ToolbarHelper::cancel('language_translation.cancel', 'JTOOLBAR_CLOSE');
+			}
 		}
 	}
 

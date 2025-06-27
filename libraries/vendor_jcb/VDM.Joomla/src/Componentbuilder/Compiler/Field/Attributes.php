@@ -551,6 +551,11 @@ final class Attributes
 			return $this->removeRequired();
 		}
 
+		if ($name === 'sql_title_key' && 'ModalSelect' === $this->typeName)
+		{
+			return $this->getSqlTitleKey();
+		}
+
 		if ($this->viewType == 2 && in_array($name, ['readonly', 'disabled']))
 		{
 			return $this->setReadonly($name);
@@ -967,7 +972,7 @@ final class Attributes
 	{
 		// load the text key
 		$this->attributes['custom']['text']
-			= StringHelper::safe(
+			= FieldHelper::safe(
 			GetHelper::between(
 				$this->settings->xml, 'value_field="', '"'
 			)
@@ -986,7 +991,7 @@ final class Attributes
 	{
 		// load the id key
 		$this->attributes['custom']['id']
-			= StringHelper::safe(
+			= FieldHelper::safe(
 			GetHelper::between(
 				$this->settings->xml, 'key_field="', '"'
 			)
@@ -1043,6 +1048,30 @@ final class Attributes
 	{
 		// don't load the required to repeatable field type
 		return 'false';
+	}
+
+	/**
+	 * get sql title key value 
+	 *    and set the [data-key-name] if the key is not an [id]
+	 *
+	 * @return  string|null
+	 * @since   5.1.1
+	 */
+	private function getSqlTitleKey(): ?string
+	{
+		// load the id key
+		$key = FieldHelper::safe(
+			GetHelper::between(
+				$this->settings->xml, 'sql_title_key="', '"'
+			)
+		);
+
+		if ($key !== 'id')
+		{
+			$this->attributes['data-key-name'] = $key;
+		}
+
+		return $key;
 	}
 
 	/**

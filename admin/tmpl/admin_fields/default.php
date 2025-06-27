@@ -24,13 +24,16 @@ Html::_('bootstrap.tooltip');
 // No direct access to this file
 defined('_JEXEC') or die;
 
+$layout  = $this->isModal ? 'modal' : 'edit';
+$tmpl    = $this->input->get('tmpl');
+$tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 ?>
 <script type="text/javascript">
 	// waiting spinner
 	var outerDiv = document.querySelector('body');
 	var loadingDiv = document.createElement('div');
 	loadingDiv.id = 'loading';
-	loadingDiv.style.cssText = "background: rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat; top: " + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + "px; left: " + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + "px; width: " + outerDiv.offsetWidth + "px; height: " + outerDiv.offsetHeight + "px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;";
+	loadingDiv.style.cssText = "background: rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat; top: " + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + "px; left: " + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + "px; width: " + outerDiv.offsetWidth + "px; height: " + outerDiv.offsetHeight + "px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;";
 	outerDiv.appendChild(loadingDiv);
 	loadingDiv.style.display = 'block';
 	// when page is ready remove and show
@@ -41,7 +44,7 @@ defined('_JEXEC') or die;
 	});
 </script>
 <div id="componentbuilder_loader" style="display: none;">
-<form action="<?php echo Route::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <?php echo LayoutHelper::render('admin_fields.fields_above', $this); ?>
 <div class="main-card">
@@ -117,10 +120,10 @@ function checkAdminBehaviour(field) {
 	if (2 == value) {
 		// no database
 		if (target[2] == 'list') {
-			jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_ONLY_USE_THE_BNONE_DBB_OPTION_IF_YOU_ARE_PLANNING_ON_TARGETING_THIS_FIELD_WITH_JAVASCRIPTCUSTOM_PHP_TO_MOVE_ITS_VALUE_INTO_ANOTHER_FIELD_THAT_DOES_GET_SAVED_TO_THE_DATABASE'), timeout: 10000, status: 'warning', pos: 'top-right'});
-			jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BNONE_DBB_OPTION_WILL_REMOVE_THIS_FIELD_FROM_BEING_SAVED_IN_THE_DATABASE'), timeout: 5000, status: 'primary', pos: 'top-right'});
+			jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_ONLY_USE_THE_BNONE_DBB_OPTION_IF_YOU_ARE_PLANNING_ON_TARGETING_THIS_FIELD_WITH_JAVASCRIPTCUSTOM_PHP_TO_MOVE_ITS_VALUE_INTO_ANOTHER_FIELD_THAT_DOES_GET_SAVED_TO_THE_DATABASE'), timeout: 10000, status: 'warning', pos: 'top-right'});
+			jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_THE_BNONE_DBB_OPTION_WILL_REMOVE_THIS_FIELD_FROM_BEING_SAVED_IN_THE_DATABASE'), timeout: 5000, status: 'primary', pos: 'top-right'});
 		} else {
-			jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_NOT_AVAILABLE_TO_THE_FIELD_IF_BNONE_DBB_OPTION_IS_SELECTED'), timeout: 7000, status: 'warning', pos: 'top-right'});
+			jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_NOT_AVAILABLE_TO_THE_FIELD_IF_BNONE_DBB_OPTION_IS_SELECTED'), timeout: 7000, status: 'warning', pos: 'top-right'});
 		}
 		// do some house cleaning
 		jQuery('#'+subID+'__order_list').val(0).trigger('liszt:updated');
@@ -136,11 +139,11 @@ function checkAdminBehaviour(field) {
 		// show in list view
 		if (target[2] == 'list') {
 			if (1 == value) {
-				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BSHOW_IN_ALL_LIST_VIEWSB_OPTION_WILL_ADD_THIS_FIELD_TO_ALL_LIST_VIEWS_ADMIN_AMP_LINKED'), timeout: 5000, status: 'primary', pos: 'top-right'});
+				jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_THE_BSHOW_IN_ALL_LIST_VIEWSB_OPTION_WILL_ADD_THIS_FIELD_TO_ALL_LIST_VIEWS_ADMIN_AMP_LINKED'), timeout: 5000, status: 'primary', pos: 'top-right'});
 			} else if (3 == value) {
-				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BONLY_IN_ADMIN_LIST_VIEWB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_ADMIN_LIST_VIEW_NOT_TO_ANY_LINKED_VIEWS'), timeout: 5000, status: 'primary', pos: 'top-right'});
+				jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_THE_BONLY_IN_ADMIN_LIST_VIEWB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_ADMIN_LIST_VIEW_NOT_TO_ANY_LINKED_VIEWS'), timeout: 5000, status: 'primary', pos: 'top-right'});
 			} else if (4 == value) {
-				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_THE_BONLY_IN_LINKED_LIST_VIEWSB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_LINKED_LIST_VIEW_IF_THIS_VIEW_GETS_LINKED_TO_OTHER_VIEW_NOT_TO_THIS_ADMIN_LIST_VIEW'), timeout: 5000, status: 'primary', pos: 'top-right'});
+				jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_THE_BONLY_IN_LINKED_LIST_VIEWSB_OPTION_WILL_ONLY_ADD_THIS_FIELD_TO_THE_LINKED_LIST_VIEW_IF_THIS_VIEW_GETS_LINKED_TO_OTHER_VIEW_NOT_TO_THIS_ADMIN_LIST_VIEW'), timeout: 5000, status: 'primary', pos: 'top-right'});
 			}
 		}
 		// check if the order list already has a value

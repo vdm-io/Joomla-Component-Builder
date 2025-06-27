@@ -151,6 +151,11 @@ class Data
 	 */
 	public function get($field, ?string $singleViewName = null, ?string $listViewName = null): ?object
 	{
+		if (empty($field))
+		{
+			return null;
+		}
+
 		if (isset($this->index[$field]))
 		{
 			$id = $this->index[$field];

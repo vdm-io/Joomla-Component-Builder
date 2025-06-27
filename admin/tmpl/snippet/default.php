@@ -25,9 +25,12 @@ Html::_('bootstrap.tooltip');
 // No direct access to this file
 defined('_JEXEC') or die;
 
+$layout  = $this->isModal ? 'modal' : 'edit';
+$tmpl    = $this->input->get('tmpl');
+$tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 ?>
 <div id="componentbuilder_loader">
-<form action="<?php echo Route::_('index.php?option=com_componentbuilder&layout=edit&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <?php echo LayoutHelper::render('snippet.details_above', $this); ?>
 <div class="main-card">

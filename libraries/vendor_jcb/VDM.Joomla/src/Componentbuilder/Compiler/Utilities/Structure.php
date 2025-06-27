@@ -15,8 +15,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\File as JoomlaFile;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File as JoomlaFile;
+use Joomla\Filesystem\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
@@ -208,7 +208,7 @@ class Structure
 		}
 
 		// setup the folder
-		if (!Folder::exists($path))
+		if (!is_dir($path))
 		{
 			Folder::create($path);
 			$this->file->html($zip_path);
@@ -219,7 +219,7 @@ class Structure
 
 		$new_name = $this->getNewName($details, $item, $name, $fileName);
 
-		if (!JoomlaFile::exists($path . '/' . $new_name))
+		if (!is_file($path . '/' . $new_name))
 		{
 			// move the file to its place
 			JoomlaFile::copy(

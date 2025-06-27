@@ -12,53 +12,16 @@
 namespace VDM\Joomla\Interfaces\Remote;
 
 
+use VDM\Joomla\Interfaces\Remote\BaseInterface;
+
+
 /**
  * Set data based on global unique ids to remote system
  * 
  * @since 3.2.2
  */
-interface SetInterface
+interface SetInterface extends BaseInterface
 {
-	/**
-	 * Set the current active table
-	 *
-	 * @param string $table The table that should be active
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function table(string $table): self;
-
-	/**
-	 * Set the current active area
-	 *
-	 * @param string $area The area that should be active
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function area(string $area): self;
-
-	/**
-	 * Set the settings path
-	 *
-	 * @param string    $settingsPath    The repository settings path
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function setSettingsPath(string $settingsPath): self;
-
-	/**
-	 * Set the index settings path
-	 *
-	 * @param string    $settingsIndexPath    The repository index settings path
-	 *
-	 * @return self
-	 * @since 3.2.2
-	 */
-	public function setIndexSettingsPath(string $settingsIndexPath): self;
-
 	/**
 	 * Save items remotely
 	 *

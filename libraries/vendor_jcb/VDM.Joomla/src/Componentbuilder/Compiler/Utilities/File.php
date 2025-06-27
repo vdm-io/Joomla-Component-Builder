@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
-use Joomla\CMS\Filesystem\File as JoomlaFile;
+use Joomla\Filesystem\File as JoomlaFile;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;

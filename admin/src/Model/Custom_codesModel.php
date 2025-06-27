@@ -218,6 +218,7 @@ class Custom_codesModel extends ListModel
 
 				$item->target_code = $item->target;
 				// making sure we have the component details
+				
 			}
 		}
 

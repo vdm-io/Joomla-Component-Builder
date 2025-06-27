@@ -26,8 +26,6 @@ use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\Filesystem\File;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -99,120 +97,6 @@ class SnippetsModel extends ListModel
 		parent::__construct($config, $factory);
 
 		$this->app ??= Factory::getApplication();
-	}
-
-	public $user;
-	public $zipPath;
-
-	/**
-	*	Method to build the export package
-	*
-	*	@return bool on success.
-	*/
-	public function shareSnippets($pks)
-	{
-		// setup the query
-		if (UtilitiesArrayHelper::check($pks))
-		{
-			// Get the user object.
-			if (!ObjectHelper::check($this->user))
-			{
-				$this->user = Factory::getUser();
-			}
-			// Create a new query object.
-			if (!ObjectHelper::check($this->_db))
-			{
-				$this->_db = Factory::getDBO();
-			}
-			$query = $this->_db->getQuery(true);
-
-			// Select some fields
-			$query->select($this->_db->quoteName(
-				array('a.name','a.heading','a.description','a.usage','a.snippet','a.url','b.name','c.name','a.created','a.modified','a.contributor_company','a.contributor_name','a.contributor_email','a.contributor_website'),
-				array('name','heading','description','usage','snippet','url','type','library','created','modified','contributor_company','contributor_name','contributor_email','contributor_website')
-			));
-			
-			// From the componentbuilder_snippet table
-			$query->from($this->_db->quoteName('#__componentbuilder_snippet', 'a'));
-			// From the componentbuilder_snippet_type table.
-			$query->join('LEFT', $this->_db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON (' . $this->_db->quoteName('a.type') . ' = ' . $this->_db->quoteName('b.id') . ')');
-			// From the componentbuilder_library table.
-			$query->join('LEFT', $this->_db->quoteName('#__componentbuilder_library', 'c') . ' ON (' . $this->_db->quoteName('a.library') . ' = ' . $this->_db->quoteName('c.id') . ')');
-			$query->where('a.id IN (' . implode(',',$pks) . ')');
-			
-			// Implement View Level Access
-			if (!$this->user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $this->user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
-
-			// Order the results by ordering
-			$query->order('a.ordering  ASC');
-
-			// Load the items
-			$this->_db->setQuery($query);
-			$this->_db->execute();
-			if ($this->_db->getNumRows())
-			{
-				// load the items from db
-				$items = $this->_db->loadObjectList();
-				// check if we have items
-				if (UtilitiesArrayHelper::check($items))
-				{
-					// get the shared paths
-					$this->fullPath = rtrim(ComponentbuilderHelper::getFolderPath('path', 'sharepath', Factory::getConfig()->get('tmp_path')), '/') . '/snippets';
-					// remove old folder with the same name
-					if (is_dir($this->fullPath))
-					{
-						// remove if old folder is found
-						ComponentbuilderHelper::removeFolder($this->fullPath);
-					}
-					// create the full path
-					Folder::create($this->fullPath);
-					// set zip path
-					$this->zipPath = $this->fullPath .'.zip';
-					// remove old zip files with the same name
-					if (is_file($this->zipPath))
-					{
-						// remove file if found
-						File::delete($this->zipPath);
-					}
-					// prep the item
-					foreach($items as $item)
-					{
-						// just unlock the snippet
-						$item->snippet = base64_decode($item->snippet);
-						// build filename
-						$fileName = StringHelper::safe($item->library . ' - (' . $item->type . ') ' . $item->name, 'filename', '', false) . '.json';
-						// if the snippet has its own contributor details set, then do not change
-						if (!strlen($item->contributor_company) || !strlen($item->contributor_name) || !strlen($item->contributor_email) || !strlen($item->contributor_website))
-						{
-							// load the correct contributor details to each snippet (this is very slow)
-							$_contributor = ComponentbuilderHelper::getContributorDetails($fileName);
-							$item->contributor_company = $_contributor['contributor_company'];
-							$item->contributor_name = $_contributor['contributor_name'];
-							$item->contributor_email = $_contributor['contributor_email'];
-							$item->contributor_website = $_contributor['contributor_website'];
-						}
-						// now store the snippet info
-						ComponentbuilderHelper::writeFile($this->fullPath . '/' . $fileName, json_encode($item, JSON_PRETTY_PRINT));
-					}
-					// zip the folder
-					if (!ComponentbuilderHelper::zip($this->fullPath, $this->zipPath))
-					{
-						return false;
-					}
-					// remove the folder
-					if (!ComponentbuilderHelper::removeFolder($this->fullPath))
-					{
-						return false;
-					}
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**

@@ -154,7 +154,7 @@ class Issue extends Api
 		return $this->response->get(
 			$this->http->post(
 				$this->uri->get($path), json_encode($data)
-			)
+			), 201
 		);
 	}
 

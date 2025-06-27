@@ -773,9 +773,11 @@ class Creator implements ServiceProviderInterface
 			$container->get('Field.Name'),
 			$container->get('Field.Type.Name'),
 			$container->get('Field.Attributes'),
+			$container->get('Field.ModalSelect'),
 			$container->get('Utilities.Xml'),
 			$container->get('Compiler.Creator.Custom.Field.Type.File'),
-			$container->get('Utilities.Counter')
+			$container->get('Utilities.Counter'),
+			$container->get('Compiler.Builder.Component.Fields')
 		);
 	}
 
@@ -797,8 +799,10 @@ class Creator implements ServiceProviderInterface
 			$container->get('Field.Name'),
 			$container->get('Field.Type.Name'),
 			$container->get('Field.Attributes'),
+			$container->get('Field.ModalSelect'),
 			$container->get('Compiler.Creator.Custom.Field.Type.File'),
-			$container->get('Utilities.Counter')
+			$container->get('Utilities.Counter'),
+			$container->get('Compiler.Builder.Component.Fields')
 		);
 	}
 
@@ -816,6 +820,7 @@ class Creator implements ServiceProviderInterface
 			$container->get('Field.Name'),
 			$container->get('Field.Type.Name'),
 			$container->get('Field.Attributes'),
+			$container->get('Field.ModalSelect'),
 			$container->get('Field.Groups'),
 			$container->get('Compiler.Builder.Field.Names'),
 			$container->get('Compiler.Creator.Field.Type'),

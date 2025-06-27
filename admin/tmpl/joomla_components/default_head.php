@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 
 ?>
 <tr>
-	<?php if ($this->canEdit&& $this->canState): ?>
+	<?php if (!$this->isModal && $this->canEdit && $this->canState): ?>
 		<th width="1%" class="nowrap center hidden-phone">
 			<?php echo Html::_('searchtools.sort', '', 'a.ordering', $this->listDirn, $this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 		</th>
@@ -36,13 +36,13 @@ defined('_JEXEC') or die;
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SYSTEM_NAME_LABEL', 'a.system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_NAME_CODE_LABEL', 'a.name_code', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_CODE_NAME', 'a.name_code', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_SHORT_DESCRIPTION_LABEL', 'a.short_description', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_DESCRIPTION', 'a.short_description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENT_COMPANYNAME_LABEL', 'a.companyname', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_COMPONENTS_COMPANY_DETAILS', 'a.companyname', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

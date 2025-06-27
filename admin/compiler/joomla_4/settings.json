@@ -252,8 +252,8 @@
 				"newName": "HeaderCheck.php",
 				"type": "file"
 			},
-			"import.gif": {
-				"naam": "import.gif",
+			"ajax.gif": {
+				"naam": "ajax.gif",
 				"path": "c0mp0n3nt/admin/assets/images",
 				"rename": false,
 				"type": "file"
@@ -463,6 +463,30 @@
 					"rename": "new",
 					"newName": "[[[Key]]]Field.php",
 					"type": "fieldcustom"
+				},
+				"FORM_MODAL_SELECT_FIELD.php": {
+					"path": "c0mp0n3nt/admin/src/Field",
+					"rename": "new",
+					"newName": "ModalSelectField.php",
+					"type": "fieldmodalselect_override"
+				},
+				"ADMIN_VIEWS_MODAL.php": {
+					"path": "c0mp0n3nt/admin/tmpl/[[[name]]]",
+					"rename": "new",
+					"newName": "modal.php",
+					"type": "list_modal"
+				},
+				"ADMIN_VIEW_MODAL.php": {
+					"path": "c0mp0n3nt/admin/tmpl/[[[name]]]",
+					"rename": "new",
+					"newName": "modal.php",
+					"type": "single_modal"
+				},
+				"ADMIN_VIEW_MODAL_RETURN.php": {
+					"path": "c0mp0n3nt/admin/tmpl/[[[name]]]",
+					"rename": "new",
+					"newName": "modalreturn.php",
+					"type": "single_modal"
 				},
 				"FORM_LIST_FIELD.php": {
 					"path": "c0mp0n3nt/admin/src/Field",
@@ -732,6 +756,18 @@
 					"newName": "HtmlView.php",
 					"type": "edit"
 				},
+				"SITE_ADMIN_VIEW_MODAL.php": {
+					"path": "c0mp0n3nt/site/tmpl/[[[name]]]",
+					"rename": "new",
+					"newName": "modal.php",
+					"type": "edit_modal"
+				},
+				"SITE_ADMIN_VIEW_MODAL_RETURN.php": {
+					"path": "c0mp0n3nt/site/tmpl/[[[name]]]",
+					"rename": "new",
+					"newName": "modalreturn.php",
+					"type": "edit_modal"
+				},
 				"view_site_edit.css": {
 					"path": "c0mp0n3nt/site/assets/css",
 					"rename": "view_site_edit",
@@ -742,6 +778,12 @@
 					"rename": "new",
 					"newName": "[[[Key]]]Field.php",
 					"type": "fieldcustom"
+				},
+				"SITE_FORM_MODAL_SELECT_FIELD.php": {
+					"path": "c0mp0n3nt/site/src/Field",
+					"rename": "new",
+					"newName": "ModalSelectField.php",
+					"type": "fieldmodalselect_override"
 				},
 				"SITE_FORM_LIST_FIELD.php": {
 					"path": "c0mp0n3nt/site/src/Field",

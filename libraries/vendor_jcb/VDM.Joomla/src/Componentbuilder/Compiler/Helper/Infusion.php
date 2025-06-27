@@ -13,8 +13,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\Filter\OutputFilter;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -54,6 +54,8 @@ class Infusion extends Interpretation
 	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_edit_folder;
 	 */
 	public $removeSiteEditFolder = true;
+
+	public $secondRunAdmin;
 
 	/**
 	 * Constructor
@@ -420,6 +422,15 @@ class Infusion extends Interpretation
 						'jcb_ce_onBeforeBuildAdminEditViewContent', [&$view, &$nameSingleCode, &$nameListCode]
 					);
 
+					// Here we set defaults
+					// The real values are set in ModalSelect(4fc020dc-3137-478d-8d42-0571a75b77b5)
+
+					// add the Title Key for the Modal
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SQL_TITLE_KEY', 'id');
+
+					// add the Title Column for the Modal
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|SQL_TITLE_COLUMN', 'name');
+
 					// FIELDSETS <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|FIELDSETS',
 						CFactory::_('Compiler.Creator.Fieldset')->get(
@@ -443,6 +454,11 @@ class Infusion extends Interpretation
 					// ADDTOOLBAR <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDTOOLBAR',
 						$this->setAddToolBar($view)
+					);
+
+					// ADDMODALTOOLBAR <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDMODALTOOLBAR',
+						$this->setAddModalToolBar($view)
 					);
 
 					// set the script for this view
@@ -945,6 +961,14 @@ class Infusion extends Interpretation
 						)
 					);
 
+					// VIEWS_MODAL_BODY <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|VIEWS_MODAL_BODY',
+						$this->setModalViewsBody(
+							$nameSingleCode,
+							$nameListCode
+						)
+					);
+
 					// LISTHEAD <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|LISTHEAD',
 						$this->setListHead(
@@ -1043,6 +1067,13 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_HEADER',
 						CFactory::_('Header')->get(
 							'admin.views', $nameListCode
+						)
+					);
+
+					// ADMIN_VIEWS_MODAL_HEADER <<<DYNAMIC>>> add the header details for the views
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_VIEWS_MODAL_HEADER',
+						CFactory::_('Header')->get(
+							'admin.views.modal', $nameListCode
 						)
 					);
 
@@ -2495,7 +2526,7 @@ class Infusion extends Interpretation
 						// build the path to place the lang file
 						$path = CFactory::_('Utilities.Paths')->component_path . '/' . $p . '/language/'
 							. $tag . '/';
-						if (!Folder::exists($path))
+						if (!is_dir($path))
 						{
 							Folder::create($path);
 							// count the folder created

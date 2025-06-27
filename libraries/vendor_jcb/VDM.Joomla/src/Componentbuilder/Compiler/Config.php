@@ -674,6 +674,7 @@ class Config extends ComponentConfig
 		// these strings are used to search for language strings in all content
 		return [
 			'jjt' => 'Joomla' . '.JText._(',
+			'jjtn' => 'Joomla' . '.Text._(',
 			'js' => 'Text:' . ':script(',
 			't' => 'Text:' . ':_(',            // namespace and J version will be found
 			'ts' => 'Text:' . ':sprintf(',  // namespace and J version will be found
@@ -734,7 +735,7 @@ class Config extends ComponentConfig
 		// get the compiler path
 		return $this->params->get(
 			'compiler_folder_path',
-			JPATH_COMPONENT_ADMINISTRATOR . '/compiler'
+			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/compiler'
 		);
 	}
 
@@ -946,7 +947,7 @@ class Config extends ComponentConfig
 		// get the custom folder path
 		return $this->params->get(
 			'custom_folder_path',
-			JPATH_COMPONENT_ADMINISTRATOR . '/custom'
+			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/custom'
 		);
 	}
 

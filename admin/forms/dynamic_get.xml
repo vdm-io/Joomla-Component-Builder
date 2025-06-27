@@ -556,30 +556,52 @@
 					multiple="false"
 					filter="INT"
 					required="true"
-					default="0">
+					default="1">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_</option>
 					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_NE</option>
 					<option value="3">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_OR_NOT</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_ALT_LTGT</option>
 					<option value="4">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_GT</option>
 					<option value="5">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_LT</option>
 					<option value="6">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL_GE</option>
 					<option value="7">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_TO</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_LE</option>
 					<option value="8">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN_LT</option>
 					<option value="9">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN_GT</option>
 					<option value="10">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_IN</option>
 					<option value="11">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_IN</option>
+					<option value="12">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LIKE</option>
+					<option value="13">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LIKE</option>
+					<option value="14">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NULL</option>
+					<option value="15">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NOT_NULL</option>
+					<option value="16">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_BETWEEN</option>
+					<option value="17">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_BETWEEN</option>
+					<option value="18">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EXISTS</option>
+					<option value="19">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EXISTS</option>
+					<option value="20">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_REGEXP</option>
+					<option value="21">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_REGEXP</option>
+					<option value="22">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_SOUNDS_LIKE</option>
 				</field>
 				<!-- Join_field Field. Type: Text. (joomla) -->
 				<field
@@ -798,30 +820,52 @@
 					multiple="false"
 					filter="INT"
 					required="true"
-					default="0">
+					default="1">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_</option>
 					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_NE</option>
 					<option value="3">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_OR_NOT</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_ALT_LTGT</option>
 					<option value="4">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_GT</option>
 					<option value="5">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_LT</option>
 					<option value="6">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL_GE</option>
 					<option value="7">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_TO</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_LE</option>
 					<option value="8">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN_LT</option>
 					<option value="9">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN_GT</option>
 					<option value="10">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_IN</option>
 					<option value="11">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_IN</option>
+					<option value="12">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LIKE</option>
+					<option value="13">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LIKE</option>
+					<option value="14">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NULL</option>
+					<option value="15">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NOT_NULL</option>
+					<option value="16">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_BETWEEN</option>
+					<option value="17">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_BETWEEN</option>
+					<option value="18">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EXISTS</option>
+					<option value="19">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EXISTS</option>
+					<option value="20">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_REGEXP</option>
+					<option value="21">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_REGEXP</option>
+					<option value="22">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_SOUNDS_LIKE</option>
 				</field>
 				<!-- Table_key Field. Type: Text. (joomla) -->
 				<field
@@ -903,30 +947,52 @@
 					multiple="false"
 					filter="INT"
 					required="true"
-					default="0">
+					default="1">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_</option>
 					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_NE</option>
 					<option value="3">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_OR_NOT</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_ALT_LTGT</option>
 					<option value="4">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_GT</option>
 					<option value="5">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_LT</option>
 					<option value="6">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL_GE</option>
 					<option value="7">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_TO</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_LE</option>
 					<option value="8">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN_LT</option>
 					<option value="9">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN_GT</option>
 					<option value="10">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_IN</option>
 					<option value="11">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_IN</option>
+					<option value="12">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LIKE</option>
+					<option value="13">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LIKE</option>
+					<option value="14">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NULL</option>
+					<option value="15">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NOT_NULL</option>
+					<option value="16">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_BETWEEN</option>
+					<option value="17">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_BETWEEN</option>
+					<option value="18">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EXISTS</option>
+					<option value="19">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EXISTS</option>
+					<option value="20">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_REGEXP</option>
+					<option value="21">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_REGEXP</option>
+					<option value="22">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_SOUNDS_LIKE</option>
 				</field>
 				<!-- Value_key Field. Type: Text. (joomla) -->
 				<field
@@ -1424,30 +1490,52 @@
 					multiple="false"
 					filter="INT"
 					required="true"
-					default="0">
+					default="1">
 					<!-- Option Set. -->
 					<option value="1">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_</option>
 					<option value="2">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_NE</option>
 					<option value="3">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_EQUAL_OR_NOT</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EQUAL_ALT_LTGT</option>
 					<option value="4">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_GT</option>
 					<option value="5">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_LT</option>
 					<option value="6">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_GREATER_THAN_OR_EQUAL_GE</option>
 					<option value="7">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_TO</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LESS_THAN_OR_EQUAL_LE</option>
 					<option value="8">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LESS_THAN_LT</option>
 					<option value="9">
-						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN</option>
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_GREATER_THAN_GT</option>
 					<option value="10">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_IN</option>
 					<option value="11">
 						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_IN</option>
+					<option value="12">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_LIKE</option>
+					<option value="13">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_LIKE</option>
+					<option value="14">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NULL</option>
+					<option value="15">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_IS_NOT_NULL</option>
+					<option value="16">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_BETWEEN</option>
+					<option value="17">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_BETWEEN</option>
+					<option value="18">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_EXISTS</option>
+					<option value="19">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_EXISTS</option>
+					<option value="20">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_REGEXP</option>
+					<option value="21">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_NOT_REGEXP</option>
+					<option value="22">
+						COM_COMPONENTBUILDER_DYNAMIC_GET_SOUNDS_LIKE</option>
 				</field>
 				<!-- Join_field Field. Type: Text. (joomla) -->
 				<field

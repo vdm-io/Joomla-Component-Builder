@@ -35,21 +35,21 @@ class ImportController extends BaseController
 	public function import()
 	{
 		// Check for request forgeries
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken() or jexit(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('import');
 		if ($model->import())
 		{
-			$cache = Factory::getCache('mod_menu');
+			$cache = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getCache('mod_menu');
 			$cache->clean();
 			// TODO: Reset the users acl here as well to kill off any missing bits
 		}
 
-		$app = Factory::getApplication();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$redirect_url = $app->getUserState('com_###component###.redirect_url');
 		if (empty($redirect_url))
 		{
-			$redirect_url = Route::_('index.php?option=com_###component###&view=import', false);
+			$redirect_url = Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=import', false);
 		}
 		else
 		{

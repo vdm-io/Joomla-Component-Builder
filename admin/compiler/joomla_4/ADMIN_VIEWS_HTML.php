@@ -77,6 +77,22 @@ class HtmlView extends BaseHtmlView
 	public string $return_here;
 
 	/**
+	 * The title key used in modal
+	 *
+	 * @var    string
+	 * @since  5.2.1
+	 */
+	public string $modalTitleKey;
+
+	/**
+	 * The modal state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	public bool $isModal;
+
+	/**
 	 * The user object.
 	 *
 	 * @var    Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power
@@ -104,7 +120,7 @@ class HtmlView extends BaseHtmlView
 		$this->user ??= $this->getCurrentUser();###ADMIN_DIPLAY_METHOD###
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
-		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
+		$this->return_here = urlencode(base64_encode((string) Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::getInstance()));
 		// get global action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
 
@@ -115,8 +131,10 @@ class HtmlView extends BaseHtmlView
 		}
 
 		// We don't need toolbar in the modal window.
+		$this->isModal = true;
 		if ($this->getLayout() !== 'modal')
 		{
+			$this->isModal = false;
 			$this->addToolbar();
 		}
 
@@ -141,11 +159,11 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addToolbar(): void
 	{
-		ToolbarHelper::title(Text::_('COM_###COMPONENT###_###VIEWS###'), '###ICOMOON###');
+		Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEWS###'), '###ICOMOON###');
 
 		if ($this->canCreate)
 		{
-			ToolbarHelper::addNew('###view###.add');
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::addNew('###view###.add');
 		}
 
 		// Only load if there are items
@@ -153,28 +171,28 @@ class HtmlView extends BaseHtmlView
 		{
 			if ($this->canEdit)
 			{
-				ToolbarHelper::editList('###view###.edit');
+				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::editList('###view###.edit');
 			}
 
 			if ($this->canState)
 			{
-				ToolbarHelper::publishList('###views###.publish');
-				ToolbarHelper::unpublishList('###views###.unpublish');
-				ToolbarHelper::archiveList('###views###.archive');
+				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::publishList('###views###.publish');
+				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::unpublishList('###views###.unpublish');
+				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::archiveList('###views###.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					ToolbarHelper::checkin('###views###.checkin');
+					Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::checkin('###views###.checkin');
 				}
 			}###CUSTOM_ADMIN_DYNAMIC_BUTTONS######ADMIN_CUSTOM_BUTTONS_LIST###
 
 			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
 			{
-				ToolbarHelper::deleteList('', '###views###.delete', 'JTOOLBAR_EMPTY_TRASH');
+				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::deleteList('', '###views###.delete', 'JTOOLBAR_EMPTY_TRASH');
 			}
 			elseif ($this->canState && $this->canDelete)
 			{
-				ToolbarHelper::trash('###views###.trash');
+				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::trash('###views###.trash');
 			}###EXPORTBUTTON###
 		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST######IMPORTBUTTON###
 
@@ -182,13 +200,13 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ###Component###Helper::getHelpUrl('###views###');
 		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_###component###');
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::preferences('com_###component###');
 		}###FILTERFIELDDISPLAYHELPER######BATCHDISPLAYHELPER###
 	}
 
@@ -200,16 +218,16 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function _prepareDocument(): void
 	{###JQUERY###
-		$this->getDocument()->setTitle(Text::_('COM_###COMPONENT###_###VIEWS###'));
+		$this->getDocument()->setTitle(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEWS###'));
 		// add styles
 		foreach ($this->styles as $style)
 		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
 		}
 		// add scripts
 		foreach ($this->scripts as $script)
 		{
-			Html::_('script', $script, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
 		}###ADMIN_ADD_JAVASCRIPT_FILE###
 	}
 
@@ -231,6 +249,17 @@ class HtmlView extends BaseHtmlView
 		}
 
 		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+	}
+
+	/**
+	 * Get the modal data/title key
+	 *
+	 * @return  string  The key value.
+	 * @since   5.2.1
+	 */
+	public function getModalTitleKey(): string
+	{
+		return $this->modalTitleKey ?? 'id';
 	}
 
 	/**

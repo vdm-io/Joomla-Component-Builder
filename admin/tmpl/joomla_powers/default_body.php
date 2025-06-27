@@ -31,7 +31,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_powers&task=joomla_po
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
-		<?php if ($canDo->get('joomla_power.edit.state')): ?>
+		<?php if (!$this->isModal && $canDo->get('joomla_power.edit.state')): ?>
 			<?php
 				$iconClass = '';
 				if (!$this->saveOrder)
@@ -51,7 +51,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_powers&task=joomla_po
 		<?php endif; ?>
 		</td>
 		<td class="nowrap center">
-		<?php if ($canDo->get('joomla_power.edit')): ?>
+		<?php if (!$this->isModal && $canDo->get('joomla_power.edit')): ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo Html::_('grid.id', $i, $item->id); ?>
@@ -67,19 +67,35 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_powers&task=joomla_po
 		</td>
 		<td class="nowrap">
 			<div>
-			<?php if ($canDo->get('joomla_power.edit')): ?>
+			<?php if (!$this->isModal && $canDo->get('joomla_power.edit')): ?>
 				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_powers.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
-				<?php echo $this->escape($item->system_name); ?>
+				<?php if (!$this->isModal): ?>
+					<?php echo $this->escape($item->system_name); ?>
+				<?php else: ?>
+					<?php
+						$link = "{$edit}&id={$item->id}";
+						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
+						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->system_name, false) . '</a>';
+						$attribs = 'data-content-select data-content-type="com_componentbuilder.joomla_power"'
+							. ' data-id="' . $dataId . '"'
+							. ' data-title="' . $this->escape($item->system_name, false) . '"'
+							. ' data-uri="' . $this->escape($link, false) . '"'
+							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+					?>
+					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
+						<?php echo $this->escape($item->system_name); ?>
+					</a>
+				<?php endif; ?>
 			<?php endif; ?><br /><small>GUID: 
 			<?php echo $this->escape($item->guid); ?><?php if(isset($item->joomla_power_key)): ?><br />JPK: <?php echo $item->joomla_power_key; ?><?php endif; ?></small>
 			</div>
 		</td>
 		<td class="center">
-		<?php if ($canDo->get('joomla_power.edit.state')) : ?>
+		<?php if (!$this->isModal && $canDo->get('joomla_power.edit.state')) : ?>
 				<?php if ($item->checked_out) : ?>
 					<?php if ($canCheckin) : ?>
 						<?php echo Html::_('jgrid.published', $item->published, $i, 'joomla_powers.', true, 'cb'); ?>

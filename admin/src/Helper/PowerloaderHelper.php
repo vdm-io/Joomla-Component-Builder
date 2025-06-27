@@ -23,8 +23,10 @@ if (file_exists($composer_autoloader))
 spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
+		'libraries/vendor_jcb/VDM.Joomla.Github' => 'VDM\\Joomla\\Github',
 		'libraries/vendor_jcb/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',
 		'libraries/vendor_jcb/VDM.Joomla.FOF' => 'VDM\\Joomla\\FOF',
+		'libraries/vendor_jcb/VDM.Joomla.Git' => 'VDM\\Joomla\\Git',
 		'libraries/vendor_jcb/VDM.Joomla' => 'VDM\\Joomla',
 		'libraries/vendor_jcb/VDM.Minify' => 'VDM\\Minify',
 		'libraries/vendor_jcb/VDM.Psr' => 'VDM\\Psr'

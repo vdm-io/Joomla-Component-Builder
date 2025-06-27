@@ -14,8 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -356,7 +356,7 @@ class Compiler extends Infusion
 							. StringHelper::safe($string, 'U');
 						$this->app->enqueueMessage(
 							Text::sprintf(
-								'The <b>Joomla.JText._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>Text::script(&apos;%s&apos;)</code> decalaration, please add it.',
+								'The <b>Joomla.Text._(&apos;%s&apos;)</b> language constant for <b>%s</b> does not have a corresponding <code>Text::script(&apos;%s&apos;)</code> decalaration, please add it.',
 								$constant, $string, $string
 							), 'Warning'
 						);
@@ -418,7 +418,7 @@ class Compiler extends Infusion
 			// first we do the static files
 			foreach (CFactory::_('Utilities.Files')->get('static') as $static)
 			{
-				if (File::exists($static['path']))
+				if (is_file($static['path']))
 				{
 					$this->setFileContent(
 						$static['name'], $static['path'], $bom
@@ -434,7 +434,7 @@ class Compiler extends Infusion
 					{
 						if ($file['view'] == $view)
 						{
-							if (File::exists($file['path']))
+							if (is_file($file['path']))
 							{
 								$this->setFileContent(
 									$file['name'], $file['path'], $bom,
@@ -513,7 +513,7 @@ class Compiler extends Infusion
 						// update the module files
 						foreach (CFactory::_('Utilities.Files')->get($module->key) as $module_file)
 						{
-							if (File::exists($module_file['path']))
+							if (is_file($module_file['path']))
 							{
 								$this->setFileContent(
 									$module_file['name'], $module_file['path'],
@@ -591,7 +591,7 @@ class Compiler extends Infusion
 						// update the plugin files
 						foreach (CFactory::_('Utilities.Files')->get($plugin->key) as $plugin_file)
 						{
-							if (File::exists($plugin_file['path']))
+							if (is_file($plugin_file['path']))
 							{
 								$this->setFileContent(
 									$plugin_file['name'], $plugin_file['path'],
@@ -625,7 +625,7 @@ class Compiler extends Infusion
 						// update the power files
 						foreach (CFactory::_('Utilities.Files')->get($power->key) as $power_file)
 						{
-							if (File::exists($power_file['path']))
+							if (is_file($power_file['path']))
 							{
 								$this->setFileContent(
 									$power_file['name'], $power_file['path'],
@@ -650,7 +650,7 @@ class Compiler extends Infusion
 						// update the power files
 						foreach (CFactory::_('Utilities.Files')->get($key) as $power_file)
 						{
-							if (File::exists($power_file['path']))
+							if (is_file($power_file['path']))
 							{
 								$this->setFileContent(
 									$power_file['name'], $power_file['path'],
@@ -775,7 +775,7 @@ class Compiler extends Infusion
 			$update_server_xml_path = CFactory::_('Utilities.Paths')->component_path . '/'
 				. $this->updateServerFileName . '.xml';
 			// make sure we have the correct file
-			if (File::exists($update_server_xml_path)
+			if (is_file($update_server_xml_path)
 				&& ($update_server = CFactory::_('Component')->get('update_server')) !== null)
 			{
 				// move to server
@@ -811,7 +811,7 @@ class Compiler extends Infusion
 					&& is_numeric($module->update_server)
 					&& $module->update_server > 0
 					&& isset($module->update_server_xml_path)
-					&& File::exists($module->update_server_xml_path)
+					&& is_file($module->update_server_xml_path)
 					&& isset($module->update_server_xml_file_name)
 					&& StringHelper::check(
 						$module->update_server_xml_file_name
@@ -852,7 +852,7 @@ class Compiler extends Infusion
 					&& is_numeric($plugin->update_server)
 					&& $plugin->update_server > 0
 					&& isset($plugin->update_server_xml_path)
-					&& File::exists($plugin->update_server_xml_path)
+					&& is_file($plugin->update_server_xml_path)
 					&& isset($plugin->update_server_xml_file_name)
 					&& StringHelper::check(
 						$plugin->update_server_xml_file_name
@@ -952,7 +952,7 @@ class Compiler extends Infusion
 			if (('README.md' === $static['name']
 					|| 'README.txt' === $static['name'])
 				&& CFactory::_('Component')->get('addreadme')
-				&& File::exists($static['path']))
+				&& is_file($static['path']))
 			{
 				$this->setReadMe($static['path']);
 				$two++;
@@ -1467,7 +1467,7 @@ class Compiler extends Infusion
 				}
 				$counter = 0;
 				// check if file exist			
-				if (File::exists($file))
+				if (is_file($file))
 				{
 					foreach (
 						new \SplFileObject($file) as $lineNumber => $lineContent

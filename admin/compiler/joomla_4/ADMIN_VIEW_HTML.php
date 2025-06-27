@@ -37,6 +37,14 @@ class HtmlView extends BaseHtmlView
 	public mixed $item;
 
 	/**
+	 * The input class
+	 *
+	 * @var    Joomla___59106b64_dd51_4280_be0a_1b9b9ebb7161___Power
+	 * @since  5.2.1
+	 */
+	public Joomla___59106b64_dd51_4280_be0a_1b9b9ebb7161___Power $input;
+
+	/**
 	 * The state object
 	 *
 	 * @var    mixed
@@ -109,6 +117,14 @@ class HtmlView extends BaseHtmlView
 	public string $referral;
 
 	/**
+	 * The modal state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	public bool $isModal;
+
+	/**
 	 * ###View### view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -120,7 +136,7 @@ class HtmlView extends BaseHtmlView
 	public function display($tpl = null): void
 	{
 		// set params
-		$this->params = ComponentHelper::getParams('com_###component###');
+		$this->params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		$this->useCoreUI = true;
 		// Assign the variables
 		$this->form ??= $this->get('Form');
@@ -131,10 +147,10 @@ class HtmlView extends BaseHtmlView
 		// get action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
 		// get input
-		$jinput = Factory::getApplication()->input;
-		$this->ref = $jinput->get('ref', 0, 'word');
-		$this->refid = $jinput->get('refid', 0, 'int');
-		$return = $jinput->get('return', null, 'base64');
+		$this->input ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;
+		$this->ref = $this->input->get('ref', 0, 'word');
+		$this->refid = $this->input->get('refid', 0, 'int');
+		$return = $this->input->get('return', null, 'base64');
 		// set the referral string
 		$this->referral = '';
 		if ($this->refid && $this->ref)
@@ -155,7 +171,16 @@ class HtmlView extends BaseHtmlView
 		}###LINKEDVIEWITEMS###
 
 		// Set the toolbar
-		$this->addToolBar();
+		if ($this->getLayout() !== 'modal')
+		{
+			$this->isModal = false;
+			$this->addToolbar();
+		}
+		else
+		{
+			$this->isModal = true;
+			$this->addModalToolbar();
+		}
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -170,16 +195,28 @@ class HtmlView extends BaseHtmlView
 		parent::display($tpl);
 	}
 
-
 	/**
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
 		###ADDTOOLBAR###
+	}
+
+	/**
+	 * Add the modal toolbar.
+	 *
+	 * @return  void
+	 * @throws  \Exception
+	 * @since   5.0.0
+	 */
+	protected function addModalToolbar()
+	{
+		###ADDMODALTOOLBAR###
 	}
 
 	/**
@@ -211,16 +248,16 @@ class HtmlView extends BaseHtmlView
 	protected function _prepareDocument(): void
 	{###JQUERY###
 		$isNew = ($this->item->id < 1);
-		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
+		$this->getDocument()->setTitle(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
 		// add styles
 		foreach ($this->styles as $style)
 		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
 		}###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
 		// add scripts
 		foreach ($this->scripts as $script)
 		{
-			Html::_('script', $script, ['version' => 'auto']);
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
 		}###DOCUMENT_CUSTOM_PHP###
 	}
 }

@@ -65,7 +65,7 @@ class ImportModel extends BaseDatabaseModel
 	 */
 	protected function populateState()
 	{
-		$app = Factory::getApplication('administrator');
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication('administrator');
 
 		$this->setState('message', $app->getUserState('com_###component###.message'));
 		$app->setUserState('com_###component###.message', '');
@@ -85,8 +85,8 @@ class ImportModel extends BaseDatabaseModel
 	public function import()
 	{
 		$this->setState('action', 'import');
-		$app = Factory::getApplication();
-		$session = Factory::getSession();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
+		$session = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getSession();
 		$package = null;
 		$continue = false;
 		// get import type
@@ -123,7 +123,7 @@ class ImportModel extends BaseDatabaseModel
 					break;
 
 				default:
-					$app->setUserState('com_###component###.message', Text::_('COM_###COMPONENT###_IMPORT_NO_IMPORT_TYPE_FOUND'));
+					$app->setUserState('com_###component###.message', Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_NO_IMPORT_TYPE_FOUND'));
 
 					return false;
 					break;
@@ -137,7 +137,7 @@ class ImportModel extends BaseDatabaseModel
 				$this->remove($package['packagename']);
 			}
 
-			$app->setUserState('com_###component###.message', Text::_('COM_###COMPONENT###_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
+			$app->setUserState('com_###component###.message', Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_UNABLE_TO_FIND_IMPORT_PACKAGE'));
 			return false;
 		}
 
@@ -155,7 +155,7 @@ class ImportModel extends BaseDatabaseModel
 		if (!$this->setData($package,$this->dataType,$headerList))
 		{
 			// There was an error importing the package
-			$msg = Text::_('COM_###COMPONENT###_IMPORT_ERROR');
+			$msg = Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_ERROR');
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
@@ -167,7 +167,7 @@ class ImportModel extends BaseDatabaseModel
 		else
 		{
 			// Package imported sucessfully
-			$msg = Text::sprintf('COM_###COMPONENT###_IMPORT_SUCCESS', $package['packagename']);
+			$msg = Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('COM_###COMPONENT###_IMPORT_SUCCESS', $package['packagename']);
 			$back = $session->get('backto_VDM_IMPORT', NULL);
 			if ($back)
 			{
@@ -195,7 +195,7 @@ class ImportModel extends BaseDatabaseModel
 	protected function _getPackageFromUpload()
 	{
 		// Get the uploaded file information
-		$app = Factory::getApplication();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$input = $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
@@ -204,26 +204,26 @@ class ImportModel extends BaseDatabaseModel
 		// Make sure that file uploads are enabled in php
 		if (!(bool) ini_get('file_uploads'))
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTFILE'), 'warning');
 			return false;
 		}
 
 		// If there is no uploaded file, we have a problem...
 		if (!is_array($userfile))
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_NO_FILE_SELECTED'), 'warning');
 			return false;
 		}
 
 		// Check if there was a problem uploading the file.
 		if ($userfile['error'] || $userfile['size'] < 1)
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_WARNIMPORTUPLOADERROR'), 'warning');
 			return false;
 		}
 
 		// Build the appropriate paths
-		$config = Factory::getConfig();
+		$config = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig();
 		$tmp_dest = $config->get('tmp_path') . '/' . $userfile['name'];
 		$tmp_src = $userfile['tmp_name'];
 
@@ -233,7 +233,7 @@ class ImportModel extends BaseDatabaseModel
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			$session = Factory::getSession();
+			$session = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getSession();
 			$session->clear('package');
 			$session->clear('dataType');
 			$session->clear('hasPackage');
@@ -255,7 +255,7 @@ class ImportModel extends BaseDatabaseModel
 	 */
 	protected function _getPackageFromFolder()
 	{
-		$app = Factory::getApplication();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$input = $app->input;
 
 		// Get the path to the package to import
@@ -264,7 +264,7 @@ class ImportModel extends BaseDatabaseModel
 		// Did you give us a valid path?
 		if (!file_exists($p_dir))
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_PLEASE_ENTER_A_PACKAGE_DIRECTORY'), 'warning');
 			return false;
 		}
 
@@ -274,14 +274,14 @@ class ImportModel extends BaseDatabaseModel
 		// Did you give us a valid package?
 		if (!$type)
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_PATH_DOES_NOT_HAVE_A_VALID_PACKAGE'), 'warning');
 		}
 
 		// check the extention
 		if(!$this->checkExtension($p_dir))
 		{
 			// set error message
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
 		}
 
@@ -300,7 +300,7 @@ class ImportModel extends BaseDatabaseModel
 	 */
 	protected function _getPackageFromUrl()
 	{
-		$app = Factory::getApplication();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$input = $app->input;
 
 		// Get the URL of the package to import
@@ -309,7 +309,7 @@ class ImportModel extends BaseDatabaseModel
 		// Did you give us a URL?
 		if (!$url)
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_ENTER_A_URL'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_ENTER_A_URL'), 'warning');
 			return false;
 		}
 
@@ -319,7 +319,7 @@ class ImportModel extends BaseDatabaseModel
 		// Was the package downloaded?
 		if (!$p_file)
 		{
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_INVALID_URL'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_INVALID_URL'), 'warning');
 			return false;
 		}
 
@@ -340,7 +340,7 @@ class ImportModel extends BaseDatabaseModel
 	 */
 	protected function check($archivename)
 	{
-		$app = Factory::getApplication();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		// Clean the name
 		$archivename = Path::clean($archivename);
 
@@ -349,11 +349,11 @@ class ImportModel extends BaseDatabaseModel
 		{
 			// Cleanup the import files
 			$this->remove($archivename);
-			$app->enqueueMessage(Text::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
+			$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_MSG_DOES_NOT_HAVE_A_VALID_FILE_TYPE'), 'warning');
 			return false;
 		}
 
-		$config = Factory::getConfig();
+		$config = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig();
 		// set Package Name
 		$check['packagename'] = $archivename;
 
@@ -378,7 +378,7 @@ class ImportModel extends BaseDatabaseModel
 	{
 		jimport('joomla.filesystem.file');
 
-		$config = Factory::getConfig();
+		$config = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig();
 		$package = $config->get('tmp_path'). '/' .$package;
 
 		// Is the package file a valid file?
@@ -396,7 +396,7 @@ class ImportModel extends BaseDatabaseModel
 	protected function getAlias($name,$type = false)
 	{
 		// sanitize the name to an alias
-		if (Factory::getConfig()->get('unicodeslugs') == 1)
+		if (Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig()->get('unicodeslugs') == 1)
 		{
 			$alias = OutputFilter::stringURLUnicodeSlug($name);
 		}

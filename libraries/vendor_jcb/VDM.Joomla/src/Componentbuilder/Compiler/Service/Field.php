@@ -20,6 +20,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Field\Data;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Groups;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Attributes;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name;
+use VDM\Joomla\Componentbuilder\Compiler\Field\ModalSelect;
 use VDM\Joomla\Componentbuilder\Compiler\Field\TypeName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\UniqueName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Rule;
@@ -82,6 +83,9 @@ class Field implements ServiceProviderInterface
 
 		$container->alias(Name::class, 'Field.Name')
 			->share('Field.Name', [$this, 'getName'], true);
+
+		$container->alias(ModalSelect::class, 'Field.ModalSelect')
+			->share('Field.ModalSelect', [$this, 'getModalSelect'], true);
 
 		$container->alias(TypeName::class, 'Field.Type.Name')
 			->share('Field.Type.Name', [$this, 'getTypeName'], true);
@@ -211,6 +215,22 @@ class Field implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Field.Unique.Name'),
 			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The ModalSelect Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ModalSelect
+	 * @since   5.2.1
+	 */
+	public function getModalSelect(Container $container): ModalSelect
+	{
+		return new ModalSelect(
+			$container->get('Utilities.Structure'),
+			$container->get('Compiler.Builder.Content.Multi')
 		);
 	}
 

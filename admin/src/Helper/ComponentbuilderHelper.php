@@ -42,8 +42,8 @@ use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
-use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
@@ -58,6 +58,7 @@ use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
 use VDM\Joomla\Utilities\FormHelper;
+use Joomla\Filesystem\Folder as FilesystemFolder;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 
@@ -183,11 +184,11 @@ abstract class ComponentbuilderHelper
 		// The path to the cache folder.
 		'JPATH_CACHE' => JPATH_CACHE,
 		// The path to the administration folder of the current component being executed.
-		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_COMPONENT_ADMINISTRATOR,
+		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_ADMINISTRATOR . '/components/com_componentbuilder',
 		// The path to the site folder of the current component being executed.
-		'JPATH_COMPONENT_SITE' => JPATH_COMPONENT_SITE,
+		'JPATH_COMPONENT_SITE' => JPATH_SITE . '/components/com_componentbuilder',
 		// The path to the current component being executed.
-		'JPATH_COMPONENT' => JPATH_COMPONENT,
+		'JPATH_COMPONENT' => JPATH_BASE . '/components/com_componentbuilder',
 		// The path to folder containing the configuration.php file.
 		'JPATH_CONFIGURATION' => JPATH_CONFIGURATION,
 		// The path to the installation folder.
@@ -728,59 +729,72 @@ abstract class ComponentbuilderHelper
 		}
 	}
 
-	/*
-	 * Get the Array of Existing Validation Rule Names
+	/**
+	 * Get the array of existing Joomla validation rule class names
 	 *
-	 * @return array|null
+	 * @param  bool  $lowercase  If true, converts names to lowercase
+	 *
+	 * @return array|null  Array of rule names or null on failure
 	 * @since  3.0.0
 	 */
 	public static function getExistingValidationRuleNames(bool $lowercase = false): ?array
 	{
-		// get the items
-		$items = self::get('_existing_validation_rules_VDM', null);
-		if (!$items)
+		// Try to retrieve from static cache
+		$cacheKey = '_existing_validation_rules_VDM';
+		$cached = self::get($cacheKey, null);
+
+		if (!empty($cached) && is_string($cached))
 		{
-			// set the path to the form validation rules
+			$items = json_decode($cached, true);
+		}
+		else
+		{
 			$path = JPATH_LIBRARIES . '/src/Form/Rule';
-			// check if the path exist
-			if (!Folder::exists($path))
+
+			if (!is_dir($path))
 			{
 				return null;
 			}
-			// we must first store the current working directory
-			$joomla = getcwd();
-			// go to that folder
-			chdir($path);
-			// load all the files in this path
-			$items = Folder::files('.', '\.php', true, true);
-			// change back to Joomla working directory
-			chdir($joomla);
-			// make sure we have an array
-			if (!UtilitiesArrayHelper::check($items))
+
+			$original_dir = getcwd();
+			if (!@chdir($path))
 			{
 				return null;
 			}
-			// remove the Rule.php from the name
-			$items = array_map( function ($name) {
-				return str_replace(array('./','Rule.php'), '', $name);
-			}, $items);
-			// store the names for next run
-			self::set('_existing_validation_rules_VDM', json_encode($items));
-		}
-		// make sure it is no longer json
-		if (JsonHelper::check($items))
-		{
-			$items = json_decode($items, true);
-		}
-		// check if the names should be all lowercase
-		if ($lowercase)
-		{
-			$items = array_map( function($item) {
-				return strtolower($item);
-			}, $items);
+
+			try {
+				$files = FilesystemFolder::files(
+					'.',
+					'\.php',
+					true,
+					true
+				);
+			} catch (\Throwable $e) {
+				return null;
+			} finally {
+				@chdir($original_dir);
+			}
+
+			if (!UtilitiesArrayHelper::check($files)) {
+				return null;
+			}
+
+			$items = array_map(
+				fn(string $file) => str_replace(['./', 'Rule.php'], '', $file),
+				$files
+			);
+
+			// Cache it for next time
+			self::set($cacheKey, json_encode($items));
 		}
 
-		return $items;
+		// Normalize casing if requested
+		if ($lowercase && is_array($items))
+		{
+			$items = array_map('strtolower', $items);
+		}
+
+		return is_array($items) ? $items : null;
 	}
 
 	/**
@@ -1000,7 +1014,7 @@ abstract class ComponentbuilderHelper
 					$bucket = [];
 
 					// get custom folder path
-					$customPath = '/'.trim(self::$params->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR.'/custom'), '/');
+					$customPath = '/'.trim(self::$params->get('custom_folder_path', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/custom'), '/');
 
 					// get all the file paths
 					foreach ($result->addfolders as $folder)
@@ -1474,7 +1488,7 @@ abstract class ComponentbuilderHelper
 		if (UtilitiesStringHelper::check($hash))
 		{
 			// first get the file path
-			$path_filename = FileHelper::getPath('path', $name.$type, $fileType, $key, JPATH_COMPONENT_ADMINISTRATOR);
+			$path_filename = FileHelper::getPath('path', $name.$type, $fileType, $key, JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
 			// set as read if not already set
 			if ($content = FileHelper::getContent($path_filename, false))
 			{
@@ -2222,7 +2236,7 @@ abstract class ComponentbuilderHelper
 						md5($image_data) === $target['hash'])
 					{
 						// create the JCB type path if it does not exist
-						if (!Folder::exists(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type"))
+						if (!is_dir(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type"))
 						{
 							Folder::create(JPATH_ROOT . "/administrator/components/com_componentbuilder/assets/images/$type");
 						}
@@ -2649,7 +2663,7 @@ abstract class ComponentbuilderHelper
 	 */
 	public static function removeFolder(string $path, ?array $ignore = null): bool
 	{
-		if (!Folder::exists($path))
+		if (!is_dir($path))
 		{
 			return false;
 		}
@@ -3407,7 +3421,7 @@ abstract class ComponentbuilderHelper
 			$script['view'][] = self::_t(1) . "var outerDiv = \$('body');";
 			$script['view'][] = "";
 			$script['view'][] = PHP_EOL . self::_t(1) . "\$('<div id=\"loading\"></div>')";
-			$script['view'][] = self::_t(2) . ".css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_[[[-#-#-component]]]/assets/images/import.gif') 50% 15% no-repeat\")";
+			$script['view'][] = self::_t(2) . ".css(\"background\", \"rgba(255, 255, 255, .8) url('components/com_[[[-#-#-component]]]/assets/images/ajax.gif') 50% 35% no-repeat\")";
 			$script['view'][] = self::_t(2) . ".css(\"top\", outerDiv.position().top - \$(window).scrollTop())";
 			$script['view'][] = self::_t(2) . ".css(\"left\", outerDiv.position().left - \$(window).scrollLeft())";
 			$script['view'][] = self::_t(2) . ".css(\"width\", outerDiv.width())";
@@ -3851,7 +3865,7 @@ abstract class ComponentbuilderHelper
 		}
 		$folderPath = self::$params->get($target, $default);
 		// create the folder if it does not exist
-		if ($createIfNotSet && !Folder::exists($folderPath))
+		if ($createIfNotSet && !is_dir($folderPath))
 		{
 			Folder::create($folderPath);
 		}

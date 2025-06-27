@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Gitea\Repository;
 
 
+use VDM\Joomla\Interfaces\Git\Repository\WikiInterface;
 use VDM\Joomla\Gitea\Abstraction\Api;
 
 
@@ -20,16 +21,16 @@ use VDM\Joomla\Gitea\Abstraction\Api;
  * 
  * @since 3.2.0
  */
-class Wiki extends Api
+class Wiki extends Api implements WikiInterface
 {
 	/**
 	 * Create a wiki page.
 	 *
-	 * @param	string   $owner			The owner name.
-	 * @param	string   $repo				The repository name.
-	 * @param	string   $title				The title of the wiki page.
-	 * @param	string   $contentBase64		The base64 encoded content of the wiki page.
-	 * @param	string|null   $message		Optional commit message summarizing the change.
+	 * @param   string       $owner           The owner name.
+	 * @param   string       $repo            The repository name.
+	 * @param   string       $title           The title of the wiki page.
+	 * @param   string       $contentBase64   The base64 encoded content of the wiki page.
+	 * @param   string|null  $message         Optional commit message summarizing the change.
 	 *
 	 * @return  object|null
 	 * @since   3.2.0
@@ -67,9 +68,9 @@ class Wiki extends Api
 	/**
 	 * Get a wiki page.
 	 *
-	 * @param	string   $owner		The owner name.
-	 * @param	string   $repo			The repository name.
-	 * @param	string   $pageName	The name of the wiki page.
+	 * @param   string   $owner     The owner name.
+	 * @param   string   $repo      The repository name.
+	 * @param   string   $pageName  The name of the wiki page.
 	 *
 	 * @return  object|null
 	 * @since   3.2.0
@@ -95,10 +96,10 @@ class Wiki extends Api
 	/**
 	 * Get all wiki pages.
 	 *
-	 * @param	string   $owner	The owner name.
-	 * @param	string   $repo		The repository name.
-	 * @param	int      $page		Page number of results to return (1-based).
-	 * @param	int      $limit		Page size of results.
+	 * @param   string   $owner   The owner name.
+	 * @param   string   $repo    The repository name.
+	 * @param   int      $page    Page number of results to return (1-based).
+	 * @param   int      $limit   Page size of results.
 	 *
 	 * @return  array|null
 	 * @since   3.2.0
@@ -127,9 +128,9 @@ class Wiki extends Api
 	/**
 	 * Delete a wiki page.
 	 *
-	 * @param	string   $owner		The owner name.
-	 * @param	string   $repo			The repository name.
-	 * @param	string   $pageName	The name of the wiki page.
+	 * @param    string   $owner      The owner name.
+	 * @param    string   $repo       The repository name.
+	 * @param    string   $pageName   The name of the wiki page.
 	 *
 	 * @return  string
 	 * @since   3.2.0
@@ -155,12 +156,12 @@ class Wiki extends Api
 	/**
 	 * Edit a wiki page.
 	 *
-	 * @param	string   $owner		The owner name.
-	 * @param	string   $repo			The repository name.
-	 * @param	string   $pageName	The name of the wiki page.
-	 * @param	string   $title 			The new title of the wiki page.
-	 * @param	string   $content		The new content of the wiki page.
-	 * @param	string   $message		The optional commit message summarizing the change.
+	 * @param   string   $owner     The owner name.
+	 * @param   string   $repo      The repository name.
+	 * @param   string   $pageName  The name of the wiki page.
+	 * @param   string   $title     The new title of the wiki page.
+	 * @param   string   $content   The new content of the wiki page.
+	 * @param   string   $message   The optional commit message summarizing the change.
 	 *
 	 * @return  object|null
 	 * @since   3.2.0
@@ -199,10 +200,10 @@ class Wiki extends Api
 	/**
 	 * Get revisions of a wiki page.
 	 *
-	 * @param	string   $owner		The owner name.
-	 * @param	string   $repo			The repository name.
-	 * @param	string   $pageName	The name of the wiki page.
-	 * @param	int      $page			The page number of results to return (1-based).
+	 * @param    string   $owner      The owner name.
+	 * @param    string   $repo       The repository name.
+	 * @param    string   $pageName   The name of the wiki page.
+	 * @param    int      $page       The page number of results to return (1-based).
 	 *
 	 * @return  object|null
 	 * @since   3.2.0
@@ -227,6 +228,5 @@ class Wiki extends Api
 			)
 		);
 	}
-
 }
 

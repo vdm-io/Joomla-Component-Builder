@@ -41,10 +41,10 @@ class HelpController extends BaseController
 
 	public function help()
 	{
-		$user       = Factory::getApplication()->getIdentity();
-		$jinput     = Factory::getApplication()->input;
+		$user       = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();
+		$jinput     = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;
 		// Check Token!
-		$token         = Session::getFormToken();
+		$token         = Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken();
 		$call_token    = $jinput->get('token', 0, 'ALNUM');
 		if($user->id != 0 && ($jinput->get($token, 0, 'ALNUM') || $token === $call_token))
 		{
@@ -83,7 +83,7 @@ class HelpController extends BaseController
 
 	protected function getHelpDocumentText($id)
 	{
-		$db       = Factory::getContainer()->get(DatabaseInterface::class);
+		$db       = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);
 		$query    = $db->getQuery(true);
 		$query->select(array('a.title','a.content'));
 		$query->from('#__###component###_help_document AS a');
@@ -96,18 +96,18 @@ class HelpController extends BaseController
 			$text = [];
 			$document = $db->loadObject();
 			// fix image issue
-			$images['src="images'] = 'src="'.Uri::root().'images';
-			$images["src='images"] = "src='".Uri::root()."images";
-			$images['src="/images'] = 'src="'.Uri::root().'images';
-			$images["src='/images"] = "src='".Uri::root()."images";
+			$images['src="images'] = 'src="'.Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root().'images';
+			$images["src='images"] = "src='".Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root()."images";
+			$images['src="/images'] = 'src="'.Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root().'images';
+			$images["src='/images"] = "src='".Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root()."images";
 			// set document template
 			$text[] = "<!doctype html>";
 			$text[] = '<html>';
 			$text[] = "<head>";
 			$text[] = '<meta charset="utf-8">';
 			$text[] = "<title>".$document->title."</title>";
-			$text[] = '<link type="text/css" href="'.Uri::root().'media/com_###component###/uikit/css/uikit.gradient.min.css" rel="stylesheet"></link>';
-			$text[] = '<script type="text/javascript" src="'.Uri::root().'media/com_###component###/uikit/js/uikit.min.js"></script>';
+			$text[] = '<link type="text/css" href="'.Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root().'media/com_###component###/uikit/css/uikit.gradient.min.css" rel="stylesheet"></link>';
+			$text[] = '<script type="text/javascript" src="'.Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root().'media/com_###component###/uikit/js/uikit.min.js"></script>';
 			$text[] = "</head>";
 			$text[] = '<body><br />';
 			$text[] = '<div class="uk-container uk-container-center uk-grid-collapse">';

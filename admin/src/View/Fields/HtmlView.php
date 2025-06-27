@@ -88,6 +88,22 @@ class HtmlView extends BaseHtmlView
 	public string $return_here;
 
 	/**
+	 * The title key used in modal
+	 *
+	 * @var    string
+	 * @since  5.2.1
+	 */
+	public string $modalTitleKey;
+
+	/**
+	 * The modal state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	public bool $isModal;
+
+	/**
 	 * The user object.
 	 *
 	 * @var    User
@@ -138,8 +154,10 @@ class HtmlView extends BaseHtmlView
 		}
 
 		// We don't need toolbar in the modal window.
+		$this->isModal = true;
 		if ($this->getLayout() !== 'modal')
 		{
+			$this->isModal = false;
 			$this->addToolbar();
 		}
 
@@ -200,6 +218,21 @@ class HtmlView extends BaseHtmlView
 				ToolbarHelper::trash('fields.trash');
 			}
 		}
+		if ($this->user->authorise('field.init', 'com_componentbuilder'))
+		{
+			// add Init button.
+			ToolbarHelper::custom('fields.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
+		}
+		if ($this->user->authorise('field.reset', 'com_componentbuilder'))
+		{
+			// add Reset button.
+			ToolbarHelper::custom('fields.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+		}
+		if ($this->user->authorise('field.push', 'com_componentbuilder'))
+		{
+			// add Push button.
+			ToolbarHelper::custom('fields.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('fields');
@@ -256,6 +289,17 @@ class HtmlView extends BaseHtmlView
 		}
 
 		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+	}
+
+	/**
+	 * Get the modal data/title key
+	 *
+	 * @return  string  The key value.
+	 * @since   5.2.1
+	 */
+	public function getModalTitleKey(): string
+	{
+		return $this->modalTitleKey ?? 'id';
 	}
 
 	/**

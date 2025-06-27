@@ -76,7 +76,7 @@ class ###Views###Model extends ListModel
 
 		parent::__construct($config, $factory);
 
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 	}###ADMIN_CUSTOM_BUTTONS_METHOD_LIST###
 
 	/**

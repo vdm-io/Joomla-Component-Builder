@@ -1189,7 +1189,7 @@ class FieldModel extends AdminModel
 							}
 						break;
 						case 'type':
-							$property['value'] = TypeHelper::safe($property['value']);
+							$property['value'] = TypeHelper::safe($property['value'], 'com_componentbuilder');
 						break;
 					}
 					// load the property

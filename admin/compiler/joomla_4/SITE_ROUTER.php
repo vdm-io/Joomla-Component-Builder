@@ -85,7 +85,7 @@ class Router extends RouterView
 	{
 		$this->categoryFactory = $categoryFactory;
 		$this->db              = $db;
-		$this->params          = ComponentHelper::getParams('com_###component###');
+		$this->params          = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		$this->noIDs           = (bool) $this->params->get('sef_ids', false);###SITE_ROUTER_CONSTRUCTOR_BEFORE_PARENT###
 
 		parent::__construct($app, $menu);###SITE_ROUTER_CONSTRUCTOR_AFTER_PARENT###

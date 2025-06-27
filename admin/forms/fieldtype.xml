@@ -145,7 +145,7 @@
 			name="null_switch"
 			label="COM_COMPONENTBUILDER_FIELDTYPE_NULL_SWITCH_LABEL"
 			class="btn-group btn-group-yesno"
-			default="NOT NULL"
+			default="NULL"
 			required="true">
 			<!-- Option Set. -->
 			<option value="NULL">

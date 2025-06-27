@@ -139,7 +139,7 @@ class ###SView###Model extends ItemModel
 	{
 		parent::__construct($config, $factory);
 
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->input ??= $this->app->getInput();
 
 		// Set the current user for authorisation checks (for those calling this model directly)

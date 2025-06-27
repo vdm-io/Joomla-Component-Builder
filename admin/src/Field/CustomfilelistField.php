@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -44,7 +44,7 @@ class CustomfilelistField extends ListField
 	protected function getOptions()
 	{
 		// get custom folder files
-		$localfolder = ComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_COMPONENT_ADMINISTRATOR . '/custom');
+		$localfolder = ComponentHelper::getParams('com_componentbuilder')->get('custom_folder_path', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/custom');
 		// set the default
 		$options[] = Html::_('select.option', '', Text::sprintf('COM_COMPONENTBUILDER_PLEASE_ADD_FILES_TO_S',$localfolder));
 		// setup the folder if it does not exist

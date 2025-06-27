@@ -72,13 +72,13 @@ function checkRuleName(ruleName) {
 				jQuery('#jform_name').val('');
 			} else {
 				// set an error that message was not send
-				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_VALIDATION_RULE_NAME_ALREADY_TAKEN_PLEASE_TRY_AGAIN'), timeout: 7000, status: 'danger', pos: 'top-right'});
+				jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_VALIDATION_RULE_NAME_ALREADY_TAKEN_PLEASE_TRY_AGAIN'), timeout: 7000, status: 'danger', pos: 'top-right'});
 				jQuery('#jform_name').val('');
 			}
 		});
 	} else {
 		// set an error that message was not send
-		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_YOU_MUST_ADD_AN_UNIQUE_VALIDATION_RULE_NAME'), timeout: 5000, status: 'danger', pos: 'top-right'});
+		jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_YOU_MUST_ADD_AN_UNIQUE_VALIDATION_RULE_NAME'), timeout: 5000, status: 'danger', pos: 'top-right'});
 		jQuery('#jform_name').val('');
 	}
 }

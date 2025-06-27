@@ -288,7 +288,6 @@
 			name="icon"
 			label="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICON_LABEL"
 			description="COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEW_ICON_DESCRIPTION"
-			directory=""
 		/>
 		<!-- Add_php_jview Field. Type: Radio. (joomla) -->
 		<field

@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 
 ?>
 <tr>
-	<?php if ($this->canEdit&& $this->canState): ?>
+	<?php if (!$this->isModal && $this->canEdit && $this->canState): ?>
 		<th width="1%" class="nowrap center hidden-phone">
 			<?php echo Html::_('searchtools.sort', '', 'a.ordering', $this->listDirn, $this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 		</th>
@@ -33,7 +33,7 @@ defined('_JEXEC') or die;
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo Text::_('COM_COMPONENTBUILDER_CUSTOM_CODE_SYSTEM_NAME_LABEL'); ?>
+			<?php echo Text::_('COM_COMPONENTBUILDER_CUSTOM_CODES_CODE'); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_PATH_LABEL', 'a.path', $this->listDirn, $this->listOrder); ?>
@@ -45,7 +45,7 @@ defined('_JEXEC') or die;
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_TYPE_LABEL', 'a.type', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_COMMENT_TYPE_LABEL', 'a.comment_type', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODES_COMMENT_TYPE', 'a.comment_type', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_CUSTOM_CODE_JOOMLA_VERSION_LABEL', 'a.joomla_version', $this->listDirn, $this->listOrder); ?>

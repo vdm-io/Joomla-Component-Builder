@@ -575,7 +575,7 @@ function getFieldPropertyDesc(field, targetForm){
 		jQuery('#'+id).val('');
 		jQuery('#'+id).trigger("liszt:updated");
 		// give out a notice
-		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
+		jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
 		// update the values
 		jQuery('#'+target[0]+'__desc').val('');
 		jQuery('#'+target[0]+'__value').val('');
@@ -595,7 +595,7 @@ function getFieldPropertyDesc(field, targetForm){
 				jQuery('#'+target[0]+'__value').val(result.value);
 			} else {
 				// update the values
-				jQuery('#'+target[0]+'__desc').val(Joomla.JText._('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND'));
+				jQuery('#'+target[0]+'__desc').val(Joomla.Text._('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND'));
 				jQuery('#'+target[0]+'__value').val('');
 			}
 		});
@@ -627,7 +627,7 @@ function propertyDynamicSet() {
 		}
 	}
 	// trigger chosen on the list fields
-	// jQuery('.field_list_name_options').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.JText._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.JText._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.JText._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
+	// jQuery('.field_list_name_options').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.Text._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.Text._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.Text._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
 	// now build the list to keep
 	jQuery.each( propertiesArray, function( prop, name ) {
 		if (!propertiesSelectedArray.hasOwnProperty(prop)) {

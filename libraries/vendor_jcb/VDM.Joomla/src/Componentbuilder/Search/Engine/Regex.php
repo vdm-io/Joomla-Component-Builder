@@ -13,8 +13,6 @@ namespace VDM\Joomla\Componentbuilder\Search\Engine;
 
 
 use VDM\Joomla\Componentbuilder\Search\Config;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface;
 use VDM\Joomla\Componentbuilder\Search\Abstraction\Engine;
 
@@ -30,7 +28,7 @@ class Regex extends Engine implements SearchTypeInterface
 	 * Regex Search Value
 	 *
 	 * @var    string
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected string $regexValue = '';
 
@@ -44,15 +42,7 @@ class Regex extends Engine implements SearchTypeInterface
 	public function __construct(?Config $config = null)
 	{
 		parent::__construct($config);
-
-		// set search based on match case
-		$case = '';
-		if ($this->matchCase == 0)
-		{
-			$case = 'i';
-		}
-
-		$this->regexValue = "/(" . $this->searchValue . ")/" . $case;
+		$this->compileRegex();
 	}
 
 	/**
@@ -61,23 +51,25 @@ class Regex extends Engine implements SearchTypeInterface
 	 * @param   string    $value   The string value
 	 *
 	 * @return  string|null    The marked string if found, else null
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function string(string $value): ?string
 	{
 		// we count every line
 		$this->lineCounter();
 
-		if (StringHelper::check($this->searchValue) && $this->match($value))
+		if (empty($this->searchValue) || !$this->match($value))
 		{
-			return trim(preg_replace(
-				$this->regexValue . 'm',
-				$this->start . "$1" . $this->end,
-				$value
-			));
+			return null;
 		}
 
-		return null;
+		$result = preg_replace(
+			$this->regexValue,
+			$this->start . '$1' . $this->end,
+			$value
+		);
+
+		return is_string($result) ? trim($result) : null;
 	}
 
 	/**
@@ -86,20 +78,22 @@ class Regex extends Engine implements SearchTypeInterface
 	 * @param   string     $value      The string value to update
 	 *
 	 * @return  string      The updated string
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function replace(string $value): string
 	{
-		if (StringHelper::check($this->searchValue) && $this->match($value))
+		if (empty($this->searchValue) || !$this->match($value))
 		{
-			return preg_replace(
-				$this->regexValue . 'm',
-				(string) $this->replaceValue,
-				$value
-			);
+			return $value;
 		}
 
-		return $value;
+		$result = preg_replace(
+			$this->regexValue,
+			(string) $this->replaceValue,
+			$value
+		);
+
+		return is_string($result) ? $result : $value;
 	}
 
 	/**
@@ -108,21 +102,30 @@ class Regex extends Engine implements SearchTypeInterface
 	 * @param   string    $value  The string value
 	 *
 	 * @return  bool  true if match is found
-	 * @since  3.0.9
+	 * @since   3.0.9
 	 */
 	public function match(string $value): bool
 	{
-		$match = [];
-
-		preg_match($this->regexValue, $value, $match);
-
-		$match = array_filter(
-			$match,
-			fn($found) => !empty($found)
-		);
-
-		return (bool) ArrayHelper::check($match);
+		return !empty($this->searchValue) && preg_match($this->regexValue, $value) === 1;
 	}
 
+	/**
+	 * Compile regex pattern
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected function compileRegex(): void
+	{
+		if (empty($this->searchValue))
+		{
+			$this->regexValue = '//';
+			return;
+		}
+
+		$flags = $this->matchCase === 1 ? 'm' : 'mi';
+		$pattern = (string) $this->searchValue;
+		$this->regexValue = "/($pattern)/$flags";
+	}
 }
 

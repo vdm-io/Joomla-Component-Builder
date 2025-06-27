@@ -14,10 +14,14 @@ namespace VDM\Joomla\Componentbuilder\Power;
 
 use Joomla\DI\Container;
 use VDM\Joomla\Componentbuilder\Power\Service\Power;
+use VDM\Joomla\Componentbuilder\Package\Service\Power as Package;
 use VDM\Joomla\Service\Database;
 use VDM\Joomla\Service\Model;
 use VDM\Joomla\Service\Data;
 use VDM\Joomla\Componentbuilder\Power\Service\Generator;
+use VDM\Joomla\Componentbuilder\Power\Service\Git;
+use VDM\Joomla\Componentbuilder\Power\Service\Github;
+use VDM\Joomla\Github\Service\Utilities as GithubUtilities;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Componentbuilder\Power\Service\Gitea as GiteaPower;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
@@ -53,10 +57,14 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	{
 		return (new Container())
 			->registerServiceProvider(new Power())
+			->registerServiceProvider(new Package())
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new Model())
 			->registerServiceProvider(new Data())
 			->registerServiceProvider(new Generator())
+			->registerServiceProvider(new Git())
+			->registerServiceProvider(new Github())
+			->registerServiceProvider(new GithubUtilities())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaPower())
 			->registerServiceProvider(new GiteaUtilities())

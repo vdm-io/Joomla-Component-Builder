@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 
 ?>
 <tr>
-	<?php if ($this->canEdit&& $this->canState): ?>
+	<?php if (!$this->isModal && $this->canEdit && $this->canState): ?>
 		<th width="1%" class="nowrap center hidden-phone">
 			<?php echo Html::_('searchtools.sort', '', 'a.ordering', $this->listDirn, $this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 		</th>
@@ -36,10 +36,10 @@ defined('_JEXEC') or die;
 			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEW_SYSTEM_NAME_LABEL', 'a.system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEW_NAME_SINGLE_LABEL', 'a.name_single', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEWS_NAMES', 'a.name_single', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<th class="nowrap hidden-phone" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEW_SHORT_DESCRIPTION_LABEL', 'a.short_description', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_ADMIN_VIEWS_DETAILS', 'a.short_description', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

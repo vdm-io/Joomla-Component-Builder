@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 
 ?>
 <tr>
-	<?php if ($this->canEdit&& $this->canState): ?>
+	<?php if (!$this->isModal && $this->canEdit && $this->canState): ?>
 		<th width="1%" class="nowrap center hidden-phone">
 			<?php echo Html::_('searchtools.sort', '', 'a.ordering', $this->listDirn, $this->listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 		</th>
@@ -33,7 +33,7 @@ defined('_JEXEC') or die;
 		</th>
 	<?php endif; ?>
 	<th class="nowrap" >
-			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_POWER_SYSTEM_NAME_LABEL', 'a.system_name', $this->listDirn, $this->listOrder); ?>
+			<?php echo Html::_('searchtools.sort', 'COM_COMPONENTBUILDER_JOOMLA_POWERS_NAME', 'a.system_name', $this->listDirn, $this->listOrder); ?>
 	</th>
 	<?php if ($this->canState): ?>
 		<th width="10" class="nowrap center" >

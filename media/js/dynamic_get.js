@@ -617,8 +617,8 @@ function vvvvvzq(main_source_vvvvvzq)
 		jQuery('#jform_group-lbl').closest('.control-group').show();
 		jQuery('#jform_order-lbl').closest('.control-group').show();
 		jQuery('#jform_where-lbl').closest('.control-group').show();
-		jQuery('#jform_join_db_table-lbl').closest('.control-group').show();
 		jQuery('#jform_join_view_table-lbl').closest('.control-group').show();
+		jQuery('#jform_join_db_table-lbl').closest('.control-group').show();
 	}
 	else
 	{
@@ -627,8 +627,8 @@ function vvvvvzq(main_source_vvvvvzq)
 		jQuery('#jform_group-lbl').closest('.control-group').hide();
 		jQuery('#jform_order-lbl').closest('.control-group').hide();
 		jQuery('#jform_where-lbl').closest('.control-group').hide();
-		jQuery('#jform_join_db_table-lbl').closest('.control-group').hide();
 		jQuery('#jform_join_view_table-lbl').closest('.control-group').hide();
+		jQuery('#jform_join_db_table-lbl').closest('.control-group').hide();
 	}
 }
 
@@ -1444,7 +1444,7 @@ function setSelectAll(select_all) {
 function getViewTableColumns_server(viewId, asKey, rowType) {
 	let getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.viewTableColumns&format=json&raw=true");
 	let request = '';
-	if (token.length > 0 && viewId > 0 && asKey.length > 0) {
+	if (token.length > 0 && viewId.length && asKey.length > 0) {
 		request = token + '=1&as=' + asKey + '&type=' + rowType + '&id=' + viewId;
 	}
 	return fetch(getUrl + '&' + request, { method: 'GET' }).then(function(response) {

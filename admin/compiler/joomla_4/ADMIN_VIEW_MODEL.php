@@ -229,7 +229,7 @@ class ###View###Model extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{###LICENSE_TABLE_LOCKED_CHECK###
-		$date = Factory::getDate();
+		$date = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getDate();
 		$user = $this->getCurrentUser();
 
 		if (isset($table->name))
@@ -285,7 +285,7 @@ class ###View###Model extends AdminModel
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = Factory::getApplication()->getUserState('com_###component###.edit.###view###.data', []);
+		$data = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getUserState('com_###component###.edit.###view###.data', []);
 
 		if (empty($data))
 		{
@@ -359,7 +359,7 @@ class ###View###Model extends AdminModel
 
 		if (empty($pks))
 		{
-			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JGLOBAL_NO_ITEM_SELECTED'));
 			return false;
 		}
 
@@ -376,7 +376,7 @@ class ###View###Model extends AdminModel
 
 		if (!$this->canDo->get('core.batch'))
 		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -419,7 +419,7 @@ class ###View###Model extends AdminModel
 
 		if (!$done)
 		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
+			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
 			return false;
 		}
 
@@ -439,7 +439,7 @@ class ###View###Model extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input    = Factory::getApplication()->getInput();
+		$input    = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getInput();
 		$filter   = InputFilter::getInstance();
 
 		// set the metadata to the Item Data

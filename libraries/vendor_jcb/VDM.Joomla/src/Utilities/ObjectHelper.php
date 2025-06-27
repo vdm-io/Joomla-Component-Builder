@@ -41,34 +41,39 @@ abstract class ObjectHelper
 	/**
 	 * Checks if two objects are equal by comparing their properties and values.
 	 *
-	 *  This method converts both input objects to
-	 *  associative arrays, sorts the arrays by keys,
-	 *  and compares these sorted arrays.
+	 * This method converts both input objects to
+	 * associative arrays, optionally removes ignored keys,
+	 * sorts the arrays by keys, and compares them.
 	 *
-	 *  If the arrays are identical, the objects are considered equal.
+	 * If the arrays are identical, the objects are considered equal.
 	 *
-	 * @param object|null  $obj1  The first object to compare.
-	 * @param object|null  $obj2  The second object to compare.
+	 * @param object|null  $obj1    The first object to compare.
+	 * @param object|null  $obj2    The second object to compare.
+	 * @param array|null   $ignore  Keys to ignore during comparison.
 	 *
 	 * @return bool  True if the objects are equal, false otherwise.
 	 * @since  5.0.2
 	 */
-	public static function equal(?object $obj1, ?object $obj2): bool
+	public static function equal(?object $obj1, ?object $obj2, ?array $ignore = null): bool
 	{
-		// if any is null we return false as that means there is a none object
-		// we are not comparing null but objects
-		// but we allow null as some objects while
-		// not instantiate are still null
+		// Return false if either is null
 		if (is_null($obj1) || is_null($obj2))
 		{
 			return false;
 		}
 
-		// Convert both objects to associative arrays
+		// Convert objects to associative arrays
 		$array1 = json_decode(json_encode($obj1), true);
 		$array2 = json_decode(json_encode($obj2), true);
 
-		// Sort the arrays by keys
+		// Remove ignored keys recursively
+		if (!empty($ignore))
+		{
+			self::removeIgnoredKeys($array1, $ignore);
+			self::removeIgnoredKeys($array2, $ignore);
+		}
+
+		// Sort both arrays by keys
 		self::recursiveKsort($array1);
 		self::recursiveKsort($array2);
 
@@ -77,21 +82,41 @@ abstract class ObjectHelper
 	}
 
 	/**
-	 * Recursively sorts an associative array by keys.
+	 * Recursively remove ignored keys from an array.
 	 *
-	 * This method will sort an associative array by its keys at all levels.
+	 * @param array       $array   The array to modify (by reference).
+	 * @param array       $ignore  The list of keys to ignore.
 	 *
-	 * @param array &$array The array to sort.
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected static function removeIgnoredKeys(array &$array, array $ignore): void
+	{
+		foreach ($array as $key => &$value)
+		{
+			if (in_array($key, $ignore, true))
+			{
+				unset($array[$key]);
+			}
+			elseif (is_array($value))
+			{
+				self::removeIgnoredKeys($value, $ignore);
+			}
+		}
+	}
+
+	/**
+	 * Recursively sort an array by key.
+	 *
+	 * @param array  $array  The array to sort.
 	 *
 	 * @return void
 	 * @since  5.0.2
 	 */
 	protected static function recursiveKsort(array &$array): void
 	{
-		// Sort the array by its keys
 		ksort($array);
 
-		// Recursively sort nested arrays
 		foreach ($array as &$value)
 		{
 			if (is_array($value))
@@ -100,5 +125,6 @@ abstract class ObjectHelper
 			}
 		}
 	}
+
 }
 

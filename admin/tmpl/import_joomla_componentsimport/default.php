@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
 	loadingDiv.id = 'loading';
 
 	// Set CSS properties individually
-	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat";
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
 	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
 	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
 	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";

@@ -21,6 +21,7 @@ use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
 use VDM\Joomla\Data\Guid;
 use VDM\Joomla\Componentbuilder\File\Type;
 use VDM\Joomla\Componentbuilder\File\Handler;
+use VDM\Joomla\Componentbuilder\File\Image;
 use VDM\Joomla\Utilities\MimeHelper;
 
 
@@ -29,7 +30,7 @@ use VDM\Joomla\Utilities\MimeHelper;
  * 
  * @since  5.0.2
  */
-final class Manager
+class Manager
 {
 	/**
 	 * The Globally Unique Identifier.
@@ -71,6 +72,14 @@ final class Manager
 	protected Handler $handler;
 
 	/**
+	 * The Image Class.
+	 *
+	 * @var   Image
+	 * @since 5.1.1
+	 */
+	protected Image $image;
+
+	/**
 	 * The active user
 	 *
 	 * @var    User
@@ -93,15 +102,18 @@ final class Manager
 	 * @param Items     $items     The Items Class.
 	 * @param Type      $type      The Type Class.
 	 * @param Handler   $handler   The Handler Class.
+	 * @param Image     $image     The Image Class.
 	 *
 	 * @since 5.0.2
 	 */
-	public function __construct(Item $item, Items $items, Type $type, Handler $handler)
+	public function __construct(Item $item, Items $items, Type $type, Handler $handler,
+		Image $image)
 	{
 		$this->item = $item;
 		$this->items = $items;
 		$this->type = $type;
 		$this->handler = $handler;
+		$this->image = $image;
 		$this->user = Factory::getApplication()->getIdentity();
 	}
 
@@ -146,10 +158,10 @@ final class Manager
 			throw new \RuntimeException($this->handler->getErrors());
 		}
 
-		// we might need to crop images
 		if ($fileType['type'] === 'image')
 		{
-			// $this->cropImage($details, $guid);
+			$this->processImages($details, $guid, $entity, $target, $fileType);
+			return;
 		}
 
 		// store file in the file table
@@ -226,6 +238,72 @@ final class Manager
 	}
 
 	/**
+	 * Process the image(s) as needed based on crop settings
+	 *
+	 * @param array  $details   The uploaded file details.
+	 * @param string $guid      The file type guid
+	 * @param string $entity    The entity guid
+	 * @param string $target    The target entity name
+	 * @param array $fileType   The file type
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected function processImages(array $details, string $guid, string $entity, string $target, array $fileType): void
+	{
+		if (empty($fileType['crop']))
+		{
+			// store file in the file table
+			$this->item->table($this->getTable())->set(
+				$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
+			);
+			return;
+		}
+
+		$source = $details['full_path'];
+		$path = $details['path'];
+		$cropping = $fileType['crop'];
+
+		$placeholders = [
+			'{number}' => $this->getFileNumber($fileType, $entity),
+			'{name}' => $this->getFileName($details, $entity),
+			'{extension}' => $this->getFileExtension($source)
+		];
+
+		foreach ($cropping as &$crop)
+		{
+			$crop['name'] = str_replace(array_keys($placeholders), array_values($placeholders), $crop['name']);
+		}
+
+		$images = $this->image->process($source, $path, $cropping);
+
+		foreach($images as $image)
+		{
+			if (empty($image))
+			{
+				continue;
+			}
+
+			$details['name'] = $image['name'];
+			$details['extension'] = $image['extension'];
+			$details['size'] = $image['size'];
+			$details['mime'] = $image['mime'];
+			$details['full_path'] = $image['path'];
+
+			// store file in the file table
+			$this->item->table($this->getTable())->set(
+				$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
+			);
+		}
+
+		// clean up source image
+		if (is_file($source) && is_writable($source))
+		{
+			File::delete($source); // from file system
+		}
+	}
+
+	/**
 	 * model the file details to store in the file table
 	 *
 	 * @param array  $details   The uploaded file details.
@@ -252,6 +330,89 @@ final class Manager
 			'guid' => $this->getGuid('guid'),
 			'created_by' => $this->user->id
 		];
+	}
+
+	/**
+	 * Get the file name without extension for download.
+	 *
+	 * If the original name is empty, return the entity GUID.
+	 * If the name does not contain a '.', return the name as is.
+	 * Otherwise, return the name without the final extension.
+	 *
+	 * @param   array   $details  The uploaded file details.
+	 * @param   string  $entity   The entity GUID used as fallback.
+	 *
+	 * @return  string  The extracted or fallback file name.
+	 * @since   5.1.1
+	 */
+	protected function getFileName(array $details, string $entity): string
+	{
+		// Check if name is set and non-empty
+		$name = trim($details['name'] ?? '');
+
+		// Return entity if name is empty
+		if ($name === '')
+		{
+			return $entity;
+		}
+
+		// If there is no dot in the name, assume no extension — return as-is
+		if (strpos($name, '.') === false)
+		{
+			return $name;
+		}
+
+		// Use pathinfo to extract the name without extension
+		$info = pathinfo($name);
+
+		// Return filename (without extension)
+		return $info['filename'] ?? $name;
+	}
+
+	/**
+	 * Get the file number TODO: not ideal, if images are deleted we need a better solution
+	 *
+	 * @param array  $fileType  The uploaded file type details.
+	 * @param string $entity    The entity guid
+	 *
+	 * @return int
+	 * @since  5.1.1
+	 */
+	protected function getFileNumber(array $fileType, string $entity): int
+	{
+		if (empty($fileType['crop']))
+		{
+			return 1;
+		}
+
+		$number = count($fileType['crop']);
+		$number_files = 1;
+
+		if (($files = $this->items->table($this->getTable())->values([$entity], 'entity')) !== null)
+		{
+			$total = count($files);
+			if ($total >= $number)
+			{
+				$number_files = round($total / $number);
+			}
+
+			return ++$number_files;
+		}
+
+		return $number_files;
+	}
+
+	/**
+	 * Get the file extension
+	 *
+	 * @param sring  $source  The full path to the file
+	 *
+	 * @return string
+	 * @since  5.1.1
+	 */
+	protected function getFileExtension(string $source): string
+	{
+		return MimeHelper::extension($source);
 	}
 }
 

@@ -350,7 +350,7 @@ class Structure
 	 */
 	protected function modulePath(object &$module): void
 	{
-		$module->folder_path = $this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/'
+		$module->folder_path = $this->config->get('compiler_path', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/compiler') . '/'
 			. $module->folder_name;
 	}
 

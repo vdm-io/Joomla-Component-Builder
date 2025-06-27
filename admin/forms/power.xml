@@ -379,7 +379,7 @@
 			default="一_一"
 		/>
 		<!-- Note_approved_paths Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_approved_paths" label="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_LABEL" description="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_DESCRIPTION" heading="h4" class="alert alert-info note_approved_paths" showon="approved:1" />
+		<field type="note" name="note_approved_paths" label="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_LABEL" description="COM_COMPONENTBUILDER_POWER_NOTE_APPROVED_PATHS_DESCRIPTION" heading="h4" class="alert alert-info note_approved_paths" />
 		<!-- Property_selection Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"

@@ -1021,7 +1021,7 @@ final class Data
 		if (StringHelper::check($component->bom))
 		{
 			$this->config->set('bom_path',
-				$this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler') . '/' . $component->bom
+				$this->config->get('compiler_path', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/compiler') . '/' . $component->bom
 			);
 		}
 		unset($component->bom);

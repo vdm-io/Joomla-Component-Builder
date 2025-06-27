@@ -96,7 +96,7 @@ abstract class ###Component###Helper
 	public static function getContributors()
 	{
 		// get params
-		$params    = ComponentHelper::getParams('com_###component###');
+		$params    = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		// start contributors array
 		$contributors = [];
 		// get all Contributors (max 20)
@@ -134,7 +134,7 @@ abstract class ###Component###Helper
 	public static function addSubmenu($submenu)
 	{
 		// load user for access menus
-		$user = Factory::getApplication()->getIdentity();
+		$user = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();
 		// load the submenus to sidebar
 		###SUBMENU###
 	}###HELPER_CREATEUSER######HELPER_UIKIT######HELPER_EXEL###
@@ -216,7 +216,7 @@ abstract class ###Component###Helper
 		{
 			$type = 'item';
 		}
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$db = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true);
 		$query->select(array('a.published'));
 		$query->from('#__###component###_'.$type.' AS a');
@@ -234,7 +234,7 @@ abstract class ###Component###Helper
 
 	public static function getGroupName($id)
 	{
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$db = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true);
 		$query->select(array('a.title'));
 		$query->from('#__usergroups AS a');
@@ -268,7 +268,7 @@ abstract class ###Component###Helper
 		if (!Super___91004529_94a9_4590_b842_e7c6b624ecf5___Power::check($user))
 		{
 			// get the user object
-			$user = Factory::getApplication()->getIdentity();
+			$user = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();
 		}
 		// load the CMSObject
 		$result = new CMSObject;
@@ -472,7 +472,7 @@ abstract class ###Component###Helper
 		}
 
 		// Get the model through the MVCFactory
-		return Factory::getApplication()->bootComponent('com_' . $component)->getMVCFactory()->createModel($type, $prefix, $config);
+		return Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->bootComponent('com_' . $component)->getMVCFactory()->createModel($type, $prefix, $config);
 	}
 
 	/**
@@ -542,7 +542,7 @@ abstract class ###Component###Helper
 
 			if (!$asset->check() || !$asset->store())
 			{
-				Factory::getApplication()->enqueueMessage($asset->getError(), 'warning');
+				Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->enqueueMessage($asset->getError(), 'warning');
 				return false;
 			}
 			else
@@ -555,7 +555,7 @@ abstract class ###Component###Helper
 				$object->asset_id = (int) $asset->id;
 
 				// Update their asset_id to link to the asset table.
-				return Factory::getDbo()->updateObject('#__###component###_'.$table, $object, 'id');
+				return Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo()->updateObject('#__###component###_'.$table, $object, 'id');
 			}
 		}
 		return false;
@@ -572,7 +572,7 @@ abstract class ###Component###Helper
 		if (!$inherit)
 		{
 			// Need to find the asset id by the name of the component.
-			$db = Factory::getContainer()->get(DatabaseInterface::class);
+			$db = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true)
 				->select($db->quoteName('id'))
 				->from($db->quoteName('#__assets'))

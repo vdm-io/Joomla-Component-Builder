@@ -48,6 +48,9 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComHelperClass;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitecturePlugin;
+use VDM\Joomla\Componentbuilder\Power\Service\Git;
+use VDM\Joomla\Componentbuilder\Power\Service\Github;
+use VDM\Joomla\Github\Service\Utilities as GithubUtilities;
 use VDM\Joomla\Componentbuilder\Service\Gitea;
 use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
 use VDM\Joomla\Gitea\Service\Settings as GiteaSettings;
@@ -159,6 +162,9 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new ArchitectureController())
 			->registerServiceProvider(new ArchitectureModel())
 			->registerServiceProvider(new ArchitecturePlugin())
+			->registerServiceProvider(new Git())
+			->registerServiceProvider(new Github())
+			->registerServiceProvider(new GithubUtilities())
 			->registerServiceProvider(new Gitea())
 			->registerServiceProvider(new GiteaUtilities())
 			->registerServiceProvider(new GiteaSettings())

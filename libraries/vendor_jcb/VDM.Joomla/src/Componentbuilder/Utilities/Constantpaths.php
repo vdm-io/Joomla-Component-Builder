@@ -49,12 +49,12 @@ class Constantpaths
 		'JPATH_BASE' => JPATH_BASE,
 		// The path to the cache folder.
 		'JPATH_CACHE' => JPATH_CACHE,
-		// The path to the administration folder of the current component being executed.
-		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_COMPONENT_ADMINISTRATOR,
-		// The path to the site folder of the current component being executed.
-		'JPATH_COMPONENT_SITE' => JPATH_COMPONENT_SITE,
-		// The path to the current component being executed.
-		'JPATH_COMPONENT' => JPATH_COMPONENT,
+		//  NOW ONLY POINTS TO com_componentbuilder (so stop using this)
+		'JPATH_COMPONENT_ADMINISTRATOR' => JPATH_ADMINISTRATOR . '/components/com_componentbuilder', // stop using this
+		//  NOW ONLY POINTS TO com_componentbuilder (so stop using this)
+		'JPATH_COMPONENT_SITE' => JPATH_SITE . '/components/com_componentbuilder', // stop using this
+		// NOW ONLY POINTS TO com_componentbuilder (so stop using this)
+		'JPATH_COMPONENT' => JPATH_BASE . '/components/com_componentbuilder', // stop using this
 		// The path to folder containing the configuration.php file.
 		'JPATH_CONFIGURATION' => JPATH_CONFIGURATION,
 		// The path to the installation folder.
@@ -88,6 +88,5 @@ class Constantpaths
 
 		return $this->paths[$path] ?? null;
 	}
-
 }
 

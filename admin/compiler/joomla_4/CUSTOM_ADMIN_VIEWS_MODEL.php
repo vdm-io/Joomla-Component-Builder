@@ -125,7 +125,7 @@ class ###SViews###Model extends ListModel
 	{
 		parent::__construct($config, $factory);
 
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->input ??= $this->app->getInput();
 
 		// Set the current user for authorisation checks (for those calling this model directly)
@@ -162,7 +162,7 @@ class ###SViews###Model extends ListModel
 		// check if this user has permission to access items
 		if (!$user->authorise('###sviews###.access', 'com_###component###'))
 		{
-			$this->app->enqueueMessage(Text::_('Not authorised!'), 'error');
+			$this->app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Not authorised!'), 'error');
 			// redirect away if not a correct to default view
 			$this->app->redirect('index.php?option=com_###component###');
 			return false;
@@ -171,7 +171,7 @@ class ###SViews###Model extends ListModel
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = ComponentHelper::getParams('com_###component###', true);###CUSTOM_ADMIN_GET_ITEMS######CUSTOM_ADMIN_AFTER_GET_ITEMS###
+		$globalParams = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###', true);###CUSTOM_ADMIN_GET_ITEMS######CUSTOM_ADMIN_AFTER_GET_ITEMS###
 
 		// return items
 		return $items;

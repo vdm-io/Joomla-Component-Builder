@@ -217,7 +217,7 @@ class Admin_fields_relationsController extends FormController
 	 */
 	public function batch($model = null)
 	{
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or exit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
 		$model = $this->getModel('Admin_fields_relations', '', []);
@@ -280,6 +280,15 @@ class Admin_fields_relationsController extends FormController
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
+		}
+		// When editing in modal then redirect to modalreturn layout
+		elseif ($cancel && $this->input->get('layout') === 'modal')
+		{
+			$id = $this->input->get('id');
+			$return = 'index.php?option=' . $this->option . '&view=' . $this->view_item . $this->getRedirectToItemAppend($id)
+				. '&layout=modalreturn&from-task=cancel';
+
+			$this->setRedirect(Route::_($return, false));
 		}
 		return $cancel;
 	}
@@ -363,6 +372,15 @@ class Admin_fields_relationsController extends FormController
 	 */
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
+		if ($this->input->get('layout') === 'modal' && $this->task === 'save')
+		{
+			// When editing in modal then redirect to modalreturn layout
+			$id = $model->getState('admin_fields_relations.id', '');
+			$return = 'index.php?option=' . $this->option . '&view=' . $this->view_item . $this->getRedirectToItemAppend($id)
+				. '&layout=modalreturn&from-task=save';
+
+			$this->setRedirect(Route::_($return, false));
+		}
 		return;
 	}
 }

@@ -17,6 +17,7 @@ use VDM\Joomla\Data\Items;
 use VDM\Joomla\Database\Load;
 use VDM\Joomla\Database\Update;
 use VDM\Joomla\Data\Guid as TraitGuid;
+use VDM\Joomla\Utilities\GetHelper;
 
 
 /**
@@ -155,12 +156,13 @@ final class Guid
 		{
 			$this->processSubSubformValue($mapping);
 		}
-		// allow for down stream function
-		elseif ($mapping['valueType'] == 4 &&
-			isset($mapping['function']) &&
-			method_exists($this, $mapping['function']))
+		elseif ($mapping['valueType'] == 4)
 		{
-			$this->{$mapping['function']}($mapping);
+			$this->processDashboardValue($mapping);
+		}
+		elseif ($mapping['valueType'] == 5)
+		{
+			$this->processFieldValue($mapping);
 		}
 	}
 
@@ -392,6 +394,143 @@ final class Guid
 	}
 
 	/**
+	 * Processes dashboard values in a table and replaces IDs with GUIDs.
+	 *
+	 * @param array $mapping Configuration for the current table and column.
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function processDashboardValue(array $mapping): void
+	{
+		$table = $mapping['table'];
+		$column = $mapping['column'];
+		$linkedTables = $mapping['linkedTables'];
+		$linkedColumn = $mapping['linkedColumn'];
+		$isArray = $mapping['array'];
+
+		$update = false;
+
+		$rows = $this->load->rows(["a.{$column}" => $column, 'a.id' => 'id'], ['a' => $table]) ?? [];
+
+		foreach ($rows as $row)
+		{
+			$parentId = $row['id'];
+			$value = $row[$column] ?? null;
+
+			$hasUpdate = false;
+			$updatedValue = null;
+			$targetKey = null;
+
+			if (empty($value))
+			{
+				continue;
+			}
+
+			if (strpos($value, '_') !== false)
+			{
+				[$targetKey, $identifier] = explode('_', $value, 2);
+				$linkedTable = $linkedTables[$targetKey] ?? null;
+				$guid = null;
+				if ($linkedTable !== null)
+				{
+					$guid = $this->getItemGuid($linkedTable, $linkedColumn, $identifier);
+				}
+
+				if ($guid !== null)
+				{
+					$updatedValue = $targetKey . '_' . $guid;
+					$hasUpdate = true;
+				}
+			}
+
+			if (!$hasUpdate || $updatedValue === null)
+			{
+				continue; // Skip if no GUID updated or returned
+			}
+
+			if ($this->updateValue($table, $column, $updatedValue, $parentId))
+			{
+				$update = true;
+			}
+		}
+
+		if ($update)
+		{
+			$this->success[] = "Success: migrated {$column}:field in {$table}:table to GUIDs from {$linkedTable}:table.";
+		}
+	}
+
+	/**
+	 * Processes field values in a table and replaces IDs with GUIDs.
+	 *
+	 * @param array $mapping Configuration for the current table and column.
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	private function processFieldValue(array $mapping): void
+	{
+		$table = $mapping['table'];
+		$column = $mapping['column'];
+		$linkedTable = $mapping['linkedTable'];
+		$linkedColumn = $mapping['linkedColumn'];
+
+		$update = false;
+
+		$rows = $this->load->rows(["a.{$column}" => $column, 'a.xml' => 'xml', 'a.id' => 'id'], ['a' => $table]) ?? [];
+
+		foreach ($rows as $row)
+		{
+			$parentId = $row['id'];
+			$value = $row[$column] ?? null;
+
+			if (empty($value))
+			{
+				continue;
+			}
+
+			$guid = is_numeric($value) ? $this->getItemGuid($linkedTable, $linkedColumn, $value) : null;
+
+			$hasValidGuid = $guid !== null;
+			$updatedValue = $hasValidGuid ? $guid : $value;
+
+			// Subform update logic for hardcoded GUIDs of the field types that has fields to update
+			$requiresSubformUpdate = in_array(
+				$updatedValue,
+				[
+					'7139f2c8-a70a-46a6-bbe3-4eefe54ca515', // global subform field type
+					'05bf68d4-52f9-4705-8ae7-cba137fce0ad' // global repeatable field type (should not be used actually for J4+)
+				],
+				true
+			);
+
+        		$fields = null;
+			if ($requiresSubformUpdate) 
+			{
+				$fields = $this->getSubfromFields($row['xml']);
+			}
+
+			if (!$hasValidGuid && !$requiresSubformUpdate || ($requiresSubformUpdate && $fields === null))
+			{
+				continue; // Skip if no GUID updated or returned
+			}
+
+			$row[$column] = $updatedValue;
+
+			if (($fields !== null && $this->updateSubformValue($table, $row, $fields)) || $this->updateValue($table, $column, $updatedValue, $parentId))
+			{
+				$update = true;
+			}
+		}
+
+		if ($update)
+		{
+			$this->success[] = "Success: migrated {$column}:field in {$table}:table to GUIDs from {$linkedTable}:table.";
+		}
+	}
+
+	/**
 	 * Retrieves or creates a GUID for a given linked table and ID (ITEM).
 	 *
 	 * @param string $table  The linked table name.
@@ -442,6 +581,90 @@ final class Guid
 
 		// Raise an exception for invalid values
 		throw new \Exception("Invalid value detected: ({$table}:table)->({$column}:column)->({$value_printed}:value). Must be either an integer or a valid GUID.");
+	}
+
+	/**
+	 * Update the subform field.
+	 *
+	 * @param string $table   The table name.
+	 * @param array  $row     The field row values
+	 * @param array  $fields  The fields to update
+	 *
+	 * @return bool
+	 * @since  5.1.1
+	 */
+	private function updateSubformValue($table, $row, array $fields): bool
+	{
+		$xml = json_decode($row['xml']);
+		$xml = str_replace($fields['id'], $fields['guid'], $xml);
+		$row['xml'] = json_encode($xml);
+		return $this->update->row($row, 'id', $table);
+	}
+
+	/**
+	 * get the subfrom fields.
+	 *
+	 * @param string $xml  The field xml
+	 *
+	 * @return array|null
+	 * @since  5.1.1
+	 */
+	private function getSubfromFields(string $xml): ?array
+	{
+		$xml = json_decode($xml);
+		$field_string = GetHelper::between(
+			$xml, 'fields="', '"'
+		);
+
+		if (($fields = $this->stringToIntArray($field_string)) === [])
+		{
+			return null;
+		}
+
+		$bucket = [];
+		$update = false;
+		foreach ($fields as $field)
+		{
+			if (($guid = $this->getItemGuid('field', 'id', $field)) !== null)
+			{
+				$bucket[] = $guid;
+				$update = true;
+			}
+			elseif ($this->validateGuid($field))
+			{
+				$bucket[] = $field;
+			}
+		}
+
+		// only update if we have all values
+		if ($update && count($fields) === count($bucket))
+		{
+			return [
+				'guid' => 'fields="' . implode(',', $bucket) . '"',
+				'id' => 'fields="' . $field_string . '"'
+			];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Convert a comma-separated string to an array of integers.
+	 *
+	 * @param string $input Comma-separated string of values.
+	 *
+	 * @return int[] Cleaned array of integers.
+	 * @since  5.1.1
+	 */
+	private function stringToIntArray(string $input): array
+	{
+		return array_values(array_filter(
+			array_map(
+				static fn($value) => is_numeric(trim($value)) ? (int) trim($value) : null,
+				explode(',', $input)
+			),
+			static fn($val) => $val !== null
+		));
 	}
 
 	/**

@@ -107,7 +107,7 @@ class ###View###Table extends Table implements VersionableTableInterface, Taggab
 	 */
 	public function store($updateNulls = false)
 	{
-		$date   = Factory::getDate()->toSql();
+		$date   = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getDate()->toSql();
 		$userId = $this->getCurrentUser()->id;
 
 		if ($this->id)
@@ -137,11 +137,11 @@ class ###View###Table extends Table implements VersionableTableInterface, Taggab
 
 			if ($table->load(['alias' => $this->alias###JTABLEALIASCATEGORY###]) && ($table->id != $this->id || $this->id == 0))
 			{
-				$this->setError(Text::_('COM_###COMPONENT###_###VIEW###_ERROR_UNIQUE_ALIAS'));
+				$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEW###_ERROR_UNIQUE_ALIAS'));
 
 				if ($table->published === -2)
 				{
-					$this->setError(Text::_('COM_###COMPONENT###_###VIEW###_ERROR_UNIQUE_ALIAS_TRASHED'));
+					$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEW###_ERROR_UNIQUE_ALIAS_TRASHED'));
 				}
 
 				return false;
@@ -258,7 +258,7 @@ class ###View###Table extends Table implements VersionableTableInterface, Taggab
 	protected function getDefaultAssetValues($component, $try = true)
 	{
 		// Need to find the asset id by the name of the component.
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$db = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__assets'))

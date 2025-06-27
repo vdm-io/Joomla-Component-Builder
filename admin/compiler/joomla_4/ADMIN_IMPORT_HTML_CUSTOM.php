@@ -43,18 +43,18 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addToolbar(): void
 	{
-		ToolbarHelper::title(Text::_('COM_###COMPONENT###_IMPORT_TITLE'), 'upload');
+		Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_IMPORT_TITLE'), 'upload');
 
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_###component###');
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::preferences('com_###component###');
 		}
 
 		// set help url for this view if found
 		$this->help_url = ###Component###Helper::getHelpUrl('###view###');
 		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
 	}
 }

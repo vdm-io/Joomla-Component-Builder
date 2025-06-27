@@ -19,7 +19,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Get as SuperPower;
+use VDM\Joomla\Interfaces\Remote\GetInterface as SuperPower;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -379,7 +379,7 @@ final class JoomlaPower implements PowerInterface
 	 */
 	private function handlePowerNotFound(string $guid): bool
 	{
-		if (empty($this->retry[$guid]) && $this->superpower->item($guid, ['remote', 'local']))
+		if (empty($this->retry[$guid]) && $this->setSuperPowers($guid))
 		{
 			// Retry loading the power
 			unset($this->state[$guid]);
@@ -529,16 +529,16 @@ final class JoomlaPower implements PowerInterface
 	}
 
 	/**
-	 * Set the super powers of this power
+	 * Set the super power of this power
 	 *
 	 * @param string  $guid   The global unique id of the power
 	 *
-	 * @return void
-	 * @since 3.2.1
+	 * @return bool
+	 * @since  5.1.1
 	 */
-	private function setSuperPowers(string $guid): void
+	private function setSuperPowers(string $guid): bool
 	{
-		// soon
+		return $this->superpower->item($guid, ['remote', 'local']);
 	}
 }
 

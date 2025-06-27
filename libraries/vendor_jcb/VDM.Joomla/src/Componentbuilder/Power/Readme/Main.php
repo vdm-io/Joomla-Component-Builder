@@ -17,63 +17,101 @@ use VDM\Joomla\Interfaces\Readme\MainInterface;
 
 /**
  * Compiler Power Main Readme
+ * 
  * @since 3.2.0
  */
 final class Main implements MainInterface
 {
 	/**
-	 * Get Main Readme
+	 * Generate the main README for the JCB Super Powers repository in Markdown format.
 	 *
-	 * @param array    $items  All items of this repository.
+	 * This README provides an overview of what JCB Super Powers are, how they help,
+	 * and lists all registered powers in this repository.
 	 *
-	 * @return string
-	 * @since 3.2.0
+	 * @param  array  $items  All powers currently registered in the repository.
+	 *
+	 * @return string  The full generated Markdown README.
+	 * @since  3.2.0
 	 */
 	public function get(array $items): string
 	{
-		// build readme
-		$readme = ["```
-███████╗██╗   ██╗██████╗ ███████╗██████╗
-██╔════╝██║   ██║██╔══██╗██╔════╝██╔══██╗
-███████╗██║   ██║██████╔╝█████╗  ██████╔╝
-╚════██║██║   ██║██╔═══╝ ██╔══╝  ██╔══██╗
-███████║╚██████╔╝██║     ███████╗██║  ██║
-╚══════╝ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═╝
-██████╗  ██████╗ ██╗    ██╗███████╗██████╗ ███████╗
-██╔══██╗██╔═══██╗██║    ██║██╔════╝██╔══██╗██╔════╝
-██████╔╝██║   ██║██║ █╗ ██║█████╗  ██████╔╝███████╗
-██╔═══╝ ██║   ██║██║███╗██║██╔══╝  ██╔══██╗╚════██║
-██║     ╚██████╔╝╚███╔███╔╝███████╗██║  ██║███████║
-╚═╝      ╚═════╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝╚══════╝
-```"];
+		$readme = [];
 
-		// default description of super powers
-		$readme[] = "\n### What is JCB Super Powers?\nThe Joomla Component Builder (JCB) Super Power features are designed to enhance JCB's functionality and streamline the development process. These Super Powers enable developers to efficiently manage and share their custom powers across multiple JCB instances through repositories hosted on [https://git.vdm.dev/[username]/[repository-name]](https://git.vdm.dev). JCB Super Powers are managed using a combination of layers, events, tasks, methods, switches, and algorithms, which work together to provide powerful customization and extensibility options. More details on JCB Super Powers can be found in the [Super Powers Documentation](https://git.vdm.dev/joomla/super-powers/wiki).\n\nIn summary, JCB Super Powers offer a flexible and efficient way to manage and share functionalities between JCB instances. By utilizing a sophisticated system of layers, events, tasks, methods, switches, and algorithms, developers can seamlessly integrate JCB core powers and their custom powers. For more information on how to work with JCB Super Powers, refer to the [Super Powers User Guide](https://git.vdm.dev/joomla/super-powers/wiki).\n\n### What can I find here?\nThis repository contains an index (see below) of all the approved powers within the JCB GUI. During the compilation of a component, these powers are automatically added to the repository, ensuring a well-organized and accessible collection of functionalities.\n";
+		// Header
+		$readme[] = '# JCB! Super Powers';
+		$readme[] = '';
 
-		// get the readme body
+		// Beginner-friendly + accurate explanation
+		$readme[] = '### What Are JCB Super Powers?';
+		$readme[] = <<<MD
+In simple terms, **JCB Super Powers are PHP classes** — but managed entirely from the Joomla Component Builder (JCB) interface.
+
+You can use JCB to create your own:
+- **Classes**
+- **Interfaces**
+- **Abstract classes**
+- **Traits**
+- **Final classes**
+
+These are full-featured PHP code units that you define visually in the JCB GUI. JCB then takes care of:
+- Proper **namespacing**
+- Correct **file placement**
+- Seamless **project integration**
+
+Every Super Power is treated as a reusable unit of logic. It can be automatically injected into any part of your JCB-powered component, or used in other components or codebases via a **SPK** (Super Power Key).
+
+Even better — you can use **dynamic placeholders** like [[[`NamespacePrefix`]]] or [[[`ComponentNamespace`]]] in your Super Power code Namespace. These automatically adapt when reused in different projects, making your logic portable and future-proof.
+
+> In short: **Super Powers turn JCB into a PHP code factory** — giving you the power of advanced PHP with none of the manual file management.
+
+To learn how to create, manage, and use Super Powers, see the  
+[Super Powers Documentation →](https://git.vdm.dev/joomla/super-powers/wiki)
+MD;
+		$readme[] = '';
+
+		// What's in this repo
+		$readme[] = '### What Can I Find Here?';
+		$readme[] = <<<MD
+This repository acts as a **central registry of approved Super Powers** specific to this JCB instance.  
+Only the Super Powers that have been explicitly assigned to this repository are listed here.
+
+In JCB, you can organize your Super Powers across multiple repositories.  
+For example, we have separate repositories for:
+
+- [GITEA](https://git.vdm.dev/joomla/gitea)-related classes
+- [OpenAI](https://git.vdm.dev/joomla/openai) integrations
+- Core [Super Power](https://git.vdm.dev/joomla/super-powers) collection
+- and many more...
+
+Each repository maintains its own index, and only the powers assigned to that specific repository will appear in its list.
+MD;
+		// How to use the Super powers
+		$readme[] = '#### How to Use These Super Powers';
+		$readme[] = <<<MD
+If you want to use any of the classes listed here in your own component logic, simply reference their **SPK** (Super Power Key):
+
+```
+Super---[unique-guid]---Power
+```
+
+> Replace each `---` with `___` when using the key inside your code.
+
+JCB will automatically resolve this SPK during compilation, placing the associated class in the correct location with the correct namespace based on your component context.  
+This makes your logic both **reusable** and **component-aware**, without hardcoding anything.
+
+---
+MD;
+
+		// Power list
 		$readme[] = $this->readmeBuilder($items);
+		$readme[] = '';
 
-		// yes you can remove this, but why?
-		$readme[] = "\n---\n```
-     ██╗ ██████╗  ██████╗ ███╗   ███╗██╗      █████╗
-     ██║██╔═══██╗██╔═══██╗████╗ ████║██║     ██╔══██╗
-     ██║██║   ██║██║   ██║██╔████╔██║██║     ███████║
-██   ██║██║   ██║██║   ██║██║╚██╔╝██║██║     ██╔══██║
-╚█████╔╝╚██████╔╝╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║
- ╚════╝  ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
- ██████╗ ██████╗ ███╗   ███╗██████╗  ██████╗ ███╗   ██╗███████╗███╗   ██╗████████╗
-██╔════╝██╔═══██╗████╗ ████║██╔══██╗██╔═══██╗████╗  ██║██╔════╝████╗  ██║╚══██╔══╝
-██║     ██║   ██║██╔████╔██║██████╔╝██║   ██║██╔██╗ ██║█████╗  ██╔██╗ ██║   ██║
-██║     ██║   ██║██║╚██╔╝██║██╔═══╝ ██║   ██║██║╚██╗██║██╔══╝  ██║╚██╗██║   ██║
-╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ╚██████╔╝██║ ╚████║███████╗██║ ╚████║   ██║
- ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═══╝   ╚═╝
-██████╗ ██╗   ██╗██╗██╗     ██████╗ ███████╗██████╗
-██╔══██╗██║   ██║██║██║     ██╔══██╗██╔════╝██╔══██╗
-██████╔╝██║   ██║██║██║     ██║  ██║█████╗  ██████╔╝
-██╔══██╗██║   ██║██║██║     ██║  ██║██╔══╝  ██╔══██╗
-██████╔╝╚██████╔╝██║███████╗██████╔╝███████╗██║  ██║
-╚═════╝  ╚═════╝ ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-```\n> Build with [Joomla Component Builder](https://git.vdm.dev/joomla/Component-Builder)\n\n";
+		$readme[] = <<<MD
+### All used in [Joomla Component Builder](https://www.joomlacomponentbuilder.com) - [Source](https://git.vdm.dev/joomla/Component-Builder) - [Mirror](https://github.com/vdm-io/Joomla-Component-Builder) - [Download](https://git.vdm.dev/joomla/pkg-component-builder/releases)
+
+---
+[![Joomla Volunteer Portal](https://img.shields.io/badge/-Joomla-gold?logo=joomla)](https://volunteers.joomla.org/joomlers/1396-llewellyn-van-der-merwe "Join Llewellyn on the Joomla Volunteer Portal: Shaping the Future Together!") [![Octoleo](https://img.shields.io/badge/-Octoleo-black?logo=linux)](https://git.vdm.dev/octoleo "--quiet") [![Llewellyn](https://img.shields.io/badge/-Llewellyn-ffffff?logo=gitea)](https://git.vdm.dev/Llewellyn "Collaborate and Innovate with Llewellyn on Git: Building a Better Code Future!") [![Telegram](https://img.shields.io/badge/-Telegram-blue?logo=telegram)](https://t.me/Joomla_component_builder "Join Llewellyn and the Community on Telegram: Building Joomla Components Together!") [![Mastodon](https://img.shields.io/badge/-Mastodon-9e9eec?logo=mastodon)](https://joomla.social/@llewellyn "Connect and Engage with Llewellyn on Joomla Social: Empowering Communities, One Post at a Time!") [![X (Twitter)](https://img.shields.io/badge/-X-black?logo=x)](https://x.com/llewellynvdm "Join the Conversation with Llewellyn on X: Where Ideas Take Flight!") [![GitHub](https://img.shields.io/badge/-GitHub-181717?logo=github)](https://github.com/Llewellynvdm "Build, Innovate, and Thrive with Llewellyn on GitHub: Turning Ideas into Impact!") [![YouTube](https://img.shields.io/badge/-YouTube-ff0000?logo=youtube)](https://www.youtube.com/@OctoYou "Explore, Learn, and Create with Llewellyn on YouTube: Your Gateway to Inspiration!") [![n8n](https://img.shields.io/badge/-n8n-black?logo=n8n)](https://n8n.io/creators/octoleo "Effortless Automation and Impactful Workflows with Llewellyn on n8n!") [![Docker Hub](https://img.shields.io/badge/-Docker-grey?logo=docker)](https://hub.docker.com/u/llewellyn "Llewellyn on Docker: Containerize Your Creativity!") [![Open Collective](https://img.shields.io/badge/-Donate-green?logo=opencollective)](https://opencollective.com/joomla-component-builder "Donate towards JCB: Help Llewellyn financially so he can continue developing this great tool!") [![GPG Key](https://img.shields.io/badge/-GPG-blue?logo=gnupg)](https://git.vdm.dev/Llewellyn/gpg "Unlock Trust and Security with Llewellyn's GPG Key: Your Gateway to Verified Connections!")
+MD;
 
 		return implode("\n", $readme);
 	}
@@ -259,7 +297,7 @@ final class Main implements MainInterface
 		$name = $power['name'] ?? 'error';
 		return '**' . $type . ' ' . $name . "** | "
 			. $this->linkPowerRepo($power) . ' | '
-			. $this->linkPowerCode($power) . ' | '
+			. $this->linkPowerRaw($power) . ' | '
 			. $this->linkPowerSettings($power) . ' | SPK: `'
 			. $this->linkPowerSPK($power) .'`';
 	}
@@ -279,17 +317,17 @@ final class Main implements MainInterface
 	}
 
 	/**
-	 * Build the Link to the power settings in this repository
+	 * Build the Link to the power raw code in this repository
 	 *
 	 * @param array  $power  The power details.
 	 *
 	 * @return string
 	 * @since 3.2.0
 	 */
-	private function linkPowerCode(array &$power): string
+	private function linkPowerRaw(array &$power): string
 	{
-		$code = $power['code'] ?? 'error';
-		return '[Code](' . $code . ')';
+		$raw = $power['power'] ?? 'error';
+		return '[Raw](' . $raw . ')';
 	}
 
 	/**

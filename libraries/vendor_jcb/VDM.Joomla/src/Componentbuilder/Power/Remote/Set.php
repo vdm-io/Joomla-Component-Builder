@@ -12,11 +12,15 @@
 namespace VDM\Joomla\Componentbuilder\Power\Remote;
 
 
+use Joomla\CMS\Language\Text;
+use VDM\Joomla\Interfaces\Remote\ConfigInterface as Config;
 use VDM\Joomla\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
 use VDM\Joomla\Interfaces\Readme\ItemInterface as ItemReadme;
 use VDM\Joomla\Interfaces\Readme\MainInterface as MainReadme;
 use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface as Git;
+use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
+use VDM\Joomla\Componentbuilder\Package\MessageBus;
 use VDM\Joomla\Componentbuilder\Power\Parser;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -35,91 +39,6 @@ use VDM\Joomla\Abstraction\Remote\Set as ExtendingSet;
 final class Set extends ExtendingSet implements SetInterface
 {
 	/**
-	 * Table Name
-	 *
-	 * @var    string
-	 * @since  5.0.3
-	 */
-	protected string $table = 'power';
-
-	/**
-	 * Area Name
-	 *
-	 * @var    string
-	 * @since  5.0.3
-	 */
-	protected string $area = 'Super Power';
-
-	/**
-	 * Prefix Key
-	 *
-	 * @var    string
-	 * @since  5.0.3
-	 */
-	protected string $prefix_key = 'Super---';
-
-	/**
-	 * The item map
-	 *
-	 * @var    array
-	 * @since  5.0.3
-	 */
-	protected array $map = [
-		'add_head' => 'add_head',
-		'description' => 'description',
-		'extends' => 'extends',
-		'extendsinterfaces' => 'extendsinterfaces',
-		'guid' => 'guid',
-		'head' => 'head',
-		'use_selection' => 'use_selection',
-		'implements' => 'implements',
-		'load_selection' => 'load_selection',
-		'name' => 'name',
-		'power_version' => 'power_version',
-		'system_name' => 'system_name',
-		'type' => 'type',
-		'namespace' => 'namespace',
-		'composer' => 'composer',
-		'add_licensing_template' => 'add_licensing_template',
-		'licensing_template' => 'licensing_template',
-		'main_class_code' => 'main_class_code'
-	];
-
-	/**
-	 * The index map
-	 *
-	 * @var    array
-	 * @since  5.0.3
-	 */
-	protected array $index_map = [
-		'name' => 'index_map_IndexName',
-		'type' => 'index_map_TypeName',
-		'namespace' => 'index_map_NameSpace',
-		'code' => 'index_map_CodePath',
-		'power' => 'index_map_PowerPath',
-		'settings' => 'index_map_IndexSettingsPath',
-		'path' => 'index_map_IndexPath',
-		'spk' => 'index_map_IndexKey',
-		'guid' => 'index_map_IndexGUID'
-	];
-
-	/**
-	 * The item settings file path
-	 *
-	 * @var   string
-	 * @since  5.0.3
-	 */
-	protected string $settings_path = 'settings.json';
-
-	/**
-	 * The index settings file path
-	 *
-	 * @var    string
-	 * @since  5.0.3
-	 */
-	protected string $index_settings_path = 'super-powers.json';
-
-	/**
 	 * The Parser Class.
 	 *
 	 * @var   Parser|null
@@ -130,26 +49,28 @@ final class Set extends ExtendingSet implements SetInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param array        $repos               The active repos
+	 * @param Config       $config              The Config Class.
 	 * @param Grep         $grep                The Grep Class.
 	 * @param Items        $items               The Items Class.
 	 * @param ItemReadme   $itemReadme          The Item Readme Class.
 	 * @param MainReadme   $mainReadme          The Main Readme Class.
 	 * @param Git          $git                 The Contents Class.
+	 * @param Tracker      $tracker             The Tracker Class.
+	 * @param MessageBus   $messages            The MessageBus Class.
+	 * @param Parser       $parser              The Parser Class.
+	 * @param array        $repos               The active repos.
 	 * @param string|null  $table               The table name.
 	 * @param string|null  $settingsPath        The settings path.
 	 * @param string|null  $settingsIndexPath   The index settings path.
-	 * @param Parser|null  $parser              The Parser Class.
 	 *
 	 * @since 3.2.2
 	 */
-	public function __construct(array $repos, Grep $grep, Items $items,
-		ItemReadme $itemReadme, MainReadme $mainReadme, Git $git,
-		?string $table = null, ?string $settingsPath = null,
-		?string $settingsIndexPath = null, ?Parser $parser = null)
+	public function __construct(Config $config, Grep $grep, Items $items, ItemReadme $itemReadme,
+		MainReadme $mainReadme, Git $git, Tracker $tracker, MessageBus $messages, Parser $parser,
+		array $repos, ?string $table = null, ?string $settingsPath = null, ?string $indexPath = null)
 	{
-		parent::__construct($repos, $grep, $items, $itemReadme, $mainReadme,
-			$git, $table, $settingsPath, $settingsIndexPath);
+		parent::__construct($config, $grep, $items, $itemReadme, $mainReadme,
+			$git, $tracker, $messages, $repos, $table, $settingsPath, $indexPath);
 
 		$this->parser = $parser;
 	}
@@ -157,9 +78,8 @@ final class Set extends ExtendingSet implements SetInterface
 	/**
 	 * Map a single item value (extends)
 	 *
-	 * @param object $item  The item to be mapped
-	 * @param array  $item  The bucket to to place new values
-	 * @param string  $map   The item map to be mapped
+	 * @param object $item   The source object containing raw values
+	 * @param array   $power  The destination associative array where processed values will be stored.
 	 *
 	 * @return void
 	 * @since  5.0.2
@@ -186,6 +106,11 @@ final class Set extends ExtendingSet implements SetInterface
 					$power['extends_name'] = ClassfunctionHelper::safe(
 						$this->updatePlaceholders($name)
 					);
+					$power['extends'] = $value;
+				}
+				else
+				{
+					$power['extends'] = '';
 				}
 			}
 			else
@@ -201,9 +126,8 @@ final class Set extends ExtendingSet implements SetInterface
 	/**
 	 * Map a single item value (extendsinterfaces)
 	 *
-	 * @param object $item  The item to be mapped
-	 * @param array  $item  The bucket to to place new values
-	 * @param string  $map   The item map to be mapped
+	 * @param object $item   The source object containing raw values
+	 * @param array   $power  The destination associative array where processed values will be stored.
 	 *
 	 * @return void
 	 * @since  5.0.2
@@ -262,9 +186,8 @@ final class Set extends ExtendingSet implements SetInterface
 	/**
 	 * Map a single item value (use_selection)
 	 *
-	 * @param object $item  The item to be mapped
-	 * @param array  $item  The bucket to to place new values
-	 * @param string  $map   The item map to be mapped
+	 * @param object $item   The source object containing raw values
+	 * @param array   $power  The destination associative array where processed values will be stored.
 	 *
 	 * @return void
 	 * @since  5.0.2
@@ -286,9 +209,8 @@ final class Set extends ExtendingSet implements SetInterface
 	/**
 	 * Map a single item value (load_selection)
 	 *
-	 * @param object $item  The item to be mapped
-	 * @param array  $item  The bucket to to place new values
-	 * @param string  $map   The item map to be mapped
+	 * @param object $item   The source object containing raw values
+	 * @param array   $power  The destination associative array where processed values will be stored.
 	 *
 	 * @return void
 	 * @since  5.0.2
@@ -310,9 +232,8 @@ final class Set extends ExtendingSet implements SetInterface
 	/**
 	 * Map a single item value (composer)
 	 *
-	 * @param object $item  The item to be mapped
-	 * @param array  $item  The bucket to to place new values
-	 * @param string  $map   The item map to be mapped
+	 * @param object $item   The source object containing raw values
+	 * @param array   $power  The destination associative array where processed values will be stored.
 	 *
 	 * @return void
 	 * @since  5.0.2
@@ -327,16 +248,15 @@ final class Set extends ExtendingSet implements SetInterface
 		}
 		else
 		{
-			$power['composer'] = '';
+			$power['composer'] = [];
 		}
 	}
 
 	/**
 	 * Map a single item value (implements)
 	 *
-	 * @param object $item  The item to be mapped
-	 * @param array  $item  The bucket to to place new values
-	 * @param string  $map   The item map to be mapped
+	 * @param object $item   The source object containing raw values
+	 * @param array   $power  The destination associative array where processed values will be stored.
 	 *
 	 * @return void
 	 * @since  5.0.2
@@ -398,37 +318,55 @@ final class Set extends ExtendingSet implements SetInterface
 		// make sure there was a change
 		$sha = $existing->params->source[$repo->guid . '-settings'] ?? null;
 		$_existing = $this->mapItem($existing);
+		$area = $this->getArea();
+		$item_name = $this->index_map_IndexName($item);
+		$repo_name = $this->getRepoName($repo);
+		$settings_item = clone $item;
 
-		if ($sha === null || $this->areObjectsEqual($item, $_existing))
+		// strip these values form the settings
+		unset($settings_item->main_class_code);
+		unset($settings_item->extends_name);
+		unset($settings_item->implement_names);
+		unset($_existing->main_class_code);
+		unset($_existing->extends_name);
+		unset($_existing->implement_names);
+
+		if ($sha === null || $this->areObjectsEqual($settings_item, $_existing))
 		{
-			return false;
+			$result = $this->updatePower($item, $existing, $repo);
+
+			if (!$result)
+			{
+				$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_DETAILS_IN_REPOS_DID_NOT_CHANGE_SO_NO_UPDATE_WAS_MADE', $area, $item_name, $repo_name));
+			}
+
+			return $result;
 		}
 		else
 		{
-			// strip these values form the settings
-			$code = (string) $item->main_class_code ?? '';
-			$extends_name = (string) $item->extends_name ?? '';
-			$implement_names = (string) $item->implement_names ?? '';
-			unset($item->main_class_code);
-			unset($item->extends_name);
-			unset($item->implement_names);
-
-			$this->git->update(
+			$result = $this->git->update(
 				$repo->organisation, // The owner name.
 				$repo->repository, // The repository name.
-				'src/' . $item->guid . '/' . $this->getSettingsPath(), // The file path.
-				json_encode($item, JSON_PRETTY_PRINT), // The file content.
+				$this->index_map_IndexSettingsPath($item), // The file path.
+				json_encode($settings_item, JSON_PRETTY_PRINT), // The file content.
 				'Update ' . $item->system_name . ' settings', // The commit message.
 				$sha, // The blob SHA of the old file.
-				$repo->write_branch // The branch name.
+				$repo->write_branch, // The branch name.
+				$repo->author_name, // The author name.
+				$repo->author_email // The author email.
 			);
-
-			$item->main_class_code = $code;
-			$item->extends_name = $extends_name;
-			$item->implement_names = $implement_names;
 		}
 
-		return $this->updatePower($item, $existing, $repo);
+		$power_result = $this->updatePower($item, $existing, $repo);
+
+		$final_result = is_object($result) || $power_result;
+
+		if (!$final_result)
+		{
+			$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_DETAILS_IN_REPOS_FAILED_TO_UPDATE', $area, $item_name, $repo_name));
+		}
+
+		return $final_result;
 	}
 
 	/**
@@ -461,17 +399,19 @@ final class Set extends ExtendingSet implements SetInterface
 			return false;
 		}
 
-		$this->git->update(
+		$result = $this->git->update(
 			$repo->organisation, // The owner name.
 			$repo->repository, // The repository name.
-			'src/' . $item->guid . '/code.power', // The file path.
+			$this->index_map_PowerPath($item), // The file path.
 			$power, // The file content.
 			'Update ' . $item->system_name . ' code', // The commit message.
 			$sha, // The blob SHA of the old file.
-			$repo->write_branch // The branch name.
+			$repo->write_branch, // The branch name.
+			$repo->author_name, // The author name.
+			$repo->author_email // The author email.
 		);
 
-		return true;
+		return is_object($result);
 	}
 
 	/**
@@ -480,33 +420,28 @@ final class Set extends ExtendingSet implements SetInterface
 	 * @param object  $item
 	 * @param object  $repo
 	 *
-	 * @return void
+	 * @return bool
 	 * @since  5.0.3
 	 */
-	protected function createItem(object $item, object $repo): void
+	protected function createItem(object $item, object $repo): bool
 	{
-		// strip these values form the settings
-		$code = (string) $item->main_class_code ?? '';
-		$extends_name = (string) $item->extends_name ?? '';
-		$implement_names = (string) $item->implement_names ?? '';
-		unset($item->main_class_code);
-		unset($item->extends_name);
-		unset($item->implement_names);
+		$settings_item = clone $item;
+		unset($settings_item->main_class_code);
+		unset($settings_item->extends_name);
+		unset($settings_item->implement_names);
 
-		$this->git->create(
+		$result = $this->git->create(
 			$repo->organisation, // The owner name.
 			$repo->repository, // The repository name.
-			'src/' . $item->guid . '/' . $this->getSettingsPath(), // The file path.
-			json_encode($item, JSON_PRETTY_PRINT), // The file content.
+			$this->index_map_IndexSettingsPath($item), // The file path.
+			json_encode($settings_item, JSON_PRETTY_PRINT), // The file content.
 			'Create ' . $item->system_name . ' settings', // The commit message.
-			$repo->write_branch // The branch name.
+			$repo->write_branch, // The branch name.
+			$repo->author_name, // The author name.
+			$repo->author_email // The author email.
 		);
 
-		$item->main_class_code = $code;
-		$item->extends_name = $extends_name;
-		$item->implement_names = $implement_names;
-
-		$this->createPower($item, $repo);
+		return $this->createPower($item, $repo) && is_object($result);
 	}
 
 	/**
@@ -515,19 +450,23 @@ final class Set extends ExtendingSet implements SetInterface
 	 * @param object  $item
 	 * @param object  $repo
 	 *
-	 * @return void
+	 * @return bool
 	 * @since  5.0.3
 	 */
-	protected function createPower(object $item, object $repo): void
+	protected function createPower(object $item, object $repo): bool
 	{
-		$this->git->create(
+		$result = $this->git->create(
 			$repo->organisation, // The owner name.
 			$repo->repository, // The repository name.
-			'src/' . $item->guid . '/code.power', // The file path.
+			$this->index_map_PowerPath($item), // The file path.
 			$item->main_class_code, // The file content.
 			'Create ' . $item->system_name . ' code', // The commit message.
-			$repo->write_branch // The branch name.
+			$repo->write_branch, // The branch name.
+			$repo->author_name, // The author name.
+			$repo->author_email // The author email.
 		);
+
+		return is_object($result);
 	}
 
 	/**
@@ -568,11 +507,13 @@ final class Set extends ExtendingSet implements SetInterface
 		$this->git->update(
 			$repo->organisation, // The owner name.
 			$repo->repository, // The repository name.
-			'src/' . $item->guid . '/README.md', // The file path.
+			$this->index_map_IndexPath($item) . '/README.md', // The file path.
 			$readme, // The file content.
 			'Update ' . $item->system_name . ' readme file', // The commit message.
 			$sha, // The blob SHA of the old file.
-			$repo->write_branch // The branch name.
+			$repo->write_branch, // The branch name.
+			$repo->author_name, // The author name.
+			$repo->author_email // The author email.
 		);
 	}
 
@@ -597,10 +538,12 @@ final class Set extends ExtendingSet implements SetInterface
 		$this->git->create(
 			$repo->organisation, // The owner name.
 			$repo->repository, // The repository name.
-			'src/' . $item->guid . '/README.md', // The file path.
+			$this->index_map_IndexPath($item) . '/README.md', // The file path.
 			$this->itemReadme->get($item), // The file content.
 			'Create ' . $item->system_name . ' readme file', // The commit message.
-			$repo->write_branch // The branch name.
+			$repo->write_branch, // The branch name.
+			$repo->author_name, // The author name.
+			$repo->author_email // The author email.
 		);
 	}
 

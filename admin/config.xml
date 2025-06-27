@@ -958,7 +958,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_LABEL"
 			description="COM_COMPONENTBUILDER_CONFIG_FIELD_NAME_BUILDER_DESCRIPTION"
 			class="btn-group btn-group-yesno"
-			default="1">
+			default="2">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
@@ -972,7 +972,7 @@
 			label="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_LABEL"
 			description="COM_COMPONENTBUILDER_CONFIG_TYPE_NAME_BUILDER_DESCRIPTION"
 			class="btn-group btn-group-yesno"
-			default="1">
+			default="2">
 			<!-- Option Set. -->
 			<option value="1">
 				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>

@@ -44,21 +44,25 @@ final class PermissionDashboard extends Registry implements Registryinterface
 	use VarExport;
 
 	/**
-	 * Get the build permission dashboard code
+	 * Get the build permission dashboard code.
 	 *
-	 * @return  string
-	 * @since 3.2.0
+	 * @return string
+	 * @since  3.2.0
+	 * @since  5.1.1 Changed to class property.
 	 */
 	public function build(): string
 	{
-		if ($this->isActive())
-		{
-			return PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " view access array" . PHP_EOL . Indent::_(2)
-				. "\$viewAccess = " . $this->varExport() . ';';
-		}
+		$indent = Indent::_(1);
+		$docBlock = PHP_EOL . $indent . '/**'
+			. PHP_EOL . $indent . ' *' . Line::_(__LINE__, __CLASS__) . ' View access array.'
+			. PHP_EOL . $indent . ' *'
+			. PHP_EOL . $indent . ' * @var   array<string, string>'
+			. PHP_EOL . $indent . ' * @since 5.1.1'
+			. PHP_EOL . $indent . ' */';
 
-		return '';
+		$value = $this->isActive() ? $this->varExport(null, 1) : '[]';
+
+		return $docBlock . PHP_EOL . $indent . 'protected array $viewAccess = ' . $value . ';' . PHP_EOL;
 	}
 }
 

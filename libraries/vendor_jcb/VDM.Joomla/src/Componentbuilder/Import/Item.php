@@ -53,7 +53,7 @@ final class Item implements ImportItemInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Validator   $validator   The Table ValidatorI Class.
+	 * @param Validator   $validator   The Table Validator Class.
 	 * @param DataItem    $item        The Item Class.
 	 * @param Row         $row         The Import Row Class.
 	 *

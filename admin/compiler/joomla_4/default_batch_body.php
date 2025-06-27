@@ -22,5 +22,5 @@ defined('_JEXEC') or die;###LICENSE_LOCKED_DEFINED###
 
 ?>
 
-<p><?php echo Text::_('COM_###COMPONENT###_###VIEWS###_BATCH_TIP'); ?></p>
+<p><?php echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEWS###_BATCH_TIP'); ?></p>
 <?php echo $this->batchDisplay; ?>

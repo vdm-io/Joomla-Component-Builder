@@ -50,7 +50,7 @@ final class RowDataArray implements RowDataProcessorInterface
 
 		foreach ($cellIterator as $cell)
 		{
-			$rowData['values'][$cell->getColumn()] = $cell->getValueString();
+			$rowData['values'][$cell->getColumn()] = (string) $cell->getValue();
 		}
 
 		return $rowData;

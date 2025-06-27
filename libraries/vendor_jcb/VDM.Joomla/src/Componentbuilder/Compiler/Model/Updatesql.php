@@ -78,13 +78,13 @@ class Updatesql
 				{
 					$newItem = true;
 
-					// check if this is an id to ignore
+					// check if this is an id/guid to ignore
 					if (ArrayHelper::check($ignore)
 						&& in_array(
 							$item, $ignore
 						))
 					{
-						// don't add ignored ids
+						// don't add ignored ids/guids
 						$newItem = false;
 					}
 					// check if this is old repeatable field
@@ -142,11 +142,11 @@ class Updatesql
 						// search to see if this is a new value
 						$newItem = true;
 
-						// check if this is an id to ignore
+						// check if this is an id/guid to ignore
 						if (ArrayHelper::check($ignore)
 							&& in_array($item[$type], $ignore))
 						{
-							// don't add ignored ids
+							// don't add ignored ids/guids
 							$newItem = false;
 						}
 						// check if this is old repeatable field

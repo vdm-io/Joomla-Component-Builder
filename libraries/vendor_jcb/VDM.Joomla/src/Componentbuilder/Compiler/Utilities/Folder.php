@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
-use Joomla\CMS\Filesystem\Folder as JoomlaFolder;
-use Joomla\CMS\Filesystem\File as JoomlaFile;
+use Joomla\Filesystem\Folder as JoomlaFolder;
+use Joomla\Filesystem\File as JoomlaFile;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
@@ -69,7 +69,7 @@ class Folder
 	public function create(string $path, bool $addHtml = true)
 	{
 		// check if the path exist
-		if (!JoomlaFolder::exists($path))
+		if (!is_dir($path))
 		{
 			// create the path
 			JoomlaFolder::create(
@@ -100,7 +100,7 @@ class Folder
 	 */
 	public function remove(string $path, ?array $ignore = null): bool
 	{
-		if (!JoomlaFolder::exists($path))
+		if (!is_dir($path))
 		{
 			return false;
 		}

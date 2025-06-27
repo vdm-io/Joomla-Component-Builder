@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
@@ -88,30 +87,29 @@ final class Structuremultiple
 	protected Structure $structure;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param Config|null           $config           The compiler config object.
-	 * @param Registry|null         $registry         The compiler registry object.
-	 * @param Settings|null    	    $settings         The compiler component Joomla version settings object.
-	 * @param Component|null        $component        The component class.
-	 * @param Createdate|null       $createdate       The compiler model to get create date class.
-	 * @param Modifieddate|null     $modifieddate     The compiler model to get modified date class.
-	 * @param Structure|null        $structure        The compiler structure to build dynamic folder and files class.
+	 * @param Config         $config         The Config Class.
+	 * @param Registry       $registry       The Registry Class.
+	 * @param Settings       $settings       The SettingsInterface Class.
+	 * @param Component      $component      The Component Class.
+	 * @param Createdate     $createdate     The Createdate Class.
+	 * @param Modifieddate   $modifieddate   The Modifieddate Class.
+	 * @param Structure      $structure      The Structure Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Registry $registry = null,
-		?Settings $settings = null, ?Component $component = null,
-		?Createdate $createdate = null, ?Modifieddate $modifieddate = null,
-		?Structure $structure = null)
+	public function __construct(Config $config, Registry $registry, Settings $settings,
+		Component $component, Createdate $createdate,
+		Modifieddate $modifieddate, Structure $structure)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->registry = $registry ?: Compiler::_('Registry');
-		$this->settings = $settings ?: Compiler::_('Component.Settings');
-		$this->component = $component ?: Compiler::_('Component');
-		$this->createdate = $createdate ?: Compiler::_('Model.Createdate');
-		$this->modifieddate = $modifieddate ?: Compiler::_('Model.Modifieddate');
-		$this->structure = $structure ?: Compiler::_('Utilities.Structure');
+		$this->config = $config;
+		$this->registry = $registry;
+		$this->settings = $settings;
+		$this->component = $component;
+		$this->createdate = $createdate;
+		$this->modifieddate = $modifieddate;
+		$this->structure = $structure;
 	}
 
 	/**
@@ -275,6 +273,25 @@ final class Structuremultiple
 	}
 
 	/**
+	 * Check if the view has an Modal
+	 *
+	 * @param array $view
+	 *
+	 * @return int
+	 * @since  5.1.1
+	 */
+	private function hasModal(array $view): int
+	{
+		// only for Joomla 5 and above
+		if ($this->config->get('joomla_version', 3) > 4)
+		{
+			return 1;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Check if the view has an API
 	 *
 	 * @param array $view
@@ -336,11 +353,18 @@ final class Structuremultiple
 	 */
 	private function buildAdminView(array $view, array $config)
 	{
+		$addModal = $this->hasModal($view);
+
 		// build the admin edit view
 		if ($view['settings']->name_single != 'null')
 		{
 			$target = ['admin' => $view['settings']->name_single];
 			$this->structure->build($target, 'single', false, $config);
+
+			if ($addModal)
+			{
+				$this->structure->build($target, 'single_modal', false, $config);
+			}
 
 			// build the site edit view (of this admin view)
 			if (isset($view['edit_create_site_view'])
@@ -350,6 +374,11 @@ final class Structuremultiple
 				// setup the front site edit-view files
 				$target = ['site' => $view['settings']->name_single];
 				$this->structure->build($target, 'edit', false, $config);
+
+				if ($addModal)
+				{
+					$this->structure->build($target, 'edit_modal', false, $config);
+				}
 			}
 		}
 
@@ -358,6 +387,11 @@ final class Structuremultiple
 		{
 			$target = ['admin' => $view['settings']->name_list];
 			$this->structure->build($target, 'list', false, $config);
+
+			if ($addModal)
+			{
+				$this->structure->build($target, 'list_modal', false, $config);
+			}
 		}
 	}
 

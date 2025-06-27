@@ -23,5 +23,5 @@ defined('_JEXEC') or die;###LICENSE_LOCKED_DEFINED######CUSTOM_ADMIN_CODE_BODY##
 <?php if ($this->canDo->get('###sview###.access')): ?>###CUSTOM_ADMIN_SUBMITBUTTON_SCRIPT###
 ###CUSTOM_ADMIN_TOP_FORM######CUSTOM_ADMIN_BODY######CUSTOM_ADMIN_BOTTOM_FORM###
 <?php else: ?>
-		<h1><?php echo Text::_('COM_###COMPONENT###_NO_ACCESS_GRANTED'); ?></h1>
+		<h1><?php echo Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

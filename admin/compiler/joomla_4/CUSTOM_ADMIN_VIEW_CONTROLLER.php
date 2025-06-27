@@ -51,6 +51,6 @@ class ###SView###Controller extends BaseController
 	 */
 	public function dashboard(): void
 	{
-		$this->setRedirect(Route::_('index.php?option=com_###component###', false));
+		$this->setRedirect(Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###', false));
 	}###CUSTOM_ADMIN_CUSTOM_BUTTONS_CONTROLLER###
 }

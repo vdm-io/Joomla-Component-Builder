@@ -13,8 +13,6 @@ namespace VDM\Joomla\Componentbuilder\Search\Engine;
 
 
 use VDM\Joomla\Componentbuilder\Search\Config;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Search\Interfaces\SearchTypeInterface;
 use VDM\Joomla\Componentbuilder\Search\Abstraction\Engine;
 
@@ -30,7 +28,7 @@ class Basic extends Engine implements SearchTypeInterface
 	 * Regex Search Value
 	 *
 	 * @var    string
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	protected string $regexValue = '';
 
@@ -44,228 +42,96 @@ class Basic extends Engine implements SearchTypeInterface
 	public function __construct(?Config $config = null)
 	{
 		parent::__construct($config);
-
-		// quote all regular expression characters
-		$searchValue = preg_quote((string) $this->searchValue, '/');
-
-		$start = ''; $end = '';
-
-		// if this is a whole word search we need to do some prep
-		if ($this->wholeWord == 1)
-		{
-			// get first character of search string
-			$first = mb_substr((string) $this->searchValue, 0, 1);
-			// get last character of search string
-			$last = mb_substr((string) $this->searchValue, -1);
-
-			// set the start boundary behavior
-			$start = '(\b)';
-			if (\preg_match("/\W/", $first))
-			{
-				$start = '(\b|\B)';
-			}
-
-			// set the boundary behavior
-			$end = '(\b)';
-			if (\preg_match("/\W/", $last))
-			{
-				$end = '(\b|\B)';
-			}
-		}
-
-		// set search based on match case
-		$case = '';
-		if ($this->matchCase == 0)
-		{
-			$case = 'i';
-		}
-
-		$this->regexValue = "/" . $start . '(' . $searchValue . ')' . $end . "/" . $case;
+		$this->compileRegex();
 	}
 
 	/**
 	 * Search inside a string
 	 *
-	 * @param   string    $value   The string value
+	 * @param  string   $value   The string value
 	 *
 	 * @return  string|null    The marked string if found, else null
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function string(string $value): ?string
 	{
 		// we count every line
 		$this->lineCounter();
 
-		if (StringHelper::check($this->searchValue))
+		if (empty($this->searchValue) || !$this->match($value))
 		{
-			if ($this->wholeWord == 1)
-			{
-				return $this->searchWhole($value);
-			}
-			else
-			{
-				return $this->searchAll($value);
-			}
+			return null;
 		}
 
-		return null;
+		$result = preg_replace(
+			$this->regexValue,
+			$this->start . '$1' . $this->end,
+			$value
+		);
+
+		return is_string($result) ? trim($result) : null;
 	}
 
 	/**
 	 * Replace found instances inside string value
 	 *
-	 * @param   string     $value      The string value to update
+	 * @param   string   $value  The string value to update
 	 *
-	 * @return  string      The updated string
-	 * @since 3.2.0
+	 * @return  string   The updated string
+	 * @since   3.2.0
 	 */
 	public function replace(string $value): string
 	{
-		if (StringHelper::check($this->searchValue))
+		if (empty($this->searchValue) || !$this->match($value))
 		{
-			if ($this->wholeWord == 1)
-			{
-				return $this->replaceWhole($value);
-			}
-			else
-			{
-				return $this->replaceAll($value);
-			}
+			return $value;
 		}
-		return $value;
+
+		$result = preg_replace(
+			$this->regexValue,
+			(string) $this->replaceValue,
+			$value
+		);
+
+		return is_string($result) ? $result : $value;
 	}
 
 	/**
-	 * Replace whole words
-	 *
-	 * @param   string    $value   The string value
-	 *
-	 * @return  string    The marked string if found, else null
-	 * @since 3.2.0
-	 */
-	protected function replaceWhole(string $value): string
-	{
-		if ($this->match($value))
-		{
-			return preg_replace(
-				$this->regexValue . 'm',
-				"$1" . $this->replaceValue . "$3",
-				$value
-			);
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Search for whole words
-	 *
-	 * @param   string    $value   The string value
-	 *
-	 * @return  string|null    The marked string if found, else null
-	 * @since 3.2.0
-	 */
-	protected function searchWhole(string $value): ?string
-	{
-		if ($this->match($value))
-		{
-			return trim(preg_replace(
-				$this->regexValue . 'm',
-				"$1" . $this->start . "$2" . $this->end . "$3",
-				$value
-			));
-		}
-
-		return null;
-	}
-
-	/**
-	 * Math the Regular Expression
+	 * Check if search string exists in the value
 	 *
 	 * @param   string    $value  The string value
 	 *
-	 * @return  bool  true if match is found
-	 * @since  3.0.9
+	 * @return  bool
+	 * @since   3.0.9
 	 */
 	public function match(string $value): bool
 	{
-		$match = [];
-
-		preg_match($this->regexValue, $value, $match);
-
-		$match = array_filter(
-			$match,
-			fn($found) => !empty($found)
-		);
-
-		return (bool) ArrayHelper::check($match);
+		return !empty($this->searchValue) && preg_match($this->regexValue, $value) === 1;
 	}
 
 	/**
-	 * Search for all instances
+	 * Compile regex pattern based on whole word and match case settings
 	 *
-	 * @param   string    $value   The string value
-	 *
-	 * @return  string|null    The marked string if found, else null
-	 * @since 3.2.0
+	 * @return void
+	 * @since  5.1.1
 	 */
-	protected function searchAll(string $value): ?string
+	protected function compileRegex(): void
 	{
-		if ($this->matchCase == 1)
+		if (empty($this->searchValue))
 		{
-			if (strpos($value, (string) $this->searchValue) !== false)
-			{
-				return trim(preg_replace(
-					$this->regexValue . 'm',
-					$this->start . "$1" . $this->end,
-					$value
-				));
-			}
-		}
-		elseif (stripos($value, (string) $this->searchValue) !== false)
-		{
-			return trim(preg_replace(
-				$this->regexValue . 'm',
-				$this->start . "$1" . $this->end,
-				$value
-			));
+			$this->regexValue = '//';
+			return;
 		}
 
-		return null;
+		$quoted = preg_quote($this->searchValue, '/');
+
+		$pattern = $this->wholeWord === 1
+			? '\b' . $quoted . '\b'
+			: $quoted;
+
+		$flags = $this->matchCase === 1 ? 'm' : 'mi';
+
+		$this->regexValue = "/($pattern)/$flags";
 	}
-
-	/**
-	 * Replace for all instances
-	 *
-	 * @param   string    $value   The string value
-	 *
-	 * @return  string    The marked string if found, else null
-	 * @since 3.2.0
-	 */
-	protected function replaceAll(string $value): string
-	{
-		if ($this->matchCase == 1)
-		{
-			if (strpos($value, (string) $this->searchValue) !== false)
-			{
-				return preg_replace(
-					$this->regexValue . 'm',
-					(string) $this->replaceValue,
-					$value
-				);
-			}
-		}
-		elseif (stripos($value, (string) $this->searchValue) !== false)
-		{
-			return preg_replace(
-				$this->regexValue . 'm',
-				(string) $this->replaceValue,
-				$value
-			);
-		}
-
-		return $value;
-	}
-
 }
 

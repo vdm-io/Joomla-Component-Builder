@@ -15,7 +15,6 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\ObjectHelper;
 
 
 /**
@@ -63,117 +62,101 @@ class Sqltweaking
 		if (ArrayHelper::check($item->sql_tweak))
 		{
 			// build the tweak settings
-			$this->tweak(
-				array_map(
-					fn($array) => array_map(
-						function ($value) {
-							if (!ArrayHelper::check($value)
-								&& !ObjectHelper::check(
-									$value
-								)
-								&& strval($value) === strval(
-									intval($value)
-								))
-							{
-								return $value;
-							}
-
-							return $value;
-						}, $array
-					), array_values($item->sql_tweak)
-				)
-			);
+			$this->tweak($item->sql_tweak);
 		}
 
 		unset($item->sql_tweak);
 	}
 
 	/**
-	 * To limit the SQL Demo data build in the views
+	 * Limit the SQL Demo data build in the views by applying tweak settings.
 	 *
-	 * @param   array  $settings  Tweaking array.
+	 * @param   array  $settings  The tweak configuration array.
 	 *
 	 * @return  void
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
-	protected function tweak($settings)
+	protected function tweak(array $settings): void
 	{
-		if (ArrayHelper::check($settings))
+		if (!ArrayHelper::check($settings))
 		{
-			foreach ($settings as $setting)
+			return;
+		}
+
+		foreach ($settings as $setting)
+		{
+			$adminView = $setting['adminview'] ?? null;
+
+			if (!$adminView)
 			{
-				// should sql dump be added
-				if (1 == $setting['add_sql'])
+				continue;
+			}
+
+			$addSql = (int) ($setting['add_sql'] ?? 0);
+			$addSqlOptions = (int) ($setting['add_sql_options'] ?? 0);
+
+			if ($addSql === 1 && $addSqlOptions === 2)
+			{
+				$ids = $setting['ids'] ?? '';
+				$idArray = $this->normalizeIds($ids);
+
+				if (!empty($idArray))
 				{
-					// add sql (by option)
-					if (2 == $setting['add_sql_options'])
-					{
-						// rest always
-						$id_array = [];
-
-						// by id (first remove backups)
-						$ids = $setting['ids'];
-
-						// now get the ids
-						if (strpos((string) $ids, ',') !== false)
-						{
-							$id_array = (array) array_map(
-								'trim', explode(',', (string) $ids)
-							);
-						}
-						else
-						{
-							$id_array[] = trim((string) $ids);
-						}
-						$id_array_new = [];
-
-						// check for ranges
-						foreach ($id_array as $key => $id)
-						{
-							if (strpos($id, '=>') !== false)
-							{
-								$id_range = (array) array_map(
-									'trim', explode('=>', $id)
-								);
-								unset($id_array[$key]);
-								// build range
-								if (count((array) $id_range) == 2)
-								{
-									$range        = range(
-										$id_range[0], $id_range[1]
-									);
-									$id_array_new = [...$id_array_new, ...$range];
-								}
-							}
-						}
-
-						if (ArrayHelper::check($id_array_new))
-						{
-							$id_array = [...$id_array_new, ...$id_array];
-						}
-
-						// final fixing to array
-						if (ArrayHelper::check($id_array))
-						{
-							// unique
-							$id_array = array_unique($id_array, SORT_NUMERIC);
-							// sort
-							sort($id_array, SORT_NUMERIC);
-							// now set it to global
-							$this->registry->
-								set('builder.sql_tweak.' . $setting['adminview'] . '.where', implode(',', $id_array));
-						}
-					}
+					$this->registry->set(
+						'builder.sql_tweak.' . $adminView . '.where',
+						implode(',', $idArray)
+					);
 				}
-				else
-				{
-					// do not add sql dump options
-					$this->registry->
-						set('builder.sql_tweak.' . $setting['adminview'] . '.add', false);
-				}
+			}
+			elseif ($addSql === 0)
+			{
+				$this->registry->set(
+					'builder.sql_tweak.' . $adminView . '.add',
+					false
+				);
 			}
 		}
 	}
 
+	/**
+	 * Normalize a comma-separated string of IDs or ID ranges into a unique, sorted array.
+	 *
+	 * Supports individual IDs (e.g., "1,3,5") and ranges (e.g., "10 => 12").
+	 *
+	 * @param   string  $ids  Raw ID string from settings.
+	 *
+	 * @return  array<int>  Normalized list of numeric IDs.
+	 * @since   5.1.1
+	 */
+	private function normalizeIds(string $ids): array
+	{
+		$rawIds = array_map('trim', explode(',', $ids));
+		$finalIds = [];
+
+		foreach ($rawIds as $id)
+		{
+			if (strpos($id, '=>') !== false)
+			{
+				$rangeParts = array_map('trim', explode('=>', $id));
+
+				if (count($rangeParts) === 2 && is_numeric($rangeParts[0]) && is_numeric($rangeParts[1]))
+				{
+					$range = range((int) $rangeParts[0], (int) $rangeParts[1]);
+					$finalIds = array_merge($finalIds, $range);
+					continue;
+				}
+			}
+
+			if (is_numeric($id))
+			{
+				$finalIds[] = (int) $id;
+			}
+		}
+
+		$finalIds = array_unique($finalIds, SORT_NUMERIC);
+		sort($finalIds, SORT_NUMERIC);
+
+		return $finalIds;
+	}
 }
 

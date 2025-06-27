@@ -16,7 +16,7 @@ use VDM\Joomla\Interfaces\Data\LoadInterface as Load;
 use VDM\Joomla\Interfaces\Data\InsertInterface as Insert;
 use VDM\Joomla\Interfaces\Data\UpdateInterface as Update;
 use VDM\Joomla\Interfaces\Data\DeleteInterface as Delete;
-use VDM\Joomla\Interfaces\LoadInterface as Database;
+use VDM\Joomla\Interfaces\Database\LoadInterface as Database;
 use VDM\Joomla\Interfaces\Data\ItemInterface;
 
 

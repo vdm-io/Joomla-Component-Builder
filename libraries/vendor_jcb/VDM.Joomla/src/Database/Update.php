@@ -12,8 +12,10 @@
 namespace VDM\Joomla\Database;
 
 
-use VDM\Joomla\Interfaces\UpdateInterface;
-use VDM\Joomla\Abstraction\Database;
+use Joomla\CMS\Date\Date;
+use VDM\Joomla\Database\DefaultTrait;
+use VDM\Joomla\Interfaces\Database\UpdateInterface;
+use VDM\Joomla\Abstraction\Versioning;
 
 
 /**
@@ -21,8 +23,15 @@ use VDM\Joomla\Abstraction\Database;
  * 
  * @since 3.2.0
  */
-final class Update extends Database implements UpdateInterface
+final class Update extends Versioning implements UpdateInterface
 {
+	/**
+	 * Default Switch
+	 *
+	 * @since 5.1.1
+	 */
+	use DefaultTrait;
+
 	/**
 	 * Update rows in the database (with remapping and filtering columns option)
 	 *
@@ -135,14 +144,38 @@ final class Update extends Database implements UpdateInterface
 			return false;
 		}
 
+		// set joomla default columns
+		$add_modified = false;
+		$add_modified_by = false;
+
+		// check if we should load the defaults
+		if ($this->defaults)
+		{
+			if (!isset($data['modified']))
+			{
+				$add_modified = true;
+			}
+
+			if (!isset($data['modified_by']))
+			{
+				$add_modified_by = true;
+			}
+		}
+
+		// set history vars
+		$this->entity = $this->getTableEntityName($table);
+		$table = $this->getTable($table);
+
 		// get a query object
 		$query = $this->db->getQuery(true);
 
 		// set the query targets
-		$query->update($this->db->quoteName($this->getTable($table)));
+		$query->update($this->db->quoteName($table));
 
 		// set the update values
 		$key_ = null;
+		$guid = null;
+		$id = null;
 		foreach ($data as $column => $value)
 		{
 			if ($column === $key)
@@ -153,17 +186,50 @@ final class Update extends Database implements UpdateInterface
 			{
 				$query->set($this->db->quoteName($column) . ' = ' . $this->quote($value));
 			}
+
+			if (!empty($this->entity) && $this->history && !empty($value))
+			{
+				if ($column === 'guid')
+				{
+					$guid = $value;
+				}
+				elseif ($column === 'id')
+				{
+					$id = (int) $value;
+				}
+			}
 		}
 
 		// add the key condition
 		if ($key_ !== null)
 		{
+			if ($add_modified)
+			{
+				$query->set($this->db->quoteName('modified') . ' = ' . $this->quote((new Date())->toSql()));
+			}
+
+			if ($add_modified_by)
+			{
+				$query->set($this->db->quoteName('modified_by') . ' = ' . $this->userId);
+			}
+
 			$query->where($this->db->quoteName($key) . ' = ' . $this->quote($key_));
 
 			// execute the final query
 			$this->db->setQuery($query);
 
-			return $this->db->execute();
+			$result = $this->db->execute();
+
+			// tract history
+			if ($result && $this->history && !empty($this->entity) && (!empty($id) || !empty($guid)))
+			{
+				$this->trackHistory($id, $guid, $table);
+			}
+
+			// always reset the switch's
+			$this->defaults()->history();
+
+			return $result;
 		}
 
 		return false;
@@ -183,6 +249,93 @@ final class Update extends Database implements UpdateInterface
 	{
 		// convert to an array
 		return $this->row((array) get_object_vars($data), $key, $table);
+	}
+
+	/**
+	 * Update a single column value for all rows in the table
+	 *
+	 * @param   mixed   $value   The value to assign to the column
+	 * @param   string  $key     Dataset key column to use in updating the values in the Database
+	 * @param   string  $table   The table where the update should be applied
+	 *
+	 * @return  bool  True on success, false on failure
+	 * @since   5.1.1
+	 */
+	public function column(mixed $value, string $key, string $table): bool
+	{
+		// Ensure valid input
+		if ($key === '' || $table === '')
+		{
+			return false;
+		}
+
+		// Get a query object
+		$query = $this->db->getQuery(true);
+
+		// Prepare the update statement
+		$query->update($this->db->quoteName($this->getTable($table)))
+		      ->set($this->db->quoteName($key) . ' = ' . $this->quote($value));
+
+		// Apply the query
+		$this->db->setQuery($query);
+
+		return $this->db->execute();
+	}
+
+	/**
+	 * Attempt to set history records for the specified entity.
+	 *
+	 * Any exceptions during this process are silently caught and ignored.
+	 *
+	 * @param  int     $id      The entity id.
+	 * @param  string  $guid    The entity GUID.
+	 * @param  string  $table   The full table name.
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected function trackHistory(?int $id, ?string $guid, $table): void
+	{
+		if ($id !== null)
+		{
+			try
+			{
+				$this->setHistory($id);
+			}
+			catch (\Throwable $e)
+			{
+				// Silently ignore all errors
+			}
+			return;
+		}
+
+		if ($guid === null)
+		{
+			// should never happen
+			return;
+		}
+
+		try
+		{
+			$query = $this->db->getQuery(true)
+				->select($this->db->quoteName('id'))
+				->from($this->db->quoteName($table))
+				->where($this->db->quoteName('guid') . ' = ' . $this->quote($guid));
+
+			$this->db->setQuery($query);
+			$this->db->execute();
+
+			if ($this->db->getNumRows())
+			{
+				$this->setHistory(
+					$this->db->loadResult()
+				);
+			}
+		}
+		catch (\Throwable $e)
+		{
+			// Silently ignore all errors
+		}
 	}
 }
 

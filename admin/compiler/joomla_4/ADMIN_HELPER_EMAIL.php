@@ -38,7 +38,7 @@ abstract class ###Component###Email
 	public static $active = [];
 
 	/**
-	 * Configuraiton object
+	 * Configuration object
 	 *
 	 * @var    Registry
 	 */
@@ -66,7 +66,7 @@ abstract class ###Component###Email
 	{
 		if (!self::$config)
 		{
-			self::$config = ComponentHelper::getParams('com_###component###');
+			self::$config = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		}
 
 		return self::$config;
@@ -153,7 +153,7 @@ abstract class ###Component###Email
 		if ('global' == $mailer)
 		{
 			// get the global details
-			$globalConf  = Factory::getConfig();
+			$globalConf  = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig();
 
 			$mailer      = $globalConf->get('mailer');
 			$smtpauth    = ($globalConf->get('smtpauth') == 0) ? null : 1;

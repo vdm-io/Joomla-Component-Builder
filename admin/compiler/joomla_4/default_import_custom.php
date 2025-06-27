@@ -22,9 +22,9 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 // No direct access to this file
 defined('_JEXEC') or die;###LICENSE_LOCKED_DEFINED###
 
-Html::_('jquery.framework');
-Html::_('bootstrap.tooltip');
-Html::_('script', 'system/core.js', false, true);
-Html::_('behavior.keepalive');
+Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('jquery.framework');
+Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('bootstrap.tooltip');
+Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', 'system/core.js', false, true);
+Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('behavior.keepalive');
 
 ?>###IMPORT_DEFAULT_VIEW_CUSTOM###

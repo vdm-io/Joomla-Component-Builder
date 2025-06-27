@@ -29,7 +29,9 @@ $fields = $displayData->get($fields_tab_layout) ?: array(
 	'type',
 	'base',
 	'username',
-	'token'
+	'token',
+	'author_name',
+	'author_email'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: [];

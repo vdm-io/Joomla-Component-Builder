@@ -67,7 +67,7 @@ class AjaxController extends BaseController
 		// return to a callback function
 		$callback     = $jinput->get('callback', null, 'CMD');
 		// Check Token!
-		$token        = Session::getFormToken();
+		$token        = Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken();
 		$call_token   = $jinput->get('token', 0, 'ALNUM');
 		if($jinput->get($token, 0, 'ALNUM') || $token === $call_token)
 		{

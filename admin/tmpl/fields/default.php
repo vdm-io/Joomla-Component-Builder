@@ -60,7 +60,7 @@ if ($this->saveOrder)
 	loadingDiv.id = 'loading';
 
 	// Set CSS properties individually
-	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/import.gif') 50% 15% no-repeat";
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
 	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
 	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
 	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
@@ -73,8 +73,13 @@ if ($this->saveOrder)
 
 	// add to page body
 	outerBodyDiv.appendChild(loadingDiv);
-// when the expand button is clicked
-jQuery('#toolbar').on('click',"button.button-expand-2", function(e){
-	loadingDiv.style.display = 'block';
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.adminForm;
+        // Hook into the form's submit event
+        if (form && loadingDiv) {
+            form.addEventListener('submit', function () {
+                loadingDiv.style.display = 'block';
+            });
+        }
+    });
 </script>

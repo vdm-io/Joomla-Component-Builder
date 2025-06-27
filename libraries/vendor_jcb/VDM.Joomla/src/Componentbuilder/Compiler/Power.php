@@ -25,7 +25,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
-use VDM\Joomla\Componentbuilder\Power\Remote\Get as Superpower;
+use VDM\Joomla\Componentbuilder\Remote\Get as Superpower;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface;
 
 

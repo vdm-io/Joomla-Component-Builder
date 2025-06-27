@@ -149,13 +149,13 @@ class ###View###Controller extends FormController
 	 */
 	public function batch($model = null)
 	{
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken() or jexit(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JINVALID_TOKEN'));
 
 		// Set the model
 		$model = $this->getModel('###View###', '', []);
 
 		// Preset the redirect
-		$this->setRedirect(Route::_('index.php?option=com_###component###&view=###views###' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=###views###' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}
@@ -180,13 +180,13 @@ class ###View###Controller extends FormController
 
 		$cancel = parent::cancel($key);
 
-		if (!is_null($return) && Uri::isInternal(base64_decode($return)))
+		if (!is_null($return) && Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::isInternal(base64_decode($return)))
 		{
 			$redirect = base64_decode($return);
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				Route::_(
+				Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(
 					$redirect, false
 				)
 			);
@@ -197,7 +197,7 @@ class ###View###Controller extends FormController
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				Route::_(
+				Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -208,7 +208,7 @@ class ###View###Controller extends FormController
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				Route::_(
+				Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -234,7 +234,7 @@ class ###View###Controller extends FormController
 
 		// Check if there is a return value
 		$return = $this->input->get('return', null, 'base64');
-		$canReturn = (!is_null($return) && Uri::isInternal(base64_decode($return)));
+		$canReturn = (!is_null($return) && Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::isInternal(base64_decode($return)));
 
 		if ($this->ref || $this->refid || $canReturn)
 		{
@@ -252,7 +252,7 @@ class ###View###Controller extends FormController
 
 			// Redirect to the return value.
 			$this->setRedirect(
-				Route::_(
+				Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(
 					$redirect, false
 				)
 			);
@@ -263,7 +263,7 @@ class ###View###Controller extends FormController
 
 			// Redirect to the item screen.
 			$this->setRedirect(
-				Route::_(
+				Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
@@ -274,7 +274,7 @@ class ###View###Controller extends FormController
 
 			// Redirect to the list screen.
 			$this->setRedirect(
-				Route::_(
+				Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);

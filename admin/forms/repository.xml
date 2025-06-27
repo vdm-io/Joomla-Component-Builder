@@ -154,12 +154,18 @@
 			<!-- Option Set. -->
 			<option value="">
 				COM_COMPONENTBUILDER_REPOSITORY_SELECT_AN_OPTION</option>
-			<option value="1">
-				COM_COMPONENTBUILDER_REPOSITORY_SUPER_POWER</option>
+			<option value="4">
+				COM_COMPONENTBUILDER_REPOSITORY_PACKAGES</option>
+			<option value="3">
+				COM_COMPONENTBUILDER_REPOSITORY_FIELD_TYPES</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_POWER</option>
-			<option value="3">
-				COM_COMPONENTBUILDER_REPOSITORY_JOOMLA_FIELD_TYPES</option>
+			<option value="5">
+				COM_COMPONENTBUILDER_REPOSITORY_SNIPPETS</option>
+			<option value="1">
+				COM_COMPONENTBUILDER_REPOSITORY_SUPER_POWER</option>
+			<option value="6">
+				COM_COMPONENTBUILDER_REPOSITORY_REPOSITORIES</option>
 		</field>
 		<!-- Type Field. Type: List. (joomla) -->
 		<field
@@ -178,6 +184,8 @@
 				COM_COMPONENTBUILDER_REPOSITORY_SELECT_AN_OPTION</option>
 			<option value="1">
 				COM_COMPONENTBUILDER_REPOSITORY_GITEA</option>
+			<option value="2">
+				COM_COMPONENTBUILDER_REPOSITORY_GITHUB</option>
 		</field>
 		<!-- Base Field. Type: Url. (joomla) -->
 		<field
@@ -189,7 +197,6 @@
 			default="https://git.vdm.dev"
 			description="COM_COMPONENTBUILDER_REPOSITORY_BASE_DESCRIPTION"
 			class="text_area"
-			required="true"
 			filter="url"
 			validated="url"
 			scheme="http,https"
@@ -264,7 +271,7 @@
 			label="COM_COMPONENTBUILDER_REPOSITORY_ACCESS_REPO_LABEL"
 			description="COM_COMPONENTBUILDER_REPOSITORY_ACCESS_REPO_DESCRIPTION"
 			class="btn-group btn-group-yesno"
-			default="0">
+			default="1">
 			<!-- Option Set. -->
 			<option value="0">
 				COM_COMPONENTBUILDER_REPOSITORY_GLOBAL</option>
@@ -297,6 +304,33 @@
 			message="COM_COMPONENTBUILDER_REPOSITORY_READ_BRANCH_MESSAGE"
 			hint="COM_COMPONENTBUILDER_REPOSITORY_READ_BRANCH_HINT"
 		/>
+		<!-- Author_email Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="author_email"
+			label="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_EMAIL_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_EMAIL_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			validate="email"
+			message="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_EMAIL_MESSAGE"
+			hint="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_EMAIL_HINT"
+		/>
+		<!-- Author_name Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="author_name"
+			label="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_NAME_LABEL"
+			size="40"
+			maxlength="150"
+			description="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_NAME_DESCRIPTION"
+			class="text_area"
+			filter="STRING"
+			message="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_NAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_REPOSITORY_AUTHOR_NAME_HINT"
+		/>
 		<!-- Token Field. Type: Password. (joomla) -->
 		<field
 			type="password"
@@ -309,7 +343,7 @@
 			filter="STRING"
 			hint="COM_COMPONENTBUILDER_REPOSITORY_TOKEN_HINT"
 			autocomplete="off"
-			showon="type:1[AND]access_repo:1"
+			showon="type:1[OR]type:2[AND]access_repo:1"
 		/>
 		<!-- Username Field. Type: Text. (joomla) -->
 		<field

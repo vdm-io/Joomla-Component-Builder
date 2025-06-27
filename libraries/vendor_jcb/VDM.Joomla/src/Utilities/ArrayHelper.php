@@ -103,5 +103,41 @@ abstract class ArrayHelper
 		return false;
 	}
 
+	/**
+	 * Deep clone an array, including nested arrays and objects.
+	 *
+	 * This method creates a completely independent copy of the given array.
+	 * It recursively clones nested arrays and uses PHP's `clone` keyword
+	 * to clone any objects found within the structure.
+	 *
+	 * Note: Resources and closures are not supported and will not be copied.
+	 *
+	 * @param  array  $array  The array to be deeply cloned.
+	 *
+	 * @return array A fully cloned, independent copy of the input array.
+	 * @since 5.1.1
+	 */
+	public static function clone(array $array): array
+	{
+		$copy = [];
+
+		foreach ($array as $key => $value)
+		{
+			if (is_array($value))
+			{
+				$copy[$key] = self::clone($value);
+			}
+			elseif (is_object($value))
+			{
+				$copy[$key] = clone $value;
+			}
+			else
+			{
+				$copy[$key] = $value;
+			}
+		}
+
+		return $copy;
+	}
 }
 

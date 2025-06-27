@@ -49,3 +49,55 @@ if ($this->saveOrder)
 	<input type="hidden" name="task" value="" />
 	<?php echo Html::_('form.token'); ?>
 </form>
+<script type="text/javascript">
+// dynamic_gets footer script
+
+	// get page body
+	var outerBodyDiv = document.querySelector('body');
+
+	// start loading spinner
+	var loadingDiv = document.createElement('div');
+	loadingDiv.id = 'loading';
+
+	// Set CSS properties individually
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
+	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
+	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
+	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
+	loadingDiv.style.height = outerBodyDiv.offsetHeight + "px";
+	loadingDiv.style.position = 'fixed';
+	loadingDiv.style.opacity = '0.80';
+	loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	loadingDiv.style.filter = "alpha(opacity=80)";
+	loadingDiv.style.display = 'none';
+
+	// add to page body
+	outerBodyDiv.appendChild(loadingDiv);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const pushButton = document.getElementById('toolbar-share-custom-button-pushpowers');
+        const resetButton = document.getElementById('toolbar-joomla-custom-button-resetpowers');
+        // Set confirmation messages
+        if (pushButton) {
+            const pushText = Joomla.Text._('COM_COMPONENTBUILDER_HTHREEKEEP_THIS_WIDOW_OPENHTHREEPTHIS_IS_A_BVERY_LARGE_TASKB_AND_MAY_TAKE_A_BLONG_TIMEB_TO_COMPLETEBRBRIT_WILL_BPUSH_ALLB_ENTITIES_LINKED_TO_EACH_SELECTED_BDYNAMIC_GETBBRBRDO_YOU_WANT_TO_PROCEEDP');
+            pushButton.setAttribute('confirm-message', pushText);
+        }
+        if (resetButton) {
+            const resetText = Joomla.Text._('COM_COMPONENTBUILDER_HTHREEKEEP_THIS_WIDOW_OPENHTHREEPTHIS_IS_A_BVERY_LARGE_TASKB_AND_MAY_TAKE_A_BLONG_TIMEB_TO_COMPLETEBRBRIT_WILL_BRESET_ALLB_ENTITIES_LINKED_TO_EACH_SELECTED_BDYNAMIC_GETBBRBRDO_YOU_WANT_TO_CONTINUEP');
+            resetButton.setAttribute('confirm-message', resetText);
+        }
+        const form = document.adminForm;
+        // Hook into the form's submit event
+        if (form && loadingDiv) {
+            form.addEventListener('submit', function () {
+                loadingDiv.style.display = 'block';
+            });
+        }
+    });
+
+<?php
+		// some language strings for JS in this area
+		Text::script('COM_COMPONENTBUILDER_HTHREEKEEP_THIS_WIDOW_OPENHTHREEPTHIS_IS_A_BVERY_LARGE_TASKB_AND_MAY_TAKE_A_BLONG_TIMEB_TO_COMPLETEBRBRIT_WILL_BPUSH_ALLB_ENTITIES_LINKED_TO_EACH_SELECTED_BDYNAMIC_GETBBRBRDO_YOU_WANT_TO_PROCEEDP');
+		Text::script('COM_COMPONENTBUILDER_HTHREEKEEP_THIS_WIDOW_OPENHTHREEPTHIS_IS_A_BVERY_LARGE_TASKB_AND_MAY_TAKE_A_BLONG_TIMEB_TO_COMPLETEBRBRIT_WILL_BRESET_ALLB_ENTITIES_LINKED_TO_EACH_SELECTED_BDYNAMIC_GETBBRBRDO_YOU_WANT_TO_CONTINUEP');
+?>
+</script>

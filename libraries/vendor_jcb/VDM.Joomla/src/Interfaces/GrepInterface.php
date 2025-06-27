@@ -35,12 +35,70 @@ interface GrepInterface
 	public function get(string $guid, ?array $order = null, ?object $repo = null): ?object;
 
 	/**
-	 * Get all remote GUID's
+	 * Get the path/repo object
+	 *
+	 * @param string   $guid  The target repository guid.
+	 *
+	 * @return object|null
+	 * @since  5.1.1
+	 */
+	public function getPath(string $guid): ?object;
+
+	/**
+	 * Get all the available repos
 	 *
 	 * @return array|null
-	 * @since 3.2.0
+	 * @since  5.1.1
 	 */
-	public function getRemoteGuid(): ?array;
+	public function getPaths(): ?array;
+
+	/**
+	 * Get all paths + indexes (the active set)
+	 *
+	 * @return array|null
+	 * @since  5.1.1
+	 */
+	public function getPathsIndexes(): ?array;
+
+	/**
+	 * Get the a path + indexes
+	 *
+	 * @param string $guid The unique identifier for the repo.
+	 *
+	 * @return object|null
+	 * @since  5.1.1
+	 */
+	public function getPathIndexes(string $guid): ?object;
+
+	/**
+	 * Get the index of a repo
+	 *
+	 * @param string $guid The unique identifier for the repo.
+	 *
+	 * @return object|null
+	 * @since 3.2.2
+	 */
+	public function getRemoteIndex(string $guid): ?object;
+
+	/**
+	 * Get the network target name
+	 *
+	 * @return string|null
+	 * @since  5.1.1
+	 */
+	public function getNetworkTarget(): ?string;
+
+	/**
+	 * Check if an item exists in any repo or in a specific repo.
+	 *
+	 * @param string $guid The unique identifier for the item.
+	 * @param object|null $repo The repository object to check against. If null, all repos will be checked.
+	 * @param array|null $order The order of the targets to check. If null, the default order will be used.
+	 *
+	 * @return bool True if the item exists, false otherwise.
+	 * @since 3.2.2
+	 */
+	public function exists(string $guid, ?object $repo = null, ?array $order = null): bool;
 
 	/**
 	 * Set the branch field
@@ -71,16 +129,6 @@ interface GrepInterface
 	 * @since 3.2.2
 	 */
 	public function setIndexPath(string $indexPath): void;
-
-	/**
-	 * Get the index of a repo
-	 *
-	 * @param string $guid The unique identifier for the repo.
-	 *
-	 * @return object|null
-	 * @since 3.2.2
-	 */
-	public function getRemoteIndex(string $guid): ?object;
 
 	/**
 	 * Loads API config using the provided base URL and token.

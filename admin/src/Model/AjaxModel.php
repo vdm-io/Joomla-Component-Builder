@@ -28,12 +28,13 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Gitea\Factory as GiteaFactory;
-use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Remote\Version;
+use VDM\Joomla\Github\Factory as GithubFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\SessionHelper;
@@ -41,6 +42,12 @@ use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Table\Search;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Utilities\FormHelper;
+use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
+use VDM\Joomla\Componentbuilder\Fieldtype\Factory as FieldtypeFactory;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Factory as JoomlaPowerFactory;
+use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
+use VDM\Joomla\Componentbuilder\Snippet\Factory as SnippetFactory;
+use VDM\Joomla\Componentbuilder\Repository\Factory as RepositoryFactory;
 use Joomla\CMS\Form\FormHelper as FormFormHelper;
 
 // No direct access to this file
@@ -87,95 +94,6 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in joomla_component
-	/**
-	 * Will be removed since we are going the AI route... instead.
-	 */
-	public function getCrowdinDetails($identifier, $key)
-	{
-		// set the url
-		$url = "https://api.crowdin.com/api/project/$identifier/info?key=$key&json";
-		// get the details
-		if (($details = FileHelper::getContent($url, false)) !== false && JsonHelper::check($details))
-		{
-			$details = json_decode($details, true);
-			// check if there is an error
-			if (isset($details['error']))
-			{
-				return ['error' => '<div class="alert alert-error">' . $details['error']['message'] . '<br /><br /><small>Identifier: ' . $identifier . '</small></div>'];
-			}
-			// build the details html
-			if (isset($details['details']))
-			{
-				$html = '<div class="alert alert-success" id="crowdin_message">';
-				$html .= '<h1>' . Text::_('COM_COMPONENTBUILDER_COMPONENT_SUCCESSFULLY_LINKED') . '</h1>';
-				$html .= '<h3>' . $details['details']['name'] . '</h3>';
-				if (StringHelper::check($details['details']['description']))
-				{
-					$html .= '<p>';
-					$html .= $details['details']['description'];
-					$html .= '</p>';
-				}
-				$html .= '<ul>';
-				$html .= '<li>Number of participants: <b>';
-				$html .= $details['details']['participants_count'];
-				$html .= '</b></li>';
-				$html .= '<li>Total strings count: <b>';
-				$html .= $details['details']['total_strings_count'];
-				$html .= '</b></li>';
-				$html .= '<li>Total words count: <b>';
-				$html .= $details['details']['total_words_count'];
-				$html .= '</b></li>';
-				$html .= '<li>Created: <b>';
-				$html .= ComponentbuilderHelper::fancyDate($details['details']['created']);
-				$html .= '</b></li>';
-				$html .= '<li>Last activity: <b>';
-				$html .= ComponentbuilderHelper::fancyDate($details['details']['last_activity']);
-				$html .= '</b></li>';
-				$html .= '</ul>';
-				$html .= '</div>';
-				return ['html' => $html];
-			}
-		}
-		return false;
-	}
-
-	/**
-	 *  Will be removed since we are moving to the new SuperPowers distribution system.
-	 */
-	public function getJCBpackageInfo($package)
-	{
-		// convert URL
-		$url = base64_decode($package);
-		$url = str_replace('.zip', '.info', $url);
-
-		// check if url exist
-		if ($info = FileHelper::getContent($url, false))
-		{
-			$_info = PackageFactory::_('Crypt')->decrypt($info, 'local.legacy');
-
-			// check if we had success
-			if (!JsonHelper::check($_info))
-			{
-				$_info = PackageFactory::_('Crypt')->decrypt($info, 'local.fof');
-			}
-
-			// check if we have json
-			if (JsonHelper::check($_info))
-			{
-				$info = json_decode($_info, true);
-
-				return [
-					'owner' => PackageFactory::_('Display.Details')->owner($info, true),
-					'packages' => PackageFactory::_('Display.Details')->components($info)
-				];
-			}
-		}
-
-		return [
-			'error' => Text::_('COM_COMPONENTBUILDER_JCB_PACKAGE_INFO_PATH_DOES_NOT_WORK_WE_ADVICE_YOU_BNOT_TO_CONTINUEB_WITH_THE_IMPORT_OF_THE_SELECTED_PACKAGE')
-		];
-	}
-
 	/**
 	 * Retrieves the component details as an HTML display and metadata.
 	 *
@@ -363,170 +281,44 @@ class AjaxModel extends ListModel
 	}
 
 	/**
-	 * 	Will be removed, since we will change to workflows soon :)
-	 */
-	public function getCronPath($type)
-	{
-		return ['error' => '<span style="color: red;">' . Text::_('COM_COMPONENTBUILDER_NO_CRONJOB_PATHS_WAS_REMOVED_WE_WILL_CHANGE_TO_WORKFLOWS_SOON') . '</span>'];
-	}
-
-	/**
-	 * get Current Version
+	 * Get the current version notice.
 	 *
-	 * @param   string|null  $message  The error messages if any.
+	 * Compares the installed version of the component with the latest available
+	 * version from the repository tags and returns an appropriate message.
 	 *
-	 * @return  array  The array of the notice or error message
+	 * @param   string|null  $version  Optional version to compare if manifest version not found.
+	 *
+	 * @return  array  The array with 'notice' or 'error' and optional 'github-error' / 'gitea-error'.
 	 * @since   2.3.0
+	 * @since   5.1.1 Improved with support for pre-releases and intelligent tag grouping.
 	 */
-	public function getVersion($version = null)
+	public function getVersion(?string $version = null): array
 	{
-		try
-		{
-			// get the repository tags
-			$tags = GiteaFactory::_('Gitea.Repository.Tags')->list('joomla', 'Component-Builder');
-		}
-		catch (DomainException $e)
-		{
-			return $this->getTokenForVersion($e->getMessage());
-		}
-		catch (InvalidArgumentException $e)
-		{
-			return $this->getTokenForVersion($e->getMessage());
-		}
-		catch (Exception $e)
-		{
-			return $this->getTokenForVersion($e->getMessage());
-		}
-		// do we have tags returned
-		if (isset($tags[0]) && isset($tags[0]->name))
-		{
-			// get the local version
-			$manifest = ComponentbuilderHelper::manifest();
-			$local_version = (string) $manifest->version;
-			$latest_version = '1.0.0';
-			$download_link = "https://git.vdm.dev/api/v1/joomla/Component-Builder";
-
-			// Filter tags by major version matching the local version's major number
-			$major_version = explode('.', $local_version)[0];
-			$filtered_tags = array_filter($tags, function($tag) use ($major_version) {
-				return strpos($tag->name, "v$major_version") === 0;
-			});
-
-			if (!empty($filtered_tags))
-			{
-				// Sort versions to find the latest one
-				usort($filtered_tags, function($a, $b) {
-					return \version_compare($b->name, $a->name);
-				});
-
-				$latest_version = trim($filtered_tags[0]->name, 'vV');
-
-				// download link of the latest version
-				$download_link = $filtered_tags[0]->zipball_url;
-			}
-
-			// now check if this version is out dated
-			if (\version_compare($local_version, $latest_version) === 0)
-			{
-				return ['notice' => '<small><span style="color:green;"><span class="icon-shield"></span>&nbsp;' . Text::_('COM_COMPONENTBUILDER_UP_TO_DATE') . '</span></small>'];
-			}
-			else
-			{
-				// check if this is beta version
-				if (\version_compare($local_version, $latest_version) > 0)
-				{
-					return ['notice' => '<small><span style="color:#F7B033;"><span class="icon-wrench"></span>&nbsp;' . Text::_('COM_COMPONENTBUILDER_PRE_RELEASE') . '</span></small>'];
-				}
-				else
-				{
-					return ['notice' => '<small><span style="color:red;"><span class="icon-warning-circle"></span>&nbsp;' . Text::_('COM_COMPONENTBUILDER_OUT_OF_DATE') . '!</span> <a style="color:green;"  href="' .
-						$download_link . '" title="' . Text::_('COM_COMPONENTBUILDER_YOU_CAN_DIRECTLY_DOWNLOAD_THE_LATEST_UPDATE_OR_USE_THE_JOOMLA_UPDATE_AREA') . '">' . Text::_('COM_COMPONENTBUILDER_DOWNLOAD_UPDATE') . '!</a></small>'];
-				}
-			}
-		}
-
-		return $this->getTokenForVersion();
+		return (new Version(
+			'joomengine', 'pkg-component-builder',
+			'joomla', 'pkg-component-builder'
+		))->get($version);
 	}
 
 	/**
-	 * Instructions to get Token for version
+	 * Get the content of a GitHub wiki page.
 	 *
-	 * @param   string|null  $message  The error messages if any.
+	 * @param   string  $name  The name of the wiki page (default: 'Home').
 	 *
-	 * @return  array  The array of the error message
-	 * @since   2.3.0
-	 */
-	protected function getTokenForVersion(?string $message = null): array
-	{
-		// the URL
-		$url = 'https://git.vdm.dev/user/settings/applications';
-
-		// create link
-		$a = '<small><a style="color:#F7B033;" href="' . $url . '" title="';
-		$a_ = '">';
-		$_a = '</a></small>';
-
-		if ($message)
-		{
-			return ['error' => $a . $message . $a_ . Text::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
-		}
-
-		return ['error' =>  $a . Text::_('COM_COMPONENTBUILDER_GET_TOKEN_FROM_VDM_TO_GET_UPDATE_NOTICE_AND_ADD_IT_TO_YOUR_GLOBAL_OPTIONS') . $a_ . Text::_('COM_COMPONENTBUILDER_GET_TOKEN') . $_a];
-	}
-
-	/**
-	 * get Wiki Page
-	 *
-	 * @param   string|null  $message  The error messages if any.
-	 *
-	 * @return  array  The array of the page or error message
+	 * @return  array  Associative array with 'page' or 'error' key.
 	 * @since   2.3.0
 	 */
 	public function getWiki(string $name = 'Home'): array
 	{
-		try
-		{
-			// get the gitea wiki page im markdown
-			$wiki = GiteaFactory::_('Gitea.Repository.Wiki')->get('joomla', 'Component-Builder', $name);
+		try {
+			$wiki = GithubFactory::_('Github.Repository.Wiki')
+				->get('joomengine', 'Joomla-Component-Builder', $name);
 
-			// now render the page in HTML
-			$page = $wiki->content ?? null;
-		}
-		catch (\DomainException $e)
-		{
-			return $this->getTokenForWiki($e->getMessage());
-		}
-		catch (\InvalidArgumentException $e)
-		{
-			return $this->getTokenForWiki($e->getMessage());
-		}
-		catch (\Exception $e)
-		{
-			return $this->getTokenForWiki($e->getMessage());
-		}
-
-		// get the html
-		if (isset($page))
-		{
-			return ['page' => $page];
-		}
-
-		return $this->getTokenForWiki();
-	}
-
-	/**
-	 * Instructions to get Token for wiki
-	 *
-	 * @param   string|null  $message  The error messages if any.
-	 *
-	 * @return  array  The array of the error message
-	 * @since   2.3.0
-	 */
-	protected function getTokenForWiki(?string $message = null): array
-	{
-		if ($message)
-		{
-			return ['error' => $message];
+			if (!empty($wiki->content)) {
+				return ['page' => base64_decode($wiki->content)];
+			}
+		} catch (\Throwable $e) {
+			return ['error' => $e->getMessage()];
 		}
 
 		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
@@ -4320,132 +4112,6 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in snippet
-
-	public function getSnippets($libraries)
-	{
-		if (JsonHelper::check($libraries))
-		{
-			$libraries = json_decode($libraries, true);
-		}
-		// check if we have an array
-		if (UtilitiesArrayHelper::check($libraries))
-		{
-			// insure we only have int values
-			if ($libraries = $this->checkLibraries($libraries))
-			{
-				// Get a db connection.
-				$db = Factory::getDbo();
-				// Create a new query object.
-				$query = $db->getQuery(true);
-				$query->select($db->quoteName( array('a.id') ));
-				$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
-				$query->where($db->quoteName('a.published') . ' = 1');
-				// check for country and region
-				$query->where($db->quoteName('a.library') . ' IN ('. implode(',',$libraries) .')');
-				$db->setQuery($query);
-				$db->execute();
-				if ($db->getNumRows())
-				{
-					return $db->loadColumn();
-				}
-			}
-		}
-		return false;
-	}
-
-	protected function checkLibraries($libraries)
-	{
-		$bucket = array();
-		$libraries = array_map( function($id) use (&$bucket) { 
-			// now get bundled libraries
-			$type = GetHelper::var('library', (int) $id, 'id', 'type');
-			if (2 == $type && $bundled = GetHelper::var('library', (int) $id, 'id', 'libraries'))
-			{
-				// make sure we have an array if it was json
-				if (JsonHelper::check($bundled))
-				{
-					$bundled = json_decode($bundled, true);
-				}
-				// load in the values if we have an array
-				if (UtilitiesArrayHelper::check($bundled))
-				{
-					foreach ($bundled as $lib)
-					{
-						$bucket[$lib] = $lib;
-					}
-				}
-				elseif (is_numeric($bundled))
-				{
-					$bucket[(int) $bundled] = (int) $bundled;
-				}
-			}
-			else
-			{
-				return (int) $id;
-			}
-		}, $libraries);
-		// check if we have any bundled libraries
-		if (UtilitiesArrayHelper::check($bucket))
-		{
-			foreach ($bucket as $lib)
-			{
-				$libraries[] = (int) $lib;
-			}
-		}
-		// check that we have libraries
-		if (UtilitiesArrayHelper::check($libraries))
-		{
-			$libraries = array_values(array_unique(array_filter($libraries, function($id){return is_int($id);})));
-			// check if we have any libraries remaining
-			if (UtilitiesArrayHelper::check($libraries))
-			{
-				return $libraries;
-			}
-		}
-		return false;
-	}
-	public function getSnippetDetails($key)
-	{
-		if (GuidHelper::valid($key))
-		{
-			$target = 'guid';
-		}
-		elseif (is_numeric($key))
-		{
-			$target = 'id';
-		}
-		else
-		{
-			return false;
-		}
-
-		// Get a db connection.
-		$db = Factory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.name', 'a.heading', 'a.usage', 'a.description', 'b.name', 'a.snippet', 'a.url', 'c.name'), array('name', 'heading', 'usage', 'description', 'type', 'snippet', 'url', 'library')));
-		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
-		// From the componentbuilder_snippet_type table.
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON (' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.id') . ')');
-		// From the componentbuilder_library table.
-		$query->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON (' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.id') . ')');
-		$query->where($db->quoteName('a.published') . ' >= 1');
-		$query->where($db->quoteName('a.' . $target) . ' = ' . $db->quote($key));
-		 
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			$snippet = $db->loadObject();
-			$snippet->snippet = base64_decode($snippet->snippet);
-			// return found snippet settings
-			return $snippet;
-		}
-		return false;
-	}
-
 	public function setSnippetGithub($path, $status)
 	{
 		// get user
@@ -4503,7 +4169,7 @@ class AjaxModel extends ListModel
 			}
 		}
 		// get the snippet model
-		$model = ComponentbuilderHelper::getModel('snippet', JPATH_COMPONENT_ADMINISTRATOR);
+		$model = ComponentbuilderHelper::getModel('snippet', JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
 		// save the snippet
 		if ($model->save($item))
 		{
@@ -4569,7 +4235,7 @@ class AjaxModel extends ListModel
 		if (ComponentbuilderHelper::getActions($type)->get('core.create'))
 		{
 			// get the snippet model
-			$model = ComponentbuilderHelper::getModel($type, JPATH_COMPONENT_ADMINISTRATOR);
+			$model = ComponentbuilderHelper::getModel($type, JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
 			// build array to save
 			$item['id'] = 0;
 			$item['name'] = $name;
@@ -4584,6 +4250,191 @@ class AjaxModel extends ListModel
 			return $item->get('id');
 		}
 		return 0;
+	}
+
+	/**
+	 * Retrieves published snippet GUIDs for valid libraries.
+	 *
+	 * @param   mixed  $libraries  JSON string or array of library GUIDs.
+	 *
+	 * @return  array|false  List of snippet IDs or false on failure.
+	 * @since   5.1.1
+	 */
+	public function getSnippets($libraries)
+	{
+		// Decode JSON if required
+		if (JsonHelper::check($libraries))
+		{
+			$libraries = json_decode($libraries, true);
+		}
+
+		// Ensure we have a valid array of libraries
+		if (!UtilitiesArrayHelper::check($libraries))
+		{
+			return false;
+		}
+
+		// Validate and expand libraries
+		$validatedLibraries = $this->expandAndValidateLibraries($libraries);
+
+		if (!$validatedLibraries)
+		{
+			return false;
+		}
+
+		$db = Factory::getDbo();
+		$query = $db->getQuery(true)
+			->select($db->quoteName('a.id'))
+			->from($db->quoteName('#__componentbuilder_snippet', 'a'))
+			->where($db->quoteName('a.published') . ' = 1')
+			->where($db->quoteName('a.library') . ' IN ("' . implode('","', $validatedLibraries) . '")');
+
+		$db->setQuery($query);
+		$db->execute();
+
+		return $db->getNumRows() ? $db->loadColumn() : false;
+	}
+
+	/**
+	 * Validates and expands library GUIDs to ensure only integers and valid references remain.
+	 *
+	 * @param   array  $libraries  The original list of library GUIDs.
+	 *
+	 * @return  array|false  Sanitized and validated list of libraries, or false.
+	 * @since   5.1.1
+	 */
+	protected function expandAndValidateLibraries(array $libraries)
+	{
+		$expanded = [];
+
+		foreach ($libraries as $guid)
+		{
+			$guid = (string) $guid;
+			$type = GetHelper::var('library', $guid, 'guid', 'type');
+
+			if ((int) $type === 2)
+			{
+				$bundled = GetHelper::var('library', $guid, 'guid', 'libraries');
+
+				if (JsonHelper::check($bundled))
+				{
+					$bundled = json_decode($bundled, true);
+				}
+
+				if (UtilitiesArrayHelper::check($bundled))
+				{
+					foreach ($bundled as $lib)
+					{
+						$expanded[$lib] = $lib;
+					}
+				}
+				elseif (is_numeric($bundled))
+				{
+					$expanded[$bundled] = $bundled;
+				}
+			}
+			else
+			{
+				$expanded[$guid] = $guid;
+			}
+		}
+
+		// Remove invalid entries and duplicates
+		$valid = array_filter(array_unique($expanded), function ($guid) {
+			return GuidHelper::valid($guid);
+		});
+
+		return UtilitiesArrayHelper::check($valid) ? array_values($valid) : false;
+	}
+
+	/**
+	 * Retrieves snippet details by GUID or ID.
+	 *
+	 * @param   string|int  $key  The snippet GUID (string) or ID (int).
+	 *
+	 * @return  object|false  The snippet data object or false on failure.
+	 * @since   5.1.1
+	 */
+	public function getSnippetDetails($key)
+	{
+		$target = $this->resolveSnippetKeyField($key);
+
+		if ($target === false)
+		{
+			return false;
+		}
+
+		$db = Factory::getDbo();
+		$query = $db->getQuery(true);
+
+		$query
+			->select($db->quoteName(
+				[
+					'a.name',
+					'a.heading',
+					'a.usage',
+					'a.description',
+					'b.name',
+					'a.snippet',
+					'a.url',
+					'c.name'
+				],
+				[
+					'name',
+					'heading',
+					'usage',
+					'description',
+					'type',
+					'snippet',
+					'url',
+					'library'
+				]
+			))
+			->from($db->quoteName('#__componentbuilder_snippet', 'a'))
+			->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON ' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.guid'))
+			->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON ' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.guid'))
+			->where($db->quoteName('a.published') . ' >= 1')
+			->where($db->quoteName("a.$target") . ' = ' . $db->quote($key));
+
+		$db->setQuery($query);
+		$db->execute();
+
+		if ($db->getNumRows() > 0)
+		{
+			$snippet = $db->loadObject();
+
+			if (isset($snippet->snippet))
+			{
+				$snippet->snippet = base64_decode($snippet->snippet);
+			}
+
+			return $snippet;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Resolves whether the given key is a GUID or numeric ID and returns the appropriate field.
+	 *
+	 * @param   mixed  $key  The value used to identify the snippet.
+	 *
+	 * @return  string|false  'guid', 'id', or false if invalid.
+	 * @since   5.1.1
+	 */
+	protected function resolveSnippetKeyField($key)
+	{
+		if (GuidHelper::valid($key))
+		{
+			return 'guid';
+		}
+
+		if (is_numeric($key))
+		{
+			return 'id';
+		}
+
+		return false;
 	}
 
 	// Used in validation_rule
@@ -5434,4 +5285,225 @@ class AjaxModel extends ListModel
 		return ['error' => Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_PLEASE_TRY_AGAIN')];
 	}
 
+
+	// Used in initialization_selection
+	/**
+	 * Method to get the target power
+	 *
+	 * @return  string|null
+	 *
+	 * @since   5.1.1
+	 */
+	protected function getTargetAreaPower($power): ?string
+	{
+		return $this->powers[$power] ?? null;
+	}
+
+	/**
+	 * Method to get the power get class
+	 *
+	 * @param   string  $repo  The repo to list index
+	 * @param   string  $area  The target area
+	 *
+	 * @return  array
+	 * @since   5.1.1
+	 */
+	public function getRepoIndex(string $repo, string $area): array
+	{
+		if (!GuidHelper::valid($repo))
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
+		}
+
+		if (($Power = $this->getTargetAreaPower($area)) === null)
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
+		}
+
+		try
+		{
+			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			if ($class !== null)
+			{
+				$result = $class->list($repo);
+			}
+		}
+		catch (\Exception $e)
+		{
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+
+		if (!empty($result))
+		{
+			foreach($result as &$values)
+			{
+				// ensure we don't leak the repo token
+				if (isset($values->token))
+				{
+					$values->token = '***redacted***';
+				}
+			}
+
+			return ['success' => true, 'index' => $result];
+		}
+
+		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_REPO_INDEX_FAILED_TO_LOAD_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Method to initialize the selected powers
+	 *
+	 * @param   string  $repo      The repo to list index
+	 * @param   string  $area      The target area
+	 * @param   array   $selected  The selected powers
+	 *
+	 * @return  array
+	 * @since   5.1.1
+	 */
+	public function initSelectedPowers(string $repo, string $area, array $selected): array
+	{
+		if (!GuidHelper::valid($repo))
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
+		}
+
+		if (($Power = $this->getTargetAreaPower($area)) === null)
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
+		}
+
+		$result = [];
+		try
+		{
+			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			if ($class !== null)
+			{
+				$repo_path = $class->path($repo);
+				$result = $class->init($selected, $repo_path);
+			}
+		}
+		catch (\Exception $e)
+		{
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+
+		if ($result !== [])
+		{
+			return ['success' => true, 'result_log' => $result];
+		}
+
+		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_REPO_INDEX_FAILED_TO_LOAD_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Method to initialize the selected packages
+	 *
+	 * @param   string  $repo      The repo to list index
+	 * @param   string  $area      The target area
+	 * @param   array   $selected  The selected powers
+	 *
+	 * @return  array
+	 * @since   5.1.1
+	 */
+	public function initSelectedPackages(string $repo, string $area, array $selected): array
+	{
+		if (!GuidHelper::valid($repo))
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
+		}
+
+		if (($Power = $this->getTargetAreaPower($area)) === null)
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
+		}
+
+		$result = [];
+		try
+		{
+			$class = $this->getPowerClass($Power, "Package.Builder.Get");
+			$entity = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			if (!empty($selected) && $class !== null && $entity !== null)
+			{
+				$table = $entity->getTable();
+				$repo_path = $entity->path($repo);
+				$result = $class->init($table, $selected, $repo_path);
+			}
+		}
+		catch (\Exception $e)
+		{
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+
+		if ($this->hasIntResults($result))
+		{
+			return ['success' => true, 'result_log' => $result];
+		}
+
+		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_INITIALIZATION_FAILED_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Check if at least one key in the array has a non-empty value.
+	 *
+	 * @param array $data The result array (with 'local', 'not_found', 'added' keys)
+	 *
+	 * @return bool True if some values are non-empty; false if all are empty.
+	 * @since  5.1.1
+	 */
+	protected static function hasIntResults(array $data): bool
+	{
+		return (bool) array_filter($data);
+	}
+
+	/**
+	 * The powers that we can initialize
+	 *
+	 * @var    array
+	 * @since  5.1.1
+	 */
+	protected array $powers = [
+		'AdminView' => 'PackageFactory',
+		'Component' => 'PackageFactory',
+		'CustomAdminView' => 'PackageFactory',
+		'CustomCode' => 'PackageFactory',
+		'DynamicGet' => 'PackageFactory',
+		'Field' => 'PackageFactory',
+		'Joomla.Fieldtype' => 'FieldtypeFactory',
+		'Joomla.Power' => 'JoomlaPowerFactory',
+		'Layout' => 'PackageFactory',
+		'Library' => 'PackageFactory',
+		'JoomlaModule' => 'PackageFactory',
+		'JoomlaPlugin' => 'PackageFactory',
+		'Power' => 'PowerFactory',
+		'SiteView' => 'PackageFactory',
+		'Snippet' => 'SnippetFactory',
+		'Template' => 'PackageFactory',
+		'ClassExtends' => 'PackageFactory',
+		'ClassProperty' => 'PackageFactory',
+		'ClassMethod' => 'PackageFactory',
+		'Placeholder' => 'PackageFactory',
+		'Repository' => 'RepositoryFactory'
+	];
+
+	/**
+	 * Method to get the power get class
+	 *
+	 * @param   string  $factoryName  The factory name
+	 * @param   string  $getClass          The remote power class name
+	 *
+	 * @return  mixed
+	 * @since   5.1.1
+	 */
+	protected function getPowerClass(string $factoryName, string $getClass)
+	{
+		return match ($factoryName) {
+			'PowerFactory' => PowerFactory::_($getClass),
+			'JoomlaPowerFactory' => JoomlaPowerFactory::_($getClass),
+			'FieldtypeFactory' => FieldtypeFactory::_($getClass),
+			'SnippetFactory' => SnippetFactory::_($getClass),
+			'PackageFactory' => PackageFactory::_($getClass),
+			'RepositoryFactory' => RepositoryFactory::_($getClass),
+			default => null,
+		};
+	}
 }

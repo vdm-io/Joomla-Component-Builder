@@ -24,6 +24,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Snippet\Factory as SnippetFactory;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -77,6 +78,229 @@ class SnippetController extends FormController
 	 * @since  5.0
 	 */
 	protected int $refid;
+
+
+	/**
+	 * Resets the specified Snippet.
+	 *
+	 * This function performs several checks and operations:
+	 * 1. It verifies the authenticity of the request to prevent request forgery.
+	 * 2. It retrieves the item data posted by the user.
+	 * 3. It checks whether the current user has the necessary permissions to reset the Snippet.
+	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to reset the specified Snippet.
+	 * 6. Depending on the result of the reset operation, it sets the appropriate success or error message.
+	 * 7. It redirects the user to a specified URL with the result message and status.
+	 *
+	 * @return bool True on successful reset, false on failure.
+	 * @since  5.1.1
+	 */
+	public function resetPowers()
+	{
+		// Check for request forgeries
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		// get Item posted
+		$item = $this->input->post->get('jform', array(), 'array');
+
+		// check if user has the right
+		$user = $this->app->getIdentity();
+
+		// set default error message
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RESET_THIS_SNIPPET') . '</p>';
+		$status = 'error';
+		$success = false;
+		$has_error = false;
+
+		// get the guid field of this entity
+		$key_field = SnippetFactory::_('Snippet.Remote.Get')->getGuidField();
+
+		// load the ID
+		$id = $item['id'] ?? null;
+		$guid = $item[$key_field] ?? null;
+
+		$message_bus = ['success', 'warning', 'error'];
+
+		// check if there is any selections
+		if ($id === null || $guid === null)
+		{
+			// set error message
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_RESET') . '</h1>';
+			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_SNIPPET_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
+		}
+		elseif($user->authorise('snippet.reset', 'com_componentbuilder'))
+		{
+			try {
+				SnippetFactory::_('Package.Builder.Get')->reset('snippet', [$guid]);
+
+				foreach ($message_bus as $message_key)
+				{
+					if (($messages = SnippetFactory::_('Power.Message')->get($message_key, null)) !== null)
+					{
+						$messages = '<p>' . implode('<br>', $messages) . '</p>';
+						$this->app->enqueueMessage($messages, $message_key);
+
+						if (!$success && $message_key === 'success')
+						{
+							$success = true;
+						}
+
+						if (!$has_error && $message_key === 'error')
+						{
+							$has_error = true;
+						}
+					}
+				}
+
+				if ($success)
+				{
+					// set success message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESS') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_SNIPPET_HAS_SUCCESSFULLY_BEEN_RESET') . '</p>';
+					$status = 'success';
+				}
+				elseif ($has_error)
+				{
+					// set error message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_SNIPPET_HAS_FAILED') . '</p>';
+					$status = 'error';
+				}
+				else
+				{
+					// set warning message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_UNSUCCESSFUL') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_SNIPPET_HAS_NOT_BEEN_SUCCESSFUL') . '</p>';
+					$status = 'warning';
+				}
+			} catch (\Exception $e) {
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
+			}
+		}
+
+		// set redirect
+		$redirect_url = Route::_(
+			'index.php?option=com_componentbuilder&view=snippet'
+			. $this->getRedirectToItemAppend($id), false
+		);
+
+		$this->setRedirect($redirect_url, $message, $status);
+
+		return $success;
+	}
+
+	 /**
+	 * Pushes the specified Snippet.
+	 *
+	 * This function performs several checks and operations:
+	 * 1. It verifies the authenticity of the request to prevent request forgery.
+	 * 2. It retrieves the item data posted by the user.
+	 * 3. It checks whether the current user has the necessary permissions to push the Snippet.
+	 * 4. It validates the presence of the necessary item identifiers (ID and GUID).
+	 * 5. If the user is authorized and the identifiers are valid, it attempts to push the specified Snippet.
+	 * 6. Depending on the result of the push operation, it sets the appropriate success or error message.
+	 * 7. It redirects the user to a specified URL with the result message and status.
+	 *
+	 * @return bool True on successful push, false on failure.
+	 * @since  5.1.1
+	 */
+	public function pushPowers()
+	{
+		// Check for request forgeries
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		// get Item posted
+		$item = $this->input->post->get('jform', array(), 'array');
+
+		// check if user has the right
+		$user = $this->app->getIdentity();
+
+		// set default error message
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_PUSH_THIS_SNIPPET') . '</p>';
+		$status = 'error';
+		$success = false;
+		$has_error = false;
+
+		// get the guid field of this entity
+		$key_field = SnippetFactory::_('Snippet.Remote.Set')->getGuidField();
+
+		// load the ID
+		$id = $item['id'] ?? null;
+		$guid = $item[$key_field] ?? null;
+
+		$message_bus = ['success', 'warning', 'error'];
+
+		// check if there is any selections
+		if ($id === null || $guid === null)
+		{
+			// set error message
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_PUSHED') . '</h1>';
+			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_SNIPPET_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
+		}
+		elseif($user->authorise('snippet.push', 'com_componentbuilder'))
+		{
+			try {
+				SnippetFactory::_('Package.Builder.Set')->items('snippet', [$guid]);
+
+				foreach ($message_bus as $message_key)
+				{
+					if (($messages = SnippetFactory::_('Power.Message')->get($message_key, null)) !== null)
+					{
+						$messages = '<p>' . implode('<br>', $messages) . '</p>';
+						$this->app->enqueueMessage($messages, $message_key);
+
+						if (!$success && $message_key === 'success')
+						{
+							$success = true;
+						}
+
+						if (!$has_error && $message_key === 'error')
+						{
+							$has_error = true;
+						}
+					}
+				}
+
+				if ($success)
+				{
+					// set success message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESS') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_SNIPPET_HAS_SUCCESSFULLY_BEEN_PUSHED') . '</p>';
+					$status = 'success';
+				}
+				elseif ($has_error)
+				{
+					// Initialize base values
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_SNIPPET_HAS_FAILED') . '</p>';
+					$status = 'error';
+				}
+				else
+				{
+					// Initialize base values
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_UNSUCCESSFUL') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_SNIPPET_HAS_NOT_BEEN_SUCCESSFUL') . '</p>';
+					$status = 'warning';
+				}
+			} catch (\Exception $e) {
+				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
+				$message .= '<p>' . \htmlspecialchars($e->getMessage()) . '</p>';
+			}
+		}
+
+		// set redirect
+		$redirect_url = Route::_(
+			'index.php?option=com_componentbuilder&view=snippet'
+			. $this->getRedirectToItemAppend($id), false
+		);
+
+		$this->setRedirect($redirect_url, $message, $status);
+
+		return $success;
+	}
 
 	/**
 	 * Method override to check if you can add a new record.
@@ -217,7 +441,7 @@ class SnippetController extends FormController
 	 */
 	public function batch($model = null)
 	{
-		Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+		Session::checkToken() or exit(Text::_('JINVALID_TOKEN'));
 
 		// Set the model
 		$model = $this->getModel('Snippet', '', []);
@@ -280,6 +504,15 @@ class SnippetController extends FormController
 					'index.php?option=' . $this->option . $redirect, false
 				)
 			);
+		}
+		// When editing in modal then redirect to modalreturn layout
+		elseif ($cancel && $this->input->get('layout') === 'modal')
+		{
+			$id = $this->input->get('id');
+			$return = 'index.php?option=' . $this->option . '&view=' . $this->view_item . $this->getRedirectToItemAppend($id)
+				. '&layout=modalreturn&from-task=cancel';
+
+			$this->setRedirect(Route::_($return, false));
 		}
 		return $cancel;
 	}
@@ -363,6 +596,15 @@ class SnippetController extends FormController
 	 */
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = [])
 	{
+		if ($this->input->get('layout') === 'modal' && $this->task === 'save')
+		{
+			// When editing in modal then redirect to modalreturn layout
+			$id = $model->getState('snippet.id', '');
+			$return = 'index.php?option=' . $this->option . '&view=' . $this->view_item . $this->getRedirectToItemAppend($id)
+				. '&layout=modalreturn&from-task=save';
+
+			$this->setRedirect(Route::_($return, false));
+		}
 		return;
 	}
 }

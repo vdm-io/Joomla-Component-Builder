@@ -91,7 +91,7 @@ const doSearch = async (signal, tables) => {
 				if (response.ok) {
 					return response.json();
 				} else { 
-					UIkit.notify(Joomla.JText._('COM_COMPONENTBUILDER_THE_SEARCH_PROCESS_HAD_AN_ERROR_WITH_TABLE') + ' ' + tableName, {pos:'top-right', status:'danger'});
+					UIkit.notify(Joomla.Text._('COM_COMPONENTBUILDER_THE_SEARCH_PROCESS_HAD_AN_ERROR_WITH_TABLE') + ' ' + tableName, {pos:'top-right', status:'danger'});
 				}
 			}).then((data) => {
 				if (typeof data.success !== 'undefined') {
@@ -116,11 +116,11 @@ const doSearch = async (signal, tables) => {
 				searchProgressBarObject.innerHTML = percent.toFixed(2) + '%';
 				// when complete hide the progress bar
 				if (progress == total) {
-					let total_field_line = ' ' +  fieldCount + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_FIELDS_THAT_HAD') + ' ' +  lineCount + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_LINES') + ' ';
+					let total_field_line = ' ' +  fieldCount + ' ' + Joomla.Text._('COM_COMPONENTBUILDER_FIELDS_THAT_HAD') + ' ' +  lineCount + ' ' + Joomla.Text._('COM_COMPONENTBUILDER_LINES') + ' ';
 					if (progress == 1) {
-						searchProgressBarObject.innerHTML = Joomla.JText._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + tableName + total_field_line + Joomla.JText._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_SECONDS');
+						searchProgressBarObject.innerHTML = Joomla.Text._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + tableName + total_field_line + Joomla.Text._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.Text._('COM_COMPONENTBUILDER_SECONDS');
 					} else {
-						searchProgressBarObject.innerHTML = Joomla.JText._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + progress + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_TABLES_WITH') + total_field_line + Joomla.JText._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.JText._('COM_COMPONENTBUILDER_SECONDS');
+						searchProgressBarObject.innerHTML = Joomla.Text._('COM_COMPONENTBUILDER_SEARCHING') + ' ' + progress + ' ' + Joomla.Text._('COM_COMPONENTBUILDER_TABLES_WITH') + total_field_line + Joomla.Text._('COM_COMPONENTBUILDER_AND_FINISHED_THE_SEARCH_IN') + ' ' + getSearchLenght() + ' ' + Joomla.Text._('COM_COMPONENTBUILDER_SECONDS');
 					}
 					// show the search button
 					startSearchButton.style.display = '';
@@ -235,11 +235,11 @@ const replaceAllCheck = () => {
 	let searchValue = searchObject.value;
 	let replaceValue = replaceObject.value;
 	// load question
-	let question = Joomla.JText._('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_BALLB_VALUES_THAT_CAN_BE_FOUND_IN_THE_DATABASE') + '<br />' +
-		Joomla.JText._('COM_COMPONENTBUILDER_YOU_WILL_REPLACE') + ': [<span class="found_code">' + htmlentities(searchValue) + '</span>] ' +
-		Joomla.JText._('COM_COMPONENTBUILDER_WITH') + ': [<span class="found_code">' + htmlentities(replaceValue) + '</span>]<br />' +
-		Joomla.JText._('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB') + '<br /><br />' +
-		Joomla.JText._('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
+	let question = Joomla.Text._('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_BALLB_VALUES_THAT_CAN_BE_FOUND_IN_THE_DATABASE') + '<br />' +
+		Joomla.Text._('COM_COMPONENTBUILDER_YOU_WILL_REPLACE') + ': [<span class="found_code">' + htmlentities(searchValue) + '</span>] ' +
+		Joomla.Text._('COM_COMPONENTBUILDER_WITH') + ': [<span class="found_code">' + htmlentities(replaceValue) + '</span>]<br />' +
+		Joomla.Text._('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_BYOU_HAVE_BEEN_WARNEDB') + '<br /><br />' +
+		Joomla.Text._('COM_COMPONENTBUILDER_ARE_YOU_THEREFORE_ABSOLUTELY_SURE_YOU_WANT_TO_CONTINUE');
 	// do check
 	UIkit.modal.confirm(question, function () {
 
@@ -258,7 +258,7 @@ const replaceAllCheck = () => {
 		} else {
 			replaceAll(controller_replace.signal, searchTables);
 		}
-	}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES_UPDATE_ALL'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+	}, {labels: { Ok: Joomla.Text._('COM_COMPONENTBUILDER_YES_UPDATE_ALL'), Cancel: Joomla.Text._('COM_COMPONENTBUILDER_NO') }});
 };
 
 /**
@@ -321,7 +321,7 @@ const replaceAll = async (signal, tables) => {
 				if (response.ok) {
 					return response.json();
 				} else { 
-					UIkit.notify(Joomla.JText._('COM_COMPONENTBUILDER_THE_REPLACE_PROCESS_HAD_AN_ERROR_WITH_TABLE') + ' ' + tableName, {pos:'top-right', status:'danger'});
+					UIkit.notify(Joomla.Text._('COM_COMPONENTBUILDER_THE_REPLACE_PROCESS_HAD_AN_ERROR_WITH_TABLE') + ' ' + tableName, {pos:'top-right', status:'danger'});
 				}
 			}).then((data) => {
 				if (typeof data.success !== 'undefined') {
@@ -343,22 +343,22 @@ const replaceAll = async (signal, tables) => {
 						// if not reqex we reverse the search for you so you can see the update was a success
 						if (regexValue == 0) {
 							// set the replace value as the search value
-							UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_DO_A_REVERSE_SEARCH'), function(){
+							UIkit.modal.confirm(Joomla.Text._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_DO_A_REVERSE_SEARCH'), function(){
 								startNewSearch(replaceValue, searchValue, matchValue, wholeValue, regexValue, 2);
 							}, function () {
-								UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
+								UIkit.modal.confirm(Joomla.Text._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
 									startSearch();
 								}, function () {
 									clearSearch();
-								}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
-							}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+								}, {labels: { Ok: Joomla.Text._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.Text._('COM_COMPONENTBUILDER_NO') }});
+							}, {labels: { Ok: Joomla.Text._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.Text._('COM_COMPONENTBUILDER_NO') }});
 						} else {
 							// else we search it again just to prove its changed
-							UIkit.modal.confirm(Joomla.JText._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
+							UIkit.modal.confirm(Joomla.Text._('COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_REPEAT_THE_SAME_SEARCH'), function(){
 								startSearch();
 							}, function () {
 								clearSearch();
-							}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+							}, {labels: { Ok: Joomla.Text._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.Text._('COM_COMPONENTBUILDER_NO') }});
 						}
 					}, 3000);
 				}
@@ -381,13 +381,13 @@ const replaceAll = async (signal, tables) => {
  */
 const setValueCheck = (row, field, table) => {
 	// load question
-	let question = Joomla.JText._('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_ROW') + ' (' + row + ') -> (' + field + ') ' +
-		Joomla.JText._('COM_COMPONENTBUILDER_FIELD_IN_THE') + ' (' + table + ') ' + Joomla.JText._('COM_COMPONENTBUILDER_TABLE') + '.<br /><br />' +
-		Joomla.JText._('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
+	let question = Joomla.Text._('COM_COMPONENTBUILDER_YOUR_ARE_ABOUT_TO_UPDATE_ROW') + ' (' + row + ') -> (' + field + ') ' +
+		Joomla.Text._('COM_COMPONENTBUILDER_FIELD_IN_THE') + ' (' + table + ') ' + Joomla.Text._('COM_COMPONENTBUILDER_TABLE') + '.<br /><br />' +
+		Joomla.Text._('COM_COMPONENTBUILDER_THIS_CAN_NOT_BE_UNDONE_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
 	// do check
 	UIkit.modal.confirm(question, function () {
 		setValue(row, field, table);
-	}, {labels: { Ok: Joomla.JText._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.JText._('COM_COMPONENTBUILDER_NO') }});
+	}, {labels: { Ok: Joomla.Text._('COM_COMPONENTBUILDER_YES'), Cancel: Joomla.Text._('COM_COMPONENTBUILDER_NO') }});
 };
 
 /**

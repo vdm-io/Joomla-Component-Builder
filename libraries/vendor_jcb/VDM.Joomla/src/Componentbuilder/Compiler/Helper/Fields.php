@@ -1326,6 +1326,30 @@ class Fields extends Structure
 								. $filter['type'] . '"';
 							// set css classname of this field
 							$filter_class = ucfirst((string) $filter['type']);
+
+							// if this is a modal_select field
+							$modal_select = $filter['custom']['modal_select'] ?? null;
+							if ($modal_select)
+							{
+								$field_filter_sets[] = Indent::_(3) . 'sql_title_table="'
+									. $filter['custom']['table'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'sql_title_column="'
+									. $filter['custom']['text'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'sql_title_key="'
+									. $filter['custom']['id'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'urlSelect="'
+									. $filter['custom']['urlSelect'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'hint="'
+									. $filter['custom']['hint'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'titleSelect="'
+									. $filter['custom']['titleSelect'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'iconSelect="'
+									. $filter['custom']['iconSelect'] . '"';
+								$field_filter_sets[] = Indent::_(3) . 'select="true"';
+								$field_filter_sets[] = Indent::_(3) . 'edit="false"';
+								$field_filter_sets[] = Indent::_(3) . 'clear="true"';
+								$field_filter_sets[] = Indent::_(3) . 'onchange="form.submit()"';
+							}
 						}
 						else
 						{

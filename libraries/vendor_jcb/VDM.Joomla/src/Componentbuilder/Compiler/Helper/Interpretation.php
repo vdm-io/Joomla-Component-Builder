@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Helper;
 
 
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Language\Text;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
@@ -324,10 +324,13 @@ class Interpretation extends Fields
 			{
 				// the text for the file BAKING
 				CFactory::_('Compiler.Builder.Content.Multi')->set('emailer_' . $component . '|BAKING', ''); // <<-- to insure it gets updated
-				// return the code need to load the abstract class
-				return PHP_EOL . "\JLoader::register('" . $Component
-					. "Email', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/"
-					. $component . "email.php'); ";
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					// return the code need to load the abstract class
+					return PHP_EOL . "\JLoader::register('" . $Component
+						. "Email', JPATH_ADMINISTRATOR . '/components/com_{$component}/helpers/"
+						. $component . "email.php'); ";
+				}
 			}
 		}
 
@@ -352,7 +355,7 @@ class Interpretation extends Fields
 				CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_INT', $this->setInitLicenseLock($_WHMCS));
 				CFactory::_('Compiler.Builder.Content.One')->set('LICENSE_LOCKED_DEFINED',
 					PHP_EOL . PHP_EOL . 'defined(\'' . $_WHMCS
-					. '\') or die(Text:' . ':_(\'NIE_REG_NIE\'));');
+					. '\') or die(Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(\'NIE_REG_NIE\'));');
 			}
 		}
 		else
@@ -415,7 +418,7 @@ class Interpretation extends Fields
 		$statment[] = PHP_EOL . Indent::_(2) . "if (!" . $thIIS . "->"
 			. $boolMethod . "())";
 		$statment[] = Indent::_(2) . "{";
-		$statment[] = Indent::_(3) . "\$app = Factory::getApplication();";
+		$statment[] = Indent::_(3) . "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 		$statment[] = Indent::_(3) . "\$app->enqueueMessage(Text:"
 			. ":_('NIE_REG_NIE'), 'error');";
 		$statment[] = Indent::_(3) . "\$app->redirect('index.php');";
@@ -579,7 +582,7 @@ class Interpretation extends Fields
 				$encrypt[] = Indent::_(1) . "{";
 				$encrypt[] = Indent::_(2) . "// get the session";
 				$encrypt[] = Indent::_(2)
-					. "\$session = Factory::getSession();";
+					. "\$session = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getSession();";
 				$encrypt[] = Indent::_(2)
 					. "\$V2uekt2wcgwk = \$session->get(\$Vk5smi0wjnjb, null);";
 				$encrypt[] = Indent::_(2)
@@ -935,29 +938,6 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "}";
 				$function[] = Indent::_(2) . "}";
 			}
-			// add the whmcs option
-			if (CFactory::_('Compiler.Builder.Model.Whmcs.Field')->isActive()
-				|| CFactory::_('Component')->get('add_license'))
-			{
-				$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-					. " WHMCS Encryption Type";
-				$function[] = Indent::_(2)
-					. "if ('whmcs' === \$type || 'advanced' === \$type)";
-				$function[] = Indent::_(2) . "{";
-				$function[] = Indent::_(3)
-					. "\$key = \$params->get('whmcs_key', \$default);";
-				$function[] = Indent::_(3) . "if (Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$key))";
-				$function[] = Indent::_(3) . "{";
-				$function[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-					. " load the file";
-				$function[] = Indent::_(4)
-					. "JLoader::import( 'whmcs', JPATH_COMPONENT_ADMINISTRATOR);";
-				$function[] = PHP_EOL . Indent::_(4)
-					. "\$the = new \WHMCS(\$key);";
-				$function[] = PHP_EOL . Indent::_(4) . "return \$the->_key;";
-				$function[] = Indent::_(3) . "}";
-				$function[] = Indent::_(2) . "}";
-			}
 			// end the function
 			$function[] = PHP_EOL . Indent::_(2) . "return \$default;";
 			$function[] = Indent::_(1) . "}";
@@ -991,7 +971,7 @@ class Interpretation extends Fields
 					. "\$path = '/'. trim(str_replace('//', '/', \$path), '/');";
 				$function[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Check if folder exist";
-				$function[] = Indent::_(2) . "if (!Folder::exists(\$path))";
+				$function[] = Indent::_(2) . "if (!is_dir(\$path))";
 				$function[] = Indent::_(2) . "{";
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Lock key.";
@@ -999,7 +979,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Set the error message.";
 				$function[] = Indent::_(3)
-					. "Factory::getApplication()->enqueueMessage(Text:" . ":_('"
+					. "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 					. CFactory::_('Config')->lang_prefix
 					. "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = Indent::_(3) . "return false;";
@@ -1030,7 +1010,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Set the error message.";
 				$function[] = Indent::_(3)
-					. "Factory::getApplication()->enqueueMessage(Text:" . ":_('"
+					. "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 					. CFactory::_('Config')->lang_prefix
 					. "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = Indent::_(3) . "return false;";
@@ -1049,7 +1029,7 @@ class Interpretation extends Fields
 				$function[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Set the error message.";
 				$function[] = Indent::_(3)
-					. "Factory::getApplication()->enqueueMessage(Text:" . ":_('"
+					. "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 					. CFactory::_('Config')->lang_prefix
 					. "_CONFIG_MEDIUM_KEY_PATH_ERROR'), 'Error');";
 				$function[] = Indent::_(3) . "return false;";
@@ -1183,14 +1163,16 @@ class Interpretation extends Fields
 			if (CFactory::_('Component')->get('version_update_id', 0)  > 0)
 			{
 				$newU['id'] = (int) CFactory::_('Component')->get('version_update_id', 0);
+				$key = 'id';
 			}
 			else
 			{
-				$newU['joomla_component'] = (int) CFactory::_('Config')->component_id;
+				$newU['joomla_component'] = (string) CFactory::_('Config')->component_guid;
+				$key = 'guid';
 			}
 			$newU['version_update'] = $buket;
 			// update the component with the new dynamic SQL
-			CFactory::_('Data.Item')->table('component_updates')->set((object) $newU, 'id'); // <-- to insure the history is also updated
+			CFactory::_('Data.Item')->table('component_updates')->set((object) $newU, $key); // <-- to insure the history is also updated
 		}
 	}
 
@@ -1303,9 +1285,9 @@ class Interpretation extends Fields
 		if ($update['version'] != CFactory::_('Component')->get('component_version'))
 		{
 			$name   = StringHelper::safe($update['version']);
-			$target = array('admin' => $name);
-			CFactory::_('Utilities.Structure')->build($target, 'sql_update', $update['version']);
+			$target = ['admin' => $name];
 			$_name = preg_replace('/[\.]+/', '_', (string) $update['version']);
+			CFactory::_('Utilities.Structure')->build($target, 'sql_update', $_name);
 			CFactory::_('Compiler.Builder.Content.Multi')->set($name . '_' . $_name . '|UPDATE_VERSION_MYSQL',
 				$update['mysql']
 			);
@@ -1324,7 +1306,7 @@ class Interpretation extends Fields
 			$u_element = 'com_' . CFactory::_('Config')->component_code_name;
 			$u_server_type = 'component';
 			$u_state = 'stable';
-			$u_target_version = '3.*';
+			$u_target_version = '5.*';
 			$u_client = null;
 			// check if we have advance options set
 			if (isset($update['update_server_adv']) && $update['update_server_adv'])
@@ -1445,20 +1427,20 @@ class Interpretation extends Fields
 		$help[] = Indent::_(1) . "{";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$help[] = Indent::_(2) . "\$user	= Factory::getUser();";
+			$help[] = Indent::_(2) . "\$user	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
-			$help[] = Indent::_(2) . "\$user	= Factory::getApplication()->getIdentity();";
+			$help[] = Indent::_(2) . "\$user	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 		}
 		$help[] = Indent::_(2) . "\$groups = \$user->get('groups');";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$help[] = Indent::_(2) . "\$db	= Factory::getDbo();";
+			$help[] = Indent::_(2) . "\$db	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 		}
 		else
 		{
-			$help[] = Indent::_(2) . "\$db	= Factory::getContainer()->get(DatabaseInterface::class);";
+			$help[] = Indent::_(2) . "\$db	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);";
 		}
 		$help[] = Indent::_(2) . "\$query	= \$db->getQuery(true);";
 		$help[] = Indent::_(2)
@@ -1560,18 +1542,18 @@ class Interpretation extends Fields
 				. " set the user";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$exel[] = Indent::_(2) . "\$user = Factory::getUser();";
+				$exel[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
-				$help[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+				$help[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			}
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set fileName if not set";
 			$exel[] = Indent::_(2) . "if (!\$fileName)";
 			$exel[] = Indent::_(2) . "{";
 			$exel[] = Indent::_(3)
-				. "\$fileName = 'exported_'.Factory::getDate()->format('jS_F_Y');";
+				. "\$fileName = 'exported_' . Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDate()->format('jS_F_Y');";
 			$exel[] = Indent::_(2) . "}";
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set modified if not set";
@@ -1759,7 +1741,7 @@ class Interpretation extends Fields
 				. "self::composerAutoload('phpspreadsheet');";
 			$exel[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get session object";
-			$exel[] = Indent::_(2) . "\$session = Factory::getSession();";
+			$exel[] = Indent::_(2) . "\$session = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getSession();";
 			$exel[] = Indent::_(2)
 				. "\$package = \$session->get('package', null);";
 			$exel[] = Indent::_(2)
@@ -2600,7 +2582,7 @@ class Interpretation extends Fields
 					$runplugins .= PHP_EOL . $tab . Indent::_(1)
 						. "PluginHelper::importPlugin('content');";
 					$runplugins .= PHP_EOL . $tab . Indent::_(1)
-						. '$this->_dispatcher = Factory::getApplication();';
+						. '$this->_dispatcher = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();';
 				}
 				if (!$params)
 				{
@@ -3221,7 +3203,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					)
 					. " redirect away to the default view if no access allowed.";
-				$redirectString  = "Route::_('index.php?option=com_"
+				$redirectString  = "Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view="
 					. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
 			}
@@ -3240,7 +3222,7 @@ class Interpretation extends Fields
 				. ".access', 'com_" . CFactory::_('Config')->component_code_name . "'))";
 			$accessCheck[] = Indent::_(2) . "{";
 			$accessCheck[] = Indent::_(3)
-				. "\$app = Factory::getApplication();";
+				. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 			// set lang
 			$langKeyWord = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe(
@@ -3303,7 +3285,7 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$db = Factory::getDbo();";
+					. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 			}
 			else
 			{
@@ -3386,7 +3368,7 @@ class Interpretation extends Fields
 			if ($type === 'main')
 			{
 				$getItem      .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "\$app = Factory::getApplication();";
+					. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 				$langKeyWoord = CFactory::_('Config')->lang_prefix . '_'
 					. StringHelper::safe(
 						'Not found or access denied', 'U'
@@ -3398,7 +3380,7 @@ class Interpretation extends Fields
 					. Line::_(__Line__, __Class__)
 					. " If no data is found redirect to default page and show warning.";
 				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "\$app->enqueueMessage(Text:" . ":_('" . $langKeyWoord
+					. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $langKeyWoord
 					. "'), 'warning');";
 				if ('site' === CFactory::_('Config')->build_target)
 				{
@@ -3406,7 +3388,7 @@ class Interpretation extends Fields
 					if (CFactory::_('Compiler.Builder.Content.One')->exists('SITE_DEFAULT_VIEW')
 						&& CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') != $code)
 					{
-						$redirectString = "Route::_('index.php?option=com_"
+						$redirectString = "Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 							. CFactory::_('Config')->component_code_name . "&view="
 							. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
 					}
@@ -3636,7 +3618,7 @@ class Interpretation extends Fields
 							. "if (!isset(\$this->initSet) || !\$this->initSet)";
 						$main .= PHP_EOL . Indent::_(2) . "{";
 						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->user = Factory::getUser();";
+							. "\$this->user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 						$main .= PHP_EOL . Indent::_(3)
 							. "\$this->userId = \$this->user->get('id');";
 						$main .= PHP_EOL . Indent::_(3)
@@ -3664,7 +3646,7 @@ class Interpretation extends Fields
 							. "if (!isset(\$this->initSet) || !\$this->initSet)";
 						$main .= PHP_EOL . Indent::_(2) . "{";
 						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->user = Factory::getUser();";
+							. "\$this->user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 						$main .= PHP_EOL . Indent::_(3)
 							. "\$this->userId = \$this->user->get('id');";
 						$main .= PHP_EOL . Indent::_(3)
@@ -3983,7 +3965,7 @@ class Interpretation extends Fields
 						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 						{
 							$methods .= PHP_EOL . Indent::_(2)
-								. "\$db = Factory::getDbo();";
+								. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 						}
 						else
 						{
@@ -4348,7 +4330,7 @@ class Interpretation extends Fields
 			}
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$getItem .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDbo();";
+				$getItem .= PHP_EOL . Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 			}
 			else
 			{
@@ -4910,7 +4892,7 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " this is where you want to load your module position";
 			$addModule[] = Indent::_(3)
-				. "\$modules = ModuleHelper::getModules(\$position);";
+				. "\$modules = Joomla__"."_f15d556d_33dd_4ee3_a0f7_0653e4a7a1e4___Power::getModules(\$position);";
 			$addModule[] = Indent::_(3) . "if ("
 				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$modules, true))";
 			$addModule[] = Indent::_(3) . "{";
@@ -4921,7 +4903,7 @@ class Interpretation extends Fields
 			$addModule[] = Indent::_(4) . "foreach(\$modules as \$module)";
 			$addModule[] = Indent::_(4) . "{";
 			$addModule[] = Indent::_(5)
-				. "\$this->setModules[\$position][] = ModuleHelper::renderModule(\$module);";
+				. "\$this->setModules[\$position][] = Joomla__"."_f15d556d_33dd_4ee3_a0f7_0653e4a7a1e4___Power::renderModule(\$module);";
 			$addModule[] = Indent::_(4) . "}";
 			$addModule[] = Indent::_(4) . "\$found = true;";
 			$addModule[] = Indent::_(3) . "}";
@@ -5096,7 +5078,7 @@ class Interpretation extends Fields
 				$buttons[] = $tab . Indent::_(2)
 					. "//" . Line::_(__Line__, __Class__) . " add cpanel button";
 				$buttons[] = $tab . Indent::_(2)
-					. "ToolbarHelper::custom('" . $viewCodeName . "."
+					. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewCodeName . "."
 					. "dashboard', 'grid-2', '', 'COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT')
 					. "_DASH', false);";
@@ -5153,7 +5135,7 @@ class Interpretation extends Fields
 							. Line::_(__Line__, __Class__) . " add "
 							. $custom_button['name'] . " button.";
 						$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-							. "ToolbarHelper::custom('" . $viewCodeName . "."
+							. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewCodeName . "."
 							. $custom_button['method'] . "', '"
 							. $custom_button['icomoon'] . " custom-button-"
 							. strtolower((string) $custom_button['method']) . "', '', '"
@@ -5194,7 +5176,7 @@ class Interpretation extends Fields
 								= Indent::_(
 									1
 								) . $tab . Indent::_(1)
-								. "ToolbarHelper::custom('" . $viewsCodeName
+								. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewsCodeName
 								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
@@ -5219,7 +5201,7 @@ class Interpretation extends Fields
 								. "//" . Line::_(__Line__, __Class__) . " add "
 								. $custom_button['name'] . " button.";
 							$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-								. "ToolbarHelper::custom('" . $viewsCodeName
+								. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewsCodeName
 								. "."
 								. $custom_button['method'] . "', '"
 								. $custom_button['icomoon'] . " custom-button-"
@@ -5785,7 +5767,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " add the google chart builder class.";
 			$chart[] = Indent::_(2)
-				. "require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/chartbuilder.php';";
+				. "require_once JPATH_ADMINISTRATOR . '/components/com_" . CFactory::_('Config')->component_code_name . "/helpers/chartbuilder.php';";
 			$chart[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " load the google chart js.";
 			$chart[] = Indent::_(2)
@@ -5835,12 +5817,12 @@ class Interpretation extends Fields
 				if (CFactory::_('Config')->build_target === 'site')
 				{
 					$setter .= PHP_EOL . Indent::_(2)
-						. "require_once( JPATH_COMPONENT_SITE.'/helpers/headercheck.php' );";
+						. "require_once( JPATH_SITE . '/components/com_" . CFactory::_('Config')->component_code_name . "/helpers/headercheck.php' );";
 				}
 				else
 				{
 					$setter .= PHP_EOL . Indent::_(2)
-						. "require_once( JPATH_COMPONENT_ADMINISTRATOR.'/helpers/headercheck.php' );";
+						. "require_once( JPATH_ADMINISTRATOR . '/components/com_" . CFactory::_('Config')->component_code_name . "/helpers/headercheck.php' );";
 				}
 				$setter .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Initialize the header checker.";
@@ -6630,7 +6612,7 @@ class Interpretation extends Fields
 					// top
 					if ('site' === CFactory::_('Config')->build_target)
 					{
-						return '<form action="<?php echo Route::_(\'index.php?option=com_'
+						return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php?option=com_'
 							. CFactory::_('Config')->component_code_name
 							. '\'); ?>" method="post" name="adminForm" id="adminForm">'
 							. PHP_EOL;
@@ -6639,14 +6621,14 @@ class Interpretation extends Fields
 					{
 						if ($gettype == 2)
 						{
-							return '<form action="<?php echo Route::_(\'index.php?option=com_'
+							return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php?option=com_'
 								. CFactory::_('Config')->component_code_name . '&view=' . $view
 								. '\'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">'
 								. PHP_EOL;
 						}
 						else
 						{
-							return '<form action="<?php echo Route::_(\'index.php?option=com_'
+							return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php?option=com_'
 								. CFactory::_('Config')->component_code_name . '&view=' . $view
 								. '\' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">'
 								. PHP_EOL;
@@ -7134,14 +7116,14 @@ class Interpretation extends Fields
 						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 						{
 							$script .= PHP_EOL . Indent::_(3)
-								. "&& Factory::getUser()->authorise('" . $view
+								. "&& Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser()->authorise('" . $view
 								. "." . $permission_option . "." . $jsonItem
 								. "', 'com_" . $component . "')";
 						}
 						else
 						{
 							$script .= PHP_EOL . Indent::_(3)
-								. "&& Factory::getApplication()->getIdentity()->authorise('" . $view
+								. "&& Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity()->authorise('" . $view
 								. "." . $permission_option . "." . $jsonItem
 								. "', 'com_" . $component . "')";
 						}
@@ -7279,7 +7261,7 @@ class Interpretation extends Fields
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding Tag Options";
 			$oserver .= PHP_EOL . Indent::_(2)
-				. "TableObserverTags::createObserver(\$this, array('typeAlias' => 'com_"
+				. "Joomla__"."_fe63add8_0a40_4b3d_b548_f735fa6072fb___Power::createObserver(\$this, array('typeAlias' => 'com_"
 				. $component . "." . $view . "'));";
 		}
 		// add the history/version observer
@@ -7288,7 +7270,7 @@ class Interpretation extends Fields
 			$oserver .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Adding History Options";
 			$oserver .= PHP_EOL . Indent::_(2)
-				. "TableObserverContenthistory::createObserver(\$this, array('typeAlias' => 'com_"
+				. "Joomla__"."_9ac794c2_f96d_4522_8acf_b8d48c4f51c5___Power::createObserver(\$this, array('typeAlias' => 'com_"
 				. $component . "." . $view . "'));";
 		}
 
@@ -7372,7 +7354,7 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . PHP_EOL . Indent::_(3) . "//"
 				. Line::_(__Line__, __Class__) . " Get The Database object";
 			$script .= PHP_EOL . Indent::_(3)
-				. "\$db = Factory::getDbo();";
+				. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 			foreach ($dbStuff as $name => $tables)
 			{
 				if (ArrayHelper::check($tables))
@@ -7567,7 +7549,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Install the global extension assets permission.";
 				$script .= PHP_EOL . Indent::_(3)
-					. "\$db = Factory::getDbo();";
+					. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 			}
 			$script .= PHP_EOL . Indent::_(3)
 				. "\$query = \$db->getQuery(true);";
@@ -7608,7 +7590,7 @@ class Interpretation extends Fields
 						__LINE__,__CLASS__
 					) . " Install the global extension params.";
 				$script .= PHP_EOL . Indent::_(3)
-					. "\$db = Factory::getDbo();";
+					. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 			}
 			$script .= PHP_EOL . Indent::_(3)
 				. "\$query = \$db->getQuery(true);";
@@ -7726,11 +7708,11 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get Application object";
 			$script .= PHP_EOL . Indent::_(2)
-				. "\$app = Factory::getApplication();";
+				. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Get The Database object";
-			$script .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDbo();";
+			$script .= PHP_EOL . Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 
 			foreach (
 				$this->uninstallScriptBuilder as $viewsCodeName => $typeAlias
@@ -8003,7 +7985,7 @@ class Interpretation extends Fields
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . Indent::_(4)
-					. "\$app->enqueueMessage(Text:" . ":_('The (" . $typeAlias
+					. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (" . $typeAlias
 					. ") type alias was removed from the <b>#__content_type</b> table'));";
 				$script .= PHP_EOL . Indent::_(3) . "}";
 
@@ -8038,7 +8020,7 @@ class Interpretation extends Fields
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . Indent::_(4)
-					. "\$app->enqueueMessage(Text:" . ":_('The (" . $typeAlias
+					. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (" . $typeAlias
 					. ") type alias was removed from the <b>#__contentitem_tag_map</b> table'));";
 				$script .= PHP_EOL . Indent::_(3) . "}";
 
@@ -8073,7 +8055,7 @@ class Interpretation extends Fields
 					. " add queued success message.";
 				// TODO lang is not translated
 				$script .= PHP_EOL . Indent::_(4)
-					. "\$app->enqueueMessage(Text:" . ":_('The (" . $typeAlias
+					. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The (" . $typeAlias
 					. ") type alias was removed from the <b>#__ucm_content</b> table'));";
 				$script .= PHP_EOL . Indent::_(3) . "}";
 
@@ -8182,11 +8164,11 @@ class Interpretation extends Fields
 			$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Get Application object";
 			$script .= PHP_EOL . Indent::_(2)
-				. "\$app = Factory::getApplication();";
+				. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 			$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Get The Database object";
-			$script .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDbo();";
+			$script .= PHP_EOL . Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 		}
 		// add the Intelligent Reversal script if needed
 		$script .= $this->getAssetsTableIntelligentUninstall();
@@ -8301,7 +8283,7 @@ class Interpretation extends Fields
 			$codeA    = implode(PHP_EOL, $script);
 			// fixed message
 			$messageA = Indent::_(5)
-				. "\$app->enqueueMessage(Text:" . ":_('The <b>#__assets</b> table rules column was resized to the "
+				. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('The <b>#__assets</b> table rules column was resized to the "
 				. $data_type
 				. " datatype for the components possible large permission rules.'));";
 			// do nothing
@@ -8356,7 +8338,7 @@ class Interpretation extends Fields
 			$codeB = "";
 			// not reverted message
 			$messageB = Indent::_(4)
-				. "\$app->enqueueMessage(Text:" . ":_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));";
+				. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Could not revert the <b>#__assets</b> table rules column back to its default size of varchar(5120), since there is still one or more components that still requires the column to be larger.'));";
 
 			// done
 			return $this->getAssetsTableIntelligentCode(
@@ -9018,12 +9000,12 @@ class Interpretation extends Fields
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
 			$batchmove[] = Indent::_(3)
-				. "\$this->user		= Factory::getUser();";
+				. "\$this->user		= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
 			$batchmove[] = Indent::_(3)
-				. "\$this->user		= Factory::getApplication()->getIdentity();";
+				. "\$this->user		= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 		}
 		$batchmove[] = Indent::_(3)
 			. "\$this->table		= \$this->getTable();";
@@ -9244,12 +9226,12 @@ class Interpretation extends Fields
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
 			$batchcopy[] = Indent::_(3)
-				. "\$this->user 		= Factory::getUser();";
+				. "\$this->user 		= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
 			$batchcopy[] = Indent::_(3)
-				. "\$this->user 		= Factory::getApplication()->getIdentity();";
+				. "\$this->user 		= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 		}
 		$batchcopy[] = Indent::_(3)
 			. "\$this->table 		= \$this->getTable();";
@@ -9619,7 +9601,7 @@ class Interpretation extends Fields
 				. "'] == null || empty(\$data['" . $alias . "']))";
 			$fixUnique[] = Indent::_(3) . "{";
 			$fixUnique[] = Indent::_(4)
-				. "if (Factory::getConfig()->get('unicodeslugs') == 1)";
+				. "if (Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig()->get('unicodeslugs') == 1)";
 			$fixUnique[] = Indent::_(4) . "{";
 			$fixUnique[] = Indent::_(5) . "\$data['" . $alias
 				. "'] = OutputFilter::stringURLUnicodeSlug(" . implode(
@@ -9642,7 +9624,7 @@ class Interpretation extends Fields
 					. $alias . "'], '" . $category . "' => \$data['" . $category
 					. "']]) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
-				$fixUnique[] = Indent::_(5) . "\$msg = Text:" . ":_('COM_"
+				$fixUnique[] = Indent::_(5) . "\$msg = Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "list(" . implode(
@@ -9661,7 +9643,7 @@ class Interpretation extends Fields
 					. $alias
 					. "'])) && (\$table->id != \$data['id'] || \$data['id'] == 0))";
 				$fixUnique[] = Indent::_(4) . "{";
-				$fixUnique[] = Indent::_(5) . "\$msg = Text:" . ":_('COM_"
+				$fixUnique[] = Indent::_(5) . "\$msg = Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . "_" . $VIEW . "_SAVE_WARNING');";
 				$fixUnique[] = Indent::_(4) . "}";
 				$fixUnique[] = PHP_EOL . Indent::_(4) . "\$data['" . $alias
@@ -9671,7 +9653,7 @@ class Interpretation extends Fields
 			$fixUnique[] = PHP_EOL . Indent::_(4) . "if (isset(\$msg))";
 			$fixUnique[] = Indent::_(4) . "{";
 			$fixUnique[] = Indent::_(5)
-				. "Factory::getApplication()->enqueueMessage(\$msg, 'warning');";
+				. "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->enqueueMessage(\$msg, 'warning');";
 			$fixUnique[] = Indent::_(4) . "}";
 			$fixUnique[] = Indent::_(3) . "}";
 			$fixUnique[] = Indent::_(2) . "}";
@@ -9679,7 +9661,7 @@ class Interpretation extends Fields
 //			$fixUnique[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__) . " Update alias if still empty at this point";
 //			$fixUnique[] = Indent::_(2) . "if (\$data['" . $alias . "'] == null || empty(\$data['" . $alias . "']))";
 //			$fixUnique[] = Indent::_(2) . "{";
-//			$fixUnique[] = Indent::_(3) . "if (Factory::getConfig()->get('unicodeslugs') == 1)";
+//			$fixUnique[] = Indent::_(3) . "if (Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig()->get('unicodeslugs') == 1)";
 //			$fixUnique[] = Indent::_(3) . "{";
 //			$fixUnique[] = Indent::_(4) . "\$data['" . $alias . "'] = OutputFilter::stringURLUnicodeSlug(" . implode(' . " " . ', $titleData) . ");";
 //			$fixUnique[] = Indent::_(3) . "}";
@@ -9881,7 +9863,7 @@ class Interpretation extends Fields
 				. "if (trim(str_replace('-', '', \$this->alias)) == '')";
 			$newFunction[] = Indent::_(2) . "{";
 			$newFunction[] = Indent::_(3)
-				. "\$this->alias = Factory::getDate()->format('Y-m-d-H-i-s');";
+				. "\$this->alias = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDate()->format('Y-m-d-H-i-s');";
 			$newFunction[] = Indent::_(2) . "}";
 			$newFunction[] = PHP_EOL . Indent::_(2) . "return \$this->alias;";
 			$newFunction[] = Indent::_(1) . "}";
@@ -9999,7 +9981,7 @@ class Interpretation extends Fields
 						. $data['type'] . $length . " " . $default . ",";
 					// check if this a new field that should be added via SQL update
 					if (CFactory::_('Registry')->
-						get('builder.add_sql.field.' . $view . '.' . $data['ID'], null))
+						get('builder.add_sql.field.' . $view . '.' . $data['GUID'], null))
 					{
 						// to soon....
 						// $key_ = "ALTERTABLE`#__" . $component . "_" . $view . "`ADDCOLUMNIFNOTEXISTS`" . $field . "`";
@@ -11108,16 +11090,30 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$body .= PHP_EOL . Indent::_(2)
-					. "\$userChkOut = Factory::getUser(\$item->checked_out);";
+					. "\$userChkOut = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser(\$item->checked_out);";
+
+				$allowSortingWhen = "<?php if (\$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')): ?>";
+				$allowSelectionWhen =  "<?php if (\$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')): ?>";
+				$allowPublishedWhen =  "<?php if (\$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')) : ?>";
 			}
 			else
 			{
 				$body .= PHP_EOL . Indent::_(2)
-					. "\$userChkOut = Factory::getContainer()->";
+					. "\$userChkOut = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->";
 				$body .= PHP_EOL . Indent::_(3)
 					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
 					. "loadUserById(\$item->checked_out ?? 0);";
+
+				$allowSortingWhen = "<?php if (!\$this->isModal && \$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')): ?>";
+				$allowSelectionWhen =  "<?php if (!\$this->isModal && \$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')): ?>";
+				$allowPublishedWhen =  "<?php if (!\$this->isModal && \$canDo->get('"
+					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')) : ?>";
 			}
 			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
 				. "::getActions('" . $nameSingleCode . "',\$item,'"
@@ -11131,8 +11127,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(2)
 					. '<td class="order nowrap center hidden-phone">';
 				// check if the item has permissions.
-				$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
-						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')): ?>";
+				$body .= PHP_EOL . Indent::_(2) . $allowSortingWhen;
 				$body .= PHP_EOL . Indent::_(3) . "<?php";
 				$body .= PHP_EOL . Indent::_(4) . "\$iconClass = '';";
 				$body .= PHP_EOL . Indent::_(4) . "if (!\$this->saveOrder)";
@@ -11161,8 +11156,7 @@ class Interpretation extends Fields
 			}
 			$body .= PHP_EOL . Indent::_(2) . '<td class="nowrap center">';
 			// check if the item has permissions.
-			$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')): ?>";
+			$body .= PHP_EOL . Indent::_(2) . $allowSelectionWhen;
 			$body .= PHP_EOL . Indent::_(4)
 				. "<?php if (\$item->checked_out) : ?>";
 			$body .= PHP_EOL . Indent::_(5) . "<?php if (\$canCheckin) : ?>";
@@ -11223,8 +11217,7 @@ class Interpretation extends Fields
 			{
 				$body .= PHP_EOL . Indent::_(2) . '<td class="center">';
 				// check if the item has permissions.
-				$body .= PHP_EOL . Indent::_(2) . "<?php if (\$canDo->get('"
-					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')) : ?>";
+				$body .= PHP_EOL . Indent::_(2) . $allowPublishedWhen;
 				$body .= PHP_EOL . Indent::_(4)
 					. "<?php if (\$item->checked_out) : ?>";
 				$body .= PHP_EOL . Indent::_(5)
@@ -11279,7 +11272,7 @@ class Interpretation extends Fields
 	 * @param   bool    $doNotEscape     The do not escape global switch
 	 * @param   bool    $class           The dive class adding switch
 	 * @param   string  $ref             The link referral string
-	 * @param   string  $escape          The escape code name
+	 * @param   string  $classPointer          The class pointer (this or displaydata)
 	 * @param   string  $user            The user code name
 	 * @param   string  $refview         The override of the referral view code name
 	 *
@@ -11288,7 +11281,7 @@ class Interpretation extends Fields
 	 */
 	protected function getListItemBuilder($item, $nameSingleCode,
 	                                      $nameListCode, &$itemClass, $doNotEscape,
-	                                      $class = true, $ref = null, $escape = '$this->escape',
+	                                      $class = true, $ref = null, $classPointer = '$this->',
 	                                      $user = '$this->user', $refview = null
 	)
 	{
@@ -11310,7 +11303,7 @@ class Interpretation extends Fields
 			// load the main list view field
 			$field_list_item = $this->getListItem(
 				$item, $nameSingleCode, $nameListCode, $itemClass,
-				$doNotEscape,false, $ref, $escape, $user,
+				$doNotEscape, false, $ref, $classPointer, $user,
 				$refview
 			);
 			$field['[field=' . (int) $item['id'] . ']'] = $field_list_item;
@@ -11336,7 +11329,7 @@ class Interpretation extends Fields
 						$join_field_list_item = $this->getListItem(
 							$join_item, $nameSingleCode, $nameListCode, $blankClass,
 							$doNotEscape, false, $ref,
-							$escape, $user, $refview
+							$classPointer, $user, $refview
 						);
 						$field['[field=' . (int) $join_id . ']'] = $join_field_list_item;
 						$field['[field=' . (string) $join . ']'] = $join_field_list_item;
@@ -11380,7 +11373,7 @@ class Interpretation extends Fields
 
 		return $this->getListItem(
 			$item, $nameSingleCode, $nameListCode, $itemClass, $doNotEscape,
-			$class, $ref, $escape, $user, $refview
+			$class, $ref, $classPointer, $user, $refview
 		);
 	}
 
@@ -11394,7 +11387,7 @@ class Interpretation extends Fields
 	 * @param   bool    $doNotEscape     The do not escape global switch
 	 * @param   bool    $class           The dive class adding switch
 	 * @param   string  $ref             The link referral string
-	 * @param   string  $escape          The escape code name
+	 * @param   string  $classPointer          The class pointer
 	 * @param   string  $user            The user code name
 	 * @param   string  $refview         The override of the referral view code name
 	 *
@@ -11402,20 +11395,17 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItem($item, $nameSingleCode, $nameListCode,
-	                               &$itemClass, $doNotEscape, $class = true, $ref = null,
-	                               $escape = '$this->escape', $user = '$this->user', $refview = null
-	)
+		&$itemClass, $doNotEscape, $class = true, $ref = null,
+		$classPointer = '$this->', $user = '$this->user', $refview = null)
 	{
 		// get list item code
 		$itemCode = $this->getListItemCode(
-			$item, $nameListCode, $doNotEscape, $escape
+			$item, $nameListCode, $doNotEscape, $classPointer
 		);
 		// add default links
 		$defaultLink = true;
-		if (StringHelper::check($refview)
-			&& isset($item['custom'])
-			&& isset($item['custom']['view'])
-			&& $refview === $item['custom']['view'])
+		if (StringHelper::check($refview) && isset($item['custom'])
+			&& isset($item['custom']['view']) && $refview === $item['custom']['view'])
 		{
 			$defaultLink = false;
 		}
@@ -11433,13 +11423,13 @@ class Interpretation extends Fields
 			);
 			// get list item link authority
 			$itemLinkAuthority = $this->getListItemLinkAuthority(
-				$item, $nameSingleCode, $nameListCode, $user
+				$item, $nameSingleCode, $nameListCode, $classPointer, $user
 			);
 
 			// set item row
 			return $this->getListItemLinkLogic(
-				$itemCode, $itemLink, $itemLinkAuthority, $nameListCode,
-				$checkoutTriger, $class
+				$item, $itemCode, $itemLink, $itemLinkAuthority, $nameSingleCode,
+				$nameListCode, $classPointer, $checkoutTriger, $class
 			);
 		}
 
@@ -11450,20 +11440,24 @@ class Interpretation extends Fields
 	/**
 	 * Get the list item link logic
 	 *
+	 * @param   array  $item               The item
 	 * @param   string  $itemCode           The item code string
 	 * @param   string  $itemLink           The item link string
 	 * @param   string  $itemLinkAuthority  The link authority string
+	 * @param   string  $nameSingleCode     The single view code name
 	 * @param   string  $nameListCode       The list view code name
 	 * @param   bool    $checkoutTriger     The check out trigger
+	 * @param   string  $classPointer       The class pointer
 	 * @param   bool    $class              The dive class adding switch
 	 *
 	 * @return  string of the complete link logic of row item
 	 *
 	 */
-	protected function getListItemLinkLogic($itemCode, $itemLink,
-	                                        $itemLinkAuthority, $nameListCode, $checkoutTriger, $class = true
-	)
+	protected function getListItemLinkLogic($item, $itemCode, $itemLink,
+		$itemLinkAuthority, $nameSingleCode, $nameListCode, $classPointer, $checkoutTriger, $class = true)
 	{
+		// set some local values
+		$code = $item['code'];
 		// build link
 		$link = '';
 		// add class
@@ -11478,6 +11472,7 @@ class Interpretation extends Fields
 			. $itemLinkAuthority . "): ?>";
 		$link .= PHP_EOL . $tab . Indent::_(4) . '<a href="' . $itemLink
 			. '"><?php echo ' . $itemCode . '; ?></a>';
+		$addModalFix = false;
 		if ($checkoutTriger)
 		{
 			$link .= PHP_EOL . $tab . Indent::_(4)
@@ -11486,10 +11481,36 @@ class Interpretation extends Fields
 				. "<?php echo Html::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '"
 				. $nameListCode . ".', \$canCheckin); ?>";
 			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php endif; ?>";
+			if (CFactory::_('Config')->get('joomla_version', 3) !== 3)
+			{
+				$addModalFix = true;
+			}
 		}
 		$link .= PHP_EOL . $tab . Indent::_(3) . "<?php else: ?>";
-		$link .= PHP_EOL . $tab . Indent::_(4) . "<?php echo " . $itemCode
-			. "; ?>";
+		if ($addModalFix)
+		{
+			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php if (!{$classPointer}isModal): ?>";
+			$link .= PHP_EOL . $tab . Indent::_(5) . "<?php echo " . $itemCode . "; ?>";
+			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php else: ?>";
+			$link .= PHP_EOL . $tab . Indent::_(5) . "<?php";
+			$link .= PHP_EOL . $tab . Indent::_(6) . "\$link = \"{\$edit}&id={\$item->id}\";";
+			$link .= PHP_EOL . $tab . Indent::_(6) . "\$dataId = \$item->{{$classPointer}getModalTitleKey()} ?? 0;";
+			$link .= PHP_EOL . $tab . Indent::_(6) . "\$itemHtml = '<a href=\"' . {$classPointer}escape(\$link, false) . '\">' . {$classPointer}escape(\$item->{$code}, false) . '</a>';";
+			$link .= PHP_EOL . $tab . Indent::_(6) . "\$attribs = 'data-content-select data-content-type=\"com_" . CFactory::_('Config')->component_code_name . ".". $nameSingleCode . "\"'";
+			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-id=\"' . \$dataId . '\"'";
+			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-title=\"' . {$classPointer}escape(\$item->{$code}, false) . '\"'";
+			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-uri=\"' . {$classPointer}escape(\$link, false) . '\"'";
+			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-html=\"' . {$classPointer}escape(\$itemHtml, false) . '\"';";
+			$link .= PHP_EOL . $tab . Indent::_(5) . "?>";
+			$link .= PHP_EOL . $tab . Indent::_(5) . "<a class=\"select-link\" href=\"javascript:void(0)\" <?php echo \$attribs; ?>>";
+			$link .= PHP_EOL . $tab . Indent::_(6) . "<?php echo " . $itemCode . "; ?>";
+			$link .= PHP_EOL . $tab . Indent::_(5) . "</a>";
+			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php endif; ?>";
+		}
+		else
+		{
+			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php echo " . $itemCode . "; ?>";
+		}
 		$link .= PHP_EOL . $tab . Indent::_(3) . "<?php endif; ?>";
 		// add class
 		if ($class)
@@ -11534,7 +11555,7 @@ class Interpretation extends Fields
 					. '<a class="hasTooltip btn btn-mini" href="index.php?option=com_'
 					. CFactory::_('Config')->component_code_name . '&view='
 					. $customLinkView['link'] . '&id=<?php echo $item->id; ?>'
-					. $ref . '" title="<?php echo Text:' . ':_(' . "'COM_"
+					. $ref . '" title="<?php echo Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(' . "'COM_"
 					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT') . '_' . $customLinkView['NAME'] . "'"
 					. '); ?>" ><span class="icon-' . $customLinkView['icon']
 					. '"></span></a>';
@@ -11560,14 +11581,12 @@ class Interpretation extends Fields
 	 * @param   array   $item          The item array
 	 * @param   string  $nameListCode  The list view code name
 	 * @param   bool    $doNotEscape   The do not escape global switch
-	 * @param   string  $escape        The escape code name
+	 * @param   string  $classPointer        The class pointer
 	 *
 	 * @return  string of the single item code
 	 *
 	 */
-	protected function getListItemCode(&$item, $nameListCode, $doNotEscape,
-	                                   $escape = '$this->escape'
-	)
+	protected function getListItemCode(&$item, $nameListCode, $doNotEscape, $classPointer = '$this->')
 	{
 		// first update the code id needed
 		if (isset($item['custom'])
@@ -11589,18 +11608,18 @@ class Interpretation extends Fields
 		// check if category
 		if ($item['type'] === 'category' && !$item['title'])
 		{
-			return $escape . '($item->category_title)';
+			return $classPointer .  'escape($item->category_title)';
 		}
 		// check if user
 		elseif ($item['type'] === 'user')
 		{
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				return 'Factory::getUser((int)$item->' . $item['code'] . ')->name';
+				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser((int)$item->' . $item['code'] . ')->name';
 			}
 			else
 			{
-				return 'Factory::getContainer()->'
+				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
 					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
 			}
@@ -11613,11 +11632,11 @@ class Interpretation extends Fields
 		{
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				return 'Factory::getUser((int)$item->' . $item['id_code'] . ')->name';
+				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser((int)$item->' . $item['id_code'] . ')->name';
 			}
 			else
 			{
-				return 'Factory::getContainer()->'
+				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
 					. 'loadUserById((int) $item->' . $item['id_code'] . ' ?? 0)->name';
 			}
@@ -11626,7 +11645,7 @@ class Interpretation extends Fields
 		elseif (CFactory::_('Compiler.Builder.Selection.Translation')->
 			exists($nameListCode . '.' . $item['code']))
 		{
-			return 'Text:' . ':_($item->' . $item['code'] . ')';
+			return 'Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_($item->' . $item['code'] . ')';
 		}
 		elseif (isset($item['custom'])
 			&& ArrayHelper::check($item['custom'])
@@ -11634,11 +11653,11 @@ class Interpretation extends Fields
 		{
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				return 'Factory::getUser((int)$item->' . $item['code'] . ')->name';
+				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser((int)$item->' . $item['code'] . ')->name';
 			}
 			else
 			{
-				return 'Factory::getContainer()->'
+				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
 					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
 			}
@@ -11652,7 +11671,7 @@ class Interpretation extends Fields
 		}
 
 		// default
-		return $escape . '($item->' . $item['code'] . ')';
+		return $classPointer .  'escape($item->' . $item['code'] . ')';
 	}
 
 	/**
@@ -11668,8 +11687,7 @@ class Interpretation extends Fields
 	 *
 	 */
 	protected function getListItemLink($item, &$checkoutTriger,
-	                                   $nameSingleCode, $nameListCode, $ref = null
-	)
+		$nameSingleCode, $nameListCode, $ref = null)
 	{
 		// set referal if not set
 		$referal = '';
@@ -11744,14 +11762,20 @@ class Interpretation extends Fields
 	 * @param   array   $item            The item array
 	 * @param   string  $nameSingleCode  The single view code name
 	 * @param   string  $nameListCode    The list view code name
+	 * @param   string  $classPointer          The class pointer
 	 * @param   string  $user            The user code name
 	 *
 	 * @return  string of the single item link authority
 	 *
 	 */
-	protected function getListItemLinkAuthority($item, $nameSingleCode, $nameListCode, $user = '$this->user'
-	)
+	protected function getListItemLinkAuthority($item, $nameSingleCode, $nameListCode, $classPointer= '$this->', $user = '$this->user')
 	{
+		// add modal fix
+		$isModal = '';
+		if (CFactory::_('Config')->get('joomla_version', 3) !== 3)
+		{
+			$isModal = "!{$classPointer}isModal && ";
+		}
 		// if to be linked
 		if ($item['type'] === 'category' && !$item['title'])
 		{
@@ -11759,14 +11783,14 @@ class Interpretation extends Fields
 			$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.view", 'error');
 
 			// return the authority to category
-			return $user . "->authorise('core.edit', 'com_"
+			return $isModal . $user . "->authorise('core.edit', 'com_"
 				. CFactory::_('Config')->component_code_name . "." . $otherView
 				. ".category.' . (int)\$item->" . $item['code'] . ")";
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
 		{
 			// return user authority
-			return $user . "->authorise('core.edit', 'com_users')";
+			return $isModal . $user . "->authorise('core.edit', 'com_users')";
 		}
 		elseif (isset($item['custom'])
 			&& ArrayHelper::check(
@@ -11779,13 +11803,13 @@ class Interpretation extends Fields
 			// do this with GUID
 			if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
 			{
-				return $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
+				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
 					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
 					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . "_id)";
 			}
 			else
 			{
-				return $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
+				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
 					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
 					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . ")";
 			}
@@ -11799,11 +11823,11 @@ class Interpretation extends Fields
 			&& isset($item['id_code']))
 		{
 			// return user link
-			return $user . "->authorise('core.edit', 'com_users')";
+			return $isModal . $user . "->authorise('core.edit', 'com_users')";
 		}
 
 		// set core permissions.
-		return "\$canDo->get('" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')";
+		return $isModal . "\$canDo->get('" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')";
 	}
 
 	/**
@@ -11869,7 +11893,7 @@ class Interpretation extends Fields
 		CFactory::_('Event')->trigger(
 			'jcb_ce_onSetDefaultViewsBodyTop', [&$body, &$nameSingleCode, &$nameListCode]
 		);
-		$body[] = "<form action=\"<?php echo Route::_('index.php?option=com_"
+		$body[] = "<form action=\"<?php echo Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 			. $component . "&view=" . $nameListCode
 			. "'); ?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\">";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
@@ -11900,7 +11924,7 @@ class Interpretation extends Fields
 			$body[] = "<?php";
 			// build code to add the trash helper layout
 			$addTrashHelper = Indent::_(1)
-				. "echo LayoutHelper::render('trashhelper', \$this);";
+				. "echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('trashhelper', \$this);";
 			// add the trash helper layout if found in JCB
 			if (CFactory::_('Templatelayout.Data')->set($addTrashHelper, $nameListCode))
 			{
@@ -11914,7 +11938,7 @@ class Interpretation extends Fields
 					__LINE__,__CLASS__
 				) . " Add the searchtools";
 			$body[] = Indent::_(1)
-				. "echo LayoutHelper::render('joomla.searchtools.default', array('view' => \$this));";
+				. "echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('joomla.searchtools.default', array('view' => \$this));";
 			$body[] = "?>";
 		}
 		$body[] = "<?php if (empty(\$this->items)): ?>";
@@ -11927,7 +11951,7 @@ class Interpretation extends Fields
 		$body[] = Indent::_(1)
 			. "<div class=\"alert alert-no-items\">";
 		$body[] = Indent::_(2)
-			. "<?php echo Text:" . ":_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
+			. "<?php echo Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
 		$body[] = Indent::_(1) . "</div>";
 		$body[] = "<?php else : ?>";
 		// check if the filter type is sidebar (1 = sidebar)
@@ -11956,7 +11980,7 @@ class Interpretation extends Fields
 			$body[] = Indent::_(3) . "'bootstrap.renderModal',";
 			$body[] = Indent::_(3) . "'collapseModal',";
 			$body[] = Indent::_(3) . "array(";
-			$body[] = Indent::_(4) . "'title' => Text:" . ":_('COM_" . $COMPONENT . "_"
+			$body[] = Indent::_(4) . "'title' => Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_" . $COMPONENT . "_"
 				. $VIEWS
 				. "_BATCH_OPTIONS'),";
 			$body[] = Indent::_(4)
@@ -11995,6 +12019,96 @@ class Interpretation extends Fields
 	}
 
 	/**
+	 * set the modal views body
+	 *
+	 * @param   string  $nameSingleCode
+	 * @param   string  $nameListCode
+	 *
+	 * @return string
+	 */
+	public function setModalViewsBody(string $nameSingleCode, string $nameListCode): string
+	{
+		// set component name
+		$component = CFactory::_('Config')->component_code_name;
+		$Component = ucfirst((string) $component);
+		$COMPONENT = strtoupper((string) $component);
+		// set uppercase view
+		$VIEWS = strtoupper($nameListCode);
+		// build the body
+		$body = [];
+		// Trigger Event: jcb_ce_onSetModalViewsBodyTop
+		CFactory::_('Event')->trigger(
+			'jcb_ce_onSetModalViewsBodyTop', [&$body, &$nameSingleCode, &$nameListCode]
+		);
+		$body[] = "<form action=\"<?php echo Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
+			. $component . "&view=" . $nameListCode
+			. "&layout=modal&tmpl=component&titleKey=' . \$this->getModalTitleKey()); ?>\" method=\"post\" name=\"adminForm\" id=\"adminForm\">";
+		$body[] = Indent::_(1)
+			. "<div id=\"j-main-container\">";
+		// Trigger Event: jcb_ce_onSetModalViewsFormTop
+		CFactory::_('Event')->trigger(
+			'jcb_ce_onSetModalViewsFormTop', [&$body, &$nameSingleCode, &$nameListCode]
+		);
+		// check if the filter type is sidebar (2 = topbar)
+		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
+		{
+			$body[] = "<?php";
+			// build code to add the trash helper layout
+			$addTrashHelper = Indent::_(1)
+				. "echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('trashhelper', \$this);";
+			// add the trash helper layout if found in JCB
+			if (CFactory::_('Templatelayout.Data')->set($addTrashHelper, $nameListCode))
+			{
+				$body[] = Indent::_(1) . "//" . Line::_(
+						__LINE__,__CLASS__
+					) . " Add the trash helper layout";
+				$body[] = $addTrashHelper;
+			}
+			// add the new search toolbar ;)
+			$body[] = Indent::_(1) . "//" . Line::_(
+					__LINE__,__CLASS__
+				) . " Add the searchtools";
+			$body[] = Indent::_(1)
+				. "echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('joomla.searchtools.default', array('view' => \$this));";
+			$body[] = "?>";
+		}
+		$body[] = "<?php if (empty(\$this->items)): ?>";
+		$body[] = Indent::_(1)
+			. "<div class=\"alert alert-no-items\">";
+		$body[] = Indent::_(2)
+			. "<?php echo Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>";
+		$body[] = Indent::_(1) . "</div>";
+		$body[] = "<?php else : ?>";
+		$body[] = Indent::_(1) . "<table class=\"table table-striped\" id=\""
+			. $nameSingleCode . "List\">";
+		$body[] = Indent::_(2)
+			. "<thead><?php echo \$this->loadTemplate('head');?></thead>";
+		$body[] = Indent::_(2)
+			. "<tfoot><?php echo \$this->loadTemplate('foot');?></tfoot>";
+		$body[] = Indent::_(2)
+			. "<tbody><?php echo \$this->loadTemplate('body');?></tbody>";
+		$body[] = Indent::_(1) . "</table>";
+		$body[] = Indent::_(1)
+			. "<input type=\"hidden\" name=\"boxchecked\" value=\"0\" />";
+		$body[] = Indent::_(1) . "</div>";
+		$body[] = "<?php endif; ?>";
+		$body[] = Indent::_(1)
+			. "<input type=\"hidden\" name=\"task\" value=\"\" />";
+		$body[] = Indent::_(1) . "<?php echo Html::_('form.token'); ?>";
+		// Trigger Event: jcb_ce_onSetDefaultViewsFormBottom
+		CFactory::_('Event')->trigger(
+			'jcb_ce_onSetModalViewsFormBottom', [&$body, &$nameSingleCode, &$nameListCode]
+		);
+		$body[] = "</form>";
+		// Trigger Event: jcb_ce_onSetModalViewsBodyBottom
+		CFactory::_('Event')->trigger(
+			'jcb_ce_onSetDefaultViewsBodyBottom', [&$body, &$nameSingleCode, &$nameListCode]
+		);
+
+		return implode(PHP_EOL, $body);
+	}
+
+	/**
 	 * set the list body table head
 	 *
 	 * @param   string  $nameSingleCode
@@ -12017,6 +12131,12 @@ class Interpretation extends Fields
 				$jhtml_sort_icon   = "";
 				$jhtml_sort_icon_2 = ", 'icon-menu-2'";
 			}
+			// Target the J5+
+			$allowSortingWhen = "<?php if (\$this->canEdit && \$this->canState): ?>";
+			if (CFactory::_('Config')->get('joomla_version', 3) !== 3)
+			{
+				$allowSortingWhen = "<?php if (!\$this->isModal && \$this->canEdit && \$this->canState): ?>";
+			}
 			// main lang prefix
 			$langView = CFactory::_('Config')->lang_prefix . '_'
 				. StringHelper::safe($nameSingleCode, 'U');
@@ -12030,8 +12150,7 @@ class Interpretation extends Fields
 			CFactory::_('Language')->set(CFactory::_('Config')->lang_target, $idLangName, 'Id');
 			// set default
 			$head = '<tr>';
-			$head .= PHP_EOL . Indent::_(1)
-				. "<?php if (\$this->canEdit&& \$this->canState): ?>";
+			$head .= PHP_EOL . Indent::_(1) . $allowSortingWhen;
 			if (!CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.ordering'))
 			{
 				$head .= PHP_EOL . Indent::_(2)
@@ -12068,7 +12187,7 @@ class Interpretation extends Fields
 				{
 					// check if we have an over-ride
 					if (($list_head_override = CFactory::_('Compiler.Builder.List.Head.Override')->
-						get($nameListCode . '.' . (int) $item['id'])) !== null)
+						get($nameListCode . '.' . $item['guid'])) !== null)
 					{
 						$item['lang'] = $list_head_override;
 					}
@@ -12096,26 +12215,22 @@ class Interpretation extends Fields
 						{
 							// keep an eye on this
 							$title = "<?php echo Html::_('" . $jhtml_sort
-								. "', '"
-								. $item['lang'] . "', '" . $item['custom']['db']
+								. "', '" . $item['lang'] . "', '" . $item['custom']['db']
 								. "." . $item['custom']['text']
 								. "', \$this->listDirn, \$this->listOrder); ?>";
 						}
 						else
 						{
 							$title = "<?php echo Html::_('" . $jhtml_sort
-								. "', '"
-								. $item['lang'] . "', 'a." . $item['code']
+								. "', '" . $item['lang'] . "', 'a." . $item['code']
 								. "', \$this->listDirn, \$this->listOrder); ?>";
 						}
 					}
 					else
 					{
-						$title = "<?php echo Text:" . ":_('" . $item['lang']
-							. "'); ?>";
+						$title = "<?php echo Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $item['lang'] . "'); ?>";
 					}
-					$head .= PHP_EOL . Indent::_(1) . '<th class="' . $class
-						. '" >';
+					$head .= PHP_EOL . Indent::_(1) . '<th class="' . $class . '" >';
 					$head .= PHP_EOL . Indent::_(3) . $title;
 					$head .= PHP_EOL . Indent::_(1) . "</th>";
 					$this->listColnrBuilder[$nameListCode]++;
@@ -12136,7 +12251,7 @@ class Interpretation extends Fields
 				$head .= PHP_EOL . Indent::_(1) . "<?php else: ?>";
 				$head .= PHP_EOL . Indent::_(2)
 					. '<th width="10" class="nowrap center" >';
-				$head .= PHP_EOL . Indent::_(3) . "<?php echo Text:" . ":_('"
+				$head .= PHP_EOL . Indent::_(3) . "<?php echo Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 					. $statusLangName . "'); ?>";
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 				$head .= PHP_EOL . Indent::_(1) . "<?php endif; ?>";
@@ -12205,8 +12320,7 @@ class Interpretation extends Fields
 					// add the alignemnt key
 					$alignmentArray[] = PHP_EOL . Indent::_(3) . "'"
 						. $this->alignmentOptions[$alignment] . "' => array("
-						. implode(',', $fieldArray) . PHP_EOL . Indent::_(3)
-						. ")";
+						. implode(',', $fieldArray) . PHP_EOL . Indent::_(3) . ")";
 				}
 				// add the layout key
 				$layoutArray[] = PHP_EOL . Indent::_(2) . "'"
@@ -12396,7 +12510,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . Indent::_(1) . "<?php \$this->tab_name = '"
 				. $nameSingleCode . "Tab'; ?>";
 			$body .= PHP_EOL . Indent::_(1)
-				. "<?php echo LayoutHelper::render('joomla.edit.params', \$this); ?>";
+				. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('joomla.edit.params', \$this); ?>";
 			// add the publish and meta data tabs
 			$body .= $this->getEditBodyPublishMetaTabs(
 				$nameSingleCode, $langView
@@ -12635,7 +12749,7 @@ class Interpretation extends Fields
 							{
 								$tabs[$tabCodeName][(int) $alignment] = '';
 							}
-							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo LayoutHelper::render('"
+							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12652,7 +12766,7 @@ class Interpretation extends Fields
 							{
 								$tabs[$tabCodeName][(int) $alignment] = '';
 							}
-							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo LayoutHelper::render('"
+							$tabs[$tabCodeName][(int) $alignment] .= "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12664,7 +12778,7 @@ class Interpretation extends Fields
 							);
 							// load to header
 							$header .= PHP_EOL
-								. "<?php echo LayoutHelper::render('"
+								. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12677,7 +12791,7 @@ class Interpretation extends Fields
 							// load to footer
 							$footer .= PHP_EOL . PHP_EOL
 								. "<div class=\"clearfix\"></div>" . PHP_EOL
-								. "<?php echo LayoutHelper::render('"
+								. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12690,7 +12804,7 @@ class Interpretation extends Fields
 							);
 							// load the body
 							$leftside .= PHP_EOL . Indent::_(2)
-								. "<?php echo LayoutHelper::render('"
+								. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12703,7 +12817,7 @@ class Interpretation extends Fields
 							);
 							// load the body
 							$rightside .= PHP_EOL . Indent::_(2)
-								. "<?php echo LayoutHelper::render('"
+								. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 								. $nameSingleCode . "." . $layoutCodeName
 								. "', \$this); ?>";
 							break;
@@ -12741,7 +12855,7 @@ class Interpretation extends Fields
 				{
 					$tabs[$tabCodeName][3] = '';
 				}
-				$tabs[$tabCodeName][3] .= "<?php echo LayoutHelper::render('"
+				$tabs[$tabCodeName][3] .= "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('"
 					. $nameSingleCode . "." . $layoutCodeName
 					. "', \$this); ?>";
 			}
@@ -13079,7 +13193,7 @@ class Interpretation extends Fields
 				$tabs .= PHP_EOL . Indent::_(3) . '<div class="' . $classs
 					. '">';
 				$tabs .= PHP_EOL . Indent::_(4)
-					. "<?php echo LayoutHelper::render('" . $nameSingleCode
+					. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('" . $nameSingleCode
 					. "." . $tabCodeNameLeft . "', \$this); ?>";
 				$tabs .= PHP_EOL . Indent::_(3) . "</div>";
 			}
@@ -13088,7 +13202,7 @@ class Interpretation extends Fields
 				$tabs .= PHP_EOL . Indent::_(3) . '<div class="' . $classs
 					. '">';
 				$tabs .= PHP_EOL . Indent::_(4)
-					. "<?php echo LayoutHelper::render('" . $nameSingleCode
+					. "<?php echo Joomla__"."_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('" . $nameSingleCode
 					. "." . $tabCodeNameRight . "', \$this); ?>";
 				$tabs .= PHP_EOL . Indent::_(3) . "</div>";
 			}
@@ -13208,7 +13322,7 @@ class Interpretation extends Fields
 			$fadein[] = Indent::_(1) . "loadingDiv.id = 'loading';";
 			$fadein[] = Indent::_(1) . "loadingDiv.style.cssText = \"background: rgba(255, 255, 255, .8) url('components/com_"
 				. CFactory::_('Config')->component_code_name
-				. "/assets/images/import.gif') 50% 15% no-repeat; top: \" + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + \"px; left: \" + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + \"px; width: \" + outerDiv.offsetWidth + \"px; height: \" + outerDiv.offsetHeight + \"px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;\";";
+				. "/assets/images/ajax.gif') 50% 35% no-repeat; top: \" + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + \"px; left: \" + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + \"px; width: \" + outerDiv.offsetWidth + \"px; height: \" + outerDiv.offsetHeight + \"px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;\";";
 			$fadein[] = Indent::_(1) . "outerDiv.appendChild(loadingDiv);";
 			$fadein[] = Indent::_(1) . "loadingDiv.style.display = 'block';";
 			$fadein[] = Indent::_(1) . "// when page is ready remove and show";
@@ -13462,7 +13576,7 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check for a return value';
 			$headerscript .= PHP_EOL
-				. '$jinput = Factory::getApplication()->input;';
+				. '$jinput = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;';
 			$headerscript .= PHP_EOL
 				. "if (\$_return = \$jinput->get('return', null, 'base64'))";
 			$headerscript .= PHP_EOL . '{';
@@ -13742,12 +13856,12 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$body .= PHP_EOL . Indent::_(2)
-					. "\$userChkOut = Factory::getUser(\$item->checked_out);";
+					. "\$userChkOut = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser(\$item->checked_out);";
 			}
 			else
 			{
 				$body .= PHP_EOL . Indent::_(2)
-					. "\$userChkOut = Factory::getContainer()->";
+					. "\$userChkOut = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->";
 				$body .= PHP_EOL . Indent::_(3)
 					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
@@ -13778,7 +13892,7 @@ class Interpretation extends Fields
 					$itemRow = $this->getListItemBuilder(
 						$item, $nameSingleCode, $nameListCode, $itemClass,
 						$doNotEscape, false, $ref,
-						'$displayData->escape', '$user', $refview
+						'$displayData->', '$user', $refview
 					);
 					// check if buttons was aready added
 					if ($firstTimeBeingAdded) // TODO we must improve this to allow more items to be targeted instead of just the first item :)
@@ -13816,7 +13930,7 @@ class Interpretation extends Fields
 					. '<span class="status-metro status-published" title="<?php echo Text:'
 					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_PUBLISHED'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('
 					. "'"
 					. CFactory::_('Config')->lang_prefix . "_PUBLISHED'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
@@ -13830,7 +13944,7 @@ class Interpretation extends Fields
 					. '<span class="status-metro status-inactive" title="<?php echo Text:'
 					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_INACTIVE'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('
 					. "'"
 					. CFactory::_('Config')->lang_prefix . "_INACTIVE'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
@@ -13844,7 +13958,7 @@ class Interpretation extends Fields
 					. '<span class="status-metro status-archived" title="<?php echo Text:'
 					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_ARCHIVED'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('
 					. "'"
 					. CFactory::_('Config')->lang_prefix . "_ARCHIVED'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
@@ -13858,7 +13972,7 @@ class Interpretation extends Fields
 					. '<span class="status-metro status-trashed" title="<?php echo Text:'
 					. ':_(' . "'" . CFactory::_('Config')->lang_prefix . "_TRASHED'"
 					. ');  ?>">';
-				$body .= PHP_EOL . Indent::_(5) . '<?php echo Text:' . ':_('
+				$body .= PHP_EOL . Indent::_(5) . '<?php echo Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('
 					. "'"
 					. CFactory::_('Config')->lang_prefix . "_TRASHED'" . '); ?>';
 				$body .= PHP_EOL . Indent::_(4) . '</span>';
@@ -13894,7 +14008,7 @@ class Interpretation extends Fields
 			$body .= PHP_EOL . '<?php else: ?>';
 			$body .= PHP_EOL . Indent::_(1)
 				. '<div class="alert alert-no-items">';
-			$body .= PHP_EOL . Indent::_(2) . '<?php echo Text:' . ':_('
+			$body .= PHP_EOL . Indent::_(2) . '<?php echo Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('
 				. "'JGLOBAL_NO_MATCHING_RESULTS'" . '); ?>';
 			$body .= PHP_EOL . Indent::_(1) . '</div>';
 			$body .= PHP_EOL . '<?php endif; ?>';
@@ -14010,7 +14124,7 @@ class Interpretation extends Fields
 				{
 					// check if we have an over-ride
 					if (($list_head_override = CFactory::_('Compiler.Builder.List.Head.Override')->
-						get($nameListCode . '.' . (int) $item['id'])) !== null)
+						get($nameListCode . '.' . $item['guid'])) !== null)
 					{
 						$item['lang'] = $list_head_override;
 					}
@@ -14051,7 +14165,7 @@ class Interpretation extends Fields
 			{
 				$head .= PHP_EOL . Indent::_(2) . '<th width="10" ' . $data_hide
 					. '>';
-				$head .= PHP_EOL . Indent::_(3) . "<?php echo Text:" . ":_('"
+				$head .= PHP_EOL . Indent::_(3) . "<?php echo Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 					. $statusLangName . "'); ?>";
 				$head .= PHP_EOL . Indent::_(2) . "</th>";
 			}
@@ -14118,17 +14232,17 @@ class Interpretation extends Fields
 			. " Get the user object.";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$query .= PHP_EOL . Indent::_(2) . "\$user = Factory::getUser();";
+			$query .= PHP_EOL . Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
-			$query .= PHP_EOL . Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+			$query .= PHP_EOL . Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 		}
 		$query .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Create a new query object.";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$query .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDBO();";
+			$query .= PHP_EOL . Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDBO();";
 		}
 		else
 		{
@@ -14633,7 +14747,7 @@ class Interpretation extends Fields
 				$buttons[] = Indent::_(2) . "{";
 				$buttons[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " add " . $custom_button['name'] . " button.";
-				$buttons[] = Indent::_(3) . "ToolbarHelper::custom('"
+				$buttons[] = Indent::_(3) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
 					. $nameListCode . ".redirectTo"
 					. StringHelper::safe(
 						$custom_button['link'], 'F'
@@ -14685,11 +14799,11 @@ class Interpretation extends Fields
 					. " check if export is allowed for this user.";
 				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 				{
-					$method[] = Indent::_(2) . "\$user = Factory::getUser();";
+					$method[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 				}
 				else
 				{
-					$method[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+					$method[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 				}
 				$method[] = Indent::_(2) . "if (\$user->authorise('"
 					. $custom_button['link'] . ".access', 'com_"
@@ -14698,7 +14812,7 @@ class Interpretation extends Fields
 				$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 					. " Get the input";
 				$method[] = Indent::_(3)
-					. "\$input = Factory::getApplication()->input;";
+					. "\$input = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
 				$method[] = Indent::_(3)
 					. "\$pks = \$input->post->get('cid', array(), 'array');";
 				$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -14709,18 +14823,18 @@ class Interpretation extends Fields
 					. " convert to string";
 				$method[] = Indent::_(3) . "\$ids = implode('_', \$pks);";
 				$method[] = Indent::_(3)
-					. "\$this->setRedirect(Route::_('index.php?option=com_"
+					. "\$this->setRedirect(Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view="
 					. $custom_button['link'] . "&cid='.\$ids, false));";
 				$method[] = Indent::_(3) . "return;";
 				$method[] = Indent::_(2) . "}";
 				$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 					. " Redirect to the list screen with error.";
-				$method[] = Indent::_(2) . "\$message = Text:" . ":_('"
+				$method[] = Indent::_(2) . "\$message = Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 					. CFactory::_('Config')->lang_prefix . "_ACCESS_TO_" . $custom_button['NAME']
 					. "_FAILED');";
 				$method[] = Indent::_(2)
-					. "\$this->setRedirect(Route::_('index.php?option=com_"
+					. "\$this->setRedirect(Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view=" . $nameListCode
 					. "', false), \$message, 'error');";
 				$method[] = Indent::_(2) . "return;";
@@ -14796,7 +14910,7 @@ class Interpretation extends Fields
 			$query .= PHP_EOL . Indent::_(3) . "{";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$query .= PHP_EOL . Indent::_(4) . "\$user = Factory::getUser();";
+				$query .= PHP_EOL . Indent::_(4) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
@@ -14807,7 +14921,7 @@ class Interpretation extends Fields
 				. " Create a new query object.";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$query .= PHP_EOL . Indent::_(3) . "\$db = Factory::getDBO();";
+				$query .= PHP_EOL . Indent::_(3) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDBO();";
 			}
 			else
 			{
@@ -15039,11 +15153,11 @@ class Interpretation extends Fields
 				. " check if export is allowed for this user.";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$method[] = Indent::_(2) . "\$user = Factory::getUser();";
+				$method[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
-				$method[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+				$method[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			}
 			$method[] = Indent::_(2) . "if (\$user->authorise('"
 				. $nameSingleCode . ".export', 'com_"
@@ -15054,7 +15168,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Get the input";
 			$method[] = Indent::_(3)
-				. "\$input = Factory::getApplication()->input;";
+				. "\$input = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
 			$method[] = Indent::_(3)
 				. "\$pks = \$input->post->get('cid', array(), 'array');";
 			$method[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
@@ -15074,7 +15188,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " now set the data to the spreadsheet";
-			$method[] = Indent::_(4) . "\$date = Factory::getDate();";
+			$method[] = Indent::_(4) . "\$date = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDate();";
 			$method[] = Indent::_(4) . CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::xls(\$data,'"
 				. StringHelper::safe($nameListCode, 'F')
 				. "_'.\$date->format('jS_F_Y'),'"
@@ -15086,10 +15200,10 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Redirect to the list screen with error.";
-			$method[] = Indent::_(2) . "\$message = Text:" . ":_('"
+			$method[] = Indent::_(2) . "\$message = Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 				. CFactory::_('Config')->lang_prefix . "_EXPORT_FAILED');";
 			$method[] = Indent::_(2)
-				. "\$this->setRedirect(Route::_('index.php?option=com_"
+				. "\$this->setRedirect(Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 				. CFactory::_('Config')->component_code_name . "&view=" . $nameListCode
 				. "', false), \$message, 'error');";
 			$method[] = Indent::_(2) . "return;";
@@ -15107,11 +15221,11 @@ class Interpretation extends Fields
 				. " check if import is allowed for this user.";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$method[] = Indent::_(2) . "\$user = Factory::getUser();";
+				$method[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
-				$method[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+				$method[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			}
 			$method[] = Indent::_(2) . "if (\$user->authorise('"
 				. $nameSingleCode . ".import', 'com_"
@@ -15133,7 +15247,7 @@ class Interpretation extends Fields
 			$method[] = Indent::_(3) . "{";
 			$method[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Load headers to session.";
-			$method[] = Indent::_(4) . "\$session = Factory::getSession();";
+			$method[] = Indent::_(4) . "\$session = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getSession();";
 			$method[] = Indent::_(4) . "\$headers = json_encode(\$headers);";
 			$method[] = Indent::_(4) . "\$session->set('" . $nameSingleCode
 				. "_VDM_IMPORTHEADERS', \$headers);";
@@ -15152,21 +15266,21 @@ class Interpretation extends Fields
 				CFactory::_('Config')->lang_target, $selectImportFileNote,
 				'Select the file to import data to ' . $nameListCode . '.'
 			);
-			$method[] = Indent::_(4) . "\$message = Text:" . ":_('"
+			$method[] = Indent::_(4) . "\$message = Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 				. $selectImportFileNote . "');";
 			// if this view has custom script it must have as custom import (model, veiw, controller)
 			if (isset($this->importCustomScripts[$nameListCode])
 				&& $this->importCustomScripts[$nameListCode])
 			{
 				$method[] = Indent::_(4)
-					. "\$this->setRedirect(Route::_('index.php?option=com_"
+					. "\$this->setRedirect(Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name . "&view=import_"
 					. $nameListCode . "', false), \$message);";
 			}
 			else
 			{
 				$method[] = Indent::_(4)
-					. "\$this->setRedirect(Route::_('index.php?option=com_"
+					. "\$this->setRedirect(Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 					. CFactory::_('Config')->component_code_name
 					. "&view=import', false), \$message);";
 			}
@@ -15175,10 +15289,10 @@ class Interpretation extends Fields
 			$method[] = Indent::_(2) . "}";
 			$method[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Redirect to the list screen with error.";
-			$method[] = Indent::_(2) . "\$message = Text:" . ":_('"
+			$method[] = Indent::_(2) . "\$message = Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 				. CFactory::_('Config')->lang_prefix . "_IMPORT_FAILED');";
 			$method[] = Indent::_(2)
-				. "\$this->setRedirect(Route::_('index.php?option=com_"
+				. "\$this->setRedirect(Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
 				. CFactory::_('Config')->component_code_name . "&view=" . $nameListCode
 				. "', false), \$message, 'error');";
 			$method[] = Indent::_(2) . "return;";
@@ -15207,7 +15321,7 @@ class Interpretation extends Fields
 				. "if (\$this->canDo->get('core.export') && \$this->canDo->get('"
 				. $nameSingleCode . ".export'))";
 			$button[] = Indent::_(3) . "{";
-			$button[] = Indent::_(4) . "ToolbarHelper::custom('"
+			$button[] = Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
 				. $nameListCode . ".exportData', 'download', '', '"
 				. $langExport . "', true);";
 			$button[] = Indent::_(3) . "}";
@@ -15235,7 +15349,7 @@ class Interpretation extends Fields
 				. "if (\$this->canDo->get('core.import') && \$this->canDo->get('"
 				. $nameSingleCode . ".import'))";
 			$button[] = Indent::_(2) . "{";
-			$button[] = Indent::_(3) . "ToolbarHelper::custom('"
+			$button[] = Indent::_(3) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
 				. $nameListCode . ".importData', 'upload', '', '"
 				. $langImport
 				. "', false);";
@@ -15328,7 +15442,7 @@ class Interpretation extends Fields
 		$query = "//" . Line::_(__Line__, __Class__) . " Get the user object.";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$query .= PHP_EOL . Indent::_(2) . "\$user = Factory::getUser();";
+			$query .= PHP_EOL . Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
@@ -15338,7 +15452,7 @@ class Interpretation extends Fields
 			. " Create a new query object.";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$query .= PHP_EOL . Indent::_(2) . "\$db = Factory::getDBO();";
+			$query .= PHP_EOL . Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDBO();";
 		}
 		else
 		{
@@ -17651,11 +17765,11 @@ class Interpretation extends Fields
 						. " Get a db connection.";
 					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 					{
-						$function[] = Indent::_(2) . "\$db = Factory::getDbo();";
+						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 					}
 					else
 					{
-						$function[] = Indent::_(2) . "\$db = Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
+						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
 					}
 					$function[] = PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__)
@@ -17723,7 +17837,7 @@ class Interpretation extends Fields
 					  $function[] = PHP_EOL.Indent::_(1) . "protected function getThe".$filter['function'].StringHelper::safe($filter['custom']['text'],'F')."Selections()";
 					  $function[] = Indent::_(1) . "{";
 					  $function[] = Indent::_(2) . "//".Line::_(__Line__, __Class__)." Get a db connection.";
-					  $function[] = Indent::_(2) . "\$db = Factory::getDbo();";
+					  $function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 					  $function[] = PHP_EOL.Indent::_(2) . "//".Line::_(__Line__, __Class__)." Select the text.";
 					  $function[] = Indent::_(2) . "\$query = \$db->getQuery(true);";
 					  $function[] = PHP_EOL.Indent::_(2) . "//".Line::_(__Line__, __Class__)." Select the text.";
@@ -17742,8 +17856,8 @@ class Interpretation extends Fields
 					  $function[] = Indent::_(3) . "{";
 					  if ($filter['custom']['text'] === 'user')
 					  {
-					  $function[] = Indent::_(4) . "\$filter[] = Html::_('select.option', \$result->".$filter['custom']['text'].", Factory::getUser(\$result->".$filter['custom']['text'].")->name);";
-					  $function[] = Indent::_(4) . "\$batch[] = Html::_('select.option', \$result->".$filter['custom']['id'].", Factory::getUser(\$result->".$filter['custom']['text'].")->name);";
+					  $function[] = Indent::_(4) . "\$filter[] = Html::_('select.option', \$result->".$filter['custom']['text'].", Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser(\$result->".$filter['custom']['text'].")->name);";
+					  $function[] = Indent::_(4) . "\$batch[] = Html::_('select.option', \$result->".$filter['custom']['id'].", Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser(\$result->".$filter['custom']['text'].")->name);";
 					  }
 					  else
 					  {
@@ -17785,11 +17899,11 @@ class Interpretation extends Fields
 					}
 					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 					{
-						$function[] = Indent::_(2) . "\$db = Factory::getDbo();";
+						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 					}
 					else
 					{
-						$function[] = Indent::_(2) . "\$db = Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
+						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
 					}
 					$function[] = PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__)
@@ -17900,7 +18014,7 @@ class Interpretation extends Fields
 							. " and its text to the options array";
 						$function[] = Indent::_(4)
 							. "\$_filter[] = Html::_('select.option', \$"
-							. $filter['code'] . ", Text:" . ":_(\$_text));";
+							. $filter['code'] . ", Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(\$_text));";
 					}
 					elseif ($filter['type'] === 'user')
 					{
@@ -17912,7 +18026,7 @@ class Interpretation extends Fields
 						{
 							$function[] = Indent::_(4)
 								. "\$_filter[] = Html::_('select.option', \$"
-								. $filter['code'] . ", Factory::getUser(\$"
+								. $filter['code'] . ", Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser(\$"
 								. $filter['code'] . ")->name);";
 						}
 						else
@@ -17921,7 +18035,7 @@ class Interpretation extends Fields
 								. "\$_filter[] = Html::_('select.option', \$"
 								. $filter['code'] . ",";
 							$function[] = Indent::_(5)
-								. "Factory::getContainer()->";
+								. "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->";
 								$function[] = Indent::_(5)
 									. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 								$function[] = Indent::_(5)
@@ -18516,7 +18630,7 @@ class Interpretation extends Fields
 			. "if (\$this->canState && \$this->canBatch)";
 		$batch[] = Indent::_(2) . "{";
 		$batch[] = Indent::_(3) . "JHtmlBatch_::addListSelection(";
-		$batch[] = Indent::_(4) . "Text:" . ":_('COM_" . $COPMONENT
+		$batch[] = Indent::_(4) . "Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_" . $COPMONENT
 			. "_KEEP_ORIGINAL_STATE'),";
 		$batch[] = Indent::_(4) . "'batch[published]',";
 		$batch[] = Indent::_(4)
@@ -18534,7 +18648,7 @@ class Interpretation extends Fields
 				. "if (\$this->canBatch && \$this->canCreate && \$this->canEdit)";
 			$batch[] = Indent::_(2) . "{";
 			$batch[] = Indent::_(3) . "JHtmlBatch_::addListSelection(";
-			$batch[] = Indent::_(4) . "Text:" . ":_('COM_" . $COPMONENT
+			$batch[] = Indent::_(4) . "Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_" . $COPMONENT
 				. "_KEEP_ORIGINAL_ACCESS'),";
 			$batch[] = Indent::_(4) . "'batch[access]',";
 			$batch[] = Indent::_(4)
@@ -18567,7 +18681,7 @@ class Interpretation extends Fields
 			$batch[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Category Batch selection.";
 			$batch[] = Indent::_(3) . "JHtmlBatch_::addListSelection(";
-			$batch[] = Indent::_(4) . "Text:" . ":_('COM_" . $COPMONENT
+			$batch[] = Indent::_(4) . "Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_" . $COPMONENT
 				. "_KEEP_ORIGINAL_CATEGORY'),";
 			$batch[] = Indent::_(4) . "'batch[category]',";
 			$batch[] = Indent::_(4)
@@ -18728,7 +18842,7 @@ class Interpretation extends Fields
 				get($nameListCode . '.view', $nameSingleCode);
 			// setup the category script
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = Factory::getApplication()->input;";
+				. "\$jinput = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				)
@@ -18782,12 +18896,12 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Factory::getUser();";
+					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
 				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Factory::getApplication()->getIdentity();";
+					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			}
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -18829,7 +18943,7 @@ class Interpretation extends Fields
 		else
 		{
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = Factory::getApplication()->input;";
+				. "\$jinput = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				)
@@ -18848,12 +18962,12 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Factory::getUser();";
+					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
 				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Factory::getApplication()->getIdentity();";
+					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			}
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -19236,11 +19350,11 @@ class Interpretation extends Fields
 				. " Check specific edit permission then general edit permission.";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
-				$allow[] = Indent::_(2) . "\$user = Factory::getUser();";
+				$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
-				$allow[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+				$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 			}
 			// load custom permission script
 			$allow[] = $customAllow;
@@ -19259,11 +19373,11 @@ class Interpretation extends Fields
 			{
 				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 				{
-					$allow[] = Indent::_(2) . "\$user = Factory::getUser();";
+					$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 				}
 				else
 				{
-					$allow[] = Indent::_(2) . "\$user = Factory::getApplication()->getIdentity();";
+					$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 				}
 			}
 			// load custom permission script
@@ -19271,14 +19385,14 @@ class Interpretation extends Fields
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$allow[] = Indent::_(2)
-					. "return Factory::getUser()->authorise('core.edit', 'com_"
+					. "return Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser()->authorise('core.edit', 'com_"
 					. $component . "." . $nameSingleCode
 					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
 			}
 			else
 			{
 				$allow[] = Indent::_(2)
-					. "return Factory::getApplication()->getIdentity()->authorise('core.edit', 'com_"
+					. "return Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity()->authorise('core.edit', 'com_"
 					. $component . "." . $nameSingleCode
 					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
 			}
@@ -19758,11 +19872,11 @@ class Interpretation extends Fields
 
 			// build toolbar
 			$toolBar
-				= "Factory::getApplication()->input->set('hidemainmenu', true);";
-			$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::title(Text:"
+				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Text:"
 				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
 				. "');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 		}
 		else
@@ -19787,22 +19901,22 @@ class Interpretation extends Fields
 			);
 			// build toolbar
 			$toolBar
-				= "Factory::getApplication()->input->set('hidemainmenu', true);";
+				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$toolBar .= PHP_EOL . Indent::_(2)
-					. "\$user = Factory::getUser();";
+					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
 				$toolBar .= PHP_EOL . Indent::_(2)
-					. "\$user = Factory::getApplication()->getIdentity();";
+					. "\$user = \$this->getCurrentUser();";
 			}
 			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId	= \$user->id;";
 			$toolBar .= PHP_EOL . Indent::_(2)
 				. "\$isNew = \$this->item->id == 0;";
 			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
-				. "ToolbarHelper::title( Text:" . ":_(\$isNew ? '"
+				. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title( Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(\$isNew ? '"
 				. $viewNameLang_new . "' : '" . $viewNameLang_edit
 				. "'), 'pencil-2 article-add');";
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
@@ -19815,7 +19929,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can create the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3)
@@ -19825,21 +19939,21 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can save the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " Do not creat but cancel.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "else";
 			$toolBar .= PHP_EOL . Indent::_(3) . "{";
 			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 				. " We can close it.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(2) . "}";
@@ -19852,15 +19966,15 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::apply('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
 				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::custom('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
 				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . Indent::_(4) . "};";
-			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(3) . "else";
@@ -19870,9 +19984,9 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
 			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " We can save the new record";
-			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::apply('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
 				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::save('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
 				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
 			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " We can save this record, but check the create permission to see";
@@ -19881,7 +19995,7 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(5) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(5) . "{";
-			$toolBar .= PHP_EOL . Indent::_(6) . "ToolbarHelper::custom('"
+			$toolBar .= PHP_EOL . Indent::_(6) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
 				. $nameSingleCode
 				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
 			$toolBar .= PHP_EOL . Indent::_(5) . "}";
@@ -19900,7 +20014,7 @@ class Interpretation extends Fields
 						. "') && \$canVersion)";
 					$toolBar .= PHP_EOL . Indent::_(4) . "{";
 					$toolBar .= PHP_EOL . Indent::_(5)
-						. "ToolbarHelper::versions('com_"
+						. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::versions('com_"
 						. CFactory::_('Config')->component_code_name . "." . $nameSingleCode
 						. "', \$this->item->id);";
 					$toolBar .= PHP_EOL . Indent::_(4) . "}";
@@ -19917,7 +20031,7 @@ class Interpretation extends Fields
 						. "if (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
 					$toolBar .= PHP_EOL . Indent::_(4) . "{";
 					$toolBar .= PHP_EOL . Indent::_(5)
-						. "ToolbarHelper::versions('com_"
+						. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::versions('com_"
 						. CFactory::_('Config')->component_code_name . "." . $nameSingleCode
 						. "', \$this->item->id);";
 					$toolBar .= PHP_EOL . Indent::_(4) . "}";
@@ -19926,20 +20040,20 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
 				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
 			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "ToolbarHelper::custom('"
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
 				. $nameSingleCode
 				. ".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
 			$toolBar .= PHP_EOL . Indent::_(4) . "}";
 			// add custom buttons
 			$toolBar .= $this->setCustomButtons($view, 2, Indent::_(2));
-			$toolBar .= PHP_EOL . Indent::_(4) . "ToolbarHelper::cancel('"
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
 				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
 			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::divider();";
+			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::divider();";
 			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
 			{
-				$toolBar .= PHP_EOL . Indent::_(2) . "ToolbarHelper::inlinehelp();";
+				$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::inlinehelp();";
 			}
 			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " set help url for this view if found";
@@ -19949,8 +20063,182 @@ class Interpretation extends Fields
 			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
 				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->help_url))";
 			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "ToolbarHelper::help('"
+			$toolBar .= PHP_EOL . Indent::_(3) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::help('"
 				. CFactory::_('Config')->lang_prefix . "_HELP_MANAGER', false, \$this->help_url);";
+			$toolBar .= PHP_EOL . Indent::_(2) . "}";
+		}
+
+		return $toolBar;
+	}
+
+	public function setAddModalToolBar(&$view)
+	{
+		// set view name
+		$nameSingleCode = $view['settings']->name_single_code;
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			$langViews = CFactory::_('Config')->lang_prefix . '_'
+				. StringHelper::safe(
+					$view['settings']->name_list_code, 'U'
+				);
+			$name_list = strtolower($view['settings']->name_list);
+			$name_single = strtolower($view['settings']->name_single);
+			// add empty title
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target,
+				$langViews . '_EMPTYSTATE_TITLE',
+				'No ' . $name_list . ' have been created yet.'
+			);
+			// add empty content
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target,
+				$langViews . '_EMPTYSTATE_CONTENT',
+				$view['settings']->description
+			);
+			// add empty button add
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target,
+				$langViews . '_EMPTYSTATE_BUTTON_ADD',
+				'Add your first ' . $name_single
+			);
+		}
+		// check type
+		if ($view['settings']->type == 2)
+		{
+			// set lang strings
+			$viewNameLang_readonly = CFactory::_('Config')->lang_prefix . '_'
+				. StringHelper::safe(
+					$view['settings']->name_single . ' readonly', 'U'
+				);
+			// load to lang
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $viewNameLang_readonly,
+				$view['settings']->name_single . ' :: Readonly'
+			);
+
+			// build toolbar
+			$toolBar
+				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Text:"
+				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
+				. "');";
+			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
+		}
+		else
+		{
+			// set lang strings
+			$viewNameLang_new  = CFactory::_('Config')->lang_prefix . '_'
+				. StringHelper::safe(
+					$view['settings']->name_single . ' New', 'U'
+				);
+			$viewNameLang_edit = CFactory::_('Config')->lang_prefix . '_'
+				. StringHelper::safe(
+					$view['settings']->name_single . ' Edit', 'U'
+				);
+			// load to lang
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $viewNameLang_new,
+				'A New ' . $view['settings']->name_single
+			);
+			CFactory::_('Language')->set(
+				CFactory::_('Config')->lang_target, $viewNameLang_edit,
+				'Editing the ' . $view['settings']->name_single
+			);
+			// build toolbar
+			$toolBar
+				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$toolBar .= PHP_EOL . Indent::_(2)
+					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
+			}
+			else
+			{
+				$toolBar .= PHP_EOL . Indent::_(2)
+					. "\$user = \$this->getCurrentUser();";
+			}
+			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId	= \$user->id;";
+			$toolBar .= PHP_EOL . Indent::_(2)
+				. "\$isNew = \$this->item->id == 0;";
+			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
+				. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title( Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(\$isNew ? '"
+				. $viewNameLang_new . "' : '" . $viewNameLang_edit
+				. "'), 'pencil-2 article-add');";
+			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+				. " Built the actions for new and existing records.";
+			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
+				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->referral))";
+			$toolBar .= PHP_EOL . Indent::_(2) . "{";
+			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && \$isNew)";
+			$toolBar .= PHP_EOL . Indent::_(3) . "{";
+			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+				. " We can create the record.";
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL . Indent::_(3) . "}";
+			$toolBar .= PHP_EOL . Indent::_(3)
+				. "elseif (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
+				. "'))";
+			$toolBar .= PHP_EOL . Indent::_(3) . "{";
+			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+				. " We can save the record.";
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL . Indent::_(3) . "}";
+			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
+			$toolBar .= PHP_EOL . Indent::_(3) . "{";
+			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+				. " Do not creat but cancel.";
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
+			$toolBar .= PHP_EOL . Indent::_(3) . "}";
+			$toolBar .= PHP_EOL . Indent::_(3) . "else";
+			$toolBar .= PHP_EOL . Indent::_(3) . "{";
+			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+				. " We can close it.";
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
+			$toolBar .= PHP_EOL . Indent::_(3) . "}";
+			$toolBar .= PHP_EOL . Indent::_(2) . "}";
+			$toolBar .= PHP_EOL . Indent::_(2) . "else";
+			$toolBar .= PHP_EOL . Indent::_(2) . "{";
+			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
+			$toolBar .= PHP_EOL . Indent::_(3) . "{";
+			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+				. " For new records, check the create permission.";
+			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
+			$toolBar .= PHP_EOL . Indent::_(4) . "{";
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
+				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
+				. $nameSingleCode
+				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
+			$toolBar .= PHP_EOL . Indent::_(4) . "};";
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
+			$toolBar .= PHP_EOL . Indent::_(3) . "}";
+			$toolBar .= PHP_EOL . Indent::_(3) . "else";
+			$toolBar .= PHP_EOL . Indent::_(3) . "{";
+			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
+				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "'))";
+			$toolBar .= PHP_EOL . Indent::_(4) . "{";
+			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
+				. " We can save the new record";
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
+				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
+			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
+				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
+			$toolBar .= PHP_EOL . Indent::_(4) . "}";
+			$toolBar .= $this->setCustomButtons($view, 2, Indent::_(2));
+			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
+				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
+			$toolBar .= PHP_EOL . Indent::_(3) . "}";
 			$toolBar .= PHP_EOL . Indent::_(2) . "}";
 		}
 
@@ -20160,7 +20448,7 @@ class Interpretation extends Fields
 					if ($filter['type'] === 'category')
 					{
 						$fields .= "," . PHP_EOL . Indent::_(3)
-							. "'category_title' => Text:" . ":_('"
+							. "'category_title' => Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 							. $filter['lang'] . "')";
 					}
 					elseif (ArrayHelper::check(
@@ -20169,13 +20457,13 @@ class Interpretation extends Fields
 					{
 						$fields .= "," . PHP_EOL . Indent::_(3) . "'"
 							. $filter['custom']['db'] . "."
-							. $filter['custom']['text'] . "' => Text:" . ":_('"
+							. $filter['custom']['text'] . "' => Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 							. $filter['lang'] . "')";
 					}
 					else
 					{
 						$fields .= "," . PHP_EOL . Indent::_(3) . "'a."
-							. $filter['code'] . "' => Text:" . ":_('"
+							. $filter['code'] . "' => Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 							. $filter['lang'] . "')";
 					}
 				}
@@ -20221,7 +20509,7 @@ class Interpretation extends Fields
 			) . " Get a db connection.";
 		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$checkin .= PHP_EOL . Indent::_(3) . "\$db = Factory::getDbo();";
+			$checkin .= PHP_EOL . Indent::_(3) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
 		}
 		else
 		{
@@ -20247,7 +20535,7 @@ class Interpretation extends Fields
 		$checkin .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 			. " Get Yesterdays date.";
 		$checkin .= PHP_EOL . Indent::_(4)
-			. "\$date = Factory::getDate()->modify(\$time)->toSql();";
+			. "\$date = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDate()->modify(\$time)->toSql();";
 		$checkin .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
 			. " Reset query.";
 		$checkin .= PHP_EOL . Indent::_(4) . "\$query = \$db->getQuery(true);";
@@ -20762,7 +21050,7 @@ class Interpretation extends Fields
 				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 				{
 					$forEachStart .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
-						. "\$user = Factory::getUser();";
+						. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 				}
 				else
 				{
@@ -21580,7 +21868,7 @@ class Interpretation extends Fields
 				$alias        = StringHelper::safe($tabname);
 				$display[]    = PHP_EOL . Indent::_(2)
 					. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', '"
-					. $alias . "', Text:" . ":_('" . $tabname
+					. $alias . "', Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $tabname
 					. "', true)); ?>";
 				$display[]    = Indent::_(2) . '<div class="' . $row_class . '">';
 				$display[]    = $tab . '<div class="' . $width_class . '12">';
@@ -21615,9 +21903,9 @@ class Interpretation extends Fields
 					$TARGET = StringHelper::safe(
 						CFactory::_('Config')->build_target, 'U'
 					);
-					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
+					// CUSTOM_ADMIN_TEMPLATE_BODY <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
-					// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
+					// CUSTOM_ADMIN_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
 				}
 				$display[] = $tab . Indent::_(1)
@@ -21706,7 +21994,7 @@ class Interpretation extends Fields
 				$alias        = StringHelper::safe($tabname);
 				$display[]    = PHP_EOL . Indent::_(2)
 					. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', '"
-					. $alias . "', Text:" . ":_('" . $tabname
+					. $alias . "', Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $tabname
 					. "', true)); ?>";
 				$display[]    = Indent::_(2) . '<div class="' . $row_class . '">';
 				$display[]    = $tab . '<div class="' . $width_class . '12">';
@@ -21955,7 +22243,7 @@ class Interpretation extends Fields
 			// set default dashboard
 			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
-				$menus .= "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang
+				$menus .= "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang
 					. "_DASHBOARD'), 'index.php?option=com_" . $codeName
 					. "&view=" . $codeName . "', \$submenu === '" . $codeName
 					. "');";
@@ -21997,7 +22285,7 @@ class Interpretation extends Fields
 						$has_permissions = true;
 					}
 					$menus .= PHP_EOL . Indent::_(2) . $tab
-						. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper . "'), 'index.php?option=com_" . $codeName
 						. "&view=" . $nameListCode . "', \$submenu === '"
 						. $nameListCode . "');";
@@ -22030,7 +22318,7 @@ class Interpretation extends Fields
 						}
 						// now load the menus
 						$menus .= PHP_EOL . Indent::_(2) . $tab
-							. "\JHtmlSidebar::addEntry(Text:" . ":_('"
+							. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.name", 'error')
 							. "'), 'index.php?option=com_categories&view=categories&extension="
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
@@ -22052,13 +22340,13 @@ class Interpretation extends Fields
 						. "if (ComponentHelper::isEnabled('com_fields'))";
 					$menus .= PHP_EOL . Indent::_(2) . "{";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS'), 'index.php?option=com_fields&context=com_"
 						. $codeName . "." . $nameSingleCode
 						. "', \$submenu === 'fields.fields');";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_"
 						. $codeName . "." . $nameSingleCode
@@ -22192,7 +22480,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -22203,7 +22491,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -22250,7 +22538,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -22261,7 +22549,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Text:" . ":_('" . $lang . "_"
+					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -22849,7 +23137,7 @@ class Interpretation extends Fields
 		{
 			$setter .= '//' . Line::_(__Line__, __Class__)
 				. 'get the document object';
-			$setter .= PHP_EOL . '$document = Factory::getDocument();';
+			$setter .= PHP_EOL . '$document = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getDocument();';
 			foreach ($data_ as $id => $true)
 			{
 				// get the library
@@ -23002,7 +23290,7 @@ class Interpretation extends Fields
 							// set path
 							$path = $module->folder_path . '/language/' . $tag . '/';
 							// create path if not exist
-							if (!Folder::exists($path))
+							if (!is_dir($path))
 							{
 								Folder::create($path);
 								// count the folder created

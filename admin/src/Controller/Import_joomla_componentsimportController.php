@@ -17,7 +17,6 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 
 // No direct access to this file
 \defined('_JEXEC') or die;

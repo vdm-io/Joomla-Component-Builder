@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customcode;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Version;

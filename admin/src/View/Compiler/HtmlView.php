@@ -23,7 +23,7 @@ use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\HeaderCheck;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\CMS\Layout\LayoutHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\FormHelper;

@@ -100,7 +100,8 @@ final class Type
 				'type' => $this->getFieldName($fileType),
 				'formats' => $this->getAllowFormats($fileType) ?? [],
 				'filter' => $fileType->filter ?? null,
-				'path' => $this->getFileTypePath($fileType)
+				'path' => $this->getFileTypePath($fileType),
+				'crop' => $this->getCropDetails($fileType)
 			];
 		}
 
@@ -157,6 +158,30 @@ final class Type
 			return $this->fileTypes[$type];
 		}
 		return 'file';
+	}
+
+	/**
+	 * Retrieves the image crop details if set.
+	 *
+	 * Ensures the returned structure is always an array of arrays,
+	 * converting any stdClass to array recursively.
+	 *
+	 * @param   object  $data  The type data object.
+	 *
+	 * @return  array  The image crop details.
+	 * @since   5.1.1
+	 */
+	protected function getCropDetails(object $data): array
+	{
+		if (($data->type ?? 0) !== 1 || empty($data->crop))
+		{
+			return [];
+		}
+
+		// Use native JSON method to deeply convert stdClass → array
+		$crop = json_decode(json_encode($data->crop), true) ?? [];
+
+		return array_values($crop);
 	}
 
 	/**

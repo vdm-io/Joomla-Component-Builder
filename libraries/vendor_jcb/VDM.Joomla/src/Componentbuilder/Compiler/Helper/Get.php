@@ -454,6 +454,7 @@ class Get
 	public $langStringTargets
 		= array(
 			'Joomla' . '.JText._(',
+			'Joomla' . '.Text._(',
 			'JText:' . ':script(',
 			'Text:' . ':_(',        // namespace and J version will be found
 			'Text:' . ':sprintf(',  // namespace and J version will be found
@@ -1070,7 +1071,7 @@ class Get
 		}
 		CFactory::_('Config')->set('field_builder_type', $this->fieldBuilderType);
 		// load the compiler path @deprecated
-		$this->compilerPath = CFactory::_('Config')->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
+		$this->compilerPath = CFactory::_('Config')->get('compiler_path', JPATH_ADMINISTRATOR . '/components/com_componentbuilder/compiler');
 		// load the jcb powers path @deprecated
 		$this->jcbPowersPath = CFactory::_('Config')->get('jcb_powers_path', 'libraries/jcb_powers');
 		// set the component ID @deprecated

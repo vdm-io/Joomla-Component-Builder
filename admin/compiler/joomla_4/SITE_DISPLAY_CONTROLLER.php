@@ -65,7 +65,7 @@ class DisplayController extends BaseController
 	 */
 	public function __construct($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
 	{
-		$app ??= Factory::getApplication();
+		$app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->identity ??= $app->getIdentity();
 
 		parent::__construct($config, $factory, $app, $input);
@@ -108,21 +108,21 @@ class DisplayController extends BaseController
 			if ($refid > 0 && Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($ref))
 			{
 				// redirect to item of ref
-				$this->setRedirect(Route::_('index.php?option=com_###component###&view=' . (string) $ref . '&layout=edit&id=' . (int) $refid, false));
+				$this->setRedirect(Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=' . (string) $ref . '&layout=edit&id=' . (int) $refid, false));
 			}
 			elseif (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($ref))
 			{
 				// redirect to ref
-				 $this->setRedirect(Route::_('index.php?option=com_###component###&view=' . (string) $ref, false));
+				 $this->setRedirect(Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=' . (string) $ref, false));
 			}
 			else
 			{
 				// normal redirect back to the list default site view
-				$this->setRedirect(Route::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###', false));
+				$this->setRedirect(Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###', false));
 			}
 
 			// Somehow the person just went to the form - we don't allow that.
-        	throw new \Exception(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id), 403);
+			throw new \Exception(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id), 403);
 		}
 
 		// we may need to make this more dynamic in the future. (TODO)

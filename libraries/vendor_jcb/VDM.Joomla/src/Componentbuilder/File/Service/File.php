@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\File\Type;
 use VDM\Joomla\Componentbuilder\File\Handler;
 use VDM\Joomla\Componentbuilder\File\Manager;
 use VDM\Joomla\Componentbuilder\File\Display;
+use VDM\Joomla\Componentbuilder\File\Image;
 
 
 /**
@@ -48,6 +49,9 @@ class File implements ServiceProviderInterface
 
 		$container->alias(Display::class, 'File.Display')
 			->share('File.Display', [$this, 'getDisplay'], true);
+
+		$container->alias(Image::class, 'File.Image')
+			->share('File.Image', [$this, 'getImage'], true);
 	}
 
 	/**
@@ -92,7 +96,8 @@ class File implements ServiceProviderInterface
 			$container->get('Data.Item'),
 			$container->get('Data.Items'),
 			$container->get('File.Type'),
-			$container->get('File.Handler')
+			$container->get('File.Handler'),
+			$container->get('File.Image')
 		);
 	}
 
@@ -110,6 +115,19 @@ class File implements ServiceProviderInterface
 			$container->get('Data.Item'),
 			$container->get('Data.Items')
 		);
+	}
+
+	/**
+	 * Get The Image Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Image
+	 * @since   5.1.1
+	 */
+	public function getImage(Container $container): Image
+	{
+		return new Image();
 	}
 }
 

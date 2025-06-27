@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Creator;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name;
 use VDM\Joomla\Componentbuilder\Compiler\Field\TypeName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Attributes;
+use VDM\Joomla\Componentbuilder\Compiler\Field\ModalSelect;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Groups;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\FieldNames;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Creator\Fieldtypeinterface as Field;
@@ -55,6 +56,14 @@ final class FieldDynamic implements Fielddynamicinterface
 	 * @since 3.2.0
 	 */
 	protected Attributes $attributes;
+
+	/**
+	 * The ModalSelect Class.
+	 *
+	 * @var   ModalSelect
+	 * @since 5.1.1
+	 */
+	protected ModalSelect $modalselect;
 
 	/**
 	 * The Groups Class.
@@ -102,6 +111,7 @@ final class FieldDynamic implements Fielddynamicinterface
 	 * @param Name         $name         The Name Class.
 	 * @param TypeName     $typename     The TypeName Class.
 	 * @param Attributes   $attributes   The Attributes Class.
+	 * @param ModalSelect  $modalselect  The ModalSelect Class.
 	 * @param Groups       $groups       The Groups Class.
 	 * @param FieldNames   $fieldnames   The FieldNames Class.
 	 * @param Field        $field        The Fieldtypeinterface Class.
@@ -111,12 +121,14 @@ final class FieldDynamic implements Fielddynamicinterface
 	 * @since 3.2.0
 	 */
 	public function __construct(Name $name, TypeName $typename,
-		Attributes $attributes, Groups $groups, FieldNames $fieldnames,
+		Attributes $attributes, ModalSelect $modalselect,
+		Groups $groups, FieldNames $fieldnames,
 		Field $field, Builders $builders, Layout $layout)
 	{
 		$this->name = $name;
 		$this->typename = $typename;
 		$this->attributes = $attributes;
+		$this->modalselect = $modalselect;
 		$this->groups = $groups;
 		$this->fieldnames = $fieldnames;
 		$this->field = $field;
@@ -171,6 +183,12 @@ final class FieldDynamic implements Fielddynamicinterface
 
 				// set options as null
 				$optionArray = null;
+
+				// special treatment for Modal Select
+				if ($typeName === 'ModalSelect')
+				{
+					$fieldAttributes['custom'] = $this->modalselect->extract($fieldAttributes);
+				}
 
 				if ($this->groups->check($typeName, 'option'))
 				{
@@ -253,6 +271,7 @@ final class FieldDynamic implements Fielddynamicinterface
 					// set the custom array
 					$custom = $fieldAttributes['custom'];
 					unset($fieldAttributes['custom']);
+
 					// set db key
 					$custom['db'] = $dbkey;
 					// increment the db key

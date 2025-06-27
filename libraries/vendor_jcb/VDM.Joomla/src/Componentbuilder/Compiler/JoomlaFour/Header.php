@@ -200,7 +200,7 @@ final class Header implements HeaderInterface
 		$headers = $this->getHeaders($context);
 
 		// add to all except the helper classes
-		if ('admin.helper' !== $context && 'site.helper' !== $context)
+		if ('admin.helper' !== $context && 'site.helper' !== $context && 'plugin.extension.header' !== $context && 'plugin.provider.header' !== $context)
 		{
 			$target = 'Administrator';
 			if ($this->config->get('build_target', 'admin') === 'site')
@@ -426,6 +426,8 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\Input\Input;';
 				break;
 
+			case 'admin.views.modal':
+				$headers[] = 'use Joomla\CMS\Session\Session;';
 			case 'admin.views':
 				$headers[] = 'use Joomla\CMS\HTML\HTMLHelper as Html;';
 				$headers[] = 'use Joomla\CMS\Layout\LayoutHelper;';
@@ -503,7 +505,7 @@ final class Header implements HeaderInterface
 			case 'import.custom.model':
 			case 'import.model':
 				$headers[] = 'use Joomla\CMS\Filesystem\File;';
-				$headers[] = 'use Joomla\CMS\Filesystem\Folder;';
+				$headers[] = 'use Joomla\Filesystem\Folder;';
 				$headers[] = 'use Joomla\CMS\Filesystem\Path;';
 				$headers[] = 'use Joomla\CMS\Filter\OutputFilter;';
 				$headers[] = 'use Joomla\CMS\Installer\InstallerHelper;';

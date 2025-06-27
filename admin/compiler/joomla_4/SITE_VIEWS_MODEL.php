@@ -122,7 +122,7 @@ class ###SViews###Model extends ListModel
 	{
 		parent::__construct($config, $factory);
 
-		$this->app ??= Factory::getApplication();
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->input ??= $this->app->getInput();
 
 		// Set the current user for authorisation checks (for those calling this model directly)
@@ -160,7 +160,7 @@ class ###SViews###Model extends ListModel
 		$items = parent::getItems();
 
 		// Get the global params
-		$globalParams = ComponentHelper::getParams('com_###component###', true);###SITE_GET_ITEMS######SITE_AFTER_GET_ITEMS###
+		$globalParams = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###', true);###SITE_GET_ITEMS######SITE_AFTER_GET_ITEMS###
 
 		// return items
 		return $items;

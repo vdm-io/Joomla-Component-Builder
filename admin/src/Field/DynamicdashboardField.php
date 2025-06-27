@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -51,20 +52,21 @@ class DynamicdashboardField extends ListField
 		// get the input from url
 		$jinput = Factory::getApplication()->input;
 		// get the id
-		$ID = $jinput->getInt('id', 0);
+		$id = $jinput->getInt('id', 0);
 		// set the targets
 		$targets = ['adminview' => 'admin_view', 'customadminview' => 'custom_admin_view'];
 		$t = ['adminview' => 'A', 'customadminview' => 'C'];
 		// rest the options
 		$options = [];
-		// reset the custom admin views array
-		$views = false;
-		if (is_numeric($ID) && $ID >= 1)
+		// reset the custom admin & admin views array
+		$views = [];
+		if (is_numeric($id) && $id >= 1)
 		{
+			$guid = GetHelper::var('joomla_component', (int) $id, 'id', 'guid');
 			// get the linked back-end views
 			foreach ($targets as $target => $view)
 			{
-				if ($result = GetHelper::var('component_'.$view.'s', (int) $ID, 'joomla_component', 'add'.$view.'s'))
+				if ($result = GetHelper::var('component_' . $view . 's', $guid, 'joomla_component', 'add' . $view . 's'))
 				{
 					$views[$target] = $result;
 				}
@@ -75,6 +77,7 @@ class DynamicdashboardField extends ListField
 			// not linked so there is none available
 			return [Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_LINK_AN_ADMIN_OR_A_CUSTOM_ADMIN_VIEW_TO_THIS_COMPONENT_THEN_YOU_CAN_SELECT_IT_HERE'))];
 		}
+
 		// check if we found any values
 		if (ArrayHelper::check($views))
 		{
@@ -89,12 +92,28 @@ class DynamicdashboardField extends ListField
 					{
 						foreach ($value as $_view)
 						{
-							if (isset($_view[$target]) && is_numeric($_view[$target]))
+							if (!isset($_view[$target]))
+							{
+								continue;
+							}
+
+							$key_id = null;
+							$key_value = $_view[$target];
+							if (is_numeric($key_value))
+							{
+								$key_id = 'id';
+							}
+							elseif (GuidHelper::valid($key_value))
+							{
+								$key_id = 'guid';
+							}
+
+							if ($key_id !== null)
 							{
 								// set the view to the selections if found
-								if ($name = GetHelper::var($view, (int) $_view[$target], 'id', 'system_name'))
+								if (($name = GetHelper::var($view, $key_value, $key_id, 'system_name')) !== null)
 								{
-									$options[] = Html::_('select.option', $t[$target].'_'.$_view[$target], $name.'  ['.$type.']');
+									$options[] = Html::_('select.option', $t[$target] . '_' . $key_value, $name . '  [' . $type . ']');
 								}
 							}
 						}
@@ -102,12 +121,14 @@ class DynamicdashboardField extends ListField
 				}
 			}
 		}
+
 		// return found options
 		if (ArrayHelper::check($options))
 		{
 			array_unshift($options , Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_SELECT_AN_OPTION')));
 			return $options;
 		}
+
 		// not linked so there is none available
 		return [Html::_('select.option', '', Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_LINK_AN_ADMIN_OR_A_CUSTOM_ADMIN_VIEW_TO_THIS_COMPONENT_THEN_YOU_CAN_SELECT_IT_HERE'))];
 	}

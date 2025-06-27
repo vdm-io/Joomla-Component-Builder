@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Library;
 
 
-use Joomla\CMS\Filesystem\Folder as JoomlaFolder;
+use Joomla\Filesystem\Folder as JoomlaFolder;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
@@ -158,7 +158,7 @@ class Structure
 			);
 
 			// creat the main component folder
-			if (!JoomlaFolder::exists($this->paths->component_path))
+			if (!is_dir($this->paths->component_path))
 			{
 				JoomlaFolder::create($this->paths->component_path);
 

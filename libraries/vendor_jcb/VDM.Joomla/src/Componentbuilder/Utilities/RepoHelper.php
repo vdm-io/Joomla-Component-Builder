@@ -45,6 +45,8 @@ abstract class RepoHelper
 				'write_branch',
 				'token',
 				'username',
+				'author_name',
+				'author_email',
 				'target',
 				'access_repo',
 				'addplaceholders',
@@ -63,15 +65,7 @@ abstract class RepoHelper
 			$options = [];
 			foreach($items as $item)
 			{
-				if ($item->access_repo != 1)
-				{
-					unset($item->username);
-					unset($item->token);
-				}
-				unset($item->access_repo);
-
-				$item->placeholders = self::setPlaceholders($item->addplaceholders ?? '');
-				unset($item->addplaceholders);
+				self::modelRepoDetails($item);
 
 				$path = $item->organisation . '/' . $item->repository;
 				$options[$path] =  $item;
@@ -81,6 +75,73 @@ abstract class RepoHelper
 		}
 
 		return null;
+	}
+
+	/**
+	 * Model the repo details
+	 *
+	 * @param object &$item An object with values to model.
+	 *
+	 * @return void
+	 * @since  5.1.1
+	 */
+	protected static function modelRepoDetails(object &$item): void
+	{
+		// Helper: Check if string is empty, whitespace, or null
+		$isEmpty = fn(?string $v): bool =>
+			$v === null || trim($v) === '';
+
+		// Helper: Check if string is only digits
+		$isOnlyDigits = fn(string $v): bool =>
+			preg_match('/^\d+$/', $v);
+
+		// Helper: Check if email has an @
+		$isValidEmail = fn(string $v): bool =>
+			strpos($v, '@') !== false;
+
+		if ($item->access_repo != 1)
+		{
+			unset($item->username);
+			unset($item->token);
+		}
+		unset($item->access_repo);
+
+		$item->placeholders = self::setPlaceholders($item->addplaceholders ?? '');
+		unset($item->addplaceholders);
+
+		$item->target = self::setTarget((int) ($item->type ?? 1));
+
+		// Sanitize base url
+		if ($item->target === 'github')
+		{
+			$item->base = 'https://api.github.com';
+		}
+		elseif (!property_exists($item, 'base') || !is_string($item->base)
+			|| $isEmpty($item->base))
+		{
+			$item->base = null;
+		}
+
+		// Sanitize author_name
+		if (!property_exists($item, 'author_name') || !is_string($item->author_name)
+			|| $isEmpty($item->author_name) || $isOnlyDigits($item->author_name))
+		{
+			$item->author_name = null;
+		}
+
+		// Sanitize author_email
+		if (!property_exists($item, 'author_email') || !is_string($item->author_email)
+			|| $isEmpty($item->author_email) || !$isValidEmail($item->author_email))
+		{
+			$item->author_email = null;
+		}
+
+		// Sanitize author_name
+		if (!property_exists($item, 'author_name') || !is_string($item->author_name)
+			|| $isEmpty($item->author_name) || $isOnlyDigits($item->author_name))
+		{
+			$item->author_name = null;
+		}
 	}
 
 	/**
@@ -106,6 +167,19 @@ abstract class RepoHelper
 			}
 		}
 		return $bucket;
+	}
+
+	/**
+	 * Determine the repository system target name from its type identifier.
+	 *
+	 * @param int   $type   The repository system type identifier.
+	 *
+	 * @return string  The resolved target name ('gitea' or 'github').
+	 * @since  5.1.1
+	 **/
+	protected static function setTarget(int $type): string
+	{
+		return $type === 1 ? 'gitea' : 'github';
 	}
 }
 

@@ -16,7 +16,8 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower as Powers;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Grep;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Get;
+use VDM\Joomla\Componentbuilder\JoomlaPower\Remote\Config;
+use VDM\Joomla\Componentbuilder\Remote\Get;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Injector;
 
@@ -40,6 +41,9 @@ class JoomlaPower implements ServiceProviderInterface
 	{
 		$container->alias(Powers::class, 'Joomla.Power')
 			->share('Joomla.Power', [$this, 'getPowers'], true);
+
+		$container->alias(Config::class, 'Joomla.Power.Remote.Config')
+			->share('Joomla.Power.Remote.Config', [$this, 'getRemoteConfig'], true);
 
 		$container->alias(Get::class, 'Joomla.Power.Remote.Get')
 			->share('Joomla.Power.Remote.Get', [$this, 'getRemoteGet'], true);
@@ -74,6 +78,21 @@ class JoomlaPower implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The Remote Config Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Config
+	 * @since  5.1.1
+	 */
+	public function getRemoteConfig(Container $container): Config
+	{
+		return new Config(
+			$container->get('Power.Table')
+		);
+	}
+
+	/**
 	 * Get the Remote Get
 	 *
 	 * @param   Container  $container  The DI container.
@@ -84,8 +103,11 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getRemoteGet(Container $container): Get
 	{
 		return new Get(
+			$container->get('Joomla.Power.Remote.Config'),
 			$container->get('Joomla.Power.Grep'),
-			$container->get('Data.Item')
+			$container->get('Data.Item'),
+			$container->get('Power.Tracker'),
+			$container->get('Power.Message')
 		);
 	}
 
@@ -100,8 +122,10 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getGrep(Container $container): Grep
 	{
 		return new Grep(
-			$container->get('Gitea.Repository.Contents'),
+			$container->get('Joomla.Power.Remote.Config'),
+			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
+			$container->get('Power.Tracker'),
 			$container->get('Config')->approved_joomla_paths
 		);
 	}

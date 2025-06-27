@@ -15,8 +15,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
@@ -397,7 +397,7 @@ final class Structuresingle
 			return false;
 		}
 		// take action based on type
-		elseif ($details->type === 'file' && !File::exists($this->currentFullPath))
+		elseif ($details->type === 'file' && !is_file($this->currentFullPath))
 		{
 			$this->app->enqueueMessage(
 				Text::_('COM_COMPONENTBUILDER_HR_HTHREEFILE_PATH_ERRORHTHREE'), 'Error'
@@ -410,7 +410,7 @@ final class Structuresingle
 
 			return false;
 		}
-		elseif ($details->type === 'folder' && !Folder::exists($this->currentFullPath))
+		elseif ($details->type === 'folder' && !is_dir($this->currentFullPath))
 		{
 			$this->app->enqueueMessage(
 				Text::_('COM_COMPONENTBUILDER_HR_HTHREEFOLDER_PATH_ERRORHTHREE'),
@@ -474,7 +474,7 @@ final class Structuresingle
 		);
 
 		// check if path exist, if not creat it
-		if (!Folder::exists($packageFullPath0nly))
+		if (!is_dir($packageFullPath0nly))
 		{
 			Folder::create($packageFullPath0nly);
 		}

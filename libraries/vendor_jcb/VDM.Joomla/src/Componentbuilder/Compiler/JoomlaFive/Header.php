@@ -426,6 +426,8 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\Input\Input;';
 				break;
 
+			case 'admin.views.modal':
+				$headers[] = 'use Joomla\CMS\Session\Session;';
 			case 'admin.views':
 				$headers[] = 'use Joomla\CMS\HTML\HTMLHelper as Html;';
 				$headers[] = 'use Joomla\CMS\Layout\LayoutHelper;';
@@ -504,7 +506,7 @@ final class Header implements HeaderInterface
 			case 'import.model':
 				$headers[] = 'use Joomla\Filesystem\File;';
 				$headers[] = 'use Joomla\Filesystem\Folder;';
-				$headers[] = 'use Joomla\CMS\Filesystem\Path;';
+				$headers[] = 'use Joomla\Filesystem\Path;';
 				$headers[] = 'use Joomla\CMS\Filter\OutputFilter;';
 				$headers[] = 'use Joomla\CMS\Installer\InstallerHelper;';
 				$headers[] = 'use Joomla\CMS\MVC\Model\BaseDatabaseModel;';

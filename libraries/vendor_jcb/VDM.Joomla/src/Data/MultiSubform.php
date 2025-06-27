@@ -101,7 +101,7 @@ final class MultiSubform implements MultiSubformInterface
 	 *        $items,
 	 *        $setMap = [
 	 *        	'_core' => [
-	 *        		'table' =>'data',
+	 *        		'table' => 'data',
 	 *        		'indexKey' => 'guid',
 	 *        		'linkKey' => 'look',
 	 *        		'linkValue' => $data['guid'] ?? ''

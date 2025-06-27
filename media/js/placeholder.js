@@ -41,7 +41,7 @@ function checkPlaceholderName(placeholderName) {
 				jQuery('#jform_target').val('');
 			} else {
 				// set an error that message was not send
-				jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_PLACEHOLDER_ALREADY_TAKEN_PLEASE_TRY_AGAIN'), timeout: 5000, status: 'danger', pos: 'top-right'});
+				jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_PLACEHOLDER_ALREADY_TAKEN_PLEASE_TRY_AGAIN'), timeout: 5000, status: 'danger', pos: 'top-right'});
 				jQuery('#jform_target').val('');
 			}
 			// set custom code placeholder
@@ -49,7 +49,7 @@ function checkPlaceholderName(placeholderName) {
 		});
 	} else {
 		// set an error that message was not send
-		jQuery.UIkit.notify({message: Joomla.JText._('COM_COMPONENTBUILDER_YOU_MUST_ADD_AN_UNIQUE_PLACEHOLDER'), timeout: 5000, status: 'danger', pos: 'top-right'});
+		jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_YOU_MUST_ADD_AN_UNIQUE_PLACEHOLDER'), timeout: 5000, status: 'danger', pos: 'top-right'});
 		jQuery('#jform_target').val('');
 		// set custom code placeholder
 		setPlaceholderName();
