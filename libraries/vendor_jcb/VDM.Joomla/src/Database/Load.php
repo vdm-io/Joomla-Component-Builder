@@ -330,7 +330,7 @@ final class Load extends Database implements LoadInterface
 	protected function query(array $select, array $tables, ?array $where = null,
 		?array $order = null, ?int $limit = null): ?object
 	{
-		$query = $this->db->getQuery(true);
+		$query = $this->db->createQuery();
 
 		$this->applySelect($query, $select);
 		$this->applyFromAndJoins($query, $tables);

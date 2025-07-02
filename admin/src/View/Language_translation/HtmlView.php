@@ -403,14 +403,6 @@ class HtmlView extends BaseHtmlView
 		{
 			Html::_('script', $script, ['version' => 'auto']);
 		}
-		// add JavaScripts
-		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit.min.js', ['version' => 'auto']);
-		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
-		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
-		// add the style sheets
-		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css', ['version' => 'auto']);
-		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css', ['version' => 'auto']);
-		// add var key
-		$this->getDocument()->addScriptDeclaration("var vastDevMod = '".$this->get('VDM')."';"); 
+		// LayoutHelper::render('exportlanguagetranslations', []); // to ensure that the layout gets loaded
 	}
 }

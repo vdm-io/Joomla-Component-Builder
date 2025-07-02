@@ -42,6 +42,8 @@ use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Table\Search;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Utilities\FormHelper;
+use VDM\Joomla\Componentbuilder\Utilities\FilterHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 use VDM\Joomla\Componentbuilder\Fieldtype\Factory as FieldtypeFactory;
 use VDM\Joomla\Componentbuilder\JoomlaPower\Factory as JoomlaPowerFactory;
@@ -4111,332 +4113,6 @@ class AjaxModel extends ListModel
 		return '&ref=placeholder&refid=' . $id;
 	}
 
-	// Used in snippet
-	public function setSnippetGithub($path, $status)
-	{
-		// get user
-		$user = Factory::getUser();
-		$access = $user->authorise('snippet.access', 'com_componentbuilder');
-		if ($access)
-		{
-			// secure path
-			$path = StringHelper::safe(str_replace('.json','',$path), 'filename', '', false).'.json';
-			// base path
-			$base_path = basename($path);
-			// set url
-			$url = ComponentbuilderHelper::$snippetPath.rawurlencode($base_path);
-			// get the snippets
-			if (($snippet = ComponentbuilderHelper::getGithubRepoData('lib_snippet_' . $base_path, $url, null, 'array')) !== false)
-			{
-				return $this->saveSnippet($snippet, $status, $user);
-			}
-			// see if we have any errors from github
-			if (UtilitiesArrayHelper::check(ComponentbuilderHelper::$githubRepoDataErrors))
-			{
-				return array('message' => Text::sprintf('COM_COMPONENTBUILDER_ERROR_BR_S', implode('<br />', ComponentbuilderHelper::$githubRepoDataErrors)), 'status' => 'danger');
-			}
-			return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_THE_PATH_HAS_A_MISMATCH_AND_COULD_THEREFORE_NOT_RETRIEVE_THE_SNIPPET_FROM_GITHUB'), 'status' => 'danger');
-		}
-		return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_ACCESS_TO_THE_SNIPPETS'), 'status' => 'danger');
-	}
-
-	protected function saveSnippet($item, $status, $user)
-	{
-		// set some defaults
-		$todayDate = Factory::getDate()->toSql();
-		// get the type id
-		$item['type'] = ($id = GetHelper::var('snippet_type', $item['type'], 'name', 'id')) ? $id : $this->createNew($item['type'], 'snippet_type', $user, $todayDate);
-		// get the library id
-		$item['library'] = ($id = GetHelper::var('library', $item['library'], 'name', 'id')) ? $id : $this->createNew($item['library'], 'library', $user, $todayDate);
-		// remove type if zero
-		if ($item['type'] == 0)
-		{
-			unset($item['type']);
-		}
-		// remove library if zero
-		if ($item['library'] == 0)
-		{
-			unset($item['library']);
-		}
-		// get the snippet ID
-		$item['id'] = $this->getSnippetId($item);
-		if ($item['id'] == 0)
-		{
-			$canCreate = $user->authorise('snippet.create', 'com_componentbuilder');
-			if ('new' === $status && !$canCreate)
-			{
-				return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_YOU_DO_NOT_HAVE_PERMISSION_TO_CREATE_THE_SNIPPET'), 'status' => 'danger');
-			}
-		}
-		// get the snippet model
-		$model = ComponentbuilderHelper::getModel('snippet', JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
-		// save the snippet
-		if ($model->save($item))
-		{
-			if ($item['id'] == 0)
-			{
-				// get the saved item
-				$updatedItem = $model->getItem();
-				$item['id']= $updatedItem->get('id');
-			}
-			// we have to force modified date since the model does not allow you
-			if ($this->forchDateFix($item))
-			{
-				return array('message' => Text::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED'), 'status' => 'success');
-			}
-			// return error
-			return array('message' => Text::_('COM_COMPONENTBUILDER_SUCCESS_THE_SNIPPET_WAS_SAVED_BUT_THE_MODIFIED_DATE_COULD_NOT_BE_ADJUSTED_BR_BR_BTHIS_MEANS_THE_SNIPPETS_WILL_CONTINUE_TO_APPEAR_OUT_OF_DATEB'), 'status' => 'warning');
-		}
-		// return error
-		return array('message' => Text::_('COM_COMPONENTBUILDER_ERROR_THE_SNIPPET_IS_FAULTY_AND_COULD_NOT_BE_SAVED'), 'status' => 'danger');
-	}
-
-	protected function forchDateFix($item)
-	{
-		$object = new \stdClass();
-		$object->id = (int) $item['id'];
-		$object->created = $item['created'];
-		$object->modified = $item['modified'];
-		// force update
-		return Factory::getDbo()->updateObject('#__componentbuilder_snippet', $object, 'id');
-	}
-
-	protected function getSnippetId($item)
-	{
-		// Get a db connection.
-		$db = Factory::getDbo();
-		 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.id')));
-		$query->from($db->quoteName('#__componentbuilder_snippet', 'a'));
-		$query->where($db->quoteName('a.name') . ' = ' . (string) $db->quote($item['name']));
-		if (is_numeric($item['type']))
-		{
-			$query->where($db->quoteName('a.type') . ' = ' . (int) $item['type']);
-		}
-		if (is_numeric($item['library']))
-		{
-			$query->where($db->quoteName('a.library') . ' = ' . (int) $item['library']);
-		}
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
-		$db->execute();
-		if ($db->getNumRows())
-		{
-			return $db->loadResult();
-		}
-		return 0;
-	}
-
-	protected function createNew($name, $type, $user, $todayDate)
-	{
-		// verify that we can continue
-		if (ComponentbuilderHelper::getActions($type)->get('core.create'))
-		{
-			// get the snippet model
-			$model = ComponentbuilderHelper::getModel($type, JPATH_ADMINISTRATOR . '/components/com_componentbuilder');
-			// build array to save
-			$item['id'] = 0;
-			$item['name'] = $name;
-			$item['published'] = 1;
-			$item['version'] = 1;
-			$item['created'] = $todayDate;
-			$item['created_by'] = $user->id;
-			// save the new
-			$model->save($item);
-			// get the saved item
-			$item = $model->getItem();
-			return $item->get('id');
-		}
-		return 0;
-	}
-
-	/**
-	 * Retrieves published snippet GUIDs for valid libraries.
-	 *
-	 * @param   mixed  $libraries  JSON string or array of library GUIDs.
-	 *
-	 * @return  array|false  List of snippet IDs or false on failure.
-	 * @since   5.1.1
-	 */
-	public function getSnippets($libraries)
-	{
-		// Decode JSON if required
-		if (JsonHelper::check($libraries))
-		{
-			$libraries = json_decode($libraries, true);
-		}
-
-		// Ensure we have a valid array of libraries
-		if (!UtilitiesArrayHelper::check($libraries))
-		{
-			return false;
-		}
-
-		// Validate and expand libraries
-		$validatedLibraries = $this->expandAndValidateLibraries($libraries);
-
-		if (!$validatedLibraries)
-		{
-			return false;
-		}
-
-		$db = Factory::getDbo();
-		$query = $db->getQuery(true)
-			->select($db->quoteName('a.id'))
-			->from($db->quoteName('#__componentbuilder_snippet', 'a'))
-			->where($db->quoteName('a.published') . ' = 1')
-			->where($db->quoteName('a.library') . ' IN ("' . implode('","', $validatedLibraries) . '")');
-
-		$db->setQuery($query);
-		$db->execute();
-
-		return $db->getNumRows() ? $db->loadColumn() : false;
-	}
-
-	/**
-	 * Validates and expands library GUIDs to ensure only integers and valid references remain.
-	 *
-	 * @param   array  $libraries  The original list of library GUIDs.
-	 *
-	 * @return  array|false  Sanitized and validated list of libraries, or false.
-	 * @since   5.1.1
-	 */
-	protected function expandAndValidateLibraries(array $libraries)
-	{
-		$expanded = [];
-
-		foreach ($libraries as $guid)
-		{
-			$guid = (string) $guid;
-			$type = GetHelper::var('library', $guid, 'guid', 'type');
-
-			if ((int) $type === 2)
-			{
-				$bundled = GetHelper::var('library', $guid, 'guid', 'libraries');
-
-				if (JsonHelper::check($bundled))
-				{
-					$bundled = json_decode($bundled, true);
-				}
-
-				if (UtilitiesArrayHelper::check($bundled))
-				{
-					foreach ($bundled as $lib)
-					{
-						$expanded[$lib] = $lib;
-					}
-				}
-				elseif (is_numeric($bundled))
-				{
-					$expanded[$bundled] = $bundled;
-				}
-			}
-			else
-			{
-				$expanded[$guid] = $guid;
-			}
-		}
-
-		// Remove invalid entries and duplicates
-		$valid = array_filter(array_unique($expanded), function ($guid) {
-			return GuidHelper::valid($guid);
-		});
-
-		return UtilitiesArrayHelper::check($valid) ? array_values($valid) : false;
-	}
-
-	/**
-	 * Retrieves snippet details by GUID or ID.
-	 *
-	 * @param   string|int  $key  The snippet GUID (string) or ID (int).
-	 *
-	 * @return  object|false  The snippet data object or false on failure.
-	 * @since   5.1.1
-	 */
-	public function getSnippetDetails($key)
-	{
-		$target = $this->resolveSnippetKeyField($key);
-
-		if ($target === false)
-		{
-			return false;
-		}
-
-		$db = Factory::getDbo();
-		$query = $db->getQuery(true);
-
-		$query
-			->select($db->quoteName(
-				[
-					'a.name',
-					'a.heading',
-					'a.usage',
-					'a.description',
-					'b.name',
-					'a.snippet',
-					'a.url',
-					'c.name'
-				],
-				[
-					'name',
-					'heading',
-					'usage',
-					'description',
-					'type',
-					'snippet',
-					'url',
-					'library'
-				]
-			))
-			->from($db->quoteName('#__componentbuilder_snippet', 'a'))
-			->join('LEFT', $db->quoteName('#__componentbuilder_snippet_type', 'b') . ' ON ' . $db->quoteName('a.type') . ' = ' . $db->quoteName('b.guid'))
-			->join('LEFT', $db->quoteName('#__componentbuilder_library', 'c') . ' ON ' . $db->quoteName('a.library') . ' = ' . $db->quoteName('c.guid'))
-			->where($db->quoteName('a.published') . ' >= 1')
-			->where($db->quoteName("a.$target") . ' = ' . $db->quote($key));
-
-		$db->setQuery($query);
-		$db->execute();
-
-		if ($db->getNumRows() > 0)
-		{
-			$snippet = $db->loadObject();
-
-			if (isset($snippet->snippet))
-			{
-				$snippet->snippet = base64_decode($snippet->snippet);
-			}
-
-			return $snippet;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Resolves whether the given key is a GUID or numeric ID and returns the appropriate field.
-	 *
-	 * @param   mixed  $key  The value used to identify the snippet.
-	 *
-	 * @return  string|false  'guid', 'id', or false if invalid.
-	 * @since   5.1.1
-	 */
-	protected function resolveSnippetKeyField($key)
-	{
-		if (GuidHelper::valid($key))
-		{
-			return 'guid';
-		}
-
-		if (is_numeric($key))
-		{
-			return 'id';
-		}
-
-		return false;
-	}
-
 	// Used in validation_rule
 	public function getExistingValidationRuleCode($name)
 	{
@@ -5009,6 +4685,237 @@ class AjaxModel extends ListModel
 			}
 		}
 		return $xml;
+	}
+
+	// Used in language_translation
+	/**
+	 * Export language translation data by filtering records based on extension, translated, and untranslated tags.
+	 *
+	 * This method loads translation records from the database and structures them into an array
+	 * with language-tagged headers (e.g., `en-GB`, `de-DE`). It supports filtering for a specific
+	 * extension, already translated languages, and missing translations. All matching records are
+	 * padded with empty values for missing languages, and returned with a size count or errors.
+	 *
+	 * @param   string  $extension      The extension identifier in format "type__name" (e.g., "com_example__field").
+	 * @param   string  $translated     Comma-separated list of language tags that must have translations.
+	 * @param   string  $notTranslated  Comma-separated list of language tags that must not yet have translations.
+	 *
+	 * @return  array<string, mixed>  Returns an array with:
+	 *                                - 'data' (array<int, array<string, string>>): The exportable translation rows.
+	 *                                - 'size' (int): Number of rows (if successful).
+	 *                                - 'errors' (string): Error message (if an error occurred).
+	 *
+	 * @throws  \Throwable  If any unexpected exception occurs during data fetching or parsing.
+	 * @since   5.1.1
+	 */
+	public function exportLanguageTranslations(string $extension, string $translated, string $notTranslated): array
+	{
+		try {
+			$ids = $this->resolveLanguageTranslationFilterIds($extension, $translated, $notTranslated);
+			$where = $this->buildLanguageTranslationWhereClause($ids);
+			$records = $this->loadLanguageTranslationRows($where);
+			$headers = $this->getLanguageTranslationHeaders();
+
+			if (empty($records))
+			{
+				return $this->errorLanguageTranslationResponse(Text::_('COM_COMPONENTBUILDER_NO_LANGUAGE_STRINGS_FOUND'));
+			}
+
+			$data = $this->normalizeLanguageTranslationData($records, $headers);
+
+			return [
+				'data' => $data,
+				'size' => count($data),
+			];
+		} catch (\Throwable $e) {
+			return $this->errorLanguageTranslationResponse($e->getMessage());
+		}
+	}
+
+	/**
+	 * Resolve all relevant record IDs from the given filters.
+	 *
+	 * @param   string  $extension      Extension string in format "type__name".
+	 * @param   string  $translated     Comma-separated list of translated language tags.
+	 * @param   string  $notTranslated  Comma-separated list of untranslated language tags.
+	 *
+	 * @return  array<int>|null  Array of record IDs, or empty array to load all or null to force a skip all.
+	 * @since   5.1.1
+	 */
+	protected function resolveLanguageTranslationFilterIds(string $extension, string $translated, string $notTranslated): ?array
+	{
+		$ids = [];
+		$forceEmpty = false;
+
+		// Extension IDs
+		if (!empty($extension) && strpos($extension, '__') !== false)
+		{
+			[$type, $name] = explode('__', $extension, 2);
+			$extIds = FilterHelper::translation($name, $type);
+			if (!empty($extIds))
+			{
+				$ids = array_merge($ids, $extIds);
+			}
+			else
+			{
+				$forceEmpty = true;
+			}
+		}
+
+		// Translated IDs
+		if (!empty($translated))
+		{
+			$trIds = FilterHelper::translations($translated);
+			if (!empty($trIds))
+			{
+				$ids = array_merge($ids, $trIds);
+			}
+			else
+			{
+				$forceEmpty = true;
+			}
+		}
+
+		// Not translated IDs
+		if (!empty($notTranslated))
+		{
+			$untrIds = FilterHelper::translations($notTranslated, false);
+			if (!empty($untrIds))
+			{
+				$ids = array_merge($ids, $untrIds);
+			}
+			else
+			{
+				$forceEmpty = true;
+			}
+		}
+
+		if ($ids === [] && !$forceEmpty)
+		{
+			return [];
+		}
+
+		return $forceEmpty ? null : array_unique($ids);
+	}
+
+	/**
+	 * Build a SQL WHERE clause using resolved IDs.
+	 *
+	 * @param   array<int>|null  $ids  The record IDs to include in the query.
+	 *
+	 * @return  array<string, array<string, mixed>>  A structured WHERE clause.
+	 * @since   5.1.1
+	 */
+	protected function buildLanguageTranslationWhereClause(?array $ids): array
+	{
+		if ($ids === [])
+		{
+			// return all published
+			return ['published' => ['value' => 1, 'operator' => '=', 'quote' => false]];
+		}
+		elseif ($ids === null)
+		{
+			// return none
+			return ['id' => ['value' => 0, 'operator' => '=', 'quote' => false]];
+		}
+
+		// return selected and published
+		return [
+			'id' => ['value' => $ids, 'operator' => 'IN', 'quote' => false],
+			'published' => ['value' => 1, 'operator' => '=', 'quote' => false]
+		];
+	}
+
+	/**
+	 * Load translation rows from the database based on the given WHERE clause.
+	 *
+	 * @param   array<string, array<string, mixed>>|null  $where  Optional WHERE clause.
+	 *
+	 * @return  array<int, array<string, mixed>>  Loaded records with 'source' and 'translation' keys.
+	 * @since   5.1.1
+	 */
+	protected function loadLanguageTranslationRows(?array $where): array
+	{
+		return DataFactory::_('Load')->rows(
+			['source', 'translation'],
+			['language_translation'],
+			$where,
+			['source' => 'ASC']
+		);
+	}
+
+	/**
+	 * Get the list of available language headers (e.g., ['en-GB' => 'en-GB']).
+	 *
+	 * This includes a default 'source' => 'source' entry.
+	 *
+	 * @return  array<string, string>  Associative list of language tags.
+	 * @since   5.1.1
+	 */
+	protected function getLanguageTranslationHeaders(): array
+	{
+		return ComponentbuilderHelper::getLanguageTranslationsHeaders() ?? ['source' => 'source'];
+	}
+
+	/**
+	 * Normalize translation records by mapping language keys and padding missing headers.
+	 *
+	 * @param   array<int, array<string, mixed>>  $rows     Raw translation rows from the database.
+	 * @param   array<string, string>             $headers  Valid language header list.
+	 *
+	 * @return  array<int, array<string, string>>  Structured translation data ready for export.
+	 * @since   5.1.1
+	 */
+	protected function normalizeLanguageTranslationData(array $rows, array $headers): array
+	{
+		$normalized = [];
+
+		foreach ($rows as $row)
+		{
+			$translations = json_decode($row['translation'] ?? '[]', true) ?: [];
+			unset($row['translation']);
+
+			// Pad all expected language headers
+			foreach ($headers as $lang => $_)
+			{
+				if ($lang === 'source')
+				{
+					continue;
+				}
+				$row[$lang] = '';
+			}
+
+			foreach ($translations as $entry)
+			{
+				$lang = $entry['language'] ?? '';
+				$text = trim(($entry['translation'] ?? ''));
+
+				if (isset($headers[$lang]) && trim($text) !== '')
+				{
+					$row[$lang] = $text;
+				}
+			}
+
+			$normalized[] = $row;
+		}
+
+		return $normalized;
+	}
+
+	/**
+	 * Build a standardized error response with message.
+	 *
+	 * @param   string  $message  Error message to return.
+	 *
+	 * @return  array<string, mixed>  Error response with 'data' as empty array and 'errors' as message.
+	 * @since   5.1.1
+	 */
+	protected function errorLanguageTranslationResponse(string $message): array
+	{
+		return [
+			'data' => [],
+			'errors' => $message,
+		];
 	}
 
 	// Used in admin_fields_relations

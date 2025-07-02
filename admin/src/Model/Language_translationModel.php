@@ -29,10 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
-use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
-use VDM\Joomla\Utilities\ObjectHelper;
-use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
@@ -118,62 +115,6 @@ class Language_translationModel extends AdminModel
 		return parent::getTable($type, $prefix, $config);
 	}
 
-
-	/**
-	 * Retrieves or generates a Vast Development Method (VDM) key for the current item.
-	 *
-	 * This function performs the following operations:
-	 * 1. Checks if the VDM key is already set. If not, it proceeds to generate or retrieve one.
-	 * 2. Determines the item ID based on the presence of a specific argument.
-	 * 3. Attempts to retrieve an existing VDM key from a helper method using the item ID.
-	 * 4. If a VDM key is not found, it generates a new random VDM key.
-	 * 5. Stores the VDM key and associates it with the item ID in a helper method.
-	 * 6. Optionally, stores return and GUID values if available.
-	 * 7. Returns the VDM key.
-	 *
-	 * @return string The VDM key for the current item.
-	 */
-	public function getVDM()
-	{
-		if (!isset($this->vastDevMod))
-		{
-			$_id = 0; // new item probably (since it was not set in the getItem method)
-
-			if (empty($_id))
-			{
-				$id = 0;
-			}
-			else
-			{
-				$id = $_id;
-			}
-			// set the id and view name to session
-			if (($vdm = SessionHelper::get('language_translation__'.$id)) !== null)
-			{
-				$this->vastDevMod = $vdm;
-			}
-			else
-			{
-				// set the vast development method key
-				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				SessionHelper::set($this->vastDevMod, 'language_translation__'.$id);
-				SessionHelper::set('language_translation__'.$id, $this->vastDevMod);
-				// set a return value if found
-				$jinput = Factory::getApplication()->input;
-				$return = $jinput->get('return', null, 'base64');
-				SessionHelper::set($this->vastDevMod . '__return', $return);
-				// set a GUID value if found
-				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& GuidHelper::valid($item->guid))
-				{
-					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
-				}
-			}
-		}
-		return $this->vastDevMod;
-	}
-
-
 	/**
 	 * Method to get a single record.
 	 *
@@ -202,62 +143,36 @@ class Language_translationModel extends AdminModel
 				$item->metadata = $registry->toArray();
 			}
 
+			if (!empty($item->plugins))
+			{
+				// Convert the plugins field to an array.
+				$plugins = new Registry;
+				$plugins->loadString($item->plugins);
+				$item->plugins = $plugins->toArray();
+			}
+
+			if (!empty($item->modules))
+			{
+				// Convert the modules field to an array.
+				$modules = new Registry;
+				$modules->loadString($item->modules);
+				$item->modules = $modules->toArray();
+			}
+
+			if (!empty($item->components))
+			{
+				// Convert the components field to an array.
+				$components = new Registry;
+				$components->loadString($item->components);
+				$item->components = $components->toArray();
+			}
+
 			if (!empty($item->translation))
 			{
 				// Convert the translation field to an array.
 				$translation = new Registry;
 				$translation->loadString($item->translation);
 				$item->translation = $translation->toArray();
-			}
-
-			if (!empty($item->plugins))
-			{
-				// JSON Decode plugins.
-				$item->plugins = json_decode($item->plugins);
-			}
-
-			if (!empty($item->modules))
-			{
-				// JSON Decode modules.
-				$item->modules = json_decode($item->modules);
-			}
-
-			if (!empty($item->components))
-			{
-				// JSON Decode components.
-				$item->components = json_decode($item->components);
-			}
-
-
-			if (empty($item->id))
-			{
-				$id = 0;
-			}
-			else
-			{
-				$id = $item->id;
-			}
-			// set the id and view name to session
-			if (($vdm = SessionHelper::get('language_translation__'.$id)) !== null)
-			{
-				$this->vastDevMod = $vdm;
-			}
-			else
-			{
-				// set the vast development method key
-				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				SessionHelper::set($this->vastDevMod, 'language_translation__'.$id);
-				SessionHelper::set('language_translation__'.$id, $this->vastDevMod);
-				// set a return value if found
-				$jinput = Factory::getApplication()->input;
-				$return = $jinput->get('return', null, 'base64');
-				SessionHelper::set($this->vastDevMod . '__return', $return);
-				// set a GUID value if found
-				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
-					&& GuidHelper::valid($item->guid))
-				{
-					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
-				}
 			}
 		}
 
@@ -987,6 +902,45 @@ class Language_translationModel extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// Set the plugins items to data.
+		if (isset($data['plugins']) && is_array($data['plugins']))
+		{
+			$plugins = new Registry;
+			$plugins->loadArray($data['plugins']);
+			$data['plugins'] = (string) $plugins;
+		}
+		elseif (!isset($data['plugins']))
+		{
+			// Set the empty plugins to data
+			$data['plugins'] = '';
+		}
+
+		// Set the modules items to data.
+		if (isset($data['modules']) && is_array($data['modules']))
+		{
+			$modules = new Registry;
+			$modules->loadArray($data['modules']);
+			$data['modules'] = (string) $modules;
+		}
+		elseif (!isset($data['modules']))
+		{
+			// Set the empty modules to data
+			$data['modules'] = '';
+		}
+
+		// Set the components items to data.
+		if (isset($data['components']) && is_array($data['components']))
+		{
+			$components = new Registry;
+			$components->loadArray($data['components']);
+			$data['components'] = (string) $components;
+		}
+		elseif (!isset($data['components']))
+		{
+			// Set the empty components to data
+			$data['components'] = '';
+		}
+
 		// Set the translation items to data.
 		if (isset($data['translation']) && is_array($data['translation']))
 		{
@@ -998,24 +952,6 @@ class Language_translationModel extends AdminModel
 		{
 			// Set the empty translation to data
 			$data['translation'] = '';
-		}
-
-		// Set the plugins string to JSON string.
-		if (isset($data['plugins']))
-		{
-			$data['plugins'] = (string) json_encode($data['plugins']);
-		}
-
-		// Set the modules string to JSON string.
-		if (isset($data['modules']))
-		{
-			$data['modules'] = (string) json_encode($data['modules']);
-		}
-
-		// Set the components string to JSON string.
-		if (isset($data['components']))
-		{
-			$data['components'] = (string) json_encode($data['components']);
 		}
 
 		// Set the Params Items to data

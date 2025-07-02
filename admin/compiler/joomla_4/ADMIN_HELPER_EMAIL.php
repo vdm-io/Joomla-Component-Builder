@@ -20,76 +20,104 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Mail\Mail;
 use Joomla\Registry\Registry;
 
-// No direct access to this file
 \defined('_JEXEC') or die;
 
 /**
  * ###Component### component email helper
  *
- * @since   3.0
+ * Provides a complete and configurable mailer integration for Joomla components.
+ * Allows for custom headers, DKIM signing, embedded images, and HTML styling.
+ *
+ * @since  3.0
  */
 abstract class ###Component###Email
 {
 	/**
-	 * The active recipient
+	 * The active recipient.
 	 *
-	 * @var    activeRecipient (array)
+	 * @var    array<string, mixed>
+	 * @since  3.0
 	 */
-	public static $active = [];
+	public static array $active = [];
 
 	/**
-	 * Configuration object
+	 * Mail instances container.
 	 *
-	 * @var    Registry
+	 * @var    Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power[]
+	 * @since  1.7.3
 	 */
-	public static ?Registry $config = null;
+	protected static array $instances = [];
 
 	/**
-	 * Mailer object
+	 * Global Configuration object.
 	 *
-	 * @var    Mail
+	 * @var    Registry|null
+	 * @since  5.1.1
 	 */
-	public static ?Mail $mailer = null;
+	protected static ?Registry $gConfig = null;
 
 	/**
-	 * Custom Headers
+	 * Component Configuration object.
 	 *
-	 * @var    array
+	 * @var    Registry|null
+	 * @since  3.0
+	 */
+	protected static ?Registry $config = null;
+
+	/**
+	 * Mailer object.
+	 *
+	 * @var    Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power|null
+	 * @since  3.0
+	 */
+	protected static ?Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power $mailer = null;
+
+	/**
+	 * Custom email headers.
+	 *
+	 * @var    array<string, string>
+	 * @since  3.0
 	 */
 	protected static array $header = [];
 
 	/**
-	 * Get a configuration object
+	 * Retrieve the component configuration.
 	 *
+	 * @return  Registry  Component configuration object
+	 * @since   3.0
 	 */
-	public static function getConfig()
+	protected static function getConfig(): Registry
 	{
-		if (!self::$config)
-		{
-			self::$config = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
-		}
-
-		return self::$config;
+		return self::$config ??= Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 	}
 
 	/**
-	 * Returns the global mailer object, only creating it if it doesn't already exist.
+	 * Retrieve the global configuration.
 	 *
+	 * @return  Registry  Global configuration object
+	 * @since   3.0
 	 */
-	public static function getMailerInstance()
+	protected static function getGlobalConfig(): Registry
 	{
-		if (!self::$mailer)
-		{
-			self::$mailer = self::createMailer();
-		}
-
-		return self::$mailer;
+		return self::$gConfig ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getConfig();
 	}
 
 	/**
-	 * Check that a string looks like an email address.
-	 * @param string $address The email address to check
-	 * @param string|callable $patternselect A selector for the validation pattern to use :
+	 * Get or create a Mailer instance.
+	 *
+	 * @return  Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power  A cloned Mail object instance
+	 * @since   3.0
+	 */
+	public static function getMailer(): Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power
+	{
+		return self::$mailer ??= self::createMailer();
+	}
+
+	/**
+	 * Validate an email address using a selected pattern or callable.
+	 *
+	 * @param   string               $address        Email address to validate.
+	 * @param   string|callable|null $patternselect  Validation pattern or callable.
 	 * * `auto` Pick best pattern automatically;
 	 * * `pcre8` Use the squiloople.com pattern, requires PCRE > 8.0, PHP >= 5.3.2, 5.2.14;
 	 * * `pcre` Use old PCRE implementation;
@@ -101,374 +129,357 @@ abstract class ###Component###Email
 	 *     return (strpos($address, '@') !== false);
 	 * });
 	 * You can also set the PHPMailer::$validator static to a callable, allowing built-in methods to use your validator.
-	 * @return boolean
-	 * @static
-	 * @access public
+	 *
+	 * @return  bool  True if valid, false otherwise
+	 * @since   3.0
 	 */
-	public static function validateAddress($address, $patternselect = null): bool
+	public static function validateAddress(string $address, $patternselect = null): bool
 	{
-		return self::getMailerInstance()->validateAddress($address, $patternselect);
+		return self::getMailer()->validateAddress($address, $patternselect);
 	}
 
 	/**
-	 * Get a mailer object.
+	 * Set a custom email header.
 	 *
-	 * Returns the global {@link Mail} object, only creating it if it doesn't already exist.
+	 * @param   string  $key    Header name.
+	 * @param   string  $value  Header value.
 	 *
-	 * @return  Mail object
-	 *
-	 * @see     Mail
+	 * @return  void
+	 * @since   3.0
 	 */
-	public static function getMailer(): Mail
+	public static function setHeader(string $key, string $value): void
 	{
-		if (!self::$mailer)
+		self::$header[$key] = $value;
+	}
+
+	/**
+	 * Get or create a Mail instance with specific configuration.
+	 *
+	 * @param   string  $id          Instance ID.
+	 * @param   bool    $exceptions  Enable exceptions.
+	 *
+	 * @return  Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power  Configured Mail instance
+	 * @since   5.1.1
+	 */
+	public static function getInstance(string $id = 'Joomla', bool $exceptions = true): Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power
+	{
+		if (!isset(self::$instances[$id]))
 		{
-			self::$mailer = self::createMailer();
+			$config = clone self::getGlobalConfig();
+			$config->set('throw_exceptions', $exceptions);
+			self::$instances[$id] = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla___3e2779e9_b33f_42b8_a13b_53f08d99f15b___Power::class)->createMailer($config);
 		}
 
-		$copy = clone self::$mailer;
-
-		return $copy;
+		return self::$instances[$id];
 	}
 
 	/**
-	 * Create a mailer object
+	 * Create a configured Mail instance.
 	 *
-	 * @return  Mail object
-	 *
-	 * @see     Mail
+	 * @return  Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power  The created Mail object with sender, reply-to and transport settings.
+	 * @since   3.0
 	 */
-	protected static function createMailer(): Mail
+	protected static function createMailer(): Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power
 	{
-		// set component params
-		$conf = self::getConfig();
-
-		// now load the mailer
+		$conf   = self::getConfig();
 		$mailer = $conf->get('mailer', 'global');
+		$mail   = self::getInstance();
 
-		// Create a Mail object
-		$mail = Mail::getInstance();
-
-		// check if set to global
-		if ('global' == $mailer)
+		if ($mailer === 'global')
 		{
-			// get the global details
-			$globalConf  = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getConfig();
-
-			$mailer      = $globalConf->get('mailer');
-			$smtpauth    = ($globalConf->get('smtpauth') == 0) ? null : 1;
-			$smtpuser    = $globalConf->get('smtpuser');
-			$smtppass    = $globalConf->get('smtppass');
-			$smtphost    = $globalConf->get('smtphost');
-			$smtpsecure  = $globalConf->get('smtpsecure');
-			$smtpport    = $globalConf->get('smtpport');
-			$sendmail    = $globalConf->get('sendmail');
-			$mailfrom    = $globalConf->get('mailfrom');
-			$fromname    = $globalConf->get('fromname');
-			$replyto     = $globalConf->get('replyto');
-			$replytoname = $globalConf->get('replytoname');
+			$global = self::getGlobalConfig();
+			$mailer = $global->get('mailer');
+			$params = [
+				'smtpauth'     => $global->get('smtpauth') ? 1 : null,
+				'smtpuser'     => $global->get('smtpuser'),
+				'smtppass'     => $global->get('smtppass'),
+				'smtphost'     => $global->get('smtphost'),
+				'smtpsecure'   => $global->get('smtpsecure'),
+				'smtpport'     => $global->get('smtpport'),
+				'sendmail'     => $global->get('sendmail'),
+				'from'         => $global->get('mailfrom'),
+				'name'         => $global->get('fromname'),
+				'replyto'      => $global->get('replyto'),
+				'replytoname'  => $global->get('replytoname'),
+			];
 		}
 		else
 		{
-			$smtpauth    = ($conf->get('smtpauth') == 0) ? null : 1;
-			$smtpuser    = $conf->get('smtpuser');
-			$smtppass    = $conf->get('smtppass');
-			$smtphost    = $conf->get('smtphost');
-			$smtpsecure  = $conf->get('smtpsecure');
-			$smtpport    = $conf->get('smtpport');
-			$sendmail    = $conf->get('sendmail');
-			$mailfrom    = $conf->get('emailfrom');
-			$fromname    = $conf->get('fromname');
-			$replyto     = $conf->get('replyto');
-			$replytoname = $conf->get('replytoname');
+			$params = [
+				'smtpauth'     => $conf->get('smtpauth') ? 1 : null,
+				'smtpuser'     => $conf->get('smtpuser'),
+				'smtppass'     => $conf->get('smtppass'),
+				'smtphost'     => $conf->get('smtphost'),
+				'smtpsecure'   => $conf->get('smtpsecure'),
+				'smtpport'     => $conf->get('smtpport'),
+				'sendmail'     => $conf->get('sendmail'),
+				'from'         => $conf->get('emailfrom'),
+				'name'         => $conf->get('fromname'),
+				'replyto'      => $conf->get('replyto'),
+				'replytoname'  => $conf->get('replytoname'),
+			];
 		}
 
-		// Set global sender
-		$mail->setSender(array($mailfrom, $fromname));
+		$mail->setSender([$params['from'], $params['name']]);
 
-		// set the global reply-to if found
-		if ($replyto && $replytoname)
-		{
+		if (!empty($params['replyto']) && !empty($params['replytoname']))
+        {
 			$mail->ClearReplyTos();
-			$mail->addReplyTo($replyto, $replytoname);
+			$mail->addReplyTo($params['replyto'], $params['replytoname']);
 		}
 
-		// Default mailer is to use PHP's mail function
 		switch ($mailer)
 		{
 			case 'smtp':
-				// set the SMTP option
-				$mail->useSMTP($smtpauth, $smtphost, $smtpuser, $smtppass, $smtpsecure, $smtpport);
+				$mail->useSMTP(
+                    $params['smtpauth'],
+                    $params['smtphost'],
+                    $params['smtpuser'],
+                    $params['smtppass'],
+                    $params['smtpsecure'],
+                    $params['smtpport']
+                );
 				break;
-
 			case 'sendmail':
-				// set the sendmail option
-				$mail->useSendmail($sendmail);
+				$mail->useSendmail($params['sendmail']);
 				$mail->IsSendmail();
 				break;
-
 			default:
 				$mail->IsMail();
-				break;
 		}
 
 		return $mail;
 	}
 
 	/**
-	 * Set a Mail custom header.
+	 * Compose and send an email with full options including attachments, HTML, DKIM, and reply-to support.
 	 *
-	 * @return  void
+	 * @param   string|array       $recipient    Email or list of recipients.
+	 * @param   string             $subject      Subject line.
+	 * @param   string             $body         HTML body.
+	 * @param   string|null        $textonly     Optional plain text fallback.
+	 * @param   int                $mode         1 = HTML, 0 = plain text.
+	 * @param   string|null        $bounce_email Optional bounce email address.
+	 * @param   string|null        $idsession    Optional message tracking tag.
+	 * @param   string|array|null  $mailreply    Optional reply-to address(es).
+	 * @param   string|array|null  $replyname    Optional reply-to name(s).
+	 * @param   string|null        $mailfrom     Optional sender email override.
+	 * @param   string|null        $fromname     Optional sender name override.
+	 * @param   array|null         $cc           CC recipients.
+	 * @param   array|null         $bcc          BCC recipients.
+	 * @param   array|string|null  $attachment   Attachments.
+	 * @param   bool               $embeded      Embed image flag.
+	 * @param   array|null         $embeds       Embedded image definitions.
+	 *
+	 * @return  bool  True on success, false on failure.
+	 * @since   3.0
 	 */
-	public static function setHeader($target, $value)
-	{
-		// set the header
-		self::$header[$target] = $value;
-	}
-
-	/**
-	 * Send an email
-	 *
-	 * @return  bool on success
-	 *
-	 */
-	public static function send($recipient, $subject, $body, $textonly, $mode = 0, $bounce_email = null, $idsession = null, $mailreply = null, $replyname = null , $mailfrom = null, $fromname = null, $cc = null, $bcc = null, $attachment = null, $embeded = null , $embeds = null)
-	{
-		 // Get a Mail instance
+	public static function send(
+		$recipient,
+		string $subject,
+		string $body,
+		?string $textonly,
+		int $mode = 0,
+		?string $bounce_email = null,
+		?string $idsession = null,
+		$mailreply = null,
+		$replyname = null,
+		?string $mailfrom = null,
+		?string $fromname = null,
+		?array $cc = null,
+		?array $bcc = null,
+		$attachment = null,
+		bool $embeded = false,
+		?array $embeds = null
+	): bool {
 		$mail = self::getMailer();
-
-		// set component params
 		$conf = self::getConfig();
 
-		// set if we have override
 		if ($mailfrom && $fromname)
 		{
-			$mail->setSender(array($mailfrom, $fromname));
+			$mail->setSender([$mailfrom, $fromname]);
 		}
 
-		// load the bounce email as sender if set
-		if (!is_null($bounce_email))
+		if ($bounce_email)
 		{
 			$mail->Sender = $bounce_email;
 		}
 
-		// Add tag to email to identify it
-		if (!is_null($idsession))
+		if ($idsession)
 		{
-			$mail->addCustomHeader('X-VDMmethodID:'.$idsession);
+			$mail->addCustomHeader('X-VDMmethodID:' . $idsession);
 		}
 
-		// set headers if found
-		if (isset(self::$header) && is_array(self::$header) && count((array)self::$header) > 0)
+		foreach (self::$header as $key => $val)
 		{
-			foreach (self::$header as $_target => $_value)
-			{
-				$mail->addCustomHeader($_target.':'.$_value);
-			}
+			$mail->addCustomHeader($key . ':' . $val);
 		}
 
-		// set the subject & Body
 		$mail->setSubject($subject);
 		$mail->setBody($body);
 
-		// Are we sending the email as HTML?
 		if ($mode)
 		{
-			$mail->IsHTML(true);
+			$mail->isHTML(true);
 			$mail->AltBody = $textonly;
 		}
 
-		//embed images
-		if ($embeded)
+		if ($embeded && !empty($embeds))
 		{
-			if(Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($embeds))
+			foreach ($embeds as $embed)
 			{
-				foreach($embeds as $embed)
-				{
-					$mail->AddEmbeddedImage($embed->Path,$embed->FileName);
-				}
+				$mail->addEmbeddedImage($embed->Path, $embed->FileName);
 			}
 		}
 
 		$mail->addRecipient($recipient);
-		$mail->addCC($cc);
-		$mail->addBCC($bcc);
-		$mail->addAttachment($attachment);
+		if (!empty($cc)) $mail->addCC($cc);
+		if (!empty($bcc)) $mail->addBCC($bcc);
+		if (!empty($attachment)) $mail->addAttachment($attachment);
 
-		// Take care of reply email addresses
-		if (is_array($mailreply))
+		if (!empty($mailreply))
 		{
 			$mail->ClearReplyTos();
-			$numReplyTo = count((array)$mailreply);
-			for ($i=0; $i < $numReplyTo; $i++)
+			if (is_array($mailreply))
 			{
-				$mail->addReplyTo($mailreply[$i], $replyname[$i]);
+				foreach ($mailreply as $i => $reply)
+				{
+					$mail->addReplyTo($reply, $replyname[$i] ?? '');
+				}
+			}
+			else
+			{
+				$mail->addReplyTo($mailreply, (string) $replyname);
 			}
 		}
-		elseif (!empty($mailreply))
-		{
-			$mail->ClearReplyTos();
-			$mail->addReplyTo($mailreply, $replyname);
-		}
 
-		// check if we can add the DKIM to email
-		if ($conf->get('enable_dkim'))
-		{
-			if (!empty($conf->get('dkim_domain')) && !empty($conf->get('dkim_selector')) && !empty($conf->get('dkim_private')) && !empty($conf->get('dkim_public')))
-			{
-				$mail->DKIM_domain      = $conf->get('dkim_domain');
-				$mail->DKIM_selector    = $conf->get('dkim_selector');
-				$mail->DKIM_identity    = $conf->get('dkim_identity');
-				$mail->DKIM_passphrase  = $conf->get('dkim_passphrase');
+		$sent = false;
+		$tmp = null;
+
+		try {
+			if (
+				$conf->get('enable_dkim') &&
+				($domain = $conf->get('dkim_domain')) &&
+				($selector = $conf->get('dkim_selector')) &&
+				($privateKey = $conf->get('dkim_private'))
+			) {
+				$mail->DKIM_domain     = $domain;
+				$mail->DKIM_selector   = $selector;
+				$mail->DKIM_identity   = $conf->get('dkim_identity') ?: $domain;
+				$mail->DKIM_passphrase = $conf->get('dkim_passphrase');
 
 				$tmp = tempnam(sys_get_temp_dir(), 'VDM');
-				$h   = fopen($tmp, 'w');
-				fwrite($h, $conf->get('dkim_private'));
-				fclose($h);
-				$mail->DKIM_private    = $tmp;
+				if ($tmp === false || file_put_contents($tmp, $privateKey) === false)
+				{
+					throw new \RuntimeException('Failed to create temporary DKIM private key file.');
+				}
+
+				$mail->DKIM_private = $tmp;
+			}
+
+			$sent = $mail->Send();
+		} finally {
+			if ($tmp && file_exists($tmp))
+			{
+				@unlink($tmp);
 			}
 		}
 
-		$sendmail = $mail->Send();
+		$sent = $mail->Send();
 
-		if ($conf->get('enable_dkim') && !empty($conf->get('dkim_domain')) && !empty($conf->get('dkim_selector')) && !empty($conf->get('dkim_private')) && !empty($conf->get('dkim_public')))
+		if ($tmp)
 		{
 			@unlink($tmp);
 		}
 
-		if (method_exists('###Component###Helper','storeMessage'))
+		if (method_exists('###Component###Helper', 'storeMessage'))
 		{
-			// if we have active recipient details
-			if (isset(self::$active[$recipient]))
-			{
-				// store the massage if the method is set
-				###Component###Helper::storeMessage($sendmail, self::$active[$recipient], $subject, $body, $textonly, $mode, 'email');
-				// clear memory
-				unset(self::$active[$recipient]);
-			}
-			else
-			{
-				// store the massage if the method is set
-				###Component###Helper::storeMessage($sendmail, $recipient, $subject, $body, $textonly, $mode, 'email');
-			}
+			$data = self::$active[$recipient] ?? $recipient;
+			###Component###Helper::storeMessage($sent, $data, $subject, $body, $textonly, $mode, 'email');
+			unset(self::$active[$recipient]);
 		}
 
-		return $sendmail;
+		return $sent;
 	}
 
 	/**
-	 * Set html text (in a row) and subject (as title) to a email table.
-	 *      do not use <p> instead use <br />
-	 *    in your html that you pass to this method
-	 *      since it is a table row it does not
-	 *      work well with paragraphs
+	 * Build a complete minimal HTML email body with basic headers.
+	 * Use <br /> instead of <p> for layout consistency in emails.
 	 *
-	 * @return  string on success
+	 * @param   string  $html     Body HTML content.
+	 * @param   string  $subject  Email subject/title used in the <title> tag.
 	 *
+	 * @return  string  Full HTML email body.
+	 * @since   3.0
 	 */
-	public static function setBasicBody($html, $subject)
+	public static function setBasicBody(string $html, string $subject): string
 	{
-		$body = [];
-		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
-		$body[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
-		$body[] = "<head>";
-		$body[] = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
-		$body[] = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
-		$body[] = "<title>" . $subject . "</title>";
-		$body[] = "<style type=\"text/css\">";
-		$body[] = "#outlook a {padding:0;}";
-		$body[] = ".ExternalClass {width:100%;}";
-		$body[] = ".ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} ";
-		$body[] = "p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;} ";
-		$body[] = "table td {border-collapse: collapse;}";
-		$body[] = "table {border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }";
-		$body[] = "img {display: block; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}";
-		$body[] = "a img {border: none;}";
-		$body[] = "a {text-decoration: none; color: #000001;}";
-		$body[] = "a.phone {text-decoration: none; color: #000001 !important; pointer-events: auto; cursor: default;}";
-		$body[] = "span {font-size: 13px; line-height: 17px; font-family: monospace; color: #000001;}";
-		$body[] = "</style>";
-		$body[] = "<!--[if gte mso 9]>";
-		$body[] = "<style>";
-		$body[] = "/* Target Outlook 2007 and 2010 */";
-		$body[] = "</style>";
-		$body[] = "<![endif]-->";
-		$body[] = "</head>";
-		$body[] = "<body style=\"width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;\">";
-		$body[] = $html;
-		$body[] = "</body>";
-		$body[] = "</html>";
-
-		return implode("\n", $body);
+		return implode("\n", [
+			'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+			'<html xmlns="http://www.w3.org/1999/xhtml">',
+			'<head>',
+			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />',
+			'<meta name="viewport" content="width=device-width, initial-scale=1.0"/>',
+			'<title>' . htmlspecialchars($subject) . '</title>',
+			'<style type="text/css">',
+			'#outlook a {padding:0;} .ExternalClass {width:100%;} .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height:100%;}',
+			// 'p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;}',
+			'table, table td {border-collapse: collapse;}',
+			'img {display:block; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic;}',
+			'a img {border:none;} a {text-decoration:none; color:#000001;} a.phone {pointer-events:auto; cursor:default; color:#000001 !important;}',
+			'span {font-size:13px; line-height:17px; font-family:monospace; color:#000001;}',
+			'</style>',
+			'<!--[if gte mso 9]><style>/* Target Outlook 2007 and 2010 */</style><![endif]-->',
+			'</head>',
+			'<body style="width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">',
+			$html,
+			'</body>',
+			'</html>'
+		]);
 	}
 
 	/**
-	 * Set html text (in a row) and subject (as title) to a email table.
-	 *      do not use <p> instead use <br />
-	 *    in your html that you pass to this method
-	 *      since it is a table row it does not
-	 *      work well with paragraphs
+	 * Build a styled HTML email with outer table formatting for wide layout support.
+	 * Suitable for rich content emails that need outer table structure.
 	 *
-	 * @return  string on success
+	 * @param   string  $html     Inner body HTML content.
+	 * @param   string  $subject  Email subject/title used in the <title> tag.
 	 *
+	 * @return  string  Complete HTML email content.
+	 * @since   3.0
 	 */
-	public static function setTableBody($html, $subject)
+	public static function setTableBody(string $html, string $subject): string
 	{
-		$body = [];
-		$body[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
-		$body[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
-		$body[] = "<head>";
-		$body[] = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
-		$body[] = "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
-		$body[] = "<title>" . $subject . "</title>";
-		$body[] = "<style type=\"text/css\">";
-		$body[] = "#outlook a {padding:0;}";
-		$body[] = ".ExternalClass {width:100%;}";
-		$body[] = ".ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} ";
-		$body[] = "p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;} ";
-		$body[] = "table td {border-collapse: collapse;}";
-		$body[] = "table {border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }";
-		$body[] = "img {display: block; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}";
-		$body[] = "a img {border: none;}";
-		$body[] = "a {text-decoration: none; color: #000001;}";
-		$body[] = "a.phone {text-decoration: none; color: #000001 !important; pointer-events: auto; cursor: default;}";
-		$body[] = "span {font-size: 13px; line-height: 17px; font-family: monospace; color: #000001;}";
-		$body[] = "</style>";
-		$body[] = "<!--[if gte mso 9]>";
-		$body[] = "<style>";
-		$body[] = "/* Target Outlook 2007 and 2010 */";
-		$body[] = "</style>";
-		$body[] = "<![endif]-->";
-		$body[] = "</head>";
-		$body[] = "<body style=\"width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;\">";
-		$body[] = "\n<!-- body wrapper -->";
-		$body[] = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0; padding:0; width:100%; line-height: 100% !important;\">";
-		$body[] = "<tr>";
-		$body[] = "<td valign=\"top\">";
-		$body[] = "<!-- edge wrapper -->";
-		$body[] = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"800\" >";
-		$body[] = "<tr>";
-		$body[] = "<td valign=\"top\">";
-		$body[] = "<!-- content wrapper -->";
-		$body[] = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" width=\"780\">";
-		$body[] = "<tr>";
-		$body[] = "<td valign=\"top\" style=\"vertical-align: top;\">";
-		$body[] = $html;
-		$body[] = "</td>";
-		$body[] = "</tr>";
-		$body[] = "</table>";
-		$body[] = "<!-- / content wrapper -->";
-		$body[] = "</td>";
-		$body[] = "</tr>";
-		$body[] = "</table>";
-		$body[] = "<!-- / edge wrapper -->";
-		$body[] = "</td>";
-		$body[] = "</tr>";
-		$body[] = "</table>";
-		$body[] = "<!-- / page wrapper -->";
-		$body[] = "</body>";
-		$body[] = "</html>";
-
-		return implode("\n", $body);
+		return implode("\n", [
+			'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+			'<html xmlns="http://www.w3.org/1999/xhtml">',
+			'<head>',
+			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />',
+			'<meta name="viewport" content="width=device-width, initial-scale=1.0"/>',
+			'<title>' . htmlspecialchars($subject) . '</title>',
+			'<style type="text/css">',
+			'#outlook a {padding:0;} .ExternalClass {width:100%;} .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height:100%;}',
+			// 'p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;}',
+			'table, table td {border-collapse: collapse;}',
+			'img {display:block; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic;}',
+			'a img {border:none;} a {text-decoration:none; color:#000001;} a.phone {pointer-events:auto; cursor:default; color:#000001 !important;}',
+			'span {font-size:13px; line-height:17px; font-family:monospace; color:#000001;}',
+			'</style>',
+			'<!--[if gte mso 9]><style>/* Target Outlook 2007 and 2010 */</style><![endif]-->',
+			'</head>',
+			'<body style="width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">',
+			'<table cellpadding="0" cellspacing="0" border="0" width="100%" style="line-height:100% !important;">',
+			'<tr><td valign="top">',
+			'<table cellpadding="0" cellspacing="0" border="0" align="center" width="800">',
+			'<tr><td valign="top">',
+			'<table cellpadding="0" cellspacing="0" border="0" align="center" width="780">',
+			'<tr><td valign="top" style="vertical-align:top;">',
+			$html,
+			'</td></tr></table>',
+			'</td></tr></table>',
+			'</td></tr></table>',
+			'</body>',
+			'</html>'
+		]);
 	}
 }

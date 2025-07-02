@@ -138,18 +138,18 @@ class HtmlView extends BaseHtmlView
 		if ($this->refid && $this->ref)
 		{
 			// return to the item that referred to this item
-			$this->referral = '&ref=' . (string)$this->ref . '&refid=' . (int)$this->refid;
+			$this->referral = '&ref=' . (string) $this->ref . '&refid=' . (int) $this->refid;
 		}
 		elseif($this->ref)
 		{
 			// return to the list view that referred to this item
-			$this->referral = '&ref=' . (string)$this->ref;
+			$this->referral = '&ref=' . (string) $this->ref;
 		}
 		// check return value
 		if (!is_null($return))
 		{
 			// add the return value
-			$this->referral .= '&return=' . (string)$return;
+			$this->referral .= '&return=' . (string) $return;
 		}###LINKEDVIEWITEMS###
 
 		// Set the toolbar
@@ -178,8 +178,8 @@ class HtmlView extends BaseHtmlView
 	{
 		###ADDTOOLBAR###
 
-		// now initiate the toolbar
-		$this->toolbar ??= Toolbar::getInstance();
+		// add the toolbar if it's not already loaded
+		$this->toolbar ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla___5d2ae99b_1ea1_44f0_9b59_f1aa7eab9e2e___Power::class)->createToolbar('toolbar');
 	}
 
 	/**

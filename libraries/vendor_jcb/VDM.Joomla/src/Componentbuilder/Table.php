@@ -10863,7 +10863,7 @@ class Table extends BaseTable implements TableInterface
 				'store' => 'json',
 				'tab_name' => 'Details',
 				'db' => [
-					'type' => 'TEXT',
+					'type' => 'MEDIUMTEXT',
 					'default' => 'EMPTY',
 					'GUID' => '36edbdce-b9b7-4b89-b2d9-03f91bb56019',
 					'null_switch' => 'NULL',

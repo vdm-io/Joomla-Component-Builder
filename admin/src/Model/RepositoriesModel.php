@@ -23,9 +23,11 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Form\Form;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -89,14 +91,56 @@ class RepositoriesModel extends ListModel
 				'a.organisation','organisation',
 				'a.repository','repository',
 				'a.target','target',
-				'a.base','base',
-				'a.type','type'
+				'a.type','type',
+				'a.base','base'
 			);
 		}
 
 		parent::__construct($config, $factory);
 
 		$this->app ??= Factory::getApplication();
+	}
+
+	/**
+	 * Get the filter form - Override the parent method
+	 *
+	 * @param   array    $data      data
+	 * @param   boolean  $loadData  load current data
+	 *
+	 * @return  Form|boolean  The Form object or false on error
+	 *
+	 * @since   JCB 2.12.5
+	 */
+	public function getFilterForm($data = array(), $loadData = true)
+	{
+		// load form from the parent class
+		$form = parent::getFilterForm($data, $loadData);
+
+		// Create the "read write branch" filter
+		$attributes = array(
+			'name' => 'branch',
+			'type' => 'list',
+			'onchange' => 'this.form.submit();',
+		);
+		$options = [
+			'' => '-  ' . Text::_('COM_COMPONENTBUILDER_SELECT_BRANCH_STATE') . '  -',
+			'write' => Text::_('COM_COMPONENTBUILDER_WRITE_BRANCH_SET'),
+			'no_write' => Text::_('COM_COMPONENTBUILDER_NO_WRITE_BRANCH_SET'),
+			'read' => Text::_('COM_COMPONENTBUILDER_READ_BRANCH_SET'),
+			'no_read' => Text::_('COM_COMPONENTBUILDER_NO_READ_BRANCH_SET'),
+			'both' => Text::_('COM_COMPONENTBUILDER_BOTH_BRANCHES_SET'),
+			'none' => Text::_('COM_COMPONENTBUILDER_NO_BRANCHES_SET')
+		];
+
+		$form->setField(FormHelper::xml($attributes, $options),'filter');
+		$form->setValue(
+			'branch',
+			'filter',
+			$this->state->get("filter.branch")
+		);
+		array_push($this->filter_fields, 'branch');
+
+		return $form;
 	}
 
 	/**
@@ -166,18 +210,18 @@ class RepositoriesModel extends ListModel
 			$this->setState('filter.target', $target);
 		}
 
-		$base = $this->getUserStateFromRequest($this->context . '.filter.base', 'filter_base');
-		if ($formSubmited)
-		{
-			$base = $app->input->post->get('base');
-			$this->setState('filter.base', $base);
-		}
-
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
 		if ($formSubmited)
 		{
 			$type = $app->input->post->get('type');
 			$this->setState('filter.type', $type);
+		}
+
+		$base = $this->getUserStateFromRequest($this->context . '.filter.base', 'filter_base');
+		if ($formSubmited)
+		{
+			$base = $app->input->post->get('base');
+			$this->setState('filter.base', $base);
 		}
 
 		// List state information.
@@ -298,6 +342,51 @@ class RepositoriesModel extends ListModel
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_repository', 'a'));
 
+		// Filtering by "branch"
+		$filterBranch = $this->state->get('filter.branch');
+
+		// Ensure the filter value is a string and not empty
+		if (is_string($filterBranch) && $filterBranch !== '')
+		{
+			$readBranch  = 'CHAR_LENGTH(TRIM(' . $db->quoteName('a.read_branch') . '))';
+			$writeBranch = 'CHAR_LENGTH(TRIM(' . $db->quoteName('a.write_branch') . '))';
+
+			switch ($filterBranch)
+			{
+				case 'both':
+					// Both read_branch and write_branch must be set
+					$query->where("{$readBranch} > 1");
+					$query->where("{$writeBranch} > 1");
+					break;
+
+				case 'none':
+					// Neither read_branch nor write_branch must be set
+					$query->where("{$readBranch} = 0");
+					$query->where("{$writeBranch} = 0");
+					break;
+
+				case 'read':
+					// Only read_branch must be set
+					$query->where("{$readBranch} > 1");
+					break;
+
+				case 'write':
+					// Only write_branch must be set
+					$query->where("{$writeBranch} > 1");
+					break;
+
+				case 'no_read':
+					// Only read_branch must NOT be set
+					$query->where("{$readBranch} = 0");
+					break;
+
+				case 'no_write':
+					// Only write_branch must NOT be set
+					$query->where("{$writeBranch} = 0");
+					break;
+			}
+		}
+
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published))
@@ -397,6 +486,23 @@ class RepositoriesModel extends ListModel
 		{
 			$query->where('a.target = ' . $db->quote($db->escape($_target)));
 		}
+		// Filter by Type.
+		$_type = $this->getState('filter.type');
+		if (is_numeric($_type))
+		{
+			if (is_float($_type))
+			{
+				$query->where('a.type = ' . (float) $_type);
+			}
+			else
+			{
+				$query->where('a.type = ' . (int) $_type);
+			}
+		}
+		elseif (StringHelper::check($_type))
+		{
+			$query->where('a.type = ' . $db->quote($db->escape($_type)));
+		}
 		// Filter by Base.
 		$_base = $this->getState('filter.base');
 		if (is_numeric($_base))
@@ -458,8 +564,8 @@ class RepositoriesModel extends ListModel
 		$id .= ':' . $this->getState('filter.organisation');
 		$id .= ':' . $this->getState('filter.repository');
 		$id .= ':' . $this->getState('filter.target');
-		$id .= ':' . $this->getState('filter.base');
 		$id .= ':' . $this->getState('filter.type');
+		$id .= ':' . $this->getState('filter.base');
 
 		return parent::getStoreId($id);
 	}

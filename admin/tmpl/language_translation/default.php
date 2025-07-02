@@ -15,7 +15,6 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use Joomla\CMS\Uri\Uri;
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
@@ -102,26 +101,3 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 </div>
 </form>
 </div>
-
-<script type="text/javascript">
-
-
-
-
-<?php
-	$app = Factory::getApplication();
-?>
-function JRouter(link) {
-<?php
-	if ($app->isClient('site'))
-	{
-		echo 'var url = "'. Uri::root() . '";';
-	}
-	else
-	{
-		echo 'var url = "";';
-	}
-?>
-	return url+link;
-} 
-</script>

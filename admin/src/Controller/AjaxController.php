@@ -76,14 +76,12 @@ class AjaxController extends BaseController
 		$this->registerTask('getEditCustomCodeButtons', 'ajax');
 		$this->registerTask('placedin', 'ajax');
 		$this->registerTask('checkPlaceholderName', 'ajax');
-		$this->registerTask('snippetDetails', 'ajax');
-		$this->registerTask('setSnippetGithub', 'ajax');
-		$this->registerTask('getSnippets', 'ajax');
 		$this->registerTask('getExistingValidationRuleCode', 'ajax');
 		$this->registerTask('getValidationRulesTable', 'ajax');
 		$this->registerTask('checkRuleName', 'ajax');
 		$this->registerTask('fieldTypeProperties', 'ajax');
 		$this->registerTask('getFieldPropertyDesc', 'ajax');
+		$this->registerTask('exportLanguageTranslations', 'ajax');
 		$this->registerTask('getCodeGlueOptions', 'ajax');
 		$this->registerTask('doSearch', 'ajax');
 		$this->registerTask('replaceAll', 'ajax');
@@ -1459,154 +1457,6 @@ class AjaxController extends BaseController
 						}
 					}
 				break;
-				case 'snippetDetails':
-					try
-					{
-						$idValue = $jinput->get('id', NULL, 'STRING');
-						if($idValue && $user->id != 0)
-						{
-							$ajaxModule = $this->getModel('ajax', 'Administrator');
-							if ($ajaxModule)
-							{
-								$result = $ajaxModule->getSnippetDetails($idValue);
-							}
-							else
-							{
-								$result = ['error' => 'There was an error! [149]'];
-							}
-						}
-						else
-						{
-							$result = ['error' => 'There was an error! [149]'];
-						}
-						if($callback)
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(\Exception $e)
-					{
-						if($callback)
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($e);
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
-				case 'setSnippetGithub':
-					try
-					{
-						$pathValue = $jinput->get('path', NULL, 'STRING');
-						$statusValue = $jinput->get('status', NULL, 'WORD');
-						if($pathValue && $user->id != 0 && $statusValue)
-						{
-							$ajaxModule = $this->getModel('ajax', 'Administrator');
-							if ($ajaxModule)
-							{
-								$result = $ajaxModule->setSnippetGithub($pathValue, $statusValue);
-							}
-							else
-							{
-								$result = ['error' => 'There was an error! [149]'];
-							}
-						}
-						else
-						{
-							$result = ['error' => 'There was an error! [149]'];
-						}
-						if($callback)
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(\Exception $e)
-					{
-						if($callback)
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($e);
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
-				case 'getSnippets':
-					try
-					{
-						$librariesValue = $jinput->get('libraries', NULL, 'STRING');
-						if($librariesValue && $user->id != 0)
-						{
-							$ajaxModule = $this->getModel('ajax', 'Administrator');
-							if ($ajaxModule)
-							{
-								$result = $ajaxModule->getSnippets($librariesValue);
-							}
-							else
-							{
-								$result = ['error' => 'There was an error! [149]'];
-							}
-						}
-						else
-						{
-							$result = ['error' => 'There was an error! [149]'];
-						}
-						if($callback)
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(\Exception $e)
-					{
-						if($callback)
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($e);
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
 				case 'getExistingValidationRuleCode':
 					try
 					{
@@ -1815,6 +1665,57 @@ class AjaxController extends BaseController
 							if ($ajaxModule)
 							{
 								$result = $ajaxModule->getFieldPropertyDesc($propertyValue, $fieldtypeValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'exportLanguageTranslations':
+					try
+					{
+						$filter_extensionValue = $jinput->get('filter_extension', NULL, 'STRING');
+						$filter_translatedValue = $jinput->get('filter_translated', NULL, 'STRING');
+						$filter_not_translatedValue = $jinput->get('filter_not_translated', NULL, 'STRING');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->exportLanguageTranslations($filter_extensionValue, $filter_translatedValue, $filter_not_translatedValue);
 							}
 							else
 							{

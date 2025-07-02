@@ -29,6 +29,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
 use VDM\Joomla\Componentbuilder\Compiler\Helper\Fields;
+use Joomla\CMS\Form\Form;
 
 
 /**
@@ -17415,7 +17416,7 @@ class Interpretation extends Fields
 				. " * Method to validate the form data.";
 			$fix .= PHP_EOL . Indent::_(1) . " *";
 			$fix .= PHP_EOL . Indent::_(1)
-				. " * @param   JForm   \$form   The form to validate against.";
+				. " * @param   Form   \$form   The form to validate against.";
 			$fix .= PHP_EOL . Indent::_(1)
 				. " * @param   array   \$data   The data to validate.";
 			$fix .= PHP_EOL . Indent::_(1)

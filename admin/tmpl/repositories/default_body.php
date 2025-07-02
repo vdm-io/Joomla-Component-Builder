@@ -97,7 +97,15 @@ $edit = "index.php?option=com_componentbuilder&view=repositories&task=repository
 			<?php echo $this->escape($item->organisation); ?>
 		</td>
 		<td class="hidden-phone">
+			<div>
 			<?php echo $this->escape($item->repository); ?>
+<?php if (!empty($item->read_branch)): ?>
+<br><small><?php echo Text::_('COM_COMPONENTBUILDER_READ_BRANCH'); ?>: <?php echo $item->read_branch; ?></small>
+<?php endif; ?>
+<?php if (!empty($item->write_branch)): ?>
+<br><small><?php echo Text::_('COM_COMPONENTBUILDER_WRITE_BRANCH'); ?>: <?php echo $item->write_branch; ?></small>
+<?php endif; ?>
+			</div>
 		</td>
 		<td class="hidden-phone">
 			<?php echo Text::_($item->target); ?>

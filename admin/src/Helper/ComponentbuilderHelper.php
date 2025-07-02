@@ -38,14 +38,16 @@ use Joomla\Archive\Archive;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
 use VDM\Joomla\Openai\Factory as OpenaiFactory;
-use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
-use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
-use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\Component\Helper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use VDM\Joomla\Utilities\Base64Helper;
@@ -103,12 +105,12 @@ abstract class ComponentbuilderHelper
 	/**
 	* Locked Libraries (we can not have these change)
 	**/
-	public static $libraryNames = array(1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3');
+	public static $libraryNames = [1 => 'No Library', 2 => 'Bootstrap v4', 3 => 'Uikit v3', 4 => 'Uikit v2', 5 => 'FooTable v2', 6 => 'FooTable v3'];
 
 	/**
 	* Array of php fields Allowed (16)
 	**/
-	public static $phpFieldArray = array('', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'x', 'HEADER');
+	public static $phpFieldArray = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'x', 'HEADER'];
 
 	/**
 	* The global params
@@ -129,30 +131,6 @@ abstract class ComponentbuilderHelper
 	* The excluded powers
 	**/
 	protected static $exPowers= array();
-
-	/**
-	* The snippet paths
-	**/
-	public static $snippetPath = 'https://raw.githubusercontent.com/vdm-io/Joomla-Component-Builder-Snippets/master/';
-	public static $snippetsPath = 'https://api.github.com/repos/vdm-io/Joomla-Component-Builder-Snippets/git/trees/master';
-
-	/**
-	* The VDM packages paths
-	**/
-	public static $vdmGithubPackageUrl = "https://github.com/vdm-io/JCB-Packages/raw/master/";
-	public static $vdmGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Packages/git/trees/master";
-
-	/**
-	* The JCB packages paths
-	**/
-	public static $jcbGithubPackageUrl = "https://github.com/vdm-io/JCB-Community-Packages/raw/master/";
-	public static $jcbGithubPackagesUrl = "https://api.github.com/repos/vdm-io/JCB-Community-Packages/git/trees/master";
-
-	/**
-	* The bolerplate paths
-	**/
-	public static $bolerplatePath = 'https://raw.githubusercontent.com/vdm-io/boilerplate/jcb/';
-	public static $bolerplateAPI = 'https://api.github.com/repos/vdm-io/boilerplate/git/trees/jcb';
 
 	/**
 	 * The array of constant paths
@@ -206,527 +184,37 @@ abstract class ComponentbuilderHelper
 	);
 
 	/**
-	 * get the class method or property
+	 * Retrieves an associative array of published language tags as headers.
 	 *
-	 * @input	mixed     The method/property ID|GUID
-	 * @input	string      The target type
+	 * The returned array is used to build header labels for language translations.
+	 * Includes a default 'source' => 'source' entry.
 	 *
-	 * @returns string on success
-	 * @since  3.0.0
+	 * @return array<string, string>  Associative array of language headers
+	 * @since  5.1.1
 	 */
-	public static function getClassCode($target, string $type): ?string
+	public static function getLanguageTranslationsHeaders(): array
 	{
-		if ('property' === $type || 'method' === $type)
-		{
-			if (GuidHelper::valid($target))
-			{
-				$key = 'guid';
-			}
-			elseif (is_numeric($target))
-			{
-				$key = 'id';
-			}
-			else
-			{
-				return null;
-			}
+		$values = DataFactory::_('Load')->values(
+			['langtag'], ['language'], ['published' => 1], ['name' => 'ASC']
+		);
 
-			// Get a db connection.
-			$db = Factory::getDbo();
-			// Get user object
-			$user = Factory::getUser();
-			// Create a new query object.
-			$query = $db->getQuery(true);
-			// get method
-			if ('method' === $type)
-			{
-				$query->select($db->quoteName(['a.comment','a.name','a.visibility','a.arguments','a.code']));
-			}
-			// get property
-			elseif ('property' === $type)
-			{
-				$query->select($db->quoteName(['a.comment','a.name','a.visibility','a.default']));
-			}
-			$query->from($db->quoteName('#__componentbuilder_class_' . $type, 'a'));
-			$query->where($db->quoteName('a.' . $key) . ' = ' . $db->quote($target));
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$columns = $db->getTableColumns('#__componentbuilder_class_' . $type);
-				if(isset($columns['access']))
-				{
-					$groups = implode(',', $user->getAuthorisedViewLevels());
-					$query->where('a.access IN (' . $groups . ')');
-				}
-			}
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				// get the code
-				$code = $db->loadObject();
-				// combine method values
-				$combinded = [];
-				// add comment if set
-				if (UtilitiesStringHelper::check($code->comment))
-				{
-					$comment = array_map('trim', (array) explode(PHP_EOL, base64_decode($code->comment)));
-					$combinded[] = "\t" . implode(PHP_EOL . "\t ", $comment);
-				}
-				// build method
-				if ('method' === $type)
-				{
-					// set the method signature
-					if (UtilitiesStringHelper::check($code->arguments))
-					{
-						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '(' . base64_decode($code->arguments) . ')';
-					}
-					else
-					{
-						$combinded[] = "\t" . $code->visibility . ' function ' . $code->name . '()';
-					}
-					// set the method code
-					$combinded[] = "\t" . "{";
-					// add code if set
-					if (UtilitiesStringHelper::check(trim($code->code)))
-					{
-						$combinded[] = base64_decode($code->code);
-					}
-					else
-					{
-						$combinded[] = "\t\t// add your code here";
-					}
-					$combinded[] = "\t" . "}";
-				}
-				else
-				{
-					if (UtilitiesStringHelper::check($code->default))
-					{
-						$code->default = base64_decode($code->default);
-						if (is_int($code->default))
-						{
-							// set the class property
-							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (int) $code->default . ';';
-						}
-						elseif (is_float($code->default))
-						{
-							// set the class property
-							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . (float) $code->default . ';';
-						}
-						elseif (('false' === $code->default || 'true' === $code->default)
-							|| (UtilitiesStringHelper::check($code->default) && (strpos($code->default, 'array(') !== false || strpos($code->default, '"') !== false)))
-						{
-							// set the class property
-							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = ' . $code->default . ';';
-						}
-						elseif (UtilitiesStringHelper::check($code->default) && strpos($code->default, '"') === false)
-						{
-							// set the class property
-							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ' = "' . $code->default . '";';
-						}
-						else
-						{
-							// set the class property
-							$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ';';
-						}
-					}
-					else
-					{
-						// set the class property
-						$combinded[] = "\t" . $code->visibility . '  $' . $code->name . ';';
-					}
-				}
-				// return the code
-				return implode(PHP_EOL, $combinded);
-			}
+		if (empty($values))
+		{
+			// return default array
+			return ['source' => 'source', 'af-ZA' => 'af-ZA', 'nl-NL' => 'nl-NL', 'fr-FR' => 'fr-FR', 'de-DE' => 'de-DE', 'pt-PT' => 'pt-PT', 'ru-RU' => 'ru-RU'];
 		}
-		return null;
-	}
 
-	/**
-	 * extract Boilerplate Class Extends
-	 *
-	 * @input	string       The class as a string
-	 * @input	string       The type of class/extension
-	 *
-	 * @returns string on success
-	 * @since  3.0.0
-	 */
-	public static function extractBoilerplateClassExtends(&$class, $type)
-	{
-		if (($strings = GetHelper::allBetween($class, 'class ', '}')) !== false && UtilitiesArrayHelper::check($strings))
-		{
-			foreach ($strings as $string)
-			{
-				if (($extends = GetHelper::between($string, 'extends ', '{')) !== false && UtilitiesStringHelper::check($extends))
-				{
-					return trim($extends);
-				}
-			}
-		}
-		return false;
-	}
+		$headers = ['source' => 'source'];
 
-	/**
-	 * extract Boilerplate Class Header
-	 *
-	 * @input	string       The class as a string
-	 * @input	string       The class being extended
-	 * @input	string       The type of class/extension
-	 *
-	 * @returns string on success
-	 * @since  3.0.0
-	 */
-	public static function extractBoilerplateClassHeader(&$class, $extends, $type)
-	{
-		if (($string = GetHelper::between($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && UtilitiesStringHelper::check($string))
+		foreach ($values as $value)
 		{
-			$headArray = explode(PHP_EOL, $string);
-			if (UtilitiesArrayHelper::check($headArray) && count($headArray) > 3)
+			if (is_string($value) && trim($value) !== '')
 			{
-				// remove first since it still has the [or die;] string in it
-				array_shift($headArray);
-				// remove the last since it has the class declaration
-				array_pop($headArray);
-				// at this point we have the class comment still in as part of the header, lets remove that
-				$last = count($headArray);
-				while ($last > 0)
-				{
-					$last--;
-					if (isset($headArray[$last]) && strpos($headArray[$last], '*') !== false)
-					{
-						unset($headArray[$last]);
-					}
-					else
-					{
-						// moment the comment stops, we break out
-						$last = 0;
-					}
-				}
-				// make sure we only return if we have values
-				if (UtilitiesArrayHelper::check($headArray))
-				{
-					return implode(PHP_EOL, $headArray);
-				}
+				$headers[$value] = $value;
 			}
 		}
-		return false;
-	}
 
-	/**
-	 * extract Boilerplate Class Comment
-	 *
-	 * @input	string       The class as a string
-	 * @input	string       The class being extended
-	 * @input	string       The type of class/extension
-	 *
-	 * @returns string on success
-	 * @since  3.0.0
-	 */
-	public static function extractBoilerplateClassComment(&$class, $extends, $type)
-	{
-		if (($string = GetHelper::between($class, "defined('_JEXEC')", 'extends ' . $extends)) !== false && UtilitiesStringHelper::check($string))
-		{
-			$headArray = explode(PHP_EOL, $string);
-			if (UtilitiesArrayHelper::check($headArray) && count($headArray) > 3)
-			{
-				$comment = array();
-				// remove the last since it has the class declaration
-				array_pop($headArray);
-				// at this point we have the class comment still in as part of the header, lets remove that
-				$last = count($headArray);
-				while ($last > 0)
-				{
-					$last--;
-					if (isset($headArray[$last]) && strpos($headArray[$last], '*') !== false)
-					{
-						$comment[$last] = $headArray[$last];
-					}
-					else
-					{
-						// moment the comment stops, we break out
-						$last = 0;
-					}
-				}
-				// make sure we only return if we have values
-				if (UtilitiesArrayHelper::check($comment))
-				{
-					// set the correct order
-					ksort($comment);
-					$replace = array('Foo' => '[[[Plugin_name]]]', '[PACKAGE_NAME]' => '[[[Plugin]]]', '1.0.0' => '[[[plugin.version]]]', '1.0' => '[[[plugin.version]]]');
-					// now update with JCB placeholders
-					return str_replace(array_keys($replace), array_values($replace), implode(PHP_EOL, $comment));
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * extract Boilerplate Class Properties & Methods
-	 *
-	 * @input	string       The class as a string
-	 * @input	string       The class being extended
-	 * @input	string       The type of class/extension
-	 * @input	int            The plugin groups
-	 *
-	 * @returns string on success
-	 * @since  3.0.0
-	 */
-	public static function extractBoilerplateClassPropertiesMethods(&$class, $extends, $type, $plugin_group = null)
-	{
-		$bucket = array('property' => array(), 'method' => array());
-		// get the class code, and remove the head
-		$codeArrayTmp = explode('extends ' . $extends, $class);
-		// make sure we have the correct result
-		if (UtilitiesArrayHelper::check($codeArrayTmp) && count($codeArrayTmp) == 2)
-		{
-			// the triggers
-			$triggers = array('public' => 1, 'protected' => 2, 'private' => 3);
-			$codeArray = explode(PHP_EOL, $codeArrayTmp[1]);
-			unset($codeArrayTmp);
-			// clean the code
-			self::cleanBoilerplateCode($codeArray);
-			// temp bucket
-			$name = null;
-			$arg = null;
-			$target = null;
-			$visibility = null;
-			$tmp = array();
-			$comment = array();
-			// load method
-			$loadCode = function (&$bucket, &$target, &$name, &$arg, &$visibility, &$tmp, &$comment) use($type, $plugin_group){
-				$_tmp = array(
-					'name' => $name,
-					'visibility' => $visibility,
-					'extension_type' => $type
-					);
-				// build filter
-				$filters = array('extension_type' => $type);
-				// add more data based on target
-				if ('method' === $target && UtilitiesArrayHelper::check($tmp))
-				{
-					// clean the code
-					self::cleanBoilerplateCode($tmp);
-					// only load if there are values
-					if (UtilitiesArrayHelper::check($tmp, true))
-					{
-						$_tmp['code'] = implode(PHP_EOL, $tmp);
-					}
-					else
-					{
-						$_tmp['code'] = '';
-					}
-					// load arguments only if set
-					if (UtilitiesStringHelper::check($arg))
-					{
-						$_tmp['arguments'] = $arg;
-					}
-				}
-				elseif ('property' === $target)
-				{
-					// load default only if set
-					if (UtilitiesStringHelper::check($arg))
-					{
-						$_tmp['default'] = $arg;
-					}
-				}
-				// load comment only if set
-				if (UtilitiesArrayHelper::check($comment, true))
-				{
-					$_tmp['comment'] = implode(PHP_EOL, $comment);
-				}
-				// load the group target
-				if ($plugin_group)
-				{
-					$_tmp['joomla_plugin_group'] = $plugin_group;
-					$filters['joomla_plugin_group'] = $plugin_group;
-				}
-				// load the local values
-				if (($locals = self::getLocalBoilerplate($name, $target, $type, $filters)) !== false)
-				{
-					foreach ($locals as $key => $value)
-					{
-						$_tmp[$key] = $value;
-					}
-				}
-				else
-				{
-					$_tmp['id'] = 0;
-					$_tmp['published'] = 1;
-					$_tmp['version'] = 1;
-				}
-				// store the data based on target
-				$bucket[$target][] = $_tmp;
-			};
-			// now we start loading
-			foreach($codeArray as $line)
-			{
-				if ($visibility && $target && $name && strpos($line, '/**') !== false)
-				{
-					$loadCode($bucket, $target, $name, $arg, $visibility, $tmp, $comment);
-					// reset loop buckets
-					$name = null;
-					$arg = null;
-					$target = null;
-					$visibility = null;
-					$tmp = array();
-					$comment = array();
-				}
-				// load the comment before method/property
-				if (!$visibility && !$target && !$name && strpos($line, '*') !== false)
-				{
-					$comment[] = rtrim($line);
-				}
-				else
-				{
-					if (!$visibility && !$target && !$name)
-					{
-						// get the line values
-						$lineArray = array_values(array_map('trim', preg_split('/\s+/', trim($line))));
-						// check if we are at the main line
-						if (isset($lineArray[0]) && isset($triggers[$lineArray[0]]))
-						{
-							$visibility = $lineArray[0];
-							if (strpos($line, 'function') !== false)
-							{
-								$target = 'method';
-								// get the name
-								$name = trim(GetHelper::between($line, 'function ', '('));
-								// get the arguments
-								$arg = trim(GetHelper::between($line, ' ' . $name . '(', ')'));
-							}
-							else
-							{
-								$target = 'property';
-								if (strpos($line, '=') !== false)
-								{
-									// get the name
-									$name = trim(GetHelper::between($line, '$', '='));
-									// get the default
-									$arg = trim(GetHelper::between($line, '=', ';'));
-								}
-								else
-								{
-									// get the name
-									$name = trim(GetHelper::between($line, '$', ';'));
-								}
-							}
-						}
-					}
-					else
-					{
-						$tmp[] = rtrim($line);
-					}
-				}
-			}
-			// check if a last method is still around
-			if ($visibility && $target && $name)
-			{
-				$loadCode($bucket, $target, $name, $arg, $visibility, $tmp, $comment);
-				// reset loop buckets
-				$name = null;
-				$arg = null;
-				$target = null;
-				$visibility = null;
-				$tmp = array();
-				$comment = array();
-			}
-			return $bucket;
-		}
-		return false;
-	}
-
-	protected static function getLocalBoilerplate($name, $table, $extension_type, $filters = array())
-	{
-		if ('property' === $table || 'method' === $table)
-		{
-			// Get a db connection.
-			$db = Factory::getDbo();
-			// Create a new query object.
-			$query = $db->getQuery(true);
-			// get method
-			$query->select($db->quoteName(array('a.id','a.published','a.version')));
-			$query->from($db->quoteName('#__componentbuilder_class_' . $table,'a'));
-			$query->where($db->quoteName('a.name') . ' = ' . $db->quote($name));
-			$query->where($db->quoteName('a.extension_type') . ' = ' . $db->quote($extension_type));
-			// add more filters
-			if (UtilitiesArrayHelper::check($filters))
-			{
-				foreach($filters as $where => $value)
-				{
-					if (is_numeric($value))
-					{
-						$query->where($db->quoteName('a.' . $where) . ' = ' . $value);
-					}
-					else
-					{
-						$query->where($db->quoteName('a.' . $where) . ' = ' . $db->quote($value));
-					}
-				}
-			}
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				// get the code
-				return $db->loadAssoc();
-			}
-		}
-		return false;
-	}
-
-	protected static function cleanBoilerplateCode(&$code)
-	{
-		// remove the first lines until a { is found
-		$key = 0;
-		$found = false;
-		while (!$found)
-		{
-			if (isset($code[$key]))
-			{
-				if (strpos($code[$key], '{') !== false)
-				{
-					unset($code[$key]);
-					// only remove the first } found
-					$found = true;
-				}
-				// remove empty lines
-				elseif (!UtilitiesStringHelper::check(trim($code[$key])))
-				{
-					unset($code[$key]);
-				}
-			}
-			// check next line
-			$key++;
-			// stop loop at line 30 (really this should never happen)
-			if ($key > 30)
-			{
-				$found = true;
-			}
-		}
-		// reset all keys
-		$code = array_values($code);
-		// remove last lines until }
-		$last = count($code);
-		while ($last > 0)
-		{
-			$last--;
-			if (isset($code[$last]))
-			{
-				if (strpos($code[$last], '}') !== false)
-				{
-					unset($code[$last]);
-					// only remove the first } found
-					$last = 0;
-				}
-				// remove empty lines
-				elseif (!UtilitiesStringHelper::check(trim($code[$last])))
-				{
-					unset($code[$last]);
-				}
-			}
-		}
+		return $headers;
 	}
 
 	/**
@@ -795,81 +283,6 @@ abstract class ComponentbuilderHelper
 		}
 
 		return is_array($items) ? $items : null;
-	}
-
-	/**
-	 * Get the snippet contributor details
-	 * 
-	 * @param  string   $filename   The file name
-	 * @param  string   $type         The type of file
-	 *
-	 * @return  array    On success the contributor details
-	 * @since  3.0.0
-	 */
-	public static function getContributorDetails(string $filename, string $type = 'snippet'): ?array
-	{
-		// start loading the contributor details
-		$contributor = [];
-
-		// get the path & content
-		switch ($type)
-		{
-			case 'snippet':
-				$path = self::$snippetPath.$filename;
-				// get the file if available
-				$content = FileHelper::getContent($path);
-				if (JsonHelper::check($content))
-				{
-					$content = json_decode($content, true);
-				}
-			break;
-			default:
-				// only allow types that are being targeted
-				return null;
-			break;
-		}
-
-		// see if we have content and all needed details
-		if (isset($content) && UtilitiesArrayHelper::check($content)
-				&& isset($content['contributor_company'])
-				&& isset($content['contributor_name'])
-				&& isset($content['contributor_email'])
-				&& isset($content['contributor_website']))
-		{
-			// got the details from file
-			return [
-				'contributor_company' => $content['contributor_company'] ,
-				'contributor_name' => $content['contributor_name'],
-				'contributor_email' => $content['contributor_email'],
-				'contributor_website' => $content['contributor_website'],
-				'origin' => 'file'
-			];
-		}
-
-		// get the global settings
-		if (!ObjectHelper::check(self::$params))
-		{
-			self::$params = ComponentHelper::getParams('com_componentbuilder');
-		}
-
-		// get the global company details
-		if (!UtilitiesArrayHelper::check(self::$localCompany))
-		{
-			// Set the person sharing information (default VDM ;)
-			self::$localCompany['company']		= self::$params->get('export_company', 'Vast Development Method');
-			self::$localCompany['owner']		= self::$params->get('export_owner', 'Llewellyn van der Merwe');
-			self::$localCompany['email']		= self::$params->get('export_email', 'joomla@vdm.io');
-			self::$localCompany['website']		= self::$params->get('export_website', 'https://www.vdm.io/');
-		}
-
-		// default global
-		return [
-			'contributor_company' => self::$localCompany['company'],
-			'contributor_name' => self::$localCompany['owner'],
-			'contributor_email' => self::$localCompany['email'],
-			'contributor_website' => self::$localCompany['website'],
-			'origin' => 'global'
-		];
 	}
 
 	/**
@@ -1468,15 +881,6 @@ abstract class ComponentbuilderHelper
 			}
 		}
 		return false;
-	}
-
-	/**
-	*  set the session defaults if not set
-	**/
-	protected static function setSessionDefaults()
-	{
-		// noting for now
-		return true;
 	}
 
 	/**
@@ -2295,61 +1699,70 @@ abstract class ComponentbuilderHelper
 
 
 	/**
-	* the Butler
-	**/
-	public static $session = array();
+	 * Local in-memory cache of session values for faster access.
+	 *
+	 * @var array<string, mixed>
+	 * @since 3.5.2
+	 */
+	protected static array $localSession = [];
 
 	/**
-	* the Butler Assistant 
-	**/
-	protected static $localSession = array();
-
-	/**
-	* start a session if not already set, and load with data
-	**/
-	public static function loadSession()
+	 * Initialize the session and set default values.
+	 *
+	 * This ensures the session is ready and can be used safely.
+	 * Defaults can be loaded or checked here if needed.
+	 *
+	 * @return void
+	 * @throws \RuntimeException if the session cannot be initialized
+	 * @since 3.5.2
+	 */
+	public static function loadSession(): void
 	{
-		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
+		// Ensure the session is initialized (handled by the session() method).
+		SessionHelper::session();
+
+		// Set default session values if needed
+		if (method_exists(static::class, 'setSessionDefaults'))
 		{
-			self::$session = Factory::getApplication()->getSession();
+			static::setSessionDefaults();
 		}
-		// set the defaults
-		self::setSessionDefaults();
 	}
 
 	/**
-	* give Session more to keep
-	**/
-	public static function set($key, $value)
+	 * Store a key-value pair in the session and local memory.
+	 *
+	 * @param string $key The session key name
+	 * @param mixed  $value  The value to store
+	 *
+	 * @return mixed The previous session value if it existed
+	 * @since 3.5.2
+	 */
+	public static function set(string $key, $value)
 	{
-		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
-		{
-			self::$session = Factory::getApplication()->getSession();
-		}
-		// set to local memory to speed up program
-		self::$localSession[$key] = $value;
-		// load to session for later use
-		return self::$session->set($key, self::$localSession[$key]);
+		static::$localSession[$key] = $value;
+
+		return SessionHelper::set($key, $value);
 	}
 
 	/**
-	* get info from Session
-	**/
-	public static function get($key, $default = null)
+	 * Retrieve a value from the session.
+	 * Uses local cache if already fetched during this request.
+	 *
+	 * @param string $key The session key name
+	 * @param mixed  $default  Default value if the key is not found
+	 *
+	 * @return mixed The session value
+	 * @since 3.5.2
+	 */
+	public static function get(string $key, $default = null)
 	{
-		if (!isset(self::$session) || !ObjectHelper::check(self::$session))
+		if (!array_key_exists($key, static::$localSession))
 		{
-			self::$session = Factory::getApplication()->getSession();
+			static::$localSession[$key] = SessionHelper::get($key, $default);
 		}
-		// check if in local memory
-		if (!isset(self::$localSession[$key]))
-		{
-			// set to local memory to speed up program
-			self::$localSession[$key] = self::$session->get($key, $default);
-		}
-		return self::$localSession[$key];
-	}
 
+		return static::$localSession[$key];
+	}
 
 	/**
 	 * get field type properties

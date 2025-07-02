@@ -87,12 +87,12 @@ abstract class StringHelper
 		{
 			// Safely escape output for HTML
 			$title = self::shorten($string, 400 , false);
-			$escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
-			$escapedShort = htmlspecialchars($shortened, ENT_QUOTES, 'UTF-8');
 
-			return '<span class="hasTip" title="' . $escapedTitle . '" style="cursor:help">'
-				. $escapedShort
-				. '</span>';
+			return sprintf(
+				'<span class="hasTip" title="%s" style="cursor:help">%s</span>',
+				htmlspecialchars($title, ENT_QUOTES, 'UTF-8'),
+				htmlspecialchars($shortened, ENT_QUOTES, 'UTF-8')
+			);
 		}
 
 		// Return shortened version without tooltip

@@ -42,7 +42,7 @@ final class Delete extends Database implements DeleteInterface
 		}
 
 		// get a query object
-		$query = $this->db->getQuery(true);
+		$query = $this->db->createQuery();
 
 		// start the conditions bucket
 		$_conditions = [];

@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Utilities\FilterHelper as JCBFilterHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Form\Form;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -109,7 +110,7 @@ class Site_viewsModel extends ListModel
 	 * @param   array    $data      data
 	 * @param   boolean  $loadData  load current data
 	 *
-	 * @return  \JForm|boolean  The \JForm object or false on error
+	 * @return  Form|boolean  The Form object or false on error
 	 *
 	 * @since   JCB 2.12.5
 	 */

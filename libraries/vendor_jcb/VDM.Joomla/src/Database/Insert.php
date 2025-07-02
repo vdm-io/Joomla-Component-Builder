@@ -219,7 +219,7 @@ final class Insert extends Versioning implements InsertInterface
 		$this->historyGuid = [];
 
 		// get a query object
-		$query = $this->db->getQuery(true);
+		$query = $this->db->createQuery();
 		$table = $this->getTable($table);
 
 		// set the query targets
@@ -242,7 +242,7 @@ final class Insert extends Versioning implements InsertInterface
 				$limit = 300;
 
 				// get a query object
-				$query = $this->db->getQuery(true);
+				$query = $this->db->createQuery();
 
 				// set the query targets
 				$query->insert($this->db->quoteName($table))->columns($this->db->quoteName(array_keys($columns)));
@@ -334,7 +334,7 @@ final class Insert extends Versioning implements InsertInterface
 	{
 		try
 		{
-			$query = $this->db->getQuery(true)
+			$query = $this->db->createQuery()
 				->select($this->db->quoteName('id'))
 				->from($this->db->quoteName($table))
 				->where(

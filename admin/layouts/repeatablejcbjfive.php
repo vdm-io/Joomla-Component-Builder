@@ -28,7 +28,7 @@ extract($displayData);
  * Layout variables
  * -----------------
  * @var   Form    $tmpl             The Empty form for template
- * @var   array   $forms            Array of JForm instances for render the rows
+ * @var   array   $forms            Array of Form instances for render the rows
  * @var   bool    $multiple         The multiple state for the form field
  * @var   int     $min              Count of minimum repeating in multiple mode
  * @var   int     $max              Count of maximum repeating in multiple mode

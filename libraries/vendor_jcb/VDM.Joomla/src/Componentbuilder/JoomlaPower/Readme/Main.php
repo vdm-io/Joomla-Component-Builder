@@ -78,7 +78,7 @@ You write clean, readable logic — and JCB ensures compatibility under the hood
 MD;
 
 		// What can be found here
-		$readme[] = '### What's in This Repository?';
+		$readme[] = '### What\'s in This Repository?';
 		$readme[] = <<<MD
 This repository contains a **index of Joomla Powers** to be used in a JCB instance.
 

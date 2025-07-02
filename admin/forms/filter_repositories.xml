@@ -52,6 +52,13 @@
 			class="js-select-submit-on-change"
 		/>
 		<field
+			type="repositoriesfiltertype"
+			name="type"
+			label="COM_COMPONENTBUILDER_REPOSITORY_TYPE_LABEL"
+			multiple="false"
+			class="js-select-submit-on-change"
+		/>
+		<field
 			type="repositoriesfilterbase"
 			name="base"
 			label="COM_COMPONENTBUILDER_REPOSITORY_BASE_LABEL"

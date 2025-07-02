@@ -167,7 +167,7 @@ final class Update extends Versioning implements UpdateInterface
 		$table = $this->getTable($table);
 
 		// get a query object
-		$query = $this->db->getQuery(true);
+		$query = $this->db->createQuery();
 
 		// set the query targets
 		$query->update($this->db->quoteName($table));
@@ -270,7 +270,7 @@ final class Update extends Versioning implements UpdateInterface
 		}
 
 		// Get a query object
-		$query = $this->db->getQuery(true);
+		$query = $this->db->createQuery();
 
 		// Prepare the update statement
 		$query->update($this->db->quoteName($this->getTable($table)))
@@ -317,7 +317,7 @@ final class Update extends Versioning implements UpdateInterface
 
 		try
 		{
-			$query = $this->db->getQuery(true)
+			$query = $this->db->createQuery()
 				->select($this->db->quoteName('id'))
 				->from($this->db->quoteName($table))
 				->where($this->db->quoteName('guid') . ' = ' . $this->quote($guid));
