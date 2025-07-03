@@ -1,4 +1,4 @@
-# v4.1.1-rc1
+# v4.1.1
 
 - Move all banners to GitHub.
 - Adds library phpspreadsheet to JCB.
@@ -20,6 +20,7 @@
 - Changes J4 fields to allow NULL.
 - Fix a bug in Dynamic Get JavaScript that causes table columns to not load.
 - Refactor the FieldString and FieldXML classes.
+- Adds option to export Language Translations.
 
 # v4.1.0
 

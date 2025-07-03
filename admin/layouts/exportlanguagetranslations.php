@@ -114,7 +114,7 @@ function exportLanguageTranslations() {
                 {
                     extend: 'excel',
                     text: 'Excel',
-                    title: '<?php echo Text::_('COM_COMPONENTBUILDER_LANGUAGE_TRANSLATIONS'); ?>',
+                    title: '',
                     filename: '<?php echo $file_name; ?>'
                 }
             ],
