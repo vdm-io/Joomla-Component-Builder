@@ -83,5 +83,5 @@
 			###ADMIN_LANGUAGES###
 		</languages>
 
-	</administration>###UPDATESERVER###
+	</administration>###UPDATESERVER######CHANGELOGSERVER###
 </extension>

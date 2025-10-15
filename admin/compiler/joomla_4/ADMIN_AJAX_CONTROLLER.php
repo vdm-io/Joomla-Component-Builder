@@ -66,7 +66,7 @@ class AjaxController extends BaseController
 		// get the user for later use
 		$user         = $this->app->getIdentity();
 		// get the input values
-		$jinput       = $this->input ?? $this->app->input;
+		$jinput       = $this->input ?? (method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input);
 		// check if we should return raw (DEFAULT TRUE SINCE J4)
 		$returnRaw    = $jinput->get('raw', true, 'BOOLEAN');
 		// return to a callback function

@@ -16,6 +16,8 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Library\Data;
 use VDM\Joomla\Componentbuilder\Compiler\Library\Structure;
+use VDM\Joomla\Componentbuilder\Compiler\Library\Document;
+use VDM\Joomla\Componentbuilder\Compiler\Library\IncludeHelper;
 
 
 /**
@@ -40,6 +42,12 @@ class Library implements ServiceProviderInterface
 
 		$container->alias(Structure::class, 'Library.Structure')
 			->share('Library.Structure', [$this, 'getStructure'], true);
+
+		$container->alias(Document::class, 'Library.Document')
+			->share('Library.Document', [$this, 'getDocument'], true);
+
+		$container->alias(IncludeHelper::class, 'Library.IncludeHelper')
+			->share('Library.IncludeHelper', [$this, 'getIncludeHelper'], true);
 	}
 
 	/**
@@ -85,5 +93,35 @@ class Library implements ServiceProviderInterface
 		);
 	}
 
+	/**
+	 * Get The Document Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Document
+	 * @since 5.1.2
+	 */
+	public function getDocument(Container $container): Document
+	{
+		return new Document(
+			$container->get('Config'),
+			$container->get('Registry'),
+			$container->get('Library.IncludeHelper'),
+			$container->get('Utilities.Paths')
+		);
+	}
+
+	/**
+	 * Get The IncludeHelper Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  IncludeHelper
+	 * @since 5.1.2
+	 */
+	public function getIncludeHelper(Container $container): IncludeHelper
+	{
+		return new IncludeHelper();
+	}
 }
 

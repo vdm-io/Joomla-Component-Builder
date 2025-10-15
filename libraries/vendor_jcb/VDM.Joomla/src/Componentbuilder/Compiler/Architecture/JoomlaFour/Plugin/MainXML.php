@@ -435,8 +435,9 @@ final class MainXML implements MainXMLInterface
 
 		if ($addComponentPath)
 		{
-			$xml .= PHP_EOL . Indent::_(3) . 'addruleprefix="' . $this->config->namespace_prefix . '\Component\\' . $this->contentone->get('ComponentNamespace') . '\Administrator\Rule"';
-			$xml .= PHP_EOL . Indent::_(3) . 'addfieldprefix="' . $this->config->namespace_prefix . '\Component\\' . $this->contentone->get('ComponentNamespace') . '\Administrator\Field">';
+			$namespace = $this->config->namespace_prefix . '\\Component\\' . $this->contentone->get('ComponentNamespace') . '\\Administrator';
+			$xml .= PHP_EOL . Indent::_(3) . "addruleprefix=\"{$namespace}\\Rule\"";
+			$xml .= PHP_EOL . Indent::_(3) . "addfieldprefix=\"{$namespace}\\Field\">";
 			$xml .= PHP_EOL . Indent::_(1) . '>';
 		}
 

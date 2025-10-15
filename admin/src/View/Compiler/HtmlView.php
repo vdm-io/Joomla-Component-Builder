@@ -28,6 +28,10 @@ use Joomla\CMS\Layout\LayoutHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\Input\Input;
+use Joomla\Registry\Registry;
+use Joomla\CMS\Version;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -40,6 +44,38 @@ use VDM\Joomla\Utilities\StringHelper;
 #[\AllowDynamicProperties]
 class HtmlView extends BaseHtmlView
 {
+	/**
+	 * The app class
+	 *
+	 * @var    CMSApplicationInterface
+	 * @since  5.2.1
+	 */
+	public CMSApplicationInterface $app;
+
+	/**
+	 * The input class
+	 *
+	 * @var    Input
+	 * @since  5.2.1
+	 */
+	public Input $input;
+
+	/**
+	 * The params registry
+	 *
+	 * @var    Registry
+	 * @since  5.2.1
+	 */
+	public Registry $params;
+
+	/**
+	 * The user object.
+	 *
+	 * @var    User
+	 * @since  3.10.11
+	 */
+	public User $user;
+
 	/**
 	 * The styles url array
 	 *
@@ -65,14 +101,6 @@ class HtmlView extends BaseHtmlView
 	public object $canDo;
 
 	/**
-	 * The user object.
-	 *
-	 * @var    User
-	 * @since  3.10.11
-	 */
-	public User $user;
-
-	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -83,23 +111,32 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
-		// get component params
-		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// get the application
 		$this->app ??= Factory::getApplication();
+		// get input
+		$this->input ??= method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
+		// get component params
+		$this->params ??= method_exists($this->app, 'getParams')
+			? $this->app->getParams()
+			: ComponentHelper::getParams('com_componentbuilder');
 		// get the user object
 		$this->user ??= $this->getCurrentUser();
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('compiler');
-		$this->styles = $this->get('Styles') ?? [];
-		$this->scripts = $this->get('Scripts') ?? [];
+		// Load module values
+		$model = $this->getModel();
+		$this->styles = $model->getStyles() ?? [];
+		$this->scripts = $model->getScripts() ?? [];
 		// Initialise variables.
-		$this->items = $this->get('Items');
+		$this->items = $model->getItems();
 		// get the success message if set
 		$this->SuccessMessage = $this->app->getUserState('com_componentbuilder.success_message', false);
 		
 		// get active components
-		$this->Components = $this->get('Components');
+		$this->Components = $model->getComponents();
+		
+		// set the "dankie" state
+		$this->dankie = $this->rotativeRandom();
 		
 		// get the needed form fields
 		$this->form = $this->getDynamicForm();
@@ -151,7 +188,7 @@ class HtmlView extends BaseHtmlView
 		}
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
+		if (count($errors = $model->getErrors()))
 		{
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
@@ -165,6 +202,7 @@ class HtmlView extends BaseHtmlView
 	// These are subform layouts used in JCB
 	// LayoutHelper::render('sectionjcbjfive', [?]); // added to ensure the layout are loaded
 	// LayoutHelper::render('repeatablejcbjfive', [?]); // added to ensure the layout are loaded
+	// LayoutHelper::render('jcbbuildersuccessmessage', [?]); // added to ensure the layout are loaded
 
 	/**
 	 * Get the dynamic build form fields needed on the page
@@ -339,12 +377,13 @@ class HtmlView extends BaseHtmlView
 				'label' => 'COM_COMPONENTBUILDER_JOOMLA_VERSION',
 				'class' => 'list_class',
 				'description' => 'COM_COMPONENTBUILDER_WHAT_VERSION_OF_JOOMLA_WOULD_YOU_LIKE_TO_TARGET',
-				'default' => '3'];
+				'default' => (string) Version::MAJOR_VERSION];
 			// start the joomla versions options
 			$options = [
 				'3' => 'COM_COMPONENTBUILDER_JOOMLA_THREE',
 				'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR',
-				'5' => 'COM_COMPONENTBUILDER_JOOMLA_FIVE'
+				'5' => 'COM_COMPONENTBUILDER_JOOMLA_FIVE',
+				'6' => 'COM_COMPONENTBUILDER_JOOMLA_SIX'
 			];
 
 			// add to form
@@ -522,14 +561,25 @@ class HtmlView extends BaseHtmlView
 			}
 
 			// Build date note attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'donations_note',
-				'label' => "COM_COMPONENTBUILDER_DONATIONS",
-				'description' =>  $this->getSupportMessage(),
-				'class' => 'alert alert-success',
-				'heading' => 'h1',
-				'showon' => 'show_advanced_options:1'];
+			if ($this->dankie == 1)
+			{
+				$attributes = [
+					'type' => 'note',
+					'name' => 'donations_note',
+					'label' => "COM_COMPONENTBUILDER_DONATIONS",
+					'description' =>  $this->getSupportMessage(),
+					'class' => 'alert alert-success',
+					'heading' => 'h1',
+					'showon' => 'show_advanced_options:1'];
+			}
+			else
+			{
+				$attributes = [
+					'type' => 'note',
+					'name' => 'partner_note',
+					'description' =>  $this->getSupportMessage(),
+					'showon' => 'show_advanced_options:1'];
+			}
 
 			// add to form
 			$xml = FormHelper::xml($attributes);
@@ -568,7 +618,81 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function getSupportMessage(): string
 	{
-		return LayoutHelper::render('jcbsupportmessage', []);
+		if ($this->dankie == 1)
+		{
+			return LayoutHelper::render('jcbsupportmessage', []);
+		}
+		else
+		{
+			return ComponentbuilderHelper::getDynamicContent('banner', '728-90');
+		}
+	}
+
+	/**
+	 * Rotative Random Number Generator (1 or 2) - In-Memory
+	 *
+	 * This version uses a static variable to remember the last value
+	 * during the lifetime of the PHP process. No files or sessions needed.
+	 *
+	 * @return int  Either 1 or 2
+	 * @since  5.1.2
+	 */
+	protected function rotativeRandom(): int
+	{
+		static $lastValue = null;
+
+		if ($lastValue === 1) {
+			// 70% chance to flip to 2, 30% chance to stay on 1
+			$value = (mt_rand(1, 100) <= 70) ? 2 : 1;
+		} elseif ($lastValue === 2) {
+			// 70% chance to flip to 1, 30% chance to stay on 2
+			$value = (mt_rand(1, 100) <= 70) ? 1 : 2;
+		} else {
+			// First run: pick random
+			$value = mt_rand(1, 2);
+		}
+
+		$lastValue = $value;
+		return $value;
+	}
+
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @return  void
+	 * @since   1.6
+	 */
+	protected function addToolbar(): void
+	{
+		// hide the main menu
+		$this->input->set('hidemainmenu', true);
+		// add title to the page
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
+		// add cpanel button
+		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+		if ($this->canDo->get('compiler.compiler_animations'))
+		{
+			// add Compiler Animations button.
+			ToolbarHelper::custom('compiler.getDynamicContent', 'download custom-button-getdynamiccontent', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
+		}
+		if ($this->canDo->get('compiler.clear_tmp'))
+		{
+			// add Clear tmp button.
+			ToolbarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
+		}
+
+		// set help url for this view if found
+		$this->help_url = ComponentbuilderHelper::getHelpUrl('compiler');
+		if (StringHelper::check($this->help_url))
+		{
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+		}
+
+		// add the options comp button
+		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
+		{
+			ToolbarHelper::preferences('com_componentbuilder');
+		}
 	}
 
 	/**
@@ -590,7 +714,7 @@ class HtmlView extends BaseHtmlView
 		$HeaderCheck = new HeaderCheck();
 
 		// Add View JavaScript File
-		Html::_('script', "administrator/components/com_componentbuilder/assets/js/compiler.js", ['version' => 'auto']);
+		Html::_('script', 'administrator/components/com_componentbuilder/assets/js/compiler.js', ['version' => 'auto']);
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -647,7 +771,7 @@ class HtmlView extends BaseHtmlView
 			Html::_('script', $script, ['version' => 'auto']);
 		}
 		// Set the Custom JS script to view
-		$this->getDocument()->addScriptDeclaration("
+		$this->getDocument()->getWebAssetManager()->addInlineScript("
 			function getComponentDetails_server(id) {
 				let getUrl = JRouter(\"index.php?option=com_componentbuilder&task=ajax.getComponentDetails&format=json&raw=true\");
 				let request = new URLSearchParams();
@@ -675,45 +799,6 @@ class HtmlView extends BaseHtmlView
 				});
 			}
 		");
-	}
-
-	/**
-	 * Add the page title and toolbar.
-	 *
-	 * @return  void
-	 * @since   1.6
-	 */
-	protected function addToolbar(): void
-	{
-		// hide the main menu
-		$this->app->input->set('hidemainmenu', true);
-		// add title to the page
-		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
-		// add cpanel button
-		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
-		if ($this->canDo->get('compiler.compiler_animations'))
-		{
-			// add Compiler Animations button.
-			ToolbarHelper::custom('compiler.getDynamicContent', 'download custom-button-getdynamiccontent', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
-		}
-		if ($this->canDo->get('compiler.clear_tmp'))
-		{
-			// add Clear tmp button.
-			ToolbarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
-		}
-
-		// set help url for this view if found
-		$this->help_url = ComponentbuilderHelper::getHelpUrl('compiler');
-		if (StringHelper::check($this->help_url))
-		{
-			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the options comp button
-		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-		{
-			ToolbarHelper::preferences('com_componentbuilder');
-		}
 	}
 
 	/**

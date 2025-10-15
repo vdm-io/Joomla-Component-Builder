@@ -93,8 +93,10 @@ final class Type
 			$this->validTarget($fileType, $target))
 		{
 			return [
+				'guid' => $fileType->guid ?? 'error',
 				'name' => $fileType->name ?? 'files',
 				'access' => $fileType->access ?? 1,
+				'quantity' => $fileType->quantity ?? 0,
 				'download_access' => $fileType->download_access ?? 1,
 				'field' => $this->getFieldName($fileType),
 				'type' => $this->getFieldName($fileType),

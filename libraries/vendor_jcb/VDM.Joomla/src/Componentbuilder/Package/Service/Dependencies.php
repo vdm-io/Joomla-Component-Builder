@@ -165,7 +165,8 @@ class Dependencies implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -261,7 +262,8 @@ class Dependencies implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -357,7 +359,8 @@ class Dependencies implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -453,7 +456,8 @@ class Dependencies implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -549,7 +553,8 @@ class Dependencies implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -605,7 +610,7 @@ class Dependencies implements ServiceProviderInterface
 	 * @return  GrepContent
 	 * @since   5.1.1
 	 */
-	public function getGrepFolder(Container $container): GrepContent
+	public function getFolderGrep(Container $container): GrepContent
 	{
 		return new GrepContent(
 			$container->get('Folder.Remote.Config'),
@@ -646,7 +651,8 @@ class Dependencies implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 

@@ -119,20 +119,21 @@ class Joomla_componentsModel extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = $this->app;
+		$input = $this->app->getInput();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}
 
 		// Check if the form was submitted
-		$formSubmited = $app->input->post->get('form_submited');
+		$formSubmited = $input->post->get('form_submited');
 
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
 		if ($formSubmited)
 		{
-			$access = $app->input->post->get('access');
+			$access = $input->post->get('access');
 			$this->setState('filter.access', $access);
 		}
 
@@ -151,49 +152,49 @@ class Joomla_componentsModel extends ListModel
 		$companyname = $this->getUserStateFromRequest($this->context . '.filter.companyname', 'filter_companyname');
 		if ($formSubmited)
 		{
-			$companyname = $app->input->post->get('companyname');
+			$companyname = $input->post->get('companyname');
 			$this->setState('filter.companyname', $companyname);
 		}
 
 		$author = $this->getUserStateFromRequest($this->context . '.filter.author', 'filter_author');
 		if ($formSubmited)
 		{
-			$author = $app->input->post->get('author');
+			$author = $input->post->get('author');
 			$this->setState('filter.author', $author);
 		}
 
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
 		if ($formSubmited)
 		{
-			$system_name = $app->input->post->get('system_name');
+			$system_name = $input->post->get('system_name');
 			$this->setState('filter.system_name', $system_name);
 		}
 
 		$name_code = $this->getUserStateFromRequest($this->context . '.filter.name_code', 'filter_name_code');
 		if ($formSubmited)
 		{
-			$name_code = $app->input->post->get('name_code');
+			$name_code = $input->post->get('name_code');
 			$this->setState('filter.name_code', $name_code);
 		}
 
 		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
 		if ($formSubmited)
 		{
-			$short_description = $app->input->post->get('short_description');
+			$short_description = $input->post->get('short_description');
 			$this->setState('filter.short_description', $short_description);
 		}
 
 		$created = $this->getUserStateFromRequest($this->context . '.filter.created', 'filter_created');
 		if ($formSubmited)
 		{
-			$created = $app->input->post->get('created');
+			$created = $input->post->get('created');
 			$this->setState('filter.created', $created);
 		}
 
 		$modified = $this->getUserStateFromRequest($this->context . '.filter.modified', 'filter_modified');
 		if ($formSubmited)
 		{
-			$modified = $app->input->post->get('modified');
+			$modified = $input->post->get('modified');
 			$this->setState('filter.modified', $modified);
 		}
 
@@ -484,57 +485,57 @@ class Joomla_componentsModel extends ListModel
 							continue;
 						}
 
-						// decode javascript
-						$item->javascript = base64_decode($item->javascript);
-						// decode css_site
-						$item->css_site = base64_decode($item->css_site);
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_method_install
-						$item->php_method_install = base64_decode($item->php_method_install);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
+						// decode buildcompsql
+						$item->buildcompsql = base64_decode($item->buildcompsql);
 						if ($basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
 						{
 							// decrypt crowdin_username
 							$item->crowdin_username = $basic->decryptString($item->crowdin_username);
 						}
-						// decode buildcompsql
-						$item->buildcompsql = base64_decode($item->buildcompsql);
 						// decode readme
 						$item->readme = base64_decode($item->readme);
+						// decode javascript
+						$item->javascript = base64_decode($item->javascript);
+						// decode css_admin
+						$item->css_admin = base64_decode($item->css_admin);
+						// decode css_site
+						$item->css_site = base64_decode($item->css_site);
+						// decode php_preflight_install
+						$item->php_preflight_install = base64_decode($item->php_preflight_install);
+						// decode php_preflight_update
+						$item->php_preflight_update = base64_decode($item->php_preflight_update);
+						// decode php_postflight_install
+						$item->php_postflight_install = base64_decode($item->php_postflight_install);
+						// decode php_postflight_update
+						$item->php_postflight_update = base64_decode($item->php_postflight_update);
+						// decode php_method_uninstall
+						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
+						// decode php_method_install
+						$item->php_method_install = base64_decode($item->php_method_install);
+						// decode sql
+						$item->sql = base64_decode($item->sql);
+						// decode sql_uninstall
+						$item->sql_uninstall = base64_decode($item->sql_uninstall);
 						// decode php_helper_both
 						$item->php_helper_both = base64_decode($item->php_helper_both);
+						// decode php_helper_admin
+						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_admin_event
+						$item->php_admin_event = base64_decode($item->php_admin_event);
 						if ($basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
 						{
 							// decrypt crowdin_project_api_key
 							$item->crowdin_project_api_key = $basic->decryptString($item->crowdin_project_api_key);
 						}
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
+						// decode php_helper_site
+						$item->php_helper_site = base64_decode($item->php_helper_site);
 						if ($basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
 						{
 							// decrypt crowdin_account_api_key
 							$item->crowdin_account_api_key = $basic->decryptString($item->crowdin_account_api_key);
 						}
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
+						// decode php_site_event
+						$item->php_site_event = base64_decode($item->php_site_event);
 						// unset the values we don't want exported.
 						unset($item->asset_id);
 						unset($item->checked_out);
@@ -685,12 +686,13 @@ class Joomla_componentsModel extends ListModel
 	}
 
 	/**
-	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 * Build an SQL query to check in all items left checked out longer then a set time.
 	 *
-	 * @return bool
+	 * @return void
+	 * @throws \DateMalformedStringException
 	 * @since 3.2.0
 	 */
-	protected function checkInNow(): bool
+	protected function checkInNow(): void
 	{
 		// Get set check in time
 		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
@@ -704,37 +706,36 @@ class Joomla_componentsModel extends ListModel
 			$query->select('*');
 			$query->from($db->quoteName('#__componentbuilder_joomla_component'));
 			// Only select items that are checked out.
-			$query->where($db->quoteName('checked_out') . '!=0');
+			$query->where($db->quoteName('checked_out') . ' >= 0');
+			// Query only to see if we have a rows
 			$db->setQuery($query, 0, 1);
 			$db->execute();
 			if ($db->getNumRows())
 			{
-				// Get Yesterdays date.
+				// Get target date in the past.
 				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
 				// Fields to update.
-				$fields = array(
-					$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',
-					$db->quoteName('checked_out') . '=0'
-				);
+				$fields = [
+					$db->quoteName('checked_out_time') . ' = NULL',
+					$db->quoteName('checked_out') . ' = NULL'
+				];
 
 				// Conditions for which records should be updated.
-				$conditions = array(
-					$db->quoteName('checked_out') . '!=0', 
-					$db->quoteName('checked_out_time') . '<\''.$date.'\''
-				);
+				$conditions = [
+					$db->quoteName('checked_out') . ' = 0 OR ' . $db->quoteName('checked_out') . ' > 0',
+					$db->quoteName('checked_out_time') . ' < ' . $db->quote($date)
+				];
 
 				// Check table.
 				$query->update($db->quoteName('#__componentbuilder_joomla_component'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);
 
-				return $db->execute();
+				$db->execute();
 			}
 		}
-
-		return false;
 	}
 }

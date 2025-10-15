@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -48,24 +48,25 @@ final class Placeholder implements PlaceholderInterface
 	protected $config;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param   Config                $config    The compiler config object.
-	 * @param   \JDatabaseDriver      $db        The Database Driver object.
+	 * @param  Config              $config    The compiler config object.
+	 * @param  DatabaseInterface   $db        The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 **/
-	public function __construct(?Config $config = null)
+	public function __construct(Config $config, DatabaseInterface $db)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->db = Factory::getDbo();
+		$this->config = $config;
+		$this->db = $db;
 	}
 
 	/**

@@ -23,12 +23,14 @@ defined('_JEXEC') or die;###LICENSE_LOCKED_DEFINED###
 
 $app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 
-if ($app->isClient('site')) {
+if ($app->isClient('site'))
+{
     Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken('get') or die(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JINVALID_TOKEN'));
 }
 
 // dynamic selection of title key (link in modal)
-$this->modalTitleKey = $app->input->get('titleKey', 'id', 'word');
+$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+$this->modalTitleKey = $input->get('titleKey', 'id', 'word');
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();

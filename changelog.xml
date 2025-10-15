@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changelogs>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>3.2.5</version>
+    <fix>
+      <item>Fix Save failed issue in dynamicGet. #1148</item>
+      <item>Fix Checked Out to be null and not 0. (#1194)</item>
+      <item>Fix created_by, modified_by, checked_out fields in the compiler of the SQL. (#1194)</item>
+      <item>Fix the noticeboard to display Llewellyn's Joomla Social feed</item>
+    </fix>
+    <addition>
+      <item>Add [AllowDynamicProperties] in the base view class for J5</item>
+      <item>Added new import powers for custom import of spreadsheets.</item>
+      <item>Add AllowDynamicProperties (Joomla 4+5) to view class to allow Custom Dynamic Get methods to work without issues.</item>
+      <item>Add the DateHelper class and improve the date methods.</item>
+      <item>Add simple SessionHelper class.</item>
+      <item>Add first classes for the new import engine.</item>
+    </addition>
+    <change>
+      <item>Update the trashhelper layout to work in Joomla 5.</item>
+      <item>Update all core date fields in table class. (#1188)</item>
+      <item>Update created_by, modified_by, checked_out fields in table class.</item>
+    </change>
+    <remove>
+      <item>Remove all backward compatibility issues, so JCB will not need the [Backward Compatibility] plugin to run.</item>
+    </remove>
+    <note>
+      <item>Move the _prepareDocument  above the display call in the base view class</item>
+      <item>Move the setDocument and _prepareDocument above the display in the site view and custom admin view.</item>
+      <item>Move all [TEXT, EDITOR, TEXTAREA] fields from [NOT NULL] to [NULL]</item>
+      <item>Improve the [VDM Registry] to be Joomla Registry Compatible</item>
+      <item>Move all registries to the [VDM Registry] class</item>
+      <item>Implementation of the decentralized Super-Power CORE repository network. (#1190)</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.0.0</version>
+    <fix>
+      <item>Fix the plug-in installer script builder bug #1067</item>
+      <item>Fix Event triggers for Joomla 4 and 5 builds.</item>
+      <item>Add fix to the update script, so that upgrading JCB from Joomla 3 to 4 will not fail.</item>
+      <item>Fix plugin field selection</item>
+      <item>Fix plugin params tab layout</item>
+      <item>Fix repeatable layout #1076</item>
+      <item>Fix customfilelist field to conform to the new namespacing conventions. #1094</item>
+      <item>Fix [Set String Value] in placeholder table to store the value as a base64 string.</item>
+      <item>Fix the search area layout.</item>
+      <item>Fix the search area code line selection.</item>
+      <item>Fix the input edit button for custom fields.</item>
+      <item>Start fixing the field view in Joomla 4. #1096</item>
+      <item>Fix the sql build feature. #1032</item>
+      <item>Fix the CustomfolderlistField #1094</item>
+      <item>Add view list and single name fix.</item>
+      <item>Add component code name fix.</item>
+      <item>Fix the media field size limitation. #1109</item>
+      <item>Fix version_update column size.</item>
+      <item>Fix autoloader timing, and loading.</item>
+      <item>Fix the admin.css file loading on dashboard. #1112</item>
+      <item>Fix dynamic get data-type default to 0. #1110</item>
+      <item>Fix the missing model call. #1114</item>
+      <item>Fix the wrong $date call. #1115</item>
+      <item>Fix the customfolderlist field. #1120</item>
+    </fix>
+    <language>
+      <item>Add menus for languages, servers, get snippets to J4 #1095</item>
+    </language>
+    <addition>
+      <item>Add issue templates</item>
+      <item>Add Factory class to the J5 Event class. #1093</item>
+      <item>Add the new layout to list fields (GUI UPDATE)</item>
+      <item>Add power path override option on component level.</item>
+      <item>Add the compiler menu back.</item>
+      <item>Add reset list of powers.</item>
+      <item>Add Joomla powers for namespace dynamic management.</item>
+      <item>Add fallback option to ensure that all JCB tables and fields exist.</item>
+      <item>Add dynamic datatype update to schema field check.</item>
+      <item>Add the BaseDatabaseModel use statement to custom site view controller. #1119</item>
+    </addition>
+    <change>
+      <item>Improved the Schema Table update engine.</item>
+      <item>Improved the Schema Table update engine (more).</item>
+      <item>Remove the SQL update, to only use the Schema updates of table columns to avoid collusion.</item>
+    </change>
+    <note>
+      <item>Force autoloader to always load.</item>
+      <item>Move the powers autoloader to its own file.</item>
+      <item>Implement the Joomla Powers in JCB code, to move away from JClasses.</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.0.1</version>
+    <fix>
+      <item>Fix auto build from SQL in Joomla 4.</item>
+      <item>Fix permission issue for admin views.</item>
+      <item>Fix registry class methods return type</item>
+      <item>Fix Gitea Contents class functions</item>
+      <item>Fix subform set methods</item>
+      <item>Fix the metadata, metadesc, metakey database issue</item>
+      <item>Fix function mismatch call in the compiler power class.</item>
+      <item>Fix init feature to only add missing powers</item>
+      <item>Fix controller postSaveHook function, for correct model class in Joomla 4 and 5</item>
+      <item>Fix app instances (mismatch) in the install script and schema class when installing from CLI</item>
+      <item>Fix subform layout of uikit in JCB</item>
+    </fix>
+    <addition>
+      <item>Add in JCB gitea push feature to help maintain JCB core features.</item>
+      <item>Add extending options to interfaces.</item>
+      <item>Add repositories for better integration with gitea</item>
+      <item>Add new Data classes</item>
+      <item>Add new subform classes</item>
+      <item>Add push options to Joomla Power</item>
+      <item>Add option to use placeholders in Joomla Power namespaces.</item>
+    </addition>
+    <change>
+      <item>Change the extendsinterfaces field to allow null, #1139</item>
+      <item>Update the Schema class to also update null mismatching if needed</item>
+      <item>Refactored the Data classes</item>
+      <item>Update all list and custom fields to use the new layouts</item>
+    </change>
+    <note>
+      <item>Complete the Joomla Power Init and Reset features</item>
+      <item>Improved the Joomla Power Push path</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.0.2</version>
+    <fix>
+      <item>Fix site view form missing classes in J4+</item>
+      <item>Fix permissions tab in items in J4+</item>
+      <item>Fix site display controller checkEditId function in J4+</item>
+      <item>Fix broken toolbar call in HtmlView in J4+</item>
+      <item>Fix missing scripts and styles fields and methods in the site admin view model</item>
+      <item>Fix helper area</item>
+      <item>Fix database mySql update in J4+</item>
+      <item>Fix abstract schema class function check default index warring</item>
+      <item>Fix dynamicGet so that the table values will load again. #1155</item>
+    </fix>
+    <addition>
+      <item>Add class methods to the HtmlView classes in J4+</item>
+      <item>Add option to use powers in preflight event in the installer class</item>
+      <item>Add more pure JS to the dynamic get area</item>
+      <item>Add native plugin builder for Joomla 4 &amp; 5</item>
+      <item>Add basic API for admin views</item>
+    </addition>
+    <change>
+      <item>Update subform field layout across JCB for cleaner look</item>
+    </change>
+    <remove>
+      <item>Remove expansion feature</item>
+      <item>Remove phpspreadsheet completely from Joomla 4+</item>
+    </remove>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.0.3</version>
+    <fix>
+      <item>Fix [Save as Copy] error in library. #1162</item>
+      <item>Fix error when no components exist. #1164</item>
+      <item>Fix search page error caused by File class.</item>
+      <item>Fix usergrouplist compiler triggers. #1100</item>
+      <item>Fix default database fields to allow NULL. #1169</item>
+      <item>Fix power list field to enable search. #1167</item>
+      <item>Fix missing working path in zip process.</item>
+      <item>Fix dynamic get issue in demo site view.</item>
+      <item>Fix demo site view to display files.</item>
+      <item>Fix field type init message.</item>
+      <item>Fix dynamic download for site area with correct namespace.</item>
+      <item>Fix missing edit button on fields in related views.</item>
+      <item>Fix dashboard display.</item>
+      <item>Fix namespace issue that broke the linker.</item>
+    </fix>
+    <addition>
+      <item>Add [push] option to powers area.</item>
+      <item>Add power field type integration [init, reset, push].</item>
+    </addition>
+    <note>
+      <item>Expand the Demo component in JCB v4 to include more advanced features.</item>
+      <item>Ensure type-agnostic comparisons by casting to CHAR in joins for dynamic get.</item>
+      <item>Restore search option in [use] field of related views.</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.1.0</version>
+    <fix>
+      <item>Fix Save failed issue in dynamicGet. #1148</item>
+      <item>Fix Checked Out to be null and not 0. (#1194)</item>
+      <item>Fix created_by, modified_by, checked_out fields in the compiler of the SQL. (#1194)</item>
+      <item>Fix the noticeboard to display Llewellyn's Joomla Social feed</item>
+    </fix>
+    <addition>
+      <item>Add [AllowDynamicProperties] in the base view class for J5</item>
+      <item>Added new import powers for custom import of spreadsheets.</item>
+      <item>Add AllowDynamicProperties (Joomla 4+5) to view class to allow Custom Dynamic Get methods to work without issues.</item>
+      <item>Add the DateHelper class and improve the date methods.</item>
+      <item>Add simple SessionHelper class.</item>
+      <item>Add first classes for the new import engine.</item>
+      <item>Add init_defaults option for dynamic form selection setup (to int new items with default values dynamically)</item>
+      <item>Updated the admin-tab-fields in add-fields view. #1205</item>
+    </addition>
+    <change>
+      <item>Update the trashhelper layout to work in Joomla 5.</item>
+      <item>Update all core date fields in table class. (#1188)</item>
+      <item>Update created_by, modified_by, checked_out fields in table class.</item>
+      <item>Update all JCB 4 tables to utf8mb4_unicode_ci collation if misaligned</item>
+    </change>
+    <remove>
+      <item>Remove all backward compatibility issues, so JCB will not need the [Backward Compatibility] plugin to run.</item>
+      <item>Remove Custom Import Tab from admin view</item>
+    </remove>
+    <note>
+      <item>Move the _prepareDocument  above the display call in the base view class</item>
+      <item>Move the setDocument and _prepareDocument above the display in the site view and custom admin view.</item>
+      <item>Move all [TEXT, EDITOR, TEXTAREA] fields from [NOT NULL] to [NULL]</item>
+      <item>Improve the [VDM Registry] to be Joomla Registry Compatible</item>
+      <item>Move all registries to the [VDM Registry] class</item>
+      <item>Implementation of the decentralized Super-Power CORE repository network. (#1190)</item>
+      <item>Started compiling JCB4 on Joomla 5 with PHP 8.2</item>
+      <item>Move all internal ID linking to GUID inside of JCB 4</item>
+      <item>Improved the customcode and placeholder search features</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.1.1</version>
+    <fix>
+      <item>Fix issue with loading the Component Builder Wiki.</item>
+      <item>Fix a bug in Dynamic Get JavaScript that causes table columns to not load.</item>
+    </fix>
+    <language>
+      <item>Adds option to export Language Translations.</item>
+    </language>
+    <addition>
+      <item>Adds library phpspreadsheet to JCB.</item>
+      <item>Add import item example to demo component.</item>
+      <item>Adds the Import Function to the Demo Component.</item>
+      <item>Adds the Component Commands Plugin to the  CLI for Import of spreadsheet data-sets.</item>
+      <item>Add all needed Powers to the release package, to speed-up the build of the demo component.</item>
+      <item>Adds new JCB package engine.</item>
+      <item>Adds advanced version update notice to the Component Builder Dashboard.</item>
+      <item>Adds Initialize, Reset, and Push functionality to the Repository entities.</item>
+    </addition>
+    <change>
+      <item>Updates the Superpower class with the GetRemote class in the plugin.</item>
+      <item>Refactored initialization flow to accommodate future scalability and integration with all designated areas.</item>
+      <item>Refactor the Creator Builders class.</item>
+      <item>Completely refactors the class that builds the Component Dashboard. #1134</item>
+      <item>Completely refactors the SQL teaks and SQL dump classes.</item>
+      <item>Changes J4 fields to allow NULL.</item>
+      <item>Refactor the FieldString and FieldXML classes.</item>
+    </change>
+    <note>
+      <item>Move all banners to GitHub.</item>
+      <item>Ensures the super power autoloader triggers the correct repositories.</item>
+      <item>Resolves the Database Updating issue in the compiler. #1212,#1209</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>4.1.2</version>
+    <fix>
+      <item>Fix the template and layout linker for packages.</item>
+      <item>Fix auto-check(in) method for Joomla 4/5 compatibility</item>
+      <item>Fix Custom Rule Validation Bug</item>
+      <item>Fix issues in the site view HtmlView caused by the refactor, including missing class calls and outdated function references.</item>
+      <item>Fix issue where the DatabaseSchemaCheckAll pulled all Component Builder tables into DB on install. #1253</item>
+      <item>Fix issue in the Dynamic Get when the value key is 0 it wouldn't add the 'WHERE' statement to the generated code. #1254</item>
+      <item>Fix issue where custom powers was not added to PowerloaderHelper. #1256</item>
+      <item>Fix normalization issue when compiling on Windows systems. #1219</item>
+      <item>Fix installer issue on Joomla 6 where components containing multiple plugins failed during installation.</item>
+    </fix>
+    <addition>
+      <item>Add native module builder for Joomla 4/5</item>
+      <item>Add Joomla 6 build option</item>
+      <item>Adds check to ensure expert mode subforms in the Demo Component remain set and unchanged when user lacks edit permissions</item>
+      <item>Add functionality to add component changelog into the package if configured.</item>
+      <item>Add a default VARCHAR(36) length to easily create fields intended to store GUID values.</item>
+    </addition>
+    <change>
+      <item>Refactor dynamic get methods into dedicated classes</item>
+      <item>Refactores event handling (contentPrepare, titlePrepare, contentBeforeDisplay, contentAfterDisplay) to use Joomla 5's native event dispatcher via the model's new getDispatcher() method.</item>
+      <item>Updates table classes to properly support NULL values, both in the store() method and in table variable definitions. #1245</item>
+      <item>Refactors the Compiler Model by dropping deprecated calls and adopting Joomla 5+ conventions</item>
+      <item>Refactors Compiler Controller to remove deprecated usage and follow Joomla 5+ best practices</item>
+      <item>Refactor PHP classes for building HTML view files in admin and site views to align with Joomla 5+ standards.</item>
+      <item>Change radio buttons with a empty option to save Datatype CHAR instead of TINYINT as other radio buttons. #1252</item>
+      <item>Refactor compiler Move file update to classes.</item>
+      <item>Refactor compiler Move plugin and module fields and rules files mover to classes.</item>
+      <item>Completely refactors the Compiler Dashboard to align with Joomla 5+ architecture and Bootstrap 5 standards.</item>
+      <item>Update the file uploader in the Demo Component for more dynamic file display and naming.</item>
+      <item>Update the SQL file dump generator to handle large SQL dumps in batches, ensuring safe and reliable database imports.</item>
+      <item>Update example hints in the field expert mode options.</item>
+    </change>
+    <remove>
+      <item>Remove setDocumentTitle method from the admin view since it is not being used by Joomla. #1255</item>
+    </remove>
+    <note>
+      <item>Move Joomla DB handling into compiler injector flow</item>
+      <item>Migrates view HTML classes to use getModel() directly instead of the deprecated magic get() calls to model methods.</item>
+      <item>Extractes the setAutoCheckIn() and setCheckInCall() logic into a dedicated CheckInNow class for cleaner design.</item>
+      <item>Replace all direct $app-&gt;input property calls with the recommended $app-&gt;getInput() method across the entire codebase.</item>
+      <item>Unpublish Joomla 6 Backward Compatibility Plugin</item>
+      <item>Improves validation handling of Fields by ensuring field validation rules are properly registered</item>
+      <item>Replace StringHelper with the correct Super Power key so it loads in the Compiler Controller</item>
+    </note>
+  </changelog>
+</changelogs>

@@ -97,7 +97,8 @@ abstract class UploadHelper
 	public static function get(string $field, string $type, string $filter = null, string $path = null): ?array
 	{
 		// Get the uploaded file information.
-		$input = Factory::getApplication()->input;
+		$app = Factory::getApplication();
+		$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// set the default filter
 		if (empty($filter))

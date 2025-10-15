@@ -358,13 +358,13 @@ class SearchModel extends ItemModel
 	public function getComponents(): ?array
 	{
 		// Get a db connection.
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
 
 		// Select only id and system name
-		$query->select($db->quoteName(array('id', 'system_name'),array('id', 'name')));
+		$query->select($db->quoteName(['id', 'system_name'],['id', 'name']));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
 
 		// only the active components

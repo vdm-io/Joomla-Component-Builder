@@ -116,7 +116,8 @@ class Language implements ServiceProviderInterface
 	public function getPurge(Container $container): Purge
 	{
 		return new Purge(
-			$container->get('Language.Update')
+			$container->get('Language.Update'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -130,7 +131,9 @@ class Language implements ServiceProviderInterface
 	 */
 	public function getInsert(Container $container): Insert
 	{
-		return new Insert();
+		return new Insert(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**
@@ -143,7 +146,9 @@ class Language implements ServiceProviderInterface
 	 */
 	public function getUpdate(Container $container): Update
 	{
-		return new Update();
+		return new Update(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**
@@ -191,7 +196,9 @@ class Language implements ServiceProviderInterface
 	 */
 	public function getMultilingual(Container $container): Multilingual
 	{
-		return new Multilingual();
+		return new Multilingual(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**

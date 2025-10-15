@@ -82,7 +82,7 @@ class Set
 
 		$this->container->get("{$class}.Remote.Set")->items($guids);
 
-		if (($dependencies = $this->tracker->get('set')) !== null)
+		while (($dependencies = $this->tracker->get('set')) !== null)
 		{
 			$this->tracker->remove('set');
 			foreach ($dependencies as $next_entity => $next_items)
@@ -91,13 +91,13 @@ class Set
 			}
 		}
 
-		if (($files = $this->tracker->get('file.set')) !== null)
+		while (($files = $this->tracker->get('file.set')) !== null)
 		{
 			$this->tracker->remove('file.set');
 			$this->container->get("File.Remote.Set")->items($files);
 		}
 
-		if (($folders = $this->tracker->get('folder.set')) !== null)
+		while (($folders = $this->tracker->get('folder.set')) !== null)
 		{
 			$this->tracker->remove('folder.set');
 			$this->container->get("Folder.Remote.Set")->items($folders);

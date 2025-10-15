@@ -38,7 +38,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\Plugin\StructureInterface;
  * 
  * @since 5.0.2
  */
-class Structure implements StructureInterface
+final class Structure implements StructureInterface
 {
 	/**
 	 * The Data Class.
@@ -243,11 +243,11 @@ class Structure implements StructureInterface
 					if (isset($plugin->fields_rules_paths)
 						&& $plugin->fields_rules_paths == 2)
 					{
-						// create fields folder
-						$this->folder->create($plugin->folder_path . '/src/Field');
-
 						// create rules folder
 						$this->folder->create($plugin->folder_path . '/src/Rule');
+
+						// create fields folder
+						$this->folder->create($plugin->folder_path . '/src/Field');
 					}
 
 					// set forms folder if needed
@@ -498,9 +498,6 @@ class Structure implements StructureInterface
 		if (isset($plugin->form_files)
 			&& ArrayHelper::check($plugin->form_files))
 		{
-			$Group = ucfirst((string) $plugin->group);
-			$FileName = $plugin->file_name;
-
 			// create forms folder
 			$this->folder->create($plugin->folder_path . '/forms');
 
@@ -595,13 +592,13 @@ class Structure implements StructureInterface
 							if (!isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
 							{
 								$plugin->add_rule_path[$file . $field_name . $fieldset] =
-									"{$this->NamespacePrefix}\\Plugin\\{$Group}\\{$FileName}\\Rule";
+									"{$this->NamespacePrefix}\\Plugin\\{$plugin->group_namespace}\\{$plugin->namespace}\\Rule";
 							}
 
 							if (!isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 							{
 								$plugin->add_field_path[$file . $field_name . $fieldset] =
-									"{$this->NamespacePrefix}\\Plugin\\{$Group}\\{$FileName}\\Field";
+									"{$this->NamespacePrefix}\\Plugin\\{$plugin->group_namespace}\\{$plugin->namespace}\\Field";
 							}
 						}
 
@@ -619,13 +616,13 @@ class Structure implements StructureInterface
 							if (isset($plugin->add_rule_path[$file . $field_name . $fieldset]))
 							{
 								$xml .= PHP_EOL . Indent::_(2)
-									. 'addrulepath="' . $plugin->add_rule_path[$file . $field_name . $fieldset] . '"';
+									. 'addruleprefix="' . $plugin->add_rule_path[$file . $field_name . $fieldset] . '"';
 							}
 
 							if (isset($plugin->add_field_path[$file . $field_name . $fieldset]))
 							{
 								$xml .= PHP_EOL . Indent::_(2)
-									. 'addfieldpath="' . $plugin->add_field_path[$file . $field_name . $fieldset] . '"';
+									. 'addfieldprefix="' . $plugin->add_field_path[$file . $field_name . $fieldset] . '"';
 							}
 
 							$xml .= PHP_EOL . Indent::_(1) . '>';

@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaThree\History as J3History;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaFour\History as J4History;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaFive\History as J5History;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaSix\History as J6History;
 
 
 /**
@@ -55,6 +56,9 @@ class History implements ServiceProviderInterface
 		$container->alias(J5History::class, 'J5.History')
 			->share('J5.History', [$this, 'getJ5History'], true);
 
+		$container->alias(J6History::class, 'J6.History')
+			->share('J6.History', [$this, 'getJ6History'], true);
+
 		$container->alias(HistoryInterface::class, 'History')
 			->share('History', [$this, 'getHistory'], true);
 	}
@@ -88,7 +92,8 @@ class History implements ServiceProviderInterface
 	public function getJ3History(Container $container): J3History
 	{
 		return new J3History(
-			$container->get('Config')
+			$container->get('Config'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -103,7 +108,8 @@ class History implements ServiceProviderInterface
 	public function getJ4History(Container $container): J4History
 	{
 		return new J4History(
-			$container->get('Config')
+			$container->get('Config'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -118,7 +124,24 @@ class History implements ServiceProviderInterface
 	public function getJ5History(Container $container): J5History
 	{
 		return new J5History(
-			$container->get('Config')
+			$container->get('Config'),
+			$container->get('Joomla.Database')
+		);
+	}
+
+	/**
+	 * Get the Joomla 6 History
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6History
+	 * @since   5.1.2
+	 */
+	public function getJ6History(Container $container): J6History
+	{
+		return new J6History(
+			$container->get('Config'),
+			$container->get('Joomla.Database')
 		);
 	}
 }

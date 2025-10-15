@@ -27,4 +27,7 @@ defined('JPATH_BASE') or die;
 	<?php echo LayoutHelper::render('mastodon', $displayData ?? []); ?>
 </div>
 <?php echo LayoutHelper::render('socialnetworking', null); ?>
-<div class="p-md-3"><?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?></div>
+<div class="p-md-3"><?php if (!empty($displayData['dankie']) && $displayData['dankie'] == 2): ?>
+<?php echo LayoutHelper::render('jcbsupportmessage', []); ?><?php else: ?>
+<?php echo ComponentbuilderHelper::getDynamicContent('banner', '728-90'); ?><?php endif; ?>
+</div>

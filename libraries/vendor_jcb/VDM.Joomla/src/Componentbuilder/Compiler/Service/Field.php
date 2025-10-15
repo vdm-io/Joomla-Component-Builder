@@ -29,9 +29,11 @@ use VDM\Joomla\Componentbuilder\Compiler\Field\DatabaseName;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreField as J3CoreField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\CoreField as J4CoreField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\CoreField as J5CoreField;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaSix\CoreField as J6CoreField;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\InputButton as J3InputButton;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\InputButton as J4InputButton;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\InputButton as J5InputButton;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaSix\InputButton as J6InputButton;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreFieldInterface as CoreField;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\InputButtonInterface as InputButton;
 
@@ -111,6 +113,9 @@ class Field implements ServiceProviderInterface
 		$container->alias(J5CoreField::class, 'J5.Field.Core.Field')
 			->share('J5.Field.Core.Field', [$this, 'getJ5CoreField'], true);
 
+		$container->alias(J6CoreField::class, 'J6.Field.Core.Field')
+			->share('J6.Field.Core.Field', [$this, 'getJ6CoreField'], true);
+
 		$container->alias(J3InputButton::class, 'J3.Field.Input.Button')
 			->share('J3.Field.Input.Button', [$this, 'getJ3InputButton'], true);
 
@@ -119,6 +124,9 @@ class Field implements ServiceProviderInterface
 
 		$container->alias(J5InputButton::class, 'J5.Field.Input.Button')
 			->share('J5.Field.Input.Button', [$this, 'getJ5InputButton'], true);
+
+		$container->alias(J6InputButton::class, 'J6.Field.Input.Button')
+			->share('J6.Field.Input.Button', [$this, 'getJ6InputButton'], true);
 
 		$container->alias(CoreField::class, 'Field.Core.Field')
 			->share('Field.Core.Field', [$this, 'getCoreField'], true);
@@ -162,7 +170,8 @@ class Field implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Field.Customcode'),
-			$container->get('Field.Rule')
+			$container->get('Field.Rule'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -176,7 +185,9 @@ class Field implements ServiceProviderInterface
 	 */
 	public function getGroups(Container $container): Groups
 	{
-		return new Groups();
+		return new Groups(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**
@@ -352,6 +363,19 @@ class Field implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The CoreField Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6CoreField
+	 * @since   5.1.2
+	 */
+	public function getJ6CoreField(Container $container): J6CoreField
+	{
+		return new J6CoreField();
+	}
+
+	/**
 	 * Get The J3InputButton Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -396,6 +420,23 @@ class Field implements ServiceProviderInterface
 	public function getJ5InputButton(Container $container): J5InputButton
 	{
 		return new J5InputButton(
+			$container->get('Config'),
+			$container->get('Placeholder'),
+			$container->get('Compiler.Creator.Permission')
+		);
+	}
+
+	/**
+	 * Get The J6InputButton Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6InputButton
+	 * @since   5.1.2
+	 */
+	public function getJ6InputButton(Container $container): J6InputButton
+	{
+		return new J6InputButton(
 			$container->get('Config'),
 			$container->get('Placeholder'),
 			$container->get('Compiler.Creator.Permission')

@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Field;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -69,20 +69,21 @@ final class Groups
 	];
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
-	 */
-	protected $db;
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
+	 **/
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct()
+	public function __construct(DatabaseInterface $db)
 	{
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

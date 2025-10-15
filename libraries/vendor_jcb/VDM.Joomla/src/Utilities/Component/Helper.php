@@ -15,6 +15,7 @@ namespace VDM\Joomla\Utilities\Component;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
@@ -87,7 +88,7 @@ abstract class Helper
 			$params->set($target, $value);
 
 			// Obtain a database connection instance.
-			$db = Factory::getDBO();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 
 			// Build and execute the query to update the parameters in the database.
@@ -281,7 +282,7 @@ abstract class Helper
 		// get global manifest_cache values
 		if (!isset(static::$manifest[$option]))
 		{
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 
 			$query->select($db->quoteName('manifest_cache'))

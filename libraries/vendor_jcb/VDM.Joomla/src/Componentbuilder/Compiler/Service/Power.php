@@ -337,7 +337,9 @@ class Power implements ServiceProviderInterface
 	 */
 	public function getExtractor(Container $container): Extractor
 	{
-		return new Extractor();
+		return new Extractor(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**

@@ -25,7 +25,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helper\###Component###Helper;
 
 // No direct access to this file
-\defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 /**
  * Form Rule (###Name###) class for the Joomla Platform.

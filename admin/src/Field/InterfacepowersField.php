@@ -17,6 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -56,7 +57,7 @@ class InterfacepowersField extends ListField
 			$button_code_name = $this->getAttribute('name');
 			// get the input from url
 			$app = Factory::getApplication();
-			$jinput = $app->input;
+			$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',
@@ -154,7 +155,7 @@ class InterfacepowersField extends ListField
 		// Get the user object.
 		$user = Factory::getApplication()->getIdentity();
 		// Get the databse object.
-		$db = Factory::getDBO();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.guid','a.name','a.system_name','a.type','a.power_version'),array('guid','extendsinterfaces_name','system_name','type','version')));
 		$query->from($db->quoteName('#__componentbuilder_power', 'a'));
@@ -173,7 +174,7 @@ class InterfacepowersField extends ListField
 			}
 		}
 		// get the input
-		$jinput = Factory::getApplication()->input;
+		$jinput = Factory::getApplication()->getInput();
 		// get the id
 		$power_id = $jinput->getInt('id', 0);
 		// if we have an id we remove all classes of the same namespace and name

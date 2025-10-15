@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Alias;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
@@ -95,26 +95,28 @@ class Data
 	protected Libraries $libraries;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Config       $config       The Config Class.
-	 * @param Registry     $registry     The Registry Class.
-	 * @param Customcode   $customcode   The Customcode Class.
-	 * @param Gui          $gui          The Gui Class.
-	 * @param Loader       $loader       The Loader Class.
-	 * @param Libraries    $libraries    The Libraries Class.
+	 * @param Config             $config       The Config Class.
+	 * @param Registry           $registry     The Registry Class.
+	 * @param Customcode         $customcode   The Customcode Class.
+	 * @param Gui                $gui          The Gui Class.
+	 * @param Loader             $loader       The Loader Class.
+	 * @param Libraries          $libraries    The Libraries Class.
+	 * @param DatabaseInterface  $db           The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Registry $registry, Customcode $customcode,
-		Gui $gui, Loader $loader, Libraries $libraries)
+		Gui $gui, Loader $loader, Libraries $libraries, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->registry = $registry;
@@ -122,7 +124,7 @@ class Data
 		$this->gui = $gui;
 		$this->loader = $loader;
 		$this->libraries = $libraries;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

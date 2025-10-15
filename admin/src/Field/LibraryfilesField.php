@@ -43,7 +43,7 @@ class LibraryfilesField extends ListField
 	protected function getOptions()
 	{
 		// get the input from url
-		$jinput = Factory::getApplication()->input;
+		$jinput = Factory::getApplication()->getInput();
 		// get the library id
 		$id = $jinput->getInt('id', 0);
 		// get custom the files

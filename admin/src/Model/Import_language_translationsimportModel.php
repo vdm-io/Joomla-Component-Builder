@@ -203,7 +203,7 @@ class Import_language_translationsimportModel extends BaseDatabaseModel
 	{
 		// Get the uploaded file information
 		$app = Factory::getApplication();
-		$input = $app->input;
+		$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
 		$userfile = $input->files->get('import_package', null, 'raw');
@@ -263,7 +263,7 @@ class Import_language_translationsimportModel extends BaseDatabaseModel
 	protected function _getPackageFromFolder()
 	{
 		$app = Factory::getApplication();
-		$input = $app->input;
+		$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// Get the path to the package to import
 		$p_dir = $input->getString('import_directory');
@@ -308,7 +308,7 @@ class Import_language_translationsimportModel extends BaseDatabaseModel
 	protected function _getPackageFromUrl()
 	{
 		$app = Factory::getApplication();
-		$input = $app->input;
+		$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// Get the URL of the package to import
 		$url = $input->getString('import_url');

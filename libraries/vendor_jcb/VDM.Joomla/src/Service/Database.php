@@ -12,6 +12,8 @@
 namespace VDM\Joomla\Service;
 
 
+use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Database\Load;
@@ -37,6 +39,9 @@ class Database implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(DatabaseInterface::class, 'Joomla.Database')
+			->share('Joomla.Database', [$this, 'getJoomlaDatabase'], true);
+
 		$container->alias(Load::class, 'Load')
 			->share('Load', [$this, 'getLoad'], true);
 
@@ -51,6 +56,26 @@ class Database implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get the Joomla Database
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  DatabaseInterface
+	 * @since   5.1.2
+	 */
+	public function getJoomlaDatabase(Container $container): DatabaseInterface
+	{
+		if (Factory::getContainer()->has(DatabaseInterface::class))
+		{
+			return Factory::getContainer()->get(DatabaseInterface::class);
+		}
+		else
+		{
+			return Factory::getDbo();
+		}
+	}
+
+	/**
 	 * Get the Core Load Database
 	 *
 	 * @param   Container  $container  The DI container.
@@ -60,7 +85,9 @@ class Database implements ServiceProviderInterface
 	 */
 	public function getLoad(Container $container): Load
 	{
-		return new Load();
+		return new Load(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**
@@ -73,7 +100,9 @@ class Database implements ServiceProviderInterface
 	 */
 	public function getInsert(Container $container): Insert
 	{
-		return new Insert();
+		return new Insert(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**
@@ -86,7 +115,9 @@ class Database implements ServiceProviderInterface
 	 */
 	public function getUpdate(Container $container): Update
 	{
-		return new Update();
+		return new Update(
+			$container->get('Joomla.Database')
+		);
 	}
 
 	/**
@@ -99,7 +130,9 @@ class Database implements ServiceProviderInterface
 	 */
 	public function getDelete(Container $container): Delete
 	{
-		return new Delete();
+		return new Delete(
+			$container->get('Joomla.Database')
+		);
 	}
 }
 

@@ -1673,6 +1673,7 @@ final class Builders
 		{
 			$this->componentfields->set("$nameSingleCode.$column", [
 				'name' => $column,
+				'guid' => $this->guid,
 				'label' => $langLabel,
 				'type' => $typeName,
 				'title' => $column === $this->title->get($nameSingleCode),

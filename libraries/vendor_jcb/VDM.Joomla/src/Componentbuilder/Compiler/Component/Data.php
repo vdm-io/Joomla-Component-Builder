@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
@@ -216,11 +216,12 @@ final class Data
 	protected Router $router;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
@@ -246,6 +247,7 @@ final class Data
 	 * @param Joomlamodules          $joomlamodules          The Joomlamodules Class.
 	 * @param Joomlaplugins          $joomlaplugins          The Joomlaplugins Class.
 	 * @param Router                 $router                 The Router Class.
+	 * @param DatabaseInterface      $db                     The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
@@ -258,7 +260,7 @@ final class Data
 		Sqltweaking $sqltweaking, Adminviews $adminviews,
 		Siteviews $siteviews, Customadminviews $customadminviews,
 		Updateserver $updateserver, Joomlamodules $joomlamodules,
-		Joomlaplugins $joomlaplugins, Router $router)
+		Joomlaplugins $joomlaplugins, Router $router, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -281,7 +283,7 @@ final class Data
 		$this->modules = $joomlamodules;
 		$this->plugins = $joomlaplugins;
 		$this->router = $router;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**
@@ -1107,48 +1109,206 @@ final class Data
 	}
 
 	/**
-	 * Configures the servers for update and sales handling.
+	 * Configure the component's server settings.
 	 *
-	 * @param  object  $component  The component object.
+	 * This method coordinates URL validation (including XML filename extraction)
+	 * and protocol configuration for update, changelog, and sales servers.
+	 *
+	 * @param  object  $component  The component object (passed by reference).
 	 *
 	 * @return void
-	 * @since  5.0.4
+	 * @since  5.2.1
 	 */
 	private function setServers(object $component): void
 	{
-		// catch empty URL to update server TODO: we need to fix this in  better way later
-		if (empty($component->add_update_server) || ($component->add_update_server == 1 && $component->update_server_target != 3
-			&& (
-				!StringHelper::check($component->update_server_url)
-				|| strpos($component->update_server_url, 'http') === false
-			)))
-		{
-			// we fall back to other, since we can't work with an empty update server URL
-			$component->add_update_server = 0;
-			$component->update_server_target = 3;
-			$component->update_server_url = '';
-		}
+		$this->normalizeServerUrls($component);
+		$this->configureServerProtocols($component);
+	}
 
-		$serverArray = ['update_server', 'sales_server'];
-		foreach ($serverArray as $server)
+	/**
+	 * Validate and normalize the update and changelog server URLs.
+	 *
+	 * - Ensures URLs are well-formed (contain 'http' and pass StringHelper::check()).
+	 * - If valid, extracts the XML filename using extractXmlFilename().
+	 * - If invalid, resets the URL, target, and add flags appropriately.
+	 *
+	 * @param  object  $component  The component object (passed by reference).
+	 *
+	 * @return void
+	 * @since  5.2.1
+	 */
+	private function normalizeServerUrls(object $component): void
+	{
+		$serverTypes = ['update_server', 'changelog_server'];
+
+		foreach ($serverTypes as $server)
 		{
-			if ($component->{'add_' . $server} == 1 &&
-				is_numeric($component->{$server}) &&
-				$component->{$server} > 0)
+			$urlProperty = "{$server}_url";
+			$addProperty = "add_{$server}";
+			$targetProperty = "{$server}_target";
+			$xmlNameProperty = "{$server}_xml_file_name";
+			$nameProperty = "{$server}_file_name";
+
+			$url = $component->{$urlProperty} ?? '';
+
+			// Validate URL presence & format
+			if (empty($component->{$addProperty}) ||
+				empty($url) ||
+				(
+					$component->{$addProperty} == 1 &&
+					$component->{$targetProperty} != 3 &&
+					(!StringHelper::check($url) || strpos($url, 'http') === false)
+				)
+			)
 			{
-				$component->{$server . '_protocol'} =
-					GetHelper::var('server', (int) $component->{$server}, 'id', 'protocol');
+				$component->{$addProperty} = 0;
+				$component->{$targetProperty} = 3;
+				$component->{$urlProperty} = '';
+				$component->{$xmlNameProperty} = '';
+				$component->{$nameProperty} = '';
+				continue;
+			}
+
+			// URL seems valid → extract XML filename if possible
+			$name = $this->extractXmlFilename($url);
+
+			if ($name !== null)
+			{
+				$component->{$xmlNameProperty} = $name;
+				$component->{$nameProperty} = $this->stripXmlExtension($name);
+			}
+			else
+			{
+				// URL is present but invalid XML filename
+				$component->{$urlProperty} = '';
+				$component->{$xmlNameProperty} = '';
+				$component->{$nameProperty} = '';
+			}
+		}
+	}
+
+	/**
+	 * Configure protocols for update, changelog, and sales servers.
+	 *
+	 * - If the server ID is numeric and > 0, fetches its protocol using GetHelper::var().
+	 * - Otherwise, resets the server ID and protocol to 0.
+	 * - For the sales server, also resets the "add_sales_server" flag.
+	 *
+	 * @param  object  $component  The component object (passed by reference).
+	 *
+	 * @return void
+	 * @since  5.2.1
+	 */
+	private function configureServerProtocols(object $component): void
+	{
+		$serverTypes = ['update_server', 'sales_server', 'changelog_server'];
+
+		foreach ($serverTypes as $server)
+		{
+			$id = $component->{$server} ?? 0;
+			$addProperty = "add_{$server}";
+			$protocolProperty = "{$server}_protocol";
+
+			if (($component->{$addProperty} ?? 0) == 1 && is_numeric($id) && $id > 0)
+			{
+				$component->{$protocolProperty} = GetHelper::var('server', (int) $id, 'id', 'protocol');
 			}
 			else
 			{
 				$component->{$server} = 0;
 				if ($server === 'sales_server')
 				{
-					$component->{'add_' . $server} = 0;
+					$component->{$addProperty} = 0;
 				}
-				$component->{$server . '_protocol'} = 0;
+				$component->{$protocolProperty} = 0;
 			}
 		}
+	}
+
+	/**
+	 * Extract the XML filename from a given update server URL.
+	 *
+	 * This method:
+	 * - Parses the URL using parse_url().
+	 * - First looks for any query parameter whose value ends with ".xml" (case-insensitive).
+	 * - If none is found, it falls back to the last path segment if it ends with ".xml".
+	 * - Ignores query strings, fragments, and trailing slashes safely.
+	 * - Returns the filename with its original case preserved.
+	 *
+	 * @param  string  $url  The full update server URL.
+	 *
+	 * @return string|null  The extracted XML filename, or null if none found.
+	 * @since  5.2.1
+	 */
+	private function extractXmlFilename(string $url): ?string
+	{
+		// Trim and short-circuit on empty input
+		$url = trim($url);
+
+		if ($url === '')
+		{
+			return null;
+		}
+
+		// Use parse_url for robust URL parsing
+		$parts = parse_url($url);
+
+		// 1. Look for a query parameter with a value ending in ".xml"
+		if (!empty($parts['query']))
+		{
+			$queryParams = [];
+			parse_str($parts['query'], $queryParams);
+
+			foreach ($queryParams as $value)
+			{
+				// Compare in lowercase, but return original case if match
+				if (str_ends_with(strtolower($value), '.xml'))
+				{
+					return basename($value);
+				}
+			}
+		}
+
+		// 2. Fallback: use the last path segment
+		if (!empty($parts['path']))
+		{
+			$filename = basename($parts['path']);
+
+			if (str_ends_with(strtolower($filename), '.xml'))
+			{
+				return $filename;
+			}
+		}
+
+		// No valid XML filename found
+		return null;
+	}
+
+	/**
+	 * Strip the ".xml" extension from a filename.
+	 *
+	 * This method:
+	 * - Only strips the extension if it ends with ".xml" (case-insensitive).
+	 * - Preserves the original case of the filename.
+	 * - Safely handles filenames without ".xml" (returns unchanged).
+	 *
+	 * @param  string  $filename  The filename to process.
+	 *
+	 * @return string  The filename without the ".xml" extension.
+	 * @since  5.2.1
+	 */
+	private function stripXmlExtension(string $filename): string
+	{
+		// Trim to avoid accidental whitespace issues
+		$filename = trim($filename);
+
+		// Case-insensitive check for ".xml" at the end
+		if (str_ends_with(strtolower($filename), '.xml'))
+		{
+			return substr($filename, 0, -4);
+		}
+
+		return $filename;
 	}
 
 	/**

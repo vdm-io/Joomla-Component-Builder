@@ -158,16 +158,19 @@ class Manager
 			throw new \RuntimeException($this->handler->getErrors());
 		}
 
-		if ($fileType['type'] === 'image')
+		if ($fileType['type'] === 'image' && !empty($fileType['crop']))
 		{
 			$this->processImages($details, $guid, $entity, $target, $fileType);
-			return;
+		}
+		else
+		{
+			// store file in the file table
+			$this->item->table($this->getTable())->set(
+				$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
+			);
 		}
 
-		// store file in the file table
-		$this->item->table($this->getTable())->set(
-			$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
-		);
+		$this->limitFileType($fileType, $guid, $entity, $target);
 	}
 
 	/**
@@ -251,15 +254,6 @@ class Manager
 	 */
 	protected function processImages(array $details, string $guid, string $entity, string $target, array $fileType): void
 	{
-		if (empty($fileType['crop']))
-		{
-			// store file in the file table
-			$this->item->table($this->getTable())->set(
-				$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
-			);
-			return;
-		}
-
 		$source = $details['full_path'];
 		$path = $details['path'];
 		$cropping = $fileType['crop'];
@@ -267,13 +261,15 @@ class Manager
 		$placeholders = [
 			'{number}' => $this->getFileNumber($fileType, $entity),
 			'{name}' => $this->getFileName($details, $entity),
-			'{extension}' => $this->getFileExtension($source)
+			'{extension}' => $this->getFileExtension($source),
+			'{random}' => $this->getRandomFileName($entity)
 		];
 
 		foreach ($cropping as &$crop)
 		{
 			$crop['name'] = str_replace(array_keys($placeholders), array_values($placeholders), $crop['name']);
 		}
+		unset($crop);
 
 		$images = $this->image->process($source, $path, $cropping);
 
@@ -297,7 +293,7 @@ class Manager
 		}
 
 		// clean up source image
-		if (is_file($source) && is_writable($source))
+		if (\is_file($source) && \is_writable($source))
 		{
 			File::delete($source); // from file system
 		}
@@ -403,6 +399,34 @@ class Manager
 	}
 
 	/**
+	 * Generate a unique random-like 12-character string for a given GUID.
+	 *
+	 * Guarantees:
+	 * - The same GUID will *never* produce the same value twice, even across executions.
+	 * - Different GUIDs will never collide (practically impossible).
+	 * - Safe alphanumeric output (A–Z, a–z, 0–9).
+	 * - Lightweight, stateless, and reproducible randomness within one call.
+	 *
+	 * @param   string  $guid  The entity GUID.
+	 *
+	 * @return  string  A unique 12-character random-like string.
+	 * @since   5.1.1
+	 */
+	protected function getRandomFileName(string $guid): string
+	{
+		// Combine GUID with microtime (ensures uniqueness across calls)
+		$entropy = $guid . '-' . microtime(true) . '-' . random_int(PHP_INT_MIN, PHP_INT_MAX);
+
+		// Create a cryptographic hash
+		$hash = hash('sha256', $entropy, true);
+
+		// Convert to safe characters and shorten to 5 chars
+		$base62 = rtrim(strtr(base64_encode($hash), '+/', 'AZ'), '=');
+
+		return substr($base62, 1, 13);
+	}
+
+	/**
 	 * Get the file extension
 	 *
 	 * @param sring  $source  The full path to the file
@@ -413,6 +437,193 @@ class Manager
 	protected function getFileExtension(string $source): string
 	{
 		return MimeHelper::extension($source);
+	}
+
+	/**
+	 * Enforces a file-count limit per entity and removes oldest excess files.
+	 * Also validates crop consistency for images.
+	 *
+	 * @param  array   $fileType  The uploaded file-type details.
+	 * @param  string  $type      The file-type GUID fallback.
+	 * @param  string  $entity    The entity GUID.
+	 * @param  string  $target    The entity target.
+	 *
+	 * @return void
+	 * @since   5.1.4
+	 */
+	protected function limitFileType(array $fileType, string $type, string $entity, string $target): void
+	{
+		$limit = (int) ($fileType['quantity'] ?? 0);
+		if ($limit <= 0)
+		{
+			return;
+		}
+
+		$fileTypeGuid = (string) ($fileType['guid'] ?? $type);
+		if ($fileTypeGuid === '')
+		{
+			return;
+		}
+
+		$isImage   = false;
+		$cropCount = 1;
+
+		// Handle image type with crops
+		if (($fileType['type'] ?? '') === 'image' && !empty($fileType['crop']))
+		{
+			$isImage = true;
+			$cropCount = (int) \count($fileType['crop']);
+			$limit *= $cropCount;
+		}
+
+		$this->applyFileLimit($fileTypeGuid, $entity, $target, $limit, $isImage, $cropCount);
+	}
+
+	/**
+	 * Applies the file limit logic and verifies crop consistency.
+	 *
+	 * @param  string  $fileTypeGuid  The file-type GUID.
+	 * @param  string  $entity        The entity GUID.
+	 * @param  string  $target        The entity target.
+	 * @param  int     $limit         Maximum allowed files.
+	 * @param  bool    $isImage       Whether this file type is an image.
+	 * @param  int     $cropCount     Crop variant count for images.
+	 *
+	 * @return void
+	 * @since   5.1.4
+	 */
+	private function applyFileLimit(
+		string $fileTypeGuid,
+		string $entity,
+		string $target,
+		int $limit,
+		bool $isImage = false,
+		int $cropCount = 1
+	): void
+	{
+		if ($limit <= 0)
+		{
+			return;
+		}
+
+		// Retrieve all files for this entity
+		$files = $this->items->table($this->getTable())->get([$entity], 'entity') ?? [];
+		if (!$files)
+		{
+			return;
+		}
+
+		// Filter by matching type & target
+		$targetFiles = [];
+		foreach ($files as $file)
+		{
+			if (($file->file_type ?? null) === $fileTypeGuid && ($file->entity_type ?? null) === $target)
+			{
+				$targetFiles[] = $file;
+			}
+		}
+
+		$total = \count($targetFiles);
+		if ($total === 0)
+		{
+			return;
+		}
+
+		$table = $this->getTable();
+
+		/**
+		 * Crop integrity check:
+		 *   If this is an image type and cropCount > 1,
+		 *   verify that total files divide evenly by cropCount.
+		 *   If not divisible, remove all old files and keep just the last uploaded version.
+		 */
+		if ($isImage && $cropCount > 1 && ($total % $cropCount) !== 0)
+		{
+			$limit = $cropCount;
+		}
+
+		// Standard limit enforcement if count exceeds the allowed number
+		if ($total > $limit)
+		{
+			$oldest = $this->extractOldestFiles($targetFiles, $limit);
+		}
+
+		if (!$oldest)
+		{
+			return;
+		}
+
+		foreach ($oldest as $delete)
+		{
+			$guid = $delete->guid ?? null;
+			$path = $delete->file_path ?? null;
+
+			if ($guid)
+			{
+				$this->item->table($table)->delete($guid);
+			}
+
+			if ($path && \is_file($path))
+			{
+				File::delete($path);
+			}
+		}
+	}
+
+	/**
+	 * Returns the oldest files exceeding the desired quantity.
+	 *
+	 * @param  array  $files     File objects containing a 'created' property.
+	 * @param  int    $quantity  Desired number of items to remain.
+	 *
+	 * @return array<int,object>  The oldest files to remove.
+	 * @since  5.1.4
+	 */
+	protected function extractOldestFiles(array $files, int $quantity): array
+	{
+		$count = \count($files);
+		if ($count === 0 || $count <= $quantity)
+		{
+			return [];
+		}
+
+		// Inline timestamp collection for maximum speed
+		$withTimestamps = [];
+		foreach ($files as $file)
+		{
+			if (!empty($file->created))
+			{
+				$ts = \strtotime($file->created);
+				if ($ts !== false)
+				{
+					$withTimestamps[] = [$ts, $file];
+				}
+			}
+		}
+
+		$total = \count($withTimestamps);
+		if ($total === 0)
+		{
+			return [];
+		}
+
+		// Sort oldest → newest (integer compare)
+		\usort($withTimestamps, static fn($a, $b) => $a[0] <=> $b[0]);
+
+		$toRemove = $total - $quantity;
+		if ($toRemove <= 0)
+		{
+			return [];
+		}
+
+		// Slice oldest segment and extract objects
+		$oldest = [];
+		foreach (\array_slice($withTimestamps, 0, $toRemove) as $pair)
+		{
+			$oldest[] = $pair[1];
+		}
+
+		return $oldest;
 	}
 }
 

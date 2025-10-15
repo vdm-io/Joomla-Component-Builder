@@ -9,11 +9,12 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\Compiler\Joomlamodule;
+namespace VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\JoomlaSix;
 
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
@@ -31,14 +32,15 @@ use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\ModuleDataInterface;
 
 
 /**
- * Joomla Module Data Class
+ * Joomla 6 Module Data Class
  * 
- * @since 3.2.0
+ * @since 5.1.2
  */
-class Data
+final class Data implements ModuleDataInterface
 {
 	/**
 	 * Compiler Joomla Plugins Data
@@ -145,26 +147,28 @@ class Data
 	protected Templatelayout $templatelayout;
 
 	/**
-	 * The Database Class.
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
-	 */
-	protected $db;
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
+	 **/
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Config           $config           The Config Class.
-	 * @param Customcode       $customcode       The Customcode Class.
-	 * @param Gui              $gui              The Gui Class.
-	 * @param Placeholder      $placeholder      The Placeholder Class.
-	 * @param Language         $language         The Language Class.
-	 * @param Field            $field            The Field Class.
-	 * @param Fieldname        $fieldname        The Name Class.
-	 * @param Filesfolders     $filesfolders     The Filesfolders Class.
-	 * @param Libraries        $libraries        The Libraries Class.
-	 * @param Dynamicget       $dynamicget       The Data Class.
-	 * @param Templatelayout   $templatelayout   The Data Class.
+	 * @param Config             $config           The Config Class.
+	 * @param Customcode         $customcode       The Customcode Class.
+	 * @param Gui                $gui              The Gui Class.
+	 * @param Placeholder        $placeholder      The Placeholder Class.
+	 * @param Language           $language         The Language Class.
+	 * @param Field              $field            The Field Class.
+	 * @param Fieldname          $fieldname        The Name Class.
+	 * @param Filesfolders       $filesfolders     The Filesfolders Class.
+	 * @param Libraries          $libraries        The Libraries Class.
+	 * @param Dynamicget         $dynamicget       The Data Class.
+	 * @param Templatelayout     $templatelayout   The Data Class.
+	 * @param DatabaseInterface  $db               The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
@@ -172,7 +176,8 @@ class Data
 		Placeholder $placeholder, Language $language,
 		Field $field, Fieldname $fieldname,
 		Filesfolders $filesfolders, Libraries $libraries,
-		Dynamicget $dynamicget, Templatelayout $templatelayout)
+		Dynamicget $dynamicget, Templatelayout $templatelayout,
+		DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -185,7 +190,7 @@ class Data
 		$this->libraries = $libraries;
 		$this->dynamicget = $dynamicget;
 		$this->templatelayout = $templatelayout;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**
@@ -372,11 +377,13 @@ class Data
 			if ($module->target == 2)
 			{
 				$module->target_client = 'administrator';
+				$module->target_client_namespace = 'Administrator';
 			}
 			else
 			{
 				// default is site area
 				$module->target_client = 'site';
+				$module->target_client_namespace = 'Site';
 			}
 
 			// set GUI mapper
@@ -397,7 +404,13 @@ class Data
 			);
 
 			// alias of code name
-			$module->class_name = $module->code_name;
+			$module->class_name = ucfirst(
+				$module->code_name
+			);
+
+			// set module namespace
+			$module->namespace = $module->class_name;
+
 			// set official name
 			$module->official_name = StringHelper::safe(
 				$module->name, 'W'
@@ -408,9 +421,9 @@ class Data
 			$module->lang_prefix = $this->config->lang_prefix;
 
 			// set module class name
-			$module->class_helper_name = 'Mod' . ucfirst((string) $module->code_name)
+			$module->class_helper_name = ucfirst((string) $module->code_name)
 				. 'Helper';
-			$module->class_data_name   = 'Mod' . ucfirst((string) $module->code_name)
+			$module->class_data_name   = ucfirst((string) $module->code_name)
 				. 'Data';
 
 			// set module install class name
@@ -511,7 +524,7 @@ class Data
 
 			if (ArrayHelper::check($module->custom_get))
 			{
-				$module->custom_get = $this->dynamic->get(
+				$module->custom_get = $this->dynamicget->get(
 					$module->custom_get, $module->key, $module->key
 				);
 			}
@@ -579,6 +592,31 @@ class Data
 				$module->class_helper_header = '';
 			}
 
+			// base64 Decode layout_data
+			if (isset($module->layout_data)
+				&& StringHelper::check($module->layout_data))
+			{
+				// set GUI mapper field
+				$guiMapper['field'] = 'layout_data';
+				$module->layout_data   = $this->gui->set(
+					$this->placeholder->update_(
+						$this->customcode->update(
+							base64_decode((string) $module->layout_data)
+						)
+					),
+					$guiMapper
+				);
+
+				// check if we have template or layouts to load
+				$this->templatelayout->set(
+					$module->layout_data , $module->code_name
+				);
+			}
+			else
+			{
+				$module->layout_data = '';
+			}
+
 			// base64 Decode mod_code
 			if (isset($module->mod_code)
 				&& StringHelper::check($module->mod_code))
@@ -615,7 +653,7 @@ class Data
 			if (isset($module->default_header)
 				&& StringHelper::check(
 					$module->default_header
-				))
+				) && $module->add_default_header == 1)
 			{
 				// set GUI mapper field
 				$guiMapper['field']     = 'default_header';
@@ -630,6 +668,7 @@ class Data
 			}
 			else
 			{
+				$module->add_default_header = 0;
 				$module->default_header = '';
 			}
 
@@ -658,6 +697,24 @@ class Data
 			{
 				$module->default = '<h1>No Tmpl set</h1>';
 			}
+
+			// set advance config field languages strings
+			$module->moduleclass_sfx_label = $module->lang_prefix . '_FIELD_MODULECLASS_SFX_LABEL';
+			$this->language->set(
+				$module->key, $module->moduleclass_sfx_label, 'Module Class'
+			);
+			$module->caching_label = $module->lang_prefix . '_FIELD_CACHING_LABEL';
+			$this->language->set(
+				$module->key, $module->caching_label, 'Caching'
+			);
+			$module->value_nocaching = $module->lang_prefix . '_FIELD_VALUE_NOCACHING';
+			$this->language->set(
+				$module->key, $module->value_nocaching, 'No caching'
+			);
+			$module->cache_time_label = $module->lang_prefix . '_FIELD_CACHE_TIME_LABEL';
+			$this->language->set(
+				$module->key, $module->cache_time_label, 'Cache Time'
+			);
 
 			// start the config array
 			$module->config_fields = [];

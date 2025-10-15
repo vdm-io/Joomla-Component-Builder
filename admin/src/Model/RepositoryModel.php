@@ -212,7 +212,9 @@ class RepositoryModel extends AdminModel
 			return false;
 		}
 
-		$jinput = Factory::getApplication()->input;
+		$app = Factory::getApplication();
+
+		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -907,6 +909,14 @@ class RepositoryModel extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// Set the GitHub URL
+		if (!empty($data['type']) && $data['type'] == 2)
+		{
+			// set GitHub URL
+			// Just for users to see github URL in the list view, in the code we have hardcoded the api url for github.
+			// so this is not what is used in the repository package API
+			$data['base'] = 'https://github.com/';
+		}
 
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)

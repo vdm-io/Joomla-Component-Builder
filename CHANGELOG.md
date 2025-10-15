@@ -1,3 +1,41 @@
+# v4.1.2
+
+- Fix the template and layout linker for packages.
+- Add native module builder for Joomla 4/5
+- Refactor dynamic get methods into dedicated classes
+- Move Joomla DB handling into compiler injector flow
+- Fix auto-check(in) method for Joomla 4/5 compatibility
+- Migrates view HTML classes to use getModel() directly instead of the deprecated magic get() calls to model methods.
+- Refactores event handling (contentPrepare, titlePrepare, contentBeforeDisplay, contentAfterDisplay) to use Joomla 5's native event dispatcher via the model's new getDispatcher() method.
+- Updates table classes to properly support NULL values, both in the store() method and in table variable definitions. #1245
+- Extractes the setAutoCheckIn() and setCheckInCall() logic into a dedicated CheckInNow class for cleaner design.
+- Replace all direct $app->input property calls with the recommended $app->getInput() method across the entire codebase.
+- Add Joomla 6 build option
+- Fix Custom Rule Validation Bug
+- Unpublish Joomla 6 Backward Compatibility Plugin
+- Refactors the Compiler Model by dropping deprecated calls and adopting Joomla 5+ conventions
+- Refactors Compiler Controller to remove deprecated usage and follow Joomla 5+ best practices
+- Adds check to ensure expert mode subforms in the Demo Component remain set and unchanged when user lacks edit permissions
+- Improves validation handling of Fields by ensuring field validation rules are properly registered
+- Replace StringHelper with the correct Super Power key so it loads in the Compiler Controller
+- Add functionality to add component changelog into the package if configured.
+- Refactor PHP classes for building HTML view files in admin and site views to align with Joomla 5+ standards.
+- Fix issues in the site view HtmlView caused by the refactor, including missing class calls and outdated function references.
+- Fix issue where the DatabaseSchemaCheckAll pulled all Component Builder tables into DB on install. #1253
+- Fix issue in the Dynamic Get when the value key is 0 it wouldn't add the 'WHERE' statement to the generated code. #1254
+- Change radio buttons with a empty option to save Datatype CHAR instead of TINYINT as other radio buttons. #1252
+- Remove setDocumentTitle method from the admin view since it is not being used by Joomla. #1255
+- Refactor compiler Move file update to classes.
+- Refactor compiler Move plugin and module fields and rules files mover to classes.
+- Fix issue where custom powers was not added to PowerloaderHelper. #1256
+- Fix normalization issue when compiling on Windows systems. #1219
+- Fix installer issue on Joomla 6 where components containing multiple plugins failed during installation.
+- Completely refactors the Compiler Dashboard to align with Joomla 5+ architecture and Bootstrap 5 standards.
+- Add a default VARCHAR(36) length to easily create fields intended to store GUID values.
+- Update the file uploader in the Demo Component for more dynamic file display and naming.
+- Update the SQL file dump generator to handle large SQL dumps in batches, ensuring safe and reliable database imports.
+- Update example hints in the field expert mode options.
+
 # v4.1.1
 
 - Move all banners to GitHub.

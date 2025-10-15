@@ -18,6 +18,7 @@ use Joomla\CMS\Version;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaThree\CoreRule as J3CoreRule;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFour\CoreRule as J4CoreRule;
 use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaFive\CoreRule as J5CoreRule;
+use VDM\Joomla\Componentbuilder\Compiler\Field\JoomlaSix\CoreRule as J6CoreRule;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Field\CoreRuleInterface as CoreRule;
 
 
@@ -54,6 +55,9 @@ class CoreRules implements ServiceProviderInterface
 
 		$container->alias(J5CoreRule::class, 'J5.Field.Core.Rule')
 			->share('J5.Field.Core.Rule', [$this, 'getJ5CoreRule'], true);
+
+		$container->alias(J6CoreRule::class, 'J6.Field.Core.Rule')
+			->share('J6.Field.Core.Rule', [$this, 'getJ6CoreRule'], true);
 
 		$container->alias(CoreRule::class, 'Field.Core.Rule')
 			->share('Field.Core.Rule', [$this, 'getCoreRule'], true);
@@ -96,6 +100,19 @@ class CoreRules implements ServiceProviderInterface
 	public function getJ5CoreRule(Container $container): J5CoreRule
 	{
 		return new J5CoreRule();
+	}
+
+	/**
+	 * Get The CoreRule Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6CoreRule
+	 * @since   5.1.2
+	 */
+	public function getJ6CoreRule(Container $container): J6CoreRule
+	{
+		return new J6CoreRule();
 	}
 
 	/**

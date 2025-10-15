@@ -40,6 +40,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseTables;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseUniqueGuid;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseUniqueKeys;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseUninstall;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\EventDispatcher;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DoNotEscape;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DynamicFields;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ExtensionCustomFields;
@@ -159,6 +160,9 @@ class BuilderAJ implements ServiceProviderInterface
 
 		$container->alias(DatabaseUninstall::class, 'Compiler.Builder.Database.Uninstall')
 			->share('Compiler.Builder.Database.Uninstall', [$this, 'getDatabaseUninstall'], true);
+
+		$container->alias(EventDispatcher::class, 'Compiler.Builder.Event.Dispatcher')
+			->share('Compiler.Builder.Event.Dispatcher', [$this, 'getEventDispatcher'], true);
 
 		$container->alias(DoNotEscape::class, 'Compiler.Builder.Do.Not.Escape')
 			->share('Compiler.Builder.Do.Not.Escape', [$this, 'getDoNotEscape'], true);
@@ -561,12 +565,26 @@ class BuilderAJ implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  DatabaseUninstall
-	 * @since 3.2.0
+	 * @since   3.2.0
 	 */
 	public function getDatabaseUninstall(Container $container): DatabaseUninstall
 	{
 		return new DatabaseUninstall();
 	}
+
+	/**
+	 * Get The EventDispatcher Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  EventDispatcher
+	 * @since   5.1.2
+	 */
+	public function getEventDispatcher(Container $container): EventDispatcher
+	{
+		return new EventDispatcher();
+	}
+
 
 	/**
 	 * Get The DoNotEscape Class.

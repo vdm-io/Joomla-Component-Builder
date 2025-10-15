@@ -224,7 +224,7 @@ class Initialization_selectionModel extends ItemModel
 				$query = $db->getQuery(true);
 
 				// Get data
-				$data = $this->getPaths();
+				$data = $this->getTagetAreaDetails();
 
 				if (empty($data))
 				{
@@ -329,13 +329,13 @@ class Initialization_selectionModel extends ItemModel
 	}
 
 	/**
-	 * Method to get the paths (repos) of this area.
+	 * Method to get the target area details.
 	 *
 	 * @return  array|null
 	 * @throws \Exception
 	 * @since   5.1.1
 	 */
-	protected function getPaths(): ?array
+	protected function getTagetAreaDetails(): ?array
 	{
 		if (($Power = $this->getTargetAreaPower()) !== null)
 		{
@@ -346,7 +346,7 @@ class Initialization_selectionModel extends ItemModel
 				{
 					return null;
 				}
-				return ['repos' => $class->paths(), 'area_class' => $Power['area'], 'headers' => $class->getIndexHeader(), 'area_name' => $class->getArea()];
+				return ['repos' => $class->paths(), 'area_class' => $Power['area'], 'headers' => $class->getIndexHeader(), 'area_name' => $class->getArea(), 'list_view' => $class->getListViewCodeName()];
 			}
 			catch (\Exception $e)
 			{

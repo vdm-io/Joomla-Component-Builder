@@ -657,76 +657,11 @@ class Structure extends Get
 	 * @param   string  $path   The path to move to
 	 *
 	 * @return void
-	 *
+	 * @deprecated 3.3 Use CFactory::_('Extension.MoveFieldsRules')->move(...);
 	 */
 	public function moveFieldsRules($field, $path)
 	{
-		// check if we have a subform or repeatable field
-		if ($field['type_name'] === 'subform'
-			|| $field['type_name'] === 'repeatable')
-		{
-			// since we could have a custom field or rule inside
-			$this->moveMultiFieldsRules($field, $path);
-		}
-		else
-		{
-			// check if this is a custom field that should be moved
-			if (CFactory::_('Compiler.Builder.Extension.Custom.Fields')->exists($field['type_name']))
-			{
-				$check = md5($path . 'type' . $field['type_name']);
-				// lets check if we already moved this
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3 &&
-					!isset($this->extentionTrackingFilesMoved[$check]))
-				{
-					// check files exist
-					if (is_file(
-						CFactory::_('Utilities.Paths')->component_path . '/admin/models/fields/'
-						. $field['type_name'] . '.php'
-					))
-					{
-						// copy the custom field
-						File::copy(
-							CFactory::_('Utilities.Paths')->component_path . '/admin/models/fields/'
-							. $field['type_name'] . '.php',
-							$path . '/fields/' . $field['type_name'] . '.php'
-						);
-					}
-					// stop from doing this again.
-					$this->extentionTrackingFilesMoved[$check] = true;
-				}
-			}
-			// check if this has validation that should be moved
-			if (CFactory::_('Registry')->get('validation.linked.' . $field['field']) !== null)
-			{
-				$check = md5(
-					$path . 'rule'
-					. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
-				);
-				// lets check if we already moved this
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3 &&
-					!isset($this->extentionTrackingFilesMoved[$check]))
-				{
-					// check files exist
-					if (is_file(
-						CFactory::_('Utilities.Paths')->component_path . '/admin/models/rules/'
-						. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
-						. '.php'
-					))
-					{
-						// copy the custom field
-						File::copy(
-							CFactory::_('Utilities.Paths')->component_path . '/admin/models/rules/'
-							. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
-							. '.php', $path . '/rules/'
-							. CFactory::_('Registry')->get('validation.linked.' . $field['field'])
-							. '.php'
-						);
-					}
-					// stop from doing this again.
-					$this->extentionTrackingFilesMoved[$check] = true;
-				}
-			}
-		}
+		CFactory::_('Extension.MoveFieldsRules')->move($field, $path);
 	}
 
 	/**
@@ -736,32 +671,19 @@ class Structure extends Get
 	 * @param   string  $path         The path to move to
 	 *
 	 * @return void
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function moveMultiFieldsRules($multi_field, $path)
 	{
-		// get the fields ids
-		$ids = array_map(
-			'trim',
-			explode(
-				',',
-				(string) GetHelper::between(
-					$multi_field['settings']->xml, 'fields="', '"'
-				)
-			)
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
-		if (ArrayHelper::check($ids))
-		{
-			foreach ($ids as $id)
-			{
-				// setup the field
-				$field          = [];
-				$field['field'] = $id;
-				CFactory::_('Field')->set($field);
-				// move field and rules if needed
-				$this->moveFieldsRules($field, $path);
-			}
-		}
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**

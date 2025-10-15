@@ -16,13 +16,13 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CFactory;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\ArrayHelper;
 
 
 /**
@@ -46,10 +46,7 @@ class Get
 	 * @var     array
 	 * @deprecated 3.3 Use CFactory::_('Config')->joomla_versions;
 	 */
-	public $joomlaVersions = array(
-		3    => array('folder_key' => 3, 'xml_version' => 3.9), // only joomla 3
-		3.10 => array('folder_key' => 3, 'xml_version' => 4.0) // legacy joomla 4
-	);
+	public $joomlaVersions = [];
 
 	/**
 	 * The hash placeholder
@@ -1093,9 +1090,9 @@ class Get
 		// set if powers should be added to component (default is true) @deprecated
 		$this->addPower = CFactory::_('Config')->get('add_power', true);
 		// set the current user
-		$this->user = Factory::getUser();
+		$this->user = $this->app->getIdentity();
 		// Get a db connection.
-		$this->db = Factory::getDbo();
+		$this->db = CFactory::_('Joomla.Database');
 		// get global placeholders @deprecated
 		$this->globalPlaceholders = CFactory::_('Component.Placeholder')->get();
 

@@ -12,11 +12,10 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaFour;
 
 
-use Joomla\CMS\Factory;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
+use Joomla\Database\DatabaseInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface;
 
 
@@ -44,23 +43,25 @@ final class History implements HistoryInterface
 	protected Config $config;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
-	 */
-	protected $db;
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
+	 **/
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor
 	 *
-	 * @param Config|null   $config         The compiler config object.
+	 * @param Config              $config   The compiler config object.
+	 * @param DatabaseInterface   $db       The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null)
+	public function __construct(Config $config, DatabaseInterface $db)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->db = Factory::getDbo();
+		$this->config = $config;
+		$this->db = $db;
 	}
 
 	/**

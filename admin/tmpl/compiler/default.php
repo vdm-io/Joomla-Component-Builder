@@ -27,12 +27,12 @@ use Joomla\CMS\Session\Session;
 // No direct access to this file
 defined('_JEXEC') or die;
 
-$this->app->input->set('hidemainmenu', false);
+$this->app->getInput()->set('hidemainmenu', false);
 $selectNotice = '<h3>' . Text::_('COM_COMPONENTBUILDER_HI') . ' ' . $this->user->name . '</h3>';
 $selectNotice .= '<p>' . Text::_('COM_COMPONENTBUILDER_PLEASE_SELECT_A_COMPONENT_THAT_YOU_WOULD_LIKE_TO_COMPILE') . '</p>';
 
 // set the noticeboard options
-$noticeboardOptions = array('vdm', 'pro');
+$noticeboardOptions = ['vdm', 'pro'];
 
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			<div class="col-md-8 p-md-3">
 				<div id="advance-details"><?php echo $this->form->renderFieldset('advanced'); ?></div>
 				<div id="component-details"><?php echo $selectNotice; ?></div>
-				<?php echo LayoutHelper::render('jcbnoticeboard', null); ?>
+				<?php echo LayoutHelper::render('jcbnoticeboard', ['dankie' => $this->dankie]); ?>
 			</div>
 		</div>
 		<div id="get-compiler-animations" style="display:none;" class="row p-md-3">
@@ -185,7 +185,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					<div style="text-align: center;"><?php echo ComponentbuilderHelper::getDynamicContent('builder-gif', $this->builder_gif_size); ?></div>
 				</div>
 				<div id="compiler-notice" class="col-md-8 p-md-3" style="display:none;">
-					<?php echo LayoutHelper::render('jcbnoticeboard',  ['id' => 'mastodon-feed-2', 'button_id' => 'refresh-feed-2', 'posts' => 7]); ?>
+					<?php echo LayoutHelper::render('jcbnoticeboard',
+						['id' => 'mastodon-feed-2', 'button_id' => 'refresh-feed-2', 'posts' => 7, 'dankie' => $this->dankie]); ?>
 				</div>
 			</div>
 		</div>
@@ -194,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	</form>
 </div>
 <script type="text/javascript">
-// token 
+// token
 var token = '<?php echo Session::getFormToken(); ?>';
 var all_is_good = '<?php echo Text::_('COM_COMPONENTBUILDER_ALL_IS_GOOD_THERE_IS_NO_NOTICE_AT_THIS_TIME'); ?>';
 document.addEventListener('DOMContentLoaded', function () {

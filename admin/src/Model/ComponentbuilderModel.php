@@ -605,36 +605,60 @@ class ComponentbuilderModel extends ListModel
 	 * fetches the README.txt file located in the administrator component directory, parses it using
 	 * the `marked` JavaScript library, and inserts the HTML into the `readme-md` div.
 	 *
+	 * Automatically uses WebAssetManager if available (Joomla 4+), and falls back to legacy
+	 * `$doc->addScriptDeclaration()` for Joomla 3.
+	 *
 	 * @return string  HTML markup including a container for the README content and a loading message.
 	 * @since 3.9.0
 	 */
-	public function getReadme()
+	public function getReadme(): string
 	{
-		// get readme text path
-		$call_url = Uri::root() . 'administrator/components/com_componentbuilder/README.txt';
+		$app = $this->app ?? Factory::getApplication();
 
-		/** \Joomla\CMS\WebAsset\WebAssetManager $wa */
-		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+		$callUrl = Uri::root()
+			. 'administrator/components/com_componentbuilder/README.txt';
 
-		$wa->addInlineScript('
-		document.addEventListener("DOMContentLoaded", function () {
-			fetch("'. $call_url . '")
-			.then(response => {
-				if (!response.ok) {
-				    throw new Error("Network response was not ok");
-				}
-				return response.text();
-			})
-			.then(readme => {
-				document.getElementById("readme-md").innerHTML = marked.parse(readme);
-			})
-			.catch(error => {
-				console.error("There has been a problem with your fetch operation:", error);
-				document.getElementById("readme-md").innerHTML = "'.Text::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATER').'.";
-			});
-		});');
+		$errorMessage = Text::_('COM_COMPONENTBUILDER_PLEASE_CHECK_AGAIN_LATER');
 
-		return '<div id="readme-md"><small>'.Text::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING').'.<span class="loading-dots">.</span></small></div>';
+		/** @var \Joomla\CMS\Document\Document $document */
+		$document = $app->getDocument();
+
+		// JavaScript to fetch and render README using `marked`
+		$script = <<<JS
+document.addEventListener("DOMContentLoaded", function () {
+	fetch("{$callUrl}")
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			return response.text();
+		})
+		.then(readme => {
+			document.getElementById("readme-md").innerHTML = marked.parse(readme);
+		})
+		.catch(error => {
+			console.error("There has been a problem with your fetch operation:", error);
+			document.getElementById("readme-md").innerHTML = "{$errorMessage}";
+		});
+});
+JS;
+
+		// Use WebAssetManager if available (Joomla 4+), otherwise fallback
+		if (method_exists($document, 'getWebAssetManager'))
+		{
+			/** @var \Joomla\CMS\WebAsset\WebAssetManager $wa */
+			$wa = $document->getWebAssetManager();
+			$wa->addInlineScript($script);
+		}
+		else
+		{
+			$document->addScriptDeclaration($script);
+		}
+
+		// Return the README container markup
+		return '<div id="readme-md"><small>'
+			. Text::_('COM_COMPONENTBUILDER_THE_README_IS_LOADING')
+			. '.<span class="loading-dots">.</span></small></div>';
 	}
 
 	/**

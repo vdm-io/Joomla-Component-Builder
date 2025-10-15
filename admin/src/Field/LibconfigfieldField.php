@@ -16,6 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -43,9 +44,9 @@ class LibconfigfieldField extends ListField
 	protected function getOptions()
 	{
 		// load the db object
-		$db = Factory::getDBO();		
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		// get the input from url
-		$jinput = Factory::getApplication()->input;
+		$jinput = Factory::getApplication()->getInput();
 		// get the id
 		$ID = $jinput->getInt('id', 0);
 		// rest the fields ids
@@ -83,7 +84,7 @@ class LibconfigfieldField extends ListField
 			$query->order('a.name ASC');
 			$db->setQuery((string)$query);
 			$items = $db->loadObjectList();
-			$options = array();
+			$options = [];
 			if ($items)
 			{
 				$options[] = Html::_('select.option', '', 'Select an option');
@@ -94,6 +95,6 @@ class LibconfigfieldField extends ListField
 				return $options;
 			}
 		}
-		return array(Html::_('select.option', '', 'No config fields linked'));
+		return [Html::_('select.option', '', 'No config fields linked')];
 	}
 }

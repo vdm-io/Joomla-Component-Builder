@@ -17,6 +17,7 @@ use VDM\Joomla\Interfaces\Data\InsertInterface as Insert;
 use VDM\Joomla\Interfaces\Data\UpdateInterface as Update;
 use VDM\Joomla\Interfaces\Data\DeleteInterface as Delete;
 use VDM\Joomla\Interfaces\Database\LoadInterface as Database;
+use VDM\Joomla\Data\Guid;
 use VDM\Joomla\Interfaces\Data\ItemsInterface;
 
 
@@ -27,6 +28,13 @@ use VDM\Joomla\Interfaces\Data\ItemsInterface;
  */
 final class Items implements ItemsInterface
 {
+	/**
+	 * The Globally Unique Identifier.
+	 *
+	 * @since 5.1.2
+	 */
+	use Guid;
+
 	/**
 	 * The LoadInterface Class.
 	 *
@@ -122,7 +130,7 @@ final class Items implements ItemsInterface
 	 * @param array     $values    The ids of the items
 	 * @param string    $key       The key of the values
 	 *
-	 * @return array|null The item object or null
+	 * @return array|null The array of item objects or null
 	 * @since 3.2.2
 	 */
 	public function get(array $values, string $key = 'guid'): ?array
@@ -246,7 +254,16 @@ final class Items implements ItemsInterface
 		$values = $this->extractValues($items, $key);
 		if ($values === null)
 		{
-			return null;
+			$sets = [];
+			$insert = [];
+			foreach ($items as $item)
+			{
+				$row = is_array($item) ? $item : (array) $item;
+				$insert[] = $this->normalizeGuid($row);
+			}
+			$sets['insert'] = $insert;
+
+			return $sets;
 		}
 
 		$sets = [
@@ -268,7 +285,13 @@ final class Items implements ItemsInterface
 		}
 		else
 		{
-			$sets['insert'] = $items;
+			$insert = [];
+			foreach ($items as $item)
+			{
+				$row = is_array($item) ? $item : (array) $item;
+				$insert[] = $this->normalizeGuid($row);
+			}
+			$sets['insert'] = $insert;
 		}
 
 		// If either set is empty, remove it from the result.
@@ -331,12 +354,55 @@ final class Items implements ItemsInterface
 				$inSet = in_array($value, $set);
 				if (($inSet && !$inverse) || (!$inSet && $inverse))
 				{
-					$result[] = is_array($item) ? $item : (array) $item; // convert all to arrays
+					$row = is_array($item) ? $item : (array) $item;
+					if ($inverse)
+					{
+						$row = $this->normalizeGuid($row);
+					}
+					$result[] = $row;
 				}
 			}
 		}
 
 		return empty($result) ? null : $result;
+	}
+
+	/**
+	 * Normalize the row item
+	 *
+	 * @param array  $item   Items array
+	 *
+	 * @return array
+	 * @since  5.1.2
+	 */
+	private function normalizeGuid(array $item): array
+	{
+		if (isset($item['guid']) && $item['guid'] === '')
+		{
+			$item['guid'] = $this->getGuid('guid');
+		}
+		return $item;
+	}
+
+	/**
+	 * Checks if the GUID value is unique and does not already exist.
+	 *
+	 * @param string $guid The GUID value to check.
+	 * @param string $key  The key to check and modify values.
+	 *
+	 * @return string The unique GUID value.
+	 *
+	 * @since 5.0.2
+	 */
+	protected function checkGuid(string $guid, string $key): string
+	{
+		// Check that the GUID does not already exist
+		if ($this->table($this->getTable())->values([$guid], $key))
+		{
+			return $this->getGuid($key);
+		}
+
+		return $guid;
 	}
 }
 

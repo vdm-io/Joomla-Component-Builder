@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
@@ -129,11 +129,12 @@ class Customcode implements CustomcodeInterface
 	protected External $external;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
@@ -144,12 +145,12 @@ class Customcode implements CustomcodeInterface
 	 * @param Power              $power           The compiler power extractor object.
 	 * @param JoomlaPower        $joomla          The compiler joomla power extractor object.
 	 * @param External           $external        The compiler external custom code object.
-	 * @param \JDatabaseDriver   $db              The Database Driver object.
+	 * @param DatabaseInterface  $db              The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
-		Extractor $extractor, Power $power, JoomlaPower $joomla, External $external)
+		Extractor $extractor, Power $power, JoomlaPower $joomla, External $external, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->placeholder = $placeholder;
@@ -157,7 +158,7 @@ class Customcode implements CustomcodeInterface
 		$this->power = $power;
 		$this->joomla = $joomla;
 		$this->external = $external;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**
@@ -657,6 +658,5 @@ class Customcode implements CustomcodeInterface
 
 		return false;
 	}
-
 }
 

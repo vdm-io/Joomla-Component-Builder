@@ -106,18 +106,18 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 
 <script type="text/javascript">
 
-// #jform_extension_type listeners for extension_type_vvvvwaj function
+// #jform_extension_type listeners for extension_type_vvvvwaq function
 jQuery('#jform_extension_type').on('keyup',function()
 {
-	var extension_type_vvvvwaj = jQuery("#jform_extension_type").val();
-	vvvvwaj(extension_type_vvvvwaj);
+	var extension_type_vvvvwaq = jQuery("#jform_extension_type").val();
+	vvvvwaq(extension_type_vvvvwaq);
 
 });
 jQuery('#adminForm').on('change', '#jform_extension_type',function (e)
 {
 	e.preventDefault();
-	var extension_type_vvvvwaj = jQuery("#jform_extension_type").val();
-	vvvvwaj(extension_type_vvvvwaj);
+	var extension_type_vvvvwaq = jQuery("#jform_extension_type").val();
+	vvvvwaq(extension_type_vvvvwaq);
 
 });
 

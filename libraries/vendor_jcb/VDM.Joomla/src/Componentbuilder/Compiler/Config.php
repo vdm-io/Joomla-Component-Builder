@@ -383,7 +383,7 @@ class Config extends ComponentConfig
 	 */
 	protected function getJoomlaversion(): int
 	{
-		return $this->input->post->get('joomla_version', 3, 'INT');
+		return $this->input->post->get('joomla_version', 5, 'INT');
 	}
 
 	/**
@@ -397,7 +397,8 @@ class Config extends ComponentConfig
 		return [
 			3 => ['folder_key' => 3, 'xml_version' => '3.10'],
 			4 => ['folder_key' => 4, 'xml_version' => '4.0'],
-			5 => ['folder_key' => 4, 'xml_version' => '5.0'] // for now we build 4 and 5 from same templates ;)
+			5 => ['folder_key' => 4, 'xml_version' => '5.0'], // for now we build 4 and 5 from same templates ;),
+			6 => ['folder_key' => 4, 'xml_version' => '6.0'] // for now we build 4 and 6 from same templates ;)
 		];
 	}
 

@@ -93,9 +93,10 @@ class ###Views###Model extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = $this->app;
+		$input = $this->app->getInput();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}###POPULATESTATE###

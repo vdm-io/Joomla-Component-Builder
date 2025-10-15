@@ -21,7 +21,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 
 // No direct access to this file
-\defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 /**
  * Form Rule (Sourcemapchecker) class for the Joomla Platform.

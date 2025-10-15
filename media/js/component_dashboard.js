@@ -17,56 +17,135 @@ jQuery(document).ready(function()
 	getEditCustomCodeButtons();
 });
 
-function getEditCustomCodeButtons_server(id) {
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
-	let requestParams = '';
-	if (token.length > 0 && id > 0) {
-		requestParams = token+'=1&id='+id+'&return_here='+return_here;
-	}
-	// Construct URL with parameters for GET request
-	const urlWithParams = getUrl + '&' + requestParams;
+/**
+ * Retrieve the Edit Custom Code buttons from the server.
+ *
+ * @param  {number} id  The record ID to load custom code buttons for.
+ *
+ * @return {Promise<object|null>}  Returns JSON object of buttons or null on failure.
+ * @since  3.1.3
+ */
+async function getEditCustomCodeButtons_server(id) {
+	try {
+		// --- Validation ---
+		if (typeof token !== 'string' || !token.trim()) {
+			console.error('[getEditCustomCodeButtons_server] Missing or invalid CSRF token.');
+			return null;
+		}
+		if (typeof id !== 'number' || id <= 0) {
+			console.error('[getEditCustomCodeButtons_server] Invalid ID provided:', id);
+			return null;
+		}
+		if (typeof return_here !== 'string' || !return_here.trim()) {
+			console.warn('[getEditCustomCodeButtons_server] "return_here" not set; continuing without it.');
+		}
 
-	// Using the Fetch API for the GET request
-	return fetch(urlWithParams, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
+		// --- Build URL safely ---
+		const baseUrl = 'index.php';
+		const params = new URLSearchParams({
+			option: 'com_componentbuilder',
+			task: 'ajax.getEditCustomCodeButtons',
+			format: 'json',
+			raw: 'true',
+			[token]: '1',
+			id: id,
+			return_here: return_here || ''
+		});
+		if (typeof vastDevMod === 'string' && vastDevMod.length > 0) {
+			params.append('vdm', vastDevMod);
 		}
-	}).then(response => {
+
+		const urlWithParams = JRouter(`${baseUrl}?${params.toString()}`);
+
+		// --- Execute request ---
+		const response = await fetch(urlWithParams, {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			cache: 'no-store',
+			credentials: 'same-origin'
+		});
+
+		// --- Handle network errors ---
 		if (!response.ok) {
-			throw new Error('Network response was not ok');
+			console.error(`[getEditCustomCodeButtons_server] HTTP ${response.status}: ${response.statusText}`);
+			return null;
 		}
-		return response.json();
-	});
+
+		// --- Parse JSON result ---
+		const data = await response.json();
+		return data ?? null;
+
+	} catch (error) {
+		console.error('[getEditCustomCodeButtons_server] Fetch failed:', error);
+		return null;
+	}
 }
 
-function getEditCustomCodeButtons() {
-	// Get the id using pure JavaScript
-	const id = document.querySelector("#jform_id").value;
-	getEditCustomCodeButtons_server(id).then(function(result) {
-		if (typeof result === 'object') {
-			Object.entries(result).forEach(([field, buttons]) => {
-				// Creating the div element for buttons
-				const div = document.createElement('div');
-				div.className = 'control-group';
-				div.innerHTML = '<div class="control-label"><label>Add/Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div>';
+/**
+ * Load and inject Edit Custom Code buttons into the DOM.
+ *
+ * @return {Promise<void>}
+ * @since  3.1.3
+ */
+async function getEditCustomCodeButtons() {
+	try {
+		// --- Get record ID from the form ---
+		const idField = document.querySelector('#jform_id');
+		if (!idField) {
+			console.error('[getEditCustomCodeButtons] #jform_id not found.');
+			return;
+		}
 
-				// Insert the div before .control-wrapper-{field}
-				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				if (insertBeforeElement) {
-					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
-				}
+		const idValue = parseInt(idField.value, 10);
+		if (isNaN(idValue) || idValue <= 0) {
+			console.warn('[getEditCustomCodeButtons] Invalid or empty ID; skipping button load.');
+			return;
+		}
 
-				// Adding buttons to the div
-				Object.entries(buttons).forEach(([name, button]) => {
-					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					if (controlsDiv) {
-						controlsDiv.innerHTML += button;
+		// --- Request data from server ---
+		const result = await getEditCustomCodeButtons_server(idValue);
+		if (!result || typeof result !== 'object') {
+			console.warn('[getEditCustomCodeButtons] No result returned or invalid format.');
+			return;
+		}
+
+		// --- Inject returned button groups ---
+		Object.entries(result).forEach(([field, buttons]) => {
+			// Create the container div
+			const div = document.createElement('div');
+			div.className = 'control-group';
+			div.innerHTML = `
+<div class="control-label">
+	<label>Add/Edit Customcode</label>
+</div>
+<div class="controls control-customcode-buttons-${field}"></div>
+			`;
+
+			// Find where to insert (before .control-wrapper-{field})
+			const insertBeforeElement = document.querySelector(`.control-wrapper-${field}`);
+			if (insertBeforeElement && insertBeforeElement.parentNode) {
+				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+			}
+
+			// Append buttons to the new container
+			const controlsDiv = div.querySelector(`.control-customcode-buttons-${field}`);
+			if (controlsDiv && typeof buttons === 'object') {
+				Object.entries(buttons).forEach(([name, buttonHtml]) => {
+					if (typeof buttonHtml === 'string') {
+						const wrapper = document.createElement('div');
+						wrapper.innerHTML = buttonHtml.trim();
+						const buttonNode = wrapper.firstElementChild;
+						if (buttonNode) {
+							controlsDiv.appendChild(buttonNode);
+						}
 					}
 				});
-			});
-		}
-	}).catch(error => {
-		console.error('Error:', error);
-	});
+			}
+		});
+	} catch (error) {
+		console.error('[getEditCustomCodeButtons] Error rendering buttons:', error);
+	}
 }

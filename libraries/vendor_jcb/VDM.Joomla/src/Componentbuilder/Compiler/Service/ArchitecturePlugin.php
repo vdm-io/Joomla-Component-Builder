@@ -15,14 +15,17 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Plugin\ExtensionInterface as Extension;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Plugin\Extension as J6Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Plugin\Extension as J5Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Plugin\Extension as J4Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Plugin\Extension as J3Extension;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Plugin\ProviderInterface as Provider;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Plugin\Provider as J6Provider;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Plugin\Provider as J5Provider;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Plugin\Provider as J4Provider;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Plugin\Provider as J3Provider;
 use VDM\Joomla\Componentbuilder\Interfaces\Architecture\Plugin\MainXMLInterface as MainXML;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Plugin\MainXML as J6MainXML;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Plugin\MainXML as J5MainXML;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Plugin\MainXML as J4MainXML;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Plugin\MainXML as J3MainXML;
@@ -56,6 +59,9 @@ class ArchitecturePlugin implements ServiceProviderInterface
 		$container->alias(Extension::class, 'Architecture.Plugin.Extension')
 			->share('Architecture.Plugin.Extension', [$this, 'getExtension'], true);
 
+		$container->alias(J6Extension::class, 'Architecture.Plugin.J6.Extension')
+			->share('Architecture.Plugin.J6.Extension', [$this, 'getJ6Extension'], true);
+
 		$container->alias(J5Extension::class, 'Architecture.Plugin.J5.Extension')
 			->share('Architecture.Plugin.J5.Extension', [$this, 'getJ5Extension'], true);
 
@@ -68,6 +74,9 @@ class ArchitecturePlugin implements ServiceProviderInterface
 		$container->alias(Provider::class, 'Architecture.Plugin.Provider')
 			->share('Architecture.Plugin.Provider', [$this, 'getProvider'], true);
 
+		$container->alias(J6Provider::class, 'Architecture.Plugin.J6.Provider')
+			->share('Architecture.Plugin.J6.Provider', [$this, 'getJ6Provider'], true);
+
 		$container->alias(J5Provider::class, 'Architecture.Plugin.J5.Provider')
 			->share('Architecture.Plugin.J5.Provider', [$this, 'getJ5Provider'], true);
 
@@ -79,6 +88,9 @@ class ArchitecturePlugin implements ServiceProviderInterface
 
 		$container->alias(MainXML::class, 'Architecture.Plugin.MainXML')
 			->share('Architecture.Plugin.MainXML', [$this, 'getMainXML'], true);
+
+		$container->alias(J6MainXML::class, 'Architecture.Plugin.J6.MainXML')
+			->share('Architecture.Plugin.J6.MainXML', [$this, 'getJ6MainXML'], true);
 
 		$container->alias(J5MainXML::class, 'Architecture.Plugin.J5.MainXML')
 			->share('Architecture.Plugin.J5.MainXML', [$this, 'getJ5MainXML'], true);
@@ -106,6 +118,23 @@ class ArchitecturePlugin implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.Plugin.J' . $this->targetVersion . '.Extension');
+	}
+
+	/**
+	 * Get The Extension Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6Extension
+	 * @since   5.1.2
+	 */
+	public function getJ6Extension(Container $container): J6Extension
+	{
+		return new J6Extension(
+			$container->get('Placeholder'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Power.Parser')
+		);
 	}
 
 	/**
@@ -181,6 +210,22 @@ class ArchitecturePlugin implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
+	 * @return  J6Provider
+	 * @since   5.1.2
+	 */
+	public function getJ6Provider(Container $container): J6Provider
+	{
+		return new J6Provider(
+			$container->get('Placeholder'),
+			$container->get('Compiler.Builder.Content.One')
+		);
+	}
+
+	/**
+	 * Get The Provider Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
 	 * @return  J5Provider
 	 * @since 5.0.2
 	 */
@@ -240,6 +285,33 @@ class ArchitecturePlugin implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.Plugin.J' . $this->targetVersion . '.MainXML');
+	}
+
+	/**
+	 * Get The MainXML Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6MainXML
+	 * @since   5.1.2
+	 */
+	public function getJ6MainXML(Container $container): J6MainXML
+	{
+		return new J6MainXML(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Language.Set'),
+			$container->get('Language.Purge'),
+			$container->get('Language.Translation'),
+			$container->get('Language.Multilingual'),
+			$container->get('Event'),
+			$container->get('Compiler.Creator.Fieldset.Extension'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Languages'),
+			$container->get('Compiler.Builder.Multilingual'),
+			$container->get('Utilities.Counter'),
+			$container->get('Utilities.File')
+		);
 	}
 
 	/**

@@ -12,13 +12,14 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface;
 
 
 /**
  * Compiler Power Extractor
+ * 
  * @since 3.2.0
  */
 class Extractor implements ExtractorInterface
@@ -64,20 +65,21 @@ class Extractor implements ExtractorInterface
 	protected array $powers = [];
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct()
+	public function __construct(DatabaseInterface $db)
 	{
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

@@ -13,6 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
@@ -131,11 +132,12 @@ final class JoomlaPower implements PowerInterface
 	protected Superpower $superpower;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.1
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Database object to query local DB
@@ -152,19 +154,21 @@ final class JoomlaPower implements PowerInterface
 	 * @param Customcode         $customcode   The compiler customcode object.
 	 * @param Gui                $gui          The compiler customcode gui object.
 	 * @param Superpower         $superpower   The JCB superpower object.
+	 * @param DatabaseInterface  $db           The Joomla Database Class.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.1
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
-		Customcode $customcode, Gui $gui, Superpower $superpower)
+		Customcode $customcode, Gui $gui, Superpower $superpower, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->placeholder = $placeholder;
 		$this->customcode = $customcode;
 		$this->gui = $gui;
 		$this->superpower = $superpower;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
+
 		$this->app = Factory::getApplication();
 	}
 

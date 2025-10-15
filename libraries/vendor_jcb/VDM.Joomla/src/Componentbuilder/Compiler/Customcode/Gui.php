@@ -15,15 +15,15 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
-use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\GetHelper;
-use VDM\Joomla\Utilities\FileHelper;
-use VDM\Joomla\Utilities\String\FieldHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
 use VDM\Joomla\Componentbuilder\Power\Parser;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
+use VDM\Joomla\Utilities\String\FieldHelper;
+use VDM\Joomla\Utilities\FileHelper;
+use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\GuiInterface;
 
 
@@ -59,14 +59,15 @@ class Gui implements GuiInterface
 	protected Parser $parser;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
-	 * Database object to query local DB
+	 * The application layer
 	 *
 	 * @since 3.2.0
 	 **/
@@ -75,19 +76,21 @@ class Gui implements GuiInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null             $config  The compiler config object.
-	 * @param Reverse|null            $reverse The compiler placeholder reverse object.
-	 * @param Parser|null             $parser  The powers parser object.
+	 * @param Config              $config  The compiler config object.
+	 * @param Reverse             $reverse The compiler placeholder reverse object.
+	 * @param Parser              $parser  The powers parser object.
+	 * @param DatabaseInterface   $db      The Joomla Database Class.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Reverse $reverse = null, ?Parser $parser = null)
+	public function __construct(Config $config, Reverse $reverse, Parser $parser, DatabaseInterface $db)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->reverse = $reverse ?: Compiler::_('Placeholder.Reverse');
-		$this->parser = $parser ?: Compiler::_('Power.Parser');
-		$this->db = Factory::getDbo();
+		$this->config = $config;
+		$this->reverse = $reverse;
+		$this->parser = $parser;
+		$this->db = $db;
+
 		$this->app = Factory::getApplication();
 	}
 
@@ -256,6 +259,5 @@ class Gui implements GuiInterface
 		// that already has any customcode placeholders
 		return strpos($code, '$$$$') === false;
 	}
-
 }
 

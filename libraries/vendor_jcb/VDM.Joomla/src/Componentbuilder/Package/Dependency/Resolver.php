@@ -17,6 +17,8 @@ use VDM\Joomla\Componentbuilder\Utilities\Normalize;
 use VDM\Joomla\Interfaces\Registryinterface as Tracker;
 use VDM\Joomla\Componentbuilder\Power\Interfaces\TableInterface as Table;
 use VDM\Joomla\Interfaces\Database\LoadInterface as Load;
+use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
+use VDM\Joomla\Data\Guid;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -30,6 +32,13 @@ use VDM\Joomla\Interfaces\Remote\Dependency\ResolverInterface;
  */
 final class Resolver implements ResolverInterface
 {
+	/**
+	 * The Globally Unique Identifier.
+	 *
+	 * @since 5.1.2
+	 */
+	use Guid;
+
 	/**
 	 * The Config Class.
 	 *
@@ -69,6 +78,14 @@ final class Resolver implements ResolverInterface
 	 * @since 5.1.1
 	 */
 	protected Load $load;
+
+	/**
+	 * The Items Class.
+	 *
+	 * @var   Items
+	 * @since 5.1.2
+	 */
+	protected Items $items;
 
 	/**
 	 * The parents fields.
@@ -143,6 +160,14 @@ final class Resolver implements ResolverInterface
 	protected array $alias_map = [];
 
 	/**
+	 * The Target Table name.
+	 *
+	 * @var   string
+	 * @since 5.1.2
+	 */
+	protected string $table_name;
+
+	/**
 	 * The current item dependencies map.
 	 *
 	 * @var   array
@@ -158,19 +183,36 @@ final class Resolver implements ResolverInterface
 	 * @param Tracker   $tracker   The Tracker Class.
 	 * @param Table     $table     The Table Class.
 	 * @param Load      $load      The Load Class.
+	 * @param Items     $items     The Items Class.
 	 *
 	 * @since 5.1.1
 	 */
 	public function __construct(Config $config, Normalize $normalize,
-		Tracker $tracker, Table $table, Load $load)
+		Tracker $tracker, Table $table, Load $load, Items $items)
 	{
 		$this->config = $config;
 		$this->normalize = $normalize;
 		$this->tracker = $tracker;
 		$this->table = $table;
 		$this->load = $load;
+		$this->items = $items;
 
 		$this->init();
+	}
+
+	/**
+	 * Set the current active table
+	 *
+	 * @param string $table The table that should be active
+	 *
+	 * @return self
+	 * @since  5.1.2
+	 */
+	public function table(string $table): self
+	{
+		$this->table_name = $table;
+
+		return $this;
 	}
 
 	/**
@@ -346,10 +388,10 @@ final class Resolver implements ResolverInterface
 
 			$this->record(
 				'parent',
-				'guid',
+				'field',
 				$field,
 				'#__componentbuilder_field',
-				'field'
+				'guid'
 			);
 		}
 	}
@@ -577,7 +619,7 @@ final class Resolver implements ResolverInterface
 		$templates = [];
 
 		$temp1 = GetHelper::allBetween($value, "\$this->load" . "Template('", "')");
-		$temp2 = GetHelper::allBetween($value, '$this->load" . "Template("', '")');
+		$temp2 = GetHelper::allBetween($value, '$this->load' . 'Template("', '")');
 
 		if (!empty($temp1))
 		{
@@ -598,6 +640,7 @@ final class Resolver implements ResolverInterface
 				$guids[$guid] = $guid;
 			}
 		}
+
 		return array_values($guids);
 	}
 
@@ -614,10 +657,10 @@ final class Resolver implements ResolverInterface
 		$layouts = [];
 
 		$patterns = [
-			["Layout" . "Helper::render('", "',"],
-			['Layout' . 'Helper::render("', '",'],
-			["Joomla__" . "_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('", "',"],
-			['Joomla__' . '_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render("', '",'],
+			["Layout" . "Helper::render('", "'"],
+			['Layout' . 'Helper::render("', '"'],
+			["Joomla__" . "_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('", "'"],
+			['Joomla__' . '_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render("', '"'],
 		];
 
 		foreach ($patterns as [$start, $end])
@@ -789,6 +832,25 @@ final class Resolver implements ResolverInterface
 		elseif (is_object($data) && property_exists($data, $segment))
 		{
 			$collected = $this->collectSubformValues($data->{$segment}, $path);
+		}
+
+		// ───────────────────────────────────────────────────────────
+		// DEEP SEEK HANDLING ;)
+		// ───────────────────────────────────────────────────────────
+		else
+		{
+			foreach ($data as $row)
+			{
+				if ((is_array($row) && array_key_exists($segment, $row)) ||
+					(is_object($row) && property_exists($row, $segment)))
+				{
+					$next = is_array($row) ? $row[$segment] : $row->{$segment};
+					$collected = array_merge(
+						$collected,
+						$this->collectSubformValues($next, $path)
+					);
+				}
+			}
 		}
 
 		return $collected;
@@ -1106,12 +1168,22 @@ final class Resolver implements ResolverInterface
 		// now check if key is found
 		foreach(['template', 'layout'] as $table)
 		{
-			$items = $this->load->items(['guid', 'alias'], [$table]);
+			$items = $this->load->items(['id', 'guid', 'alias'], [$table]);
 			if ($items !== null)
 			{
 				$this->alias_map[$table] = [];
 				foreach ($items as $item)
 				{
+					if (empty($item->alias))
+					{
+						continue;
+					}
+
+					if (empty($item->guid) || !$this->validateGuid($item->guid))
+					{
+						$item->guid = $this->setGuid($item->id, $table);
+					}
+
 					// build the key
 					$k_ey = StringHelper::safe($item->alias);
 					$key  = preg_replace("/[^A-Za-z]/", '', (string) $k_ey);
@@ -1123,6 +1195,35 @@ final class Resolver implements ResolverInterface
 				}
 			}
 		}
+	}
+
+	/**
+	 * Set GUID for an item.
+	 *
+	 * @param   int     $id
+	 * @param   string  $table
+	 *
+	 * @return  string  The guid that was set
+	 * @since   5.1.2
+	 */
+	private function setGuid($id, $table): string
+	{
+		$guid = $this->table($table)->getGuid('guid');
+
+		$this->items->table($table)->set([['id' => $id, 'guid' => $guid]], 'id');
+
+		return $guid;
+	}
+
+	/**
+	 * Get the current active table
+	 *
+	 * @return  string
+	 * @since   5.1.2
+	 */
+	private function getTable(): string
+	{
+		return $this->table_name;
 	}
 }
 

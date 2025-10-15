@@ -588,6 +588,11 @@
 					"rename": "update_server",
 					"type": "update_server"
 				},
+				"CHANGELOG.xml": {
+					"path": "c0mp0n3nt/",
+					"rename": "CHANGELOG",
+					"type": "changelog_server"
+				},
 				"viewFile.js": {
 					"path": "c0mp0n3nt/admin/assets/js",
 					"rename": "viewFile",

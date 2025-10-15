@@ -118,7 +118,7 @@ class Get
 			}
 		}
 
-		if (($dependencies = $this->tracker->get('get')) !== null)
+		while (($dependencies = $this->tracker->get('get')) !== null)
 		{
 			$this->tracker->remove('get');
 			foreach ($dependencies as $next_entity => $next_items)
@@ -127,13 +127,13 @@ class Get
 			}
 		}
 
-		if (($files = $this->tracker->get('file.get')) !== null)
+		while (($files = $this->tracker->get('file.get')) !== null)
 		{
 			$this->tracker->remove('file.get');
 			$this->file($files, $repo, $force);
 		}
 
-		if (($folders = $this->tracker->get('folder.get')) !== null)
+		while (($folders = $this->tracker->get('folder.get')) !== null)
 		{
 			$this->tracker->remove('folder.get');
 			$this->folder($folders, $repo, $force);
@@ -160,7 +160,7 @@ class Get
 
 		$this->container->get("{$class}.Remote.Get")->reset($items);
 
-		if (($dependencies = $this->tracker->get('get')) !== null)
+		while (($dependencies = $this->tracker->get('get')) !== null)
 		{
 			$this->tracker->remove('get');
 			foreach ($dependencies as $next_entity => $next_items)
@@ -174,13 +174,13 @@ class Get
 			}
 		}
 
-		if (($files = $this->tracker->get('file.get')) !== null)
+		while (($files = $this->tracker->get('file.get')) !== null)
 		{
 			$this->tracker->remove('file.get');
 			$this->container->get("File.Remote.Get")->reset($files);
 		}
 
-		if (($folders = $this->tracker->get('folder.get')) !== null)
+		while (($folders = $this->tracker->get('folder.get')) !== null)
 		{
 			$this->tracker->remove('folder.get');
 			$this->container->get("Folder.Remote.Get")->reset($folders);

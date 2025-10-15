@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\ComHelperClass\CreateUserInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\ComHelperClass\CreateUser as J6CreateUser;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\ComHelperClass\CreateUser as J5CreateUser;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\ComHelperClass\CreateUser as J4CreateUser;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\ComHelperClass\CreateUser as J3CreateUser;
@@ -48,6 +49,9 @@ class ArchitectureComHelperClass implements ServiceProviderInterface
 		$container->alias(CreateUserInterface::class, 'Architecture.ComHelperClass.CreateUser')
 			->share('Architecture.ComHelperClass.CreateUser', [$this, 'getCreateUser'], true);
 
+		$container->alias(J6CreateUser::class, 'Architecture.ComHelperClass.J6.CreateUser')
+			->share('Architecture.ComHelperClass.J6.CreateUser', [$this, 'getJ6CreateUser'], true);
+
 		$container->alias(J5CreateUser::class, 'Architecture.ComHelperClass.J5.CreateUser')
 			->share('Architecture.ComHelperClass.J5.CreateUser', [$this, 'getJ5CreateUser'], true);
 
@@ -74,6 +78,19 @@ class ArchitectureComHelperClass implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.ComHelperClass.J' . $this->targetVersion . '.CreateUser');
+	}
+
+	/**
+	 * Get The CreateUser Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6CreateUser
+	 * @since   5.1.2
+	 */
+	public function getJ6CreateUser(Container $container): J6CreateUser
+	{
+		return new J6CreateUser();
 	}
 
 	/**

@@ -313,6 +313,11 @@ abstract class Set extends Base implements SetInterface
 		}
 
 		$settings = $this->mergeIndexSettings($repoGuid, $settings);
+		$json_settings = trim(json_encode($settings, JSON_PRETTY_PRINT));
+		if (empty($json_settings))
+		{
+			return;
+		}
 
 		// set the target system
 		$target = $repo->target ?? 'gitea';
@@ -326,14 +331,15 @@ abstract class Set extends Base implements SetInterface
 		);
 
 		try {
+			$area = $this->getArea();
 			$indexPath = $this->getIndexPath();
 			if (!empty($indexPath))
 			{
 				$this->setMainRepoFile(
 					$repo,
 					$indexPath,
-					json_encode($settings, JSON_PRETTY_PRINT),
-					'Update main index file', 'Create main index file'
+					$json_settings,
+					"Update {$area} main index file", "Create {$area} main index file"
 				);
 			}
 			if ($this->hasMainReadme())
@@ -342,7 +348,7 @@ abstract class Set extends Base implements SetInterface
 					$repo,
 					$this->getMainReadmePath(),
 					$this->mainReadme->get($settings),
-					'Update main readme file', 'Create main readme file'
+					"Update {$area} main readme file", "Create {$area} main readme file"
 				);
 			}
 		} catch (\Throwable $e) {
@@ -353,17 +359,32 @@ abstract class Set extends Base implements SetInterface
 	}
 
 	/**
-	 * Validate repository and settings
+	 * Validate repository and settings.
 	 *
-	 * @param mixed $repo
-	 * @param mixed $settings
-	 * 
-	 * @return bool
-	 * @since 3.2.2
+	 * Repo must be an object and not empty.
+	 * Settings must be an object or an array and not empty.
+	 *
+	 * @param  mixed  $repo      The repository value to validate.
+	 * @param  mixed  $settings  The settings value to validate.
+	 *
+	 * @return bool  True if invalid, false if valid.
+	 * @since  3.2.2
 	 */
 	protected function isInvalidIndexRepo($repo, $settings): bool
 	{
-		return empty($repo) || empty($settings);
+		// Validate repo: must be an object and not empty
+		if (!is_object($repo) || empty((array) $repo))
+		{
+			return true;
+		}
+
+		// Validate settings: must be an object or array and not empty
+		if ((!is_object($settings) && !is_array($settings)) || empty((array) $settings))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -377,17 +398,16 @@ abstract class Set extends Base implements SetInterface
 	 */
 	protected function mergeIndexSettings(string $repoGuid, array $settings): array
 	{
-		$current_settings = $this->grep->getRemoteIndex($repoGuid);
-
-		if ($current_settings === null || (array) $current_settings === [])
-		{
-			return $settings;
-		}
-
 		$mergedSettings = [];
-		foreach ($current_settings as $guid => $setting)
+		$current_settings = $this->grep->getRemoteIndex($repoGuid, true);
+		$this->grep->resetEntityIndex();
+
+		if ($current_settings !== null  && (array) $current_settings !== [])
 		{
-			$mergedSettings[$guid] = (array) $setting;
+			foreach ($current_settings as $guid_current => $current_setting)
+			{
+				$mergedSettings[$guid_current] = (array) $current_setting;
+			}
 		}
 
 		foreach ($settings as $guid => $setting)

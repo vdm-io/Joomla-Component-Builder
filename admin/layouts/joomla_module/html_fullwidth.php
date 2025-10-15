@@ -26,6 +26,7 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
+	'default_header',
 	'default',
 	'note_linked_to_notice',
 	'not_required'

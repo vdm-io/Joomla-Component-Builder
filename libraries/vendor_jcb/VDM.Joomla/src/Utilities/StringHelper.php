@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\Filter\InputFilter;
 use Joomla\CMS\Language\LanguageFactoryInterface;
 use Joomla\CMS\Language\LanguageFactory;
+use Joomla\CMS\Language\Language;
 use VDM\Joomla\Utilities\Component\Helper;
 
 
@@ -250,12 +251,28 @@ abstract class StringHelper
 			self::$langTag = Helper::getParams()->get('language', 'en-GB');
 		}
 
-		/** @var $langFactory LanguageFactory **/
-		$langFactory = Factory::getContainer()->get(LanguageFactoryInterface::class);
-		$lang = $langFactory->createLanguage(self::$langTag);
-
 		// Transliterate on the language requested
-		return $lang->transliterate($string);
+		$lang = null;
+		if (method_exists(Factory::class, 'getContainer') && Factory::getContainer()->has(LanguageFactoryInterface::class))
+		{
+			/** @var $langFactory LanguageFactory **/
+			$langFactory = Factory::getContainer()->get(LanguageFactoryInterface::class);
+
+			/** @var $lang Language **/
+			$lang = $langFactory->createLanguage(self::$langTag);
+		}
+		elseif (method_exists(Language::class, 'getInstance'))
+		{
+			/** @var $lang Language **/
+			$lang = Language::getInstance(self::$langTag);
+		}
+
+		if ($lang !== null)
+		{
+			return $lang->transliterate($string);
+		}
+
+		return $string;
 	}
 
 	/**
@@ -452,6 +469,5 @@ abstract class StringHelper
 
 		return implode($key);
 	}
-
 }
 

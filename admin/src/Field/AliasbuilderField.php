@@ -18,6 +18,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -45,9 +46,9 @@ class AliasbuilderField extends ListField
 	protected function getOptions()
 	{
 		// load the db object
-		$db = Factory::getDBO();		
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		// get the input from url
-		$jinput = Factory::getApplication()->input;
+		$jinput = Factory::getApplication()->getInput();
 		// get the id
 		$adminView = $jinput->getInt('id', 0);
 		// rest the fields ids

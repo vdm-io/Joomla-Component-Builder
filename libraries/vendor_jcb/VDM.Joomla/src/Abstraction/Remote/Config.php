@@ -252,6 +252,17 @@ abstract class Config implements ConfigInterface
 	}
 
 	/**
+	 * Get the current active table list view code name
+	 *
+	 * @return  string|null
+	 * @since   5.1.2
+	 */
+	public function getListViewCodeName(): ?string
+	{
+		return $this->core->listViewCodeName($this->getTable());
+	}
+
+	/**
 	 * Set the current active area
 	 *
 	 * @param string $area The area that should be active

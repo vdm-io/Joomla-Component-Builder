@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Dynamicget;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\GetAsLookup;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteFields;
@@ -64,11 +64,12 @@ class Selection
 	protected SiteFields $sitefields;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
@@ -76,15 +77,16 @@ class Selection
 	 * @param Config                 $config        The Config Class.
 	 * @param GetAsLookup            $getaslookup   The GetAsLookup Class.
 	 * @param SiteFields             $sitefields    The SiteFields Class.
+	 * @param DatabaseInterface      $db            The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config, GetAsLookup $getaslookup, SiteFields $sitefields)
+	public function __construct(Config $config, GetAsLookup $getaslookup, SiteFields $sitefields, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->getaslookup = $getaslookup;
 		$this->sitefields = $sitefields;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

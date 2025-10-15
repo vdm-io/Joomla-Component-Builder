@@ -20,6 +20,7 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -47,9 +48,9 @@ class ComponentadminviewsField extends ListField
 	protected function getOptions()
 	{
 		// load the db opbject
-		$db = Factory::getDBO();		
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		// get the input from url
-		$jinput = Factory::getApplication()->input;
+		$jinput = Factory::getApplication()->getInput();
 		// get the id
 		$ID = $jinput->getInt('id', 0);
 

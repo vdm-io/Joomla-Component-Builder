@@ -234,7 +234,9 @@ class Component_files_foldersModel extends AdminModel
 			return false;
 		}
 
-		$jinput = Factory::getApplication()->input;
+		$app = Factory::getApplication();
+
+		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))

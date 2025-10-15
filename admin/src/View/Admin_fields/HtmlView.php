@@ -26,7 +26,9 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\Input\Input;
+use Joomla\Registry\Registry;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -40,12 +42,12 @@ use Joomla\Input\Input;
 class HtmlView extends BaseHtmlView
 {
 	/**
-	 * The item from the model
+	 * The app class
 	 *
-	 * @var    mixed
-	 * @since  3.10.11
+	 * @var    CMSApplicationInterface
+	 * @since  5.2.1
 	 */
-	public mixed $item;
+	public CMSApplicationInterface $app;
 
 	/**
 	 * The input class
@@ -54,6 +56,22 @@ class HtmlView extends BaseHtmlView
 	 * @since  5.2.1
 	 */
 	public Input $input;
+
+	/**
+	 * The params registry
+	 *
+	 * @var    Registry
+	 * @since  5.2.1
+	 */
+	public Registry $params;
+
+	/**
+	 * The item from the model
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $item;
 
 	/**
 	 * The state object
@@ -146,19 +164,25 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
+		// get application
+		$this->app ??= Factory::getApplication();
+		// get input
+		$this->input ??= method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
 		// set params
-		$this->params = ComponentHelper::getParams('com_componentbuilder');
+		$this->params ??= method_exists($this->app, 'getParams')
+			? $this->app->getParams()
+			: ComponentHelper::getParams('com_componentbuilder');
 		$this->useCoreUI = true;
-		// Assign the variables
-		$this->form ??= $this->get('Form');
-		$this->item = $this->get('Item');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
-		$this->state = $this->get('State');
+		// Load module values
+		$model = $this->getModel();
+		$this->form ??= $model->getForm();
+		$this->item = $model->getItem();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
+		$this->state = $model->getState();
 		// get action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('admin_fields', $this->item);
-		// get input
-		$this->input ??= Factory::getApplication()->input;
+		// get return referral details
 		$this->ref = $this->input->get('ref', 0, 'word');
 		$this->refid = $this->input->get('refid', 0, 'int');
 		$return = $this->input->get('return', null, 'base64');
@@ -215,9 +239,9 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addToolbar(): void
 	{
-		Factory::getApplication()->input->set('hidemainmenu', true);
+		$this->input->set('hidemainmenu', true);
 		$user = $this->getCurrentUser();
-		$userId	= $user->id;
+		$userId = $user->id;
 		$isNew = $this->item->id == 0;
 
 		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'), 'pencil-2 article-add');
@@ -303,9 +327,9 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addModalToolbar()
 	{
-		Factory::getApplication()->input->set('hidemainmenu', true);
+		$this->input->set('hidemainmenu', true);
 		$user = $this->getCurrentUser();
-		$userId	= $user->id;
+		$userId = $user->id;
 		$isNew = $this->item->id == 0;
 
 		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'), 'pencil-2 article-add');
@@ -360,26 +384,6 @@ class HtmlView extends BaseHtmlView
 	}
 
 	/**
-	 * Escapes a value for output in a view script.
-	 *
-	 * @param   mixed  $var     The output to escape.
-	 * @param   bool   $shorten The switch to shorten.
-	 * @param   int    $length  The shorting length.
-	 *
-	 * @return  mixed  The escaped value.
-	 * @since   1.6
-	 */
-	public function escape($var, bool $shorten = true, int $length = 30)
-	{
-		if (!is_string($var))
-		{
-			return $var;
-		}
-
-		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
-	}
-
-	/**
 	 * Prepare some document related stuff.
 	 *
 	 * @return  void
@@ -390,7 +394,6 @@ class HtmlView extends BaseHtmlView
 		// Load jQuery
 		Html::_('jquery.framework');
 		$isNew = ($this->item->id < 1);
-		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_ADMIN_FIELDS_NEW' : 'COM_COMPONENTBUILDER_ADMIN_FIELDS_EDIT'));
 		// add styles
 		foreach ($this->styles as $style)
 		{
@@ -422,5 +425,25 @@ class HtmlView extends BaseHtmlView
 		Text::script('COM_COMPONENTBUILDER_THESE_OPTIONS_ARE_ONLY_AVAILABLE_TO_THE_FIELD_IF_BSHOW_IN_LIST_VIEWB_OPTION_IS_SELECTED');
 		Text::script('COM_COMPONENTBUILDER_THE_BMULTI_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_MORE_THEN_ONE_VALUE_IN_THIS_FILTERFIELD_PLEASE_NOTE_THAT_THIS_OPTION_BONLY_WORKSB_WITH_THE_BNEWB_FILTERS_THAT_LOAD_ABOVE_THE_ADMIN_LIST_VIEW_YOU_CAN_SELECT_THE_NEW_FILTER_OPTION_WHENWHERE_YOU_ADD_THE_VIEW_TO_THE_COMPONENT');
 		Text::script('COM_COMPONENTBUILDER_THE_BSINGLE_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_JUST_ONE_VALUE_IN_THIS_FILTERFIELD');
+	}
+
+	/**
+	 * Escapes a value for output in a view script.
+	 *
+	 * @param   mixed  $var     The output to escape.
+	 * @param   bool   $shorten The switch to shorten.
+	 * @param   int    $length  The shorting length.
+	 *
+	 * @return  mixed  The escaped value.
+	 * @since   1.6
+	 */
+	public function escape($var, bool $shorten = true, int $length = 30)
+	{
+		if (!is_string($var))
+		{
+			return $var;
+		}
+
+		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}
 }

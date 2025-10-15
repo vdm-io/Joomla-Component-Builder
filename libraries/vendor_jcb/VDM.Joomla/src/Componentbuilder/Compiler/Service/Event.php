@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaThree\Event as J3Event;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaFour\Event as J4Event;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaFive\Event as J5Event;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaSix\Event as J6Event;
 
 
 /**
@@ -54,6 +55,9 @@ class Event implements ServiceProviderInterface
 
 		$container->alias(J5Event::class, 'J5.Event')
 			->share('J5.Event', [$this, 'getJ5Event'], true);
+
+		$container->alias(J6Event::class, 'J6.Event')
+			->share('J6.Event', [$this, 'getJ6Event'], true);
 
 		$container->alias(EventInterface::class, 'Event')
 			->share('Event', [$this, 'getEvent'], true);
@@ -114,6 +118,19 @@ class Event implements ServiceProviderInterface
 	public function getJ5Event(Container $container): J5Event
 	{
 		return new J5Event();
+	}
+
+	/**
+	 * Get the Joomla 6 Event
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6Event
+	 * @since   5.1.2
+	 */
+	public function getJ6Event(Container $container): J6Event
+	{
+		return new J6Event();
 	}
 }
 

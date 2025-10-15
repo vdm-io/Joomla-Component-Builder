@@ -20,7 +20,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 
 // No direct access to this file
-\defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 /**
  * Form Rule (Code) class for the Joomla Platform.

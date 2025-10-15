@@ -83,7 +83,8 @@ class Customcode implements ServiceProviderInterface
 			$container->get('Language.Extractor'),
 			$container->get('Power.Extractor'),
 			$container->get('Joomla.Power.Extractor'),
-			$container->get('Customcode.External')
+			$container->get('Customcode.External'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -98,7 +99,8 @@ class Customcode implements ServiceProviderInterface
 	public function getExternal(Container $container): External
 	{
 		return new External(
-			$container->get('Placeholder')
+			$container->get('Placeholder'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -114,7 +116,9 @@ class Customcode implements ServiceProviderInterface
 	{
 		return new Gui(
 			$container->get('Config'),
-			$container->get('Placeholder.Reverse')
+			$container->get('Placeholder.Reverse'),
+			$container->get('Power.Parser'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -182,7 +186,8 @@ class Customcode implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Component.Placeholder'),
 			$container->get('Customcode'),
-			$container->get('Language.Extractor')
+			$container->get('Language.Extractor'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -202,9 +207,9 @@ class Customcode implements ServiceProviderInterface
 			$container->get('Customcode.Extractor.Paths'),
 			$container->get('Placeholder.Reverse'),
 			$container->get('Component.Placeholder'),
-			$container->get('Utilities.Pathfix')
+			$container->get('Utilities.Pathfix'),
+			$container->get('Joomla.Database')
 		);
 	}
-
 }
 

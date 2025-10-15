@@ -97,11 +97,11 @@ abstract class GetContent extends Get implements GetInterface
 		foreach ($items as $item)
 		{
 			// Support both object and array types
-			$guid    = is_array($item) ? ($item['key'] ?? null)     : ($item->key     ?? null);
-			$value   = is_array($item) ? ($item['value'] ?? null)   : ($item->value   ?? null);
-			$entity  = is_array($item) ? ($item['entity'] ?? null)  : ($item->entity  ?? null);
-			$target  = is_array($item) ? ($item['target'] ?? null)  : ($item->target  ?? null);
-			$pointer = is_array($item) ? ($item['pointer'] ?? null) : ($item->pointer ?? null);
+			$guid    = $this->extractItemValue($item, 'key');
+			$value   = $this->extractItemValue($item, 'value');
+			$entity  = $this->extractItemValue($item, 'entity');
+			$target  = $this->extractItemValue($item, 'target');
+			$pointer = $this->extractItemValue($item, 'pointer');
 
 			if (empty($guid) || empty($value) || empty($entity) || empty($target) || empty($pointer) || $this->tracker->exists("{$entity}.save.{$pointer}"))
 			{
@@ -124,15 +124,16 @@ abstract class GetContent extends Get implements GetInterface
 
 			// Attempt to fetch the item from the remote repository
 			$found = $this->grep->get($guid, ['remote'], $repo);
+			$content = $this->extractItemValue($found, 'content');
 
-			if ($found === null || empty($found->content))
+			if ($found === null || empty($content))
 			{
 				$logger['not_found'][$guid] = $value;
 				continue;
 			}
 
 			// Store the retrieved content
-			$result = $this->store($found, $full_path);
+			$result = $this->store($content, $full_path);
 
 			if (!$result)
 			{
@@ -198,36 +199,80 @@ abstract class GetContent extends Get implements GetInterface
 	}
 
 	/**
-	 * Load an item
+	 * Load an item using its GUID from the given repository or across all repositories.
 	 *
-	 * @param string       $guid    The global unique id of the item
-	 * @param array        $order   The search order
-	 * @param object|null  $repo    The repository object to search. If null, all repos will be searched.
+	 * @param string       $guid   The globally unique ID of the item.
+	 * @param array        $order  The search order: typically ['remote', 'local'].
+	 * @param object|null  $repo   The repository to search in, or null to search all.
 	 *
-	 * @return bool
-	 * @since  3.2.0
-	 * @since  5.1.1  We added the repo object
+	 * @return bool  True if the item was successfully stored; false otherwise.
+	 *
+	 * @since 3.2.0
+	 * @since 5.1.1  Added support for optional repository object.
 	 */
 	public function item(string $guid, array $order = ['remote', 'local'], ?object $repo = null): bool
 	{
 		$this->grep->setBranchField('read_branch');
-		$entity = strtolower($this->getArea());
-		$pointer = str_replace('.', '--', $guid);
+
+		$entity   = strtolower($this->getArea());
+		$pointer  = str_replace('.', '--', $guid);
+		$trackerKey = "{$entity}.save.{$pointer}";
+
+		// Return cached result if previously processed
+		if ($this->tracker->exists($trackerKey))
+		{
+			return $this->tracker->get($trackerKey);
+		}
+
+		$item = $this->grep->get($guid, $order, $repo);
 		$result = false;
 
-		if ($this->tracker->exists("{$entity}.save.{$pointer}"))
+		if ($item !== null)
 		{
-			return $this->tracker->get("{$entity}.save.{$pointer}");
+			// Support both array and object formats
+			$value   = $this->extractItemValue($item, 'value');
+			$target  = $this->extractItemValue($item, 'target');
+			$content = $this->extractItemValue($item, 'content');
+
+			if (!empty($value) && !empty($target) && !empty($content))
+			{
+				$fullPath = $this->normalize->full($value, $target);
+
+				if (!empty($fullPath))
+				{
+					$result = $this->store($content, $fullPath);
+				}
+			}
 		}
 
-		if (($item = $this->grep->get($guid, $order, $repo)) !== null)
-		{
-			$result = $this->store($item);
-		}
-
-		$this->tracker->set("{$entity}.save.{$pointer}", $result);
+		// Cache the result for future calls
+		$this->tracker->set($trackerKey, $result);
 
 		return $result;
+	}
+
+	/**
+	 * Extract a value from an array or object safely.
+	 *
+	 * @param array|object $item The item to extract from.
+	 * @param string       $key  The key or property name to extract.
+	 *
+	 * @return mixed|null  The extracted value or null if not found.
+	 * @since 5.1.2
+	 */
+	protected function extractItemValue($item, string $key)
+	{
+		if (is_array($item))
+		{
+			return $item[$key] ?? null;
+		}
+
+		if (is_object($item))
+		{
+			return $item->$key ?? null;
+		}
+
+		return null;
 	}
 
 	/**
@@ -243,12 +288,12 @@ abstract class GetContent extends Get implements GetInterface
 	/**
 	 * Store the found content locally
 	 *
-	 * @param  object       $item      The content to store
-	 * @param  string|null  $fullPath  The full path to the content
+	 * @param  string   $content   The content to store
+	 * @param  string   $fullPath  The full path where the file should be restored
 	 *
-	 * @return bool
+	 * @return bool  True on success, false on failure
 	 * @since  5.1.1
 	 */
-	abstract protected function store(object $item, ?string $fullPath = null): bool;
+	abstract protected function store(string $content, string $fullPath): bool;
 }
 

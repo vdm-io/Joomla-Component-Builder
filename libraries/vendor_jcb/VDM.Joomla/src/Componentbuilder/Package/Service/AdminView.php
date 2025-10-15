@@ -128,7 +128,8 @@ class AdminView implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -252,7 +253,8 @@ class AdminView implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -348,7 +350,8 @@ class AdminView implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -444,7 +447,8 @@ class AdminView implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 
@@ -540,7 +544,8 @@ class AdminView implements ServiceProviderInterface
 			$container->get('Utilities.Normalize'),
 			$container->get('Power.Tracker'),
 			$container->get('Power.Table'),
-			$container->get('Load')
+			$container->get('Load'),
+			$container->get('Data.Items')
 		);
 	}
 

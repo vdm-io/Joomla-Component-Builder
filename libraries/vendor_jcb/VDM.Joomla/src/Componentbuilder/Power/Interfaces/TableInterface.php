@@ -58,5 +58,17 @@ interface TableInterface extends ExtendingTableInterface
 	 * @since  5.1.0
 	 */
 	public function search(string $table, string $area): array;
+
+	/**
+	 * Get the list view code name from a table's fields.
+	 *
+	 * This method returns the first field where the 'list' key is a non-empty string.
+	 *
+	 * @param   string  $table  The table name to retrieve fields for.
+	 *
+	 * @return  string|null  The list view code name, or null if not found.
+	 * @since   5.1.2
+	 */
+	public function listViewCodeName(string $table): ?string;
 }
 

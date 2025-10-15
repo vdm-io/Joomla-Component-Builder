@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Customview;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
@@ -161,11 +161,12 @@ class Data
 	protected Custombuttons $custombuttons;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
@@ -183,6 +184,7 @@ class Data
 	 * @param Phpcustomview          $phpcustomview          The Phpcustomview Class.
 	 * @param Ajaxcustomview         $ajaxcustomview         The Ajaxcustomview Class.
 	 * @param Custombuttons          $custombuttons          The Custombuttons Class.
+	 * @param DatabaseInterface      $db                     The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
@@ -194,7 +196,8 @@ class Data
 		Csscustomview $csscustomview,
 		Phpcustomview $phpcustomview,
 		Ajaxcustomview $ajaxcustomview,
-		Custombuttons $custombuttons)
+		Custombuttons $custombuttons,
+		DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -209,7 +212,7 @@ class Data
 		$this->php = $phpcustomview;
 		$this->ajax = $ajaxcustomview;
 		$this->custombuttons = $custombuttons;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

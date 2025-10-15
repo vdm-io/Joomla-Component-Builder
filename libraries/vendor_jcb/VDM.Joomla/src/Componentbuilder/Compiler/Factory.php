@@ -47,6 +47,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComHelperClass;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitecturePlugin;
 use VDM\Joomla\Componentbuilder\Power\Service\Git;
 use VDM\Joomla\Componentbuilder\Power\Service\Github;
@@ -161,6 +162,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new ArchitectureComHelperClass())
 			->registerServiceProvider(new ArchitectureController())
 			->registerServiceProvider(new ArchitectureModel())
+			->registerServiceProvider(new ArchitectureModule())
 			->registerServiceProvider(new ArchitecturePlugin())
 			->registerServiceProvider(new Git())
 			->registerServiceProvider(new Github())
