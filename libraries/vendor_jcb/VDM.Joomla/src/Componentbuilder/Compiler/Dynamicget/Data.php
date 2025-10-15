@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Dynamicget;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
@@ -102,28 +102,30 @@ class Data
 	protected Dynamicget $dynamic;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Config       $config       The Config Class.
-	 * @param Registry     $registry     The Registry Class.
-	 * @param Event        $event        The EventInterface Class.
-	 * @param Customcode   $customcode   The Customcode Class.
-	 * @param Dispenser    $dispenser    The Dispenser Class.
-	 * @param Gui          $gui          The Gui Class.
-	 * @param Dynamicget   $dynamicget   The Dynamicget Class.
+	 * @param Config              $config       The Config Class.
+	 * @param Registry            $registry     The Registry Class.
+	 * @param Event               $event        The EventInterface Class.
+	 * @param Customcode          $customcode   The Customcode Class.
+	 * @param Dispenser           $dispenser    The Dispenser Class.
+	 * @param Gui                 $gui          The Gui Class.
+	 * @param Dynamicget          $dynamicget   The Dynamicget Class.
+	 * @param DatabaseInterface   $db           The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Registry $registry, Event $event,
 		Customcode $customcode, Dispenser $dispenser, Gui $gui,
-		Dynamicget $dynamicget)
+		Dynamicget $dynamicget, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->registry = $registry;
@@ -132,7 +134,7 @@ class Data
 		$this->dispenser = $dispenser;
 		$this->gui = $gui;
 		$this->dynamic = $dynamicget;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

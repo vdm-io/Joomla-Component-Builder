@@ -17,6 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -56,7 +57,7 @@ class FieldtypesField extends ListField
 			$button_code_name = $this->getAttribute('name');
 			// get the input from url
 			$app = Factory::getApplication();
-			$jinput = $app->input;
+			$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',
@@ -151,7 +152,7 @@ class FieldtypesField extends ListField
 	 */
 	protected function getOptions()
 	{
-			$db = Factory::getDBO();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 	$query = $db->getQuery(true);
 	$query->select($db->quoteName(array('a.guid','a.name'),array('guid','fieldtype_name')));
 	$query->from($db->quoteName('#__componentbuilder_fieldtype', 'a'));

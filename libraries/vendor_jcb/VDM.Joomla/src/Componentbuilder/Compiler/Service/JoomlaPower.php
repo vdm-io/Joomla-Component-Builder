@@ -73,7 +73,8 @@ class JoomlaPower implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
-			$container->get('Joomla.Power.Remote.Get')
+			$container->get('Joomla.Power.Remote.Get'),
+			$container->get('Joomla.Database')
 		);
 	}
 
@@ -141,6 +142,7 @@ class JoomlaPower implements ServiceProviderInterface
 	public function getExtractor(Container $container): Extractor
 	{
 		return new Extractor(
+			$container->get('Joomla.Database'),
 			$container->get('Config')->joomla_version
 		);
 	}

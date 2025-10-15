@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Adminview;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
@@ -241,11 +241,12 @@ class Data
 	protected SiteEditView $siteeditview;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
@@ -272,13 +273,14 @@ class Data
 	 * @param Sql                   $sql                   The Sql Class.
 	 * @param Mysqlsettings         $mysqlsettings         The Mysqlsettings Class.
 	 * @param SiteEditView          $siteeditview          The SiteEditView Class.
+	 * @param DatabaseInterface     $db                    The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Event $event, Placeholder $placeholder, Dispenser $dispenser, Customtabs $customtabs, Tabs $tabs, Fields $fields,
 		History $history, Permissions $permissions, Conditions $conditions, Relations $relations, Linkedviews $linkedviews, Javascript $javascript,
 		Css $css, Php $php, Custombuttons $custombuttons, Customimportscripts $customimportscripts, Ajax $ajax, Customalias $customalias, Sql $sql,
-		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview)
+		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -302,7 +304,7 @@ class Data
 		$this->sql = $sql;
 		$this->mysqlsettings = $mysqlsettings;
 		$this->siteeditview = $siteeditview;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

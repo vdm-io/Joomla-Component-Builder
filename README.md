@@ -9,7 +9,7 @@ This is a professional-grade [Joomla 5.x](https://extensions.joomla.org/extensio
 
 JCB generates native Joomla components, plugins, and modules for Joomla 3.x, 4.x, and 5.x - and is already prepared for Joomla 6. Every compiled project is tailored for the specific version without needing backward compatibility plugins. With integrated version-aware compiling, smart boilerplating, and Git-powered project syncing, JCB is much more than a code generator-it's a **full-stack development pipeline for Joomla extensions**.
 
-You can install this component easily. The latest release (**5.1.1**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
+You can install this component easily. The latest release (**5.1.2**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
 
 Upgrades are seamless through Joomla's built-in extension update mechanism.
 
@@ -229,9 +229,9 @@ JCB is developed by developers for developers. Its purpose is to democratize hig
 * **Company:** [Vast Development Method](https://dev.vdm.io)
 * **Author:** [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 * **Component:** [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
-* **Created:** 30th April, 2015 · **Last Build:** 3rd July, 2025 · **Version:** 5.1.1
+* **Created:** 30th April, 2015 · **Last Build:** 15th October, 2025 · **Version:** 5.1.2
 * **License:** GNU General Public License version 2 or later; see LICENSE.txt · **Copyright:** Copyright (C) 2015 Vast Development Method. All rights reserved.
-* **Lines:** 1094985 · **Fields:** 2096 · **Files:** 7515 · **Folders:** 728
+* **Lines:** 1204398 · **Fields:** 2098 · **Files:** 8077 · **Folders:** 753
 
 > Generated with [JCB](https://www.joomlacomponentbuilder.com) — The Smartest Way to Build Joomla Extensions.
 

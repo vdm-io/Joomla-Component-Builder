@@ -164,8 +164,9 @@ class Class_propertyModel extends AdminModel
 				SessionHelper::set($this->vastDevMod, 'class_property__'.$id);
 				SessionHelper::set('class_property__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = Factory::getApplication()->input;
-				$return = $jinput->get('return', null, 'base64');
+				$app = Factory::getApplication();
+				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
@@ -240,8 +241,9 @@ class Class_propertyModel extends AdminModel
 				SessionHelper::set($this->vastDevMod, 'class_property__'.$id);
 				SessionHelper::set('class_property__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = Factory::getApplication()->input;
-				$return = $jinput->get('return', null, 'base64');
+				$app = Factory::getApplication();
+				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
@@ -292,7 +294,9 @@ class Class_propertyModel extends AdminModel
 			return false;
 		}
 
-		$jinput = Factory::getApplication()->input;
+		$app = Factory::getApplication();
+
+		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))

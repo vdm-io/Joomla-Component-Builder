@@ -123,6 +123,25 @@ final class Header implements HeaderInterface
 	protected array $headers = [];
 
 	/**
+	 * List of disallowed context strings.
+	 *
+	 * @var   array<string>
+	 * @since 5.1.2
+	 */
+	protected array $disallowedContexts = [
+		'admin.helper',
+		'site.helper',
+		'plugin.extension.header',
+		'plugin.provider.header',
+		'module.provider.header',
+		'module.dispatcher.header',
+		'module.dynamicgets.header',
+		'module.helper.header',
+		'module.default.template.header',
+		'module.extra.template.header',
+	];
+
+	/**
 	 * The Namespace Prefix
 	 *
 	 * @var   string
@@ -200,7 +219,7 @@ final class Header implements HeaderInterface
 		$headers = $this->getHeaders($context);
 
 		// add to all except the helper classes
-		if ('admin.helper' !== $context && 'site.helper' !== $context && 'plugin.extension.header' !== $context && 'plugin.provider.header' !== $context)
+		if ($this->isAllowedContext($context))
 		{
 			$target = 'Administrator';
 			if ($this->config->get('build_target', 'admin') === 'site')
@@ -554,6 +573,29 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Form\Field\###FORM_EXTENDS###;';
 				break;
 
+			case 'module.provider.header':
+				$headers = [];
+				$headers[] = 'use Joomla\CMS\Extension\Service\Provider\HelperFactory;';
+				$headers[] = 'use Joomla\CMS\Extension\Service\Provider\Module;';
+				$headers[] = 'use Joomla\CMS\Extension\Service\Provider\ModuleDispatcherFactory;';
+				$headers[] = 'use Joomla\DI\ServiceProviderInterface;';
+				$headers[] = 'use Joomla\DI\Container;';
+				break;
+			case 'module.dispatcher.header':
+				$headers = [];
+				$headers[] = 'use Joomla\CMS\Dispatcher\AbstractModuleDispatcher;';
+				$headers[] = 'use Joomla\CMS\Helper\HelperFactoryAwareInterface;';
+				$headers[] = 'use Joomla\CMS\Helper\HelperFactoryAwareTrait;';
+				break;
+			case 'module.dynamicgets.header':
+				$headers = [];
+				$headers[] = 'use Joomla\CMS\Application\CMSApplicationInterface;';
+				$headers[] = 'use Joomla\Database\DatabaseAwareInterface;';
+				$headers[] = 'use Joomla\Database\DatabaseAwareTrait;';
+				$headers[] = 'use Joomla\Registry\Registry;';
+				$headers[] = 'use Joomla\Input\Input;';
+				break;
+
 			case 'plugin.extension.header':
 				$headers = [];
 				break;
@@ -588,6 +630,22 @@ final class Header implements HeaderInterface
 		$this->headers[$context] = $headers;
 
 		return $headers;
+	}
+
+	/**
+	 * Determine if the given context is allowed.
+	 *
+	 * Returns true if the context is not in the disallowed list,
+	 * false if the context is disallowed.
+	 *
+	 * @param  string  $context  The context string to evaluate.
+	 *
+	 * @return bool  True if allowed, false if disallowed.
+	 * @since  5.1.2
+	 */
+	protected function isAllowedContext(string $context): bool
+	{
+		return !in_array($context, $this->disallowedContexts, true);
 	}
 }
 

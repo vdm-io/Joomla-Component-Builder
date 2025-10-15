@@ -63,7 +63,8 @@ class Joomla_moduleModel extends AdminModel
 				'description',
 				'libraries',
 				'note_libraries_options',
-				'note_add_php_language_string'
+				'note_add_php_language_string',
+				'add_default_header'
 			),
 			'right' => array(
 				'snippet',
@@ -71,6 +72,7 @@ class Joomla_moduleModel extends AdminModel
 				'note_snippet_usage'
 			),
 			'fullwidth' => array(
+				'default_header',
 				'default',
 				'note_linked_to_notice',
 				'not_required'
@@ -99,6 +101,19 @@ class Joomla_moduleModel extends AdminModel
 				'php_method_uninstall'
 			)
 		),
+		'dynamic_integration' => array(
+			'left' => array(
+				'add_update_server',
+				'update_server_url',
+				'update_server_target',
+				'note_update_server_note_ftp',
+				'note_update_server_note_zip',
+				'note_update_server_note_other',
+				'update_server',
+				'add_sales_server',
+				'sales_server'
+			)
+		),
 		'readme' => array(
 			'left' => array(
 				'addreadme',
@@ -113,27 +128,14 @@ class Joomla_moduleModel extends AdminModel
 				'sql_uninstall'
 			)
 		),
-		'dynamic_integration' => array(
-			'left' => array(
-				'add_update_server',
-				'update_server_url',
-				'update_server_target',
-				'note_update_server_note_ftp',
-				'note_update_server_note_zip',
-				'note_update_server_note_other',
-				'update_server',
-				'add_sales_server',
-				'sales_server'
-			)
-		),
 		'code' => array(
 			'left' => array(
-				'custom_get'
+				'note_layout_data',
+				'layout_data'
 			),
 			'right' => array(
-				'note_mod_file_options'
-			),
-			'fullwidth' => array(
+				'custom_get',
+				'note_mod_file_options',
 				'mod_code'
 			)
 		),
@@ -250,8 +252,9 @@ class Joomla_moduleModel extends AdminModel
 				SessionHelper::set($this->vastDevMod, 'joomla_module__'.$id);
 				SessionHelper::set('joomla_module__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = Factory::getApplication()->input;
-				$return = $jinput->get('return', null, 'base64');
+				$app = Factory::getApplication();
+				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
@@ -299,22 +302,34 @@ class Joomla_moduleModel extends AdminModel
 				$item->default = base64_decode($item->default);
 			}
 
+			if (!empty($item->default_header))
+			{
+				// base64 Decode default_header.
+				$item->default_header = base64_decode($item->default_header);
+			}
+
+			if (!empty($item->php_preflight_install))
+			{
+				// base64 Decode php_preflight_install.
+				$item->php_preflight_install = base64_decode($item->php_preflight_install);
+			}
+
 			if (!empty($item->php_preflight_update))
 			{
 				// base64 Decode php_preflight_update.
 				$item->php_preflight_update = base64_decode($item->php_preflight_update);
 			}
 
+			if (!empty($item->layout_data))
+			{
+				// base64 Decode layout_data.
+				$item->layout_data = base64_decode($item->layout_data);
+			}
+
 			if (!empty($item->php_preflight_uninstall))
 			{
 				// base64 Decode php_preflight_uninstall.
 				$item->php_preflight_uninstall = base64_decode($item->php_preflight_uninstall);
-			}
-
-			if (!empty($item->mod_code))
-			{
-				// base64 Decode mod_code.
-				$item->mod_code = base64_decode($item->mod_code);
 			}
 
 			if (!empty($item->php_postflight_install))
@@ -329,16 +344,16 @@ class Joomla_moduleModel extends AdminModel
 				$item->php_postflight_update = base64_decode($item->php_postflight_update);
 			}
 
+			if (!empty($item->mod_code))
+			{
+				// base64 Decode mod_code.
+				$item->mod_code = base64_decode($item->mod_code);
+			}
+
 			if (!empty($item->php_method_uninstall))
 			{
 				// base64 Decode php_method_uninstall.
 				$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-			}
-
-			if (!empty($item->class_helper_header))
-			{
-				// base64 Decode class_helper_header.
-				$item->class_helper_header = base64_decode($item->class_helper_header);
 			}
 
 			if (!empty($item->sql))
@@ -347,16 +362,16 @@ class Joomla_moduleModel extends AdminModel
 				$item->sql = base64_decode($item->sql);
 			}
 
-			if (!empty($item->class_helper_code))
-			{
-				// base64 Decode class_helper_code.
-				$item->class_helper_code = base64_decode($item->class_helper_code);
-			}
-
 			if (!empty($item->sql_uninstall))
 			{
 				// base64 Decode sql_uninstall.
 				$item->sql_uninstall = base64_decode($item->sql_uninstall);
+			}
+
+			if (!empty($item->class_helper_header))
+			{
+				// base64 Decode class_helper_header.
+				$item->class_helper_header = base64_decode($item->class_helper_header);
 			}
 
 			if (!empty($item->readme))
@@ -365,16 +380,16 @@ class Joomla_moduleModel extends AdminModel
 				$item->readme = base64_decode($item->readme);
 			}
 
+			if (!empty($item->class_helper_code))
+			{
+				// base64 Decode class_helper_code.
+				$item->class_helper_code = base64_decode($item->class_helper_code);
+			}
+
 			if (!empty($item->php_script_construct))
 			{
 				// base64 Decode php_script_construct.
 				$item->php_script_construct = base64_decode($item->php_script_construct);
-			}
-
-			if (!empty($item->php_preflight_install))
-			{
-				// base64 Decode php_preflight_install.
-				$item->php_preflight_install = base64_decode($item->php_preflight_install);
 			}
 
 			if (!empty($item->libraries))
@@ -422,8 +437,9 @@ class Joomla_moduleModel extends AdminModel
 				SessionHelper::set($this->vastDevMod, 'joomla_module__'.$id);
 				SessionHelper::set('joomla_module__'.$id, $this->vastDevMod);
 				// set a return value if found
-				$jinput = Factory::getApplication()->input;
-				$return = $jinput->get('return', null, 'base64');
+				$app = Factory::getApplication();
+				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
 				// set a GUID value if found
 				if (isset($item) && ObjectHelper::check($item) && isset($item->guid)
@@ -474,7 +490,9 @@ class Joomla_moduleModel extends AdminModel
 			return false;
 		}
 
-		$jinput = Factory::getApplication()->input;
+		$app = Factory::getApplication();
+
+		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
 		if ($jinput->get('a_id'))
@@ -1342,22 +1360,34 @@ class Joomla_moduleModel extends AdminModel
 			$data['default'] = base64_encode($data['default']);
 		}
 
+		// Set the default_header string to base64 string.
+		if (isset($data['default_header']))
+		{
+			$data['default_header'] = base64_encode($data['default_header']);
+		}
+
+		// Set the php_preflight_install string to base64 string.
+		if (isset($data['php_preflight_install']))
+		{
+			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
+		}
+
 		// Set the php_preflight_update string to base64 string.
 		if (isset($data['php_preflight_update']))
 		{
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
 		}
 
+		// Set the layout_data string to base64 string.
+		if (isset($data['layout_data']))
+		{
+			$data['layout_data'] = base64_encode($data['layout_data']);
+		}
+
 		// Set the php_preflight_uninstall string to base64 string.
 		if (isset($data['php_preflight_uninstall']))
 		{
 			$data['php_preflight_uninstall'] = base64_encode($data['php_preflight_uninstall']);
-		}
-
-		// Set the mod_code string to base64 string.
-		if (isset($data['mod_code']))
-		{
-			$data['mod_code'] = base64_encode($data['mod_code']);
 		}
 
 		// Set the php_postflight_install string to base64 string.
@@ -1372,16 +1402,16 @@ class Joomla_moduleModel extends AdminModel
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
+		// Set the mod_code string to base64 string.
+		if (isset($data['mod_code']))
+		{
+			$data['mod_code'] = base64_encode($data['mod_code']);
+		}
+
 		// Set the php_method_uninstall string to base64 string.
 		if (isset($data['php_method_uninstall']))
 		{
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
-		}
-
-		// Set the class_helper_header string to base64 string.
-		if (isset($data['class_helper_header']))
-		{
-			$data['class_helper_header'] = base64_encode($data['class_helper_header']);
 		}
 
 		// Set the sql string to base64 string.
@@ -1390,16 +1420,16 @@ class Joomla_moduleModel extends AdminModel
 			$data['sql'] = base64_encode($data['sql']);
 		}
 
-		// Set the class_helper_code string to base64 string.
-		if (isset($data['class_helper_code']))
-		{
-			$data['class_helper_code'] = base64_encode($data['class_helper_code']);
-		}
-
 		// Set the sql_uninstall string to base64 string.
 		if (isset($data['sql_uninstall']))
 		{
 			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
+		}
+
+		// Set the class_helper_header string to base64 string.
+		if (isset($data['class_helper_header']))
+		{
+			$data['class_helper_header'] = base64_encode($data['class_helper_header']);
 		}
 
 		// Set the readme string to base64 string.
@@ -1408,16 +1438,16 @@ class Joomla_moduleModel extends AdminModel
 			$data['readme'] = base64_encode($data['readme']);
 		}
 
+		// Set the class_helper_code string to base64 string.
+		if (isset($data['class_helper_code']))
+		{
+			$data['class_helper_code'] = base64_encode($data['class_helper_code']);
+		}
+
 		// Set the php_script_construct string to base64 string.
 		if (isset($data['php_script_construct']))
 		{
 			$data['php_script_construct'] = base64_encode($data['php_script_construct']);
-		}
-
-		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
-		{
-			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
 		}
 
 		// Set the Params Items to data

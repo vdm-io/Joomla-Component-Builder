@@ -112,20 +112,21 @@ class Help_documentsModel extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = $this->app;
+		$input = $this->app->getInput();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}
 
 		// Check if the form was submitted
-		$formSubmited = $app->input->post->get('form_submited');
+		$formSubmited = $input->post->get('form_submited');
 
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
 		if ($formSubmited)
 		{
-			$access = $app->input->post->get('access');
+			$access = $input->post->get('access');
 			$this->setState('filter.access', $access);
 		}
 
@@ -147,35 +148,35 @@ class Help_documentsModel extends ListModel
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
 		if ($formSubmited)
 		{
-			$type = $app->input->post->get('type');
+			$type = $input->post->get('type');
 			$this->setState('filter.type', $type);
 		}
 
 		$location = $this->getUserStateFromRequest($this->context . '.filter.location', 'filter_location');
 		if ($formSubmited)
 		{
-			$location = $app->input->post->get('location');
+			$location = $input->post->get('location');
 			$this->setState('filter.location', $location);
 		}
 
 		$admin_view = $this->getUserStateFromRequest($this->context . '.filter.admin_view', 'filter_admin_view');
 		if ($formSubmited)
 		{
-			$admin_view = $app->input->post->get('admin_view');
+			$admin_view = $input->post->get('admin_view');
 			$this->setState('filter.admin_view', $admin_view);
 		}
 
 		$site_view = $this->getUserStateFromRequest($this->context . '.filter.site_view', 'filter_site_view');
 		if ($formSubmited)
 		{
-			$site_view = $app->input->post->get('site_view');
+			$site_view = $input->post->get('site_view');
 			$this->setState('filter.site_view', $site_view);
 		}
 
 		$title = $this->getUserStateFromRequest($this->context . '.filter.title', 'filter_title');
 		if ($formSubmited)
 		{
-			$title = $app->input->post->get('title');
+			$title = $input->post->get('title');
 			$this->setState('filter.title', $title);
 		}
 
@@ -480,12 +481,13 @@ class Help_documentsModel extends ListModel
 	}
 
 	/**
-	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 * Build an SQL query to check in all items left checked out longer then a set time.
 	 *
-	 * @return bool
+	 * @return void
+	 * @throws \DateMalformedStringException
 	 * @since 3.2.0
 	 */
-	protected function checkInNow(): bool
+	protected function checkInNow(): void
 	{
 		// Get set check in time
 		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
@@ -499,37 +501,36 @@ class Help_documentsModel extends ListModel
 			$query->select('*');
 			$query->from($db->quoteName('#__componentbuilder_help_document'));
 			// Only select items that are checked out.
-			$query->where($db->quoteName('checked_out') . '!=0');
+			$query->where($db->quoteName('checked_out') . ' >= 0');
+			// Query only to see if we have a rows
 			$db->setQuery($query, 0, 1);
 			$db->execute();
 			if ($db->getNumRows())
 			{
-				// Get Yesterdays date.
+				// Get target date in the past.
 				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
 				// Fields to update.
-				$fields = array(
-					$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',
-					$db->quoteName('checked_out') . '=0'
-				);
+				$fields = [
+					$db->quoteName('checked_out_time') . ' = NULL',
+					$db->quoteName('checked_out') . ' = NULL'
+				];
 
 				// Conditions for which records should be updated.
-				$conditions = array(
-					$db->quoteName('checked_out') . '!=0', 
-					$db->quoteName('checked_out_time') . '<\''.$date.'\''
-				);
+				$conditions = [
+					$db->quoteName('checked_out') . ' = 0 OR ' . $db->quoteName('checked_out') . ' > 0',
+					$db->quoteName('checked_out_time') . ' < ' . $db->quote($date)
+				];
 
 				// Check table.
 				$query->update($db->quoteName('#__componentbuilder_help_document'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);
 
-				return $db->execute();
+				$db->execute();
 			}
 		}
-
-		return false;
 	}
 }

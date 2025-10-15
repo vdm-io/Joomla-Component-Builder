@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Joomlamodule\Data as Module;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\ModuleDataInterface as Module;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 

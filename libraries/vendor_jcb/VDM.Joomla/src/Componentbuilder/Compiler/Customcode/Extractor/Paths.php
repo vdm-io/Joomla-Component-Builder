@@ -12,18 +12,17 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Customcode\Extractor;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
-use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Utilities\GetHelper;
-use VDM\Joomla\Utilities\String\ClassfunctionHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Placeholder as ComponentPlaceholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 
 
 /**
@@ -82,35 +81,36 @@ class Paths
 	protected Extractor $extractor;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null                 $config               The compiler config object.
-	 * @param Placeholder|null            $placeholder          The compiler placeholder object.
-	 * @param ComponentPlaceholder|null   $componentPlaceholder The compiler component placeholder object.
-	 * @param Customcode|null   	      $customcode           The compiler customcode object.
-	 * @param Extractor|null              $extractor            The compiler language extractor object.
+	 * @param Config                $config               The compiler config object.
+	 * @param Placeholder           $placeholder          The compiler placeholder object.
+	 * @param ComponentPlaceholder  $componentPlaceholder The compiler component placeholder object.
+	 * @param Customcode            $customcode           The compiler customcode object.
+	 * @param Extractor             $extractor            The compiler language extractor object.
+	 * @param DatabaseInterface     $db                   The Joomla Database Class.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Placeholder $placeholder = null,
-		?ComponentPlaceholder $componentPlaceholder = null, ?Customcode $customcode = null,
-		?Extractor $extractor = null)
+	public function __construct(Config $config, Placeholder $placeholder,
+		ComponentPlaceholder $componentPlaceholder, Customcode $customcode,
+		Extractor $extractor, DatabaseInterface $db)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		/** @var ComponentPlaceholder $componentPlaceholder */
-		$componentPlaceholder = $componentPlaceholder ?: Compiler::_('Component.Placeholder');
-		$this->customcode = $customcode ?: Compiler::_('Customcode');
-		$this->extractor = $extractor ?: Compiler::_('Language.Extractor');
-		$this->db = Factory::getDbo();
+		$this->config = $config;
+		$this->placeholder = $placeholder;
+		$componentPlaceholder = $componentPlaceholder;
+		$this->customcode = $customcode;
+		$this->extractor = $extractor;
+		$this->db = $db;
 
 		// load the placeholders to local array
 		$this->componentPlaceholder = $componentPlaceholder->get();
@@ -413,6 +413,5 @@ class Paths
 
 		return false;
 	}
-
 }
 

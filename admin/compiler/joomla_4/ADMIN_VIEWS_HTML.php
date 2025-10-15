@@ -93,6 +93,14 @@ class HtmlView extends BaseHtmlView
 	public bool $isModal;
 
 	/**
+	 * The empty state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	protected bool $isEmptyState;
+
+	/**
 	 * The user object.
 	 *
 	 * @var    Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power
@@ -111,12 +119,13 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
-		// Assign data to the view
-		$this->items = $this->get('Items');
-		$this->pagination = $this->get('Pagination');
-		$this->state = $this->get('State');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
+		// Load module values
+		$model = $this->getModel();
+		$this->items = $model->getItems();
+		$this->pagination = $model->getPagination();
+		$this->state = $model->getState();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();###ADMIN_DIPLAY_METHOD###
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
@@ -125,7 +134,7 @@ class HtmlView extends BaseHtmlView
 		$this->canDo = ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $this->get('IsEmptyState'))
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
 		{
 			$this->setLayout('emptystate');
 		}
@@ -218,7 +227,6 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function _prepareDocument(): void
 	{###JQUERY###
-		$this->getDocument()->setTitle(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEWS###'));
 		// add styles
 		foreach ($this->styles as $style)
 		{

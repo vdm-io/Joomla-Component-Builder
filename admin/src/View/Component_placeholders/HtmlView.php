@@ -26,7 +26,9 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\Input\Input;
+use Joomla\Registry\Registry;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -40,12 +42,12 @@ use Joomla\Input\Input;
 class HtmlView extends BaseHtmlView
 {
 	/**
-	 * The item from the model
+	 * The app class
 	 *
-	 * @var    mixed
-	 * @since  3.10.11
+	 * @var    CMSApplicationInterface
+	 * @since  5.2.1
 	 */
-	public mixed $item;
+	public CMSApplicationInterface $app;
 
 	/**
 	 * The input class
@@ -54,6 +56,22 @@ class HtmlView extends BaseHtmlView
 	 * @since  5.2.1
 	 */
 	public Input $input;
+
+	/**
+	 * The params registry
+	 *
+	 * @var    Registry
+	 * @since  5.2.1
+	 */
+	public Registry $params;
+
+	/**
+	 * The item from the model
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $item;
 
 	/**
 	 * The state object
@@ -146,19 +164,25 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
+		// get application
+		$this->app ??= Factory::getApplication();
+		// get input
+		$this->input ??= method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
 		// set params
-		$this->params = ComponentHelper::getParams('com_componentbuilder');
+		$this->params ??= method_exists($this->app, 'getParams')
+			? $this->app->getParams()
+			: ComponentHelper::getParams('com_componentbuilder');
 		$this->useCoreUI = true;
-		// Assign the variables
-		$this->form ??= $this->get('Form');
-		$this->item = $this->get('Item');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
-		$this->state = $this->get('State');
+		// Load module values
+		$model = $this->getModel();
+		$this->form ??= $model->getForm();
+		$this->item = $model->getItem();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
+		$this->state = $model->getState();
 		// get action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('component_placeholders', $this->item);
-		// get input
-		$this->input ??= Factory::getApplication()->input;
+		// get return referral details
 		$this->ref = $this->input->get('ref', 0, 'word');
 		$this->refid = $this->input->get('refid', 0, 'int');
 		$return = $this->input->get('return', null, 'base64');
@@ -215,9 +239,9 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addToolbar(): void
 	{
-		Factory::getApplication()->input->set('hidemainmenu', true);
+		$this->input->set('hidemainmenu', true);
 		$user = $this->getCurrentUser();
-		$userId	= $user->id;
+		$userId = $user->id;
 		$isNew = $this->item->id == 0;
 
 		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_EDIT'), 'pencil-2 article-add');
@@ -303,9 +327,9 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addModalToolbar()
 	{
-		Factory::getApplication()->input->set('hidemainmenu', true);
+		$this->input->set('hidemainmenu', true);
 		$user = $this->getCurrentUser();
-		$userId	= $user->id;
+		$userId = $user->id;
 		$isNew = $this->item->id == 0;
 
 		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_EDIT'), 'pencil-2 article-add');
@@ -360,6 +384,29 @@ class HtmlView extends BaseHtmlView
 	}
 
 	/**
+	 * Prepare some document related stuff.
+	 *
+	 * @return  void
+	 * @since   1.6
+	 */
+	protected function _prepareDocument(): void
+	{
+		// Load jQuery
+		Html::_('jquery.framework');
+		$isNew = ($this->item->id < 1);
+		// add styles
+		foreach ($this->styles as $style)
+		{
+			Html::_('stylesheet', $style, ['version' => 'auto']);
+		}
+		// add scripts
+		foreach ($this->scripts as $script)
+		{
+			Html::_('script', $script, ['version' => 'auto']);
+		}
+	}
+
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
@@ -377,29 +424,5 @@ class HtmlView extends BaseHtmlView
 		}
 
 		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
-	}
-
-	/**
-	 * Prepare some document related stuff.
-	 *
-	 * @return  void
-	 * @since   1.6
-	 */
-	protected function _prepareDocument(): void
-	{
-		// Load jQuery
-		Html::_('jquery.framework');
-		$isNew = ($this->item->id < 1);
-		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_NEW' : 'COM_COMPONENTBUILDER_COMPONENT_PLACEHOLDERS_EDIT'));
-		// add styles
-		foreach ($this->styles as $style)
-		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
-		}
-		// add scripts
-		foreach ($this->scripts as $script)
-		{
-			Html::_('script', $script, ['version' => 'auto']);
-		}
 	}
 }

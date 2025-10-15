@@ -27,7 +27,9 @@ use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\Input\Input;
+use Joomla\Registry\Registry;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -41,12 +43,12 @@ use Joomla\Input\Input;
 class HtmlView extends BaseHtmlView
 {
 	/**
-	 * The item from the model
+	 * The app class
 	 *
-	 * @var    mixed
-	 * @since  3.10.11
+	 * @var    CMSApplicationInterface
+	 * @since  5.2.1
 	 */
-	public mixed $item;
+	public CMSApplicationInterface $app;
 
 	/**
 	 * The input class
@@ -55,6 +57,22 @@ class HtmlView extends BaseHtmlView
 	 * @since  5.2.1
 	 */
 	public Input $input;
+
+	/**
+	 * The params registry
+	 *
+	 * @var    Registry
+	 * @since  5.2.1
+	 */
+	public Registry $params;
+
+	/**
+	 * The item from the model
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $item;
 
 	/**
 	 * The state object
@@ -147,19 +165,25 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
+		// get application
+		$this->app ??= Factory::getApplication();
+		// get input
+		$this->input ??= method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
 		// set params
-		$this->params = ComponentHelper::getParams('com_componentbuilder');
+		$this->params ??= method_exists($this->app, 'getParams')
+			? $this->app->getParams()
+			: ComponentHelper::getParams('com_componentbuilder');
 		$this->useCoreUI = true;
-		// Assign the variables
-		$this->form ??= $this->get('Form');
-		$this->item = $this->get('Item');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
-		$this->state = $this->get('State');
+		// Load module values
+		$model = $this->getModel();
+		$this->form ??= $model->getForm();
+		$this->item = $model->getItem();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
+		$this->state = $model->getState();
 		// get action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('joomla_plugin', $this->item);
-		// get input
-		$this->input ??= Factory::getApplication()->input;
+		// get return referral details
 		$this->ref = $this->input->get('ref', 0, 'word');
 		$this->refid = $this->input->get('refid', 0, 'int');
 		$return = $this->input->get('return', null, 'base64');
@@ -216,9 +240,9 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addToolbar(): void
 	{
-		Factory::getApplication()->input->set('hidemainmenu', true);
+		$this->input->set('hidemainmenu', true);
 		$user = $this->getCurrentUser();
-		$userId	= $user->id;
+		$userId = $user->id;
 		$isNew = $this->item->id == 0;
 
 		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_EDIT'), 'pencil-2 article-add');
@@ -314,9 +338,9 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function addModalToolbar()
 	{
-		Factory::getApplication()->input->set('hidemainmenu', true);
+		$this->input->set('hidemainmenu', true);
 		$user = $this->getCurrentUser();
-		$userId	= $user->id;
+		$userId = $user->id;
 		$isNew = $this->item->id == 0;
 
 		ToolbarHelper::title( Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_EDIT'), 'pencil-2 article-add');
@@ -381,26 +405,6 @@ class HtmlView extends BaseHtmlView
 	}
 
 	/**
-	 * Escapes a value for output in a view script.
-	 *
-	 * @param   mixed  $var     The output to escape.
-	 * @param   bool   $shorten The switch to shorten.
-	 * @param   int    $length  The shorting length.
-	 *
-	 * @return  mixed  The escaped value.
-	 * @since   1.6
-	 */
-	public function escape($var, bool $shorten = true, int $length = 30)
-	{
-		if (!is_string($var))
-		{
-			return $var;
-		}
-
-		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
-	}
-
-	/**
 	 * Prepare some document related stuff.
 	 *
 	 * @return  void
@@ -411,14 +415,13 @@ class HtmlView extends BaseHtmlView
 		// Load jQuery
 		Html::_('jquery.framework');
 		$isNew = ($this->item->id < 1);
-		$this->getDocument()->setTitle(Text::_($isNew ? 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_NEW' : 'COM_COMPONENTBUILDER_JOOMLA_PLUGIN_EDIT'));
 		// add styles
 		foreach ($this->styles as $style)
 		{
 			Html::_('stylesheet', $style, ['version' => 'auto']);
 		}
 		// Add Ajax Token
-		$this->getDocument()->addScriptDeclaration("var token = '" . Session::getFormToken() . "';");
+		$this->getDocument()->getWebAssetManager()->addInlineScript("var token = '" . Session::getFormToken() . "';");
 		// add scripts
 		foreach ($this->scripts as $script)
 		{
@@ -441,9 +444,9 @@ class HtmlView extends BaseHtmlView
 		Html::_('script', 'media/com_componentbuilder/js/jstorage.min.js', ['version' => 'auto']);
 		Html::_('script', 'media/com_componentbuilder/js/strtotime.js', ['version' => 'auto']);
 		// add var key
-		$this->getDocument()->addScriptDeclaration("var vastDevMod = '" . $this->get('VDM') . "';");
+		$this->getDocument()->getWebAssetManager()->addInlineScript("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->getDocument()->addScriptDeclaration("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$this->getDocument()->getWebAssetManager()->addInlineScript("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
@@ -459,7 +462,7 @@ class HtmlView extends BaseHtmlView
 			if ('global' == $storageTimeToLive)
 			{
 				// use the global session time
-				$session = Factory::getSession();
+				$session = $this->app->getSession();
 				// must have itin milliseconds
 				$expire = ($session->getExpire()*60)* 1000;
 			}
@@ -480,21 +483,9 @@ class HtmlView extends BaseHtmlView
 			$expire = 30000; // only 30 seconds
 		}
 		// Set the Time To Live To JavaScript
-		$this->getDocument()->addScriptDeclaration("var expire = ". (int) $expire.";");
-		$this->getDocument()->addScriptDeclaration("selectionArray = {'property':{},'method':{}};");
+		$this->getDocument()->getWebAssetManager()->addInlineScript("var expire = ". (int) $expire.";");
+		$this->getDocument()->getWebAssetManager()->addInlineScript("selectionArray = {'property':{},'method':{}};");
 		// add a few field options via PHP
-		FormHelper::addFieldPath(JPATH_BASE . '/components/com_componentbuilder/models/fields');
-		$tmp_ = FormHelper::loadFieldType('joomlaplugingroups')->options;
-		if (ArrayHelper::check($tmp_))
-		{
-			$_tmp = array();
-			foreach ($tmp_ as $item)
-			{
-				$_tmp[$item->value] = $item->text;
-			}
-			// Set the values to JavaScript
-			$this->getDocument()->addScriptDeclaration("selectionArray['joomla_plugin_group'] = ". json_encode($_tmp) . ";");
-		}
 		$tmp_ = FormHelper::loadFieldType('pluginsclassproperties')->options;
 		if (ArrayHelper::check($tmp_))
 		{
@@ -504,7 +495,7 @@ class HtmlView extends BaseHtmlView
 				$_tmp[$item->value] = $item->text;
 			}
 			// Set the values to JavaScript
-			$this->getDocument()->addScriptDeclaration("selectionArray['property'] = ". json_encode($_tmp) . ";");
+			$this->getDocument()->getWebAssetManager()->addInlineScript("selectionArray['property'] = ". json_encode($_tmp) . ";");
 		}
 		$tmp_ = FormHelper::loadFieldType('pluginsclassmethods')->options;
 		if (ArrayHelper::check($tmp_))
@@ -515,7 +506,27 @@ class HtmlView extends BaseHtmlView
 				$_tmp[$item->value] = $item->text;
 			}
 			// Set the values to JavaScript
-			$this->getDocument()->addScriptDeclaration("selectionArray['method'] = ". json_encode($_tmp) . ";");
+			$this->getDocument()->getWebAssetManager()->addInlineScript("selectionArray['method'] = ". json_encode($_tmp) . ";");
 		}
+	}
+
+	/**
+	 * Escapes a value for output in a view script.
+	 *
+	 * @param   mixed  $var     The output to escape.
+	 * @param   bool   $shorten The switch to shorten.
+	 * @param   int    $length  The shorting length.
+	 *
+	 * @return  mixed  The escaped value.
+	 * @since   1.6
+	 */
+	public function escape($var, bool $shorten = true, int $length = 30)
+	{
+		if (!is_string($var))
+		{
+			return $var;
+		}
+
+		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}
 }

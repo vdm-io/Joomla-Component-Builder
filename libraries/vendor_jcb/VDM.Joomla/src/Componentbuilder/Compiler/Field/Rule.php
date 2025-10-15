@@ -114,6 +114,7 @@ class Rule
 
 			// link this field to this validation (don't move this down)
 			$this->registry->set("validation.linked.{$id}", $validation_rule);
+			$this->registry->set("validation.field.{$id}", $validation_rule);
 
 			// make sure it is not already set
 			if ($this->registry->get("validation.rules.{$validation_rule}") === null)

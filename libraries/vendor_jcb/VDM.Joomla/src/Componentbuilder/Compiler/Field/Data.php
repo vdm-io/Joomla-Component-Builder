@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Field;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HistoryInterface as History;
@@ -106,11 +106,12 @@ class Data
 	protected Rule $rule;
 
 	/**
-	 * The database class.
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
-	 */
-	protected $db;
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
+	 **/
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
@@ -122,12 +123,13 @@ class Data
 	 * @param Customcode             $customcode        The Customcode Class.
 	 * @param FieldCustomcode        $fieldcustomcode   The Customcode Class.
 	 * @param Rule                   $rule              The Rule Class.
+	 * @param DatabaseInterface      $db                The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Event $event, History $history,
 		Placeholder $placeholder, Customcode $customcode,
-		FieldCustomcode $fieldcustomcode, Rule $rule)
+		FieldCustomcode $fieldcustomcode, Rule $rule, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -136,7 +138,7 @@ class Data
 		$this->customcode = $customcode;
 		$this->fieldcustomcode = $fieldcustomcode;
 		$this->rule = $rule;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

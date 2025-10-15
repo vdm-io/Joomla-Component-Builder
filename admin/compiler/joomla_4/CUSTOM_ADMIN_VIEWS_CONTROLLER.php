@@ -46,7 +46,7 @@ class ###SViews###Controller extends AdminController
 	 *
 	 * @since   1.6
 	 */
-	public function getModel($name = '###View###', $prefix = 'Administrator', $config = ['ignore_request' => true])
+	public function getModel($name = '###SViews###', $prefix = 'Administrator', $config = ['ignore_request' => true])
 	{
 		return parent::getModel($name, $prefix, $config);
 	}

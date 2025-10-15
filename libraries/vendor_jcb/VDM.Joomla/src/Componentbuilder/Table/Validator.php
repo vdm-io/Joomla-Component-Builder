@@ -189,7 +189,6 @@ final class Validator implements TableValidatorInterface
 
 	/**
 	 * Retrieve the database field structure for the specified field and table.
-	 * In your case, you use `$db = $this->table->get($table, $field, 'db')`.
 	 *
 	 * @param string $field  The field name.
 	 * @param string $table  The table name.
@@ -199,7 +198,7 @@ final class Validator implements TableValidatorInterface
 	 */
 	private function getDatabaseField(string $field, string $table): array
 	{
-		// Simulated retrieval of field details. Replace with actual logic.
+		// Retrieval of field db details.
 		return $this->table->get($table, $field, 'db');
 	}
 

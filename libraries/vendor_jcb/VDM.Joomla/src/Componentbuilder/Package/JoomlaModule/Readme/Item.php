@@ -74,6 +74,20 @@ final class Item implements ItemInterface
 
 MD;
 
+		// Default Header Template
+		if (!empty($item->default_header) && (int) ($item->add_default_header ?? 0) === 1)
+		{
+			$readme[] = '<details>';
+			$readme[] = '<summary>Header Default Template</summary>';
+			$readme[] = '';
+			$readme[] = '```php';
+			$readme[] = rtrim($item->default_header);
+			$readme[] = '```';
+			$readme[] = '';
+			$readme[] = '</details>';
+			$readme[] = '';
+		}
+
 		// Default Template
 		if (!empty($item->default))
 		{
@@ -84,13 +98,31 @@ MD;
 			$readme[] = '';
 		}
 
+		// Dispatcher getLayoutData Method Code
+		if (!empty($item->layout_data))
+		{
+			$readme[] = '<details>';
+			$readme[] = '<summary>Dispatcher getLayoutData Method (J4+)</summary>';
+			$readme[] = '';
+			$readme[] = '```php';
+			$readme[] = rtrim($item->layout_data);
+			$readme[] = '```';
+			$readme[] = '';
+			$readme[] = '</details>';
+			$readme[] = '';
+		}
+
 		// Module Code
 		if (!empty($item->mod_code))
 		{
-			$readme[] = '## Module Code:';
+			$readme[] = '<details>';
+			$readme[] = '<summary>Module Code (J3)</summary>';
+			$readme[] = '';
 			$readme[] = '```php';
 			$readme[] = rtrim($item->mod_code);
 			$readme[] = '```';
+			$readme[] = '';
+			$readme[] = '</details>';
 			$readme[] = '';
 		}
 

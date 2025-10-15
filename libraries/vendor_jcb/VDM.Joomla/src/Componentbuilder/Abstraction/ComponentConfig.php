@@ -54,7 +54,7 @@ abstract class ComponentConfig extends FunctionRegistry
 	 */
 	public function __construct(?Input $input = null, ?JoomlaRegistry $params = null)
 	{
-		$this->input = $input ?: Factory::getApplication()->input;
+		$this->input = $input ?: Factory::getApplication()->getInput();
 		$this->params = $params ?: Helper::getParams('com_componentbuilder');
 	}
 }

@@ -13,6 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Language;
 
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Update;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -34,23 +35,25 @@ final class Purge
 	protected Update $update;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 5.0.2
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Update $update The Update Class.
+	 * @param Update              $update   The Update Class.
+	 * @param DatabaseInterface   $db       The Joomla Database Class.
 	 *
 	 * @since 5.0.2
 	 */
-	public function __construct(Update $update)
+	public function __construct(Update $update, DatabaseInterface $db)
 	{
 		$this->update = $update;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

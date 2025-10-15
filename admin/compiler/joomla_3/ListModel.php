@@ -50,9 +50,10 @@ class ###Component###Model###Views### extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = Factory::getApplication();
+		$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}###POPULATESTATE###

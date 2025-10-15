@@ -47,8 +47,8 @@ final class SetFolder extends SetContent implements SetInterface
 				: null;
 		} catch (\Throwable $e) {
 			$this->messages->add('error', Text::sprintf(
-				'%s:%s [%s] could not be ::zipped:: from full path:%s.<br><br><b>Error Message</b>:<br>%s',
-				$area, $target, $value, $fullPath ?? 'missing', $e->getMessage()
+				'System:Folder [%s] could not be ::zipped:: from full path:%s.<br><br><b>Error Message</b>:<br>%s',
+				$guid, $fullPath ?? 'missing', $e->getMessage()
 			));
 		} finally {
 			if (is_file($zip_path))

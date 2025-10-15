@@ -131,7 +131,7 @@ class Joomla_componentsController extends AdminController
 		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
 
 		// check if user has the right
-		$user = Factory::getUser();
+		$user = $this->app->getIdentity();
 
 		// set page redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_components', false);
@@ -147,13 +147,12 @@ class Joomla_componentsController extends AdminController
 			{
 				$message = Text::_('COM_COMPONENTBUILDER_BTHE_TMP_FOLDER_HAS_BEEN_CLEARED_SUCCESSFULLYB');
 				$this->setRedirect($redirect_url, $message, 'message');
-				// get application
-				$app = Factory::getApplication();
+
 				// wipe out the user c-m-p since we are done with them all
-				$app->setUserState('com_componentbuilder.component_folder_name', '');
-				$app->setUserState('com_componentbuilder.modules_folder_name', '');
-				$app->setUserState('com_componentbuilder.plugins_folder_name', '');
-				$app->setUserState('com_componentbuilder.success_message', '');
+				$this->app->setUserState('com_componentbuilder.component_folder_name', '');
+				$this->app->setUserState('com_componentbuilder.modules_folder_name', '');
+				$this->app->setUserState('com_componentbuilder.plugins_folder_name', '');
+				$this->app->setUserState('com_componentbuilder.success_message', '');
 
 				return true;
 			}

@@ -11,31 +11,31 @@
 // Initial Script
 document.addEventListener('DOMContentLoaded', function()
 {
-	var update_server_target_vvvvvwq = jQuery("#jform_update_server_target input[type='radio']:checked").val();
-	var add_update_server_vvvvvwq = jQuery("#jform_add_update_server input[type='radio']:checked").val();
-	vvvvvwq(update_server_target_vvvvvwq,add_update_server_vvvvvwq);
+	var update_server_target_vvvvvwx = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	var add_update_server_vvvvvwx = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwx(update_server_target_vvvvvwx,add_update_server_vvvvvwx);
 
-	var add_update_server_vvvvvwr = jQuery("#jform_add_update_server input[type='radio']:checked").val();
-	var update_server_target_vvvvvwr = jQuery("#jform_update_server_target input[type='radio']:checked").val();
-	vvvvvwr(add_update_server_vvvvvwr,update_server_target_vvvvvwr);
+	var add_update_server_vvvvvwy = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	var update_server_target_vvvvvwy = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	vvvvvwy(add_update_server_vvvvvwy,update_server_target_vvvvvwy);
 
-	var update_server_target_vvvvvws = jQuery("#jform_update_server_target input[type='radio']:checked").val();
-	var add_update_server_vvvvvws = jQuery("#jform_add_update_server input[type='radio']:checked").val();
-	vvvvvws(update_server_target_vvvvvws,add_update_server_vvvvvws);
+	var update_server_target_vvvvvwz = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	var add_update_server_vvvvvwz = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvwz(update_server_target_vvvvvwz,add_update_server_vvvvvwz);
 
-	var update_server_target_vvvvvwu = jQuery("#jform_update_server_target input[type='radio']:checked").val();
-	var add_update_server_vvvvvwu = jQuery("#jform_add_update_server input[type='radio']:checked").val();
-	vvvvvwu(update_server_target_vvvvvwu,add_update_server_vvvvvwu);
+	var update_server_target_vvvvvxb = jQuery("#jform_update_server_target input[type='radio']:checked").val();
+	var add_update_server_vvvvvxb = jQuery("#jform_add_update_server input[type='radio']:checked").val();
+	vvvvvxb(update_server_target_vvvvvxb,add_update_server_vvvvvxb);
 
-	var add_head_vvvvvww = jQuery("#jform_add_head input[type='radio']:checked").val();
-	vvvvvww(add_head_vvvvvww);
+	var add_head_vvvvvxd = jQuery("#jform_add_head input[type='radio']:checked").val();
+	vvvvvxd(add_head_vvvvvxd);
 });
 
-// the vvvvvwq function
-function vvvvvwq(update_server_target_vvvvvwq,add_update_server_vvvvvwq)
+// the vvvvvwx function
+function vvvvvwx(update_server_target_vvvvvwx,add_update_server_vvvvvwx)
 {
 	// set the function logic
-	if (update_server_target_vvvvvwq == 1 && add_update_server_vvvvvwq == 1)
+	if (update_server_target_vvvvvwx == 1 && add_update_server_vvvvvwx == 1)
 	{
 		jQuery('#jform_update_server').closest('.control-group').show();
 		jQuery('.note_update_server_note_ftp').closest('.control-group').show();
@@ -47,11 +47,11 @@ function vvvvvwq(update_server_target_vvvvvwq,add_update_server_vvvvvwq)
 	}
 }
 
-// the vvvvvwr function
-function vvvvvwr(add_update_server_vvvvvwr,update_server_target_vvvvvwr)
+// the vvvvvwy function
+function vvvvvwy(add_update_server_vvvvvwy,update_server_target_vvvvvwy)
 {
 	// set the function logic
-	if (add_update_server_vvvvvwr == 1 && update_server_target_vvvvvwr == 1)
+	if (add_update_server_vvvvvwy == 1 && update_server_target_vvvvvwy == 1)
 	{
 		jQuery('#jform_update_server').closest('.control-group').show();
 		jQuery('.note_update_server_note_ftp').closest('.control-group').show();
@@ -63,11 +63,11 @@ function vvvvvwr(add_update_server_vvvvvwr,update_server_target_vvvvvwr)
 	}
 }
 
-// the vvvvvws function
-function vvvvvws(update_server_target_vvvvvws,add_update_server_vvvvvws)
+// the vvvvvwz function
+function vvvvvwz(update_server_target_vvvvvwz,add_update_server_vvvvvwz)
 {
 	// set the function logic
-	if (update_server_target_vvvvvws == 2 && add_update_server_vvvvvws == 1)
+	if (update_server_target_vvvvvwz == 2 && add_update_server_vvvvvwz == 1)
 	{
 		jQuery('.note_update_server_note_zip').closest('.control-group').show();
 	}
@@ -77,11 +77,11 @@ function vvvvvws(update_server_target_vvvvvws,add_update_server_vvvvvws)
 	}
 }
 
-// the vvvvvwu function
-function vvvvvwu(update_server_target_vvvvvwu,add_update_server_vvvvvwu)
+// the vvvvvxb function
+function vvvvvxb(update_server_target_vvvvvxb,add_update_server_vvvvvxb)
 {
 	// set the function logic
-	if (update_server_target_vvvvvwu == 3 && add_update_server_vvvvvwu == 1)
+	if (update_server_target_vvvvvxb == 3 && add_update_server_vvvvvxb == 1)
 	{
 		jQuery('.note_update_server_note_other').closest('.control-group').show();
 	}
@@ -91,11 +91,11 @@ function vvvvvwu(update_server_target_vvvvvwu,add_update_server_vvvvvwu)
 	}
 }
 
-// the vvvvvww function
-function vvvvvww(add_head_vvvvvww)
+// the vvvvvxd function
+function vvvvvxd(add_head_vvvvvxd)
 {
 	// set the function logic
-	if (add_head_vvvvvww == 1)
+	if (add_head_vvvvvxd == 1)
 	{
 		jQuery('#jform_head-lbl').closest('.control-group').show();
 	}
@@ -124,42 +124,100 @@ document.addEventListener('DOMContentLoaded', function () {
 	rowWatcher();
 });
 
-function getCodeFrom_server(id, type, type_name, callingName) {
-	var url = "index.php?option=com_componentbuilder&task=ajax." + callingName + "&format=json&raw=true&vdm="+vastDevMod;
-	if (token.length > 0 && getCodeFrom_isValidId(id) && type.length > 0) {
-		url += '&' + token + '=1&' + type_name + '=' + type + '&id=' + id;
-	} else {
-		console.error('There was a issue with the values passed to the [getCodeFrom_server] method and we could not make the Ajax call.');
-		return;
+/**
+ * Fetch data from the server with validated parameters.
+ *
+ * @param  {number|string} id          The record ID (integer > 0 or string > 30 chars)
+ * @param  {string}        type        The type value to send
+ * @param  {string}        typeName    The type parameter name (e.g. "type" or "context")
+ * @param  {string}        callingName The AJAX task name (e.g. "getCode")
+ * @global   {string}        token       The CSRF token name or key
+ * @global   {string}        vastDevMod  The developer key or mode flag (optional)
+ *
+ * @return {Promise<object|null>}      Returns parsed JSON data or null on failure
+ * @since  3.1.2
+ */
+async function getCodeFrom_server(id, type, typeName, callingName) {
+	try {
+		// --- Validation ---
+		if (!getCodeFrom_isValidId(id)) {
+			console.error('[getCodeFrom_server] Invalid ID provided:', id);
+			return null;
+		}
+		if (typeof type !== 'string' || !type.trim()) {
+			console.error('[getCodeFrom_server] Invalid type provided:', type);
+			return null;
+		}
+		if (typeof typeName !== 'string' || !typeName.trim()) {
+			console.error('[getCodeFrom_server] Invalid typeName provided:', typeName);
+			return null;
+		}
+		if (typeof callingName !== 'string' || !callingName.trim()) {
+			console.error('[getCodeFrom_server] Invalid callingName provided:', callingName);
+			return null;
+		}
+		if (typeof token !== 'string' || !token.trim()) {
+			console.error('[getCodeFrom_server] Missing security token.');
+			return null;
+		}
+
+		// --- Construct URL safely ---
+		const baseUrl = 'index.php';
+		const params = new URLSearchParams({
+			option: 'com_componentbuilder',
+			task: `ajax.${callingName}`,
+			format: 'json',
+			raw: 'true',
+			[token]: '1',
+			[typeName]: type,
+			id: id
+		});
+		if (vastDevMod) params.append('vdm', vastDevMod);
+
+		const fullUrl = JRouter(`${baseUrl}?${params.toString()}`);
+
+		// --- Execute request ---
+		const response = await fetch(fullUrl, {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			cache: 'no-store',
+			credentials: 'same-origin'
+		});
+
+		// --- Validate HTTP response ---
+		if (!response.ok) {
+			console.error(`[getCodeFromServer] Server responded with status ${response.status}: ${response.statusText}`);
+			return null;
+		}
+
+		// --- Parse JSON response ---
+		const data = await response.json();
+		return data ?? null;
+
+	} catch (error) {
+		console.error('[getCodeFromServer] Fetch operation failed:', error);
+		return null;
 	}
-	var getUrl = JRouter(url);
-	return fetch(getUrl, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	}).then(function(response) {
-		if (response.ok) {
-			return response.json();
-		} else {
-			throw new Error('Network response was not ok');
-		}
-	}).then(function(data) {
-		return data;
-	}).catch(function(error) {
-		console.error('There was a problem with the fetch operation:', error);
-	});
 }
+
+/**
+ * Validate if the given ID is acceptable.
+ *
+ * @param  {number|string} id  The ID value to validate.
+ * @return {boolean}           True if valid, false otherwise.
+ * @since  3.1.2
+ */
 function getCodeFrom_isValidId(id) {
-    if (typeof id === 'number') {
-        // Check if it's a positive integer
-        return Number.isInteger(id) && id > 0;
-    } else if (typeof id === 'string') {
-        // Check if it's a string of length > 30
-        return id.length > 30;
-    }
-    // If neither a number nor a string, return false
-    return false;
+	if (typeof id === 'number') {
+		return Number.isInteger(id) && id > 0;
+	}
+	if (typeof id === 'string') {
+		return id.trim().length > 30;
+	}
+	return false;
 }
 
 // set selection the options
@@ -558,56 +616,135 @@ function getLinked() {
 	});
 }
 
-function getEditCustomCodeButtons_server(id) {
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getEditCustomCodeButtons&format=json&raw=true&vdm="+vastDevMod);
-	let requestParams = '';
-	if (token.length > 0 && id > 0) {
-		requestParams = token+'=1&id='+id+'&return_here='+return_here;
-	}
-	// Construct URL with parameters for GET request
-	const urlWithParams = getUrl + '&' + requestParams;
+/**
+ * Retrieve the Edit Custom Code buttons from the server.
+ *
+ * @param  {number} id  The record ID to load custom code buttons for.
+ *
+ * @return {Promise<object|null>}  Returns JSON object of buttons or null on failure.
+ * @since  3.1.3
+ */
+async function getEditCustomCodeButtons_server(id) {
+	try {
+		// --- Validation ---
+		if (typeof token !== 'string' || !token.trim()) {
+			console.error('[getEditCustomCodeButtons_server] Missing or invalid CSRF token.');
+			return null;
+		}
+		if (typeof id !== 'number' || id <= 0) {
+			console.error('[getEditCustomCodeButtons_server] Invalid ID provided:', id);
+			return null;
+		}
+		if (typeof return_here !== 'string' || !return_here.trim()) {
+			console.warn('[getEditCustomCodeButtons_server] "return_here" not set; continuing without it.');
+		}
 
-	// Using the Fetch API for the GET request
-	return fetch(urlWithParams, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
+		// --- Build URL safely ---
+		const baseUrl = 'index.php';
+		const params = new URLSearchParams({
+			option: 'com_componentbuilder',
+			task: 'ajax.getEditCustomCodeButtons',
+			format: 'json',
+			raw: 'true',
+			[token]: '1',
+			id: id,
+			return_here: return_here || ''
+		});
+		if (typeof vastDevMod === 'string' && vastDevMod.length > 0) {
+			params.append('vdm', vastDevMod);
 		}
-	}).then(response => {
+
+		const urlWithParams = JRouter(`${baseUrl}?${params.toString()}`);
+
+		// --- Execute request ---
+		const response = await fetch(urlWithParams, {
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			cache: 'no-store',
+			credentials: 'same-origin'
+		});
+
+		// --- Handle network errors ---
 		if (!response.ok) {
-			throw new Error('Network response was not ok');
+			console.error(`[getEditCustomCodeButtons_server] HTTP ${response.status}: ${response.statusText}`);
+			return null;
 		}
-		return response.json();
-	});
+
+		// --- Parse JSON result ---
+		const data = await response.json();
+		return data ?? null;
+
+	} catch (error) {
+		console.error('[getEditCustomCodeButtons_server] Fetch failed:', error);
+		return null;
+	}
 }
 
-function getEditCustomCodeButtons() {
-	// Get the id using pure JavaScript
-	const id = document.querySelector("#jform_id").value;
-	getEditCustomCodeButtons_server(id).then(function(result) {
-		if (typeof result === 'object') {
-			Object.entries(result).forEach(([field, buttons]) => {
-				// Creating the div element for buttons
-				const div = document.createElement('div');
-				div.className = 'control-group';
-				div.innerHTML = '<div class="control-label"><label>Add/Edit Customcode</label></div><div class="controls control-customcode-buttons-'+field+'"></div>';
+/**
+ * Load and inject Edit Custom Code buttons into the DOM.
+ *
+ * @return {Promise<void>}
+ * @since  3.1.3
+ */
+async function getEditCustomCodeButtons() {
+	try {
+		// --- Get record ID from the form ---
+		const idField = document.querySelector('#jform_id');
+		if (!idField) {
+			console.error('[getEditCustomCodeButtons] #jform_id not found.');
+			return;
+		}
 
-				// Insert the div before .control-wrapper-{field}
-				const insertBeforeElement = document.querySelector(".control-wrapper-"+field);
-				if (insertBeforeElement) {
-					insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
-				}
+		const idValue = parseInt(idField.value, 10);
+		if (isNaN(idValue) || idValue <= 0) {
+			console.warn('[getEditCustomCodeButtons] Invalid or empty ID; skipping button load.');
+			return;
+		}
 
-				// Adding buttons to the div
-				Object.entries(buttons).forEach(([name, button]) => {
-					const controlsDiv = document.querySelector(".control-customcode-buttons-"+field);
-					if (controlsDiv) {
-						controlsDiv.innerHTML += button;
+		// --- Request data from server ---
+		const result = await getEditCustomCodeButtons_server(idValue);
+		if (!result || typeof result !== 'object') {
+			console.warn('[getEditCustomCodeButtons] No result returned or invalid format.');
+			return;
+		}
+
+		// --- Inject returned button groups ---
+		Object.entries(result).forEach(([field, buttons]) => {
+			// Create the container div
+			const div = document.createElement('div');
+			div.className = 'control-group';
+			div.innerHTML = `
+<div class="control-label">
+	<label>Add/Edit Customcode</label>
+</div>
+<div class="controls control-customcode-buttons-${field}"></div>
+			`;
+
+			// Find where to insert (before .control-wrapper-{field})
+			const insertBeforeElement = document.querySelector(`.control-wrapper-${field}`);
+			if (insertBeforeElement && insertBeforeElement.parentNode) {
+				insertBeforeElement.parentNode.insertBefore(div, insertBeforeElement);
+			}
+
+			// Append buttons to the new container
+			const controlsDiv = div.querySelector(`.control-customcode-buttons-${field}`);
+			if (controlsDiv && typeof buttons === 'object') {
+				Object.entries(buttons).forEach(([name, buttonHtml]) => {
+					if (typeof buttonHtml === 'string') {
+						const wrapper = document.createElement('div');
+						wrapper.innerHTML = buttonHtml.trim();
+						const buttonNode = wrapper.firstElementChild;
+						if (buttonNode) {
+							controlsDiv.appendChild(buttonNode);
+						}
 					}
 				});
-			});
-		}
-	}).catch(error => {
-		console.error('Error:', error);
-	});
+			}
+		});
+	} catch (error) {
+		console.error('[getEditCustomCodeButtons] Error rendering buttons:', error);
+	}
 }

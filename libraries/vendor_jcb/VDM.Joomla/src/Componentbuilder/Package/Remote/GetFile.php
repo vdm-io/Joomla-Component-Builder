@@ -12,6 +12,10 @@
 namespace VDM\Joomla\Componentbuilder\Package\Remote;
 
 
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Language\Text;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Interfaces\Remote\GetInterface;
 use VDM\Joomla\Componentbuilder\Package\Remote\GetContent;
 
@@ -37,17 +41,46 @@ final class GetFile extends GetContent implements GetInterface
 	}
 
 	/**
-	 * Store the found file locally
+	 * Store the found content locally
 	 *
-	 * @param  object       $item      The file to store
-	 * @param  string|null  $fullPath  The full path to the file
+	 * @param  string   $content   The content to store (file data)
+	 * @param  string   $fullPath  The full path where the file should be restored
 	 *
-	 * @return bool
+	 * @return bool  True on success, false on failure
 	 * @since  5.1.1
 	 */
-	protected function store(object $item, ?string $fullPath = null): bool
+	protected function store(string $content, string $fullPath): bool
 	{
-		return false;
+		try
+		{
+			// Ensure the directory exists
+			$directory = dirname($fullPath);
+			if (!is_dir($directory) && !Folder::create($directory))
+			{
+				throw new \RuntimeException("Failed to create directory: {$directory}");
+			}
+
+			// If file exists, delete it
+			if (is_file($fullPath) && !File::delete($fullPath))
+			{
+				throw new \RuntimeException("Failed to delete existing file: {$fullPath}");
+			}
+
+			// Write file using FileHelper
+			if (!FileHelper::write($fullPath, $content))
+			{
+				throw new \RuntimeException("Failed to write file to: {$fullPath}");
+			}
+
+			return true;
+		}
+		catch (\Throwable $e)
+		{
+			$this->messages->add('error', Text::sprintf('COM_COMPONENTBUILDER_SYSTEMCOULD_NOT_RESTORE_FILE_TO_SBRBRBERROR_MESSAGEBBRS',
+				$fullPath, $e->getMessage()
+			));
+			return false;
+		}
 	}
 }
 

@@ -57,7 +57,7 @@ class SnippetsField extends ListField
 			$button_code_name = $this->getAttribute('name');
 			// get the input from url
 			$app = Factory::getApplication();
-			$jinput = $app->input;
+			$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',

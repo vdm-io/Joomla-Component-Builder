@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\HeaderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaThree\Header as J3Header;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaFour\Header as J4Header;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaFive\Header as J5Header;
+use VDM\Joomla\Componentbuilder\Compiler\JoomlaSix\Header as J6Header;
 
 
 /**
@@ -53,6 +54,9 @@ class Header implements ServiceProviderInterface
 
 		$container->alias(J5Header::class, 'J5.Header')
 			->share('J5.Header', [$this, 'getJ5Header'], true);
+
+		$container->alias(J6Header::class, 'J6.Header')
+			->share('J6.Header', [$this, 'getJ6Header'], true);
 
 		$container->alias(HeaderInterface::class, 'Header')
 			->share('Header', [$this, 'getHeader'], true);
@@ -135,6 +139,30 @@ class Header implements ServiceProviderInterface
 	public function getJ5Header(Container $container): J5Header
 	{
 		return new J5Header(
+			$container->get('Config'),
+			$container->get('Event'),
+			$container->get('Placeholder'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Uikit.Comp'),
+			$container->get('Compiler.Builder.Admin.Filter.Type'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Access.Switch.List'),
+			$container->get('Compiler.Builder.Filter'),
+			$container->get('Compiler.Builder.Tags')
+		);
+	}
+
+	/**
+	 * Get The Header Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6Header
+	 * @since   5.1.2
+	 */
+	public function getJ6Header(Container $container): J6Header
+	{
+		return new J6Header(
 			$container->get('Config'),
 			$container->get('Event'),
 			$container->get('Placeholder'),

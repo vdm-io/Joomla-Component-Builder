@@ -85,12 +85,14 @@ final class Provider implements ProviderInterface
 		$provider[] = Indent::_(2) . "\$container->set(";
 		$provider[] = Indent::_(3) . "PluginInterface::class,";
 		$provider[] = Indent::_(3) . "function (Container \$container) {";
+		$provider[] = Indent::_(5) . "\$dispatcher = \$container->get(DispatcherInterface::class);";
+		$provider[] = Indent::_(5) . "\$params = (array) PluginHelper::getPlugin('{$group}', '{$plugin->context_name}');";
+		$provider[] = Indent::_(4) . "\$app = Factory::getApplication();";
 		$provider[] = Indent::_(4) . "\$plugin = new {$plugin->class_name}(";
-		$provider[] = Indent::_(5) . "\$container->get(DispatcherInterface::class),";
-		$provider[] = Indent::_(5) . "(array) PluginHelper::getPlugin('{$group}', '{$plugin->context_name}')";
+		$provider[] = Indent::_(5) . "\$dispatcher, \$params";
 		$provider[] = Indent::_(4) . ");";
-		$provider[] = Indent::_(4) . "\$plugin->setApplication(Factory::getApplication());";
-		$provider[] = $plugin->service_provider ?? ''; // to add extra plug-in suff
+		$provider[] = Indent::_(4) . "\$plugin->setApplication(\$app);";
+		$provider[] = $plugin->service_provider ?? ''; // to add extra plug-in stuff
 		$provider[] = Indent::_(4) . "return \$plugin;";
 		$provider[] = Indent::_(3) . "}";
 		$provider[] = Indent::_(2) . ");";

@@ -177,20 +177,21 @@ class FieldsModel extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = $this->app;
+		$input = $this->app->getInput();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}
 
 		// Check if the form was submitted
-		$formSubmited = $app->input->post->get('form_submited');
+		$formSubmited = $input->post->get('form_submited');
 
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
 		if ($formSubmited)
 		{
-			$access = $app->input->post->get('access');
+			$access = $input->post->get('access');
 			$this->setState('filter.access', $access);
 		}
 
@@ -212,35 +213,35 @@ class FieldsModel extends ListModel
 		$fieldtype = $this->getUserStateFromRequest($this->context . '.filter.fieldtype', 'filter_fieldtype');
 		if ($formSubmited)
 		{
-			$fieldtype = $app->input->post->get('fieldtype');
+			$fieldtype = $input->post->get('fieldtype');
 			$this->setState('filter.fieldtype', $fieldtype);
 		}
 
 		$datatype = $this->getUserStateFromRequest($this->context . '.filter.datatype', 'filter_datatype');
 		if ($formSubmited)
 		{
-			$datatype = $app->input->post->get('datatype');
+			$datatype = $input->post->get('datatype');
 			$this->setState('filter.datatype', $datatype);
 		}
 
 		$indexes = $this->getUserStateFromRequest($this->context . '.filter.indexes', 'filter_indexes');
 		if ($formSubmited)
 		{
-			$indexes = $app->input->post->get('indexes');
+			$indexes = $input->post->get('indexes');
 			$this->setState('filter.indexes', $indexes);
 		}
 
 		$null_switch = $this->getUserStateFromRequest($this->context . '.filter.null_switch', 'filter_null_switch');
 		if ($formSubmited)
 		{
-			$null_switch = $app->input->post->get('null_switch');
+			$null_switch = $input->post->get('null_switch');
 			$this->setState('filter.null_switch', $null_switch);
 		}
 
 		$store = $this->getUserStateFromRequest($this->context . '.filter.store', 'filter_store');
 		if ($formSubmited)
 		{
-			$store = $app->input->post->get('store');
+			$store = $input->post->get('store');
 			$this->setState('filter.store', $store);
 		}
 
@@ -253,14 +254,14 @@ class FieldsModel extends ListModel
 		$catid = $this->getUserStateFromRequest($this->context . '.filter.catid', 'filter_catid');
 		if ($formSubmited)
 		{
-			$catid = $app->input->post->get('catid');
+			$catid = $input->post->get('catid');
 			$this->setState('filter.catid', $catid);
 		}
 
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		if ($formSubmited)
 		{
-			$name = $app->input->post->get('name');
+			$name = $input->post->get('name');
 			$this->setState('filter.name', $name);
 		}
 
@@ -763,12 +764,13 @@ class FieldsModel extends ListModel
 	}
 
 	/**
-	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 * Build an SQL query to check in all items left checked out longer then a set time.
 	 *
-	 * @return bool
+	 * @return void
+	 * @throws \DateMalformedStringException
 	 * @since 3.2.0
 	 */
-	protected function checkInNow(): bool
+	protected function checkInNow(): void
 	{
 		// Get set check in time
 		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
@@ -782,37 +784,36 @@ class FieldsModel extends ListModel
 			$query->select('*');
 			$query->from($db->quoteName('#__componentbuilder_field'));
 			// Only select items that are checked out.
-			$query->where($db->quoteName('checked_out') . '!=0');
+			$query->where($db->quoteName('checked_out') . ' >= 0');
+			// Query only to see if we have a rows
 			$db->setQuery($query, 0, 1);
 			$db->execute();
 			if ($db->getNumRows())
 			{
-				// Get Yesterdays date.
+				// Get target date in the past.
 				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
 				// Fields to update.
-				$fields = array(
-					$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',
-					$db->quoteName('checked_out') . '=0'
-				);
+				$fields = [
+					$db->quoteName('checked_out_time') . ' = NULL',
+					$db->quoteName('checked_out') . ' = NULL'
+				];
 
 				// Conditions for which records should be updated.
-				$conditions = array(
-					$db->quoteName('checked_out') . '!=0', 
-					$db->quoteName('checked_out_time') . '<\''.$date.'\''
-				);
+				$conditions = [
+					$db->quoteName('checked_out') . ' = 0 OR ' . $db->quoteName('checked_out') . ' > 0',
+					$db->quoteName('checked_out_time') . ' < ' . $db->quote($date)
+				];
 
 				// Check table.
 				$query->update($db->quoteName('#__componentbuilder_field'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);
 
-				return $db->execute();
+				$db->execute();
 			}
 		}
-
-		return false;
 	}
 }

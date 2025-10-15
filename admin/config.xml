@@ -961,7 +961,7 @@
 			default="2">
 			<!-- Option Set. -->
 			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+				COM_COMPONENTBUILDER_CONFIG_LEGACY_MODE</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERIC</option>
 		</field>
@@ -975,127 +975,10 @@
 			default="2">
 			<!-- Option Set. -->
 			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+				COM_COMPONENTBUILDER_CONFIG_LEGACY_MODE</option>
 			<option value="2">
 				COM_COMPONENTBUILDER_CONFIG_ALPHANUMERICDOT</option>
 		</field>
-	</fieldset>
-	<fieldset
-		name="jcb_packages_custom_config"
-		label="COM_COMPONENTBUILDER_CONFIG_JCB_PACKAGES">
-
-		<!-- Import_guid_only Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="import_guid_only"
-			label="COM_COMPONENTBUILDER_CONFIG_IMPORT_GUID_ONLY_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_IMPORT_GUID_ONLY_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>
-		<!-- Export_language_strings Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="export_language_strings"
-			label="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_EXPORT_LANGUAGE_STRINGS_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NO</option>
-		</field>
-	</fieldset>
-	<fieldset
-		name="auto_backup_custom_config"
-		label="COM_COMPONENTBUILDER_CONFIG_AUTO_BACKUP">
-
-		<!-- Backupcronjob_note Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="backupcronjob_note" label="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_LABEL" description="COM_COMPONENTBUILDER_CONFIG_BACKUPCRONJOB_NOTE_DESCRIPTION" heading="h4" class="backupcronjob_note" />
-		<!-- Cronjob_backup_type Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="cronjob_backup_type"
-			label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_TYPE_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_TYPE_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="1">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_LOCAL_FOLDER</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_REMOTE_SERVER</option>
-		</field>
-		<!-- Cronjob_backup_server Field. Type: Cron_servers. (custom) -->
-		<field
-			type="cron_servers"
-			name="cronjob_backup_server"
-			label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_SERVER_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_SERVER_DESCRIPTION"
-			class="list_class"
-			layout="joomla.form.field.list-fancy-select"
-			multiple="false"
-			default="0"
-			showon="cronjob_backup_type:2"
-			button="true"
-		/>
-		<!-- Cronjob_backup_folder_path Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="cronjob_backup_folder_path"
-			label="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_LABEL"
-			size="70"
-			maxlength="150"
-			description="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="false"
-			filter="PATH"
-			message="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_CRONJOB_BACKUP_FOLDER_PATH_HINT"
-			autocomplete="on"
-			showon="cronjob_backup_type:1"
-		/>
-		<!-- Backup_email Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="backup_email"
-			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_LABEL"
-			size="10"
-			maxlength="50"
-			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_DESCRIPTION"
-			class="text_area"
-			filter="STRING"
-			validate="email"
-			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_EMAIL_HINT"
-		/>
-		<!-- Package_name_plaeholders Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="package_name_plaeholders" label="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_LABEL" description="COM_COMPONENTBUILDER_CONFIG_PACKAGE_NAME_PLAEHOLDERS_DESCRIPTION" heading="h4" class="package_name_plaeholders" />
-		<!-- Backup_package_name Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="backup_package_name"
-			label="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_LABEL"
-			size="40"
-			maxlength="150"
-			default="JCB_Backup_[YEAR]_[MONTH]_[DAY]"
-			description="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			filter="STRING"
-			message="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_MESSAGE"
-			hint="COM_COMPONENTBUILDER_CONFIG_BACKUP_PACKAGE_NAME_HINT"
-		/>
 	</fieldset>
 	<fieldset
 		name="folder_paths_custom_config"

@@ -81,6 +81,27 @@ trait Guid
 	}
 
 	/**
+	 * Checks if the GUID value is unique and does not already exist.
+	 *
+	 * @param string $guid The GUID value to check.
+	 * @param string $key  The key to check and modify values.
+	 *
+	 * @return string The unique GUID value.
+	 *
+	 * @since 5.0.2
+	 */
+	protected function checkGuid(string $guid, string $key): string
+	{
+		// Check that the GUID does not already exist
+		if ($this->items->table($this->getTable())->values([$guid], $key))
+		{
+			return $this->getGuid($key);
+		}
+
+		return $guid;
+	}
+
+	/**
 	 * Generates a fallback GUIDv4 using less secure methods.
 	 *
 	 * @param string $key The key to check and modify values.
@@ -102,27 +123,6 @@ trait Guid
 		);
 
 		return $this->checkGuid($guidv4, $key);
-	}
-
-	/**
-	 * Checks if the GUID value is unique and does not already exist.
-	 *
-	 * @param string $guid The GUID value to check.
-	 * @param string $key  The key to check and modify values.
-	 *
-	 * @return string The unique GUID value.
-	 *
-	 * @since 5.0.2
-	 */
-	private function checkGuid(string $guid, string $key): string
-	{
-		// Check that the GUID does not already exist
-		if ($this->items->table($this->getTable())->values([$guid], $key))
-		{
-			return $this->getGuid($key);
-		}
-
-		return $guid;
 	}
 }
 

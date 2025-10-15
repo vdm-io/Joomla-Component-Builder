@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Language;
 
 
-use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 
 
 /**
@@ -31,20 +31,21 @@ final class Insert
 	protected array $items = [];
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 5.0.2
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 5.0.2
 	 */
-	public function __construct()
+	public function __construct(DatabaseInterface $db)
 	{
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

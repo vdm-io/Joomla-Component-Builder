@@ -38,7 +38,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\Plugin\StructureInterface;
  * 
  * @since 5.0.2
  */
-class Structure implements StructureInterface
+final class Structure implements StructureInterface
 {
 	/**
 	 * The Data Class.

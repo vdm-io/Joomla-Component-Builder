@@ -28,7 +28,7 @@ use Joomla\CMS\Session\Session;
 defined('_JEXEC') or die;
 
 // allow main menu selection
-$this->app->input->set('hidemainmenu', false);
+$this->app->getInput()->set('hidemainmenu', false);
 
 // set the basu URL
 $url_base = Uri::base() . 'index.php?option=com_componentbuilder';

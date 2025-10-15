@@ -2205,8 +2205,8 @@ class AjaxModel extends ListModel
 		if (!isset($this->viewid[$call]))
 		{
 			// get the vdm key
-			$jinput = Factory::getApplication()->input;
-			$vdm = $jinput->get('vdm', null, 'WORD');
+			$input = Factory::getApplication()->getInput();
+			$vdm = $input->get('vdm', null, 'WORD');
 			if ($vdm)
 			{
 				// set view and id
@@ -3423,7 +3423,7 @@ class AjaxModel extends ListModel
 	 */
 	protected function buildReturnUrl(array $view, int $id): string
 	{
-		$jinput = Factory::getApplication()->input;
+		$jinput = Factory::getApplication()->getInput();
 		$returnHere = $jinput->get('return_here', null, 'base64');
 		if (StringHelper::check($returnHere))
 		{
@@ -3670,8 +3670,8 @@ class AjaxModel extends ListModel
 	 */
 	protected function buildReturnUrlForcustom_code(int $id): string
 	{
-		$jinput = Factory::getApplication()->input;
-		$returnHere = $jinput->get('return_here', null, 'base64');
+		$input = Factory::getApplication()->getInput();
+		$returnHere = $input->get('return_here', null, 'base64');
 		if (StringHelper::check($returnHere))
 		{
 			return '&return=' . $returnHere;
@@ -4104,8 +4104,8 @@ class AjaxModel extends ListModel
 	 */
 	protected function buildReturnUrlForplaceholder(int $id): string
 	{
-		$jinput = Factory::getApplication()->input;
-		$returnHere = $jinput->get('return_here', null, 'base64');
+		$input = Factory::getApplication()->getInput();
+		$returnHere = $input->get('return_here', null, 'base64');
 		if (StringHelper::check($returnHere))
 		{
 			return '&return=' . $returnHere;

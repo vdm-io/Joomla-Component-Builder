@@ -104,6 +104,14 @@ class HtmlView extends BaseHtmlView
 	public bool $isModal;
 
 	/**
+	 * The empty state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	protected bool $isEmptyState;
+
+	/**
 	 * The user object.
 	 *
 	 * @var    User
@@ -122,17 +130,18 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
-		// Assign data to the view
-		$this->items = $this->get('Items');
-		$this->pagination = $this->get('Pagination');
-		$this->state = $this->get('State');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
+		// Load module values
+		$model = $this->getModel();
+		$this->items = $model->getItems();
+		$this->pagination = $model->getPagination();
+		$this->state = $model->getState();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();
-		// Load the filter form from xml.
-		$this->filterForm = $this->get('FilterForm');
-		// Load the active filters.
-		$this->activeFilters = $this->get('ActiveFilters');
+		// Load the filter form from xml for searchtools.
+		$this->filterForm = $model->getFilterForm();
+		// Load the active filters for searchtools.
+		$this->activeFilters = $model->getActiveFilters();
 		// Add the list ordering clause.
 		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
 		$this->listDirn = $this->escape($this->state->get('list.direction', 'DESC'));
@@ -148,7 +157,7 @@ class HtmlView extends BaseHtmlView
 		$this->canBatch = ($this->canDo->get('component_admin_views.batch') && $this->canDo->get('core.batch'));
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $this->get('IsEmptyState'))
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
 		{
 			$this->setLayout('emptystate');
 		}
@@ -243,7 +252,6 @@ class HtmlView extends BaseHtmlView
 	{
 		// Load jQuery
 		Html::_('jquery.framework');
-		$this->getDocument()->setTitle(Text::_('COM_COMPONENTBUILDER_COMPONENTS_ADMIN_VIEWS'));
 		// add styles
 		foreach ($this->styles as $style)
 		{

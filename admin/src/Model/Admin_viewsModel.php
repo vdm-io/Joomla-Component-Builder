@@ -164,20 +164,21 @@ class Admin_viewsModel extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = $this->app;
+		$input = $this->app->getInput();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}
 
 		// Check if the form was submitted
-		$formSubmited = $app->input->post->get('form_submited');
+		$formSubmited = $input->post->get('form_submited');
 
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
 		if ($formSubmited)
 		{
-			$access = $app->input->post->get('access');
+			$access = $input->post->get('access');
 			$this->setState('filter.access', $access);
 		}
 
@@ -199,49 +200,49 @@ class Admin_viewsModel extends ListModel
 		$add_fadein = $this->getUserStateFromRequest($this->context . '.filter.add_fadein', 'filter_add_fadein');
 		if ($formSubmited)
 		{
-			$add_fadein = $app->input->post->get('add_fadein');
+			$add_fadein = $input->post->get('add_fadein');
 			$this->setState('filter.add_fadein', $add_fadein);
 		}
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.type', 'filter_type');
 		if ($formSubmited)
 		{
-			$type = $app->input->post->get('type');
+			$type = $input->post->get('type');
 			$this->setState('filter.type', $type);
 		}
 
 		$add_custom_button = $this->getUserStateFromRequest($this->context . '.filter.add_custom_button', 'filter_add_custom_button');
 		if ($formSubmited)
 		{
-			$add_custom_button = $app->input->post->get('add_custom_button');
+			$add_custom_button = $input->post->get('add_custom_button');
 			$this->setState('filter.add_custom_button', $add_custom_button);
 		}
 
 		$add_php_ajax = $this->getUserStateFromRequest($this->context . '.filter.add_php_ajax', 'filter_add_php_ajax');
 		if ($formSubmited)
 		{
-			$add_php_ajax = $app->input->post->get('add_php_ajax');
+			$add_php_ajax = $input->post->get('add_php_ajax');
 			$this->setState('filter.add_php_ajax', $add_php_ajax);
 		}
 
 		$system_name = $this->getUserStateFromRequest($this->context . '.filter.system_name', 'filter_system_name');
 		if ($formSubmited)
 		{
-			$system_name = $app->input->post->get('system_name');
+			$system_name = $input->post->get('system_name');
 			$this->setState('filter.system_name', $system_name);
 		}
 
 		$name_single = $this->getUserStateFromRequest($this->context . '.filter.name_single', 'filter_name_single');
 		if ($formSubmited)
 		{
-			$name_single = $app->input->post->get('name_single');
+			$name_single = $input->post->get('name_single');
 			$this->setState('filter.name_single', $name_single);
 		}
 
 		$short_description = $this->getUserStateFromRequest($this->context . '.filter.short_description', 'filter_short_description');
 		if ($formSubmited)
 		{
-			$short_description = $app->input->post->get('short_description');
+			$short_description = $input->post->get('short_description');
 			$this->setState('filter.short_description', $short_description);
 		}
 
@@ -649,12 +650,13 @@ class Admin_viewsModel extends ListModel
 	}
 
 	/**
-	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 * Build an SQL query to check in all items left checked out longer then a set time.
 	 *
-	 * @return bool
+	 * @return void
+	 * @throws \DateMalformedStringException
 	 * @since 3.2.0
 	 */
-	protected function checkInNow(): bool
+	protected function checkInNow(): void
 	{
 		// Get set check in time
 		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
@@ -668,37 +670,36 @@ class Admin_viewsModel extends ListModel
 			$query->select('*');
 			$query->from($db->quoteName('#__componentbuilder_admin_view'));
 			// Only select items that are checked out.
-			$query->where($db->quoteName('checked_out') . '!=0');
+			$query->where($db->quoteName('checked_out') . ' >= 0');
+			// Query only to see if we have a rows
 			$db->setQuery($query, 0, 1);
 			$db->execute();
 			if ($db->getNumRows())
 			{
-				// Get Yesterdays date.
+				// Get target date in the past.
 				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
 				// Fields to update.
-				$fields = array(
-					$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',
-					$db->quoteName('checked_out') . '=0'
-				);
+				$fields = [
+					$db->quoteName('checked_out_time') . ' = NULL',
+					$db->quoteName('checked_out') . ' = NULL'
+				];
 
 				// Conditions for which records should be updated.
-				$conditions = array(
-					$db->quoteName('checked_out') . '!=0', 
-					$db->quoteName('checked_out_time') . '<\''.$date.'\''
-				);
+				$conditions = [
+					$db->quoteName('checked_out') . ' = 0 OR ' . $db->quoteName('checked_out') . ' > 0',
+					$db->quoteName('checked_out_time') . ' < ' . $db->quote($date)
+				];
 
 				// Check table.
 				$query->update($db->quoteName('#__componentbuilder_admin_view'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);
 
-				return $db->execute();
+				$db->execute();
 			}
 		}
-
-		return false;
 	}
 }

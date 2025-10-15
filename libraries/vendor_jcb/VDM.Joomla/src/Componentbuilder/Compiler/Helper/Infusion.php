@@ -494,7 +494,7 @@ class Infusion extends Interpretation
 					{
 						CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|DOCUMENT_CUSTOM_PHP',
 							str_replace(
-								'$document->', '$this->document->', (string) $phpDocument
+								'$document->', '$this->getDocument()->', (string) $phpDocument
 							)
 						);
 						// clear some memory
@@ -772,16 +772,16 @@ class Infusion extends Interpretation
 					// set Auto check in function
 					if (isset($view['checkin']) && $view['checkin'] == 1)
 					{
+						// CHECKINCALL <<<DYNAMIC>>>
+						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CHECKINCALL',
+							CFactory::_('Architecture.Model.CheckInNow')->getCall()
+						);
 						// AUTOCHECKIN <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|AUTOCHECKIN',
-							$this->setAutoCheckin(
+							CFactory::_('Architecture.Model.CheckInNow')->getMethod(
 								$nameSingleCode,
 								CFactory::_('Config')->component_code_name
 							)
-						);
-						// CHECKINCALL <<<DYNAMIC>>>
-						CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CHECKINCALL',
-							$this->setCheckinCall()
 						);
 					}
 					else
@@ -1329,14 +1329,28 @@ class Infusion extends Interpretation
 					}
 					else
 					{
-						// HIDEMAINMENU <<<DYNAMIC>>>
-						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|HIDEMAINMENU',
-							PHP_EOL . Indent::_(2) . '//' . Line::_(
-								__LINE__,__CLASS__
-							) . " hide the main menu"
-							. PHP_EOL . Indent::_(2)
-							. "\$this->app->input->set('hidemainmenu', true);"
-						);
+						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						{
+							// HIDEMAINMENU <<<DYNAMIC>>>
+							CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|HIDEMAINMENU',
+								PHP_EOL . Indent::_(2) . '//' . Line::_(
+									__LINE__,__CLASS__
+								) . " hide the main menu"
+								. PHP_EOL . Indent::_(2)
+								. "\$this->app->input->set('hidemainmenu', true);"
+							);
+						}
+						else
+						{
+							// HIDEMAINMENU <<<DYNAMIC>>>
+							CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|HIDEMAINMENU',
+								PHP_EOL . Indent::_(2) . '//' . Line::_(
+									__LINE__,__CLASS__
+								) . " hide the main menu"
+								. PHP_EOL . Indent::_(2)
+								. "\$this->input->set('hidemainmenu', true);"
+							);
+						}
 					}
 
 					if ($view['settings']->main_get->gettype == 1)
@@ -1351,7 +1365,7 @@ class Infusion extends Interpretation
 
 						// CUSTOM_ADMIN_GET_ITEM <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_GET_ITEM',
-							$this->setCustomViewGetItem(
+							CFactory::_('Dynamicget.GetItem')->get(
 								$view['settings']->main_get,
 								$view['settings']->code, Indent::_(2)
 							)
@@ -1369,7 +1383,7 @@ class Infusion extends Interpretation
 					{
 						// CUSTOM_ADMIN_GET_LIST_QUERY <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_GET_LIST_QUERY',
-							$this->setCustomViewListQuery(
+							CFactory::_('Dynamicget.ListQuery')->get(
 								$view['settings']->main_get, $view['settings']->code
 							)
 						);
@@ -1392,7 +1406,7 @@ class Infusion extends Interpretation
 
 						// CUSTOM_ADMIN_GET_ITEMS <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_GET_ITEMS',
-							$this->setCustomViewGetItems(
+							CFactory::_('Dynamicget.GetItems')->get(
 								$view['settings']->main_get, $view['settings']->code
 							)
 						);
@@ -1408,12 +1422,12 @@ class Infusion extends Interpretation
 
 					// CUSTOM_ADMIN_CUSTOM_METHODS <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_CUSTOM_METHODS',
-						$this->setCustomViewCustomItemMethods(
+						CFactory::_('Dynamicget.CustomGetMethods')->get(
 							$view['settings']->main_get, $view['settings']->code
 						)
 					);
 					CFactory::_('Compiler.Builder.Content.Multi')->add($view['settings']->code . '|CUSTOM_ADMIN_CUSTOM_METHODS',
-						$this->setCustomViewCustomMethods(
+						CFactory::_('Dynamicget.Methods')->get(
 							$view, $view['settings']->code
 						). false
 					);
@@ -1879,7 +1893,7 @@ class Infusion extends Interpretation
 
 						// SITE_GET_ITEM <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_GET_ITEM',
-							$this->setCustomViewGetItem(
+							CFactory::_('Dynamicget.GetItem')->get(
 								$view['settings']->main_get,
 								$view['settings']->code, Indent::_(2)
 							)
@@ -1901,7 +1915,7 @@ class Infusion extends Interpretation
 						);
 						// SITE_GET_LIST_QUERY <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_GET_LIST_QUERY',
-							$this->setCustomViewListQuery(
+							CFactory::_('Dynamicget.ListQuery')->get(
 								$view['settings']->main_get, $view['settings']->code
 							)
 						);
@@ -1914,7 +1928,7 @@ class Infusion extends Interpretation
 
 						// SITE_GET_ITEMS <<<DYNAMIC>>>
 						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_GET_ITEMS',
-							$this->setCustomViewGetItems(
+							CFactory::_('Dynamicget.GetItems')->get(
 								$view['settings']->main_get, $view['settings']->code
 							)
 						);
@@ -1940,12 +1954,12 @@ class Infusion extends Interpretation
 					);
 					// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_CUSTOM_METHODS',
-						$this->setCustomViewCustomItemMethods(
+						CFactory::_('Dynamicget.CustomGetMethods')->get(
 							$view['settings']->main_get, $view['settings']->code
 						)
 					);
 					CFactory::_('Compiler.Builder.Content.Multi')->add($view['settings']->code . '|SITE_CUSTOM_METHODS',
-						$this->setCustomViewCustomMethods(
+						CFactory::_('Dynamicget.Methods')->get(
 							$view, $view['settings']->code
 						), false
 					);
@@ -2228,87 +2242,9 @@ class Infusion extends Interpretation
 			$_backup_target     = CFactory::_('Config')->build_target;
 			$_backup_lang       = CFactory::_('Config')->lang_target;
 			$_backup_langPrefix = CFactory::_('Config')->lang_prefix;
-			// infuse module data if set
-			if (CFactory::_('Joomlamodule.Data')->exists())
-			{
-				foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
-				{
-					if (ObjectHelper::check($module))
-					{
-						// Trigger Event: jcb_ce_onBeforeInfuseModuleData
-						CFactory::_('Event')->trigger(
-							'jcb_ce_onBeforeInfuseModuleData', [&$module]
-						);
 
-						CFactory::_('Config')->build_target = $module->key;
-						CFactory::_('Config')->lang_target = $module->key;
-						$this->langPrefix = $module->lang_prefix;
-						CFactory::_('Config')->set('lang_prefix', $module->lang_prefix);
-						// MODCODE
-						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|MODCODE',
-							$this->getModCode($module)
-						);
-						// DYNAMICGET
-						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|DYNAMICGETS',
-							$this->setCustomViewCustomMethods(
-								$module, $module->key
-							)
-						);
-						// HELPERCODE
-						if ($module->add_class_helper >= 1)
-						{
-							CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|HELPERCODE',
-								$this->getModHelperCode($module)
-							);
-						}
-						// MODDEFAULT
-						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|MODDEFAULT',
-							$this->getModDefault($module, $module->key)
-						);
-						// MODDEFAULT_XXX
-						$this->setModTemplates($module);
-						// only add install script if needed
-						if ($module->add_install_script)
-						{
-							// INSTALLCLASS
-							CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|INSTALLCLASS',
-								CFactory::_('Extension.InstallScript')->get($module)
-							);
-						}
-						// FIELDSET
-						if (isset($module->form_files)
-							&& ArrayHelper::check(
-								$module->form_files
-							))
-						{
-							foreach ($module->form_files as $file => $files)
-							{
-								foreach ($files as $field_name => $fieldsets)
-								{
-									foreach ($fieldsets as $fieldset => $fields)
-									{
-										// FIELDSET_ . $file.$field_name.$fieldset
-										CFactory::_('Compiler.Builder.Content.Multi')->set($module->key .
-											'|FIELDSET_' . $file . $field_name . $fieldset,
-											CFactory::_('Compiler.Creator.Fieldset.Extension')->get(
-												$module, $fields
-											)
-										);
-									}
-								}
-							}
-						}
-						// MAINXML
-						CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|MAINXML',
-							$this->getModuleMainXML($module)
-						);
-						// Trigger Event: jcb_ce_onAfterInfuseModuleData
-						CFactory::_('Event')->trigger(
-							'jcb_ce_onAfterInfuseModuleData', [&$module]
-						);
-					}
-				}
-			}
+			// infuse module data if set
+			CFactory::_('Joomlamodule.Infusion')->set();
 
 			// infuse plugin data if set
 			CFactory::_('Joomlaplugin.Infusion')->set();

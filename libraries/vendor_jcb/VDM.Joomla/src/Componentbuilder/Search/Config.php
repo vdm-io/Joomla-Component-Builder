@@ -25,7 +25,7 @@ use VDM\Joomla\Abstraction\FunctionRegistry;
 class Config extends FunctionRegistry
 {
 	/**
-	 * Hold a JInput object for easier access to the input variables.
+	 * Hold a Input object for easier access to the input variables.
 	 *
 	 * @var    Input
 	 * @since 3.2.0
@@ -42,7 +42,7 @@ class Config extends FunctionRegistry
 	 */
 	public function __construct(?Input $input = null)
 	{
-		$this->input = $input ?: Factory::getApplication()->input;
+		$this->input = $input ?: Factory::getApplication()->getInput();
 	}
 
 	/**

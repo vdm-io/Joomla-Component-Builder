@@ -71,6 +71,34 @@ class Interpretation extends Fields
 	public $uninstallBuilder = [];
 
 	/**
+	 * The unistall script builder
+	 *
+	 * @var    array
+	 */
+	public $uninstallScriptBuilder = [];
+
+	/**
+	 * The unistall script fields
+	 *
+	 * @var    array
+	 */
+	public $uninstallScriptFields = [];
+
+	/**
+	 * The unistall script content
+	 *
+	 * @var    array
+	 */
+	public $uninstallScriptContent = [];
+
+	/**
+	 * The last update url
+	 *
+	 * @var    array
+	 */
+	public $lastupdateURL;
+
+	/**
 	 * The update SQL builder
 	 *
 	 * @var    array
@@ -1063,6 +1091,7 @@ class Interpretation extends Fields
 			// add the update server
 			if (CFactory::_('Component')->get('update_server_target', 3) != 3)
 			{
+				$updateXML[] = '<?xml version="1.0" encoding="utf-8"?>';
 				$updateXML[] = '<updates>';
 			}
 
@@ -1102,20 +1131,13 @@ class Interpretation extends Fields
 			{
 				$updateXML[] = '</updates>';
 				// UPDATE_SERVER_XML
-				$name   = substr(
-					(string) CFactory::_('Component')->get('update_server_url'),
-					strrpos((string) CFactory::_('Component')->get('update_server_url'), '/')
-					+ 1
-				);
-				$name   = explode('.xml', $name)[0];
+				$name = CFactory::_('Component')->get('update_server_file_name');
 				$target = array('admin' => $name);
 				CFactory::_('Utilities.Structure')->build($target, 'update_server');
 				CFactory::_('Compiler.Builder.Content.Multi')->set($name . '|UPDATE_SERVER_XML', implode(PHP_EOL, $updateXML));
-
-				// set the Update server file name
-				$this->updateServerFileName = $name;
 			}
 		}
+
 		// add the update server link to component XML
 		if (CFactory::_('Component')->get('add_update_server')
 			&& CFactory::_('Component')->isString('update_server_url'))
@@ -1139,6 +1161,31 @@ class Interpretation extends Fields
 			// add update server details to component XML file
 			CFactory::_('Compiler.Builder.Content.One')->set('UPDATESERVER', '');
 		}
+
+		// add the changelog server to component XML
+		if (CFactory::_('Component')->get('add_changelog_server')
+			&& CFactory::_('Component')->isString('changelog_server_url'))
+		{
+			// CHANGELOGSERVER
+			$changelogServer = PHP_EOL . Indent::_(1) . "<changelogurl>" . CFactory::_('Component')->get('changelog_server_url')
+				. "</changelogurl>";
+			// add changelog server to component XML file
+			CFactory::_('Compiler.Builder.Content.One')->set('CHANGELOGSERVER', $changelogServer);
+
+			// CHANGELOG_SERVER_XML
+			$name = CFactory::_('Component')->get('changelog_server_file_name');
+			$target = array('admin' => $name);
+			CFactory::_('Utilities.Structure')->build($target, 'changelog_server');
+			CFactory::_('Compiler.Builder.Content.Multi')->set($name . '|CHANGELOG_SERVER_XML',
+				CFactory::_('Component')->get('changelogxml', '<changelogs></changelogs>')
+			);
+		}
+		else
+		{
+			// add update server details to component XML file
+			CFactory::_('Compiler.Builder.Content.One')->set('CHANGELOGSERVER', '');
+		}
+
 		// ensure to update Component version data
 		if (CFactory::_('Compiler.Builder.Update.Mysql')->isActive())
 		{
@@ -1441,7 +1488,7 @@ class Interpretation extends Fields
 		}
 		else
 		{
-			$help[] = Indent::_(2) . "\$db	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(DatabaseInterface::class);";
+			$help[] = Indent::_(2) . "\$db	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla__"."_7bd29d76_73c9_4c07_a5da_4f7a32aff78f___Power::class);";
 		}
 		$help[] = Indent::_(2) . "\$query	= \$db->getQuery(true);";
 		$help[] = Indent::_(2)
@@ -2089,1094 +2136,214 @@ class Interpretation extends Fields
 		return $keep;
 	}
 
-	public function setCustomViewQuery(&$gets, &$code, $tab = '', $type = 'main'
-	)
+	/**
+	 * Set the custom view query.
+	 *
+	 * @param  array   $gets   The data to build the query from.
+	 * @param  string  $code   The build code.
+	 * @param  string  $tab    The tab indentation.
+	 * @param  string  $type   The query type (main|custom).
+	 *
+	 * @return string  The compiled query string.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Queries')->get(...)
+	 */
+	public function setCustomViewQuery($gets, &$code, $tab = '', $type = 'main'): string
 	{
-		$query = '';
-		if (ArrayHelper::check($gets))
-		{
-			$mainAsArray = [];
-			$check       = 'zzz';
-			foreach ($gets as $nr => $the_get)
-			{
-				// to insure that there be no double entries of a call
-				$checker = md5(serialize($the_get) . $code);
-				if (!isset($this->customViewQueryChecker[CFactory::_('Config')->build_target])
-					|| !isset($checker, $this->customViewQueryChecker[CFactory::_('Config')->build_target][$checker]))
-				{
-					// load this unuiqe key
-					$this->customViewQueryChecker[CFactory::_('Config')->build_target][$checker]
-						= true;
-					if (isset($the_get['selection']['type'])
-						&& StringHelper::check(
-							$the_get['selection']['type']
-						))
-					{
-						$getItem = PHP_EOL . PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(1) . "//" . Line::_(__Line__, __Class__)
-							. " Get from " . $the_get['selection']['table']
-							. " as " . $the_get['as'];
-						// set the selection
-						$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. $the_get['selection']['select'];
-					}
-					else
-					{
-						$getItem = PHP_EOL . PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(1) . "//" . Line::_(__Line__, __Class__)
-							. " Get data";
-						// set the selection
-						$getItem .= PHP_EOL . CFactory::_('Placeholder')->update_(
-								$the_get['selection']['select']
-							);
-					}
-					// load the from selection
-					if (($nr == 0
-							&& (!isset($the_get['join_field'])
-								|| !StringHelper::check(
-									$the_get['join_field']
-								))
-							&& (isset($the_get['selection']['type'])
-								&& StringHelper::check(
-									$the_get['selection']['type']
-								)))
-						|| ($type === 'custom'
-							&& (isset($the_get['selection']['type'])
-								&& StringHelper::check(
-									$the_get['selection']['type']
-								))))
-					{
-						$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. '$query->from(' . $the_get['selection']['from']
-							. ');';
-					}
-					elseif (isset($the_get['join_field'])
-						&& StringHelper::check(
-							$the_get['join_field']
-						)
-						&& isset($the_get['selection']['type'])
-						&& StringHelper::check(
-							$the_get['selection']['type']
-						))
-					{
-						$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$query->join('" . $the_get['type'];
-						$getItem .= "', (" . $the_get['selection']['from'];
-						$getItem .= ") . ' ON (' . \$db->quoteName('"
-							. $the_get['on_field'];
-						$getItem .= "') . ' " . $the_get['operator'];
-						$getItem .= " ' . \$db->quoteName('"
-							. $the_get['join_field'] . "') . ')');";
-
-						$check = current(explode(".", (string) $the_get['on_field']));
-					}
-
-					// set the method defaults
-					if (($default = $this->setCustomViewMethodDefaults($the_get, $code)) !== false)
-					{
-						if (($join_field_ = CFactory::_('Compiler.Builder.Site.Dynamic.Get')->get(CFactory::_('Config')->build_target .
-								'.' . $default['code'] . '.' . $default['as'] . '.' . $default['join_field'])) !== null
-							&& !in_array($check, $mainAsArray))
-						{
-							// load to other query
-							CFactory::_('Compiler.Builder.Other.Query')->add(
-								CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $join_field_ . '.' . $default['valueName'],
-								$getItem,
-								false
-							);
-						}
-						else
-						{
-							$mainAsArray[] = $default['as'];
-							$query         .= $getItem;
-						}
-					}
-				}
-			}
-		}
-
-		return $query;
-	}
-
-	public function setCustomViewFieldDecodeFilter(&$get, &$filters, $string,
-	                                               $removeString, $code, $tab
-	)
-	{
-		$filter = '';
-		// check if filter is set for this field
-		if (ArrayHelper::check($filters))
-		{
-			foreach ($filters as $field => $ter)
-			{
-				// build load counter
-				$key = md5(
-					'setCustomViewFieldDecodeFilter' . $code . $get['key']
-					. $string . $ter['table_key']
-				);
-				// check if we should load this again
-				if (strpos((string) $get['selection']['select'], (string) $ter['table_key'])
-					!== false
-					&& !isset($this->loadTracker[$key]))
-				{
-					// set the key
-					$this->loadTracker[$key] = $key;
-					$as                      = '';
-					$felt                    = '';
-					list($as, $felt) = array_map(
-						'trim', explode('.', (string) $ter['table_key'])
-					);
-					if ($get['as'] == $as)
-					{
-						switch ($ter['filter_type'])
-						{
-							case 4:
-								// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
-								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
-									. $tab . Indent::_(1) . "//"
-									. Line::_(__Line__, __Class__) . " filter "
-									. $as . " based on user groups";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1)
-									. "\$remove = (count(array_intersect((array) \$this->groups, (array) "
-									. $string . "->" . $field
-									. "))) ? false : true;";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "if (\$remove)";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "{";
-								if ($removeString == $string)
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Remove " . $string
-										. " if user not in groups";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . $string . " = null;";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "return false;";
-								}
-								else
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Unset " . $string
-										. " if user not in groups";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "unset("
-										. $removeString . ");";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "continue;";
-								}
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "}";
-								break;
-							case 9:
-								// COM_COMPONENTBUILDER_DYNAMIC_GET_ARRAY_VALUE
-
-								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
-									. $tab . Indent::_(1) . "if ("
-									. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(" . $string . "->"
-									. $field . "))";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "{";
-
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(2) . "//" . Line::_(
-										__LINE__,__CLASS__
-									) . " do your thing here";
-
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "}";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "else";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "{";
-
-								if ($removeString == $string)
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Remove " . $string
-										. " if not array.";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . $string . " = null;";
-								}
-								else
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Unset " . $string
-										. " if not array.";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "unset("
-										. $removeString . ");";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "continue;";
-								}
-
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "}";
-								break;
-							case 10:
-								// COM_COMPONENTBUILDER_DYNAMIC_GET_REPEATABLE_VALUE
-								$filter .= PHP_EOL . PHP_EOL . Indent::_(1)
-									. $tab . Indent::_(1) . "//"
-									. Line::_(__Line__, __Class__) . " filter "
-									. $as . " based on repeatable value";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "if ("
-									. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(" . $string . "->"
-									. $field . "))";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "{";
-
-								$filter .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(1) . "\$array = json_decode("
-									. $string . "->" . $field . ",true);";
-								$filter .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(1) . "if ("
-									. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
-								$filter .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(1) . "{";
-
-								$filter .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(2) . "//" . Line::_(
-										__LINE__,__CLASS__
-									) . " do your thing here";
-
-								$filter .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(1) . "}";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(2) . "else";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(2) . "{";
-
-								if ($removeString == $string)
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(3) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Remove " . $string
-										. " if not array.";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(3) . $string . " = null;";
-								}
-								else
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(3) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Unset " . $string
-										. " if not array.";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(3) . "unset("
-										. $removeString . ");";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(3) . "continue;";
-								}
-
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(2) . "}";
-
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "}";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "else";
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "{";
-
-								if ($removeString == $string)
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Remove " . $string
-										. " if not string.";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . $string . " = null;";
-								}
-								else
-								{
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "//" . Line::_(
-											__LINE__,__CLASS__
-										) . " Unset " . $string
-										. " if not string.";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "unset("
-										. $removeString . ");";
-									$filter .= PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(2) . "continue;";
-								}
-
-								$filter .= PHP_EOL . Indent::_(1) . $tab
-									. Indent::_(1) . "}";
-								break;
-						}
-					}
-				}
-			}
-		}
-
-		return $filter;
-	}
-
-	public function setCustomViewFieldDecode(&$get, $checker, $string, $code,
-	                                         $tab = ''
-	)
-	{
-		$fieldDecode = '';
-		foreach ($checker as $field => $array)
-		{
-			// build load counter
-			$key = md5(
-				'setCustomViewFieldDecode' . $code . $get['key'] . $string
-				. $field
-			);
-			// check if we should load this again
-			if (strpos((string) $get['selection']['select'], (string) $field) !== false
-				&& !isset($this->loadTracker[$key])
-				&& ArrayHelper::check($array['decode']))
-			{
-				// set the key
-				$this->loadTracker[$key] = $key;
-				// insure it is unique
-				$array['decode'] = (array) array_unique(
-					array_reverse((array) $array['decode'])
-				);
-				// now loop the array
-				foreach ($array['decode'] as $decode)
-				{
-					$if      = '';
-					$decoder = '';
-					if ('json' === $decode)
-					{
-						$if = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "if (isset(" . $string . "->" . $field . ") && "
-							. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check("
-							. $string . "->" . $field . "))" . PHP_EOL
-							. Indent::_(1) . $tab . Indent::_(1) . "{";
-						// json_decode
-						$decoder = $string . "->" . $field . " = json_decode("
-							. $string . "->" . $field . ", true);";
-					}
-					elseif ('base64' === $decode)
-					{
-						$if = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "if (!empty(" . $string . "->" . $field . ") && "
-							. $string . "->" . $field
-							. " === base64_encode(base64_decode(" . $string
-							. "->" . $field . ")))" . PHP_EOL . Indent::_(1)
-							. $tab . Indent::_(1) . "{";
-						// base64_decode
-						$decoder = $string . "->" . $field . " = base64_decode("
-							. $string . "->" . $field . ");";
-					}
-					elseif (strpos((string) $decode, '_encryption') !== false
-						|| 'expert_mode' === $decode)
-					{
-						foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-						{
-							if ($cryptionType . '_encryption' === $decode
-								|| $cryptionType . '_mode' === $decode)
-							{
-								if ('expert' !== $cryptionType)
-								{
-									$if = PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(1) . "if (!empty(" . $string
-										. "->" . $field . ") && \$"
-										. $cryptionType . "key && !is_numeric("
-										. $string . "->" . $field . ") && "
-										. $string . "->" . $field
-										. " === base64_encode(base64_decode("
-										. $string . "->" . $field . ", true)))"
-										. PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(1) . "{";
-									// set decryption
-									$decoder = $string . "->" . $field
-										. " = rtrim(\$" . $cryptionType
-										. "->decryptString(" . $string . "->"
-										. $field . "), " . '"\0"' . ");";
-								}
-								elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->
-									exists($array['admin_view'] . '.' . $field))
-								{
-									$_placeholder_for_field
-										= array('[[[field]]]' => $string
-										. "->" . $field);
-									$fieldDecode .= CFactory::_('Placeholder')->update(
-										PHP_EOL . Indent::_(1) . $tab
-										. Indent::_(1) . implode(
-											PHP_EOL . Indent::_(1) . $tab
-											. Indent::_(1),
-											CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field')->get(
-												$array['admin_view'] . '.' . $field . '.get', ['error'])
-										), $_placeholder_for_field
-									);
-								}
-								// activate site decryption
-								CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", true);
-							}
-						}
-					}
-					// check if we have found the details
-					if (StringHelper::check($if))
-					{
-						// build decoder string
-						$fieldDecode .= PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(1) . "//" . Line::_(__Line__, __Class__)
-							. " Check if we can decode " . $field . $if
-							. PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-							. "//" . Line::_(__Line__, __Class__) . " Decode "
-							. $field;
-					}
-					if (StringHelper::check($decoder))
-					{
-						// build decoder string
-						$fieldDecode .= PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(2) . $decoder . PHP_EOL . Indent::_(1)
-							. $tab . Indent::_(1) . "}";
-					}
-				}
-			}
-		}
-
-		return $fieldDecode;
-	}
-
-	public function setCustomViewFieldonContentPrepareChecker(&$get, $checker,
-	                                                          $string, $code, $tab = ''
-	)
-	{
-		$fieldPrepare = '';
-		$runplugins   = false;
-		// set component
-		$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
-		// set context
-		$context = (isset($get['context'])) ? $get['context'] : $code;
-		$context = 'com_' . CFactory::_('Config')->component_code_name . '.' . $context;
-		// load parms builder only once
-		$params = false;
-		foreach ($checker as $field => $array)
-		{
-			// build load counter
-			$key = md5(
-				'setCustomViewFieldonContentPrepareChecker' . $code
-				. $get['key'] . $string . $field
-			);
-			// check if we should load this again
-			if (strpos((string) $get['selection']['select'], (string) $field) !== false
-				&& !isset($this->loadTracker[$key]))
-			{
-				// set the key
-				$this->loadTracker[$key] = $key;
-				// build decoder string
-				if (!$runplugins)
-				{
-					$runplugins = PHP_EOL . $tab . Indent::_(1) . "//"
-						. Line::_(__Line__, __Class__)
-						. " Load the JEvent Dispatcher";
-					$runplugins .= PHP_EOL . $tab . Indent::_(1)
-						. "PluginHelper::importPlugin('content');";
-					$runplugins .= PHP_EOL . $tab . Indent::_(1)
-						. '$this->_dispatcher = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();';
-				}
-				if (!$params)
-				{
-					$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(
-							1
-						) . "//" . Line::_(__Line__, __Class__)
-						. " Check if item has params, or pass whole item.";
-					$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(
-							1
-						) . "\$params = (isset(" . $string . "->params) && "
-						. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(" . $string
-						. "->params)) ? json_decode(" . $string . "->params) : "
-						. $string . ";";
-					$params       = true;
-				}
-				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "//" . Line::_(__Line__, __Class__)
-					. " Make sure the content prepare plugins fire on "
-					. $field;
-				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$_" . $field . " = new \stdClass();";
-				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$_" . $field . '->text =& ' . $string . '->' . $field
-					. '; //' . Line::_(__Line__, __Class__)
-					. ' value must be in text';
-				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "//" . Line::_(__Line__, __Class__)
-					. " Since all values are now in text (Joomla Limitation), we also add the field name ("
-					. $field . ") to context";
-				$fieldPrepare .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. '$this->_dispatcher->triggerEvent("onContentPrepare", array(\''
-					. $context . '.' . $field . '\', &$_' . $field
-					. ', &$params, 0));';
-			}
-		}
-		// load dispatcher
-		if ($runplugins)
-		{
-			$this->JEventDispatcher = array(Placefix::_h('DISPATCHER') => $runplugins);
-		}
-
-		// return content prepare fix
-		return $fieldPrepare;
-	}
-
-	public function setCustomViewFieldUikitChecker(&$get, $checker, $string,
-	                                               $code, $tab = ''
-	)
-	{
-		$fieldUikit = '';
-		foreach ($checker as $field => $array)
-		{
-			// build load counter
-			$key = md5(
-				'setCustomViewFieldUikitChecker' . $code . $get['key'] . $string
-				. $field
-			);
-			// check if we should load this again
-			if (strpos((string) $get['selection']['select'], (string) $field) !== false
-				&& !isset($this->loadTracker[$key]))
-			{
-				// set the key
-				$this->loadTracker[$key] = $key;
-				// only load for uikit version 2 (TODO) we may need to add another check here
-				if (2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-				{
-					$fieldUikit .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-						. "//" . Line::_(__Line__, __Class__) . " Checking if "
-						. $field . " has uikit components that must be loaded.";
-					$fieldUikit .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-						. "\$this->uikitComp = "
-						. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::getUikitComp(" . $string . "->"
-						. $field . ",\$this->uikitComp);";
-				}
-			}
-		}
-
-		// return UIKIT fix
-		return $fieldUikit;
-	}
-
-	public function setCustomViewCustomJoin(&$gets, $string, $code, &$asBucket,
-	                                        $tab = ''
-	)
-	{
-		if (ArrayHelper::check($gets))
-		{
-			$customJoin = '';
-			foreach ($gets as $get)
-			{
-				// set the value name $default
-				if (($default = $this->setCustomViewMethodDefaults($get, $code))
-					!== false)
-				{
-					if ($this->checkJoint($default, $get, $asBucket))
-					{
-						// build custom join string
-						$otherJoin = PHP_EOL . Indent::_(1) . Placefix::_h("TAB")
-							. Indent::_(1) . "//" . Line::_(__LINE__,__CLASS__)
-							. " set " . $default['valueName'] . " to the "
-							. Placefix::_h("STRING")  . " object.";
-						$otherJoin .= PHP_EOL . Indent::_(1) . Placefix::_h("TAB")
-							. Indent::_(1) . Placefix::_h("STRING") . "->"
-							. $default['valueName'] . " = \$this->get"
-							. $default['methodName'] . "(" . Placefix::_h("STRING")  . "->"
-							. CFactory::_('Compiler.Builder.Get.As.Lookup')->
-								get($get['key'] . '.' . $get['on_field'], 'Error')
-							. ");";
-						$join_field_ = CFactory::_('Compiler.Builder.Site.Dynamic.Get')->get(CFactory::_('Config')->build_target .
-							'.' . $default['code'] . '.' . $default['as'] . '.' . $default['join_field'], 'ZZZ');
-						// load to other join
-						CFactory::_('Compiler.Builder.Other.Join')->add(
-							CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $join_field_ . '.' . $default['valueName'],
-							$otherJoin,
-							false
-						);
-					}
-					else
-					{
-						// build custom join string
-						$customJoin .= PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(1) . "//" . Line::_(__Line__, __Class__)
-							. " set " . $default['valueName'] . " to the "
-							. $string . " object.";
-						$customJoin .= PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(1) . $string . "->"
-							. $default['valueName'] . " = \$this->get"
-							. $default['methodName'] . "(" . $string . "->"
-							. CFactory::_('Compiler.Builder.Get.As.Lookup')->
-								get($get['key'] . '.' . $get['on_field'], 'Error')
-							. ");";
-					}
-				}
-			}
-
-			return $customJoin;
-		}
-
-		return '';
-	}
-
-	public function checkJoint(&$default, &$get, &$asBucket)
-	{
-		// check if this function is not linked to the main call
-		list($aJoin) = explode('.', (string) $get['on_field']);
-		if (ArrayHelper::check($asBucket) && in_array($aJoin, $asBucket))
-		{
-			return false;
-		}
-		// default fallback
-		elseif (CFactory::_('Compiler.Builder.Site.Dynamic.Get')->exists(
-			CFactory::_('Config')->build_target . '.' . $default['code'] . '.' .
-			$default['as'] . '.' . $default['join_field']
-		))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	public function setCustomViewFilter(&$filter, &$code, $tab = '')
-	{
-		$filters = '';
-		if (ArrayHelper::check($filter))
-		{
-			foreach ($filter as $ter)
-			{
-				$as     = '';
-				$field  = '';
-				$string = '';
-				if (strpos((string) $ter['table_key'], '.') !== false)
-				{
-					list($as, $field) = array_map(
-						'trim', explode('.', (string) $ter['table_key'])
-					);
-				}
-				$path = $code . '.' . $ter['key'] . '.' . $as . '.' . $field;
-				switch ($ter['filter_type'])
-				{
-					case 1:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_ID
-						$string = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$query->where('" . $ter['table_key'] . " "
-							. $ter['operator'] . " ' . (int) \$pk);";
-						break;
-					case 2:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_USER
-						$string = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$query->where('" . $ter['table_key'] . " "
-							. $ter['operator'] . " ' . (int) \$this->userId);";
-						break;
-					case 3:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_ACCESS_LEVEL
-						$string = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$query->where('" . $ter['table_key'] . " "
-							. $ter['operator']
-							. " (' . implode(',', \$this->levels) . ')');";
-						break;
-					case 4:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_USER_GROUPS
-						$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->
-							get('decode.' . $path);
-						if (ArrayHelper::check($decodeChecker)
-							|| $ter['state_key'] === 'array')
-						{
-							// set needed fields to filter after query
-							CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
-								set(CFactory::_('Config')->build_target . '.' . $path, $ter);
-						}
-						else
-						{
-							$string = PHP_EOL . Indent::_(1) . $tab . Indent::_(
-									1
-								) . "\$query->where('" . $ter['table_key'] . " "
-								. $ter['operator']
-								. " (' . implode(',', \$this->groups) . ')');";
-						}
-						break;
-					case 5:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_CATEGORIES
-						$string = PHP_EOL . Indent::_(2) . $tab . "//"
-							. Line::_(__Line__, __Class__)
-							. " (TODO) The dynamic category filter is not ready.";
-						break;
-					case 6:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_TAGS
-						$string = PHP_EOL . Indent::_(2) . $tab . "//"
-							. Line::_(__Line__, __Class__)
-							. " (TODO) The dynamic tags filter is not ready.";
-						break;
-					case 7:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_DATE
-						$string = PHP_EOL . Indent::_(2) . $tab . "//"
-							. Line::_(__Line__, __Class__)
-							. " (TODO) The dynamic date filter is not ready.";
-						break;
-					case 8:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_FUNCTIONVAR
-						if ($ter['operator'] === 'IN'
-							|| $ter['operator'] === 'NOT IN')
-						{
-							$string = PHP_EOL . Indent::_(2) . $tab . "//"
-								. Line::_(__Line__, __Class__) . " Check if "
-								. $ter['state_key']
-								. " is an array with values.";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. "\$array = " . $ter['state_key'] . ";";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. "if (isset(\$array) && "
-								. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array))";
-							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. Indent::_(1) . "\$query->where('"
-								. $ter['table_key'] . " " . $ter['operator']
-								. " (' . implode(',', \$array) . ')');";
-							$string .= PHP_EOL . Indent::_(2) . $tab . "}";
-							// check if empty is allowed
-							if (!isset($ter['empty']) || !$ter['empty'])
-							{
-								$string .= PHP_EOL . Indent::_(2) . $tab
-									. "else";
-								$string .= PHP_EOL . Indent::_(2) . $tab . "{";
-								$string .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(1) . "return false;";
-								$string .= PHP_EOL . Indent::_(2) . $tab . "}";
-							}
-						}
-						else
-						{
-							$string = PHP_EOL . Indent::_(2) . $tab . "//"
-								. Line::_(__Line__, __Class__) . " Check if "
-								. $ter['state_key']
-								. " is a string or numeric value.";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. "\$checkValue = " . $ter['state_key'] . ";";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. "if (isset(\$checkValue) && "
-								. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$checkValue))";
-							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. Indent::_(1) . "\$query->where('"
-								. $ter['table_key'] . " " . $ter['operator']
-								. " ' . \$db->quote(\$checkValue));";
-							$string .= PHP_EOL . Indent::_(2) . $tab . "}";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. "elseif (is_numeric(\$checkValue))";
-							$string .= PHP_EOL . Indent::_(2) . $tab . "{";
-							$string .= PHP_EOL . Indent::_(2) . $tab
-								. Indent::_(1) . "\$query->where('"
-								. $ter['table_key'] . " " . $ter['operator']
-								. " ' . \$checkValue);";
-							$string .= PHP_EOL . Indent::_(2) . $tab . "}";
-							// check if empty is allowed
-							if (!isset($ter['empty']) || !$ter['empty'])
-							{
-								$string .= PHP_EOL . Indent::_(2) . $tab
-									. "else";
-								$string .= PHP_EOL . Indent::_(2) . $tab . "{";
-								$string .= PHP_EOL . Indent::_(2) . $tab
-									. Indent::_(1) . "return false;";
-								$string .= PHP_EOL . Indent::_(2) . $tab . "}";
-							}
-						}
-						break;
-					case 9:
-					case 10:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_ARRAY_VALUE
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_REPEATABLE_VALUE
-						$string = "";
-						// set needed fields to filter after query
-						CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
-							set(CFactory::_('Config')->build_target . '.' . $path, $ter);
-						break;
-					case 11:
-						// COM_COMPONENTBUILDER_DYNAMIC_GET_OTHER
-						if (strpos($as, '(') !== false)
-						{
-							// TODO (for now we only fix extra sql methods here)
-							list($dump, $as) = array_map(
-								'trim', explode('(', $as)
-							);
-							$field = trim(str_replace(')', '', $field));
-						}
-						$string = PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$query->where('" . $ter['table_key'] . " "
-							. $ter['operator'] . " " . $ter['state_key']
-							. "');";
-						break;
-				}
-				// only add if the filter is set
-				if (StringHelper::check($string))
-				{
-					// sort where
-					if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
-						exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
-					{
-						$filters .= $string;
-					}
-					elseif ($as !== 'a')
-					{
-						CFactory::_('Compiler.Builder.Other.Filter')->
-							set(CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field, $string);;
-					}
-				}
-			}
-		}
-
-		return $filters;
-	}
-
-	public function setCustomViewGroup(&$group, &$code, $tab = '')
-	{
-		$grouping = '';
-		if (ArrayHelper::check($group))
-		{
-			foreach ($group as $gr)
-			{
-				list($as, $field) = array_map(
-					'trim', explode('.', (string) $gr['table_key'])
-				);
-				// set the string
-				$string = "\$query->group('" . $gr['table_key'] . "');";
-				// sort where
-				if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
-					exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
-				{
-					$grouping .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-						. $string;
-				}
-				else
-				{
-					CFactory::_('Compiler.Builder.Other.Group')->set(
-						CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field,
-						PHP_EOL . Indent::_(2) . $string
-					);
-				}
-			}
-		}
-
-		return $grouping;
-	}
-
-	public function setCustomViewOrder(&$order, &$code, $tab = '')
-	{
-		$ordering = '';
-		if (ArrayHelper::check($order))
-		{
-			foreach ($order as $or)
-			{
-				list($as, $field) = array_map(
-					'trim', explode('.', (string) $or['table_key'])
-				);
-				// check if random
-				if ('RAND' === $or['direction'])
-				{
-					// set the string
-					$string = "\$query->order('RAND()');";
-				}
-				else
-				{
-					// set the string
-					$string = "\$query->order('" . $or['table_key'] . " "
-						. $or['direction'] . "');";
-				}
-				// sort where
-				if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
-					exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
-				{
-					$ordering .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . $string;
-				}
-				else
-				{
-					CFactory::_('Compiler.Builder.Other.Order')->set(
-						CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field,
-						PHP_EOL . Indent::_(2) . $string
-					);
-				}
-			}
-		}
-
-		return $ordering;
-	}
-
-	public function setCustomViewWhere(&$where, &$code, $tab = '')
-	{
-		$wheres = '';
-		if (ArrayHelper::check($where))
-		{
-			foreach ($where as $whe)
-			{
-				$as    = '';
-				$field = '';
-				$value = '';
-				list($as, $field) = array_map(
-					'trim', explode('.', (string) $whe['table_key'])
-				);
-				if (is_numeric($whe['value_key']))
-				{
-					$value = " " . $whe['value_key'] . "');";
-				}
-				elseif (strpos((string) $whe['value_key'], '$') !== false)
-				{
-					if ($whe['operator'] === 'IN'
-						|| $whe['operator'] === 'NOT IN')
-					{
-						$value = " (' . implode(',', " . $whe['value_key']
-							. ") . ')');";
-					}
-					else
-					{
-						$value = " ' . \$db->quote(" . $whe['value_key']
-							. "));";
-					}
-				}
-				elseif (strpos((string) $whe['value_key'], '.') !== false)
-				{
-					if (strpos((string) $whe['value_key'], "'") !== false)
-					{
-						$value = " ' . \$db->quote(" . $whe['value_key']
-							. "));";
-					}
-					else
-					{
-						$value = " " . $whe['value_key'] . "');";
-					}
-				}
-				elseif (StringHelper::check($whe['value_key']))
-				{
-					$value = " " . $whe['value_key'] . "');";
-				}
-				// only load if there is a value
-				if (StringHelper::check($value))
-				{
-					$tabe = '';
-					if ($as === 'a')
-					{
-						$tabe = $tab;
-					}
-					// set the string
-					if ($whe['operator'] === 'IN'
-						|| $whe['operator'] === 'NOT IN')
-					{
-						$string = "if (isset(" . $whe['value_key'] . ") && "
-							. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check("
-							. $whe['value_key'] . "))";
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
-							. "{";
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(2)
-							. "//" . Line::_(__Line__, __Class__) . " Get where "
-							. $whe['table_key'] . " is " . $whe['value_key'];
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(2)
-							. "\$query->where('" . $whe['table_key'] . " "
-							. $whe['operator'] . $value;
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
-							. "}";
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
-							. "else";
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
-							. "{";
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(2)
-							. "return false;";
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
-							. "}";
-					}
-					else
-					{
-						$string = "//" . Line::_(__Line__, __Class__)
-							. " Get where " . $whe['table_key'] . " is "
-							. $whe['value_key'];
-						$string .= PHP_EOL . Indent::_(1) . $tabe . Indent::_(1)
-							. "\$query->where('" . $whe['table_key'] . " "
-							. $whe['operator'] . $value;
-					}
-					// sort where
-					if ($as === 'a' || CFactory::_('Compiler.Builder.Site.Main.Get')->
-						exists(CFactory::_('Config')->build_target . '.' . $code . '.' . $as))
-					{
-						$wheres .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . $string;
-					}
-					elseif ($as !== 'a')
-					{
-						CFactory::_('Compiler.Builder.Other.Where')->set(
-							CFactory::_('Config')->build_target . '.' . $code . '.' . $as . '.' . $field,
-							PHP_EOL . Indent::_(2) . $string
-						);
-					}
-				}
-			}
-		}
-
-		return $wheres;
-	}
-
-	public function setCustomViewGlobals(&$global, $string, $as, $tab = '')
-	{
-		$globals = '';
-		if (ArrayHelper::check($global))
-		{
-			$as = array_unique($as);
-			foreach ($global as $glo)
-			{
-				if (in_array($glo['as'], $as))
-				{
-					switch ($glo['type'])
-					{
-						case 1:
-							// SET STATE
-							$value = "\$this->setState('" . $glo['as'] . "."
-								. $glo['name'] . "', " . $string . "->"
-								. $glo['key'] . ");";
-							break;
-						case 2:
-							// SET THIS
-							$value = "\$this->" . $glo['as'] . "_"
-								. $glo['name'] . " = " . $string . "->"
-								. $glo['key'] . ";";
-							break;
-					}
-					// only add if the filter is set
-					if (StringHelper::check($value))
-					{
-						$globals .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "//" . Line::_(__Line__, __Class__)
-							. " set the global " . $glo['name'] . " value."
-							. PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. $value;
-					}
-				}
-			}
-		}
-
-		return $globals;
+		return CFactory::_('Dynamicget.Queries')->get($gets, $code, $tab, $type);
 	}
 
 	/**
-	 * @param           $string
-	 * @param   string  $type
+	 * Get the Custom View Field Decode Filter code block.
 	 *
-	 * @return mixed
+	 * @param  array   $get            The GET metadata for the current field.
+	 * @param  array   $filters        The filters to apply on the field.
+	 * @param  string  $string         The variable name representing the current object.
+	 * @param  string  $removeString   The variable name for object removal context.
+	 * @param  string  $code           The custom view identifier code.
+	 * @param  string  $tab            The tab level for indent formatting.
+	 *
+	 * @return string  The generated PHP filter code block.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.FilterColumn')->get(...)
+	 */
+	public function setCustomViewFieldDecodeFilter($get, $filters, $string, $removeString, $code, $tab): string
+	{
+		return CFactory::_('Dynamicget.FilterColumn')->get($get, $filters, $string, $removeString, $code, $tab);
+	}
+
+	/**
+	 * Generate the decode logic for a column in the custom view.
+	 *
+	 * @param  array   $get      The get array with view configuration.
+	 * @param  array   $checker  Field decode configuration.
+	 * @param  string  $string   The variable representing the row object.
+	 * @param  string  $code     The calling context code string.
+	 * @param  string  $tab      Optional indentation tab prefix.
+	 *
+	 * @return string  The generated decode logic.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.DecodeColumn')->get(...)
+	 */
+	public function setCustomViewFieldDecode($get, $checker, $string, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.DecodeColumn')->get($get, $checker, $string, $code, $tab);
+	}
+
+	/**
+	 * Get the content preparation plugin logic for a field.
+	 *
+	 * @param  array   $get      The get array passed in.
+	 * @param  array   $checker  The checker structure containing field info.
+	 * @param  string  $string   The string name for the object.
+	 * @param  string  $code     The code to use as fallback context.
+	 * @param  string  $tab      Indentation tab prefix.
+	 *
+	 * @return string  The content preparation PHP string.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.FieldonContentPrepare')->get(...)
+	 */
+	public function setCustomViewFieldonContentPrepareChecker($get, $checker, $string, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.FieldonContentPrepare')->get($get, $checker, $string, $code, $tab);
+	}
+
+	/**
+	 * Check if custom view fields contain UIKit components that must be loaded.
+	 *
+	 * This method iterates through the given checker array, determines whether the
+	 * field should have UIKit components loaded based on the selection criteria,
+	 * and appends the relevant code for inclusion.
+	 *
+	 * @param  array   $get      The "get" array containing view configuration data.
+	 * @param  array   $checker  The array of fields and their configurations to check.
+	 * @param  string  $string   The string variable name or object reference in the generated code.
+	 * @param  string  $code     The code identifier used for generating unique load keys.
+	 * @param  string  $tab      Optional indentation tab for formatting generated code.
+	 *
+	 * @return string  The generated PHP code string for UIKit component inclusion.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.UikitLoader')->get(...)
+	 */
+	public function setCustomViewFieldUikitChecker($get, $checker, $string, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.UikitLoader')->get($get, $checker, $string, $code, $tab);
+	}
+
+	/**
+	 * Get the custom view custom join code.
+	 *
+	 * @param  array   $gets      The array of join definitions.
+	 * @param  string  $string    The target variable name in generated code.
+	 * @param  string  $code      The code identifier for the join.
+	 * @param  array   $asBucket  The array of already processed join aliases.
+	 * @param  string  $tab       The indentation tab string for formatting (optional).
+	 *
+	 * @return string  The generated custom join code block or an empty string.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.CustomJoin')->get(...)
+	 */
+	public function setCustomViewCustomJoin($gets, $string, $code, $asBucket, $tab = '')
+	{
+		return CFactory::_('Dynamicget.CustomJoin')->get($gets, $string, $code, $asBucket, $tab);
+	}
+
+	/**
+	 * Determine whether a join should be processed as a separate join.
+	 *
+	 * @param  array  $default   The join structure details (passed by reference).
+	 * @param  array  $get       The current join definition (passed by reference).
+	 * @param  array  $asBucket  The list of already processed join aliases (passed by reference).
+	 *
+	 * @return bool  True if the join should be processed separately, false otherwise.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.CustomJoin')->check(...)
+	 */
+	public function checkJoint($default, $get, $asBucket): bool
+	{
+		return CFactory::_('Dynamicget.CustomJoin')->check($default, $get, $asBucket);
+	}
+
+	/**
+	 * Build the dynamic query filters for a custom view.
+	 *
+	 * @param  array   $filter  The filter configuration array.
+	 * @param  string  $code    The code representing the view context.
+	 * @param  string  $tab     The indentation tab string.
+	 *
+	 * @return string  The generated filter query strings.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryFilter')->get(...)
+	 */
+	public function setCustomViewFilter($filter, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.QueryFilter')->get($filter, $code, $tab);
+	}
+
+	/**
+	 * Generate GROUP BY code for the query.
+	 *
+	 * @param  array   $group  The grouping configuration array.
+	 * @param  string  $code   The component code.
+	 * @param  string  $tab    The indentation tab characters.
+	 *
+	 * @return string  The generated GROUP BY code.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryGroup')->get(...)
+	 */
+	public function setCustomViewGroup($group, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.QueryGroup')->get($group, $code, $tab);
+	}
+
+	/**
+	 * Build the ordering part of a query for a custom view.
+	 *
+	 * @param  array   $order  The ordering rules array (passed by reference).
+	 * @param  string  $code   The code identifier (passed by reference).
+	 * @param  string  $tab    The tab indentation.
+	 *
+	 * @return string  The generated ordering query part.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryOrder')->get(...)
+	 */
+	public function setCustomViewOrder($order, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.QueryOrder')->get($order, $code, $tab);
+	}
+
+	/**
+	 * Process and build WHERE clauses for a given custom view.
+	 *
+	 * @param  array   $where  The WHERE clause definitions.
+	 * @param  string  $code   The code identifier for the view.
+	 * @param  string  $tab    Optional tab/indentation prefix.
+	 *
+	 * @return string  The generated WHERE clauses as a string.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryWhere')->get(...)
+	 */
+	public function setCustomViewWhere($where, $code, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.QueryWhere')->get($where, $code, $tab);
+	}
+
+	/**
+	 * Generate PHP code for setting custom view global values.
+	 *
+	 * @param  array   $global  The list of global configuration items.
+	 * @param  string  $string  The base string reference to the data source.
+	 * @param  array   $as      The list of aliases to process.
+	 * @param  string  $tab     The tab indentation string (optional).
+	 *
+	 * @return string  The generated PHP code for setting global values.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Globals')->get(...)
+	 */
+	public function setCustomViewGlobals($global, $string, $as, $tab = ''): string
+	{
+		return CFactory::_('Dynamicget.Globals')->get($global, $string, $as, $tab);
+	}
+
+	/**
+	 * Remove the alias (AS) portion from a dot-notation string.
+	 *
+	 * @param  string  $string  The input string possibly containing a dot (e.g. `a.name`).
+	 *
+	 * @return string  The portion after the dot or the original string if no dot found.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.JoinStructure')->getFieldName(...);
 	 */
 	public function removeAsDot($string, $type = '')
 	{
-		if (strpos((string) $string, '.') !== false)
-		{
-			list($dump, $field) = array_map('trim', explode('.', (string) $string));
-		}
-		else
-		{
-			$field = $string;
-		}
-
-		return $field;
+		return CFactory::_('Dynamicget.JoinStructure')->getFieldName($string);
 	}
 
 	/**
@@ -3250,502 +2417,33 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * @param           $get
-	 * @param           $code
-	 * @param   string  $tab
-	 * @param   string  $type
+	 * Get the dynamic get item method.
 	 *
-	 * @return string
+	 * @param  mixed   $get   The get object.
+	 * @param  string  $code  The code string.
+	 * @param  string  $tab   The tab spacing.
+	 * @param  string  $type  The type (main|custom).
+	 *
+	 * @return string  The generated PHP code block.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.GetItem')->get(...)
 	 */
-	public function setCustomViewGetItem(&$get, &$code, $tab = '', $type = 'main')
+	public function setCustomViewGetItem($get, $code, $tab = '', $type = 'main'): string
 	{
-		if (ObjectHelper::check($get))
-		{
-			// set the site decription switches
-			foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-			{
-				CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", false);
-			}
-			// start the get Item
-			$getItem = '';
-			// set before item php
-			if (isset($get->add_php_before_getitem)
-				&& $get->add_php_before_getitem == 1
-				&& isset($get->php_before_getitem)
-				&& StringHelper::check(
-					$get->php_before_getitem
-				))
-			{
-				$getItem .= CFactory::_('Placeholder')->update_(
-					$get->php_before_getitem
-				);
-			}
-			// start loadin the get Item
-			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "//"
-				. Line::_(__Line__, __Class__) . " Get a db connection.";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
-			}
-			else
-			{
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$db = \$this->getDatabase();";
-			}
-			$getItem .= PHP_EOL . PHP_EOL . $tab . Indent::_(2) . "//"
-				. Line::_(__Line__, __Class__) . " Create a new query object.";
-			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-				. "\$query = \$db->getQuery(true);";
-			// set main get query
-			$getItem .= $this->setCustomViewQuery($get->main_get, $code, $tab);
-			// setup filters
-			if (isset($get->filter))
-			{
-				$getItem .= $this->setCustomViewFilter(
-					$get->filter, $code, $tab
-				);
-			}
-			// setup Where
-			if (isset($get->where))
-			{
-				$getItem .= $this->setCustomViewWhere($get->where, $code, $tab);
-			}
-			// setup ordering
-			if (isset($get->order))
-			{
-				$getItem .= $this->setCustomViewOrder($get->order, $code, $tab);
-			}
-			// setup grouping
-			if (isset($get->group))
-			{
-				$getItem .= $this->setCustomViewGroup($get->group, $code, $tab);
-			}
-			// db set query data placeholder
-			$getItem .= Placefix::_h("DB_SET_QUERY_DATA") ;
-			// set after item php
-			if (isset($get->add_php_after_getitem)
-				&& $get->add_php_after_getitem == 1
-				&& isset($get->php_after_getitem)
-				&& StringHelper::check($get->php_after_getitem))
-			{
-				$getItem .= CFactory::_('Placeholder')->update_(
-					$get->php_after_getitem
-				);
-			}
-			// check the getItem string to see if we should still add set query to data
-			if (strpos($getItem, '$data =') === false)
-			{
-				// get ready to get query
-				$setQuery[Placefix::_h("DB_SET_QUERY_DATA")] =
-					PHP_EOL . PHP_EOL . $tab . Indent::_(2) . "//"
-					. Line::_(__Line__, __Class__)
-					. " Reset the query using our newly populated query object.";
-				$setQuery[Placefix::_h("DB_SET_QUERY_DATA")] .=
-					PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$db->setQuery(\$query);";
-				$setQuery[Placefix::_h("DB_SET_QUERY_DATA")] .=
-					PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "//"
-					. Line::_(__Line__, __Class__)
-					. " Load the results as a stdClass object.";
-				$setQuery[Placefix::_h("DB_SET_QUERY_DATA")] .=
-					PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$data = \$db->loadObject();";
-				// add the db set query to data
-			}
-			else
-			{
-				// remove our placeholder
-				$setQuery[Placefix::_h("DB_SET_QUERY_DATA")] = '';
-			}
-			// add the db set query to data
-			$getItem = str_replace(
-				array_keys($setQuery),
-				array_values($setQuery), $getItem
-			);
-			$getItem .= PHP_EOL . PHP_EOL . $tab . Indent::_(2)
-				. "if (empty(\$data))";
-			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "{";
-			if ($type === 'main')
-			{
-				$getItem      .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
-				$langKeyWoord = CFactory::_('Config')->lang_prefix . '_'
-					. StringHelper::safe(
-						'Not found or access denied', 'U'
-					);
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $langKeyWoord, 'Not found, or access denied.'
-				);
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2) . "//"
-					. Line::_(__Line__, __Class__)
-					. " If no data is found redirect to default page and show warning.";
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "\$app->enqueueMessage(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $langKeyWoord
-					. "'), 'warning');";
-				if ('site' === CFactory::_('Config')->build_target)
-				{
-					// check that the default and the redirect page is not the same
-					if (CFactory::_('Compiler.Builder.Content.One')->exists('SITE_DEFAULT_VIEW')
-						&& CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') != $code)
-					{
-						$redirectString = "Joomla__"."_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_"
-							. CFactory::_('Config')->component_code_name . "&view="
-							. CFactory::_('Compiler.Builder.Content.One')->get('SITE_DEFAULT_VIEW') . "')";
-					}
-					else
-					{
-						$redirectString = 'Joomla__'.'_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root()';
-					}
-					$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-						. "\$app->redirect(" . $redirectString . ");";
-				}
-				else
-				{
-					$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-						. "\$app->redirect('index.php?option=com_"
-						. CFactory::_('Config')->component_code_name . "');";
-				}
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "return false;";
-			}
-			else
-			{
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
-					. "return false;";
-			}
-			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "}";
-			// dispatcher placeholder
-			$getItem .= Placefix::_h("DISPATCHER") ;
-			if (ArrayHelper::check($get->main_get))
-			{
-				$asBucket = [];
-				foreach ($get->main_get as $main_get)
-				{
-					if (isset($main_get['key']) && isset($main_get['as']))
-					{
-						// build path
-						$path = $code . '.' . $main_get['key'] . '.' . $main_get['as'];
-
-						$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('decode.' . $path);
-						if (ArrayHelper::check($decodeChecker))
-						{
-							// set decoding of needed fields
-							$getItem .= $this->setCustomViewFieldDecode(
-								$main_get, $decodeChecker, '$data', $code,
-								$tab
-							);
-						}
-
-						$decodeFilter = CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
-							get(CFactory::_('Config')->build_target . '.' . $path);
-						if (ArrayHelper::check($decodeFilter))
-						{
-							// also filter fields if needed
-							$getItem .= $this->setCustomViewFieldDecodeFilter(
-								$main_get, $decodeFilter, '$data', '$data',
-								$code, $tab
-							);
-						}
-
-						$contentprepareChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->
-							get('textareas.' . $path);
-						if (ArrayHelper::check($contentprepareChecker))
-						{
-							// set contentprepare checkers on needed fields
-							$getItem .= $this->setCustomViewFieldonContentPrepareChecker(
-								$main_get, $contentprepareChecker, '$data',
-								$code, $tab
-							);
-						}
-
-						$uikitChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('uikit.' . $path);
-						if (ArrayHelper::check($uikitChecker))
-						{
-							// set uikit checkers on needed fields
-							$getItem .= $this->setCustomViewFieldUikitChecker(
-								$main_get, $uikitChecker, '$data', $code,
-								$tab
-							);
-						}
-
-						$asBucket[] = $main_get['as'];
-					}
-				}
-			}
-			// set the scripts
-			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
-			$script    = '';
-			foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-			{
-				if (CFactory::_('Compiler.Builder.Site.Decrypt')->get("{$cryptionType}.{$code}", false))
-				{
-					if ('expert' !== $cryptionType)
-					{
-						$script .= PHP_EOL . PHP_EOL . Indent::_(1) . $tab
-							. Indent::_(1) . "//" . Line::_(__Line__, __Class__)
-							. " Get the " . $cryptionType . " encryption.";
-						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$" . $cryptionType . "key = " . $Component
-							. "Helper::getCryptKey('" . $cryptionType . "');";
-						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "//" . Line::_(__Line__, __Class__)
-							. " Get the encryption object.";
-						$script .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-							. "\$" . $cryptionType . " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
-							. $cryptionType . "key);";
-					}
-					elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
-						exists("{$code}.get"))
-					{
-						foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
-							get("{$code}.get") as $block)
-						{
-							$script .= PHP_EOL . Indent::_(1) . implode(
-								PHP_EOL . Indent::_(1), $block
-							);
-						}
-					}
-				}
-			}
-			$getItem = $script . $getItem;
-			// setup Globals
-			$getItem .= $this->setCustomViewGlobals(
-				$get->global, '$data', $asBucket, $tab
-			);
-			// setup the custom gets that returns multiple values
-			$getItem .= $this->setCustomViewCustomJoin(
-				$get->custom_get, '$data', $code, $asBucket, $tab
-			);
-			// set calculations
-			if ($get->addcalculation == 1)
-			{
-				$get->php_calculation = (array) explode(
-					PHP_EOL, (string) CFactory::_('Placeholder')->update_(
-					$get->php_calculation
-				)
-				);
-				$getItem .= PHP_EOL . Indent::_(1) . $tab
-					. Indent::_(1) . implode(
-						PHP_EOL . Indent::_(1) . $tab . Indent::_(1),
-						$get->php_calculation
-					);
-			}
-			if ($type === 'custom')
-			{
-				// return the object
-				$getItem .= PHP_EOL . PHP_EOL . Indent::_(1) . $tab . Indent::_(
-						1
-					) . "//" . Line::_(__Line__, __Class__)
-					. " return data object.";
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "return \$data;";
-			}
-			else
-			{
-				// set the object
-				$getItem .= PHP_EOL . PHP_EOL . Indent::_(1) . $tab . Indent::_(
-						1
-					) . "//" . Line::_(__Line__, __Class__)
-					. " set data object to item.";
-				$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
-					. "\$this->_item[\$pk] = \$data;";
-			}
-			// only update if dispacher placholder is found
-			if (strpos($getItem, (string) Placefix::_h('DISPATCHER'))
-				!== false)
-			{
-				// check if the dispather should be added
-				if (!isset($this->JEventDispatcher)
-					|| !ArrayHelper::check(
-						$this->JEventDispatcher
-					))
-				{
-					$this->JEventDispatcher = array(Placefix::_h('DISPATCHER') => '');
-				}
-				$getItem = str_replace(
-					array_keys($this->JEventDispatcher),
-					array_values($this->JEventDispatcher), $getItem
-				);
-			}
-
-			return $getItem;
-		}
-
-		return PHP_EOL . Indent::_(1) . $tab . Indent::_(1) . "//"
-			. Line::_(__Line__, __Class__) . "add your custom code here.";
+		return CFactory::_('Dynamicget.GetItem')->get($get, $code, $tab, $type);
 	}
 
-	public function setCustomViewCustomMethods($main_view, $code)
+	/**
+	 * Get the required data to generate dynamicget methods.
+	 *
+	 * @param  array|object   $mainView  The main view data
+	 * @param  string         $code      The component code
+	 *
+	 * @return string  The generated methods
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Methods')->get(...)
+	 */
+	public function setCustomViewCustomMethods($mainView, $code): string
 	{
-		$methods = '';
-		// then set the needed custom methods
-		if (ArrayHelper::check($main_view)
-			&& isset($main_view['settings'])
-			&& ObjectHelper::check($main_view['settings'])
-			&& isset($main_view['settings']->custom_get))
-		{
-			$_dynamic_get = $main_view['settings']->custom_get;
-		}
-		elseif (ObjectHelper::check($main_view)
-			&& isset($main_view->custom_get))
-		{
-			$_dynamic_get = $main_view->custom_get;
-		}
-		// check if we have an array
-		if (isset($_dynamic_get)
-			&& ArrayHelper::check(
-				$_dynamic_get
-			))
-		{
-			// start dynamic build
-			foreach ($_dynamic_get as $view)
-			{
-				// fix alias to use in code
-				$view->code = StringHelper::safe($code);
-				$view->Code = StringHelper::safe(
-					$view->code, 'F'
-				);
-				$view->CODE = StringHelper::safe(
-					$view->code, 'U'
-				);
-				$main       = '';
-				if ($view->gettype == 3)
-				{
-					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-					{
-						// SITE_GET_ITEM <<<DYNAMIC>>>
-						$main .= PHP_EOL . PHP_EOL . Indent::_(2)
-							. "if (!isset(\$this->initSet) || !\$this->initSet)";
-						$main .= PHP_EOL . Indent::_(2) . "{";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->userId = \$this->user->get('id');";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->guest = \$this->user->get('guest');";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->groups = \$this->user->get('groups');";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->authorisedGroups = \$this->user->getAuthorisedGroups();";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->levels = \$this->user->getAuthorisedViewLevels();";
-						$main .= PHP_EOL . Indent::_(3) . "\$this->initSet = true;";
-						$main .= PHP_EOL . Indent::_(2) . "}";
-					}
-					$main .= $this->setCustomViewGetItem(
-						$view, $view->code, '', 'custom'
-					);
-					$type
-						= 'mixed  item data object on success, false on failure.';
-				}
-				elseif ($view->gettype == 4)
-				{
-					if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-					{
-						$main .= PHP_EOL . PHP_EOL . Indent::_(2)
-							. "if (!isset(\$this->initSet) || !\$this->initSet)";
-						$main .= PHP_EOL . Indent::_(2) . "{";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->userId = \$this->user->get('id');";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->guest = \$this->user->get('guest');";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->groups = \$this->user->get('groups');";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->authorisedGroups = \$this->user->getAuthorisedGroups();";
-						$main .= PHP_EOL . Indent::_(3)
-							. "\$this->levels = \$this->user->getAuthorisedViewLevels();";
-						$main .= PHP_EOL . Indent::_(3) . "\$this->initSet = true;";
-						$main .= PHP_EOL . Indent::_(2) . "}";
-					}
-					$main .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-						. Line::_(__Line__, __Class__) . " Get the global params";
-					$main .= PHP_EOL . Indent::_(2)
-						. "\$globalParams = ComponentHelper::getParams('com_"
-						. CFactory::_('Config')->component_code_name . "', true);";
-					// set php before listquery
-					if (isset($view->add_php_getlistquery)
-						&& $view->add_php_getlistquery == 1
-						&& isset($view->php_getlistquery)
-						&& StringHelper::check(
-							$view->php_getlistquery
-						))
-					{
-						$main .= CFactory::_('Placeholder')->update_(
-							$view->php_getlistquery
-						);
-					}
-					// SITE_GET_LIST_QUERY <<<DYNAMIC>>>
-					$main .= $this->setCustomViewListQuery(
-						$view, $view->code, false
-					);
-					// set before items php
-					if (isset($view->add_php_before_getitems)
-						&& $view->add_php_before_getitems == 1
-						&& isset($view->php_before_getitems)
-						&& StringHelper::check(
-							$view->php_before_getitems
-						))
-					{
-						$main .= CFactory::_('Placeholder')->update_(
-							$view->php_before_getitems
-						);
-					}
-					// load the object list
-					$main .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-						. Line::_(__Line__, __Class__)
-						. " Reset the query using our newly populated query object.";
-					$main .= PHP_EOL . Indent::_(2)
-						. "\$db->setQuery(\$query);";
-					$main .= PHP_EOL . Indent::_(2)
-						. "\$items = \$db->loadObjectList();";
-					// set after items php
-					if (isset($view->add_php_after_getitems)
-						&& $view->add_php_after_getitems == 1
-						&& isset($view->php_after_getitems)
-						&& StringHelper::check(
-							$view->php_after_getitems
-						))
-					{
-						$main .= CFactory::_('Placeholder')->update_(
-							$view->php_after_getitems
-						);
-					}
-					$main .= PHP_EOL . PHP_EOL . Indent::_(2)
-						. "if (empty(\$items))";
-					$main .= PHP_EOL . Indent::_(2) . "{";
-					$main .= PHP_EOL . Indent::_(3) . "return false;";
-					$main .= PHP_EOL . Indent::_(2) . "}";
-					// SITE_GET_ITEMS <<<DYNAMIC>>>
-					$main .= $this->setCustomViewGetItems($view, $view->code);
-					$main .= PHP_EOL . Indent::_(2) . "//" . Line::_(
-							__LINE__,__CLASS__
-						) . " return items";
-					$main .= PHP_EOL . Indent::_(2) . "return \$items;";
-					$type
-						= 'mixed  An array of objects on success, false on failure.';
-				}
-				// load the main mehtod
-				$methods .= $this->setMainCustomMehtod(
-					$main, $view->getcustom, $type
-				);
-				// SITE_CUSTOM_METHODS <<<DYNAMIC>>>
-				$methods .= $this->setCustomViewCustomItemMethods(
-					$view, $view->code
-				);
-			}
-		}
-		// load uikit get method
-		if (ArrayHelper::check($main_view)
-			&& isset($main_view['settings']))
-		{
-			$methods .= $this->setUikitGetMethod();
-		}
-
-		return $methods;
+		return CFactory::_('Dynamicget.Methods')->get($mainView, $code);
 	}
 
 	public function setUikitHelperMethods()
@@ -3872,692 +2570,93 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	public function setUikitGetMethod()
+	/**
+	 * Build and return the PHP method definition for retrieving the UIkit components.
+	 *
+	 * This method dynamically generates the source code for a `getUikitComp()` method
+	 * if the configured UIkit version is either `1` or `2`. The generated method
+	 * checks if the `$this->uikitComp` property is set and valid, and returns it;
+	 * otherwise, it returns `false`.
+	 *
+	 * @return string  The generated PHP code for the `getUikitComp()` method, or an
+	 *                 empty string if the UIkit version is not 1 or 2.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.UikitLoader')->getUikitComp(...)
+	 */
+	public function setUikitGetMethod(): string
 	{
-		$method = '';
-		// only load for uikit version 2
-		if (2 == CFactory::_('Config')->uikit || 1 == CFactory::_('Config')->uikit)
-		{
-			// build uikit get method
-			$method .= PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-			$method .= PHP_EOL . Indent::_(1)
-				. " * Get the uikit needed components";
-			$method .= PHP_EOL . Indent::_(1) . " *";
-			$method .= PHP_EOL . Indent::_(1)
-				. " * @return mixed  An array of objects on success.";
-			$method .= PHP_EOL . Indent::_(1) . " *";
-			$method .= PHP_EOL . Indent::_(1) . " */";
-			$method .= PHP_EOL . Indent::_(1)
-				. "public function getUikitComp()";
-			$method .= PHP_EOL . Indent::_(1) . "{";
-			$method .= PHP_EOL . Indent::_(2)
-				. "if (isset(\$this->uikitComp) && "
-				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$this->uikitComp))";
-			$method .= PHP_EOL . Indent::_(2) . "{";
-			$method .= PHP_EOL . Indent::_(3) . "return \$this->uikitComp;";
-			$method .= PHP_EOL . Indent::_(2) . "}";
-			$method .= PHP_EOL . Indent::_(2) . "return false;";
-			$method .= PHP_EOL . Indent::_(1) . "}";
-		}
-
-		return $method;
-	}
-
-	public function setMainCustomMehtod(&$body, $nAme, $type)
-	{
-		$method = '';
-		if (StringHelper::check($body))
-		{
-			// build custom method
-			$method .= PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-			$method .= PHP_EOL . Indent::_(1) . " * Custom Method";
-			$method .= PHP_EOL . Indent::_(1) . " *";
-			$method .= PHP_EOL . Indent::_(1) . " * @return " . $type;
-			$method .= PHP_EOL . Indent::_(1) . " *";
-			$method .= PHP_EOL . Indent::_(1) . " */";
-			$method .= PHP_EOL . Indent::_(1) . "public function " . $nAme
-				. "()";
-			$method .= PHP_EOL . Indent::_(1) . "{" . $body;
-			$method .= PHP_EOL . Indent::_(1) . "}";
-		}
-
-		return $method;
-	}
-
-	public function setCustomViewCustomItemMethods(&$main_get, $code)
-	{
-		$methods                = '';
-		$this->JEventDispatcher = '';
-		// first set the needed item/s methods
-		if (ObjectHelper::check($main_get))
-		{
-			if (isset($main_get->custom_get)
-				&& ArrayHelper::check($main_get->custom_get))
-			{
-				foreach ($main_get->custom_get as $get)
-				{
-					// set the site decription switch
-					foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-					{
-						CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", false);
-					}
-					// set the method defaults
-					if (($default = $this->setCustomViewMethodDefaults($get, $code)) !== false)
-					{
-						// build custom method
-						$methods .= PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-						$methods .= PHP_EOL . Indent::_(1)
-							. " * Method to get an array of " . $default['name']
-							. " Objects.";
-						$methods .= PHP_EOL . Indent::_(1) . " *";
-						$methods .= PHP_EOL . Indent::_(1)
-							. " * @return mixed  An array of "
-							. $default['name']
-							. " Objects on success, false on failure.";
-						$methods .= PHP_EOL . Indent::_(1) . " *";
-						$methods .= PHP_EOL . Indent::_(1) . " */";
-						$methods .= PHP_EOL . Indent::_(1)
-							. "public function get" . $default['methodName']
-							. "(\$" . $default['on_field'] . ")";
-						$methods .= PHP_EOL . Indent::_(1) . "{" . Placefix::_h("CRYPT") ;
-						$methods .= PHP_EOL . Indent::_(2) . "//"
-							. Line::_(__Line__, __Class__)
-							. " Get a db connection.";
-						if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-						{
-							$methods .= PHP_EOL . Indent::_(2)
-								. "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
-						}
-						else
-						{
-							$methods .= PHP_EOL . Indent::_(2)
-								. "\$db = \$this->getDatabase();";
-						}
-						$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-							. Line::_(__Line__, __Class__)
-							. " Create a new query object.";
-						$methods .= PHP_EOL . Indent::_(2)
-							. "\$query = \$db->getQuery(true);";
-						$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-							. Line::_(__Line__, __Class__) . " Get from "
-							. $get['selection']['table'] . " as "
-							. $default['as'];
-						$methods .= PHP_EOL . Indent::_(2)
-							. $get['selection']['select'];
-						$methods .= PHP_EOL . Indent::_(2) . '$query->from('
-							. $get['selection']['from'] . ');';
-						// set the string
-						if ($get['operator'] === 'IN'
-							|| $get['operator'] === 'NOT IN')
-						{
-							$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-								. Line::_(__Line__, __Class__) . " Check if \$"
-								. $default['on_field']
-								. " is an array with values.";
-							$methods .= PHP_EOL . Indent::_(2) . "\$array = ("
-								. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$"
-								. $default['on_field']
-								. ", true)) ? json_decode(\$"
-								. $default['on_field'] . ",true) : \$"
-								. $default['on_field'] . ";";
-							$methods .= PHP_EOL . Indent::_(2)
-								. "if (isset(\$array) && "
-								. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$array, true))";
-							$methods .= PHP_EOL . Indent::_(2) . "{";
-							$methods .= PHP_EOL . Indent::_(3)
-								. "\$query->where('" . $get['join_field'] . " "
-								. $get['operator']
-								. " (' . implode(',', \$array) . ')');";
-							$methods .= PHP_EOL . Indent::_(2) . "}";
-							$methods .= PHP_EOL . Indent::_(2) . "else";
-							$methods .= PHP_EOL . Indent::_(2) . "{";
-							$methods .= PHP_EOL . Indent::_(3)
-								. "return false;";
-							$methods .= PHP_EOL . Indent::_(2) . "}";
-						}
-						else
-						{
-							$methods .= PHP_EOL . Indent::_(2)
-								. "\$query->where('" . $get['join_field'] . " "
-								. $get['operator'] . " ' . \$db->quote(\$"
-								. $default['on_field'] . "));";
-						}
-						// check if other queries should be loaded
-						foreach (CFactory::_('Compiler.Builder.Other.Query')->
-							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
-								as $query)
-						{
-							$methods .= $query;
-						}
-						// add any other filter that was set
-						foreach (CFactory::_('Compiler.Builder.Other.Filter')->
-							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
-								as $field => $string)
-						{
-							$methods .= $string;
-						}
-						// add any other where that was set
-						foreach (CFactory::_('Compiler.Builder.Other.Where')->
-							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
-								as $field => $string)
-						{
-							$methods .= $string;
-						}
-						// add any other order that was set
-						foreach (CFactory::_('Compiler.Builder.Other.Order')->
-							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
-								 as $field => $string)
-						{
-							$methods .= $string;
-						}
-						// add any other grouping that was set
-						foreach (CFactory::_('Compiler.Builder.Other.Group')->
-							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as'], [])
-								as $field => $string)
-						{
-							$methods .= $string;
-						}
-						$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-							. Line::_(__Line__, __Class__)
-							. " Reset the query using our newly populated query object.";
-						$methods .= PHP_EOL . Indent::_(2)
-							. "\$db->setQuery(\$query);";
-						$methods .= PHP_EOL . Indent::_(2) . "\$db->execute();";
-						$methods .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-							. Line::_(__Line__, __Class__)
-							. " check if there was data returned";
-						$methods .= PHP_EOL . Indent::_(2)
-							. "if (\$db->getNumRows())";
-						$methods .= PHP_EOL . Indent::_(2) . "{";
-						// set dispatcher placeholder
-						$methods .= Placefix::_h("DISPATCHER");
-						// build path
-						$path = $default['code'] . '.' . $get['key'] . '.' . $default['as'];
-						// set decoding of needed fields
-						$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('decode.' . $path);
-						// also filter fields if needed
-						$decodeFilter = CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
-							get(CFactory::_('Config')->build_target . '.' . $path);
-						// set uikit checkers on needed fields
-						$uikitChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('uikit.' . $path);
-						// set content prepare on needed fields
-						$contentprepareChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->
-							get('textareas.' . $path);
-						// set placeholder values
-						$placeholders = [
-							Placefix::_h('TAB') => Indent::_(2),
-							Placefix::_h('STRING') => '$item'
-						];
-						// set joined values
-						$joinedChecker = CFactory::_('Compiler.Builder.Other.Join')->
-							get(CFactory::_('Config')->build_target . '.' . $default['code'] . '.' . $default['as']);
-						if ($decodeChecker !== null || $uikitChecker !== null
-							|| $decodeFilter !== null || $contentprepareChecker !== null
-							|| $joinedChecker !== null)
-						{
-							$decoder = '';
-							if ($decodeChecker !== null && ArrayHelper::check($decodeChecker))
-							{
-								// also filter fields if needed
-								$decoder = $this->setCustomViewFieldDecode(
-									$get, $decodeChecker, '$item',
-									$default['code'], Indent::_(2)
-								);
-							}
-							$decoder_filter = '';
-							if ($decodeFilter !== null && ArrayHelper::check($decodeFilter))
-							{
-								$decoder_filter
-									= $this->setCustomViewFieldDecodeFilter(
-									$get, $decodeFilter, '$item', '$items[$nr]',
-									$default['code'], Indent::_(2)
-								);
-							}
-							$contentprepare = '';
-							if ($contentprepareChecker !== null && ArrayHelper::check($contentprepareChecker))
-							{
-								$contentprepare
-									= $this->setCustomViewFieldonContentPrepareChecker(
-									$get, $contentprepareChecker, '$item',
-									$default['code'], Indent::_(2)
-								);
-							}
-							$uikit = '';
-							if ($uikitChecker !== null && ArrayHelper::check($uikitChecker))
-							{
-								$uikit = $this->setCustomViewFieldUikitChecker(
-									$get, $uikitChecker, '$item',
-									$default['code'], Indent::_(2)
-								);
-							}
-							$joine = '';
-							if ($joinedChecker !== null && ArrayHelper::check($joinedChecker))
-							{
-								foreach ($joinedChecker as $joinedString)
-								{
-									$joine .= CFactory::_('Placeholder')->update(
-										$joinedString, $placeholders
-									);
-								}
-							}
-							if (StringHelper::check($decoder) || StringHelper::check($contentprepare)
-								|| StringHelper::check($uikit) || StringHelper::check($decoder_filter)
-								|| StringHelper::check($joine))
-							{
-								$methods .= PHP_EOL . Indent::_(3)
-									. "\$items = \$db->loadObjectList();";
-								$methods .= PHP_EOL . PHP_EOL . Indent::_(3)
-									. "//" . Line::_(__Line__, __Class__)
-									. " Convert the parameter fields into objects.";
-								$methods .= PHP_EOL . Indent::_(3)
-									. "foreach (\$items as \$nr => &\$item)";
-								$methods .= PHP_EOL . Indent::_(3) . "{";
-								if (StringHelper::check($decoder))
-								{
-									$methods .= $decoder;
-								}
-								if (StringHelper::check($decoder_filter))
-								{
-									$methods .= $decoder_filter;
-								}
-								if (StringHelper::check($contentprepare))
-								{
-									$methods .= $contentprepare;
-								}
-								if (StringHelper::check($uikit))
-								{
-									$methods .= $uikit;
-								}
-								if (StringHelper::check($joine))
-								{
-									$methods .= $joine;
-								}
-								$methods .= PHP_EOL . Indent::_(3) . "}";
-								$methods .= PHP_EOL . Indent::_(3)
-									. "return \$items;";
-							}
-							else
-							{
-								$methods .= PHP_EOL . Indent::_(3)
-									. "return \$db->loadObjectList();";
-							}
-						}
-						else
-						{
-							$methods .= PHP_EOL . Indent::_(3)
-								. "return \$db->loadObjectList();";
-						}
-						$methods .= PHP_EOL . Indent::_(2) . "}";
-						$methods .= PHP_EOL . Indent::_(2) . "return false;";
-						$methods .= PHP_EOL . Indent::_(1) . "}";
-
-						// set the script if it was found
-						$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
-						$script    = '';
-						foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-						{
-							if (CFactory::_('Compiler.Builder.Site.Decrypt')->get("{$cryptionType}.{$code}", false))
-							{
-								if ('expert' !== $cryptionType)
-								{
-									$script .= PHP_EOL . Indent::_(2) . "//"
-										. Line::_(__Line__, __Class__) . " Get the "
-										. $cryptionType . " encryption.";
-									$script .= PHP_EOL . Indent::_(2) . "\$"
-										. $cryptionType . "key = " . $Component
-										. "Helper::getCryptKey('"
-										. $cryptionType . "');";
-									$script .= PHP_EOL . Indent::_(2) . "//"
-										. Line::_(__Line__, __Class__)
-										. " Get the encryption object.";
-									$script .= PHP_EOL . Indent::_(2) . "\$"
-										. $cryptionType
-										. " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$"
-										. $cryptionType . "key);" . PHP_EOL;
-								}
-								elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
-									exists("{$code}.get"))
-								{
-									foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
-										exists("{$code}.get") as $block)
-									{
-										$script .= PHP_EOL . Indent::_(2) . implode(
-											PHP_EOL . Indent::_(2), $block
-										);
-									}
-								}
-							}
-						}
-						$methods = str_replace(
-							Placefix::_h('CRYPT'), $script, $methods
-						);
-					}
-				}
-				// insure the crypt placeholder is removed
-				if (StringHelper::check($methods))
-				{
-					$methods = str_replace(
-						Placefix::_h('CRYPT'), '', $methods
-					);
-				}
-			}
-		}
-		// only update if dispacher placholder is found
-		if (strpos($methods, (string) Placefix::_h('DISPATCHER')) !== false)
-		{
-			// check if the dispather should be added
-			if (!isset($this->JEventDispatcher)
-				|| !ArrayHelper::check($this->JEventDispatcher))
-			{
-				$this->JEventDispatcher = array(Placefix::_h('DISPATCHER') => '');
-			}
-			$methods = str_replace(
-				array_keys($this->JEventDispatcher),
-				array_values($this->JEventDispatcher), $methods
-			);
-		}
-		// insure the crypt placeholder is removed
-		if (StringHelper::check($methods))
-		{
-			return $methods . PHP_EOL;
-		}
-
-		return '';
-	}
-
-	public function setCustomViewMethodDefaults($get, $code)
-	{
-		if (isset($get['key']) && isset($get['as']))
-		{
-			$key                  = substr(
-				(string) StringHelper::safe(
-					preg_replace('/[0-9]+/', '', md5((string) $get['key'])), 'F'
-				), 0, 4
-			);
-			$method['on_field']   = (isset($get['on_field']))
-				? $this->removeAsDot($get['on_field']) : null;
-			$method['join_field'] = (isset($get['join_field']))
-				? StringHelper::safe(
-					$this->removeAsDot($get['join_field'])
-				) : null;
-			$method['Join_field'] = (isset($method['join_field']))
-				? StringHelper::safe($method['join_field'], 'F')
-				: null;
-			$method['name']       = StringHelper::safe(
-				$get['selection']['name'], 'F'
-			);
-			$method['code']       = StringHelper::safe($code);
-			$method['AS']         = StringHelper::safe(
-				$get['as'], 'U'
-			);
-			$method['as']         = StringHelper::safe(
-				$get['as']
-			);
-			$method['valueName']  = $method['on_field'] . $method['Join_field']
-				. $method['name'] . $method['AS'];
-			$method['methodName'] = StringHelper::safe(
-					$method['on_field'], 'F'
-				) . $method['Join_field'] . $method['name'] . $key . '_'
-				. $method['AS'];
-
-			// return
-			return $method;
-		}
-
-		return false;
-	}
-
-	public function setCustomViewListQuery(&$get, $code, $return = true)
-	{
-		if (ObjectHelper::check($get))
-		{
-			if ($get->pagination == 1)
-			{
-				$getItem = PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Get a db connection.";
-			}
-			else
-			{
-				$getItem = PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					)
-					. " Make sure all records load, since no pagination allowed.";
-				$getItem .= PHP_EOL . Indent::_(2)
-					. "\$this->setState('list.limit', 0);";
-				$getItem .= PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Get a db connection.";
-			}
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$getItem .= PHP_EOL . Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
-			}
-			else
-			{
-				$getItem .= PHP_EOL . Indent::_(2) . "\$db = \$this->getDatabase();";
-			}
-			$getItem .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-				. Line::_(__Line__, __Class__) . " Create a new query object.";
-			$getItem .= PHP_EOL . Indent::_(2)
-				. "\$query = \$db->getQuery(true);";
-			// set main get query
-			$getItem .= $this->setCustomViewQuery($get->main_get, $code);
-			// check if there is any custom script
-			$getItem .= CFactory::_('Customcode.Dispenser')->get(
-				CFactory::_('Config')->build_target . '_php_getlistquery', $code, '',
-				PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Filtering.", true
-			);
-			// setup filters
-			if (isset($get->filter))
-			{
-				$getItem .= $this->setCustomViewFilter($get->filter, $code);
-			}
-			// setup where
-			if (isset($get->where))
-			{
-				$getItem .= $this->setCustomViewWhere($get->where, $code);
-			}
-			// setup ordering
-			if (isset($get->order))
-			{
-				$getItem .= $this->setCustomViewOrder($get->order, $code);
-			}
-			// setup grouping
-			if (isset($get->group))
-			{
-				$getItem .= $this->setCustomViewGroup($get->group, $code);
-			}
-			if ($return)
-			{
-				// return the query object
-				$getItem .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-					. Line::_(__Line__, __Class__) . " return the query object"
-					. PHP_EOL . Indent::_(2) . "return \$query;";
-			}
-
-			return $getItem;
-		}
-
-		return PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-			. "add your custom code here.";
+		return CFactory::_('Dynamicget.UikitLoader')->getUikitComp();
 	}
 
 	/**
-	 * @param $get
-	 * @param $code
+	 * Get the main custom method block.
 	 *
-	 * @return string
+	 * @param  string  $body   The PHP code body
+	 * @param  string  $name   The function name
+	 * @param  string  $type   The doc return type
+	 *
+	 * @return string  The built method block
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Methods')->getMethod(...)
 	 */
-	public function setCustomViewGetItems(&$get, $code)
+	public function setMainCustomMehtod($body, $name, $type): string
 	{
-		$getItem = '';
-		// set the site decrypt switch
-		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-		{
-			CFactory::_('Compiler.Builder.Site.Decrypt')->set("{$cryptionType}.{$code}", false);
-		}
-		// set the component name
-		$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
-		// start load the get item
-		if (ObjectHelper::check($get))
-		{
-			$getItem .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-				. Line::_(__Line__, __Class__)
-				. " Insure all item fields are adapted where needed.";
-			$getItem .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$items))";
-			$getItem .= PHP_EOL . Indent::_(2) . "{";
-			$getItem .= Placefix::_h("DISPATCHER") ;
-			$getItem .= PHP_EOL . Indent::_(3)
-				. "foreach (\$items as \$nr => &\$item)";
-			$getItem .= PHP_EOL . Indent::_(3) . "{";
-			$getItem .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Always create a slug for sef URL's";
-			$getItem .= PHP_EOL . Indent::_(4)
-				. "\$item->slug = (\$item->id ?? '0') . (isset(\$item->alias) ? ':' . \$item->alias : '');";
-			if (isset($get->main_get)
-				&& ArrayHelper::check(
-					$get->main_get
-				))
-			{
-				$asBucket = [];
-				foreach ($get->main_get as $main_get)
-				{
-					// build path
-					$path = $code . '.' . $main_get['key'] . '.' . $main_get['as'];
+		return CFactory::_('Dynamicget.Methods')->getMethod($body, $name, $type);
+	}
 
-					$decodeChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('decode.' . $path);
-					if (ArrayHelper::check($decodeChecker))
-					{
-						// set decoding of needed fields
-						$getItem .= $this->setCustomViewFieldDecode(
-							$main_get, $decodeChecker, "\$item", $code,
-							Indent::_(2)
-						);
-					}
+	/**
+	 * Get the dynamic get custom item methods.
+	 *
+	 * @param   mixed   $mainGet   The main get object.
+	 * @param   string  $code      The code string.
+	 *
+	 * @return string  The generated methods code.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.CustomGetMethods')->get(...)
+	 */
+	public function setCustomViewCustomItemMethods($mainGet, $code)
+	{
+		return CFactory::_('Dynamicget.CustomGetMethods')->get($mainGet, $code);
+	}
 
-					// also filter fields if needed
-					$decodeFilter = CFactory::_('Compiler.Builder.Site.Field.Decode.Filter')->
-						get(CFactory::_('Config')->build_target . '.' . $path);
-					if (ArrayHelper::check($decodeFilter))
-					{
-						$getItem .= $this->setCustomViewFieldDecodeFilter(
-							$main_get, $decodeFilter, "\$item",
-							'$items[$nr]', $code, Indent::_(2)
-						);
-					}
+	/**
+	 * Get the default method structure for a custom view join.
+	 *
+	 * @param  array   $get   The method definition array.
+	 * @param  string  $code  The code snippet related to the method.
+	 *
+	 * @return array|null  The normalized method array or null on failure.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.JoinStructure')->get(...)
+	 */
+	public function setCustomViewMethodDefaults($get, $code): ?array
+	{
+		return CFactory::_('Dynamicget.JoinStructure')->get($get, $code);
+	}
 
-					$contentprepareChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('textareas.' . $path);
-					if (ArrayHelper::check($contentprepareChecker))
-					{
-						// set contentprepare checkers on needed fields
-						$getItem .= $this->setCustomViewFieldonContentPrepareChecker(
-							$main_get, $contentprepareChecker, "\$item",
-							$code, Indent::_(2)
-						);
-					}
+	/**
+	 * Build the custom view list query code block.
+	 *
+	 * @param  object  $get     The GET configuration object.
+	 * @param  string  $code    The current code name.
+	 * @param  bool    $return  Whether to include `return $query;`.
+	 *
+	 * @return string  The full PHP code block as a string.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.ListQuery')->get(...)
+	 */
+	public function setCustomViewListQuery($get, $code, $return = true)
+	{
+		return CFactory::_('Dynamicget.ListQuery')->get($get, $code, $return);
+	}
 
-					$uikitChecker = CFactory::_('Compiler.Builder.Site.Field.Data')->get('uikit.' . $path);
-					if (ArrayHelper::check($uikitChecker))
-					{
-						// set uikit checkers on needed fields
-						$getItem .= $this->setCustomViewFieldUikitChecker(
-							$main_get, $uikitChecker, "\$item", $code,
-							Indent::_(2)
-						);
-					}
-
-					$asBucket[] = $main_get['as'];
-				}
-			}
-			// only update if dispacher placholder is found
-			if (strpos($getItem, (string) Placefix::_h('DISPATCHER'))
-				!== false)
-			{
-				// check if the dispather should be added
-				if (!isset($this->JEventDispatcher)
-					|| !ArrayHelper::check(
-						$this->JEventDispatcher
-					))
-				{
-					$this->JEventDispatcher = array(Placefix::_h('DISPATCHER') => '');
-				}
-				$getItem = str_replace(
-					array_keys($this->JEventDispatcher),
-					array_values($this->JEventDispatcher), $getItem
-				);
-			}
-			// setup Globals
-			$getItem .= $this->setCustomViewGlobals(
-				$get->global, '$item', $asBucket, Indent::_(2)
-			);
-			// setup the custom gets that returns multipal values
-			$getItem .= $this->setCustomViewCustomJoin(
-				$get->custom_get, "\$item", $code, $asBucket, Indent::_(2)
-			);
-			// set calculations
-			if ($get->addcalculation == 1)
-			{
-				$get->php_calculation = (array) explode(
-					PHP_EOL, (string) $get->php_calculation
-				);
-				if (ArrayHelper::check($get->php_calculation))
-				{
-					$_tmp    = PHP_EOL . Indent::_(4) . implode(
-							PHP_EOL . Indent::_(4), $get->php_calculation
-						);
-					$getItem .= CFactory::_('Placeholder')->update_(
-						$_tmp
-					);
-				}
-			}
-			$getItem .= PHP_EOL . Indent::_(3) . "}";
-			$getItem .= PHP_EOL . Indent::_(2) . "}";
-			// remove empty foreach
-			if (strlen($getItem) <= 100)
-			{
-				$getItem = PHP_EOL;
-			}
-		}
-
-		// set the script if found
-		$script = '';
-		foreach (CFactory::_('Config')->cryption_types as $cryptionType)
-		{
-			if (CFactory::_('Compiler.Builder.Site.Decrypt')->get("{$cryptionType}.{$code}", false))
-			{
-				if ('expert' !== $cryptionType)
-				{
-					$script .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
-						. Line::_(__Line__, __Class__) . " Get the " . $cryptionType
-						. " encryption.";
-					$script .= PHP_EOL . Indent::_(2) . "\$" . $cryptionType
-						. "key = " . $Component . "Helper::getCryptKey('"
-						. $cryptionType . "');";
-					$script .= PHP_EOL . Indent::_(2) . "//" . Line::_(
-							__LINE__,__CLASS__
-						) . " Get the encryption object.";
-					$script .= PHP_EOL . Indent::_(2) . "\$" . $cryptionType
-						. " = new Super_" . "__99175f6d_dba8_4086_8a65_5c4ec175e61d___Power(\$" . $cryptionType . "key);";
-				}
-				elseif (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
-					exists("{$code}.get"))
-				{
-					foreach (CFactory::_('Compiler.Builder.Model.' . ucfirst($cryptionType).  '.Field.Initiator')->
-						get("{$code}.get") as $block)
-					{
-						$script .= PHP_EOL . Indent::_(2) . implode(
-							PHP_EOL . Indent::_(2), $block
-						);
-					}
-				}
-			}
-		}
-
-		return $script . $getItem;
+	/**
+	 * Generate the GetItems code block for the dynamicget.
+	 *
+	 * @param  object  $get   The get object.
+	 * @param  string  $code  The component code.
+	 *
+	 * @return string  The resulting PHP code string.
+	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.GetItems')->get(...)
+	 */
+	public function setCustomViewGetItems($get, $code)
+	{
+		return CFactory::_('Dynamicget.GetItems')->get($get, $code);
 	}
 
 	/**
@@ -4571,21 +2670,40 @@ class Interpretation extends Fields
 	public function setAdminViewDisplayMethod($nameListCode)
 	{
 		$script = '';
+		$target_version = CFactory::_('Config')->get('joomla_version', 3);
 		// add the new filter methods for the search toolbar above the list view (2 = topbar)
 		if (CFactory::_('Compiler.Builder.Admin.Filter.Type')->get($nameListCode, 1) == 2)
 		{
-			$script .= PHP_EOL . Indent::_(2) . "//"
-				. Line::_(
-					__LINE__,__CLASS__
-				) . " Load the filter form from xml.";
-			$script .= PHP_EOL . Indent::_(2) . "\$this->filterForm "
-				. "= \$this->get('FilterForm');";
-			$script .= PHP_EOL . Indent::_(2) . "//"
-				. Line::_(
-					__LINE__,__CLASS__
-				) . " Load the active filters.";
-			$script .= PHP_EOL . Indent::_(2) . "\$this->activeFilters "
-				. "= \$this->get('ActiveFilters');";
+			if ($target_version == 3)
+			{
+				$script .= PHP_EOL . Indent::_(2) . "//"
+					. Line::_(
+						__LINE__,__CLASS__
+					) . " Load the filter form from xml.";
+				$script .= PHP_EOL . Indent::_(2) . "\$this->filterForm "
+					. "= \$this->get('FilterForm');";
+				$script .= PHP_EOL . Indent::_(2) . "//"
+					. Line::_(
+						__LINE__,__CLASS__
+					) . " Load the active filters.";
+				$script .= PHP_EOL . Indent::_(2) . "\$this->activeFilters "
+					. "= \$this->get('ActiveFilters');";
+			}
+			else
+			{
+				$script .= PHP_EOL . Indent::_(2) . "//"
+					. Line::_(
+						__LINE__,__CLASS__
+					) . " Load the filter form from xml for searchtools.";
+				$script .= PHP_EOL . Indent::_(2) . "\$this->filterForm "
+					. "= \$model->getFilterForm();";
+				$script .= PHP_EOL . Indent::_(2) . "//"
+					. Line::_(
+						__LINE__,__CLASS__
+					) . " Load the active filters for searchtools.";
+				$script .= PHP_EOL . Indent::_(2) . "\$this->activeFilters "
+					. "= \$model->getActiveFilters();";
+			}
 		}
 		// get the default ordering values
 		$default_ordering = $this->getListViewDefaultOrdering($nameListCode);
@@ -4610,27 +2728,43 @@ class Interpretation extends Fields
 		if (isset($view['settings']->main_get)
 			&& ObjectHelper::check($view['settings']->main_get))
 		{
+			$target_version = CFactory::_('Config')->get('joomla_version', 3);
+
 			// add events if needed
 			if ($view['settings']->main_get->gettype == 1
 				&& ArrayHelper::check(
 					$view['settings']->main_get->plugin_events
 				))
 			{
-				// load the dispatcher
-				$method .= PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Initialise dispatcher.";
-				$method .= PHP_EOL . Indent::_(2)
-					. "\$dispatcher = JEventDispatcher::getInstance();";
+
+				if ($target_version == 3 || $target_version == 4)
+				{
+					// load the dispatcher
+					$method .= PHP_EOL . Indent::_(2) . "//" . Line::_(
+							__LINE__,__CLASS__
+						) . " Initialise dispatcher.";
+					$method .= PHP_EOL . Indent::_(2)
+						. "\$dispatcher = JEventDispatcher::getInstance();";
+				}
 			}
+
 			if ($view['settings']->main_get->gettype == 1)
 			{
 				// for single views
 				$method .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Initialise variables.";
-				$method .= PHP_EOL . Indent::_(2)
-					. "\$this->item = \$this->get('Item');";
+
+				if ($target_version == 3)
+				{
+					$method .= PHP_EOL . Indent::_(2)
+						. "\$this->item = \$this->get('Item');";
+				}
+				else
+				{
+					$method .= PHP_EOL . Indent::_(2)
+						. "\$this->item = \$model->getItem();";
+				}
 			}
 			elseif ($view['settings']->main_get->gettype == 2)
 			{
@@ -4638,13 +2772,28 @@ class Interpretation extends Fields
 				$method .= PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Initialise variables.";
-				$method .= PHP_EOL . Indent::_(2)
-					. "\$this->items = \$this->get('Items');";
-				// only add if pagination is requered
-				if ($view['settings']->main_get->pagination == 1)
+
+				if ($target_version == 3)
 				{
 					$method .= PHP_EOL . Indent::_(2)
-						. "\$this->pagination = \$this->get('Pagination');";
+						. "\$this->items = \$this->get('Items');";
+					// only add if pagination is requered
+					if ($view['settings']->main_get->pagination == 1)
+					{
+						$method .= PHP_EOL . Indent::_(2)
+							. "\$this->pagination = \$this->get('Pagination');";
+					}
+				}
+				else
+				{
+					$method .= PHP_EOL . Indent::_(2)
+						. "\$this->items = \$model->getItems();";
+					// only add if pagination is requered
+					if ($view['settings']->main_get->pagination == 1)
+					{
+						$method .= PHP_EOL . Indent::_(2)
+							. "\$this->pagination = \$model->getPagination();";
+					}
 				}
 			}
 			// add the custom get methods
@@ -4658,9 +2807,19 @@ class Interpretation extends Fields
 					$custom_get_name = str_replace(
 						'get', '', (string) $custom_get->getcustom
 					);
-					$method          .= PHP_EOL . Indent::_(2) . "\$this->"
-						. StringHelper::safe($custom_get_name)
-						. " = \$this->get('" . $custom_get_name . "');";
+
+					if ($target_version == 3)
+					{
+						$method .= PHP_EOL . Indent::_(2) . "\$this->"
+							. StringHelper::safe($custom_get_name)
+							. " = \$this->get('" . $custom_get_name . "');";
+					}
+					else
+					{
+						$method .= PHP_EOL . Indent::_(2) . "\$this->"
+							. StringHelper::safe($custom_get_name)
+							. " = \$model->{$custom_get->getcustom}();";
+					}
 				}
 			}
 			// add custom script
@@ -4706,7 +2865,7 @@ class Interpretation extends Fields
 				$method .= PHP_EOL . Indent::_(3) . "\$this->addToolBar();";
 				$method .= PHP_EOL . Indent::_(2) . "}";
 
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				if ($target_version == 3)
 				{
 					$method .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__) . " set the document";
@@ -4717,8 +2876,18 @@ class Interpretation extends Fields
 			$method .= PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Check for errors.";
-			$method .= PHP_EOL . Indent::_(2)
-				. "if (count(\$errors = \$this->get('Errors')))";
+
+			if ($target_version == 3)
+			{
+				$method .= PHP_EOL . Indent::_(2)
+					. "if (count(\$errors = \$model->get('Errors')))";
+			}
+			else
+			{
+				$method .= PHP_EOL . Indent::_(2)
+					. "if (count(\$errors = \$model->getErrors()))";
+			}
+
 			$method .= PHP_EOL . Indent::_(2) . "{";
 			$method .= PHP_EOL . Indent::_(3)
 				. "throw new \Exception(implode(PHP_EOL, \$errors), 500);";
@@ -4736,7 +2905,7 @@ class Interpretation extends Fields
 					. "Super_" . "__91004529_94a9_4590_b842_e7c6b624ecf5___Power::check(\$this->item))";
 				$method .= PHP_EOL . Indent::_(2) . "{";
 				$method .= PHP_EOL . Indent::_(3)
-					. "PluginHelper::importPlugin('content');";
+					. "Joomla__" . "_7934665b_e432_4ec6_b38d_27bf32730eb9___Power::importPlugin('content');";
 				$method .= PHP_EOL . Indent::_(3) . "//" . Line::_(
 						__LINE__,__CLASS__
 					) . " Setup Event Object.";
@@ -4749,28 +2918,62 @@ class Interpretation extends Fields
 					. "\$params = (isset(\$this->item->params) && "
 					. "Super_" . "__4b225c51_d293_48e4_b3f6_5136cf5c3f18___Power::check(\$this->item->params)) ? json_decode(\$this->item->params) : \$this->params;";
 				// load the defaults
-				foreach (
-					$view['settings']->main_get->plugin_events as $plugin_event
-				)
+				foreach ($view['settings']->main_get->plugin_events as $plugin_event)
 				{
 					// load the events
 					if ('onContentPrepare' === $plugin_event)
 					{
 						// TODO the onContentPrepare already gets triggered on the fields of its relation
 						// $method .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__) . " onContentPrepare Event Trigger.";
-						// $method .= PHP_EOL . Indent::_(2) . "\$dispatcher->trigger('onContentPrepare', array ('com_" . CFactory::_('Config')->component_code_name . ".article', &\$this->item, &\$this->params, 0));";
+						// if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+						// {
+							// $method .= PHP_EOL . Indent::_(2) . "\$dispatcher->trigger('onContentPrepare', ['com_" . CFactory::_('Config')->component_code_name . ".article', &\$this->item, &\$this->params, 0]);";
+						// }
+
 					}
 					else
 					{
-						$method .= PHP_EOL . Indent::_(3) . "//"
-							. Line::_(__Line__, __Class__) . " " . $plugin_event
-							. " Event Trigger.";
-						$method .= PHP_EOL . Indent::_(3)
-							. "\$results = \$dispatcher->trigger('"
-							. $plugin_event . "', array('com_"
-							. CFactory::_('Config')->component_code_name . "."
-							. $view['settings']->context
-							. "', &\$this->item, &\$params, 0));";
+						if ($target_version == 3 || $target_version == 4)
+						{
+							$method .= PHP_EOL . Indent::_(3) . "//"
+								. Line::_(__Line__, __Class__) . " " . $plugin_event . " Event Trigger.";
+							$method .= PHP_EOL . Indent::_(3)
+								. "\$results = \$dispatcher->trigger('"
+								. $plugin_event . "', array('com_"
+								. CFactory::_('Config')->component_code_name . "."
+								. $view['settings']->context
+								. "', &\$this->item, &\$params, 0));";
+						}
+						else
+						{
+							$joomla_power = 'error';
+							if ('onContentAfterTitle' === $plugin_event)
+							{
+								$joomla_power = "Joomla__" . "_fa9c1320_a115_452a_a0a8_534fcdea490b___Power";
+							}
+							elseif ('onContentBeforeDisplay' === $plugin_event)
+							{
+								$joomla_power = "Joomla__" . "_fc1ab159_0df1_4be8_babd_0bd18d35f467___Power";
+							}
+							elseif ('onContentAfterDisplay' === $plugin_event)
+							{
+								$joomla_power = "Joomla__" . "_a42c4e8e_ead1_442d_8b9a_99236a1ee9a9___Power";
+							}
+
+							$method .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__) . " {$plugin_event} Event Trigger";
+							$method .= PHP_EOL . Indent::_(3) . "\$results = \$this->getDispatcher()->dispatch('{$plugin_event}',";
+							$method .= PHP_EOL . Indent::_(4) . "new {$joomla_power}(";
+							$method .= PHP_EOL . Indent::_(5) . "'{$plugin_event}',";
+							$method .= PHP_EOL . Indent::_(5) . "[";
+							$method .= PHP_EOL . Indent::_(6) . "'context' => '" . CFactory::_('Config')->component_code_name . "." . $view['settings']->context . "',";
+							$method .= PHP_EOL . Indent::_(6) . "'subject' => \$this->item,";
+							$method .= PHP_EOL . Indent::_(6) . "'params' => \$params,";
+							$method .= PHP_EOL . Indent::_(6) . "'page' => 0";
+							$method .= PHP_EOL . Indent::_(5) . "]";
+							$method .= PHP_EOL . Indent::_(4) . ")";
+							$method .= PHP_EOL . Indent::_(3) . ")->getArgument('result', []);";
+						}
+
 						$method .= PHP_EOL . Indent::_(3)
 							. '$this->item->event->' . $plugin_event
 							. ' = trim(implode("\n", $results));';
@@ -5330,8 +3533,17 @@ class Interpretation extends Fields
 		$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " Add the needed Javascript to insure that the buttons work.";
 		$script[] = Indent::_(2) . "Html::_('behavior.framework', true);";
-		$script[] = Indent::_(2)
-			. "\$this->getDocument()->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
+
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+		{
+			$script[] = Indent::_(2)
+				. "\$this->getDocument()->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
+		}
+		else
+		{
+			$script[] = Indent::_(2)
+				. "\$this->getDocument()->getWebAssetManager()->addInlineScript(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
+		}
 
 		// return the script
 		return PHP_EOL . implode(PHP_EOL, $script);
@@ -5437,7 +3649,7 @@ class Interpretation extends Fields
 			return PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Add View JavaScript File" . PHP_EOL . Indent::_(2)
-				. $this->setIncludeLibScript($path);
+				. CFactory::_('Library.IncludeHelper')->get($path);
 		}
 
 		return '';
@@ -5454,10 +3666,21 @@ class Interpretation extends Fields
 				$view['settings']->js_document
 			))
 			{
-				$script     = PHP_EOL . Indent::_(2) . "//" . Line::_(
-						__LINE__,__CLASS__
-					) . " Set the Custom JS script to view" . PHP_EOL
-					. Indent::_(2) . '$this->getDocument()->addScriptDeclaration("';
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$script = PHP_EOL . Indent::_(2) . "//" . Line::_(
+							__LINE__,__CLASS__
+						) . " Set the Custom JS script to view" . PHP_EOL
+						. Indent::_(2) . '$this->getDocument()->addScriptDeclaration("';
+				}
+				else
+				{
+					$script = PHP_EOL . Indent::_(2) . "//" . Line::_(
+							__LINE__,__CLASS__
+						) . " Set the Custom JS script to view" . PHP_EOL
+						. Indent::_(2) . '$this->getDocument()->getWebAssetManager()->addInlineScript("';
+				}
+
 				$jsDocument = PHP_EOL . Indent::_(3) . str_replace(
 						'"', '\"', implode(
 							PHP_EOL . Indent::_(3),
@@ -5662,14 +3885,14 @@ class Interpretation extends Fields
 		$meta[] = Indent::_(2) . "if (isset(\$this->" . $item
 			. "->metadesc) && \$this->" . $item . "->metadesc)";
 		$meta[] = Indent::_(2) . "{";
-		$meta[] = Indent::_(3) . "\$this->getDocument()->setDescription(\$this->"
+		$meta[] = Indent::_(3) . "\$this->setDocumentTitle(\$this->"
 			. $item . "->metadesc);";
 		$meta[] = Indent::_(2) . "}";
 		$meta[] = Indent::_(2)
 			. "elseif (\$this->params->get('menu-meta_description'))";
 		$meta[] = Indent::_(2) . "{";
 		$meta[] = Indent::_(3)
-			. "\$this->getDocument()->setDescription(\$this->params->get('menu-meta_description'));";
+			. "\$this->setDocumentTitle(\$this->params->get('menu-meta_description'));";
 		$meta[] = Indent::_(2) . "}";
 		$meta[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " load the key words if set";
@@ -5841,7 +4064,7 @@ class Interpretation extends Fields
 		if (($data = CFactory::_('Compiler.Builder.Library.Manager')->
 			get(CFactory::_('Config')->build_target . '.' . $code)) !== null)
 		{
-			foreach ($data as $id => $true)
+			foreach ($data as $id => $data_item)
 			{
 				// get the library
 				$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
@@ -5862,7 +4085,7 @@ class Interpretation extends Fields
 				elseif (is_object($library)
 					&& isset($library->how))
 				{
-					$setter .= $this->setLibraryDocument($id);
+					$setter .= CFactory::_('Library.Document')->get($id);
 				}
 			}
 		}
@@ -5875,291 +4098,45 @@ class Interpretation extends Fields
 		return $setter;
 	}
 
+	/**
+	 * Get the Library document loading code.
+	 *
+	 * @param   string  $id  The libary id/guid
+	 *
+	 * @deprecated 5.1.2  CFactory::_('Library.Document')->get(...);
+	 */
 	protected function setLibraryDocument($id)
 	{
-		// get the library
-		$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
-		// make sure we have an object
-		if (is_object($library))
-		{
-			if (isset($library->how) && 2 == $library->how
-				&& isset($library->conditions)
-				&& ArrayHelper::check(
-					$library->conditions
-				))
-			{
-				// build document with the conditions values
-				$this->setLibraryDocConditions(
-					$id, $this->setLibraryScripts($id, false)
-				);
-			}
-			elseif (isset($library->how) && 1 == $library->how)
-			{
-				// build document to allways add all files and urls
-				$this->setLibraryScripts($id);
-			}
-			// check if the document was build
-			if (isset($library->document)
-				&& StringHelper::check(
-					$library->document
-				))
-			{
-				return PHP_EOL . PHP_EOL . $library->document;
-			}
-		}
-
-		return '';
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
-	protected function setLibraryDocConditions($id, $scripts)
+	/**
+	 * get Library Include string
+	 *
+	 * @param   string      $path      The path to the library
+	 * @param   array|null  $pathInfo  The path info if already set
+	 *
+	 * @deprecated 5.1.2  CFactory::_('Library.IncludeHelper')->get(...);
+	 */
+	protected function setIncludeLibScript(string $path, ?array $pathInfo = null)
 	{
-		// Start script builder for library files
-		if (!isset($this->libwarning[$id]))
-		{
-			// set the warning only once
-			$this->libwarning[$id] = true;
-
-			// get the library
-			$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
-
-			$this->app->enqueueMessage(
-				Text::_('COM_COMPONENTBUILDER_HR_HTHREECONDITIONAL_SCRIPT_WARNINGHTHREE'), 'Warning'
-			);
-
-			// message with name
-			if (is_object($library) && isset($library->name))
-			{
-				$this->app->enqueueMessage(
-					Text::sprintf(
-						'The conditional script builder for <b>%s</b> is not ready, sorry!',
-						$library->name
-					), 'Warning'
-				);
-			}
-			else
-			{
-				$this->app->enqueueMessage(
-					Text::_(
-						'The conditional script builder for ID:<b>%s</b> is not ready, sorry!',
-						$id
-					), 'Warning'
-				);
-			}
-		}
-	}
-
-	protected function setLibraryScripts($id, $buildDoc = true)
-	{
-		$scripts = [];
-		// get the library
-		$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
-		// check that we have a library
-		if (is_object($library))
-		{
-			// load the urls if found
-			if (isset($library->urls)
-				&& ArrayHelper::check($library->urls))
-			{
-				// set all the files
-				foreach ($library->urls as $url)
-				{
-					// if local path is set, then use it first
-					if (isset($url['path']))
-					{
-						// update the root path
-						$path = $this->getScriptRootPath($url['path']);
-						// load document script
-						$scripts[md5((string) $url['path'])] = $this->setIncludeLibScript(
-							$path
-						);
-						// load url also if not building document
-						if (!$buildDoc)
-						{
-							// load document script
-							$scripts[md5((string) $url['url'])] = $this->setIncludeLibScript(
-								$url['url'], false
-							);
-						}
-					}
-					else
-					{
-						// load document script
-						$scripts[md5((string) $url['url'])] = $this->setIncludeLibScript(
-							$url['url'], false
-						);
-					}
-				}
-			}
-			// load the local files if found
-			if (isset($library->files)
-				&& ArrayHelper::check($library->files))
-			{
-				// set all the files
-				foreach ($library->files as $file)
-				{
-					$path = '/' . trim((string) $file['path'], '/');
-					// check if path has new file name (has extetion)
-					$pathInfo = pathinfo($path);
-					// update the root path
-					$_path = $this->getScriptRootPath($path);
-					if (isset($pathInfo['extension']) && $pathInfo['extension'])
-					{
-						// load document script
-						$scripts[md5($path)] = $this->setIncludeLibScript(
-							$_path, false, $pathInfo
-						);
-					}
-					else
-					{
-						// load document script
-						$scripts[md5($path . '/' . trim((string) $file['file'], '/'))]
-							= $this->setIncludeLibScript(
-							$_path . '/' . trim((string) $file['file'], '/')
-						);
-					}
-				}
-			}
-			// load the local folders if found
-			if (isset($library->folders)
-				&& ArrayHelper::check(
-					$library->folders
-				))
-			{
-				// get all the file paths
-				$files = [];
-				foreach ($library->folders as $folder)
-				{
-					if (isset($folder['path']) && isset($folder['folder']))
-					{
-						$path = '/' . trim((string)$folder['path'], '/');
-						if (isset($folder['rename']) && 1 == $folder['rename'])
-						{
-							if ($_paths = FileHelper::getPaths(
-								CFactory::_('Utilities.Paths')->component_path . $path
-							))
-							{
-								$files[$path] = $_paths;
-							}
-						}
-						else
-						{
-							$path = $path . '/' . trim((string)$folder['folder'], '/');
-							if ($_paths = FileHelper::getPaths(
-								CFactory::_('Utilities.Paths')->component_path . $path
-							))
-							{
-								$files[$path] = $_paths;
-							}
-						}
-					}
-				}
-				// now load the script
-				if (ArrayHelper::check($files))
-				{
-					foreach ($files as $root => $paths)
-					{
-						// update the root path
-						$_root = $this->getScriptRootPath($root);
-						// load per path
-						foreach ($paths as $path)
-						{
-							$scripts[md5($root . '/' . trim((string)$path, '/'))]
-								= $this->setIncludeLibScript(
-								$_root . '/' . trim((string)$path, '/')
-							);
-						}
-					}
-				}
-			}
-		}
-
-		// if there was any code added to document then set globally
-		if ($buildDoc && ArrayHelper::check($scripts))
-		{
-			CFactory::_('Registry')->set("builder.libraries.{$id}.document", Indent::_(2) . "//"
-				. Line::_(__Line__, __Class__) . " always load these files."
-				. PHP_EOL . Indent::_(2) . implode(
-					PHP_EOL . Indent::_(2), $scripts
-				)
-			);
-
-			// success
-			return true;
-		}
-		elseif (ArrayHelper::check($scripts))
-		{
-			return $scripts;
-		}
-
-		return false;
-	}
-
-	protected function setIncludeLibScript($path, $local = true,
-	                                       $pathInfo = false
-	)
-	{
-		// insure we have the path info
-		if (!$pathInfo)
-		{
-			$pathInfo = pathinfo((string) $path);
-		}
-		// use the path info to build the script
-		if (isset($pathInfo['extension']) && $pathInfo['extension'])
-		{
-			switch ($pathInfo['extension'])
-			{
-				case 'js':
-					return 'Html::_(\'script\', "' . ltrim($path, '/')
-						. '", [\'version\' => \'auto\']);';
-					break;
-				case 'css':
-				case 'less':
-					return 'Html::_(\'stylesheet\', "'
-						. ltrim($path, '/') . '", [\'version\' => \'auto\']);';
-					break;
-				case 'php':
-					if (strpos((string) $path, 'http') === false)
-					{
-						return 'require_once("' . $path . '");';
-					}
-					break;
-			}
-		}
-
-		return '';
-	}
-
-	protected function getScriptRootPath($root)
-	{
-		if (strpos((string) $root, '/media/') !== false
-			&& strpos((string) $root, '/admin/') === false
-			&& strpos((string) $root, '/site/') === false)
-		{
-			return str_replace(
-				'/media/', '/media/com_' . CFactory::_('Config')->component_code_name . '/', (string) $root
-			);
-		}
-		elseif (strpos((string) $root, '/media/') === false
-			&& strpos((string) $root, '/admin/') !== false
-			&& strpos((string) $root, '/site/') === false)
-		{
-			return str_replace(
-				'/admin/',
-				'/administrator/components/com_' . CFactory::_('Config')->component_code_name
-				. '/', (string) $root
-			);
-		}
-		elseif (strpos((string) $root, '/media/') === false
-			&& strpos((string) $root, '/admin/') === false
-			&& strpos((string) $root, '/site/') !== false)
-		{
-			return str_replace(
-				'/site/', '/components/com_' . CFactory::_('Config')->component_code_name . '/',
-				(string) $root
-			);
-		}
-
-		return $root;
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	public function setUikitLoader(&$view)
@@ -6475,6 +4452,8 @@ class Interpretation extends Fields
 						(string) $view['settings']->default,
 						(string) Placefix::_('PAGINATIONEND')
 					) !== false);
+				// if both page link and limit box is on the page, and page counter we don't need to add START and END stuff
+				$has_pagination = ($has_limitbox && $has_pagescounter && $has_pageslinks);
 
 				// add pagination start
 				CFactory::_('Placeholder')->add_('PAGINATIONSTART', PHP_EOL
@@ -6487,7 +4466,8 @@ class Interpretation extends Fields
 
 				// add pagination end
 				CFactory::_('Placeholder')->set_('PAGINATIONEND',
-					Indent::_(2) . '<?php endif; ?>');
+						Indent::_(2) . '<?php endif; ?>');
+
 				// only add if no custom page link is found
 				if (!$has_pageslinks)
 				{
@@ -6504,6 +4484,7 @@ class Interpretation extends Fields
 							. '<?php echo $this->pagination->getPagesLinks(); ?>');
 					}
 				}
+
 				CFactory::_('Placeholder')->add_('PAGINATIONEND',
 					PHP_EOL . Indent::_(1) . '</div>');
 				CFactory::_('Placeholder')->add_('PAGINATIONEND',
@@ -6537,7 +4518,7 @@ class Interpretation extends Fields
 				);
 
 				// add pagination start
-				if (!$has_pagination_start)
+				if (!$has_pagination && !$has_pagination_start)
 				{
 					$body[] = CFactory::_('Placeholder')->get_('PAGINATIONSTART');
 				}
@@ -6558,7 +4539,7 @@ class Interpretation extends Fields
 						. '<p class="counter pull-right"> <?php echo $this->pagination->getPagesCounter(); ?> </p>';
 				}
 				// add pagination end
-				if (!$has_pagination_end)
+				if (!$has_pagination && !$has_pagination_end)
 				{
 					$body[] = CFactory::_('Placeholder')->get_('PAGINATIONEND');
 				}
@@ -6643,7 +4624,7 @@ class Interpretation extends Fields
 						&& isset($this->customAdminViewListId[$view]))
 					{
 						$input = PHP_EOL . Indent::_(1)
-							. '<input type="hidden" name="id" value="<?php echo $this->app->input->getInt(\'id\', 0); ?>" />';
+							. '<input type="hidden" name="id" value="<?php echo $this->app->getInput()->getInt(\'id\', 0); ?>" />';
 					}
 
 					return $input . PHP_EOL
@@ -10378,7 +8359,7 @@ class Interpretation extends Fields
 					$placeholders = [
 						Placefix::_('component') => $component,
 						Placefix::_('view') => $for
-					]; // dont change this just use ###view### or componentbuilder (took you a while to get here right :)
+					]; // dont change this just use joomla_plugin_files_folders_urls or componentbuilder (took you a while to get here right :)
 
 					$db .= CFactory::_('Placeholder')->update(
 						$customSql, $placeholders
@@ -13792,9 +11773,19 @@ class Interpretation extends Fields
 					. ', function() { setTimeout(tableFix, 10); }); }); function tableFix() { jQuery('
 					. "'.footable'" . ').trigger(' . "'footable_resize'"
 					. '); }";';
-				$foo .= PHP_EOL . Indent::_(2)
-					. "\$this->getDocument()->addScriptDeclaration(\$footable);"
-					. PHP_EOL;
+
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$foo .= PHP_EOL . Indent::_(2)
+						. "\$this->getDocument()->addScriptDeclaration(\$footable);"
+						. PHP_EOL;
+				}
+				else
+				{
+					$foo .= PHP_EOL . Indent::_(2)
+						. "\$this->getDocument()->getWebAssetManager()->addInlineScript(\$footable);"
+						. PHP_EOL;
+				}
 			}
 		}
 		elseif (3 == $footable_version) // loading version 3
@@ -13820,9 +11811,19 @@ class Interpretation extends Fields
 				$foo .= PHP_EOL . PHP_EOL . Indent::_(2)
 					. '$footable = "jQuery(document).ready(function() { jQuery(function () { jQuery('
 					. "'.footable'" . ').footable();});});";';
-				$foo .= PHP_EOL . Indent::_(2)
-					. "\$this->getDocument()->addScriptDeclaration(\$footable);"
-					. PHP_EOL;
+
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$foo .= PHP_EOL . Indent::_(2)
+						. "\$this->getDocument()->addScriptDeclaration(\$footable);"
+						. PHP_EOL;
+				}
+				else
+				{
+					$foo .= PHP_EOL . Indent::_(2)
+						. "\$this->getDocument()->getWebAssetManager()->addInlineScript(\$footable);"
+						. PHP_EOL;
+				}
 			}
 		}
 
@@ -16411,60 +14412,77 @@ class Interpretation extends Fields
 						$this->validationFixBuilder[$nameSingleCode]
 					))
 				{
-					$validation .= PHP_EOL . "// update fields required";
-					$validation .= PHP_EOL
-						. "function updateFieldRequired(name, status) {";
-					$validation .= PHP_EOL . Indent::_(1)
-						. "// check if not_required exist";
-					$validation .= PHP_EOL . Indent::_(1)
-						. "if (document.getElementById('jform_not_required')) {";
-					$validation .= PHP_EOL . Indent::_(2)
-						. "var not_required = jQuery('#jform_not_required').val().split(\",\");";
-					$validation .= PHP_EOL . PHP_EOL . Indent::_(2)
-						. "if(status == 1)";
-					$validation .= PHP_EOL . Indent::_(2) . "{";
-					$validation .= PHP_EOL . Indent::_(3)
-						. "not_required.push(name);";
-					$validation .= PHP_EOL . Indent::_(2) . "}";
-					$validation .= PHP_EOL . Indent::_(2) . "else";
-					$validation .= PHP_EOL . Indent::_(2) . "{";
-					$validation .= PHP_EOL . Indent::_(3)
-						. "not_required = removeFieldFromNotRequired(not_required, name);";
-					$validation .= PHP_EOL . Indent::_(2) . "}";
-					$validation .= PHP_EOL . PHP_EOL . Indent::_(2)
-						. "jQuery('#jform_not_required').val(fixNotRequiredArray(not_required).toString());";
-					$validation .= PHP_EOL . Indent::_(1) . "}";
+					$validation .= PHP_EOL . "/**";
+					$validation .= PHP_EOL . " * Update the \"not required\" field list by adding or removing a field name.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * Mirrors the original jQuery logic exactly but uses pure JavaScript.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @param  {string}  name    The field name to add or remove.";
+					$validation .= PHP_EOL . " * @param  {number}  status  1 to add as not required, 0 to remove.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @return {void}";
+					$validation .= PHP_EOL . " * @since  3.1.3";
+					$validation .= PHP_EOL . " */";
+					$validation .= PHP_EOL . "function updateFieldRequired(name, status) {";
+					$validation .= PHP_EOL . Indent::_(1) . "// Check if #jform_not_required exists";
+					$validation .= PHP_EOL . Indent::_(1) . "const notRequiredField = document.getElementById('jform_not_required');";
+					$validation .= PHP_EOL . Indent::_(1) . "if (!notRequiredField) {";
+					$validation .= PHP_EOL . Indent::_(2) . "return;";
+					$validation .= PHP_EOL . Indent::_(1) . "}" . PHP_EOL;
+					$validation .= PHP_EOL . Indent::_(1) . "// Split the comma-separated list into an array";
+					$validation .= PHP_EOL . Indent::_(1) . "let not_required = notRequiredField.value ? notRequiredField.value.split(',') : [];" . PHP_EOL;
+					$validation .= PHP_EOL . Indent::_(1) . "// Add or remove the field name from the list";
+					$validation .= PHP_EOL . Indent::_(1) . "if (status == 1) {";
+					$validation .= PHP_EOL . Indent::_(2) . "not_required.push(name);";
+					$validation .= PHP_EOL . Indent::_(1) . "} else {";
+					$validation .= PHP_EOL . Indent::_(2) . "not_required = removeFieldFromNotRequired(not_required, name);";
+					$validation .= PHP_EOL . Indent::_(1) . "}" . PHP_EOL;
+					$validation .= PHP_EOL . Indent::_(1) . "// Clean and deduplicate the list";
+					$validation .= PHP_EOL . Indent::_(1) . "const fixedList = fixNotRequiredArray(not_required);" . PHP_EOL;
+					$validation .= PHP_EOL . Indent::_(1) . "// Write back the updated comma-separated list";
+					$validation .= PHP_EOL . Indent::_(1) . "notRequiredField.value = fixedList.toString();";
 					$validation .= PHP_EOL . "}" . PHP_EOL;
-					$validation .= PHP_EOL
-						. "// remove field from not_required";
-					$validation .= PHP_EOL
-						. "function removeFieldFromNotRequired(array, what) {";
-					$validation .= PHP_EOL . Indent::_(1)
-						. "return array.filter(function(element){";
-					$validation .= PHP_EOL . Indent::_(2)
-						. "return element !== what;";
+					$validation .= PHP_EOL . "/**";
+					$validation .= PHP_EOL . " * Remove a specific field name from the \"not required\" array.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @param  {Array<string>} array  The list of not-required field names.";
+					$validation .= PHP_EOL . " * @param  {string}        what   The field name to remove.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @return {Array<string>}        The updated array.";
+					$validation .= PHP_EOL . " * @since  3.1.3";
+					$validation .= PHP_EOL . " */";
+					$validation .= PHP_EOL . "function removeFieldFromNotRequired(array, what) {";
+					$validation .= PHP_EOL . Indent::_(1) . "return array.filter(function (element) {";
+					$validation .= PHP_EOL . Indent::_(2) . "return element !== what;";
 					$validation .= PHP_EOL . Indent::_(1) . "});";
 					$validation .= PHP_EOL . "}" . PHP_EOL;
-					$validation .= PHP_EOL . "// fix not required array";
-					$validation .= PHP_EOL
-						. "function fixNotRequiredArray(array) {";
-					$validation .= PHP_EOL . Indent::_(1) . "var seen = {};";
-					$validation .= PHP_EOL . Indent::_(1)
-						. "return removeEmptyFromNotRequiredArray(array).filter(function(item) {";
-					$validation .= PHP_EOL . Indent::_(2)
-						. "return seen.hasOwnProperty(item) ? false : (seen[item] = true);";
+					$validation .= PHP_EOL . "/**";
+					$validation .= PHP_EOL . " * Deduplicate and clean a \"not required\" array.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @param  {Array<string>} array  The array to fix.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @return {Array<string>}        A cleaned, unique array.";
+					$validation .= PHP_EOL . " * @since  3.1.3";
+					$validation .= PHP_EOL . " */";
+					$validation .= PHP_EOL . "function fixNotRequiredArray(array) {";
+					$validation .= PHP_EOL . Indent::_(1) . "const seen = {};";
+					$validation .= PHP_EOL . Indent::_(1) . "return removeEmptyFromNotRequiredArray(array).filter(function (item) {";
+					$validation .= PHP_EOL . Indent::_(2) . "return seen.hasOwnProperty(item) ? false : (seen[item] = true);";
 					$validation .= PHP_EOL . Indent::_(1) . "});";
 					$validation .= PHP_EOL . "}" . PHP_EOL;
-					$validation .= PHP_EOL
-						. "// remove empty from not_required array";
-					$validation .= PHP_EOL
-						. "function removeEmptyFromNotRequiredArray(array) {";
-					$validation .= PHP_EOL . Indent::_(1)
-						. "return array.filter(function (el) {";
-					$validation .= PHP_EOL . Indent::_(2)
-						. "// remove ( 一_一) as well - lol";
-					$validation .= PHP_EOL . Indent::_(2)
-						. "return (el.length > 0 && '一_一' !== el);";
+					$validation .= PHP_EOL . "/**";
+					$validation .= PHP_EOL . " * Remove empty or invalid entries from a \"not required\" array.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * Also removes the literal '一_一' token (legacy quirk preserved for compatibility).";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @param  {Array<string>} array  The array to process.";
+					$validation .= PHP_EOL . " *";
+					$validation .= PHP_EOL . " * @return {Array<string>}        The cleaned array.";
+					$validation .= PHP_EOL . " * @since  3.1.3";
+					$validation .= PHP_EOL . " */";
+					$validation .= PHP_EOL . "function removeEmptyFromNotRequiredArray(array) {";
+					$validation .= PHP_EOL . Indent::_(1) . "return array.filter(function (el) {";
+					$validation .= PHP_EOL . Indent::_(2) . "return el && el.length > 0 && el !== '一_一';";
 					$validation .= PHP_EOL . Indent::_(1) . "});";
 					$validation .= PHP_EOL . "}" . PHP_EOL;
 				}
@@ -16536,7 +14554,7 @@ class Interpretation extends Fields
 			CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_ADD_JAVASCRIPT_FILE', PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				) . " Add List View JavaScript File" . PHP_EOL . Indent::_(2)
-				. $this->setIncludeLibScript($_path)
+				. CFactory::_('Library.IncludeHelper')->get($_path)
 			);
 		}
 		else
@@ -17478,8 +15496,17 @@ class Interpretation extends Fields
 		{
 			$fix .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " Add Ajax Token";
-			$fix .= PHP_EOL . Indent::_(2)
-				. "\$this->getDocument()->addScriptDeclaration(\"var token = '\" . Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken() . \"';\");";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$fix .= PHP_EOL . Indent::_(2)
+					. "\$this->getDocument()->addScriptDeclaration(\"var token = '\" . Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken() . \"';\");";
+			}
+			else
+			{
+				$fix .= PHP_EOL . Indent::_(2)
+					. "\$this->getDocument()->getWebAssetManager()->addInlineScript(\"var token = '\" . Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken() . \"';\");";
+			}
 		}
 
 		return $fix;
@@ -17770,7 +15797,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
+						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla__"."_7bd29d76_73c9_4c07_a5da_4f7a32aff78f___Power::class);";
 					}
 					$function[] = PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__)
@@ -17904,7 +15931,7 @@ class Interpretation extends Fields
 					}
 					else
 					{
-						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(\Joomla\Database\DatabaseInterface::class);";
+						$function[] = Indent::_(2) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla__"."_7bd29d76_73c9_4c07_a5da_4f7a32aff78f___Power::class);";
 					}
 					$function[] = PHP_EOL . Indent::_(2) . "//"
 						. Line::_(__Line__, __Class__)
@@ -18944,7 +16971,9 @@ class Interpretation extends Fields
 		else
 		{
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
+				. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
+			$getForm[] = PHP_EOL . Indent::_(2)
+				. "\$jinput = method_exists(\$app, 'getInput') ? \$app->getInput() : \$app->input;";
 			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
 				)
@@ -19857,6 +17886,7 @@ class Interpretation extends Fields
 				'Add your first ' . $name_single
 			);
 		}
+
 		// check type
 		if ($view['settings']->type == 2)
 		{
@@ -19872,8 +17902,16 @@ class Interpretation extends Fields
 			);
 
 			// build toolbar
-			$toolBar
-				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$toolBar = "\$this->input->set('hidemainmenu', true);";
+			}
+			else
+			{
+				$toolBar
+					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			}
+
 			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Text:"
 				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
 				. "');";
@@ -19900,20 +17938,23 @@ class Interpretation extends Fields
 				CFactory::_('Config')->lang_target, $viewNameLang_edit,
 				'Editing the ' . $view['settings']->name_single
 			);
-			// build toolbar
-			$toolBar
-				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
+				// build toolbar
+				$toolBar
+					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
 				$toolBar .= PHP_EOL . Indent::_(2)
 					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
+				// build toolbar
+				$toolBar = "\$this->input->set('hidemainmenu', true);";
 				$toolBar .= PHP_EOL . Indent::_(2)
 					. "\$user = \$this->getCurrentUser();";
 			}
-			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId	= \$user->id;";
+			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId = \$user->id;";
 			$toolBar .= PHP_EOL . Indent::_(2)
 				. "\$isNew = \$this->item->id == 0;";
 			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
@@ -20118,8 +18159,16 @@ class Interpretation extends Fields
 			);
 
 			// build toolbar
-			$toolBar
-				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+			{
+				$toolBar = "\$this->input->set('hidemainmenu', true);";
+			}
+			else
+			{
+				$toolBar
+					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+			}
+
 			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Text:"
 				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
 				. "');";
@@ -20146,20 +18195,24 @@ class Interpretation extends Fields
 				CFactory::_('Config')->lang_target, $viewNameLang_edit,
 				'Editing the ' . $view['settings']->name_single
 			);
-			// build toolbar
-			$toolBar
-				= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
+
 			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
+				// build toolbar
+				$toolBar
+					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
 				$toolBar .= PHP_EOL . Indent::_(2)
 					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 			}
 			else
 			{
+				// build toolbar
+				$toolBar = "\$this->input->set('hidemainmenu', true);";
 				$toolBar .= PHP_EOL . Indent::_(2)
 					. "\$user = \$this->getCurrentUser();";
 			}
-			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId	= \$user->id;";
+
+			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId = \$user->id;";
 			$toolBar .= PHP_EOL . Indent::_(2)
 				. "\$isNew = \$this->item->id == 0;";
 			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
@@ -20268,7 +18321,7 @@ class Interpretation extends Fields
 			$state      .= PHP_EOL . PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Check if the form was submitted";
 			$state      .= PHP_EOL . Indent::_(2) . "\$formSubmited"
-				. " = \$app->input->post->get('form_submited');";
+				. " = \$input->post->get('form_submited');";
 			$new_filter = true;
 		}
 		// add the default populate states (this must be added first)
@@ -20344,7 +18397,7 @@ class Interpretation extends Fields
 				. "if (\$formSubmited)";
 			$state .= PHP_EOL . Indent::_(2) . "{";
 			$state .= PHP_EOL . Indent::_(3) . "\$" . $filter['code']
-				. " = \$app->input->post->get('" . $filter['code'] . "');";
+				. " = \$input->post->get('" . $filter['code'] . "');";
 			$state .= PHP_EOL . Indent::_(3)
 				. "\$this->setState('filter." . $filter['code']
 				. "', \$" . $filter['code'] . ");";
@@ -20478,101 +18531,29 @@ class Interpretation extends Fields
 		return $fields;
 	}
 
+	/**
+	 * Get the generated call snippet that invokes the check-in method.
+	 *
+	 * @return string  The code that calls the generated method.
+	 * @deprecated 5.1 Use CFactory::_('Architecture.Model.CheckInNow')->getCall();
+	 */
 	public function setCheckinCall()
 	{
-		$call = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-			. " Check in items";
-		$call .= PHP_EOL . Indent::_(2) . "\$this->checkInNow();" . PHP_EOL;
-
-		return $call;
+		return CFactory::_('Architecture.Model.CheckInNow')->getCall();
 	}
 
+	/**
+	 * Build the full `checkInNow()` method code for the given view/table.
+	 *
+	 * @param  string  $view       The view/table suffix (e.g. 'items').
+	 * @param  string  $component  The component name (without 'com_').
+	 *
+	 * @return string  The full method code as a string.
+	 * @deprecated 5.1 Use CFactory::_('Architecture.Model.CheckInNow')->getMethod(....);
+	 */
 	public function setAutoCheckin($view, $component)
 	{
-		$checkin = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-		$checkin .= PHP_EOL . Indent::_(1)
-			. " * Build an SQL query to checkin all items left checked out longer then a set time.";
-		$checkin .= PHP_EOL . Indent::_(1) . " *";
-		$checkin .= PHP_EOL . Indent::_(1) . " * @return bool";
-		$checkin .= PHP_EOL . Indent::_(1) . " * @since 3.2.0";
-		$checkin .= PHP_EOL . Indent::_(1) . " */";
-		$checkin .= PHP_EOL . Indent::_(1) . "protected function checkInNow(): bool";
-		$checkin .= PHP_EOL . Indent::_(1) . "{";
-		$checkin .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-			. " Get set check in time";
-		$checkin .= PHP_EOL . Indent::_(2)
-			. "\$time = ComponentHelper::getParams('com_" . $component
-			. "')->get('check_in');";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(2) . "if (\$time)";
-		$checkin .= PHP_EOL . Indent::_(2) . "{";
-		$checkin .= PHP_EOL . Indent::_(3) . "//" . Line::_(
-				__LINE__,__CLASS__
-			) . " Get a db connection.";
-		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-		{
-			$checkin .= PHP_EOL . Indent::_(3) . "\$db = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
-		}
-		else
-		{
-			$checkin .= PHP_EOL . Indent::_(3) . "\$db = \$this->getDatabase();";
-		}
-		$checkin .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-			. " Reset query.";
-		$checkin .= PHP_EOL . Indent::_(3) . "\$query = \$db->getQuery(true);";
-		$checkin .= PHP_EOL . Indent::_(3) . "\$query->select('*');";
-		$checkin .= PHP_EOL . Indent::_(3)
-			. "\$query->from(\$db->quoteName('#__" . $component . "_" . $view
-			. "'));";
-		$checkin .= PHP_EOL . Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-			. " Only select items that are checked out.";
-		$checkin .= PHP_EOL . Indent::_(3)
-			. "\$query->where(\$db->quoteName('checked_out') . '!=0');";
-		Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-		. " Query only to see if we have a rows";
-		$checkin .= PHP_EOL . Indent::_(3) . "\$db->setQuery(\$query, 0, 1);";
-		$checkin .= PHP_EOL . Indent::_(3) . "\$db->execute();";
-		$checkin .= PHP_EOL . Indent::_(3) . "if (\$db->getNumRows())";
-		$checkin .= PHP_EOL . Indent::_(3) . "{";
-		$checkin .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-			. " Get Yesterdays date.";
-		$checkin .= PHP_EOL . Indent::_(4)
-			. "\$date = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDate()->modify(\$time)->toSql();";
-		$checkin .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-			. " Reset query.";
-		$checkin .= PHP_EOL . Indent::_(4) . "\$query = \$db->getQuery(true);";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4) . "//" . Line::_(
-				__LINE__,__CLASS__
-			) . " Fields to update.";
-		$checkin .= PHP_EOL . Indent::_(4) . "\$fields = array(";
-		$checkin .= PHP_EOL . Indent::_(5)
-			. "\$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',";
-		$checkin .= PHP_EOL . Indent::_(5)
-			. "\$db->quoteName('checked_out') . '=0'";
-		$checkin .= PHP_EOL . Indent::_(4) . ");";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4) . "//" . Line::_(
-				__LINE__,__CLASS__
-			) . " Conditions for which records should be updated.";
-		$checkin .= PHP_EOL . Indent::_(4) . "\$conditions = array(";
-		$checkin .= PHP_EOL . Indent::_(5)
-			. "\$db->quoteName('checked_out') . '!=0', ";
-		$checkin .= PHP_EOL . Indent::_(5)
-			. "\$db->quoteName('checked_out_time') . '<\''.\$date.'\''";
-		$checkin .= PHP_EOL . Indent::_(4) . ");";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4) . "//" . Line::_(
-				__LINE__,__CLASS__
-			) . " Check table.";
-		$checkin .= PHP_EOL . Indent::_(4)
-			. "\$query->update(\$db->quoteName('#__" . $component . "_" . $view
-			. "'))->set(\$fields)->where(\$conditions); ";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4)
-			. "\$db->setQuery(\$query);";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(4) . "return \$db->execute();";
-		$checkin .= PHP_EOL . Indent::_(3) . "}";
-		$checkin .= PHP_EOL . Indent::_(2) . "}";
-		$checkin .= PHP_EOL . PHP_EOL . Indent::_(2) . "return false;";
-		$checkin .= PHP_EOL . Indent::_(1) . "}";
-
-		return $checkin;
+		return CFactory::_('Architecture.Model.CheckInNow')->getMethod($view, $component);
 	}
 
 	public function setGetItemsMethodStringFix($nameSingleCode, $nameListCode,
@@ -23050,528 +21031,82 @@ class Interpretation extends Fields
 		return $matches[1];
 	}
 
-	public function getModCode(&$module)
+	/**
+	 * get Module Main/Dispatcher Class
+	 *
+	 * @param   object  $module  The module object
+	 *
+	 * @return     string The fields set in xml
+	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Dispatcher')->get(...);
+	 */
+	public function getModCode($module): string
 	{
-		// get component helper string
-		$Helper    = CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper';
-		$component = CFactory::_('Compiler.Builder.Content.One')->get('component');
-		$_helper   = '';
-		// get libraries code
-		$libraries = array(Placefix::_('MOD_LIBRARIES') => $this->getModLibCode($module));
-		$code      = CFactory::_('Placeholder')->update($module->mod_code, $libraries);
-		// check if component helper class should be added
-		if (strpos((string) $code, $Helper . '::') !== false
-			&& strpos(
-				(string) $code,
-				"/components/com_" . $component . "/helpers/" . $component
-				. ".php"
-			) === false)
-		{
-			$_helper = '//' . Line::_(__Line__, __Class__)
-				. ' Include the component helper functions only once';
-			$_helper .= PHP_EOL . "JLoader::register('" . $Helper
-				. "', JPATH_ADMINISTRATOR . '/components/com_" . $component
-				. "/helpers/" . $component . ".php');";
-		}
-
-		return CFactory::_('Placeholder')->update($_helper . PHP_EOL . $code . PHP_EOL, CFactory::_('Compiler.Builder.Content.One')->allActive());
+		return CFactory::_('Architecture.Module.Dispatcher')->get($module);
 	}
 
-	public function getModDefault(&$module, &$key)
+	/**
+	 * get Module Default HTML code
+	 *
+	 * @param   object  $module  The module object
+	 *
+	 * @return     string The default html code
+	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Template')->default(...);
+	 */
+	public function getModDefault($module, $key): string
 	{
-		// first add the header
-		$default = PHP_EOL . $module->default_header . PHP_EOL . '?>';
-		// add any css from the fields
-		$default .= CFactory::_('Customcode.Dispenser')->get(
-			'css_views', $key, PHP_EOL . '<style>', '', true, null,
-			PHP_EOL . '</style>' . PHP_EOL
-		);
-		// now add the body
-		$default .= PHP_EOL . $module->default . PHP_EOL;
-		// add any JavaScript from the fields
-		$default .= CFactory::_('Customcode.Dispenser')->get(
-			'views_footer', $key,
-			PHP_EOL . '<script type="text/javascript">', '', true,
-			null, PHP_EOL . '</script>' . PHP_EOL
-		);
-
-		// return the default content for the model default area
-		return CFactory::_('Placeholder')->update($default, CFactory::_('Compiler.Builder.Content.One')->allActive());
+		return CFactory::_('Architecture.Module.Template')->default($module, $key);
 	}
 
-	public function setModTemplates(&$module)
+	/**
+	 * set Module extra templates
+	 *
+	 * @param   object  $module  The module object
+	 *
+	 * @return     void
+	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Template')->extra(...);
+	 */
+	public function setModTemplates($module): void
 	{
-		if (($data_ = CFactory::_('Compiler.Builder.Template.Data')->
-			get(CFactory::_('Config')->build_target . '.' . $module->code_name)) !== null)
-		{
-			foreach ($data_ as $template => $data)
-			{
-				$header = $data['php_view'] ?? '';
-				$body = $data['html'] ?? '';
-				$default = PHP_EOL . $header . PHP_EOL . '?>';
-				$default .= PHP_EOL . $body;
-				$TARGET = StringHelper::safe("MODDEFAULT_{$template}", 'U');
-				CFactory::_('Compiler.Builder.Content.Multi')->set($module->key . '|' . $TARGET,
-					CFactory::_('Placeholder')->update(
-						$default, CFactory::_('Compiler.Builder.Content.One')->allActive()
-					)
-				);
-			}
-		}
+		CFactory::_('Architecture.Module.Template')->extra($module);
 	}
 
-	public function getModHelperCode(&$module)
+	/**
+	 * get Module Helper Class code
+	 *
+	 * @param   object  $module  The module object
+	 *
+	 * @return     string The helper class code
+	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Helper')->get(...);
+	 */
+	public function getModHelperCode($module): string
 	{
-		return
-			CFactory::_('Placeholder')->update($module->class_helper_header . PHP_EOL .
-				$module->class_helper_type . $module->class_helper_name . PHP_EOL
-				. '{' . PHP_EOL .
-				$module->class_helper_code . PHP_EOL .
-				"}" . PHP_EOL, CFactory::_('Compiler.Builder.Content.One')->allActive());
+		return CFactory::_('Architecture.Module.Helper')->get($module);
 	}
 
-	public function getModLibCode(&$module)
+	/**
+	 * get Module library loading code
+	 *
+	 * @param   object  $module  The module object
+	 *
+	 * @return     string The loading code
+	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Library')->get(...);
+	 */
+	public function getModLibCode($module): string
 	{
-		$setter = '';
-		if (($data_ = CFactory::_('Compiler.Builder.Library.Manager')->
-			get($module->key . '.' . $module->code_name)) !== null)
-		{
-			$setter .= '//' . Line::_(__Line__, __Class__)
-				. 'get the document object';
-			$setter .= PHP_EOL . '$document = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getDocument();';
-			foreach ($data_ as $id => $true)
-			{
-				// get the library
-				$library = CFactory::_('Registry')->get("builder.libraries.$id", null);
-				if (is_object($library)
-					&& isset($library->document)
-					&& StringHelper::check(
-						$library->document
-					))
-				{
-					$setter .= PHP_EOL . $library->document;
-				}
-				elseif (is_object($library)
-					&& isset($library->how))
-				{
-					$setter .= $this->setLibraryDocument($id);
-				}
-			}
-		}
-		// check if we have string
-		if (StringHelper::check($setter))
-		{
-			return CFactory::_('Placeholder')->update( CFactory::_('Placeholder')->update_(
-				str_replace(
-					'$this->document->', '$document->',
-					implode(
-						PHP_EOL,
-						array_map(
-							'trim',
-							(array) explode(PHP_EOL, $setter)
-						)
-					)
-				)
-			), CFactory::_('Compiler.Builder.Content.One')->allActive());
-		}
-
-		return '';
+		return CFactory::_('Architecture.Module.Library')->get($module);
 	}
 
-	public function getModuleMainXML(&$module)
+	/**
+	 * get Module Main XML
+	 *
+	 * @param   object  $module  The module object
+	 *
+	 * @return     string The xml
+	 * @deprecated 5.1.2  CFactory::_('Architecture.Module.MainXML')->get(...);
+	 */
+	public function getModuleMainXML($module): string
 	{
-		// set the custom table key
-		$dbkey = 'yyy';
-		// build the xml
-		$xml = '';
-		// search if we must add the component path
-		$add_component_path = false;
-		// build the config fields
-		$config_fields = [];
-		if (isset($module->config_fields)
-			&& ArrayHelper::check(
-				$module->config_fields
-			))
-		{
-			$add_scripts_field = true;
-			foreach ($module->config_fields as $field_name => $fieldsets)
-			{
-				foreach ($fieldsets as $fieldset => $fields)
-				{
-					// get the field set
-					$xmlFields = CFactory::_('Compiler.Creator.Fieldset.Extension')->get(
-						$module, $fields, $dbkey
-					);
-					// check if the custom script field must be set
-					if ($add_scripts_field && $module->add_scripts_field)
-					{
-						// get the custom script field
-						$xmlFields .= PHP_EOL . Indent::_(2)
-							. "<field type=\"modadminvvvvvvvdm\" />";
-						// don't add it again
-						$add_scripts_field = false;
-					}
-					// make sure the xml is set and a string
-					if (isset($xmlFields)
-						&& StringHelper::check($xmlFields))
-					{
-						$config_fields[$field_name . $fieldset] = $xmlFields;
-					}
-					$dbkey++;
-					// check if the fieldset path requiers component paths
-					if (!$add_component_path
-						&& isset(
-							$module->fieldsets_paths[$field_name . $fieldset]
-						)
-						&& $module->fieldsets_paths[$field_name . $fieldset]
-						== 1)
-					{
-						$add_component_path = true;
-					}
-				}
-			}
-		}
-		// switch to add the language xml
-		$addLang = [];
-		// now build the language files
-		if (CFactory::_('Language')->exist($module->key))
-		{
-			// get model lang content
-			$langContent = CFactory::_('Language')->getTarget($module->key);
-			// Trigger Event: jcb_ce_onBeforeBuildModuleLang
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildModuleLang', [&$module, &$langContent]
-			);
-			// get other languages
-			$values = array_unique($langContent);
-			// get the other lang strings if there is any
-			CFactory::_('Compiler.Builder.Multilingual')->set('modules',
-				CFactory::_('Language.Multilingual')->get($values)
-			);
-			// start the modules language bucket (must rest every time)
-			$langTag = CFactory::_('Config')->get('lang_tag', 'en-GB');
-			CFactory::_('Compiler.Builder.Languages')->set(
-				"modules.{$langTag}.all",
-				$langContent
-			);
-			CFactory::_('Language')->setTarget($module->key, null);
-			// update insert the current lang in to DB
-			CFactory::_('Language.Set')->execute($values, $module->guid, 'modules');
-			// remove old unused language strings
-			CFactory::_('Language.Purge')->execute($values, $module->guid, 'modules');
-			$total = count($values);
-			unset($values);
-
-			// Trigger Event: jcb_ce_onBeforeBuildModuleLangFiles
-			CFactory::_('Event')->trigger(
-				'jcb_ce_onBeforeBuildModuleLangFiles', [&$module]
-			);
-
-			// now we insert the values into the files
-			if (CFactory::_('Compiler.Builder.Languages')->IsArray('modules'))
-			{
-				foreach (CFactory::_('Compiler.Builder.Languages')->get('modules') as $tag => $areas)
-				{
-					// trim the tag
-					$tag = trim($tag);
-					foreach ($areas as $area => $languageStrings)
-					{
-						$file_name = $tag . '.' . $module->file_name . '.ini';
-						// check if language should be added
-						if (CFactory::_('Language.Translation')->check(
-							$tag, $languageStrings, $total,
-							$file_name
-						))
-						{
-							$lang = array_map(
-								fn($langstring, $placeholder) => $placeholder . '="' . $langstring  . '"',
-								array_values($languageStrings),
-								array_keys($languageStrings)
-							);
-							// set path
-							$path = $module->folder_path . '/language/' . $tag . '/';
-							// create path if not exist
-							if (!is_dir($path))
-							{
-								Folder::create($path);
-								// count the folder created
-								CFactory::_('Utilities.Counter')->folder++;
-							}
-							// add to language files (for now we add all to both TODO)
-							CFactory::_('Utilities.File')->write(
-								$path . $file_name,
-								implode(PHP_EOL, $lang)
-							);
-							CFactory::_('Utilities.File')->write(
-								$path . $tag . '.' . $module->file_name
-								. '.sys.ini',
-								implode(PHP_EOL, $lang)
-							);
-							// set the line counter
-							CFactory::_('Utilities.Counter')->line += count(
-									(array) $lang
-								);
-							unset($lang);
-							// trigger to add language
-							$addLang[$tag] = $tag;
-						}
-					}
-				}
-			}
-		}
-		// get all files and folders in module folder
-		$files   = Folder::files($module->folder_path);
-		$folders = Folder::folders($module->folder_path);
-		// the files/folders to ignore
-		$ignore = array('sql', 'language', 'script.php',
-			$module->file_name . '.xml',
-			$module->file_name . '.php');
-		// should the scriptfile be added
-		if ($module->add_install_script)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Scripts to run on installation -->';
-			$xml .= PHP_EOL . Indent::_(1)
-				. '<scriptfile>script.php</scriptfile>';
-		}
-		// should the sql install be added
-		if ($module->add_sql)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Runs on install; New in Joomla 1.5 -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<install>';
-			$xml .= PHP_EOL . Indent::_(2) . '<sql>';
-			$xml .= PHP_EOL . Indent::_(3)
-				. '<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>';
-			$xml .= PHP_EOL . Indent::_(2) . '</sql>';
-			$xml .= PHP_EOL . Indent::_(1) . '</install>';
-		}
-		// should the sql uninstall be added
-		if ($module->add_sql_uninstall)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Runs on uninstall; New in Joomla 1.5 -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<uninstall>';
-			$xml .= PHP_EOL . Indent::_(2) . '<sql>';
-			$xml .= PHP_EOL . Indent::_(3)
-				. '<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>';
-			$xml .= PHP_EOL . Indent::_(2) . '</sql>';
-			$xml .= PHP_EOL . Indent::_(1) . '</uninstall>';
-		}
-		// should the language xml be added
-		if (ArrayHelper::check($addLang))
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Language files -->';
-			$xml .= PHP_EOL . Indent::_(1)
-				. '<languages folder="language">';
-			// load all the language files to xml
-			foreach ($addLang as $addTag)
-			{
-				$xml .= PHP_EOL . Indent::_(2) . '<language tag="'
-					. $addTag . '">' . $addTag . '/' . $addTag . '.'
-					. $module->file_name . '.ini</language>';
-				$xml .= PHP_EOL . Indent::_(2) . '<language tag="'
-					. $addTag . '">' . $addTag . '/' . $addTag . '.'
-					. $module->file_name . '.sys.ini</language>';
-			}
-			$xml .= PHP_EOL . Indent::_(1) . '</languages>';
-		}
-		// add the module files
-		$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-				__LINE__,__CLASS__
-			) . ' Model files -->';
-		$xml .= PHP_EOL . Indent::_(1) . '<files>';
-		$xml .= PHP_EOL . Indent::_(2) . '<filename module="'
-			. $module->file_name . '">' . $module->file_name
-			. '.php</filename>';
-		// add other files found
-		if (ArrayHelper::check($files))
-		{
-			foreach ($files as $file)
-			{
-				// only add what is not ignored
-				if (!in_array($file, $ignore))
-				{
-					$xml .= PHP_EOL . Indent::_(2) . '<filename>' . $file
-						. '</filename>';
-				}
-			}
-		}
-		// add language folder
-		if (ArrayHelper::check($addLang))
-		{
-			$xml .= PHP_EOL . Indent::_(2) . '<folder>language</folder>';
-		}
-		// add sql folder
-		if ($module->add_sql || $module->add_sql_uninstall)
-		{
-			$xml .= PHP_EOL . Indent::_(2) . '<folder>sql</folder>';
-		}
-		// add other files found
-		if (ArrayHelper::check($folders))
-		{
-			foreach ($folders as $folder)
-			{
-				// only add what is not ignored
-				if (!in_array($folder, $ignore))
-				{
-					$xml .= PHP_EOL . Indent::_(2) . '<folder>' . $folder
-						. '</folder>';
-				}
-			}
-		}
-		$xml .= PHP_EOL . Indent::_(1) . '</files>';
-		// now add the Config Params if needed
-		if (ArrayHelper::check($config_fields))
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Config parameter -->';
-			// only add if part of the component field types path is required
-			if ($add_component_path)
-			{
-				// add path to module rules and custom fields
-				$xml .= PHP_EOL . Indent::_(1) . '<config';
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-				{
-					$xml .= PHP_EOL . Indent::_(2)
-						. 'addrulepath="/administrator/components/com_'
-						. CFactory::_('Config')->component_code_name . '/models/rules"';
-					$xml .= PHP_EOL . Indent::_(2)
-						. 'addfieldpath="/administrator/components/com_'
-						. CFactory::_('Config')->component_code_name . '/models/fields"';
-				}
-				else
-				{
-					$xml .= PHP_EOL . Indent::_(3)
-						. 'addruleprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
-						. '\Administrator\Rule"';
-					$xml .= PHP_EOL . Indent::_(3)
-						. 'addfieldprefix="' . CFactory::_('Config')->namespace_prefix
-						. '\Component\\' . CFactory::_('Compiler.Builder.Content.One')->get('ComponentNamespace')
-						. '\Administrator\Field">';
-				}
-				$xml .= PHP_EOL . Indent::_(1) . '>';
-			}
-			else
-			{
-				$xml .= PHP_EOL . Indent::_(1) . '<config>';
-			}
-			// add the fields
-			foreach ($module->config_fields as $field_name => $fieldsets)
-			{
-				$xml .= PHP_EOL . Indent::_(1) . '<fields name="' . $field_name
-					. '">';
-				foreach ($fieldsets as $fieldset => $fields)
-				{
-					// default to the field set name
-					$label = $fieldset;
-					if (isset($module->fieldsets_label[$field_name . $fieldset]))
-					{
-						$label = $module->fieldsets_label[$field_name . $fieldset];
-					}
-					// add path to module rules and custom fields
-					if (isset($module->fieldsets_paths[$field_name . $fieldset])
-						&& ($module->fieldsets_paths[$field_name . $fieldset] == 2
-							|| $module->fieldsets_paths[$field_name . $fieldset] == 3))
-					{
-						if ($module->target == 2)
-						{
-							if (!isset($module->add_rule_path[$field_name . $fieldset]))
-							{
-								$module->add_rule_path[$field_name . $fieldset] =
-									'/administrator/modules/'
-									. $module->file_name . '/rules';
-							}
-
-							if (!isset($module->add_field_path[$field_name . $fieldset]))
-							{
-								$module->add_field_path[$field_name . $fieldset] =
-									'/administrator/modules/'
-									. $module->file_name . '/fields';
-							}
-						}
-						else
-						{
-							if (!isset($module->add_rule_path[$field_name . $fieldset]))
-							{
-								$module->add_rule_path[$field_name . $fieldset] =
-									'/modules/' . $module->file_name
-									. '/rules';
-							}
-
-							if (!isset($module->add_field_path[$field_name . $fieldset]))
-							{
-								$module->add_field_path[$field_name . $fieldset] =
-									'/modules/' . $module->file_name
-									. '/fields';
-							}
-						}
-					}
-					// add path to module rules and custom fields
-					if (isset($module->add_rule_path[$field_name . $fieldset])
-						|| isset($module->add_field_path[$field_name . $fieldset]))
-					{
-
-						$xml .= PHP_EOL . Indent::_(1) . '<!--'
-							. Line::_(__Line__, __Class__) . ' default paths of '
-							. $fieldset . ' fieldset points to the module -->';
-
-						$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-							. $fieldset . '" label="' . $label . '"';
-
-						if (isset($module->add_rule_path[$field_name . $fieldset]))
-						{
-							$xml .= PHP_EOL . Indent::_(2)
-								. 'addrulepath="' . $module->add_rule_path[$field_name . $fieldset] . '"';
-						}
-
-						if (isset($module->add_field_path[$field_name . $fieldset]))
-						{
-							$xml .= PHP_EOL . Indent::_(2)
-								. 'addfieldpath="' . $module->add_field_path[$field_name . $fieldset] . '"';
-						}
-
-						$xml .= PHP_EOL . Indent::_(1) . '>';
-					}
-					else
-					{
-						$xml .= PHP_EOL . Indent::_(1) . '<fieldset name="'
-							. $fieldset . '" label="' . $label . '">';
-					}
-					// load the fields
-					if (isset($config_fields[$field_name . $fieldset]))
-					{
-						$xml .= $config_fields[$field_name . $fieldset];
-						unset($config_fields[$field_name . $fieldset]);
-					}
-					$xml .= PHP_EOL . Indent::_(1) . '</fieldset>';
-				}
-				$xml .= PHP_EOL . Indent::_(1) . '</fields>';
-			}
-			$xml .= PHP_EOL . Indent::_(1) . '</config>';
-		}
-		// set update server if found
-		if ($module->add_update_server)
-		{
-			$xml .= PHP_EOL . PHP_EOL . Indent::_(1) . '<!--' . Line::_(
-					__LINE__,__CLASS__
-				) . ' Update servers -->';
-			$xml .= PHP_EOL . Indent::_(1) . '<updateservers>';
-			$xml .= PHP_EOL . Indent::_(2)
-				. '<server type="extension" priority="1" name="'
-				. $module->official_name . '">' . $module->update_server_url
-				. '</server>';
-			$xml .= PHP_EOL . Indent::_(1) . '</updateservers>';
-		}
-
-		return $xml;
+		return CFactory::_('Architecture.Module.MainXML')->get($module);
 	}
 
 	/**
@@ -23582,7 +21117,7 @@ class Interpretation extends Fields
 	 * @return  string The fields set in xml
 	 * @deprecated 3.4 CFactory::_('Architecture.Plugin.Extension')->get(...);
 	 */
-	public function getPluginMainClass(&$plugin)
+	public function getPluginMainClass($plugin)
 	{
 		return CFactory::_('Architecture.Plugin.Extension')->get($plugin);
 	}
@@ -23595,7 +21130,7 @@ class Interpretation extends Fields
 	 * @return  string The xml
 	 * @deprecated 3.4 CFactory::_('Architecture.Plugin.MainXML')->get(...);
 	 */
-	public function getPluginMainXML(&$plugin)
+	public function getPluginMainXML($plugin)
 	{
 		return CFactory::_('Architecture.Plugin.MainXML')->get($plugin);
 	}
@@ -23608,7 +21143,7 @@ class Interpretation extends Fields
 	 * @return  string
 	 * @deprecated 3.4 (line 393 private Compiler.Power.Infusion->code())
 	 */
-	public function getPowerCode(&$power)
+	public function getPowerCode($power)
 	{
 		$code = [];
 		// set the name space

@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Joomlaplugin\JoomlaFive;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
@@ -121,11 +122,12 @@ final class Data implements PluginDataInterface
 	protected Filesfolders $filesfolders;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Define the mappings of traits and classes to their respective methods and services
@@ -151,21 +153,22 @@ final class Data implements PluginDataInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Config         $config         The Config Class.
-	 * @param Customcode     $customcode     The Customcode Class.
-	 * @param Gui            $gui            The Gui Class.
-	 * @param Placeholder    $placeholder    The Placeholder Class.
-	 * @param Language       $language       The Language Class.
-	 * @param Field          $field          The Field Class.
-	 * @param FieldName      $fieldname      The Name Class.
-	 * @param Filesfolders   $filesfolders   The Filesfolders Class.
+	 * @param Config             $config         The Config Class.
+	 * @param Customcode         $customcode     The Customcode Class.
+	 * @param Gui                $gui            The Gui Class.
+	 * @param Placeholder        $placeholder    The Placeholder Class.
+	 * @param Language           $language       The Language Class.
+	 * @param Field              $field          The Field Class.
+	 * @param FieldName          $fieldname      The Name Class.
+	 * @param Filesfolders       $filesfolders   The Filesfolders Class.
+	 * @param DatabaseInterface  $db             The Joomla Database Class.
 	 *
 	 * @since 5.0.2
 	 */
 	public function __construct(Config $config, Customcode $customcode, Gui $gui,
 		Placeholder $placeholder, Language $language,
 		Field $field, FieldName $fieldname,
-		Filesfolders $filesfolders)
+		Filesfolders $filesfolders, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -175,7 +178,7 @@ final class Data implements PluginDataInterface
 		$this->field = $field;
 		$this->fieldname = $fieldname;
 		$this->filesfolders = $filesfolders;
-		$this->db = Factory::getDbo();
+		$this->db = $db;
 	}
 
 	/**

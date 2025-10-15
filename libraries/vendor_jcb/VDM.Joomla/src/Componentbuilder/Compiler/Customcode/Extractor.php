@@ -14,13 +14,11 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customcode;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
-use Joomla\Filesystem\Folder;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Version;
-use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Filesystem\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Extractor\Paths;
@@ -28,6 +26,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder\Reverse;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExtractorInterface;
 
 
@@ -197,6 +197,14 @@ class Extractor implements ExtractorInterface
 	protected Pathfix $pathfix;
 
 	/**
+	 * Joomla Database Class.
+	 *
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
+	 **/
+	protected DatabaseInterface $db;
+
+	/**
 	 * Current User Object
 	 *
 	 * @since 3.2.0
@@ -208,40 +216,35 @@ class Extractor implements ExtractorInterface
 	 *
 	 * @since 3.2.0
 	 **/
-	protected $db;
-
-	/**
-	 * Database object to query local DB
-	 *
-	 * @since 3.2.0
-	 **/
 	protected $app;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Config|null             $config      The compiler config object.
-	 * @param Gui|null                $gui         The compiler customcode gui object.
-	 * @param Paths|null              $paths       The compiler customcode extractor paths object.
-	 * @param Reverse|null            $reverse     The compiler placeholder reverse object.
-	 * @param Placeholder|null        $placeholder The compiler component placeholder object.
-	 * @param Pathfix|null            $pathfix     The compiler path fixing object.
+	 * @param Config             $config      The compiler config object.
+	 * @param Gui                $gui         The compiler customcode gui object.
+	 * @param Paths              $paths       The compiler customcode extractor paths object.
+	 * @param Reverse            $reverse     The compiler placeholder reverse object.
+	 * @param Placeholder        $placeholder The compiler component placeholder object.
+	 * @param Pathfix            $pathfix     The compiler path fixing object.
+	 * @param DatabaseInterface  $db          The Joomla Database Class.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Gui $gui = null, ?Paths $paths = null,
-		?Reverse $reverse = null, ?Placeholder $placeholder = null, ?Pathfix $pathfix = null)
+	public function __construct(Config $config, Gui $gui, Paths $paths,
+		Reverse $reverse, Placeholder $placeholder, Pathfix $pathfix, DatabaseInterface $db)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->gui = $gui ?: Compiler::_('Customcode.Gui');
-		$this->paths = $paths ?: Compiler::_('Customcode.Extractor.Paths');
-		$this->reverse = $reverse ?: Compiler::_('Placeholder.Reverse');
-		$this->componentPlaceholder = $placeholder ?: Compiler::_('Component.Placeholder');
-		$this->pathfix = $pathfix ?: Compiler::_('Utilities.Pathfix');
-		$this->user = Factory::getUser();
-		$this->db = Factory::getDbo();
+		$this->config = $config;
+		$this->gui = $gui;
+		$this->paths = $paths;
+		$this->reverse = $reverse;
+		$this->componentPlaceholder = $placeholder;
+		$this->pathfix = $pathfix;
+		$this->db = $db;
+
 		$this->app = Factory::getApplication();
+		$this->user = $this->app->getIdentity();
 
 		// set today's date
 		$this->today = Factory::getDate()->toSql();
@@ -935,6 +938,5 @@ class Extractor implements ExtractorInterface
 
 		return false;
 	}
-
 }
 

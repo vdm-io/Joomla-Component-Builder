@@ -63,22 +63,32 @@ interface GrepInterface
 	/**
 	 * Get the a path + indexes
 	 *
-	 * @param string $guid The unique identifier for the repo.
+	 * @param string $guid    The unique identifier for the repo.
+	 * @param bool   $reload  The switch to reload the index, and not return from cache.
 	 *
 	 * @return object|null
 	 * @since  5.1.1
 	 */
-	public function getPathIndexes(string $guid): ?object;
+	public function getPathIndexes(string $guid, bool $reload = false): ?object;
 
 	/**
 	 * Get the index of a repo
 	 *
-	 * @param string $guid The unique identifier for the repo.
+	 * @param string $guid    The unique identifier for the repo.
+	 * @param bool   $reload  The switch to reload the index, and not return from cache.
 	 *
 	 * @return object|null
-	 * @since 3.2.2
+	 * @since  3.2.2
 	 */
-	public function getRemoteIndex(string $guid): ?object;
+	public function getRemoteIndex(string $guid, bool $reload = false): ?object;
+
+	/**
+	 * Reset the index of a entity
+	 *
+	 * @return void
+	 * @since  5.1.2
+	 */
+	public function resetEntityIndex(): void;
 
 	/**
 	 * Get the network target name

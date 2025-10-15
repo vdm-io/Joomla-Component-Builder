@@ -17,12 +17,12 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Path;
+use Joomla\Database\DatabaseInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\FileHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExternalInterface;
 
 
@@ -58,11 +58,12 @@ class External implements ExternalInterface
 	protected Placeholder $placeholder;
 
 	/**
-	 * Database object to query local DB
+	 * Joomla Database Class.
 	 *
-	 * @since 3.2.0
+	 * @var   DatabaseInterface
+	 * @since 5.1.2
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * User object
@@ -81,17 +82,19 @@ class External implements ExternalInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Placeholder|null        $placeholder   The compiler placeholder object.
+	 * @param Placeholder        $placeholder   The compiler placeholder object.
+	 * @param DatabaseInterface  $db            The Joomla Database Class.
 	 *
 	 * @throws \Exception
 	 * @since 3.2.0
 	 */
-	public function __construct(?Placeholder $placeholder = null)
+	public function __construct(Placeholder $placeholder, DatabaseInterface $db)
 	{
-		$this->placeholder = $placeholder ?: Compiler::_('Placeholder');
-		$this->db = Factory::getDbo();
-		$this->user = Factory::getUser();
+		$this->placeholder = $placeholder;
+		$this->db = $db;
+
 		$this->app = Factory::getApplication();
+		$this->user = $this->app->getIdentity();
 	}
 
 	/**
@@ -387,6 +390,5 @@ class External implements ExternalInterface
 
 		return '';
 	}
-
 }
 

@@ -303,7 +303,7 @@ abstract class ComponentbuilderHelper
 		$files = [];
 
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -526,7 +526,7 @@ abstract class ComponentbuilderHelper
 	public static function getComponentIDs(): ?array
 	{
 		// Get a database connection
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		try {
 			// Create a new query object
@@ -564,7 +564,7 @@ abstract class ComponentbuilderHelper
 	public static function getComponentGUIDs(): ?array
 	{
 		// Get a database connection
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		try {
 			// Create a new query object
@@ -712,7 +712,7 @@ abstract class ComponentbuilderHelper
 		if (UtilitiesArrayHelper::check(self::$globalUpdater))
 		{
 			// get the database object
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			foreach (self::$globalUpdater as $tableKeyID => $object)
 			{
 				// get the table
@@ -1096,7 +1096,7 @@ abstract class ComponentbuilderHelper
 	public static function getDbTableColumns($tableName, $as, $type)
 	{
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
         	// get the columns
 		$columns = $db->getTableColumns("#__" . $tableName);
 		// set the type (multi or single)
@@ -1124,7 +1124,7 @@ abstract class ComponentbuilderHelper
 	public static function getViewTableColumns($admin_view, $as, $type)
 	{
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -1164,7 +1164,7 @@ abstract class ComponentbuilderHelper
 					{
 						$field[$nr]['name'] = 'alias';
 					}
-					// remove a field that is not being stored in the database
+					// remove a field that is not being stored in the database TODO: we should base this on field type and then list, not only list
 					if (!isset($value['list']) || $value['list'] == 2)
 					{
 						unset($field[$nr]);
@@ -1237,7 +1237,7 @@ abstract class ComponentbuilderHelper
 		}
 
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -1366,7 +1366,7 @@ abstract class ComponentbuilderHelper
 	protected static function getPlaceholderTarget($id, $name)
 	{
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		// Create a new query object.
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('id', 'target')));
@@ -1395,7 +1395,7 @@ abstract class ComponentbuilderHelper
 		if (!isset(self::$exPowers[$id]))
 		{
 			// Get a db connection.
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			// Create a new query object.
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName(array('a.id')));
@@ -2460,7 +2460,7 @@ abstract class ComponentbuilderHelper
 			$script['setdata'][] = self::_t(2) . "{";
 			$script['setdata'][] = self::_t(3) . "// make sure the file is loaded";
 			$script['setdata'][] = self::_t(3) . "[[[-#-#-Component]]]Helper::composerAutoload('phpspreadsheet');";
-			$script['setdata'][] = self::_t(3) . "\$jinput = Factory::getApplication()->input;";
+			$script['setdata'][] = self::_t(3) . "\$jinput = Factory::getApplication()->getInput();";
 			$script['setdata'][] = self::_t(3) . "foreach(\$target_headers as \$header)";
 			$script['setdata'][] = self::_t(3) . "{";
 			$script['setdata'][] = self::_t(4) . "if ((\$column = \$jinput->getString(\$header, false)) !== false ||";

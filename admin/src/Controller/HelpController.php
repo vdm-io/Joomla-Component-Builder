@@ -36,8 +36,9 @@ class HelpController extends BaseController
 
 	public function help()
 	{
-		$user       = Factory::getApplication()->getIdentity();
-		$jinput     = Factory::getApplication()->input;
+		$app        = Factory::getApplication();
+		$user       = $app->getIdentity();
+		$jinput     = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 		// Check Token!
 		$token         = Session::getFormToken();
 		$call_token    = $jinput->get('token', 0, 'ALNUM');

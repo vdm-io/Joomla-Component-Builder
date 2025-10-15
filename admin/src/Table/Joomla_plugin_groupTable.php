@@ -62,7 +62,7 @@ class Joomla_plugin_groupTable extends Table implements VersionableTableInterfac
 		$this->_jsonEncode = ['params', 'metadata'];
 
 		// Indicates that columns fully support the NULL value in the database
-		// $this->_supportNullValue = true; // hmmm will keep an eye on this ;)
+		$this->_supportNullValue = true;
 
 		parent::__construct('#__componentbuilder_joomla_plugin_group', 'id', $db, $dispatcher);
 	}
@@ -100,7 +100,7 @@ class Joomla_plugin_groupTable extends Table implements VersionableTableInterfac
 	 * @return  boolean  True on success, false on failure.
 	 * @since   1.6
 	 */
-	public function store($updateNulls = false)
+	public function store($updateNulls = true)
 	{
 		$date   = Factory::getDate()->toSql();
 		$userId = $this->getCurrentUser()->id;

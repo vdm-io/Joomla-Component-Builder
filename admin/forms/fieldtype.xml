@@ -417,6 +417,8 @@
 				COM_COMPONENTBUILDER_FIELDTYPE_TEN</option>
 			<option value="11">
 				COM_COMPONENTBUILDER_FIELDTYPE_ELEVEN</option>
+			<option value="36">
+				COM_COMPONENTBUILDER_FIELDTYPE_THIRTY_SIX</option>
 			<option value="50">
 				COM_COMPONENTBUILDER_FIELDTYPE_FIFTY</option>
 			<option value="64">

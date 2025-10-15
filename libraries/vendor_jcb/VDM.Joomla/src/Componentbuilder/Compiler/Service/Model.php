@@ -48,6 +48,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Model\CustomtabsInterface as
 use VDM\Joomla\Componentbuilder\Compiler\Model\JoomlaThree\Customtabs as CustomtabsJ3;
 use VDM\Joomla\Componentbuilder\Compiler\Model\JoomlaFour\Customtabs as CustomtabsJ4;
 use VDM\Joomla\Componentbuilder\Compiler\Model\JoomlaFive\Customtabs as CustomtabsJ5;
+use VDM\Joomla\Componentbuilder\Compiler\Model\JoomlaSix\Customtabs as CustomtabsJ6;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Adminviews;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sqltweaking;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sqldump;
@@ -185,6 +186,9 @@ class Model implements ServiceProviderInterface
 
 		$container->alias(CustomtabsJ5::class, 'Model.J5.Customtabs')
 			->share('Model.J5.Customtabs', [$this, 'getCustomtabsJ5'], true);
+
+		$container->alias(CustomtabsJ6::class, 'Model.J6.Customtabs')
+			->share('Model.J6.Customtabs', [$this, 'getCustomtabsJ6'], true);
 
 		$container->alias(Adminviews::class, 'Model.Adminviews')
 			->share('Model.Adminviews', [$this, 'getAdminviews'], true);
@@ -773,6 +777,25 @@ class Model implements ServiceProviderInterface
 	public function getCustomtabsJ5(Container $container): CustomtabsJ5
 	{
 		return new CustomtabsJ5(
+			$container->get('Config'),
+			$container->get('Compiler.Builder.Custom.Tabs'),
+			$container->get('Language'),
+			$container->get('Placeholder'),
+			$container->get('Customcode')
+		);
+	}
+
+	/**
+	 * Get The CustomtabsJ6 Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomtabsJ6
+	 * @since   5.1.2
+	 */
+	public function getCustomtabsJ6(Container $container): CustomtabsJ6
+	{
+		return new CustomtabsJ6(
 			$container->get('Config'),
 			$container->get('Compiler.Builder.Custom.Tabs'),
 			$container->get('Language'),

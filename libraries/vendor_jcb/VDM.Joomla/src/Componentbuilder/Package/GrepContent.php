@@ -48,7 +48,8 @@ class GrepContent extends Grep implements GrepInterface
 	 */
 	protected function getRemote(object $path, string $guid): ?object
 	{
-		$content_path = $path->index[$this->entity]->{$guid}->path ?? null;
+		$data = (object) ($path->index[$this->entity]->{$guid} ?? []);
+		$content_path = $data->path ?? null;
 		if (empty($content_path))
 		{
 			return null;
@@ -80,7 +81,6 @@ class GrepContent extends Grep implements GrepInterface
 			return null;
 		}
 
-		$data = $path->index[$this->entity]->{$guid};
 		$path_guid = $path->guid ?? null;
 
 		$branch_field = $this->getBranchField();

@@ -17,6 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -56,7 +57,7 @@ class JoomlapluginsField extends ListField
 			$button_code_name = $this->getAttribute('name');
 			// get the input from url
 			$app = Factory::getApplication();
-			$jinput = $app->input;
+			$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 			// get the view name & id
 			$values = $jinput->getArray(array(
 				'id' => 'int',
@@ -154,7 +155,7 @@ class JoomlapluginsField extends ListField
 		// Get the user object.
 		$user = Factory::getApplication()->getIdentity();
 		// Get the databse object.
-		$db = Factory::getDBO();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName(array('a.guid','a.system_name','a.name','b.name','c.name'),array('guid','plugin_system_name','name','class_extends_name','joomla_plugin_group_name')));
 		$query->from($db->quoteName('#__componentbuilder_joomla_plugin', 'a'));
@@ -174,7 +175,7 @@ class JoomlapluginsField extends ListField
 		}
 		$db->setQuery((string)$query);
 		$items = $db->loadObjectList();
-		$options = array();
+		$options = [];
 		if ($items)
 		{
 			$options[] = Html::_('select.option', '', 'Select a plugin');

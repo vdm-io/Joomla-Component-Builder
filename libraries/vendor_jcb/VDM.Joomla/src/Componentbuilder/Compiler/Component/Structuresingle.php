@@ -221,7 +221,7 @@ final class Structuresingle
 				}
 
 				// if not needed do not add
-				if ($details->naam === 'CHANGELOG.md' && !$CHANGELOG)
+				if (($details->naam === 'CHANGELOG.md' || $details->naam === 'CHANGELOG.xml') && !$CHANGELOG)
 				{
 					continue;
 				}

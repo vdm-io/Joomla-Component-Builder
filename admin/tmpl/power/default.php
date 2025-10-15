@@ -143,18 +143,18 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 
 <script type="text/javascript">
 
-// #jform_add_head listeners for add_head_vvvvvwx function
+// #jform_add_head listeners for add_head_vvvvvxe function
 jQuery('#jform_add_head').on('keyup',function()
 {
-	var add_head_vvvvvwx = jQuery("#jform_add_head input[type='radio']:checked").val();
-	vvvvvwx(add_head_vvvvvwx);
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	vvvvvxe(add_head_vvvvvxe);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_head',function (e)
 {
 	e.preventDefault();
-	var add_head_vvvvvwx = jQuery("#jform_add_head input[type='radio']:checked").val();
-	vvvvvwx(add_head_vvvvvwx);
+	var add_head_vvvvvxe = jQuery("#jform_add_head input[type='radio']:checked").val();
+	vvvvvxe(add_head_vvvvvxe);
 
 });
 

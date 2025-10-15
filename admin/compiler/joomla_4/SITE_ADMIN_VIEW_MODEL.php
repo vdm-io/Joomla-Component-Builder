@@ -449,8 +449,9 @@ class ###View###Model extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input    = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;
-		$filter   = InputFilter::getInstance();
+		$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
+		$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+		$filter = Joomla___193deb3e_0c3e_4610_8e55_450e463095b4___Power::getInstance();
 
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))

@@ -235,20 +235,21 @@ class LanguagesModel extends ListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = $this->app;
+		$input = $this->app->getInput();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->get('layout'))
+		if ($layout = $input->get('layout'))
 		{
 			$this->context .= '.' . $layout;
 		}
 
 		// Check if the form was submitted
-		$formSubmited = $app->input->post->get('form_submited');
+		$formSubmited = $input->post->get('form_submited');
 
 		$access = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
 		if ($formSubmited)
 		{
-			$access = $app->input->post->get('access');
+			$access = $input->post->get('access');
 			$this->setState('filter.access', $access);
 		}
 
@@ -270,14 +271,14 @@ class LanguagesModel extends ListModel
 		$name = $this->getUserStateFromRequest($this->context . '.filter.name', 'filter_name');
 		if ($formSubmited)
 		{
-			$name = $app->input->post->get('name');
+			$name = $input->post->get('name');
 			$this->setState('filter.name', $name);
 		}
 
 		$langtag = $this->getUserStateFromRequest($this->context . '.filter.langtag', 'filter_langtag');
 		if ($formSubmited)
 		{
-			$langtag = $app->input->post->get('langtag');
+			$langtag = $input->post->get('langtag');
 			$this->setState('filter.langtag', $langtag);
 		}
 
@@ -484,12 +485,13 @@ class LanguagesModel extends ListModel
 	}
 
 	/**
-	 * Build an SQL query to checkin all items left checked out longer then a set time.
+	 * Build an SQL query to check in all items left checked out longer then a set time.
 	 *
-	 * @return bool
+	 * @return void
+	 * @throws \DateMalformedStringException
 	 * @since 3.2.0
 	 */
-	protected function checkInNow(): bool
+	protected function checkInNow(): void
 	{
 		// Get set check in time
 		$time = ComponentHelper::getParams('com_componentbuilder')->get('check_in');
@@ -503,37 +505,36 @@ class LanguagesModel extends ListModel
 			$query->select('*');
 			$query->from($db->quoteName('#__componentbuilder_language'));
 			// Only select items that are checked out.
-			$query->where($db->quoteName('checked_out') . '!=0');
+			$query->where($db->quoteName('checked_out') . ' >= 0');
+			// Query only to see if we have a rows
 			$db->setQuery($query, 0, 1);
 			$db->execute();
 			if ($db->getNumRows())
 			{
-				// Get Yesterdays date.
+				// Get target date in the past.
 				$date = Factory::getDate()->modify($time)->toSql();
 				// Reset query.
 				$query = $db->getQuery(true);
 
 				// Fields to update.
-				$fields = array(
-					$db->quoteName('checked_out_time') . '=\'0000-00-00 00:00:00\'',
-					$db->quoteName('checked_out') . '=0'
-				);
+				$fields = [
+					$db->quoteName('checked_out_time') . ' = NULL',
+					$db->quoteName('checked_out') . ' = NULL'
+				];
 
 				// Conditions for which records should be updated.
-				$conditions = array(
-					$db->quoteName('checked_out') . '!=0', 
-					$db->quoteName('checked_out_time') . '<\''.$date.'\''
-				);
+				$conditions = [
+					$db->quoteName('checked_out') . ' = 0 OR ' . $db->quoteName('checked_out') . ' > 0',
+					$db->quoteName('checked_out_time') . ' < ' . $db->quote($date)
+				];
 
 				// Check table.
 				$query->update($db->quoteName('#__componentbuilder_language'))->set($fields)->where($conditions); 
 
 				$db->setQuery($query);
 
-				return $db->execute();
+				$db->execute();
 			}
 		}
-
-		return false;
 	}
 }

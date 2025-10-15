@@ -56,28 +56,12 @@ final class Config extends ExtendingConfig implements ConfigInterface
 	protected string $suffix_key = '---Power';
 
 	/**
-	 * The main readme file path
-	 *
-	 * @var    string
-	 * @since  5.1.1
-	 */
-	// [DEFAULT] protected string $main_readme_path = 'README.md';
-
-	/**
 	 * The index file path (index of all items)
 	 *
 	 * @var    string
 	 * @since 3.2.2
 	 */
 	protected string $index_path = 'super-powers.json';
-
-	/**
-	 * The item (files) source path
-	 *
-	 * @var    string
-	 * @since  5.1.1
-	 */
-	// [DEFAULT] protected string $src_path = 'src';
 
 	/**
 	 * The item settings file name

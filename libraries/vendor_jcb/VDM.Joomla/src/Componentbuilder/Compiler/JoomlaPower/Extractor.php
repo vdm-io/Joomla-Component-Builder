@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaPower;
 
 
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as ExtendingExtractor;
@@ -66,13 +67,14 @@ final class Extractor extends ExtendingExtractor implements ExtractorInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param int    $targetVersion   The targeted Joomla version.
+	 * @param DatabaseInterface    $db              The Joomla Database class.
+	 * @param int                  $targetVersion   The targeted Joomla version.
 	 *
 	 * @since 3.2.1
 	 */
-	public function __construct(int $targetVersion)
+	public function __construct(DatabaseInterface $db, int $targetVersion)
 	{
-		parent::__construct();
+		parent::__construct($db);
 
 		$this->targetVersion = $targetVersion;
 	}

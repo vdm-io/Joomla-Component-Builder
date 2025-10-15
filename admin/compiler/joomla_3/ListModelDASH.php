@@ -24,6 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class ###Component###Model###Component### extends ListModel
 {
+###DASHBOARDICONACCESS###
 	public function getIcons()
 	{
 		// load user for access menus
@@ -33,7 +34,8 @@ class ###Component###Model###Component### extends ListModel
 		// view groups array
 		$viewGroups = array(
 			'main' => array(###DASHBOARDICONS###)
-		);###DASHBOARDICONACCESS###
+		);
+		$viewAccess = $this->viewAccess;
 		// loop over the $views
 		foreach($viewGroups as $group => $views)
 		{

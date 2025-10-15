@@ -15,14 +15,17 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\AllowAddInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Controller\AllowAdd as J6ControllerAllowAdd;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Controller\AllowAdd as J5ControllerAllowAdd;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Controller\AllowAdd as J4ControllerAllowAdd;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AllowAdd as J3ControllerAllowAdd;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\AllowEditInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Controller\AllowEdit as J6ControllerAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Controller\AllowEdit as J5ControllerAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Controller\AllowEdit as J4ControllerAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AllowEdit as J3ControllerAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\AllowEditViewsInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Controller\AllowEditViews as J6ControllerAllowEditViews;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Controller\AllowEditViews as J5ControllerAllowEditViews;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Controller\AllowEditViews as J4ControllerAllowEditViews;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AllowEditViews as J3ControllerAllowEditViews;
@@ -56,6 +59,9 @@ class ArchitectureController implements ServiceProviderInterface
 		$container->alias(AllowAddInterface::class, 'Architecture.Controller.AllowAdd')
 			->share('Architecture.Controller.AllowAdd', [$this, 'getAllowAdd'], true);
 
+		$container->alias(J6ControllerAllowAdd::class, 'Architecture.Controller.J6.AllowAdd')
+			->share('Architecture.Controller.J6.AllowAdd', [$this, 'getJ6ControllerAllowAdd'], true);
+
 		$container->alias(J5ControllerAllowAdd::class, 'Architecture.Controller.J5.AllowAdd')
 			->share('Architecture.Controller.J5.AllowAdd', [$this, 'getJ5ControllerAllowAdd'], true);
 
@@ -68,6 +74,9 @@ class ArchitectureController implements ServiceProviderInterface
 		$container->alias(AllowEditInterface::class, 'Architecture.Controller.AllowEdit')
 			->share('Architecture.Controller.AllowEdit', [$this, 'getAllowEdit'], true);
 
+		$container->alias(J6ControllerAllowEdit::class, 'Architecture.Controller.J6.AllowEdit')
+			->share('Architecture.Controller.J6.AllowEdit', [$this, 'getJ6ControllerAllowEdit'], true);
+
 		$container->alias(J5ControllerAllowEdit::class, 'Architecture.Controller.J5.AllowEdit')
 			->share('Architecture.Controller.J5.AllowEdit', [$this, 'getJ5ControllerAllowEdit'], true);
 
@@ -79,6 +88,9 @@ class ArchitectureController implements ServiceProviderInterface
 
 		$container->alias(AllowEditViewsInterface::class, 'Architecture.Controller.AllowEditViews')
 			->share('Architecture.Controller.AllowEditViews', [$this, 'getAllowEditViews'], true);
+
+		$container->alias(J6ControllerAllowEditViews::class, 'Architecture.Controller.J6.AllowEditViews')
+			->share('Architecture.Controller.J6.AllowEditViews', [$this, 'getJ6ControllerAllowEditViews'], true);
 
 		$container->alias(J5ControllerAllowEditViews::class, 'Architecture.Controller.J5.AllowEditViews')
 			->share('Architecture.Controller.J5.AllowEditViews', [$this, 'getJ5ControllerAllowEditViews'], true);
@@ -106,6 +118,23 @@ class ArchitectureController implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.Controller.J' . $this->targetVersion . '.AllowAdd');
+	}
+
+	/**
+	 * Get The AllowAdd Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6ControllerAllowAdd
+	 * @since   5.1.2
+	 */
+	public function getJ6ControllerAllowAdd(Container $container): J6ControllerAllowAdd
+	{
+		return new J6ControllerAllowAdd(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser')
+		);
 	}
 
 	/**
@@ -182,8 +211,27 @@ class ArchitectureController implements ServiceProviderInterface
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
+	 * @return  J6ControllerAllowEdit
+	 * @since   5.1.2
+	 */
+	public function getJ6ControllerAllowEdit(Container $container): J6ControllerAllowEdit
+	{
+		return new J6ControllerAllowEdit(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEdit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
 	 * @return  J5ControllerAllowEdit
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	public function getJ5ControllerAllowEdit(Container $container): J5ControllerAllowEdit
 	{
@@ -202,7 +250,7 @@ class ArchitectureController implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  J4ControllerAllowEdit
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 */
 	public function getJ4ControllerAllowEdit(Container $container): J4ControllerAllowEdit
 	{
@@ -250,6 +298,24 @@ class ArchitectureController implements ServiceProviderInterface
 		}
 
 		return $container->get('Architecture.Controller.J' . $this->targetVersion . '.AllowEditViews');
+	}
+
+	/**
+	 * Get The AllowEditViews Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6ControllerAllowEdit
+	 * @since  5.1.2
+	 */
+	public function getJ6ControllerAllowEditViews(Container $container): J6ControllerAllowEditViews
+	{
+		return new J6ControllerAllowEditViews(
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
 	}
 
 	/**

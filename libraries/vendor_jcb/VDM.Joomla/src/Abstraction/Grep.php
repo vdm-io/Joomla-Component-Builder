@@ -270,12 +270,13 @@ abstract class Grep implements GrepInterface
 	/**
 	 * Get the a path + indexes
 	 *
-	 * @param string $guid The unique identifier for the repo.
+	 * @param string $guid    The unique identifier for the repo.
+	 * @param bool   $reload  The switch to reload the index, and not return from cache.
 	 *
 	 * @return object|null
 	 * @since  5.1.1
 	 */
-	public function getPathIndexes(string $guid): ?object
+	public function getPathIndexes(string $guid, bool $reload = false): ?object
 	{
 		if (!is_array($this->paths) || $this->paths === [] || empty($guid))
 		{
@@ -287,6 +288,11 @@ abstract class Grep implements GrepInterface
 			if (!isset($path->guid) || $guid !== $path->guid)
 			{
 				continue;
+			}
+
+			if ($reload)
+			{
+				unset($path->index[$this->entity]);
 			}
 
 			// Get remote index
@@ -304,12 +310,13 @@ abstract class Grep implements GrepInterface
 	/**
 	 * Get the index of a repo
 	 *
-	 * @param string $guid The unique identifier for the repo.
+	 * @param string $guid    The unique identifier for the repo.
+	 * @param bool   $reload  The switch to reload the index, and not return from cache.
 	 *
 	 * @return object|null
 	 * @since  3.2.2
 	 */
-	public function getRemoteIndex(string $guid): ?object
+	public function getRemoteIndex(string $guid, bool $reload = false): ?object
 	{
 		if (!is_array($this->paths) || $this->paths === [] || empty($guid))
 		{
@@ -323,6 +330,11 @@ abstract class Grep implements GrepInterface
 				continue;
 			}
 
+			if ($reload)
+			{
+				unset($path->index[$this->entity]);
+			}
+
 			// Get remote index
 			$this->indexRemote($path);
 
@@ -333,6 +345,20 @@ abstract class Grep implements GrepInterface
 		}
 
 		return null;
+	}
+
+	/**
+	 * Reset the index of a entity
+	 *
+	 * @return void
+	 * @since  5.1.2
+	 */
+	public function resetEntityIndex(): void
+	{
+		foreach ($this->paths as &$path)
+		{
+			unset($path->index[$this->entity]);
+		}
 	}
 
 	/**

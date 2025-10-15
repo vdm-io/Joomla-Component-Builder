@@ -41,8 +41,9 @@ class HelpController extends BaseController
 
 	public function help()
 	{
-		$user       = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();
-		$jinput     = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;
+		$app        = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
+		$user       = $app->getIdentity();
+		$jinput     = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 		// Check Token!
 		$token         = Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken();
 		$call_token    = $jinput->get('token', 0, 'ALNUM');

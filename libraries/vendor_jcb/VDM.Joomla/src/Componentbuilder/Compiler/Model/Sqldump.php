@@ -232,27 +232,85 @@ class Sqldump
 	/**
 	 * Build the SQL INSERT DUMP statement from data.
 	 *
-	 * @param   string         $view
-	 * @param   array<object>  $data
+	 * Automatically chunks large data sets into multiple INSERT statements
+	 * to improve database import performance and avoid query size limits.
 	 *
-	 * @return  string
-	 * @since   5.1.1
+	 * @param   string         $view  The table view name (without prefix).
+	 * @param   array<object>  $data  The dataset to dump.
+	 *
+	 * @return  string  The full SQL dump string.
+	 * @since   5.1.2
 	 */
 	protected function buildSqlDump(string $view, array $data): string
 	{
-		$tableName = "#__" . Placefix::_("component") . "_{$view}";
-		$fields = array_keys((array) $data[0]);
-
-		$header = "--\n-- Dumping data for table `{$tableName}`\n--\n";
-		$insert = "INSERT INTO `{$tableName}` (" . implode(', ', array_map([$this->db, 'quoteName'], $fields)) . ") VALUES\n";
-
-		$rows = array_map(function ($row)
+		// No data to process
+		if (empty($data))
 		{
-			$values = array_map([$this, 'escape'], (array) $row);
-			return '(' . implode(', ', $values) . ')';
-		}, $data);
+			return "-- No data available for `{$view}`\n";
+		}
 
-		return $header . $insert . implode(",\n", $rows) . ";";
+		// Define table and fields
+		$tableName = "#__" . Placefix::_("component") . "_{$view}";
+		$fields    = array_keys((array) $data[0]);
+
+		// Header
+		$header = "-- --------------------------------------------------------\n";
+		$header .= "-- Dumping data for table `{$tableName}`\n";
+		$header .= "-- --------------------------------------------------------\n\n";
+
+		// Base insert prefix
+		$insertPrefix = "INSERT INTO `{$tableName}` (" . implode(', ', array_map([$this->db, 'quoteName'], $fields)) . ") VALUES\n";
+
+		// Determine optimal chunk size based on dataset size
+		$totalRows  = count($data);
+		$chunkSize  = $this->determineOptimalChunkSize($totalRows);
+
+		// Split data into chunks
+		$chunks = array_chunk($data, $chunkSize);
+
+		// Build SQL dump
+		$sqlDump = $header;
+		foreach ($chunks as $i => $chunk)
+		{
+			$rows = array_map(function ($row)
+			{
+				$values = array_map([$this, 'escape'], (array) $row);
+				return '(' . implode(', ', $values) . ')';
+			}, $chunk);
+
+			$sqlDump .= sprintf("-- Batch %d of %d (%d rows)\n", $i + 1, count($chunks), count($chunk));
+			$sqlDump .= $insertPrefix . implode(",\n", $rows) . ";\n\n";
+		}
+
+		return $sqlDump;
+	}
+
+	/**
+	 * Determine optimal chunk size for SQL insert batching.
+	 *
+	 * @param   int  $totalRows  Total number of rows to dump.
+	 *
+	 * @return  int  Recommended chunk size.
+	 * @since   5.1.2
+	 */
+	protected function determineOptimalChunkSize(int $totalRows): int
+	{
+		// General MySQL safe limits: 1MB per query or ~1,000 rows
+		// Adjust dynamically based on dataset size.
+		if ($totalRows > 100000)
+		{
+			return 1000; // Large dataset
+		}
+		elseif ($totalRows > 10000)
+		{
+			return 500; // Medium dataset
+		}
+		elseif ($totalRows > 1000)
+		{
+			return 300; // Smaller large set
+		}
+
+		return $totalRows; // For small sets, single insert is fine
 	}
 
 	/**

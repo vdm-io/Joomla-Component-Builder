@@ -25,12 +25,14 @@ defined('_JEXEC') or die;
 
 $app = Factory::getApplication();
 
-if ($app->isClient('site')) {
+if ($app->isClient('site'))
+{
     Session::checkToken('get') or die(Text::_('JINVALID_TOKEN'));
 }
 
 // dynamic selection of title key (link in modal)
-$this->modalTitleKey = $app->input->get('titleKey', 'id', 'word');
+$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
+$this->modalTitleKey = $input->get('titleKey', 'id', 'word');
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();

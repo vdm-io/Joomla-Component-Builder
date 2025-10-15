@@ -26,6 +26,13 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
+	'add_changelog_server',
+	'changelog_server_url',
+	'changelog_server_target',
+	'note_changelog_server_note_ftp',
+	'note_changelog_server_note_zip',
+	'note_changelog_server_note_other',
+	'changelog_server',
 	'translation_tool',
 	'note_crowdin',
 	'crowdin_project_identifier',

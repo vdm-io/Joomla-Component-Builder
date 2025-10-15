@@ -23,6 +23,9 @@ use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\HeaderCheck;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\Input\Input;
+use Joomla\Registry\Registry;
 
 // No direct access to this file
 \defined('_JEXEC') or die; 
@@ -36,6 +39,54 @@ use VDM\Joomla\Utilities\StringHelper;
 class HtmlView extends BaseHtmlView
 {
 	/**
+	 * The app class
+	 *
+	 * @var    CMSApplicationInterface
+	 * @since  5.2.1
+	 */
+	public CMSApplicationInterface $app;
+
+	/**
+	 * The input class
+	 *
+	 * @var    Input
+	 * @since  5.2.1
+	 */
+	public Input $input;
+
+	/**
+	 * The params registry
+	 *
+	 * @var    Registry
+	 * @since  5.2.1
+	 */
+	public Registry $params;
+
+	/**
+	 * The user object.
+	 *
+	 * @var    User
+	 * @since  3.10.11
+	 */
+	public User $user;
+
+	/**
+	 * The styles url array
+	 *
+	 * @var    array
+	 * @since  3.10.11
+	 */
+	protected array $styles;
+
+	/**
+	 * The scripts url array
+	 *
+	 * @var    array
+	 * @since  3.10.11
+	 */
+	protected array $scripts;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -46,18 +97,24 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
-		// get component params
-		$this->params = ComponentHelper::getParams('com_componentbuilder');
 		// get the application
 		$this->app ??= Factory::getApplication();
+		// get input
+		$this->input ??= method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
+		// get component params
+		$this->params ??= method_exists($this->app, 'getParams')
+			? $this->app->getParams()
+			: ComponentHelper::getParams('com_componentbuilder');
 		// get the user object
-		$this->user ??= Factory::getApplication()->getIdentity();
+		$this->user ??= $this->getCurrentUser();
 		// get global action permissions
 		$this->canDo = ComponentbuilderHelper::getActions('initialization_selection');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
+		// Load module values
+		$model = $this->getModel();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
 		// Initialise variables.
-		$this->item = $this->get('Item');
+		$this->item = $model->getItem();
 
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
@@ -67,7 +124,7 @@ class HtmlView extends BaseHtmlView
 		}
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
+		if (count($errors = $model->getErrors()))
 		{
 			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
@@ -76,6 +133,45 @@ class HtmlView extends BaseHtmlView
 		$this->_prepareDocument();
 
 		parent::display($tpl);
+	}
+
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @return  void
+	 * @since   1.6
+	 */
+	protected function addToolbar(): void
+	{
+		// hide the main menu
+		$this->input->set('hidemainmenu', true);
+		// set the title
+		if (isset($this->item->name) && $this->item->name)
+		{
+			$title = $this->item->name;
+		}
+		// Check for empty title and add view name if param is set
+		if (empty($title))
+		{
+			$title = Text::_('COM_COMPONENTBUILDER_INITIALIZATION_SELECTION');
+		}
+		// add title to the page
+		ToolbarHelper::title($title,'puzzle');
+		// add cpanel button
+		ToolbarHelper::custom('initialization_selection.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+
+		// set help url for this view if found
+		$this->help_url = ComponentbuilderHelper::getHelpUrl('initialization_selection');
+		if (StringHelper::check($this->help_url))
+		{
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+		}
+
+		// add the options comp button
+		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
+		{
+			ToolbarHelper::preferences('com_componentbuilder');
+		}
 	}
 
 	/**
@@ -97,19 +193,19 @@ class HtmlView extends BaseHtmlView
 		$HeaderCheck = new HeaderCheck();
 
 		// always load these files.
-		Html::_('stylesheet', "media/com_componentbuilder/uikit-v3/css/uikit.min.css", ['version' => 'auto']);
-		Html::_('script', "media/com_componentbuilder/uikit-v3/js/uikit.min.js", ['version' => 'auto']);
-		Html::_('script', "media/com_componentbuilder/uikit-v3/js/uikit-icons.min.js", ['version' => 'auto']);
-		Html::_('script', "media/com_componentbuilder/uikit-v3/js/Uploader.min.js", ['version' => 'auto']);
+		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v3/css/uikit.min.css', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/uikit-v3/js/uikit.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/uikit-v3/js/uikit-icons.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/uikit-v3/js/Uploader.min.js', ['version' => 'auto']);
 
 		// always load these files.
-		Html::_('stylesheet', "media/com_componentbuilder/datatable-bootstrap5/css/datatables.min.css", ['version' => 'auto']);
-		Html::_('script', "media/com_componentbuilder/datatable-bootstrap5/js/pdfmake.min.js", ['version' => 'auto']);
-		Html::_('script', "media/com_componentbuilder/datatable-bootstrap5/js/vfs_fonts.js", ['version' => 'auto']);
-		Html::_('script', "media/com_componentbuilder/datatable-bootstrap5/js/datatables.min.js", ['version' => 'auto']);
+		Html::_('stylesheet', 'media/com_componentbuilder/datatable-bootstrap5/css/datatables.min.css', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/datatable-bootstrap5/js/pdfmake.min.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/datatable-bootstrap5/js/vfs_fonts.js', ['version' => 'auto']);
+		Html::_('script', 'media/com_componentbuilder/datatable-bootstrap5/js/datatables.min.js', ['version' => 'auto']);
 
 		// Add View JavaScript File
-		Html::_('script', "administrator/components/com_componentbuilder/assets/js/initialization_selection.js", ['version' => 'auto']);
+		Html::_('script', 'administrator/components/com_componentbuilder/assets/js/initialization_selection.js', ['version' => 'auto']);
 
 		// Load uikit options.
 		$uikit = $this->params->get('uikit_load');
@@ -147,45 +243,6 @@ class HtmlView extends BaseHtmlView
 		foreach ($this->scripts as $script)
 		{
 			Html::_('script', $script, ['version' => 'auto']);
-		}
-	}
-
-	/**
-	 * Add the page title and toolbar.
-	 *
-	 * @return  void
-	 * @since   1.6
-	 */
-	protected function addToolbar(): void
-	{
-		// hide the main menu
-		$this->app->input->set('hidemainmenu', true);
-		// set the title
-		if (isset($this->item->name) && $this->item->name)
-		{
-			$title = $this->item->name;
-		}
-		// Check for empty title and add view name if param is set
-		if (empty($title))
-		{
-			$title = Text::_('COM_COMPONENTBUILDER_INITIALIZATION_SELECTION');
-		}
-		// add title to the page
-		ToolbarHelper::title($title,'puzzle');
-		// add cpanel button
-		ToolbarHelper::custom('initialization_selection.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
-
-		// set help url for this view if found
-		$this->help_url = ComponentbuilderHelper::getHelpUrl('initialization_selection');
-		if (StringHelper::check($this->help_url))
-		{
-			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the options comp button
-		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-		{
-			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 

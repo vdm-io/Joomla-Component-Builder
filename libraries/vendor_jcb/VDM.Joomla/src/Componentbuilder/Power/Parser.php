@@ -31,6 +31,8 @@ final class Parser
 	 */
 	public function code(string $code): array
 	{
+		$code = $this->normalizeCode($code);
+
 		return [
 			'properties' => $this->properties($code),
 			'methods' => $this->methods($code)
@@ -47,6 +49,8 @@ final class Parser
 	 **/
 	public function getClassCode(string $code): ?string
 	{
+		$code = $this->normalizeCode($code);
+
 		// Match class, final class, abstract class, interface, and trait
 		$pattern = '/(?:class|final class|abstract class|interface|trait)\s+[a-zA-Z0-9_]+\s*(?:extends\s+[a-zA-Z0-9_]+\s*)?(?:implements\s+[a-zA-Z0-9_]+(?:\s*,\s*[a-zA-Z0-9_]+)*)?\s*\{/s';
 
@@ -88,6 +92,8 @@ final class Parser
 	 **/
 	public function getClassLicense(string $code): ?string
 	{
+		$code = $this->normalizeCode($code);
+
 		// Check if the file starts with '<?php'
 		if (substr($code, 0, 5) !== '<?php')
 		{
@@ -127,6 +133,8 @@ final class Parser
 	 */
 	public function getUseStatements(string $code): ?array
 	{
+		$code = $this->normalizeCode($code);
+
 		// Match class, final class, abstract class, interface, and trait
 		$pattern = '/(?:class|final class|abstract class|interface|trait)\s+[a-zA-Z0-9_]+\s*(?:extends\s+[a-zA-Z0-9_]+\s*)?(?:implements\s+[a-zA-Z0-9_]+(?:\s*,\s*[a-zA-Z0-9_]+)*)?\s*\{/s';
 
@@ -168,6 +176,8 @@ final class Parser
 	 */
 	public function getTraits(string $code): ?array
 	{
+		$code = $this->normalizeCode($code);
+
 		// regex to target trait use statements
 		$traitPattern = '/^\s*use\s+[\p{L}0-9\\\\_]+(?:\s*,\s*[\p{L}0-9\\\\_]+)*\s*;/mu';
 
@@ -640,5 +650,39 @@ final class Parser
 		return $mergedArguments;
 	}
 
+	/**
+	 * Normalize input PHP code for cross-platform consistency.
+	 *
+	 * - Always removes the UTF-8 BOM (Byte Order Mark) if present.
+	 * - Always normalizes line endings to the platform's native PHP_EOL.
+	 *
+	 * This ensures consistent behavior across Linux, macOS, and Windows,
+	 * prevents BOM-related PHP output errors, and preserves clean hashes.
+	 *
+	 * @param  string  $code  The raw PHP code as a string.
+	 *
+	 * @return string  The normalized PHP code string.
+	 * @since  5.1.2
+	 */
+	private function normalizeCode(string $code): string
+	{
+		// UTF-8 BOM sequence
+		static $BOM = "\xEF\xBB\xBF";
+
+		// Always remove UTF-8 BOM if present
+		if (strncmp($code, $BOM, 3) === 0)
+		{
+			$code = substr($code, 3);
+		}
+
+		// Universal line ending normalization in two passes
+		// 1. Replace all known newline variants with a temporary token
+		$php_eol_tmp = '#' . '#' . '#' . 'JCB_EOL' . '#' . '#' . '#';
+		// 2. Replace that token with the system-native PHP_EOL
+		$code = str_replace(["\r\n", "\n", "\r"], $php_eol_tmp, $code);
+		$code = str_replace($php_eol_tmp, PHP_EOL, $code);
+
+		return $code;
+	}
 }
 

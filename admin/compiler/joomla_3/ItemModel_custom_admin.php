@@ -62,7 +62,7 @@ class ###Component###Model###SView### extends ItemModel
 	protected function populateState()
 	{
 		$this->app = Factory::getApplication();
-		$this->input = $this->app->input;
+		$this->input = method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
 		// Get the item main id
 		$id = $this->input->getInt('id', null);
 		$this->setState('###sview###.id', $id);

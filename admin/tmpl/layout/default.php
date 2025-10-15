@@ -131,18 +131,18 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 
 <script type="text/javascript">
 
-// #jform_add_php_view listeners for add_php_view_vvvvvza function
+// #jform_add_php_view listeners for add_php_view_vvvvvzh function
 jQuery('#jform_add_php_view').on('keyup',function()
 {
-	var add_php_view_vvvvvza = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvza(add_php_view_vvvvvza);
+	var add_php_view_vvvvvzh = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvzh(add_php_view_vvvvvzh);
 
 });
 jQuery('#adminForm').on('change', '#jform_add_php_view',function (e)
 {
 	e.preventDefault();
-	var add_php_view_vvvvvza = jQuery("#jform_add_php_view input[type='radio']:checked").val();
-	vvvvvza(add_php_view_vvvvvza);
+	var add_php_view_vvvvvzh = jQuery("#jform_add_php_view input[type='radio']:checked").val();
+	vvvvvzh(add_php_view_vvvvvzh);
 
 });
 

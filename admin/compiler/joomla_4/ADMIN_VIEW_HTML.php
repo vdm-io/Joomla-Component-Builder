@@ -29,12 +29,12 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator
 class HtmlView extends BaseHtmlView
 {
 	/**
-	 * The item from the model
+	 * The app class
 	 *
-	 * @var    mixed
-	 * @since  3.10.11
+	 * @var    Joomla___a6ee04f5_33c7_4a9b_aa6d_6a03f3715a88___Power
+	 * @since  5.2.1
 	 */
-	public mixed $item;
+	public Joomla___a6ee04f5_33c7_4a9b_aa6d_6a03f3715a88___Power $app;
 
 	/**
 	 * The input class
@@ -43,6 +43,22 @@ class HtmlView extends BaseHtmlView
 	 * @since  5.2.1
 	 */
 	public Joomla___59106b64_dd51_4280_be0a_1b9b9ebb7161___Power $input;
+
+	/**
+	 * The params registry
+	 *
+	 * @var    Joomla___a87c432d_b5b4_428e_b7ff_14b51664c624___Power
+	 * @since  5.2.1
+	 */
+	public Joomla___a87c432d_b5b4_428e_b7ff_14b51664c624___Power $params;
+
+	/**
+	 * The item from the model
+	 *
+	 * @var    mixed
+	 * @since  3.10.11
+	 */
+	public mixed $item;
 
 	/**
 	 * The state object
@@ -135,19 +151,25 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null): void
 	{
+		// get application
+		$this->app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
+		// get input
+		$this->input ??= method_exists($this->app, 'getInput') ? $this->app->getInput() : $this->app->input;
 		// set params
-		$this->params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
+		$this->params ??= method_exists($this->app, 'getParams')
+			? $this->app->getParams()
+			: Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		$this->useCoreUI = true;
-		// Assign the variables
-		$this->form ??= $this->get('Form');
-		$this->item = $this->get('Item');
-		$this->styles = $this->get('Styles');
-		$this->scripts = $this->get('Scripts');
-		$this->state = $this->get('State');
+		// Load module values
+		$model = $this->getModel();
+		$this->form ??= $model->getForm();
+		$this->item = $model->getItem();
+		$this->styles = $model->getStyles();
+		$this->scripts = $model->getScripts();
+		$this->state = $model->getState();
 		// get action permissions
 		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
-		// get input
-		$this->input ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;
+		// get return referral details
 		$this->ref = $this->input->get('ref', 0, 'word');
 		$this->refid = $this->input->get('refid', 0, 'int');
 		$return = $this->input->get('return', null, 'base64');
@@ -220,6 +242,27 @@ class HtmlView extends BaseHtmlView
 	}
 
 	/**
+	 * Prepare some document related stuff.
+	 *
+	 * @return  void
+	 * @since   1.6
+	 */
+	protected function _prepareDocument(): void
+	{###JQUERY###
+		$isNew = ($this->item->id < 1);
+		// add styles
+		foreach ($this->styles as $style)
+		{
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
+		}###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
+		// add scripts
+		foreach ($this->scripts as $script)
+		{
+			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
+		}###DOCUMENT_CUSTOM_PHP###
+	}
+
+	/**
 	 * Escapes a value for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
@@ -237,27 +280,5 @@ class HtmlView extends BaseHtmlView
 		}
 
 		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
-	}
-
-	/**
-	 * Prepare some document related stuff.
-	 *
-	 * @return  void
-	 * @since   1.6
-	 */
-	protected function _prepareDocument(): void
-	{###JQUERY###
-		$isNew = ($this->item->id < 1);
-		$this->getDocument()->setTitle(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_($isNew ? 'COM_###COMPONENT###_###VIEW###_NEW' : 'COM_###COMPONENT###_###VIEW###_EDIT'));
-		// add styles
-		foreach ($this->styles as $style)
-		{
-			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('stylesheet', $style, ['version' => 'auto']);
-		}###AJAXTOKE######LINKEDVIEWTABLESCRIPTS###
-		// add scripts
-		foreach ($this->scripts as $script)
-		{
-			Joomla___34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('script', $script, ['version' => 'auto']);
-		}###DOCUMENT_CUSTOM_PHP###
 	}
 }

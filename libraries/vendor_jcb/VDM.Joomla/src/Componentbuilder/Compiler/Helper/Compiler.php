@@ -145,7 +145,7 @@ class Compiler extends Infusion
 			);
 
 			// now update the files
-			if (!$this->updateFiles())
+			if (!CFactory::_('Extension.Files.Updater')->update())
 			{
 				return false;
 			}
@@ -294,8 +294,8 @@ class Compiler extends Infusion
 					), 'Warning'
 				);
 			}
-			// move the update server into place
-			$this->setUpdateServer();
+			// move the xml files to servers
+			$this->setXmlServers();
 			// build read me
 			$this->buildReadMe();
 			// set local repos
@@ -399,483 +399,244 @@ class Compiler extends Infusion
 	 * Set the dynamic data to the created files
 	 *
 	 * @return  bool true on success
-	 *
+	 * @deprecated 3.3
 	 */
-	protected function updateFiles()
+	protected function updateFiles(): bool
 	{
-		if (CFactory::_('Utilities.Files')->exists('static')
-			&& CFactory::_('Utilities.Files')->exists('dynamic'))
-		{
-			// load any other super powers that was already found
-			if (($super_powers = CFactory::_('Power.Extractor')->get_()) !== null)
-			{
-				CFactory::_('Power')->load($super_powers);
-			}
-			// set the autoloader for Powers
-			CFactory::_('Power.Autoloader')->set();
-			// get the bom file
-			$bom = FileHelper::getContent(CFactory::_('Config')->bom_path);
-			// first we do the static files
-			foreach (CFactory::_('Utilities.Files')->get('static') as $static)
-			{
-				if (is_file($static['path']))
-				{
-					$this->setFileContent(
-						$static['name'], $static['path'], $bom
-					);
-				}
-			}
-			// now we do the dynamic files
-			foreach (CFactory::_('Utilities.Files')->get('dynamic') as $view => $files)
-			{
-				if (CFactory::_('Compiler.Builder.Content.Multi')->isArray($view))
-				{
-					foreach ($files as $file)
-					{
-						if ($file['view'] == $view)
-						{
-							if (is_file($file['path']))
-							{
-								$this->setFileContent(
-									$file['name'], $file['path'], $bom,
-									$file['view']
-								);
-							}
-						}
-					}
-				}
-				// free up some memory
-				CFactory::_('Compiler.Builder.Content.Multi')->remove($view);
-			}
-			// free up some memory
-			CFactory::_('Utilities.Files')->remove('dynamic');
-			// do modules if found
-			if (CFactory::_('Joomlamodule.Data')->exists())
-			{
-				foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
-				{
-					if (ObjectHelper::check($module)
-						&& CFactory::_('Utilities.Files')->exists($module->key))
-					{
-						// move field or rule if needed
-						if (isset($module->fields_rules_paths)
-							&& $module->fields_rules_paths == 2)
-						{
-							// check the config fields
-							if (isset($module->config_fields)
-								&& ArrayHelper::check(
-									$module->config_fields
-								))
-							{
-								foreach (
-									$module->config_fields as $field_name =>
-									$fieldsets
-								)
-								{
-									foreach ($fieldsets as $fieldset => $fields)
-									{
-										foreach ($fields as $field)
-										{
-											$this->moveFieldsRules(
-												$field, $module->folder_path
-											);
-										}
-									}
-								}
-							}
-							// check the fieldsets
-							if (isset($module->form_files)
-								&& ArrayHelper::check(
-									$module->form_files
-								))
-							{
-								foreach ($module->form_files as $file => $files)
-								{
-									foreach (
-										$files as $field_name => $fieldsets
-									)
-									{
-										foreach (
-											$fieldsets as $fieldset => $fields
-										)
-										{
-											foreach ($fields as $field)
-											{
-												$this->moveFieldsRules(
-													$field, $module->folder_path
-												);
-											}
-										}
-									}
-								}
-							}
-						}
-						// update the module files
-						foreach (CFactory::_('Utilities.Files')->get($module->key) as $module_file)
-						{
-							if (is_file($module_file['path']))
-							{
-								$this->setFileContent(
-									$module_file['name'], $module_file['path'],
-									$bom, $module->key
-								);
-							}
-						}
-						// free up some memory
-						CFactory::_('Utilities.Files')->remove($module->key);
-						CFactory::_('Compiler.Builder.Content.Multi')->remove($module->key);
-					}
-				}
-			}
-			// do plugins if found
-			if (CFactory::_('Joomlaplugin.Data')->exists())
-			{
-				foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
-				{
-					if (ObjectHelper::check($plugin)
-						&& CFactory::_('Utilities.Files')->exists($plugin->key))
-					{
-						// move field or rule if needed
-						if (isset($plugin->fields_rules_paths)
-							&& $plugin->fields_rules_paths == 2)
-						{
-							// check the config fields
-							if (isset($plugin->config_fields)
-								&& ArrayHelper::check(
-									$plugin->config_fields
-								))
-							{
-								foreach (
-									$plugin->config_fields as $field_name =>
-									$fieldsets
-								)
-								{
-									foreach ($fieldsets as $fieldset => $fields)
-									{
-										foreach ($fields as $field)
-										{
-											$this->moveFieldsRules(
-												$field, $plugin->folder_path
-											);
-										}
-									}
-								}
-							}
-							// check the fieldsets
-							if (isset($plugin->form_files)
-								&& ArrayHelper::check(
-									$plugin->form_files
-								))
-							{
-								foreach ($plugin->form_files as $file => $files)
-								{
-									foreach (
-										$files as $field_name => $fieldsets
-									)
-									{
-										foreach (
-											$fieldsets as $fieldset => $fields
-										)
-										{
-											foreach ($fields as $field)
-											{
-												$this->moveFieldsRules(
-													$field, $plugin->folder_path
-												);
-											}
-										}
-									}
-								}
-							}
-						}
-						// update the plugin files
-						foreach (CFactory::_('Utilities.Files')->get($plugin->key) as $plugin_file)
-						{
-							if (is_file($plugin_file['path']))
-							{
-								$this->setFileContent(
-									$plugin_file['name'], $plugin_file['path'],
-									$bom, $plugin->key
-								);
-							}
-						}
-						// free up some memory
-						CFactory::_('Utilities.Files')->remove($plugin->key);
-						CFactory::_('Compiler.Builder.Content.Multi')->remove($plugin->key);
-					}
-				}
-			}
-			// load any other super powers that was found
-			if (($super_powers = CFactory::_('Power.Extractor')->get_()) !== null)
-			{
-				CFactory::_('Power')->load($super_powers);
-			}
-			// load the powers files/folders
-			CFactory::_('Power.Structure')->build();
-			// Infuse POWERS
-			CFactory::_('Power.Infusion')->set();
-			// do powers if found
-			if (ArrayHelper::check(CFactory::_('Power')->active))
-			{
-				foreach (CFactory::_('Power')->active as $power)
-				{
-					if (ObjectHelper::check($power)
-						&& CFactory::_('Utilities.Files')->exists($power->key))
-					{
-						// update the power files
-						foreach (CFactory::_('Utilities.Files')->get($power->key) as $power_file)
-						{
-							if (is_file($power_file['path']))
-							{
-								$this->setFileContent(
-									$power_file['name'], $power_file['path'],
-									$bom, $power->key
-								);
-							}
-						}
-						// free up some memory
-						CFactory::_('Utilities.Files')->remove($power->key);
-						CFactory::_('Compiler.Builder.Content.Multi')->remove($power->key);
-					}
-				}
-			}
-			// do super powers details if found
-			if (ArrayHelper::check(CFactory::_('Power')->superpowers))
-			{
-				foreach (CFactory::_('Power')->superpowers as $path => $powers)
-				{
-					$key = StringHelper::safe($path);
-					if (CFactory::_('Utilities.Files')->exists($key))
-					{
-						// update the power files
-						foreach (CFactory::_('Utilities.Files')->get($key) as $power_file)
-						{
-							if (is_file($power_file['path']))
-							{
-								$this->setFileContent(
-									$power_file['name'], $power_file['path'],
-									$bom, $key
-								);
-							}
-						}
-						// free up some memory
-						CFactory::_('Utilities.Files')->remove($key);
-						CFactory::_('Compiler.Builder.Content.Multi')->remove($key);
-					}
-				}
-			}
-
-			return true;
-		}
-
-		return false;
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
+		);
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
+		);
 	}
 
 	/**
 	 * set the file content
 	 *
 	 * @return  void
-	 *
+	 * @deprecated 3.3
 	 */
 	protected function setFileContent(&$name, &$path, &$bom, $view = null)
 	{
-		// Trigger Event: jcb_ce_onBeforeSetFileContent
-		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeSetFileContent', [&$name, &$path, &$bom, &$view]
+		// set notice that we could not get a valid string from the target
+		$this->app->enqueueMessage(
+			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
 		);
-
-		// set the file name
-		CFactory::_('Compiler.Builder.Content.One')->set('FILENAME', $name);
-
-		// check if the file should get PHP opening
-		$php = '';
-		if (ComponentbuilderHelper::checkFileType($name, 'php'))
-		{
-			$php = "<?php\n";
-		}
-
-		// get content of the file
-		$string = FileHelper::getContent($path);
-
-		// Trigger Event: jcb_ce_onGetFileContents
-		CFactory::_('Event')->trigger(
-			'jcb_ce_onGetFileContents', [&$string, &$name, &$path, &$bom,  &$view]
+		$this->app->enqueueMessage(
+			Text::sprintf(
+				'Use of a deprecated method (%s)!', __METHOD__
+			), 'Error'
 		);
-
-		// see if we should add a BOM
-		if (strpos((string) $string, (string) Placefix::_h('BOM')) !== false)
-		{
-			list($wast, $code) = explode(
-				Placefix::_h('BOM'), (string) $string
-			);
-			$string = $php . $bom . $code;
-		}
-
-		// set the answer
-		$answer = CFactory::_('Placeholder')->update($string, CFactory::_('Compiler.Builder.Content.One')->allActive(), 3);
-
-		// set the dynamic answer
-		if ($view)
-		{
-			$placeholders = CFactory::_('Compiler.Builder.Content.Multi')->get($view, []);
-			if (is_array($placeholders))
-			{
-				$answer = CFactory::_('Placeholder')->update(
-					$answer, $placeholders, 3
-				);
-			}
-			else
-			{
-				echo '<pre>';
-				var_dump($view, $placeholders);
-				exit;
-			}
-			unset($placeholders);
-		}
-
-		// check if this file needs extra care :)
-		if (CFactory::_('Registry')->exists('update.file.content.' . $path))
-		{
-			$answer = CFactory::_('Customcode')->update($answer);
-		}
-
-		// Trigger Event: jcb_ce_onBeforeSetFileContent
-		CFactory::_('Event')->trigger(
-			'jcb_ce_onBeforeWriteFileContent', [&$answer, &$name, &$path, &$bom, &$view]
-		);
-
-		// inject any super powers found
-		$answer = CFactory::_('Joomla.Power.Injector')->power(
-			CFactory::_('Power.Injector')->power(
-				$answer
-			)
-		);
-
-		// add answer back to file
-		CFactory::_('Utilities.File')->write($path, $answer);
-
-		// count the file lines
-		CFactory::_('Utilities.Counter')->line += substr_count((string) $answer, PHP_EOL);
 	}
 
 	/**
-	 * move the local update server xml file to a remote ftp server
+	 * Move the local server XML files (component, modules, plugins) to their remote servers.
+	 *
+	 * @return  void
+	 * @since   5.1.2
+	 */
+	protected function setXmlServers(): void
+	{
+		$this->moveComponentXmlServers();
+		$this->moveModulesUpdateServers();
+		$this->movePluginsUpdateServers();
+	}
+
+	/**
+	 * Move the component update server and changelog XML files to their remote servers.
+	 *
+	 * @return void
+	 * @since  5.1.2
+	 */
+	protected function moveComponentXmlServers(): void
+	{
+		if (!$this->dynamicIntegration)
+		{
+			return;
+		}
+
+		$types = ['update_server', 'changelog_server'];
+		foreach ($types as $type)
+		{
+			// Dynamically resolve keys
+			$add     = CFactory::_('Component')->get("add_{$type}", 0);
+			$target  = CFactory::_('Component')->get("{$type}_target", 0);
+			$server  = CFactory::_('Component')->get($type);
+			$protocol = CFactory::_('Component')->get("{$type}_protocol");
+			$fileName = CFactory::_('Component')->get("{$type}_xml_file_name", 'error');
+
+			$xmlPath = CFactory::_('Utilities.Paths')->component_path . '/' . $fileName;
+
+			// Skip if conditions not met
+			if ($add != 1 || $target != 1 || empty($fileName) || empty($protocol) || !is_file($xmlPath) || empty($server))
+			{
+				continue;
+			}
+
+			// Try to move the file
+			if (!$this->moveXmlToServer($xmlPath, $fileName, (int) $server, $protocol))
+			{
+				$this->app->enqueueMessage(
+					Text::sprintf('COM_COMPONENTBUILDER_UPLOAD_OF_COMPONENT_S_S_XML_FAILED',
+						CFactory::_('Component')->get('system_name'),
+						str_replace('_', ' ', $type)
+					),
+					'Error'
+				);
+			}
+
+			File::delete($xmlPath);
+		}
+	}
+
+	/**
+	 * Move all module update server XML files to their respective remote servers.
+	 *
+	 * @return void
+	 * @since  5.1.2
+	 */
+	protected function moveModulesUpdateServers(): void
+	{
+		if (!CFactory::_('Joomlamodule.Data')->exists())
+		{
+			return;
+		}
+
+		foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
+		{
+			if ($this->isValidUpdateServerObject($module))
+			{
+				if (!$this->moveXmlToServer(
+					$module->update_server_xml_path,
+					$module->update_server_xml_file_name,
+					(int) $module->update_server,
+					$module->update_server_protocol
+				))
+				{
+					$this->app->enqueueMessage(
+						Text::sprintf('COM_COMPONENTBUILDER_UPLOAD_OF_MODULE_S_UPDATE_SERVER_XML_FAILED',
+							$module->name
+						),
+						'Error'
+					);
+				}
+				File::delete($module->update_server_xml_path);
+			}
+		}
+	}
+
+	/**
+	 * Move all plugin update server XML files to their respective remote servers.
+	 *
+	 * @return void
+	 * @since  5.1.2
+	 */
+	protected function movePluginsUpdateServers(): void
+	{
+		if (!CFactory::_('Joomlaplugin.Data')->exists())
+		{
+			return;
+		}
+
+		foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
+		{
+			if ($this->isValidUpdateServerObject($plugin))
+			{
+				if (!$this->moveXmlToServer(
+					$plugin->update_server_xml_path,
+					$plugin->update_server_xml_file_name,
+					(int) $plugin->update_server,
+					$plugin->update_server_protocol
+				))
+				{
+					$this->app->enqueueMessage(
+						Text::sprintf('COM_COMPONENTBUILDER_UPLOAD_OF_PLUGIN_S_UPDATE_SERVER_XML_FAILED',
+							$plugin->name
+						),
+						'Error'
+					);
+				}
+				File::delete($plugin->update_server_xml_path);
+			}
+		}
+	}
+
+	/**
+	 * Validate if a given object has a proper update server configuration and XML file.
+	 *
+	 * @param  object  $item  The module or plugin object.
+	 *
+	 * @return bool  True if object has valid update server info and file, false otherwise.
+	 * @since  5.1.2
+	 */
+	protected function isValidUpdateServerObject(object $item): bool
+	{
+		return ObjectHelper::check($item)
+			&& isset($item->add_update_server, $item->update_server_target, $item->update_server)
+			&& $item->add_update_server == 1
+			&& $item->update_server_target == 1
+			&& is_numeric($item->update_server)
+			&& $item->update_server > 0
+			&& isset($item->update_server_xml_path, $item->update_server_xml_file_name)
+			&& is_file($item->update_server_xml_path)
+			&& StringHelper::check($item->update_server_xml_file_name);
+	}
+
+	/**
+	 * Perform the actual file transfer to the server.
+	 *
+	 * @param  string  $path       Full local file path.
+	 * @param  string  $fileName   Name of the file on the server.
+	 * @param  int     $serverId   The update server ID.
+	 * @param  string  $protocol   The protocol to use for the transfer.
+	 *
+	 * @return bool  True if move succeeded, false otherwise.
+	 * @since  5.1.2
+	 */
+	protected function moveXmlToServer(string $path, string $fileName, int $serverId, string $protocol): bool
+	{
+		return CFactory::_('Server')->legacyMove($path, $fileName, $serverId, $protocol);
+	}
+
+	/**
+	 * move the local changelog xml file to a remote server
 	 *
 	 * @return  void
 	 *
 	 */
-	protected function setUpdateServer()
+	protected function setChangeLogServer()
 	{
-		// move the component update server to host
-		if (CFactory::_('Component')->get('add_update_server', 0) == 1
-			&& CFactory::_('Component')->get('update_server_target', 0) == 1
-			&& isset($this->updateServerFileName)
+		// move the component changelog xml to host
+		if (CFactory::_('Component')->get('add_changelog_server', 0) == 1
+			&& CFactory::_('Component')->get('changelog_server_target', 0) == 1
 			&& $this->dynamicIntegration)
 		{
-			$update_server_xml_path = CFactory::_('Utilities.Paths')->component_path . '/'
-				. $this->updateServerFileName . '.xml';
+			$changelog_xml_path = CFactory::_('Utilities.Paths')->component_path . '/CHANGELOG.xml';
 			// make sure we have the correct file
-			if (is_file($update_server_xml_path)
-				&& ($update_server = CFactory::_('Component')->get('update_server')) !== null)
+			if (is_file($changelog_xml_path)
+				&& ($changelog_server = CFactory::_('Component')->get('changelog_server')) !== null)
 			{
 				// move to server
 				if (!CFactory::_('Server')->legacyMove(
-					$update_server_xml_path,
-					$this->updateServerFileName . '.xml',
-					(int) $update_server,
-					CFactory::_('Component')->get('update_server_protocol')
+					$changelog_xml_path,
+					'CHANGELOG.xml',
+					(int) $changelog_server,
+					CFactory::_('Component')->get('changelog_server_protocol')
 				))
 				{
 					$this->app->enqueueMessage(
 						Text::sprintf(
-							'Upload of component (%s) update server XML failed.',
+							'Upload of component (%s) changelog xml failed.',
 							CFactory::_('Component')->get('system_name')
 						), 'Error'
 					);
 				}
 				// remove the local file
-				File::delete($update_server_xml_path);
-			}
-		}
-		// move the modules update server to host
-		if (CFactory::_('Joomlamodule.Data')->exists())
-		{
-			foreach (CFactory::_('Joomlamodule.Data')->get() as $module)
-			{
-				if (ObjectHelper::check($module)
-					&& isset($module->add_update_server)
-					&& $module->add_update_server == 1
-					&& isset($module->update_server_target)
-					&& $module->update_server_target == 1
-					&& isset($module->update_server)
-					&& is_numeric($module->update_server)
-					&& $module->update_server > 0
-					&& isset($module->update_server_xml_path)
-					&& is_file($module->update_server_xml_path)
-					&& isset($module->update_server_xml_file_name)
-					&& StringHelper::check(
-						$module->update_server_xml_file_name
-					))
-				{
-					// move to server
-					if (!CFactory::_('Server')->legacyMove(
-						$module->update_server_xml_path,
-						$module->update_server_xml_file_name,
-						(int) $module->update_server,
-						$module->update_server_protocol
-					))
-					{
-						$this->app->enqueueMessage(
-							Text::sprintf(
-								'Upload of module (%s) update server XML failed.',
-								$module->name
-							), 'Error'
-						);
-					}
-					// remove the local file
-					File::delete($module->update_server_xml_path);
-				}
-				// var_dump($module->update_server_xml_path);exit;
-			}
-		}
-		// move the plugins update server to host
-		if (CFactory::_('Joomlaplugin.Data')->exists())
-		{
-			foreach (CFactory::_('Joomlaplugin.Data')->get() as $plugin)
-			{
-				if (ObjectHelper::check($plugin)
-					&& isset($plugin->add_update_server)
-					&& $plugin->add_update_server == 1
-					&& isset($plugin->update_server_target)
-					&& $plugin->update_server_target == 1
-					&& isset($plugin->update_server)
-					&& is_numeric($plugin->update_server)
-					&& $plugin->update_server > 0
-					&& isset($plugin->update_server_xml_path)
-					&& is_file($plugin->update_server_xml_path)
-					&& isset($plugin->update_server_xml_file_name)
-					&& StringHelper::check(
-						$plugin->update_server_xml_file_name
-					))
-				{
-					// move to server
-					if (!CFactory::_('Server')->legacyMove(
-						$plugin->update_server_xml_path,
-						$plugin->update_server_xml_file_name,
-						(int) $plugin->update_server,
-						$plugin->update_server_protocol
-					))
-					{
-						$this->app->enqueueMessage(
-							Text::sprintf(
-								'Upload of plugin (%s) update server XML failed.',
-								$plugin->name
-							), 'Error'
-						);
-					}
-					// remove the local file
-					File::delete($plugin->update_server_xml_path);
-				}
+				File::delete($changelog_xml_path);
 			}
 		}
 	}

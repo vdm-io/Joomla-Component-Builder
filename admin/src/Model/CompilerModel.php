@@ -22,13 +22,15 @@ use Joomla\CMS\User\User;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Helper\Compiler;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Helper\Compiler;
+use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Installer\InstallerHelper;
 use Joomla\CMS\Installer\Installer;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -209,9 +211,8 @@ class CompilerModel extends ListModel
 		// Insure all item fields are adapted where needed.
 		if (UtilitiesArrayHelper::check($items))
 		{
-			// Load the JEvent Dispatcher
+			// Load the Event Dispatcher
 			PluginHelper::importPlugin('content');
-			$this->_dispatcher = Factory::getApplication();
 			foreach ($items as $nr => &$item)
 			{
 				// Always create a slug for sef URL's
@@ -222,8 +223,19 @@ class CompilerModel extends ListModel
 				$_copyright = new \stdClass();
 				$_copyright->text =& $item->copyright; // value must be in text
 				// Since all values are now in text (Joomla Limitation), we also add the field name (copyright) to context
-				$this->_dispatcher->triggerEvent("onContentPrepare", array('com_componentbuilder.compiler.copyright', &$_copyright, &$params, 0));
-				// Checking if copyright has uikit components that must be loaded.
+				// onContentPrepare Event Trigger
+				$this->getDispatcher()->dispatch('onContentPrepare',
+					new ContentPrepareEvent(
+						'onContentPrepare',
+						[
+							'context' => 'com_componentbuilder.compiler.copyright',
+							'subject' => $_copyright,
+							'params' => $params,
+							'page' => 0
+						]
+					)
+				);
+				// Checking if copyright has UIKit components that must be loaded.
 				$this->uikitComp = ComponentbuilderHelper::getUikitComp($item->copyright,$this->uikitComp);
 			}
 		}
@@ -291,160 +303,136 @@ class CompilerModel extends ListModel
 		return false;
 	}
 
-	public $compiler;
+	/**
+	 * Compiler instance.
+	 *
+	 * @var   Compiler
+	 * @since 3.10
+	 */
+	public Compiler $compiler;
 
-	public function builder() 
+	/**
+	 * Initialize the compiler and return whether it was created successfully.
+	 *
+	 * @return bool  True if compiler was created, false otherwise.
+	 * @since  3.10
+	 */
+	public function builder(): bool
 	{
-		// run compiler
 		$this->compiler = new Compiler();
-		if($this->compiler)
-		{
-			return true;
-		}
-		return false;
+
+		return $this->compiler instanceof Compiler;
 	}
 
-	public function emptyFolder($dir, $removeDir = false)
+	/**
+	 * Empty a folder recursively, optionally removing the folder itself.
+	 *
+	 * @param  string  $dir        The directory path to empty.
+	 * @param  bool    $removeDir  Whether to remove the directory itself after emptying.
+	 *
+	 * @return bool  True on success, false on failure.
+	 * @since  3.10
+	 */
+	public function emptyFolder(string $dir, bool $removeDir = false): bool
 	{
-		if (is_dir($dir))
+		if (!is_dir($dir))
 		{
-			$it = new \RecursiveDirectoryIterator($dir);
-			$it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($it as $file)
+			return false;
+		}
+
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::CHILD_FIRST
+		);
+
+		foreach ($iterator as $file)
+		{
+			$basename = $file->getBasename();
+
+			// Skip index.html for security reasons
+			if ($basename === 'index.html')
 			{
-				if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) continue;
-				if ($file->isDir())
-				{
-					Folder::delete($file->getPathname());	
-				}
-				else
-				{
-					if ($file->getBasename() !== 'index.html')
-					{
-						File::delete($file->getPathname());
-					}
-				}
+				continue;
 			}
-			if ($removeDir)
+
+			if ($file->isDir())
 			{
-				if (Folder::delete($dir))
-				{
-					return true;
-				}
+				Folder::delete($file->getPathname());
 			}
 			else
 			{
-				return true;
+				File::delete($file->getPathname());
 			}
 		}
-		return false;
+
+		// Optionally remove the directory itself
+		return $removeDir
+			? Folder::delete($dir)
+			: true;
 	}
 
-	public function install($p_file)
+	/**
+	 * Install a JCB package from the tmp folder.
+	 *
+	 * @param  string  $p_file  The package file name located in Joomla's tmp folder.
+	 *
+	 * @return bool  True on success, false on failure.
+	 * @since  3.10
+	 */
+	public function install(string $p_file): bool
 	{
 		$this->setState('action', 'install');
 
-		// Set FTP credentials, if given.
-		//\JClientHelper::setCredentialsFromRequest('ftp');
-		$app = Factory::getApplication();
-
-		// Load installer plugins for assistance if required:
-		//\JPluginHelper::importPlugin('installer');
-		//$dispatcher = \JEventDispatcher::getInstance();
-
-		$package = null;
-
-		// This event allows an input pre-treatment, a custom pre-packing or custom installation.
-		// (e.g. from a JSON description).
-		//$results = $dispatcher->trigger('onInstallerBeforeInstallation', array($this, &$package));
-
-		//if (in_array(true, $results, true))
-		//{
-		//	return true;
-		//}
-
-		//if (in_array(false, $results, true))
-		//{
-		//	return false;
-		//}
-
-		$config   = Factory::getConfig();
+		$config = $this->app->getConfig();
 		$tmp_dest = $config->get('tmp_path');
 
 		// Unpack the downloaded package file.
 		$package = InstallerHelper::unpack($tmp_dest . '/' . $p_file, true);
 
-		// insure the install type is folder (JCB zip file is in the folder)
-		$installType = 'folder';
-
-		// This event allows a custom installation of the package or a customization of the package:
-		//$results = $dispatcher->trigger('onInstallerBeforeInstaller', array($this, &$package));
-
-		//if (in_array(true, $results, true))
-		//{
-		//	return true;
-		//}
-		//elseif (in_array(false, $results, true))
-		//{
-		//	return false;
-		//}
-
-		// Was the package unpacked?
-		if (!$package || !$package['type'])
+		if (!$package || empty($package['type']))
 		{
-			$app->enqueueMessage(Text::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
+			$this->app->enqueueMessage(Text::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
 			return false;
 		}
 
-		// Get an installer instance.
-		$installer = Installer::getInstance();
+		// Get an installer instance and install the package.
+		$installer = new Installer();
+		$installer->setDatabase(Factory::getContainer()->get(DatabaseInterface::class));
 
-		// Install the package.
 		if (!$installer->install($package['dir']))
 		{
-			// There was an error installing the package.
-			$msg = Text::sprintf('COM_INSTALLER_INSTALL_ERROR', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
-			$result = false;
+			$msg     = Text::sprintf('COM_INSTALLER_INSTALL_ERROR', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+			$result  = false;
 			$msgType = 'error';
 		}
 		else
 		{
-			// Package installed successfully.
-			$msg = Text::sprintf('COM_INSTALLER_INSTALL_SUCCESS', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
-			$result = true;
+			$msg     = Text::sprintf('COM_INSTALLER_INSTALL_SUCCESS', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+			$result  = true;
 			$msgType = 'message';
 		}
 
-		// This event allows a custom a post-flight:
-		// $dispatcher->trigger('onInstallerAfterInstaller', array($this, &$package, $installer, &$result, &$msg));
-
-		// Set some model state values.
-		$app = Factory::getApplication();
-		$app->enqueueMessage($msg, $msgType);
+		// Output result to user
+		$this->app->enqueueMessage($msg, $msgType);
 		$this->setState('name', $installer->get('name'));
 		$this->setState('result', $result);
-		$app->setUserState('com_componentbuilder.message', $installer->message);
-		$app->setUserState('com_componentbuilder.extension_message', $installer->get('extension_message'));
-		$app->setUserState('com_componentbuilder.redirect_url', $installer->get('redirect_url'));
+		$this->app->setUserState('com_componentbuilder.message', $installer->message);
+		$this->app->setUserState('com_componentbuilder.extension_message', $installer->get('extension_message'));
+		$this->app->setUserState('com_componentbuilder.redirect_url', $installer->get('redirect_url'));
 
 		// Cleanup the install files.
 		if (!is_file($package['packagefile']))
 		{
-			$config = Factory::getConfig();
-			$package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
+			$package['packagefile'] = $tmp_dest . '/' . $package['packagefile'];
 		}
 
 		InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
-		// Clear the cached extension data and menu cache
-		$this->cleanCache('_system', 0);
-		$this->cleanCache('_system', 1);
-		$this->cleanCache('com_modules', 0);
-		$this->cleanCache('com_modules', 1);
-		$this->cleanCache('com_plugins', 0);
-		$this->cleanCache('com_plugins', 1);
-		$this->cleanCache('mod_menu', 0);
-		$this->cleanCache('mod_menu', 1);
+		// Clear relevant caches
+		foreach (['_system', 'com_modules', 'com_plugins', 'mod_menu'] as $cacheGroup)
+		{
+			$this->cleanCache($cacheGroup);
+		}
 
 		return $result;
 	}
@@ -458,13 +446,13 @@ class CompilerModel extends ListModel
 	public function getComponents(): ?array
 	{
 		// Get a db connection.
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
 
 		// Select only id and system name
-		$query->select($db->quoteName(array('id', 'system_name'),array('id', 'name')));
+		$query->select($db->quoteName(['id', 'system_name'],['id', 'name']));
 		$query->from($db->quoteName('#__componentbuilder_joomla_component'));
 
 		// only the active components
@@ -532,5 +520,4 @@ class CompilerModel extends ListModel
 		}
 		return true;
 	}
-
 }

@@ -165,6 +165,40 @@ final class Table extends ExtendingTable implements TableInterface
 	}
 
 	/**
+	 * Get the list view code name from a table's fields.
+	 *
+	 * This method returns the first field where the 'list' key is a non-empty string.
+	 *
+	 * @param   string  $table  The table name to retrieve fields for.
+	 *
+	 * @return  string|null  The list view code name, or null if not found.
+	 * @since   5.1.2
+	 */
+	public function listViewCodeName(string $table): ?string
+	{
+		$fields = $this->get($table);
+
+		if (!is_array($fields))
+		{
+			return null;
+		}
+
+		foreach ($fields as $field)
+		{
+			if (
+				array_key_exists('list', $field)
+				&& is_string($field['list'])
+				&& strlen($field['list']) > 0
+			)
+			{
+				return $field['list'];
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Recursively traverses subform fields to collect valid parent fields
 	 *
 	 * @param   string $name    The current field name
