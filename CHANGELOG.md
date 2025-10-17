@@ -1,3 +1,9 @@
+# v5.1.3
+
+- Stability update addressing a post-release field issue. #1262
+- Fix a security vulnerability in custom code redirect URL validation.
+- Add an alert to the Compiler view when no Components exist. #1263
+
 # v5.1.2
 
 - Fix the template and layout linker for packages.

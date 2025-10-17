@@ -371,4 +371,16 @@
       <item>Replace StringHelper with the correct Super Power key so it loads in the Compiler Controller</item>
     </note>
   </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>5.1.3</version>
+    <security>
+      <item>Fix a security vulnerability in custom code redirect URL validation.</item>
+    </security>
+    <addition>
+      <item>Stability update addressing a post-release field issue. #1262</item>
+      <item>Add an alert to the Compiler view when no Components exist. #1263</item>
+    </addition>
+  </changelog>
 </changelogs>

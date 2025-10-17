@@ -448,7 +448,7 @@ final class Structuresingle
 			// register the file
 			$this->registerFile($target, $details);
 		}
-		elseif ($details->type === 'folder')
+		elseif ($details->type === 'folder' && is_dir($this->currentFullPath))
 		{
 			// move the folder to its place
 			Folder::copy(

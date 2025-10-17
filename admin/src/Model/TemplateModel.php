@@ -143,6 +143,14 @@ class TemplateModel extends AdminModel
 
 
 	/**
+	 * The VDM view key
+	 *
+	 * @var    string
+	 * @since   3.0.13
+	 */
+	protected string $vastDevMod;
+
+	/**
 	 * Retrieves or generates a Vast Development Method (VDM) key for the current item.
 	 *
 	 * This function performs the following operations:
@@ -155,8 +163,9 @@ class TemplateModel extends AdminModel
 	 * 7. Returns the VDM key.
 	 *
 	 * @return string The VDM key for the current item.
+	 * @since   3.0.13
 	 */
-	public function getVDM()
+	public function getVDM(): string
 	{
 		if (!isset($this->vastDevMod))
 		{
@@ -171,7 +180,7 @@ class TemplateModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if (($vdm = SessionHelper::get('template__'.$id)) !== null)
+			if (($vdm = SessionHelper::get('template__' . $id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -179,10 +188,10 @@ class TemplateModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				SessionHelper::set($this->vastDevMod, 'template__'.$id);
-				SessionHelper::set('template__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'template__' . $id);
+				SessionHelper::set('template__' . $id, $this->vastDevMod);
 				// set a return value if found
-				$app = Factory::getApplication();
+				$app = $this->app ?? Factory::getApplication();
 				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
@@ -194,9 +203,9 @@ class TemplateModel extends AdminModel
 				}
 			}
 		}
+
 		return $this->vastDevMod;
 	}
-
 
 	/**
 	 * Method to get a single record.
@@ -256,7 +265,7 @@ class TemplateModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if (($vdm = SessionHelper::get('template__'.$id)) !== null)
+			if (($vdm = SessionHelper::get('template__' . $id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -264,10 +273,10 @@ class TemplateModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				SessionHelper::set($this->vastDevMod, 'template__'.$id);
-				SessionHelper::set('template__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'template__' . $id);
+				SessionHelper::set('template__' . $id, $this->vastDevMod);
 				// set a return value if found
-				$app = Factory::getApplication();
+				$app = $this->app ?? Factory::getApplication();
 				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
