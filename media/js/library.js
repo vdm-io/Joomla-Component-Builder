@@ -943,23 +943,23 @@ async function getCodeFrom_server(id, type, typeName, callingName) {
 	try {
 		// --- Validation ---
 		if (!getCodeFrom_isValidId(id)) {
-			console.error('[getCodeFrom_server] Invalid ID provided:', id);
+			console.debug('[getCodeFrom_server] Invalid ID provided:', id);
 			return null;
 		}
 		if (typeof type !== 'string' || !type.trim()) {
-			console.error('[getCodeFrom_server] Invalid type provided:', type);
+			console.debug('[getCodeFrom_server] Invalid type provided:', type);
 			return null;
 		}
 		if (typeof typeName !== 'string' || !typeName.trim()) {
-			console.error('[getCodeFrom_server] Invalid typeName provided:', typeName);
+			console.debug('[getCodeFrom_server] Invalid typeName provided:', typeName);
 			return null;
 		}
 		if (typeof callingName !== 'string' || !callingName.trim()) {
-			console.error('[getCodeFrom_server] Invalid callingName provided:', callingName);
+			console.debug('[getCodeFrom_server] Invalid callingName provided:', callingName);
 			return null;
 		}
 		if (typeof token !== 'string' || !token.trim()) {
-			console.error('[getCodeFrom_server] Missing security token.');
+			console.debug('[getCodeFrom_server] Missing security token.');
 			return null;
 		}
 

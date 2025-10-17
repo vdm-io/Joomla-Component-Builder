@@ -162,7 +162,6 @@ class FieldsModel extends ListModel
 		return $form;
 	}
 
-
 	/**
 	 * Method to auto-populate the model state.
 	 *

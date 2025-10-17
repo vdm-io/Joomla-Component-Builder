@@ -1757,7 +1757,7 @@ class AjaxModel extends ListModel
 				// load the values form params
 				$xml = json_decode($result->xml);
 
-				$xmlOptions = GetHelper::between($xml,'option="','"');
+				$xmlOptions = GetHelper::between($xml, 'option="', '"');
 
 				$optionSet = '';
 				if (strpos($xmlOptions,',') !== false)
@@ -1800,7 +1800,7 @@ class AjaxModel extends ListModel
 			{
 				return "keywords=\"\"\nlength=\"\"";
 			}
-			elseif (ComponentbuilderHelper::fieldCheck($result->name,'dynamic'))
+			elseif (ComponentbuilderHelper::fieldCheck($result->name, 'dynamic'))
 			{
 				return 'dynamic_list';
 			}
@@ -1830,7 +1830,7 @@ class AjaxModel extends ListModel
 	public function getTableColumns(string $tableName): ?string
 	{
         	// get the columns
-		$columns = $this->_db->getTableColumns("#__".$tableName);
+		$columns = $this->_db->getTableColumns("#__" . $tableName);
 		if (UtilitiesArrayHelper::check($columns))
 		{
         	   	// build the return string
@@ -2187,7 +2187,7 @@ class AjaxModel extends ListModel
 	/**
 	 * The view persistence details
 	 *
-	 * @var	array
+	 * @var	  array
 	 * @since 3.0.13
 	 */
 	protected array $viewid = [];
@@ -2195,18 +2195,20 @@ class AjaxModel extends ListModel
 	/**
 	 * Get the view details via the session
 	 *
-	 * @input	string  $call    The persistence key
+	 * @input   string   $call   The persistence key
 	 *
 	 * @return array
-	 * @since 3.0.13
+	 * @since  3.0.13
 	 */
 	protected function getViewID(string $call = 'table'): array
 	{
 		if (!isset($this->viewid[$call]))
 		{
 			// get the vdm key
-			$input = Factory::getApplication()->getInput();
+			$app = $this->app ?? Factory::getApplication();
+			$input = $this->input ?? (method_exists($app, 'getInput') ? $app->getInput() : $app->input);
 			$vdm = $input->get('vdm', null, 'WORD');
+
 			if ($vdm)
 			{
 				// set view and id
@@ -2251,316 +2253,497 @@ class AjaxModel extends ListModel
 		return [];
 	}
 
-
-	public function getButton($type, $size)
+	/**
+	 * Generate a new-item creation button for a specific type and size.
+	 *
+	 * @param  string  $type  The item type (view name) for which to create the button.
+	 * @param  int     $size  The button size: 1 = large, 2 = medium, 3 = small.
+	 *
+	 * @return string  The generated HTML button markup, an empty string if unauthorized, or false if type not found.
+	 * @since  3.0.0
+	 */
+	public function getButton(string $type, int $size): string
 	{
-		if (isset($this->buttonArray[$type]))
+		// Ensure the type exists in the button definition array
+		if (!isset($this->buttonArray[$type]))
 		{
-			$user = Factory::getUser();
-			// only add if user allowed to create
-			if ($user->authorise($type.'.create', 'com_componentbuilder'))
-			{
-				// get the view name & id
-				$values = $this->getViewID();
-				// check if new item
-				$ref = '';
-				if (!empty($values['a_id']) && !empty($values['a_view']))
-				{
-					// check if we have a return value
-					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
-					if (isset($values['a_return']))
-					{
-						$return_url .= '&return=' . (string) $values['a_return'];
-					}
-
-					// load the return url
-					$ref = '&amp;return=' . urlencode(base64_encode($return_url));
-
-					// check if we have a GUID
-					if (isset($values['a_guid']))
-					{
-						$ref .= '&amp;init_defaults=' . urlencode(json_encode([$values['a_view'] => $values['a_guid']]));
-					}
-				}
-				// build url (A tag)
-				$startAtag = 'onclick="UIkit2.modal.confirm(\''.Text::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=' . $type . '&amp;layout=edit' . $ref . '\' })" href="javascript:void(0)"  title="'.Text::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', StringHelper::safe($type, 'W')).'">';
-				// build the smallest button
-				if (3 == $size)
-				{
-					$button = '<a class="btn btn-small btn-success" style="margin: 0 0 5px 0;" ' . $startAtag.'<span class="icon-new icon-white"></span></a>';
-				}
-				// build the smaller button
-				elseif (2 == $size)
-				{
-					$button = '<a class="btn btn-success vdm-button-new" ' . $startAtag . '<span class="icon-new icon-white"></span> ' . Text::_('COM_COMPONENTBUILDER_CREATE') . '</a>';
-				}
-				else
-				// build the big button
-				{
-					$button = '<div class="control-group">
-								<div class="control-label">
-									<label>' . ucwords($type) . '</label>
-								</div>
-								<div class="controls"><a class="btn btn-success vdm-button-new" ' . $startAtag . '
-									<span class="icon-new icon-white"></span> 
-										' . Text::_('COM_COMPONENTBUILDER_NEW') . '
-									</a>
-								</div>
-							</div>';
-				}
-				// return the button attached to input field
-				return $button;
-			}
 			return '';
 		}
-		return false;
-	}
 
-	public function getButtonID($type, $size)
-	{
-		if (isset($this->buttonArray[$type]))
+		$app = $this->app ?? Factory::getApplication();
+		$user = method_exists($this, 'getCurrentUser') ? $this->getCurrentUser() : $this->app->getIdentity();
+
+		// Only add if user is authorized to create this type
+		if (!$user->authorise("{$type}.create", 'com_componentbuilder'))
 		{
-			$user = Factory::getUser();
-			// only add if user allowed to create
-			if ($user->authorise($type.'.create', 'com_componentbuilder'))
+			return '';
+		}
+
+		// Initialize reference string
+		$ref = '';
+
+		// Get view and ID information
+		$values = $this->getViewID();
+
+		if (!empty($values['a_id']) && !empty($values['a_view']))
+		{
+			$returnUrl = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view']
+				. '&layout=edit&id=' . (int) $values['a_id'];
+
+			// Add return if available
+			if (!empty($values['a_return']))
 			{
-				// get the view name & id
-				$values = $this->getViewID();
-				// set the button ID
-				$css_class = 'control-group-'.StringHelper::safe($type. '-' . $size, 'L', '-');
-				// check if new item
-				$ref = '';
-				if (!empty($values['a_id']) && !empty($values['a_view']))
-				{
-					// set the return value
-					$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
-					if (isset($values['a_return']))
-					{
-						$return_url .= '&return=' . (string) $values['a_return'];
-					}
-					// only load referral if not new item.
-					$ref = '&amp;return=' . urlencode(base64_encode($return_url));
+				$returnUrl .= '&return=' . (string) $values['a_return'];
+			}
 
-					// set the key get value
-					$key_get_value = $values['a_id'];
+			// Encode and attach return URL
+			$ref = '&amp;return=' . urlencode(base64_encode($returnUrl));
 
-					// check if we have a GUID
-					if (isset($values['a_guid']))
-					{
-						$ref .= '&amp;init_defaults=' . urlencode(json_encode([$values['a_view'] => $values['a_guid']]));
-						$key_get_value = $values['a_guid'];
-					}
-
-					// get item id
-					if (($id = GetHelper::var($type, $key_get_value, $values['a_view'], 'id')) !== false && $id > 0)
-					{
-						$buttonText = Text::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
-						$buttonTextSmall = Text::_('COM_COMPONENTBUILDER_EDIT');
-						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$this->buttonArray[$type].'&amp;task='.$type.'.edit&amp;id='.$id;
-						$icon = 'icon-apply';
-					}
-					else
-					{
-						$buttonText = Text::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w'));
-						$buttonTextSmall = Text::_('COM_COMPONENTBUILDER_CREATE');
-						$editThis = 'index.php?option=com_componentbuilder&amp;view='.$type.'&amp;layout=edit';
-						$icon = 'icon-new';
-					}
-					// build the button
-					$button = [];
-					if (1 == $size)
-					{
-						$button[] = '<div class="control-group '.$css_class.'">';
-						$button[] = '<div class="control-label">';
-						$button[] = '<label>' . StringHelper::safe($type, 'Ww') . '</label>';
-						$button[] = '</div>';
-						$button[] = '<div class="controls">';
-					}
-					$button[] = '<a class="btn btn-success vdm-button-new" onclick="UIkit2.modal.confirm(\''.Text::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE').'\', function(){ window.location.href = \''.$editThis.$ref.'\' })" href="javascript:void(0)" title="'.$buttonText.'">';
-					if (1 == $size)
-					{
-						$button[] = '<span class="'.$icon.' icon-white"></span>';
-						$button[] = $buttonText;
-						$button[] = '</a>';
-						$button[] = '</div>';
-						$button[] = '</div>';
-					}
-					elseif (2 == $size)
-					{
-						$button[] = '<span class="'.$icon.' icon-white"></span>';
-						$button[] = $buttonTextSmall;
-						$button[] = '</a>';
-					}
-					// return the button attached to input field
-					return implode("\n", $button);
-				}
-
-				// only return notice if big button
-				if (1 == $size)
-				{
-					return '<div class="control-group '.$css_class.'"><div class="alert alert-info">' . Text::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME', StringHelper::safe($type, 'w'), StringHelper::safe($values['a_view'], 'w')) . '</div></div>';
-				}
+			// Add GUID initialization if available
+			if (!empty($values['a_guid']))
+			{
+				$ref .= '&amp;init_defaults=' . urlencode(json_encode([
+					$values['a_view'] => $values['a_guid']
+				]));
 			}
 		}
-		return '';
+
+		// Confirmation text
+		$confirmText = Text::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
+
+		// Safe label for title
+		$safeType = StringHelper::safe($type, 'W');
+		$title = Text::sprintf('COM_COMPONENTBUILDER_CREATE_NEW_S', $safeType);
+
+		// Build onclick A tag
+		$startATag = sprintf(
+			'onclick="UIkit2.modal.confirm(\'%s\', function(){ window.location.href = \'index.php?option=com_componentbuilder&amp;view=%s&amp;layout=edit%s\' })" href="javascript:void(0)" title="%s"',
+			addslashes($confirmText),
+			htmlspecialchars($type, ENT_QUOTES, 'UTF-8'),
+			$ref,
+			htmlspecialchars($title, ENT_QUOTES, 'UTF-8')
+		);
+
+		// Build button markup based on size
+		return match ($size) {
+			3 => sprintf(
+				'<a class="btn btn-small btn-success" style="margin:0 0 5px 0;" %s><span class="icon-new icon-white"></span></a>',
+				$startATag
+			),
+			2 => sprintf(
+				'<a class="btn btn-success vdm-button-new" %s><span class="icon-new icon-white"></span> %s</a>',
+				$startATag,
+				Text::_('COM_COMPONENTBUILDER_CREATE')
+			),
+			default => sprintf(
+				'<div class="control-group">
+					<div class="control-label">
+						<label>%s</label>
+					</div>
+					<div class="controls">
+						<a class="btn btn-success vdm-button-new" %s>
+							<span class="icon-new icon-white"></span> %s
+						</a>
+					</div>
+				</div>',
+				ucwords($type),
+				$startATag,
+				Text::_('COM_COMPONENTBUILDER_NEW')
+			),
+		};
 	}
 
-	protected function getSubformTable($idName, $data)
+	/**
+	 * Generate a context-aware create/edit button tied to an item ID.
+	 *
+	 * @param  string  $type  The item type (view name) for which to create or edit the button.
+	 * @param  int     $size  The button size: 1 = large, 2 = medium, 3 = small.
+	 *
+	 * @return string  The generated HTML button markup, or an empty string if unauthorized or unavailable.
+	 * @since  3.0.0
+	 */
+	public function getButtonID(string $type, int $size): string
 	{
-		// make sure we convert the json to array
+		// Ensure the type exists in the button definition array
+		if (!isset($this->buttonArray[$type]))
+		{
+			return '';
+		}
+
+		$app  = $this->app ?? Factory::getApplication();
+		$user = method_exists($this, 'getCurrentUser') ? $this->getCurrentUser() : $app->getIdentity();
+
+		// Only add if user is authorized to create this type
+		if (!$user->authorise("{$type}.create", 'com_componentbuilder'))
+		{
+			return '';
+		}
+
+		// Initialize
+		$values = $this->getViewID();
+		$ref = '';
+		$cssClass = 'control-group-' . StringHelper::safe("{$type}-{$size}", 'L', '-');
+
+		// Require both ID and view to continue
+		if (empty($values['a_id']) || empty($values['a_view']))
+		{
+			// Show an info message only for large buttons
+			if ($size === 1)
+			{
+				return sprintf(
+					'<div class="control-group %s"><div class="alert alert-info">%s</div></div>',
+					$cssClass,
+					Text::sprintf('COM_COMPONENTBUILDER_BUTTON_TO_CREATE_S_WILL_SHOW_ONCE_S_IS_SAVED_FOR_THE_FIRST_TIME',
+						StringHelper::safe($type, 'w'),
+						StringHelper::safe($values['a_view'] ?? '', 'w')
+					)
+				);
+			}
+
+			return '';
+		}
+
+		// Build return URL
+		$returnUrl = sprintf(
+			'index.php?option=com_componentbuilder&view=%s&layout=edit&id=%d',
+			(string) $values['a_view'],
+			(int) $values['a_id']
+		);
+
+		if (!empty($values['a_return']))
+		{
+			$returnUrl .= '&return=' . (string) $values['a_return'];
+		}
+
+		// Base64 encode the return URL
+		$ref = '&amp;return=' . urlencode(base64_encode($returnUrl));
+
+		// Key get value defaults to the item ID
+		$keyValue = $values['a_id'];
+
+		// Add GUID defaults if available
+		if (!empty($values['a_guid']))
+		{
+			$ref .= '&amp;init_defaults=' . urlencode(json_encode([
+				$values['a_view'] => $values['a_guid']
+			]));
+			$keyValue = $values['a_guid'];
+		}
+
+		// Determine if the record already exists
+		$id = GetHelper::var(
+			$type, $keyValue, $values['a_view'], 'id'
+		);
+
+		$isExisting = (!empty($id) && $id > 0);
+
+		// Determine button details
+		if ($isExisting)
+		{
+			$buttonText = Text::sprintf('COM_COMPONENTBUILDER_EDIT_S_FOR_THIS_S',
+				StringHelper::safe($type, 'w'),
+				StringHelper::safe($values['a_view'], 'w')
+			);
+			$buttonTextSmall = Text::_('COM_COMPONENTBUILDER_EDIT');
+			$editLink = sprintf(
+				'index.php?option=com_componentbuilder&amp;view=%s&amp;task=%s.edit&amp;id=%d',
+				$this->buttonArray[$type],
+				$type,
+				(int) $id
+			);
+			$icon = 'icon-apply';
+		}
+		else
+		{
+			$buttonText = Text::sprintf('COM_COMPONENTBUILDER_CREATE_S_FOR_THIS_S',
+				StringHelper::safe($type, 'w'),
+				StringHelper::safe($values['a_view'], 'w')
+			);
+			$buttonTextSmall = Text::_('COM_COMPONENTBUILDER_CREATE');
+			$editLink = sprintf(
+				'index.php?option=com_componentbuilder&amp;view=%s&amp;layout=edit',
+				$type
+			);
+			$icon = 'icon-new';
+		}
+
+		// Confirmation message
+		$confirmText = Text::_('COM_COMPONENTBUILDER_ALL_UNSAVED_WORK_ON_THIS_PAGE_WILL_BE_LOST_ARE_YOU_SURE_YOU_WANT_TO_CONTINUE');
+
+		// Build onclick attribute
+		$onclick = sprintf(
+			'onclick="UIkit2.modal.confirm(\'%s\', function(){ window.location.href = \'%s%s\' })"',
+			addslashes($confirmText),
+			$editLink,
+			$ref
+		);
+
+		// Common button HTML
+		$buttonStart = sprintf(
+			'<a class="btn btn-success vdm-button-new" %s href="javascript:void(0)" title="%s">',
+			$onclick,
+			htmlspecialchars($buttonText, ENT_QUOTES, 'UTF-8')
+		);
+
+		// Build button markup
+		$output = [];
+
+		if ($size === 1)
+		{
+			$output[] = sprintf('<div class="control-group %s">', $cssClass);
+			$output[] = '<div class="control-label">';
+			$output[] = '<label>' . StringHelper::safe($type, 'Ww') . '</label>';
+			$output[] = '</div><div class="controls">';
+			$output[] = $buttonStart;
+			$output[] = sprintf('<span class="%s icon-white"></span> %s', $icon, $buttonText);
+			$output[] = '</a></div></div>';
+		}
+		elseif ($size === 2)
+		{
+			$output[] = $buttonStart;
+			$output[] = sprintf('<span class="%s icon-white"></span> %s', $icon, $buttonTextSmall);
+			$output[] = '</a>';
+		}
+
+		return implode("\n", $output);
+	}
+
+	/**
+	 * Build a subform HTML table from JSON or array data.
+	 *
+	 * @param  string       $idName  The subform identifier.
+	 * @param  string|array $data    The JSON string or array containing subform data.
+	 *
+	 * @return string|false  The rendered HTML table, or false if no valid data.
+	 * @since  3.0.0
+	 */
+	protected function getSubformTable(string $idName, string|array $data): string|false
+	{
+		// Decode JSON if necessary
 		if (JsonHelper::check($data))
 		{
 			$data = json_decode($data, true);
 		}
-		// make sure we have an array
-		if (UtilitiesArrayHelper::check($data) && StringHelper::check($idName))
-		{ 
-			// Build heading
-			$head = array();
-			foreach ($data as $headers)
+
+		// Ensure we have a valid array and identifier
+		if (
+			!UtilitiesArrayHelper::check($data)
+			|| !StringHelper::check($idName)
+		)
+		{
+			return false;
+		}
+
+		// --- Build table headers --------------------------------------------------
+		$head = [];
+
+		foreach ($data as $headers)
+		{
+			foreach ($headers as $header => $value)
 			{
-				foreach ($headers as $header => $value)
+				if (!isset($head[$header]))
 				{
-					if (!isset($head[$header]))
-					{
-						$head[$header] = $this->getLanguage($idName . '|=VDM=|' . $header);
-					}
+					$head[$header] = $this->getLanguage($idName . '|=VDM=|' . $header);
 				}
-			}
-			// build the rows
-			$rows = array();
-			if (UtilitiesArrayHelper::check($data) && UtilitiesArrayHelper::check($head))
-			{
-				foreach ($data as $nr => $values)
-				{
-					foreach ($head as $key => $_header)
-					{
-						// set the value for the row
-						if (isset($values[$key]))
-						{
-							$this->setSubformRows($nr, $this->setSubformValue($key, $values[$key]), $rows, $_header);
-						}
-						else
-						{
-							$this->setSubformRows($nr, $this->setSubformValue($key, ''), $rows, $_header);
-						}
-					}
-				}
-			}
-			// build table
-			if (UtilitiesArrayHelper::check($rows) && UtilitiesArrayHelper::check($head))
-			{
-				// set the number of rows
-				$this->rowNumber = count($rows);
-				// return the table
-				return ComponentbuilderHelper::setSubformTable($head, $rows, $idName);
 			}
 		}
+
+		// --- Build table rows -----------------------------------------------------
+		$rows = [];
+
+		if (
+			UtilitiesArrayHelper::check($data)
+			&& UtilitiesArrayHelper::check($head)
+		)
+		{
+			foreach ($data as $nr => $values)
+			{
+				foreach ($head as $key => $_header)
+				{
+					$value = $values[$key] ?? '';
+					$this->setSubformRows(
+						$nr,
+						$this->setSubformValue($key, $value),
+						$rows,
+						$_header
+					);
+				}
+			}
+		}
+
+		// --- Return final table ---------------------------------------------------
+		if (
+			UtilitiesArrayHelper::check($rows)
+			&& UtilitiesArrayHelper::check($head)
+		)
+		{
+			$this->rowNumber = count($rows);
+
+			return ComponentbuilderHelper::setSubformTable($head, $rows, $idName);
+		}
+
 		return false;
 	}
 
-	protected function setSubformValue($header, $value)
+	/**
+	 * Process and sanitize a single subform value.
+	 *
+	 * @param  string  $header  The header key for the value.
+	 * @param  mixed   $value   The raw value to process.
+	 *
+	 * @return string|mixed  The processed or original value, with fallback.
+	 * @since  3.0.0
+	 */
+	protected function setSubformValue(string $header, mixed $value): mixed
 	{
-		if (array_key_exists($header, $this->functionArray) && method_exists($this, $this->functionArray[$header]))
+		// Run mapped function if available
+		if (
+			array_key_exists($header, $this->functionArray)
+			&& method_exists($this, $this->functionArray[$header])
+		)
 		{
 			$value = $this->{$this->functionArray[$header]}($header, $value);
 		}
-		// if no value are set
+
+		// Fallback if value is empty or invalid
 		if (!StringHelper::check($value))
 		{
 			$value = '-';
 		}
+
 		return $value;
 	}
 
-	protected function setSubformRows($nr, $value, &$rows, $_header)
+	/**
+	 * Build subform row cells for the HTML table.
+	 *
+	 * @param  int|string $nr      The row number/index.
+	 * @param  mixed      $value   The processed cell value.
+	 * @param  array      &$rows   Reference to the rows array being built.
+	 * @param  string     $header  The column header (used for data attributes).
+	 *
+	 * @return void
+	 * @since  3.0.0
+	 */
+	protected function setSubformRows(int|string $nr, mixed $value, array &$rows, string $header): void
 	{
-		// build rows
-		if (!isset($rows[$nr]))
-		{
-			$rows[$nr] = '<td data-column=" '.$_header.' ">'.$value.'</td>';
-		}
-		else
-		{
-			$rows[$nr] .= '<td data-column=" '.$_header.' ">'.$value.'</td>';
-		}
+		$cell = sprintf(
+			'<td data-column="%s">%s</td>',
+			htmlspecialchars($header, ENT_QUOTES, 'UTF-8'),
+			(string) $value
+		);
+
+		$rows[$nr] = ($rows[$nr] ?? '') . $cell;
 	}
 
 	/**
-	 * Generates the HTML display for fields linked to a specific view via an AJAX request.
+	 * Generate the HTML display for fields linked to a specific view via an AJAX request.
 	 *
-	 * This method dynamically retrieves and constructs the HTML display for fields linked to a view
-	 * based on the provided type. It validates the view, builds return URLs, fetches field tables,
-	 * and generates a structured HTML output. If no fields are linked, or an error occurs, an appropriate
-	 * alert is displayed.
+	 * This method retrieves and builds the HTML for fields linked to a given view type.
+	 * It validates the view and type, constructs proper return URLs, fetches related field tables,
+	 * and wraps them in structured HTML markup. Informational or error alerts are returned if
+	 * the requested type or view is invalid.
 	 *
-	 * @param string  $type  The type of fields to retrieve and display.
+	 * @param  string  $type  The type of fields to retrieve and display.
 	 *
-	 * @return string The generated HTML output. This can include:
-	 *                - A list of fields rendered as HTML.
-	 *                - An informational message if no fields are linked.
-	 *                - An error message in case of a type-related issue.
+	 * @return string  The generated HTML output:
+	 *                 - HTML list of fields when linked.
+	 *                 - Informational alert if no fields are linked.
+	 *                 - Error alert for invalid or missing type.
 	 * @since  3.0.0
 	 */
 	public function getAjaxDisplay(string $type): string
 	{
-		if (isset($this->fieldsArray[$type]))
+		// Ensure the field type exists
+		if (!isset($this->fieldsArray[$type]))
 		{
-			// set type name
-			$typeName = StringHelper::safe($type, 'w');
-			// get the view name & id
-			$values = $this->getViewID();
-			// check if we are in the correct view.
-			if (GuidHelper::valid($values['a_guid'] ?? '') &&
-				!is_null($values['a_id']) && $values['a_id'] > 0 && strlen($values['a_view']) && in_array($values['a_view'], $this->allowedViewsArray))
-			{
-				// set a return value
-				$return_url = 'index.php?option=com_componentbuilder&view=' . (string) $values['a_view'] .  '&layout=edit&id=' . (int) $values['a_id'];
-				// set a global return value
-				if (isset($values['a_return']))
-				{
-					$return_url .= '&return=' . (string) $values['a_return'];
-				}
-				// set the ref
-				$this->ref = '&ref=' . $values['a_view'] . '&refid=' . $values['a_id'] . '&return=' . urlencode(base64_encode($return_url));
-				// set the key get value
-				$target = $values['a_guid'] ?? null;
-				// load the results
-				$result = [];
-				// return field table
-				if (UtilitiesArrayHelper::check($this->fieldsArray[$type]))
-				{
-					foreach ($this->fieldsArray[$type] as $fieldName)
-					{
-						if ($table = $this->getFieldTable($type, $target, $values['a_view'], $fieldName, $typeName))
-						{
-							$result[] = $table;
-						}
-					}
-				}
-				elseif (StringHelper::check($this->fieldsArray[$type]))
-				{
-					if ($table = $this->getFieldTable($type, $target, $values['a_view'], $this->fieldsArray[$type], $typeName))
-					{
-						$result[] = $table;
-					}
-				}
+			return '<div class="control-group"><div class="alert alert-error">'
+				. '<h4>' . Text::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4>'
+				. '<p>' . Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p>'
+				. '</div></div>';
+		}
 
-				// check if we have results
-				if (UtilitiesArrayHelper::check($result) && count($result) == 1)
+		$typeName = StringHelper::safe($type, 'w');
+		$values   = $this->getViewID();
+
+		// Validate view context
+		$isValidView =
+			GuidHelper::valid($values['a_guid'] ?? '') &&
+			!empty($values['a_id']) &&
+			!empty($values['a_view']) &&
+			in_array($values['a_view'], $this->allowedViewsArray, true);
+
+		if (!$isValidView)
+		{
+			return sprintf(
+				'<div class="control-group"><div class="alert alert-info">%s</div></div>',
+				Text::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_AS_SOON_AS_THEY_ARE_THEY_WILL_BE_DISPLAYED_HERE',
+					$typeName
+				)
+			);
+		}
+
+		// --- Build return reference -------------------------------------------------
+		$returnUrl = sprintf(
+			'index.php?option=com_componentbuilder&view=%s&layout=edit&id=%d',
+			$values['a_view'],
+			(int) $values['a_id']
+		);
+
+		if (!empty($values['a_return']))
+		{
+			$returnUrl .= '&return=' . (string) $values['a_return'];
+		}
+
+		$this->ref = sprintf(
+			'&ref=%s&refid=%d&return=%s',
+			$values['a_view'],
+			(int) $values['a_id'],
+			urlencode(base64_encode($returnUrl))
+		);
+
+		$target = $values['a_guid'] ?? null;
+		$result = [];
+
+		// --- Retrieve field tables --------------------------------------------------
+		$fieldList = $this->fieldsArray[$type];
+		if (UtilitiesArrayHelper::check($fieldList))
+		{
+			// If it's an array of fields
+			foreach ((array) $fieldList as $fieldName)
+			{
+				if ($table = $this->getFieldTable($type, $target, $values['a_view'], $fieldName, $typeName))
 				{
-					// return the display
-					return implode('', $result);
-				}
-				elseif (UtilitiesArrayHelper::check($result))
-				{
-					// return the display
-					return '<div>' . implode('</div><div>', $result) . '</div>';
+					$result[] = $table;
 				}
 			}
-			return '<div class="control-group"><div class="alert alert-info">' . Text::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_SOON_AS_THIS_IS_DONE_IT_WILL_BE_DISPLAYED_HERE', $typeName) . '</div></div>';
 		}
-		return '<div class="control-group"><div class="alert alert-error"><h4>' . Text::_('COM_COMPONENTBUILDER_TYPE_ERROR') . '</h4><p>' . Text::_('COM_COMPONENTBUILDER_THERE_HAS_BEEN_AN_ERROR_IF_THIS_CONTINUES_PLEASE_INFORM_YOUR_SYSTEM_ADMINISTRATOR_OF_A_TYPE_ERROR_IN_THE_FIELDS_DISPLAY_REQUEST') . '</p></div></div>';
+		elseif (StringHelper::check($fieldList))
+		{
+			// Single field
+			if ($table = $this->getFieldTable($type, $target, $values['a_view'], $fieldList, $typeName))
+			{
+				$result[] = $table;
+			}
+		}
+
+		// --- Generate HTML output ---------------------------------------------------
+		if (!UtilitiesArrayHelper::check($result))
+		{
+			return sprintf(
+				'<div class="control-group"><div class="alert alert-info">%s</div></div>',
+				Text::sprintf('COM_COMPONENTBUILDER_NO_S_HAVE_BEEN_LINKED_TO_THIS_VIEW_AS_SOON_AS_THEY_ARE_THEY_WILL_BE_DISPLAYED_HERE',
+					$typeName
+				)
+			);
+		}
+
+		// Combine results
+		$html = count($result) === 1
+			? $result[0]
+			: '<div>' . implode('</div><div>', $result) . '</div>';
+
+		return $html;
 	}
 
 	/**
@@ -3398,7 +3581,7 @@ class AjaxModel extends ListModel
 	protected function validateViewRequest(int $id): ?array
 	{
 		$view = $this->getViewID();
-		if (isset($view['a_id'], $view['a_view']) && (int)$view['a_id'] === $id)
+		if (isset($view['a_id'], $view['a_view']) && (int) $view['a_id'] === $id)
 		{
 			$target = $this->getCodeSearchKeys($view['a_view'], 'customcode', 'query_');
 			if ($target !== null)
@@ -3423,11 +3606,9 @@ class AjaxModel extends ListModel
 	 */
 	protected function buildReturnUrl(array $view, int $id): string
 	{
-		$jinput = Factory::getApplication()->getInput();
-		$returnHere = $jinput->get('return_here', null, 'base64');
-		if (StringHelper::check($returnHere))
+		if (!empty($view['a_return']))
 		{
-			return '&return=' . $returnHere;
+			return '&return=' . (string) $view['a_return'];
 		}
 		return '&ref=' . $view['a_view'] . '&refid=' . $id;
 	}
@@ -4646,55 +4827,57 @@ class AjaxModel extends ListModel
 		// start building the subform field XML
 		$subformXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
-		$subformAttribute = array(
+		$subformAttribute = [
 			'type' => 'subform',
 			'name' => $name,
 			'label' => $label,
 			'layout' => 'joomla.form.field.subform.repeatable-table',
 			'multiple' => 'true',
 			'icon' => 'list',
-			'max' =>  (UtilitiesArrayHelper::check($nameListOptions)) ? (int) count($nameListOptions) : 4);
+			'max' =>  (UtilitiesArrayHelper::check($nameListOptions)) ? (int) count($nameListOptions) : 4];
 		// load the subform attributes
 		FormHelper::attributes($subformXML, $subformAttribute);
 		// now add the subform child form
 		$childForm = $subformXML->addChild('form');
 		// child form attributes
-		$childFormAttribute = array(
+		$childFormAttribute = [
 			'hidden' => 'true',
 			'name' => 'list_properties',
-			'repeat' => 'true');
+			'repeat' => 'true'];
 		// load the child form attributes
 		FormHelper::attributes($childForm, $childFormAttribute);
 
 		// start building the name field XML
 		$nameXML = new \SimpleXMLElement('<field/>');
+		$isList = UtilitiesArrayHelper::check($nameListOptions);
 		// subform attributes
-		$nameAttribute = array(
-			'type' => (UtilitiesArrayHelper::check($nameListOptions)) ? 'list' : 'text',
+		$nameAttribute = [
+			'type' => $isList ? 'list' : 'text',
 			'name' => 'name',
 			'label' => 'COM_COMPONENTBUILDER_PROPERTY',
-			'size' => '40',
-			'maxlength' => '150',
-			'class' => (UtilitiesArrayHelper::check($nameListOptions)) ? 'list_class field_list_name_options' : 'text_area',
-			'filter' => 'STRING');
+			'class' => $isList ? 'list_class' : 'text_area',
+			'filter' => 'STRING'
+		];
 		// add the hint only if not name list and description if name list is an array
-		if (UtilitiesArrayHelper::check($nameListOptions))
+		if ($isList)
 		{
 			$nameAttribute['description'] = 'COM_COMPONENTBUILDER_SELECTION';
 			$nameAttribute['multiple'] = 'false';
 			$nameAttribute['onchange'] = "getFieldPropertyDesc(this, '".$name."')";
-			$nameAttribute['layout'] = 'joomla.form.field.list-fancy-select';
 		}
 		else
 		{
 			$nameAttribute['hint'] = 'COM_COMPONENTBUILDER_PROPERTY_NAME';
+			$nameAttribute['size'] = '40';
+			$nameAttribute['maxlength'] = '150';
 		}
 		// load the subform attributes
 		FormHelper::attributes($nameXML, $nameAttribute);
 		// add name list if found
-		if (UtilitiesArrayHelper::check($nameListOptions))
+		if ($isList)
 		{
-			FormHelper::options($nameXML, $nameListOptions);
+			$_nameListoptions = array_merge($nameListOptions, ['' => Text::_('COM_COMPONENTBUILDER_SELECT_A_PROPERTY')]);
+			FormHelper::options($nameXML, $_nameListoptions);
 		}
 		// now add the fields to the child form
 		FormHelper::append($childForm, $nameXML);
@@ -4702,15 +4885,15 @@ class AjaxModel extends ListModel
 		// start building the name field XML
 		$valueXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
-		$valueAttribute = array(
+		$valueAttribute = [
 			'type' => 'textarea',
 			'name' => 'value',
 			'label' => 'COM_COMPONENTBUILDER_VALUE',
 			'rows' => '1',
 			'cols' => '15',
-			'class' => 'text_area  span12',
+			'class' => 'text_area full-column-in-subform',
 			'filter' => 'STRING',
-			'hint' => 'COM_COMPONENTBUILDER_PROPERTY_VALUE');
+			'hint' => 'COM_COMPONENTBUILDER_PROPERTY_VALUE'];
 		// load the subform attributes
 		FormHelper::attributes($valueXML, $valueAttribute);
 		// now add the fields to the child form
@@ -4719,16 +4902,16 @@ class AjaxModel extends ListModel
 		// start building the desc field XML
 		$descXML = new \SimpleXMLElement('<field/>');
 		// subform attributes
-		$descAttribute = array(
+		$descAttribute = [
 			'type' => 'textarea',
 			'name' => 'desc',
 			'label' => 'COM_COMPONENTBUILDER_DESCRIPTION',
 			'rows' => '3',
 			'cols' => '25',
 			'readonly' => 'true',
-			'class' => 'text_area span12',
+			'class' => 'text_area full-column-in-subform',
 			'filter' => 'WORD',
-			'hint' => 'COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
+			'hint' => 'COM_COMPONENTBUILDER_SELECT_A_PROPERTY'];
 		// load the desc attributes
 		FormHelper::attributes($descXML, $descAttribute);
 		// now add the fields to the child form

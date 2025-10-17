@@ -426,36 +426,22 @@ class HtmlView extends BaseHtmlView
 		{
 			Html::_('script', $script, ['version' => 'auto']);
 		}
-
-
-		// add the Uikit v2 style sheets
-		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/uikit.gradient.min.css', ['version' => 'auto']);
-		// add Uikit v2 JavaScripts
-		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/uikit.min.js', ['version' => 'auto']);
-
-		// add the Uikit v2 extra style sheets
-		Html::_('stylesheet', 'media/com_componentbuilder/uikit-v2/css/components/notify.gradient.min.css', ['version' => 'auto']);
-		// add Uikit v2 extra JavaScripts
-		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/lightbox.min.js', ['version' => 'auto']);
-		Html::_('script', 'media/com_componentbuilder/uikit-v2/js/components/notify.min.js', ['version' => 'auto']);
+		// get the web asset manager :(
+		$web =$this->getDocument()->getWebAssetManager();
 		// add var key
-		$this->getDocument()->getWebAssetManager()->addInlineScript("var vastDevMod = '" . $this->get('VDM') . "';");
+		$web->addInlineScript("var vastDevMod = '" . $this->get('VDM') . "';");
 		// add return_here
-		$this->getDocument()->getWebAssetManager()->addInlineScript("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
+		$web->addInlineScript("var return_here = '" . urlencode(base64_encode((string) Uri::getInstance())) . "';");
 		// add the libs for subform (since not adding it via xml but ajax)
-		$this->getDocument()
-			->getWebAssetManager()
-			->useScript('webcomponent.field-subform')
+		$web->useScript('webcomponent.field-subform')
 			->usePreset('choicesjs')
-			->useScript('webcomponent.field-fancy-select');
-		$this->getDocument()
-			->addStyleDeclaration('.subform-table-sublayout-section .controls { margin-left: 0px }');
+			->addInlineStyle('.subform-table-sublayout-section .controls { margin-left: 0px }');
+
 		// set some lang
 		Text::script('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER');
 		Text::script('COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS');
 		Text::script('COM_COMPONENTBUILDER_NO_RESULTS_MATCH');
 		Text::script('COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
-		Text::script('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND');
 	}
 
 	/**

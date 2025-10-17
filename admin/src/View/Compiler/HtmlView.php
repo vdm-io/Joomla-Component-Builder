@@ -213,400 +213,400 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function getDynamicForm(): ?Form
 	{		
-		if(ArrayHelper::check($this->Components))
+		if(empty($this->Components))
 		{
-			// start the form
-			$form = new Form('Builder');
-
-			$form->load('<form
-				addruleprefix="VDM\Component\Componentbuilder\Administrator\Rule"
-				addfieldprefix="VDM\Component\Componentbuilder\Administrator\Field">
-					<config><inlinehelp button="show"/></config>
-					<fieldset name="builder"></fieldset>
-					<fieldset name="advanced"></fieldset></form>');
-
-			// sales attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'backup',
-				'label' => 'COM_COMPONENTBUILDER_ADD_TO_BACKUP_FOLDER_AMP_SALES_SERVER_SMALLIF_SETSMALL',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_ZIPPED_PACKAGE_OF_THE_COMPONENT_BE_MOVED_TO_THE_LOCAL_BACKUP_AND_REMOTE_SALES_SERVER_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_THOSE_VALUES_SET',
-				'default' => '0'];
-			// set the sales options
-			$options = [
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// repository attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'repository',
-				'label' => 'COM_COMPONENTBUILDER_ADD_TO_REPOSITORY_FOLDER',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_REPOSITORY_FOLDER',
-				'default' => '1'];
-			// start the repository options
-			$options = [
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// placeholders attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'add_placeholders',
-				'label' => 'COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE',
-				'default' => '2'];
-			// start the placeholders options
-			$options = [
-				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// debuglinenr attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'debug_line_nr',
-				'label' => 'COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB_OR_EVEN_FOR_YOUR_OWN_DEBUGGING',
-				'default' => '2'];
-			$options = [
-				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// minify attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'minify',
-				'label' => 'COM_COMPONENTBUILDER_MINIFY_JAVASCRIPT',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_JAVASCRIPT_BE_MINIFIED_IN_THE_COMPONENT',
-				'default' => '2'];
-			$options = [
-				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// powers attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'powers',
-				'label' => 'COM_COMPONENTBUILDER_ADD_POWERS',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_ADD_ANY_POWERS_THAT_ARE_CONNECTED_TO_THIS_COMPONENT_THIS_MAY_BE_HELPFUL_IF_YOU_ARE_LOADING_POWERS_VIA_ANOTHER_COMPONENT_AND_WOULD_LIKE_TO_AVOID_ADDING_IT_TO_BOTH_JUST_REMEMBER_THAT_IN_THIS_CASE_YOU_NEED_TO_LOAD_THE_POWERS_VIA_A_PLUGIN',
-				'default' => '2'];
-			$options = [
-				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// component attributes
-			$attributes = [
-				'type' => 'list',
-				'name' => 'component_id',
-				'label' => 'COM_COMPONENTBUILDER_COMPONENTS',
-				'class' => 'list_class',
-				'description' => 'COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_COMPILE',
-				'required' => 'true'];
-			// start the component options
-			$options = [];
-			$options[''] = 'COM_COMPONENTBUILDER__SELECT_COMPONENT_';
-			// load component options from array
-			foreach($this->Components as $component)
-			{
-				$options[(int) $component->id] = $this->escape($component->name);
-			}
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// Joomla Versions attributes
-			$attributes = [
-				'type' => 'list',
-				'name' => 'joomla_version',
-				'label' => 'COM_COMPONENTBUILDER_JOOMLA_VERSION',
-				'class' => 'list_class',
-				'description' => 'COM_COMPONENTBUILDER_WHAT_VERSION_OF_JOOMLA_WOULD_YOU_LIKE_TO_TARGET',
-				'default' => (string) Version::MAJOR_VERSION];
-			// start the joomla versions options
-			$options = [
-				'3' => 'COM_COMPONENTBUILDER_JOOMLA_THREE',
-				'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR',
-				'5' => 'COM_COMPONENTBUILDER_JOOMLA_FIVE',
-				'6' => 'COM_COMPONENTBUILDER_JOOMLA_SIX'
-			];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// Advanced Options
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'show_advanced_options',
-				'label' => 'COM_COMPONENTBUILDER_SHOW_ADVANCED_OPTIONS',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_SEE_THE_ADVANCED_COMPILER_OPTIONS',
-				'default' => '0'];
-			// start the advanced options switch
-			$options = [
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'builder');
-			}
-
-			// Advanced Options note attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'show_advanced_options_note',
-				'label' => "COM_COMPONENTBUILDER_ADVANCED_OPTIONS",
-				'heading' => 'h3',
-				'showon' => 'show_advanced_options:1'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// powers repository attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'powers_repository',
-				'label' => 'COM_COMPONENTBUILDER_ACTIVATE_SUPER_POWERS',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_THIS_ADDS_POWERS_TO_A_LOCAL_REPOSITORY_FOLDER_ALL_BAPPROVEDB_POWERS_LINKED_TO_THIS_COMPONENT_WILL_BE_MOVED_TO_YOUR_BLOCALB_POWERS_REPOSITORY_FOLDER_INTO_THEIR_SELECTIVE_TARGET_PATHS_THIS_LOCAL_FOLDER_PATH_MUST_BE_SET_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_BSUPER_POWERB_TAB',
-				'default' => '2',
-				'showon' => 'show_advanced_options:1'];
-			// start the repository options
-			$options = [
-				'2' => 'COM_COMPONENTBUILDER_GLOBAL',
-				'1' => 'COM_COMPONENTBUILDER_YES',
-				'0' => 'COM_COMPONENTBUILDER_NO'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// powers local path to repositories attributes
-			$attributes = [
-				'type' => 'text',
-				'name' => 'local_powers_repository_path',
-				'label' => 'COM_COMPONENTBUILDER_LOCAL_POWERS_REPOSITORY_PATH',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_SET_THE_PATH_TO_THE_SUPER_POWERS_LOCAL_REPOSITORY_FOLDER_WHERE_BLAYERCOREB_AND_ALL_TARGETED_BLAYEROWNB_SUB_PATHS_WILL_BE_PLACED_WITH_THEIR_SELECTIVE_BSWITCHAPPROVEDB_POWERS',
-				'default' => $this->params->get('local_powers_repository_path', ''),
-				'showon' => 'show_advanced_options:1[AND]powers_repository:1'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Indentation attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'indentation_value',
-				'label' => 'COM_COMPONENTBUILDER_INDENTATION_OPTIONS',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_WHICH_TYPE_OF_INDENTATION_WOULD_YOU_LIKE_TO_USE_PLEASE_NOTE_THAT_THIS_DOES_NOT_YET_IMPACT_THE_STATIC_TEMPLATES',
-				'default' => '1',
-				'showon' => 'show_advanced_options:1'];
-
-			// start the indentation options
-			$options = [
-				'1' => 'COM_COMPONENTBUILDER_TAB',
-				'2' => 'COM_COMPONENTBUILDER_TWO_SPACES',
-				'4' => 'COM_COMPONENTBUILDER_FOUR_SPACES'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Build date attributes
-			$attributes = [
-				'type' => 'radio',
-				'name' => 'add_build_date',
-				'label' => 'COM_COMPONENTBUILDER_BUILD_DATE',
-				'class' => 'btn-group btn-group-yesno',
-				'description' => 'COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_OVERRIDE_THE_BUILD_DATE',
-				'default' => '1',
-				'showon' => 'show_advanced_options:1'];
-			// start the build date options
-			$options = [
-				'1' => 'COM_COMPONENTBUILDER_DEFAULT',
-				'2' => 'COM_COMPONENTBUILDER_MANUAL',
-				'3' => 'COM_COMPONENTBUILDER_COMPONENT'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes, $options);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Build date note attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'add_build_date_note_two',
-				'description' => 'COM_COMPONENTBUILDER_ALLOWS_YOU_TO_OVERRIDE_THE_BUILD_DATE_BY_SELECTING_A_DATE_MANUALLY_FROM_THE_CALENDER',
-				'class' => 'alert alert-info',
-				'showon' => 'show_advanced_options:1[AND]add_build_date:2'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Build date note attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'add_build_date_note_three',
-				'description' => "COM_COMPONENTBUILDER_THE_COMPONENTS_LAST_MODIFIED_DATE_WILL_BE_USED",
-				'class' => 'alert alert-info',
-				'showon' => 'show_advanced_options:1[AND]add_build_date:3'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Build date calendar attributes
-			$attributes = [
-				'type' => 'calendar',
-				'name' => 'build_date',
-				'label' => 'COM_COMPONENTBUILDER_SELECT_BUILD_DATE',
-				'format' => '%Y-%m-%d',
-				'filter' => 'user_utc',
-				'default' => 'now',
-				'size' => '22',
-				'showon' => 'show_advanced_options:1[AND]add_build_date:2'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Build date note attributes
-			if ($this->dankie == 1)
-			{
-				$attributes = [
-					'type' => 'note',
-					'name' => 'donations_note',
-					'label' => "COM_COMPONENTBUILDER_DONATIONS",
-					'description' =>  $this->getSupportMessage(),
-					'class' => 'alert alert-success',
-					'heading' => 'h1',
-					'showon' => 'show_advanced_options:1'];
-			}
-			else
-			{
-				$attributes = [
-					'type' => 'note',
-					'name' => 'partner_note',
-					'description' =>  $this->getSupportMessage(),
-					'showon' => 'show_advanced_options:1'];
-			}
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// Build date note line attributes
-			$attributes = [
-				'type' => 'note',
-				'name' => 'donations_note_line',
-				'description' => '<hr />',
-				'showon' => 'show_advanced_options:1'];
-
-			// add to form
-			$xml = FormHelper::xml($attributes);
-			if ($xml instanceof \SimpleXMLElement)
-			{
-				$form->setField($xml, null, true, 'advanced');
-			}
-
-			// return the form array
-			return $form;
+			return null;
 		}
 
-		return null;
+		// start the form
+		$form = new Form('Builder');
+
+		$form->load('<form
+			addruleprefix="VDM\Component\Componentbuilder\Administrator\Rule"
+			addfieldprefix="VDM\Component\Componentbuilder\Administrator\Field">
+				<config><inlinehelp button="show"/></config>
+				<fieldset name="builder"></fieldset>
+				<fieldset name="advanced"></fieldset></form>');
+
+		// sales attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'backup',
+			'label' => 'COM_COMPONENTBUILDER_ADD_TO_BACKUP_FOLDER_AMP_SALES_SERVER_SMALLIF_SETSMALL',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_ZIPPED_PACKAGE_OF_THE_COMPONENT_BE_MOVED_TO_THE_LOCAL_BACKUP_AND_REMOTE_SALES_SERVER_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_THOSE_VALUES_SET',
+			'default' => '0'];
+		// set the sales options
+		$options = [
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// repository attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'repository',
+			'label' => 'COM_COMPONENTBUILDER_ADD_TO_REPOSITORY_FOLDER',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_COMPONENT_BE_MOVED_TO_YOUR_LOCAL_REPOSITORY_FOLDER',
+			'default' => '1'];
+		// start the repository options
+		$options = [
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// placeholders attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'add_placeholders',
+			'label' => 'COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_INSERT_THE_CUSTOM_CODE_PLACEHOLDERS_THIS_IS_ONLY_APPLICABLE_IF_THIS_COMPONENT_HAS_CUSTOM_CODE',
+			'default' => '2'];
+		// start the placeholders options
+		$options = [
+			'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// debuglinenr attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'debug_line_nr',
+			'label' => 'COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_ADD_CORRESPONDING_LINE_NUMBERS_TO_THE_DYNAMIC_COMMENTS_SO_TO_SEE_WHERE_IN_THE_COMPILER_THE_LINES_OF_CODE_WAS_BUILD_THIS_WILL_HELP_IF_YOU_NEED_TO_GET_MORE_TECHNICAL_WITH_AN_ISSUE_ON_GITHUB_OR_EVEN_FOR_YOUR_OWN_DEBUGGING',
+			'default' => '2'];
+		$options = [
+			'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// minify attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'minify',
+			'label' => 'COM_COMPONENTBUILDER_MINIFY_JAVASCRIPT',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_SHOULD_THE_JAVASCRIPT_BE_MINIFIED_IN_THE_COMPONENT',
+			'default' => '2'];
+		$options = [
+			'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// powers attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'powers',
+			'label' => 'COM_COMPONENTBUILDER_ADD_POWERS',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_SHOULD_JCB_ADD_ANY_POWERS_THAT_ARE_CONNECTED_TO_THIS_COMPONENT_THIS_MAY_BE_HELPFUL_IF_YOU_ARE_LOADING_POWERS_VIA_ANOTHER_COMPONENT_AND_WOULD_LIKE_TO_AVOID_ADDING_IT_TO_BOTH_JUST_REMEMBER_THAT_IN_THIS_CASE_YOU_NEED_TO_LOAD_THE_POWERS_VIA_A_PLUGIN',
+			'default' => '2'];
+		$options = [
+			'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// component attributes
+		$attributes = [
+			'type' => 'list',
+			'name' => 'component_id',
+			'label' => 'COM_COMPONENTBUILDER_COMPONENTS',
+			'class' => 'list_class',
+			'description' => 'COM_COMPONENTBUILDER_SELECT_THE_COMPONENT_TO_COMPILE',
+			'required' => 'true'];
+		// start the component options
+		$options = [];
+		$options[''] = 'COM_COMPONENTBUILDER__SELECT_COMPONENT_';
+		// load component options from array
+		foreach($this->Components as $component)
+		{
+			$options[(int) $component->id] = $this->escape($component->name);
+		}
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// Joomla Versions attributes
+		$attributes = [
+			'type' => 'list',
+			'name' => 'joomla_version',
+			'label' => 'COM_COMPONENTBUILDER_JOOMLA_VERSION',
+			'class' => 'list_class',
+			'description' => 'COM_COMPONENTBUILDER_WHAT_VERSION_OF_JOOMLA_WOULD_YOU_LIKE_TO_TARGET',
+			'default' => (string) Version::MAJOR_VERSION];
+		// start the joomla versions options
+		$options = [
+			'3' => 'COM_COMPONENTBUILDER_JOOMLA_THREE',
+			'4' => 'COM_COMPONENTBUILDER_JOOMLA_FOUR',
+			'5' => 'COM_COMPONENTBUILDER_JOOMLA_FIVE',
+			'6' => 'COM_COMPONENTBUILDER_JOOMLA_SIX'
+		];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// Advanced Options
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'show_advanced_options',
+			'label' => 'COM_COMPONENTBUILDER_SHOW_ADVANCED_OPTIONS',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_SEE_THE_ADVANCED_COMPILER_OPTIONS',
+			'default' => '0'];
+		// start the advanced options switch
+		$options = [
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'builder');
+		}
+
+		// Advanced Options note attributes
+		$attributes = [
+			'type' => 'note',
+			'name' => 'show_advanced_options_note',
+			'label' => "COM_COMPONENTBUILDER_ADVANCED_OPTIONS",
+			'heading' => 'h3',
+			'showon' => 'show_advanced_options:1'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// powers repository attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'powers_repository',
+			'label' => 'COM_COMPONENTBUILDER_ACTIVATE_SUPER_POWERS',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_THIS_ADDS_POWERS_TO_A_LOCAL_REPOSITORY_FOLDER_ALL_BAPPROVEDB_POWERS_LINKED_TO_THIS_COMPONENT_WILL_BE_MOVED_TO_YOUR_BLOCALB_POWERS_REPOSITORY_FOLDER_INTO_THEIR_SELECTIVE_TARGET_PATHS_THIS_LOCAL_FOLDER_PATH_MUST_BE_SET_IN_THE_GLOBAL_OPTIONS_OF_JCB_UNDER_THE_BSUPER_POWERB_TAB',
+			'default' => '2',
+			'showon' => 'show_advanced_options:1'];
+		// start the repository options
+		$options = [
+			'2' => 'COM_COMPONENTBUILDER_GLOBAL',
+			'1' => 'COM_COMPONENTBUILDER_YES',
+			'0' => 'COM_COMPONENTBUILDER_NO'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// powers local path to repositories attributes
+		$attributes = [
+			'type' => 'text',
+			'name' => 'local_powers_repository_path',
+			'label' => 'COM_COMPONENTBUILDER_LOCAL_POWERS_REPOSITORY_PATH',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_HERE_YOU_CAN_SET_THE_PATH_TO_THE_SUPER_POWERS_LOCAL_REPOSITORY_FOLDER_WHERE_BLAYERCOREB_AND_ALL_TARGETED_BLAYEROWNB_SUB_PATHS_WILL_BE_PLACED_WITH_THEIR_SELECTIVE_BSWITCHAPPROVEDB_POWERS',
+			'default' => $this->params->get('local_powers_repository_path', ''),
+			'showon' => 'show_advanced_options:1[AND]powers_repository:1'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Indentation attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'indentation_value',
+			'label' => 'COM_COMPONENTBUILDER_INDENTATION_OPTIONS',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_WHICH_TYPE_OF_INDENTATION_WOULD_YOU_LIKE_TO_USE_PLEASE_NOTE_THAT_THIS_DOES_NOT_YET_IMPACT_THE_STATIC_TEMPLATES',
+			'default' => '1',
+			'showon' => 'show_advanced_options:1'];
+
+		// start the indentation options
+		$options = [
+			'1' => 'COM_COMPONENTBUILDER_TAB',
+			'2' => 'COM_COMPONENTBUILDER_TWO_SPACES',
+			'4' => 'COM_COMPONENTBUILDER_FOUR_SPACES'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Build date attributes
+		$attributes = [
+			'type' => 'radio',
+			'name' => 'add_build_date',
+			'label' => 'COM_COMPONENTBUILDER_BUILD_DATE',
+			'class' => 'btn-group btn-group-yesno',
+			'description' => 'COM_COMPONENTBUILDER_WOULD_YOU_LIKE_TO_OVERRIDE_THE_BUILD_DATE',
+			'default' => '1',
+			'showon' => 'show_advanced_options:1'];
+		// start the build date options
+		$options = [
+			'1' => 'COM_COMPONENTBUILDER_DEFAULT',
+			'2' => 'COM_COMPONENTBUILDER_MANUAL',
+			'3' => 'COM_COMPONENTBUILDER_COMPONENT'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes, $options);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Build date note attributes
+		$attributes = [
+			'type' => 'note',
+			'name' => 'add_build_date_note_two',
+			'description' => 'COM_COMPONENTBUILDER_ALLOWS_YOU_TO_OVERRIDE_THE_BUILD_DATE_BY_SELECTING_A_DATE_MANUALLY_FROM_THE_CALENDER',
+			'class' => 'alert alert-info',
+			'showon' => 'show_advanced_options:1[AND]add_build_date:2'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Build date note attributes
+		$attributes = [
+			'type' => 'note',
+			'name' => 'add_build_date_note_three',
+			'description' => "COM_COMPONENTBUILDER_THE_COMPONENTS_LAST_MODIFIED_DATE_WILL_BE_USED",
+			'class' => 'alert alert-info',
+			'showon' => 'show_advanced_options:1[AND]add_build_date:3'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Build date calendar attributes
+		$attributes = [
+			'type' => 'calendar',
+			'name' => 'build_date',
+			'label' => 'COM_COMPONENTBUILDER_SELECT_BUILD_DATE',
+			'format' => '%Y-%m-%d',
+			'filter' => 'user_utc',
+			'default' => 'now',
+			'size' => '22',
+			'showon' => 'show_advanced_options:1[AND]add_build_date:2'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Build date note attributes
+		if ($this->dankie == 1)
+		{
+			$attributes = [
+				'type' => 'note',
+				'name' => 'donations_note',
+				'label' => "COM_COMPONENTBUILDER_DONATIONS",
+				'description' =>  $this->getSupportMessage(),
+				'class' => 'alert alert-success',
+				'heading' => 'h1',
+				'showon' => 'show_advanced_options:1'];
+		}
+		else
+		{
+			$attributes = [
+				'type' => 'note',
+				'name' => 'partner_note',
+				'description' =>  $this->getSupportMessage(),
+				'showon' => 'show_advanced_options:1'];
+		}
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// Build date note line attributes
+		$attributes = [
+			'type' => 'note',
+			'name' => 'donations_note_line',
+			'description' => '<hr />',
+			'showon' => 'show_advanced_options:1'];
+
+		// add to form
+		$xml = FormHelper::xml($attributes);
+		if ($xml instanceof \SimpleXMLElement)
+		{
+			$form->setField($xml, null, true, 'advanced');
+		}
+
+		// return the form array
+		return $form;
 	}
 
 	/**

@@ -502,27 +502,224 @@ function isSet(val)
 }
 
 
-jQuery(document).ready(function()
-{
-	// get type value
-	var fieldtype = jQuery("#jform_fieldtype option:selected").val();
-	getFieldTypeProperties(fieldtype, false);
-	// get the linked details
-	getLinked();
-	// get the validation rules
-	getValidationRulesTable();
-	// set button to create more fields
-	addButton('validation_rule', 'validation_rules_header', 2);
-	// get the field type text
-	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
-	// now check if database input is needed
-	dbChecker(fieldText);
-	// check and load all the custom code edit buttons
-	getEditCustomCodeButtons();
-});
+
+// set properties the options
+var propertiesArray = {};
+var propertyIdRemoved;
 
 // the options row id key
 var rowIdKey = 'properties';
+
+/**
+ * Initialize field property and validation UI logic after DOM is ready.
+ *
+ * This listener replaces jQuery(document).ready() with a pure JavaScript equivalent.
+ * It initializes field-type properties, linked fields, validation rules,
+ * and dynamic UI behaviors immediately after Joomla's form is rendered.
+ *
+ * @return {void}
+ * @since  3.1.3
+ */
+document.addEventListener('DOMContentLoaded', () => {
+	try {
+		// --- Get the current field type value and text ---
+		const fieldTypeSelect = document.querySelector('#jform_fieldtype');
+		const fieldtype = fieldTypeSelect?.value ?? '';
+		const fieldText = fieldTypeSelect?.options[fieldTypeSelect.selectedIndex]?.text?.toLowerCase() ?? '';
+
+		// --- Load field type properties dynamically ---
+		if (typeof getFieldTypeProperties === 'function') {
+			getFieldTypeProperties(fieldtype, false);
+		}
+
+		// --- Load linked details if available ---
+		if (typeof getLinked === 'function') {
+			getLinked();
+		}
+
+		// --- Load and render validation rules table ---
+		if (typeof getValidationRulesTable === 'function') {
+			getValidationRulesTable();
+		}
+
+		// --- Initialize add button for validation rules ---
+		if (typeof addButton === 'function') {
+			addButton('validation_rule', 'validation_rules_header', 2);
+		}
+
+		// --- Check if database input fields should be shown or hidden ---
+		if (typeof dbChecker === 'function') {
+			dbChecker(fieldText);
+		}
+
+		// --- Load and prepare edit custom code buttons ---
+		if (typeof getEditCustomCodeButtons === 'function') {
+			getEditCustomCodeButtons();
+		}
+
+		console.debug('[Init] Field property/validation logic initialized successfully.');
+	} catch (error) {
+		console.error('[Init] Initialization error:', error);
+	}
+});
+
+/**
+ * Handle field property selection and dynamically update related description/value fields.
+ *
+ * This function checks for duplicate property selections, resets invalid ones,
+ * updates dependent fields, and fetches the property description and value
+ * from the server via getFieldPropertyDesc_server().
+ *
+ * @param  {HTMLElement} field       The select field element triggering the change.
+ * @param  {string}      targetForm  The form context ("properties" or another form name).
+ *
+ * @return {Promise<void>}           Resolves when updates and server fetch are complete.
+ * @since  3.1.3
+ */
+async function getFieldPropertyDesc(field, targetForm) {
+	if (!field) {
+		console.debug('[getFieldPropertyDesc] Missing field element.');
+		return;
+	}
+
+	// Get the ID and property value
+	const id = field.id;
+	const property = field.value ?? '';
+
+	// Split the ID into parts (e.g. field__desc)
+	const target = id.split('__');
+
+	// Check for duplicate properties
+	if (typeof propertyIsSet === 'function' && propertyIsSet(property, id, targetForm)) {
+		// Reset the selection
+		// removeCurrentSubformRow(field); TODO: the option to remove the row
+		unselectChoicesFieldValue(`#${id}`);
+
+		// Show Joomla dialog warning and auto-close
+		const message = Joomla?.Text?._('Property already selected, try another.')
+			|| 'Property already selected, try another.';
+
+		// Ensure Joomla renderMessages API exists
+		if (typeof Joomla !== 'undefined' && typeof Joomla.renderMessages === 'function') {
+			Joomla.renderMessages({
+				warning: [message]
+			});
+			// Auto-scroll to top so message is visible
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+		// Final fallback to console
+		else {
+			console.warn(message);
+		}
+
+		// Reset dependent description/value fields
+		const descField = document.querySelector(`#${target[0]}__desc`);
+		const valueField = document.querySelector(`#${target[0]}__value`);
+		if (descField) descField.value = '';
+		if (valueField) valueField.value = '';
+
+		return;
+	}
+
+	// Trigger property refresh logic
+	if (typeof propertyDynamicSet === 'function') {
+		propertyDynamicSet();
+	}
+
+	// Determine field type (context: 'properties' or 'extra')
+	let fieldtype = 'extra';
+	if (targetForm === 'properties') {
+		const fieldTypeSelect = document.querySelector('#jform_fieldtype');
+		if (fieldTypeSelect) {
+			fieldtype = fieldTypeSelect.value ?? 'extra';
+		}
+	}
+
+	// Fetch property description and value from the server
+	const result = await getFieldPropertyDesc_server(fieldtype, property);
+
+	// Update dependent fields based on the result
+	const descField = document.querySelector(`#${target[0]}__desc`);
+	const valueField = document.querySelector(`#${target[0]}__value`);
+
+	if (result && (result.desc || result.value)) {
+		if (descField) descField.value = result.desc ?? '';
+		if (valueField) valueField.value = result.value ?? '';
+	} else {
+		if (descField) descField.value = Joomla.Text._('COM_COMPONENTBUILDER_SELECT_A_PROPERTY');
+		if (valueField) valueField.value = '';
+	}
+}
+
+/**
+ * Remove the current subform row (where this field lives)
+ * using Joomla's native SubformRepeatable instance.
+ *
+ * @param {HTMLElement} field  The field element inside the subform row.
+ *
+ * @return {void}
+ * @since  5.1.3
+ */
+function removeCurrentSubformRow(field) {
+	if (!(field instanceof HTMLElement)) {
+		console.warn('Invalid field element provided.');
+		return;
+	}
+
+	const row = field.closest('.subform-repeatable-group');
+	if (!row) {
+		console.warn('No subform row found for field.');
+		return;
+	}
+
+	row.remove();
+}
+
+/**
+ * Check whether a given property has already been selected in another field.
+ *
+ * This function iterates through all property select fields (up to 70 by default)
+ * within the given target form, comparing their current values against the provided
+ * property value. If a duplicate is found, it returns true; otherwise false.
+ *
+ * @param  {string}  prop        The property value to check for duplicates.
+ * @param  {string}  id          The current field's ID to exclude from the check.
+ * @param  {string}  targetForm  The name prefix of the form group (e.g., "properties").
+ *
+ * @return {boolean}             True if the property is already selected elsewhere, otherwise false.
+ * @since  3.1.3
+ */
+function propertyIsSet(prop, id, targetForm) {
+	// Validate input
+	if (!prop || !id || !targetForm) {
+		console.debug('[propertyIsSet] Missing required parameters:', { prop, id, targetForm });
+		return false;
+	}
+
+	// Loop through possible fields (max 70 rows by convention)
+	for (let i = 0; i < 70; i++) {
+		// Construct the expected field ID pattern
+		const id_check = `${targetForm}_${targetForm}${i}__name`;
+		const field = document.getElementById(id_check);
+
+		// Skip if not found or if this is the same field being checked
+		if (!field || id_check === id) {
+			continue;
+		}
+
+		// Get the currently selected value
+		const selectedOption = field.options[field.selectedIndex];
+		const tmp = selectedOption ? selectedOption.value : '';
+
+		// If the same property is already selected, return true
+		if (tmp === prop) {
+			return true;
+		}
+	}
+
+	// No duplicates found
+	return false;
+}
 
 /**
  * Load and initialize the field type properties dynamically.
@@ -535,7 +732,7 @@ var rowIdKey = 'properties';
  * @param  {boolean}        db         Whether to load database defaults if present.
  *
  * @return {void}
- * @since  5.1.3
+ * @since  3.1.3
  */
 function getFieldTypeProperties(fieldtype, db) {
 	getCodeFrom_server(fieldtype, 'type', 'type', 'fieldTypeProperties')
@@ -610,58 +807,83 @@ function getFieldTypeProperties(fieldtype, db) {
 				const dbData = result.database;
 
 				// Update datatype
-				setChoicesFieldValue('#jform_datatype', dbData.datatype);
-				updateFieldRequired('datatype', 0);
+				if (notEmpty(dbData?.datatype)) {
+					setChoicesFieldValue('#jform_datatype', dbData.datatype);
+					updateFieldRequired('datatype', 0);
+				} else {
+					unselectChoicesFieldValue('#jform_datatype');
+				}
 
 				// Update datalenght
-				setChoicesFieldValue('#jform_datalenght', dbData.datalenght);
-				updateFieldRequired('datalenght', 0);
-				if (dbData.datalenght === 'Other') {
-					setChoicesFieldValue('#jform_datalenght_other', dbData.datalenght_other);
-					updateFieldRequired('datalenght_other', 0);
+				if (notEmpty(dbData?.datalenght)) {
+					setChoicesFieldValue('#jform_datalenght', dbData.datalenght);
+					updateFieldRequired('datalenght', 0);
+					if (dbData.datalenght === 'Other' && notEmpty(dbData?.datalenght_other)) {
+						setChoicesFieldValue('#jform_datalenght_other', dbData.datalenght_other);
+						updateFieldRequired('datalenght_other', 0);
+					}
 				} else {
+					unselectChoicesFieldValue('#jform_datalenght');
+					unselectChoicesFieldValue('#jform_datalenght_other');
+					updateFieldRequired('datalenght', 1);
 					updateFieldRequired('datalenght_other', 1);
 				}
 
 				// Update datadefault
-				setChoicesFieldValue('#jform_datadefault', dbData.datadefault);
-				updateFieldRequired('datadefault', 0);
-				if (dbData.datadefault === 'Other') {
-					setChoicesFieldValue('#jform_datadefault_other', dbData.datadefault_other);
-					updateFieldRequired('datadefault_other', 0);
+				if (notEmpty(dbData?.datadefault)) {
+					setChoicesFieldValue('#jform_datadefault', dbData.datadefault);
+					updateFieldRequired('datadefault', 0);
+					if (dbData.datadefault === 'Other') {
+						setChoicesFieldValue('#jform_datadefault_other', dbData.datadefault_other);
+						updateFieldRequired('datadefault_other', 0);
+					} else {
+						updateFieldRequired('datadefault_other', 1);
+					}
 				} else {
+					unselectChoicesFieldValue('#jform_datadefault');
+					unselectChoicesFieldValue('#jform_datadefault_other');
+					updateFieldRequired('datadefault', 1);
 					updateFieldRequired('datadefault_other', 1);
 				}
 
 				// Update indexes
-				setChoicesFieldValue('#jform_indexes', dbData.indexes);
-				updateFieldRequired('indexes', 0);
+				if (notEmpty(dbData?.indexes)) {
+					setChoicesFieldValue('#jform_indexes', dbData.indexes);
+					// updateFieldRequired('indexes', 0);
+				} else {
+					// unselectChoicesFieldValue('#jform_indexes');
+				}
 
 				// Update store
-				setChoicesFieldValue('#jform_store', dbData.store);
-				updateFieldRequired('store', 0);
+				if (notEmpty(dbData?.store)) {
+					setChoicesFieldValue('#jform_store', dbData.store);
+					// updateFieldRequired('store', 0);
+				}  else {
+					// unselectChoicesFieldValue('#jform_store');
+				}
 			} else if (db) {
 				// Reset datatype
-				setChoicesFieldValue('#jform_datatype', '');
+				// unselectChoicesFieldValue('#jform_datatype');
 
 				// Reset datalenght
-				setChoicesFieldValue('#jform_datalenght', '');
-				updateFieldRequired('datalenght', 1);
-				setChoicesFieldValue('#jform_datalenght_other', '');
-				updateFieldRequired('datalenght_other', 1);
+				// unselectChoicesFieldValue('#jform_datalenght');
+				// updateFieldRequired('datalenght', 1);
+				// unselectChoicesFieldValue('#jform_datalenght_other');
+				// updateFieldRequired('datalenght_other', 1);
 
 				// Reset datadefault
-				setChoicesFieldValue('#jform_datadefault', '');
-				updateFieldRequired('datadefault', 1);
-				setChoicesFieldValue('#jform_datadefault_other', '');
-				updateFieldRequired('datadefault_other', 1);
+				// unselectChoicesFieldValue('#jform_datadefault');
+				// updateFieldRequired('datadefault', 1);
+				// unselectChoicesFieldValue('#jform_datadefault_other');
+				// updateFieldRequired('datadefault_other', 1);
 
 				// Reset indexes
-				setChoicesFieldValue('#jform_indexes', '');
-				updateFieldRequired('indexes', 1);
+				// unselectChoicesFieldValue('#jform_indexes');
+				// updateFieldRequired('indexes', 1);
 
 				// Reset store
-				setChoicesFieldValue('#jform_store', 0);
+				// unselectChoicesFieldValue('#jform_store');
+				// updateFieldRequired('store', 1);
 			}
 		})
 		.catch(error => {
@@ -669,199 +891,391 @@ function getFieldTypeProperties(fieldtype, db) {
 		});
 }
 
-function getFieldPropertyDesc(field, targetForm){
-	// get the ID
-	var id = jQuery(field).attr('id');
-	// build the target array
-	var target = id.split('__');
-	// get property value
-	var property = jQuery(field).val();
-	// first check that there isn't any of this property type already set
-	if (propertyIsSet(property, id, targetForm)) {
-		// reset the selection
-		jQuery('#'+id).val('');
-		jQuery('#'+id).trigger("liszt:updated");
-		// give out a notice
-		jQuery.UIkit.notify({message: Joomla.Text._('COM_COMPONENTBUILDER_PROPERTY_ALREADY_SELECTED_TRY_ANOTHER'), timeout: 5000, status: 'warning', pos: 'top-center'});
-		// update the values
-		jQuery('#'+target[0]+'__desc').val('');
-		jQuery('#'+target[0]+'__value').val('');
-	} else {
-		// do a dynamic update
-		propertyDynamicSet();
-		// get type value
-		if (targetForm === 'properties') {
-			var fieldtype = jQuery("#jform_fieldtype option:selected").val();
-		} else {
-			var fieldtype = 'extra';
-		}
-		getFieldPropertyDesc_server(fieldtype, property).done(function(result) {
-			if(result.desc || result.value){
-				// update the values
-				jQuery('#'+target[0]+'__desc').val(result.desc);
-				jQuery('#'+target[0]+'__value').val(result.value);
-			} else {
-				// update the values
-				jQuery('#'+target[0]+'__desc').val(Joomla.Text._('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND'));
-				jQuery('#'+target[0]+'__value').val('');
+/**
+ * Determine whether a given value should be considered "non-empty" or "present".
+ *
+ * This function returns true for:
+ * - Positive numbers (greater than 0)
+ * - Non-empty strings
+ * - Non-empty arrays
+ * - Any object with a numeric `.length` property greater than 0
+ *
+ * It safely ignores and returns false for:
+ * - 0, null, undefined, NaN, false
+ * - Empty strings ('')
+ * - Empty arrays ([])
+ * - Objects without a `length` property
+ *
+ * @param  {*} value  The value to evaluate.
+ *
+ * @return {boolean}  True if the value is considered non-empty, false otherwise.
+ * @since  5.1.3
+ */
+function notEmpty(value) {
+	// Handle numeric values explicitly
+	if (typeof value === 'number') {
+		return value > 0 && Number.isFinite(value);
+	}
+
+	// Handle objects with a length property (string, array, NodeList, etc.)
+	if (typeof value?.length === 'number') {
+		return value.length > 0;
+	}
+
+	// Everything else (null, undefined, {}, false, etc.) is considered empty
+	return false;
+}
+
+/**
+ * Watch for Joomla subform row additions and removals.
+ *
+ * This listener keeps property data consistent by re-running
+ * propertyDynamicSet() whenever a subform row is added or removed.
+ *
+ * On row removal, the removed field's ID is also extracted
+ * to update the dynamic property list accordingly.
+ *
+ * @return {void}
+ * @since  3.1.3
+ */
+function rowWatcher() {
+	// Listen for subform row removals
+	document.addEventListener('subform-row-remove', function (event) {
+		try {
+			// Joomla 5 provides the removed row in event.detail.row
+			const row = event.detail?.row || null;
+
+			if (row) {
+				// Find the .field_list_name_options element and get its ID
+				const field = row.querySelector('.field_list_name_options');
+				if (field && field.id) {
+					propertyIdRemoved = field.id;
+				}
 			}
+
+			// Recalculate property options
+			if (typeof propertyDynamicSet === 'function') {
+				propertyDynamicSet();
+			}
+		} catch (error) {
+			console.error('[rowWatcher] subform-row-remove error:', error);
+		}
+	});
+
+	// Listen for subform row additions
+	document.addEventListener('subform-row-add', function (event) {
+		try {
+			// Recalculate property options after a new row is added
+			if (typeof propertyDynamicSet === 'function') {
+				propertyDynamicSet();
+			}
+		} catch (error) {
+			console.error('[rowWatcher] subform-row-add error:', error);
+		}
+	});
+}
+
+/**
+ * Dynamically rebuild the available property selection lists.
+ *
+ * This function synchronizes all property select fields on the page
+ * to prevent duplicate selections. It rebuilds the available options list
+ * for each field based on what is already selected elsewhere.
+ *
+ * @return {void}
+ * @since  3.1.3
+ */
+function propertyDynamicSet() {
+	// Reset global trackers
+	propertiesAvailable = {};
+	propertiesSelectedArray = {};
+	propertiesTrackerArray = {};
+
+	// Check up to 70 potential property rows (same as legacy logic)
+	for (let i = 0; i < 70; i++) {
+		// Build field ID (example: properties_properties0__name)
+		const id_check = `${rowIdKey}_${rowIdKey}${i}__name`;
+		const field = document.getElementById(id_check);
+
+		// Ensure field exists and isn't the one just removed
+		if (field && propertyIdRemoved !== id_check) {
+			// Get selected option key and label
+			const selectedOption = field.options[field.selectedIndex];
+			if (selectedOption) {
+				const key = selectedOption.value;
+				const text = selectedOption.text;
+
+				// Track selected and used properties
+				propertiesSelectedArray[key] = text;
+				propertiesTrackerArray[id_check] = key;
+
+				// Clear all existing options
+				while (field.options.length > 0) {
+					field.remove(0);
+				}
+			}
+		}
+	}
+
+	// Build available property options (those not yet selected)
+	for (const prop in propertiesArray) {
+		if (Object.prototype.hasOwnProperty.call(propertiesArray, prop) && !propertiesSelectedArray.hasOwnProperty(prop)) {
+			propertiesAvailable[prop] = propertiesArray[prop];
+		}
+	}
+
+	// Rebuild the options list for each tracked select field
+	for (const tId in propertiesTrackerArray) {
+		if (Object.prototype.hasOwnProperty.call(propertiesTrackerArray, tId)) {
+			const tKey = propertiesTrackerArray[tId];
+			const selectEl = document.getElementById(tId);
+
+			if (selectEl) {
+				// Reinsert the previously selected option
+				const selectedOption = document.createElement('option');
+				selectedOption.value = tKey;
+				selectedOption.textContent = propertiesSelectedArray[tKey] ?? '';
+				selectEl.appendChild(selectedOption);
+
+				// Add all available properties
+				for (const aKey in propertiesAvailable) {
+					if (Object.prototype.hasOwnProperty.call(propertiesAvailable, aKey)) {
+						const option = document.createElement('option');
+						option.value = aKey;
+						option.textContent = propertiesAvailable[aKey];
+						selectEl.appendChild(option);
+					}
+				}
+
+				// Restore selected value and refresh Choices UI
+				setChoicesFieldValue(`#${tId}`, tKey, false);
+			}
+		}
+	}
+}
+
+/**
+ * Fetch the field property description from the server.
+ *
+ * This method replaces the legacy jQuery.ajax() call with a modern Fetch API request.
+ * It validates inputs, builds a secure request URL using Joomla's JRouter,
+ * and returns the JSON response from the server. If an error occurs, it logs
+ * a descriptive message and returns null to ensure safe promise resolution.
+ *
+ * @param  {string|number} fieldtype  The field type ID or name to request the description for.
+ * @param  {string}        property   The property name to request.
+ *
+ * @return {Promise<object|null>}     A Promise resolving to the JSON response object or null on error.
+ * @since  3.1.3
+ */
+function getFieldPropertyDesc_server(fieldtype, property) {
+	// Validate token
+	if (typeof token !== 'string' || token.length === 0) {
+		console.warn('[getFieldPropertyDesc_server] Missing or invalid token.');
+		return Promise.resolve(null);
+	}
+
+	// Validate fieldtype
+	let validFieldtype = false;
+	if (typeof fieldtype === 'number' && fieldtype > 0) {
+		validFieldtype = true;
+	} else if (typeof fieldtype === 'string' && fieldtype.trim().length > 0) {
+		validFieldtype = true;
+	}
+
+	if (!validFieldtype) {
+		console.debug('[getFieldPropertyDesc_server] Empty fieldtype provided:', fieldtype);
+		return Promise.resolve(null);
+	}
+
+	// Validate property
+	if (typeof property !== 'string' || property.trim().length === 0) {
+		console.debug('[getFieldPropertyDesc_server] Empty property provided.');
+		return Promise.resolve(null);
+	}
+
+	// Build URL and query
+	const baseUrl = 'index.php';
+	const params = new URLSearchParams({
+		option: 'com_componentbuilder',
+		task: 'ajax.getFieldPropertyDesc',
+		format: 'json',
+		raw: 'true',
+		[token]: '1',
+		fieldtype: encodeURIComponent(fieldtype),
+		property: encodeURIComponent(property)
+	});
+	if (vastDevMod) params.append('vdm', vastDevMod);
+
+	// Final request URL
+	const requestUrl = JRouter(`${baseUrl}?${params.toString()}`);
+
+	// Perform GET request via Fetch
+	return fetch(requestUrl, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+	.then((response) => {
+		if (!response.ok) {
+			throw new Error(`[getFieldPropertyDesc_server] Network response was not ok: ${response.status}`);
+		}
+		return response.json();
+	})
+	.then((data) => data)
+	.catch((error) => {
+			console.error('[getFieldPropertyDesc_server] Fetch operation failed:', error);
+		return null;
+	});
+}
+
+/**
+ * Manage database field visibility and validation based on the field type.
+ *
+ * When the field type is "note" or "spacer", all database settings are hidden
+ * and cleared. Otherwise, the relevant database fields are shown and required.
+ *
+ * @param  {string} type  The field type to evaluate.
+ *
+ * @return {void}
+ * @since  3.1.3
+ */
+function dbChecker(type) {
+	if (type === 'note' || type === 'spacer') {
+		// Reset database-related select fields
+		unselectChoicesFieldValue('#jform_datatype');
+		unselectChoicesFieldValue('#jform_datalenght');
+		unselectChoicesFieldValue('#jform_datadefault');
+		unselectChoicesFieldValue('#jform_indexes');
+		unselectChoicesFieldValue('#jform_store');
+
+		// Datatype field group
+		const datatypeLbl = document.querySelector('#jform_datatype-lbl');
+		const datatype = document.querySelector('#jform_datatype');
+		if (datatypeLbl) datatypeLbl.closest('.control-group').style.display = 'none';
+		if (datatype) datatype.closest('.control-group').style.display = 'none';
+		updateFieldRequired('datatype', 1);
+		if (datatype) {
+			datatype.removeAttribute('required');
+			datatype.removeAttribute('aria-required');
+			datatype.classList.remove('required');
+		}
+
+		// Null switch field group
+		const nullLbl = document.querySelector('#jform_null_switch-lbl');
+		const nullSwitch = document.querySelector('#jform_null_switch');
+		if (nullLbl) nullLbl.closest('.control-group').style.display = 'none';
+		if (nullSwitch) nullSwitch.closest('.control-group').style.display = 'none';
+		updateFieldRequired('null_switch', 1);
+		if (nullSwitch) {
+			nullSwitch.removeAttribute('required');
+			nullSwitch.removeAttribute('aria-required');
+			nullSwitch.classList.remove('required');
+		}
+
+		// Store field group
+		const storeLbl = document.querySelector('#jform_store-lbl');
+		const store = document.querySelector('#jform_store');
+		if (storeLbl) storeLbl.closest('.control-group').style.display = 'none';
+		if (store) store.closest('.control-group').style.display = 'none';
+		updateFieldRequired('store', 1);
+		if (store) {
+			store.removeAttribute('required');
+			store.removeAttribute('aria-required');
+			store.classList.remove('required');
+		}
+
+		// Show/hide notices
+		document.querySelectorAll('.note_no_database_settings_needed').forEach(el => {
+			const group = el.closest('.control-group');
+			if (group) group.style.display = '';
+		});
+		document.querySelectorAll('.note_database_settings_needed').forEach(el => {
+			const group = el.closest('.control-group');
+			if (group) group.style.display = 'none';
+		});
+
+	} else {
+		// Datatype field group
+		const datatypeLbl = document.querySelector('#jform_datatype-lbl');
+		const datatype = document.querySelector('#jform_datatype');
+		if (datatypeLbl) datatypeLbl.closest('.control-group').style.display = '';
+		if (datatype) datatype.closest('.control-group').style.display = '';
+		updateFieldRequired('datatype', 0);
+		if (datatype) {
+			datatype.setAttribute('required', 'required');
+			datatype.setAttribute('aria-required', 'true');
+			datatype.classList.add('required');
+		}
+
+		// Null switch field group
+		// const nullLbl = document.querySelector('#jform_null_switch-lbl');
+		// const nullSwitch = document.querySelector('#jform_null_switch');
+		// if (nullLbl) nullLbl.closest('.control-group').style.display = '';
+		// if (nullSwitch) nullSwitch.closest('.control-group').style.display = '';
+		// updateFieldRequired('null_switch', 0);
+		// if (nullSwitch) {
+		//	nullSwitch.setAttribute('required', 'required');
+		//	nullSwitch.setAttribute('aria-required', 'true');
+		//	nullSwitch.classList.add('required');
+		// }
+
+		// Store field group
+		// const storeLbl = document.querySelector('#jform_store-lbl');
+		// const store = document.querySelector('#jform_store');
+		// if (storeLbl) storeLbl.closest('.control-group').style.display = '';
+		// if (store) store.closest('.control-group').style.display = '';
+		// updateFieldRequired('store', 0);
+		// if (store) {
+		//	store.setAttribute('required', 'required');
+		//	store.setAttribute('aria-required', 'true');
+		//	store.classList.add('required');
+		// }
+
+		// Update database-related selects to defaults (0 or empty) if needed
+		// unselectChoicesFieldValue('#jform_indexes');
+		// unselectChoicesFieldValue('#jform_store');
+
+		// Show/hide notices
+		document.querySelectorAll('.note_no_database_settings_needed').forEach(el => {
+			const group = el.closest('.control-group');
+			if (group) group.style.display = 'none';
+		});
+		document.querySelectorAll('.note_database_settings_needed').forEach(el => {
+			const group = el.closest('.control-group');
+			if (group) group.style.display = '';
 		});
 	}
 }
 
-// set properties the options
-propertiesArray = {};
-var propertyIdRemoved;
+/**
+ * Fetch and display the validation rules table from the server.
+ *
+ * This method requests the validation rules HTML from the server using
+ * getCodeFrom_server(), then injects it into the #display_validation_rules
+ * container. It is functionally identical to the original jQuery version
+ * but rewritten in pure, modern JavaScript.
+ *
+ * @return {Promise<void>}  Resolves when the validation rules are loaded and rendered.
+ * @since  3.1.3
+ */
+async function getValidationRulesTable() {
+	try {
+		// Request validation rules HTML from the server
+		const result = await getCodeFrom_server(1, 'type', 'type', 'getValidationRulesTable');
 
-function propertyDynamicSet() {
-	propertiesAvailable = {};
-	propertiesSelectedArray = {};
-	propertiesTrackerArray = {};
-	var i;
-	for (i = 0; i < 70; i++) { // for now this is the number of field we should check
-		// build ID
-		var id_check = rowIdKey+'_'+rowIdKey+i+'__name';
-		// first check if Id is on page as that not the same as the one currently calling
-		if (jQuery("#"+id_check).length && propertyIdRemoved !== id_check) {
-			// build the selected array
-			var key =  jQuery("#"+id_check+" option:selected").val();
-			var text =  jQuery("#"+id_check+" option:selected").text();
-			propertiesSelectedArray[key] = text;
-			// keep track of the value set
-			propertiesTrackerArray[id_check] = key;
-			// clear the options out
-			jQuery("#"+id_check).find('option').remove().end();
-		}
-	}
-	// trigger chosen on the list fields
-	// jQuery('.field_list_name_options').chosen({"disable_search_threshold":10,"search_contains":true,"allow_single_deselect":true,"placeholder_text_multiple":Joomla.Text._("COM_COMPONENTBUILDER_TYPE_OR_SELECT_SOME_OPTIONS"),"placeholder_text_single":Joomla.Text._("COM_COMPONENTBUILDER_SELECT_A_PROPERTY"),"no_results_text":Joomla.Text._("COM_COMPONENTBUILDER_NO_RESULTS_MATCH")});
-	// now build the list to keep
-	jQuery.each( propertiesArray, function( prop, name ) {
-		if (!propertiesSelectedArray.hasOwnProperty(prop)) {
-			propertiesAvailable[prop] = name;
-		}
-	});
-	// now add the lists back
-	jQuery.each( propertiesTrackerArray, function( tId, tKey ) {
-		if (jQuery('#'+tId).length) {
-			jQuery('#'+tId).append('<option value="'+tKey+'">'+propertiesSelectedArray[tKey]+'</option>');
-			jQuery.each( propertiesAvailable, function( aKey, aValue ) {
-				jQuery('#'+tId).append('<option value="'+aKey+'">'+aValue+'</option>');
-			});
-			jQuery('#'+tId).val(tKey);
-			jQuery('#'+tId).trigger('liszt:updated');
-		}
-	});
-}
-
-function rowWatcher() {
-	jQuery(document).on('subform-row-remove', function(event, row){
-       		propertyIdRemoved = jQuery(row.innerHTML).find('.field_list_name_options').attr('id');
-       		propertyDynamicSet();
-	});
-	jQuery(document).on('subform-row-add', function(event, row){
-       		propertyDynamicSet();
-	});
-}
-
-function propertyIsSet(prop, id, targetForm) {
-	var i;
-	for (i = 0; i < 70; i++) { // for now this is the number of field we should check
-		// build ID
-		var id_check = targetForm+'_'+targetForm+i+'__name';
-		// first check if Id is on page as that not the same as the one currently calling
-		if (jQuery("#"+id_check).length && id_check != id) {
-			// get the property value
-			var tmp = jQuery("#"+id_check+" option:selected").val();
-			// now validate
-			if (tmp === prop) {
-				return true;
+		// Inject result into target container if present
+		if (result) {
+			const target = document.getElementById('display_validation_rules');
+			if (target) {
+				target.innerHTML = result;
+			} else {
+				console.warn('[getValidationRulesTable] Target element #display_validation_rules not found.');
 			}
 		}
-	}
-	return false;
-}
-
-function getFieldPropertyDesc_server(fieldtype, property){
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getFieldPropertyDesc&format=json&raw=true&vdm="+vastDevMod);
-	if(token.length > 0 && (fieldtype > 0 || fieldtype.length > 0) && property.length > 0){
-		var request = token+'=1&fieldtype='+fieldtype+'&property='+property;
-	}
-	return jQuery.ajax({
-		type: 'GET',
-		url: getUrl,
-		dataType: 'json',
-		data: request,
-		jsonp: false
-	});
-}
-
-function getValidationRulesTable(){
-	getCodeFrom_server(1,'type','type', 'getValidationRulesTable').then(function(result) {
-		if(result){
-			jQuery('#display_validation_rules').html(result);
-		}
-	});
-}
-
-function dbChecker(type){
-	if ('note' === type || 'spacer' === type) {
-		// update the datatype selection
-		jQuery('#jform_datatype').val('').trigger('liszt:updated').change();
-		jQuery('#jform_datalenght').val('').trigger('liszt:updated').change();
-		jQuery('#jform_datadefault').val('').trigger('liszt:updated').change();
-		jQuery('#jform_datadefault').val('').trigger('liszt:updated').change();
-		jQuery('#jform_indexes').val(0).trigger('liszt:updated').change();
-		jQuery('#jform_store').val(0).trigger('liszt:updated').change();
-		// remove the datatype
-		jQuery('#jform_datatype-lbl').closest('.control-group').hide();
-		jQuery('#jform_datatype').closest('.control-group').hide();
-		updateFieldRequired('datatype',1);
-		jQuery('#jform_datatype').removeAttr('required');
-		jQuery('#jform_datatype').removeAttr('aria-required');
-		jQuery('#jform_datatype').removeClass('required');
-		// remove the null selection
-		jQuery('#jform_null_switch-lbl').closest('.control-group').hide();
-		jQuery('#jform_null_switch').closest('.control-group').hide();
-		updateFieldRequired('null_switch',1);
-		jQuery('#jform_null_switch').removeAttr('required');
-		jQuery('#jform_null_switch').removeAttr('aria-required');
-		jQuery('#jform_null_switch').removeClass('required');
-		// remove the store (modeling method)
-		jQuery('#jform_store-lbl').closest('.control-group').hide();
-		jQuery('#jform_store').closest('.control-group').hide();
-		updateFieldRequired('store',1);
-		jQuery('#jform_store').removeAttr('required');
-		jQuery('#jform_store').removeAttr('aria-required');
-		jQuery('#jform_store').removeClass('required');
-		// show notice
-		jQuery('.note_no_database_settings_needed').closest('.control-group').show();
-		jQuery('.note_database_settings_needed').closest('.control-group').hide();
-	} else {
-		// add the datatype
-		jQuery('#jform_datatype-lbl').closest('.control-group').show();
-		jQuery('#jform_datatype').closest('.control-group').show();
-		updateFieldRequired('datatype',0);
-		jQuery('#jform_datatype').prop('required','required');
-		jQuery('#jform_datatype').attr('aria-required',true);
-		jQuery('#jform_datatype').addClass('required');
-		// add the null selection
-		jQuery('#jform_null_switch-lbl').closest('.control-group').show();
-		jQuery('#jform_null_switch').closest('.control-group').show();
-		updateFieldRequired('null_switch',0);
-		jQuery('#jform_null_switch').prop('required','required');
-		jQuery('#jform_null_switch').attr('aria-required',true);
-		jQuery('#jform_null_switch').addClass('required');
-		// remove the store (modeling method)
-		jQuery('#jform_store-lbl').closest('.control-group').show();
-		jQuery('#jform_store').closest('.control-group').show();
-		updateFieldRequired('store',0);
-		jQuery('#jform_store').prop('required','required');
-		jQuery('#jform_store').attr('aria-required',true);
-		jQuery('#jform_store').addClass('required');
-		// remove notice
-		jQuery('.note_no_database_settings_needed').closest('.control-group').hide();
-		jQuery('.note_database_settings_needed').closest('.control-group').show();
+	} catch (error) {
+		console.error('[getValidationRulesTable] Failed to fetch validation rules table:', error);
 	}
 }
 
@@ -882,23 +1296,23 @@ async function getCodeFrom_server(id, type, typeName, callingName) {
 	try {
 		// --- Validation ---
 		if (!getCodeFrom_isValidId(id)) {
-			console.error('[getCodeFrom_server] Invalid ID provided:', id);
+			console.debug('[getCodeFrom_server] Invalid ID provided:', id);
 			return null;
 		}
 		if (typeof type !== 'string' || !type.trim()) {
-			console.error('[getCodeFrom_server] Invalid type provided:', type);
+			console.debug('[getCodeFrom_server] Invalid type provided:', type);
 			return null;
 		}
 		if (typeof typeName !== 'string' || !typeName.trim()) {
-			console.error('[getCodeFrom_server] Invalid typeName provided:', typeName);
+			console.debug('[getCodeFrom_server] Invalid typeName provided:', typeName);
 			return null;
 		}
 		if (typeof callingName !== 'string' || !callingName.trim()) {
-			console.error('[getCodeFrom_server] Invalid callingName provided:', callingName);
+			console.debug('[getCodeFrom_server] Invalid callingName provided:', callingName);
 			return null;
 		}
 		if (typeof token !== 'string' || !token.trim()) {
-			console.error('[getCodeFrom_server] Missing security token.');
+			console.debug('[getCodeFrom_server] Missing security token.');
 			return null;
 		}
 
@@ -1253,55 +1667,153 @@ async function getEditCustomCodeButtons() {
 }
 
 /**
- * Set a field value, trigger Joomla/Choices refresh,
- * and remove it from the required list when applicable.
+ * Set a field value and keep the visible UI (Choices/Joomla Fancy Select) in sync.
  *
- * This ensures both the underlying value and visible UI remain synchronized.
- * If the element is a plain input (e.g. type="text"), Choices initialization is skipped.
+ * - Skips Choices/Joomla fancy select logic for plain text/number/email/url inputs.
+ * - Only updates the value if it actually changed.
+ * - Avoids duplicate change events that can cause recursion.
  *
- * @param  {string} selector     CSS selector for the field element.
- * @param  {any}    value        The value to assign to the field.
+ * @param  {string} selector  CSS selector for the field element.
+ * @param  {any}    value     The value to assign to the field.
+ * @param  {bool}   forceBubbles
  *
  * @return {void}
  * @since  5.1.3
  */
-function setChoicesFieldValue(selector, value) {
+function setChoicesFieldValue(selector, value, forceBubbles = true) {
 	const field = document.querySelector(selector);
 	if (!field) {
 		return;
 	}
 
-	// Update the native field value
-	field.value = value ?? '';
+	// Compute normalized new value and current value
+	const newVal = value == null ? '' : String(value);
+	const curVal = field.value == null ? '' : String(field.value);
 
-	// Skip Choices/FancySelect logic for plain input fields
-	const tagName = field.tagName.toLowerCase();
-	const fieldType = field.getAttribute('type') ? field.getAttribute('type').toLowerCase() : '';
+	// Skip work if nothing changed (prevents unnecessary events/loops)
+	const valueChanged = newVal !== curVal;
+	isPlainInput = isPlainInputField(field);
 
-	if (tagName === 'input' && (fieldType === 'text' || fieldType === 'number' || fieldType === 'email' || fieldType === 'url')) {
-		// Trigger native change event for Joomla listeners
-		field.dispatchEvent(new Event('change', { bubbles: true }));
+	// For plain inputs: set only if changed, then emit a single change
+	if (isPlainInput) {
+		if (valueChanged) {
+			field.value = newVal;
+			// Fire a single change to notify observers; no need for input here
+			field.dispatchEvent(new Event('change', { bubbles: true }));
+		}
 		return;
 	}
 
-	// Ensure Choices or Joomla Fancy Select instance exists
+	// For selects (or other widgets) ensure Choices/Joomla Fancy Select is ready
 	const choicesInstance = ensureChoicesInitialization(field);
 
-	// Update the visible Choices UI if active
+	// Update only if value actually changed
+	if (valueChanged) {
+		// Update the native value first
+		field.value = newVal;
+
+		// If we have a Choices/Joomla instance, update its UI.
+		// These often emit their own change event; no need to manually dispatch another.
+		if (choicesInstance) {
+			try {
+				// Preferred API
+				choicesInstance.setChoiceByValue(newVal);
+			} catch (err) {
+				// Fallback for older APIs
+				if (typeof choicesInstance.setValue === 'function') {
+					choicesInstance.setValue(newVal);
+				}
+			}
+			if (!forceBubbles) {
+				return;
+			}
+		}
+
+		// No widget present: dispatch a single change event.
+		field.dispatchEvent(new Event('change', { bubbles: true }));
+	}
+}
+
+/**
+ * Unselect the current value from a Joomla Fancy Select / Choices.js field
+ * without removing or clearing its available options.
+ *
+ * - Keeps all existing options intact.
+ * - Ensures an empty option ("Select an option") exists.
+ * - Visually and logically deselects the current choice.
+ * - Works with both Joomla.FieldChoices and plain Choices.js.
+ *
+ * @param  {string} selector  CSS selector for the field element.
+ *
+ * @return {void}
+ * @since  5.1.5
+ */
+function unselectChoicesFieldValue(selector) {
+	const field = document.querySelector(selector);
+	if (!field) {
+		console.warn('unselectChoicesFieldValue: field not found ->', selector);
+		return;
+	}
+
+	// Compute normalized new value and current value
+	const newVal = '';
+	const curVal = field.value == null ? '' : String(field.value);
+
+	// Skip work if nothing changed (prevents unnecessary events/loops)
+	const valueChanged = newVal !== curVal;
+	isPlainInput = isPlainInputField(field);
+
+	// Update only if value actually changed
+	if (!valueChanged) {
+		return;
+	}
+
+	// For plain inputs: set only if changed, then emit a single change
+	if (isPlainInput) {
+		if (valueChanged) {
+			field.value = newVal;
+			// Fire a single change to notify observers; no need for input here
+			field.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+		return;
+	}
+
+	// Ensure an empty option exists
+	let emptyOption = field.querySelector('option[value=""]');
+	if (!emptyOption) {
+		emptyOption = document.createElement('option');
+		emptyOption.value = '';
+		emptyOption.textContent = 'Select an option';
+		field.insertBefore(emptyOption, field.firstChild);
+	}
+
+	// Initialize or fetch existing Choices/Fancy Select instance
+	const choicesInstance = ensureChoicesInitialization(field);
+
+	// Set the field to the empty option (unselect)
+	field.value = emptyOption.value;
+
+	// Update Choices/Fancy Select visually without clearing the available choices
 	if (choicesInstance) {
 		try {
-			choicesInstance.setChoiceByValue(String(value ?? ''));
-			if (typeof choicesInstance._handleButtonAction === 'function') {
-				choicesInstance._handleButtonAction();
+			// Try the standard method first
+			if (typeof choicesInstance.setChoiceByValue === 'function') {
+				choicesInstance.setChoiceByValue(emptyOption.value);
 			}
-		} catch (err) {
-			if (typeof choicesInstance.setValue === 'function') {
-				choicesInstance.setValue(String(value ?? ''));
+			// Fallback for older APIs
+			else if (typeof choicesInstance.setValue === 'function') {
+				choicesInstance.setValue([emptyOption.value]);
 			}
+			// Some Joomla Fancy Selects may use a selectElement property
+			else if (choicesInstance.passedElement?.element) {
+				choicesInstance.passedElement.element.value = emptyOption.value;
+			}
+		} catch (e) {
+			console.warn('unselectChoicesFieldValue: failed to update UI', e);
 		}
 	}
 
-	// Trigger native change event for Joomla listeners
+	// Fire a proper change event to keep observers in sync
 	field.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
@@ -1356,4 +1868,17 @@ function ensureChoicesInitialization(element) {
 	}
 
 	return null;
+}
+
+/**
+ * Detects whether an element is a plain input (not a select/Choices).
+ *
+ * @param  {HTMLElement} field
+ * @return {boolean}
+ * @since  5.1.3
+ */
+function isPlainInputField(field) {
+	const tagName = field.tagName.toLowerCase();
+	const type = (field.getAttribute('type') || '').toLowerCase();
+	return tagName === 'input' && ['text', 'number', 'email', 'url'].includes(type);
 }

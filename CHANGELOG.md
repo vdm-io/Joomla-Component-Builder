@@ -1,3 +1,9 @@
+# v6.1.3
+
+- Stability update addressing a post-release field issue. #1262
+- Fix a security vulnerability in custom code redirect URL validation.
+- Add an alert to the Compiler view when no Components exist. #1263
+
 # v6.1.2
 
 - Add Joomla 6 build option

@@ -119,10 +119,10 @@
 			name="fieldtype"
 			label="COM_COMPONENTBUILDER_FIELD_FIELDTYPE_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_FIELDTYPE_DESCRIPTION"
+			class="list_class"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
-			button="true"
 		/>
 		<!-- Datatype Field. Type: List. (joomla) -->
 		<field
@@ -130,7 +130,7 @@
 			name="datatype"
 			label="COM_COMPONENTBUILDER_FIELD_DATATYPE_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_DATATYPE_DESCRIPTION"
-			class="btn-group"
+			class="list_class"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
@@ -180,7 +180,7 @@
 			type="list"
 			name="indexes"
 			label="COM_COMPONENTBUILDER_FIELD_INDEXES_LABEL"
-			class="btn-group"
+			class="list_class"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			filter="INT"
@@ -299,7 +299,7 @@
 			name="datalenght"
 			label="COM_COMPONENTBUILDER_FIELD_DATALENGHT_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_DATALENGHT_DESCRIPTION"
-			class="btn-group"
+			class="list_class"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			required="true"
@@ -402,7 +402,7 @@
 			name="datadefault"
 			label="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_LABEL"
 			description="COM_COMPONENTBUILDER_FIELD_DATADEFAULT_DESCRIPTION"
-			class="btn-group"
+			class="list_class"
 			layout="joomla.form.field.list-fancy-select"
 			multiple="false"
 			default="">

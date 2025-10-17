@@ -283,44 +283,77 @@ jQuery('#adminForm').on('change', '#jform_add_javascript_views_footer',function 
 
 
 
-jQuery(function() {
-	setTimeout(
-		function() {
-			// make sure the code bocks are active
-			document.querySelectorAll("code").forEach(function(codeBlock) {
-				codeBlock.addEventListener("click", function() {
-					codeBlock.selText(); // Call the custom selText function
-					codeBlock.classList.add("selected"); // Add the "selected" class
-				});
+/**
+ * Initialize form listeners and code block click handlers.
+ *
+ * Fully replaces the original jQuery logic in pure JavaScript.
+ *
+ * @since 5.1.3
+ */
+document.addEventListener('DOMContentLoaded', function () {
+	setTimeout(function () {
+		document.querySelectorAll('code').forEach(function (codeBlock) {
+			codeBlock.addEventListener('click', function () {
+				codeBlock.selText();
+				codeBlock.classList.add('selected');
 			});
-		}, 2000);
+		});
+	}, 2000);
+
+	const adminForm = document.getElementById('adminForm');
+	if (adminForm) {
+		adminForm.addEventListener('change', function (e) {
+			if (e.target && e.target.id === 'jform_fieldtype') {
+				e.preventDefault();
+
+				// Get selected option
+				const select = document.getElementById('jform_fieldtype');
+				const selected = select.options[select.selectedIndex];
+				if (!selected) return;
+
+				const fieldId = selected.value;
+				const fieldText = selected.textContent.trim().toLowerCase();
+
+				// Run your existing functions (kept identical)
+				getFieldTypeProperties(fieldId, true);
+				dbChecker(fieldText);
+			}
+		});
+	}
 });
 
-jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
-	e.preventDefault();
-	// get type value
-	var fieldId = jQuery("#jform_fieldtype option:selected").val();
-	getFieldTypeProperties(fieldId, true);
-	// get the field type text
-	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
-	// now check if database input is needed
-	dbChecker(fieldText);
-});
+/**
+ * Select all text content within an HTMLElement.
+ *
+ * Adds a convenient `selText()` method to all HTMLElements.
+ * Works across modern browsers and gracefully handles errors.
+ *
+ * @return {HTMLElement}  Returns the element itself for chaining.
+ * @since  5.1.3
+ */
+HTMLElement.prototype.selText = function () {
+	try {
+		const selection = window.getSelection();
+		if (!selection) {
+			console.warn('selText: window.getSelection() not supported in this environment.');
+			return this;
+		}
 
+		const range = document.createRange();
+		range.selectNodeContents(this);
 
-HTMLElement.prototype.selText = function() {
-    var obj = this;
+		selection.removeAllRanges(); // clear any prior selections
+		selection.addRange(range);   // select the element's text content
 
-    // For modern browsers, handle the selection
-    var selection = window.getSelection();
-    var range = document.createRange();
+		// Optionally bring the element into view if it's outside viewport
+		if (typeof this.scrollIntoView === 'function') {
+			this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	} catch (error) {
+		console.error('selText failed:', error);
+	}
 
-    // Select the content of the element
-    range.selectNodeContents(obj);
-    selection.removeAllRanges();  // Clear any previous selections
-    selection.addRange(range);    // Add the new selection range
-
-    return this;
+	return this;
 };
 
 <?php

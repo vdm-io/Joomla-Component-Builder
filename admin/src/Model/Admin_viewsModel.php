@@ -120,20 +120,20 @@ class Admin_viewsModel extends ListModel
 		$form = parent::getFilterForm($data, $loadData);
 
 		// Create the "joomla_component" filter
-		$attributes = array(
+		$attributes = [
 			'name' => 'joomla_component',
 			'type' => 'list',
 			'onchange' => 'this.form.submit();',
-		);
-		$options = array(
+		];
+		$options = [
 			'' => '-  ' . Text::_('COM_COMPONENTBUILDER_NO_COMPONENTS_FOUND') . '  -'
-		);
+		];
 		// check if we have joomla components
 		if (($joomla_components = JCBFilterHelper::names('joomla_component')) !== null)
 		{
-			$options = array(
+			$options = [
 				'' => '-  ' . Text::_('COM_COMPONENTBUILDER_SELECT_COMPONENT') . '  -'
-			);
+			];
 			// make sure we do not lose the key values in normal merge
 			$options = $options + $joomla_components;
 		}
