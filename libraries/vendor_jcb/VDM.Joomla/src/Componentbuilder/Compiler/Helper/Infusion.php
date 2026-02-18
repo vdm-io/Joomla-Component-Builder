@@ -39,22 +39,6 @@ class Infusion extends Interpretation
 {
 	public $langFiles = [];
 
-	/**
-	 * Switch to remove site folder
-	 *
-	 * @var     bool
-	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_folder;
-	 */
-	public $removeSiteFolder = false;
-
-	/**
-	 * Switch to remove site edit folder
-	 *
-	 * @var     bool
-	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_edit_folder;
-	 */
-	public $removeSiteEditFolder = true;
-
 	public $secondRunAdmin;
 
 	/**
@@ -120,12 +104,13 @@ class Infusion extends Interpretation
 			);
 
 			// CREATIONDATE
-			CFactory::_('Compiler.Builder.Content.One')->set('CREATIONDATE',
-				Factory::getDate(CFactory::_('Component')->get('created'))->format(
-				'jS F, Y'
-			));
-			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALCREATIONDATE',
-				CFactory::_('Compiler.Builder.Content.One')->get('CREATIONDATE'));
+			$creationDate = CFactory::_('Component')->get('created');
+			$creationDateFormat = Factory::getDate($creationDate)->format('jS F, Y');
+
+			CFactory::_('Compiler.Builder.Content.One')->set('CREATIONDATE', $creationDateFormat);
+			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALCREATIONDATE', $creationDateFormat);
+
+			CFactory::_('Utilities.Counter')->projectStart = strtotime($creationDate);
 
 			// BUILDDATE
 			CFactory::_('Compiler.Builder.Content.One')->set('BUILDDATE', Factory::getDate(
@@ -233,7 +218,7 @@ class Infusion extends Interpretation
 
 			// COMP_IMAGE_TYPE
 			CFactory::_('Compiler.Builder.Content.One')->set('COMP_IMAGE_TYPE',
-				$this->setComponentImageType(CFactory::_('Component')->get('image'))
+				CFactory::_('Architecture.Component.ImageType')->set(CFactory::_('Component')->get('image') ?? '')
 			);
 
 			// ACCESS_SECTIONS
@@ -345,9 +330,9 @@ class Infusion extends Interpretation
 			);
 
 			// HELP
-			CFactory::_('Compiler.Builder.Content.One')->set('HELP', $this->noHelp());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELP', CFactory::_('Compiler.Creator.Helper')->none());
 			// HELP_SITE
-			CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', $this->noHelp());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', CFactory::_('Compiler.Creator.Helper')->none());
 
 			// build route parse switch
 			CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_PARSE_SWITCH', '');
@@ -355,7 +340,7 @@ class Infusion extends Interpretation
 			CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_BUILD_VIEWS', '');
 
 			// add the helper emailer if set
-			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_EMAIL', $this->addEmailHelper());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_EMAIL', CFactory::_('Compiler.Creator.Email.Helper')->get());
 
 			// load the global placeholders
 			foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder =>
@@ -394,8 +379,10 @@ class Infusion extends Interpretation
 					// insure site view does not get removed
 					CFactory::_('Config')->remove_site_edit_folder = false;
 				}
+
 				// check if help is being loaded
-				$this->checkHelp($nameSingleCode);
+				CFactory::_('Compiler.Creator.Helper')->set($nameSingleCode);
+
 				// set custom admin view list links
 				$this->setCustomAdminViewListLink(
 					$view, $nameListCode
@@ -453,12 +440,17 @@ class Infusion extends Interpretation
 
 					// ADDTOOLBAR <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDTOOLBAR',
-						$this->setAddToolBar($view)
+						CFactory::_('Architecture.AdminView.AddToolBar')->get($view)
+					);
+
+					// INITTOOLBAR <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|INITTOOLBAR',
+						CFactory::_('Architecture.AdminView.AddToolBar')->initSite()
 					);
 
 					// ADDMODALTOOLBAR <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDMODALTOOLBAR',
-						$this->setAddModalToolBar($view)
+						CFactory::_('Architecture.AdminView.AddModalToolBar')->get($view)
 					);
 
 					// set the script for this view
@@ -738,6 +730,13 @@ class Infusion extends Interpretation
 					&& $view['settings']->name_list != 'null')
 				{
 					CFactory::_('Config')->lang_target = 'admin';
+					// ensure the language strings array also added to the site view
+					if (isset($view['edit_create_site_view'])
+						&& is_numeric($view['edit_create_site_view'])
+						&& $view['edit_create_site_view'] > 0)
+					{
+						CFactory::_('Config')->lang_target = 'both';
+					}
 
 					// ICOMOON <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ICOMOON', $view['icomoon']);
@@ -748,11 +747,12 @@ class Infusion extends Interpretation
 					);
 
 					// set the export/import option
+					$add_custom_import = (int) ($view['settings']->add_custom_import ?? 0);
 					if (isset($view['port']) && $view['port']
-						|| 1 == $view['settings']->add_custom_import)
+						|| 1 === $add_custom_import)
 					{
 						$this->eximportView[$nameListCode] = true;
-						if (1 == $view['settings']->add_custom_import)
+						if (1 === $add_custom_import)
 						{
 							// this view has custom import scripting
 							$this->importCustomScripts[$nameListCode]
@@ -799,10 +799,10 @@ class Infusion extends Interpretation
 					);
 					// ADMIN_CUSTOM_BUTTONS_LIST
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_CUSTOM_BUTTONS_LIST',
-						$this->setCustomButtons($view, 3, Indent::_(1)));
+						CFactory::_('Architecture.CustomButtons')->get($view, 3, Indent::_(1)));
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST',
-						$this->setFunctionOnlyButtons(
-							$nameListCode
+						CFactory::_('Compiler.Builder.Only.Function.Buttons')->get(
+							$nameListCode, ''
 						)
 					);
 
@@ -1188,7 +1188,7 @@ class Infusion extends Interpretation
 
 				// JMODELADMIN_ALLOWEDIT <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_ALLOWEDIT',
-					$this->setJmodelAdminAllowEdit(
+					CFactory::_('Architecture.Model.AllowEdit')->get(
 						$nameSingleCode,
 						$nameListCode
 					)
@@ -1211,7 +1211,7 @@ class Infusion extends Interpretation
 				// set custom admin view Toolbare buttons
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS  <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CUSTOM_ADMIN_DYNAMIC_BUTTONS',
-					$this->setCustomAdminDynamicButton(
+					CFactory::_('Architecture.DynamicButtons')->get(
 						$nameListCode
 					)
 				);
@@ -1220,6 +1220,11 @@ class Infusion extends Interpretation
 					$this->setCustomAdminDynamicButtonController(
 						$nameListCode
 					)
+				);
+
+				// ADDTOOLBAR <<<DYNAMIC>>>
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADDTOOLBAR',
+					CFactory::_('Architecture.AdminViews.AddToolBar')->get($view)
 				);
 
 				// set helper router
@@ -1499,6 +1504,10 @@ class Infusion extends Interpretation
 								'custom.admin.view', $view['settings']->code
 							)
 						);
+						// CUSTOM_ADMIN_ADDTOOLBAR <<<DYNAMIC>>>
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_ADDTOOLBAR',
+							CFactory::_('Architecture.CustomAdminView.AddToolBar')->get($view)
+						);
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
@@ -1526,6 +1535,10 @@ class Infusion extends Interpretation
 							CFactory::_('Header')->get(
 								'custom.admin.views', $view['settings']->code
 							)
+						);
+						// CUSTOM_ADMIN_ADDTOOLBAR <<<DYNAMIC>>>
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_ADDTOOLBAR',
+							CFactory::_('Architecture.CustomAdminViews.AddToolBar')->get($view)
 						);
 					}
 
@@ -1981,6 +1994,10 @@ class Infusion extends Interpretation
 					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_BODY',
 						$this->setCustomViewBody($view)
 					);
+					// SITE_ADDTOOLBAR <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_ADDTOOLBAR',
+						CFactory::_('Architecture.SiteView.AddToolBar')->get($view)
+					);
 
 					// setup the templates
 					$this->setCustomViewTemplateBody($view);
@@ -2252,7 +2269,6 @@ class Infusion extends Interpretation
 			// rest globals
 			CFactory::_('Config')->build_target = $_backup_target;
 			CFactory::_('Config')->lang_target = $_backup_lang;
-			$this->langPrefix = $_backup_langPrefix;
 			CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent

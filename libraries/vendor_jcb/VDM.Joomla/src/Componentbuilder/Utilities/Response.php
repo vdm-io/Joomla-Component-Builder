@@ -39,13 +39,17 @@ final class Response
 	public function get(JoomlaResponse $response, int  $expectedCode = 200, $default = null)
 	{
 		// Validate the response code.
-		if ($response->code != $expectedCode)
+		$code = method_exists($response, 'getStatusCode')
+			? (string) $response->getStatusCode()
+			: ($response->code ?? null);
+
+		if ($code != $expectedCode)
 		{
 			// Decode the error response and throw an exception.
 			$message = $this->error($response);
 
 			// Throw an exception with the error message and code.
-			throw new \DomainException($message, $response->code);
+			throw new \DomainException($message, $code);
 		}
 
 		return $this->getBody($response, $default);
@@ -62,11 +66,11 @@ final class Response
 	 **/
 	protected function getBody(JoomlaResponse $response, $default = null)
 	{
+		// check that we have a body
 		$body = is_object($response) && method_exists($response, 'getBody')
 			? (string) $response->getBody()
 			: (isset($response->body) ? (string) $response->body : null);
 
-		// check that we have a body
 		if ($body !== null && StringHelper::check($body))
 		{
 			// if it's JSON, decode it

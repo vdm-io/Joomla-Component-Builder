@@ -118,7 +118,7 @@ class Site_viewModel extends AdminModel
 				'note_linked_to_notice'
 			)
 		),
-		'custom_buttons' => array(
+		'toolbar' => array(
 			'left' => array(
 				'add_custom_button'
 			),
@@ -129,7 +129,9 @@ class Site_viewModel extends AdminModel
 				'note_custom_toolbar_placeholder',
 				'custom_button',
 				'php_controller',
-				'php_model'
+				'php_model',
+				'add_view_toolbar',
+				'view_toolbar'
 			)
 		)
 	);
@@ -265,26 +267,26 @@ class Site_viewModel extends AdminModel
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params) && !is_array($item->params))
-			{
-				// Convert the params field to an array.
-				$registry = new Registry;
-				$registry->loadString($item->params);
-				$item->params = $registry->toArray();
-			}
-
-			if (!empty($item->metadata))
+			if (property_exists($item, 'metadata') && !is_array($item->metadata))
 			{
 				// Convert the metadata field to an array.
-				$registry = new Registry;
-				$registry->loadString($item->metadata);
-				$item->metadata = $registry->toArray();
+				$metadata       = new Registry($item->metadata);
+				$item->metadata = $metadata->toArray();
 			}
 
-			if (!empty($item->js_document))
+			// check edit access permissions
+			if (!empty($item->id) && !$this->allowEdit((array) $item))
 			{
-				// base64 Decode js_document.
-				$item->js_document = base64_decode($item->js_document);
+ 				$app = Factory::getApplication();
+  				$app->enqueueMessage(Text::_('Not authorised!'), 'error');
+				$app->redirect('index.php?option=com_componentbuilder');
+				return false;
+			}
+
+			if (!empty($item->php_ajaxmethod))
+			{
+				// base64 Decode php_ajaxmethod.
+				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
 			}
 
 			if (!empty($item->javascript_file))
@@ -293,10 +295,22 @@ class Site_viewModel extends AdminModel
 				$item->javascript_file = base64_decode($item->javascript_file);
 			}
 
+			if (!empty($item->view_toolbar))
+			{
+				// base64 Decode view_toolbar.
+				$item->view_toolbar = base64_decode($item->view_toolbar);
+			}
+
 			if (!empty($item->default))
 			{
 				// base64 Decode default.
 				$item->default = base64_decode($item->default);
+			}
+
+			if (!empty($item->js_document))
+			{
+				// base64 Decode js_document.
+				$item->js_document = base64_decode($item->js_document);
 			}
 
 			if (!empty($item->css_document))
@@ -309,12 +323,6 @@ class Site_viewModel extends AdminModel
 			{
 				// base64 Decode css.
 				$item->css = base64_decode($item->css);
-			}
-
-			if (!empty($item->php_ajaxmethod))
-			{
-				// base64 Decode php_ajaxmethod.
-				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
 			}
 
 			if (!empty($item->php_document))
@@ -335,16 +343,16 @@ class Site_viewModel extends AdminModel
 				$item->php_jview_display = base64_decode($item->php_jview_display);
 			}
 
-			if (!empty($item->php_jview))
-			{
-				// base64 Decode php_jview.
-				$item->php_jview = base64_decode($item->php_jview);
-			}
-
 			if (!empty($item->php_controller))
 			{
 				// base64 Decode php_controller.
 				$item->php_controller = base64_decode($item->php_controller);
+			}
+
+			if (!empty($item->php_jview))
+			{
+				// base64 Decode php_jview.
+				$item->php_jview = base64_decode($item->php_jview);
 			}
 
 			if (!empty($item->php_model))
@@ -701,20 +709,60 @@ class Site_viewModel extends AdminModel
 	}
 
 	/**
-	 * Method override to check if you can edit an existing record.
+	 * Method to check if you can edit an existing record.
+	 *   We know this is a double access check (Controller already does an allowEdit check)
+	 *   But when the item is directly accessed the controller is skipped (2025_).
 	 *
 	 * @param    array    $data   An array of input data.
 	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return   boolean
+	 * @return   boolean  True if allowed to edit the record. Defaults to the permission set in the component.
 	 * @since    2.5
 	 */
-	protected function allowEdit($data = [], $key = 'id')
+	protected function allowEdit(array $data = [], string $key = 'id'): bool
 	{
-		// Check specific edit permission then general edit permission.
-		$user = Factory::getApplication()->getIdentity();
+		// get user object.
+		$user = $this->getCurrentUser();
+		// get record id.
+		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 
-		return $user->authorise('core.edit', 'com_componentbuilder.site_view.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('core.edit',  'com_componentbuilder');
+
+		// Access check.
+		$access = ($user->authorise('site_view.access', 'com_componentbuilder.site_view.' . (int) $recordId) && $user->authorise('site_view.access', 'com_componentbuilder'));
+		if (!$access)
+		{
+			return false;
+		}
+
+		if ($recordId)
+		{
+			// The record has been set. Check the record permissions.
+			$permission = $user->authorise('core.edit', 'com_componentbuilder.site_view.' . (int) $recordId);
+			if (!$permission)
+			{
+				if ($user->authorise('core.edit.own', 'com_componentbuilder.site_view.' . $recordId))
+				{
+					// Now test the owner is the user.
+					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+					if (empty($ownerId))
+					{
+						return false;
+					}
+
+					// If the owner matches 'me' then allow.
+					if ($ownerId == $user->id)
+					{
+						if ($user->authorise('core.edit.own', 'com_componentbuilder'))
+						{
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		}
+		// Since there is no permission given, core edit must be checked.
+		return $user->authorise('core.edit', $this->option);
 	}
 
 	/**
@@ -790,7 +838,7 @@ class Site_viewModel extends AdminModel
 			$data = $this->getItem();
 		}
 
-		// run the perprocess of the data
+		// run the per process of the data
 		$this->preprocessData('com_componentbuilder.site_view', $data);
 
 		return $data;
@@ -841,351 +889,6 @@ class Site_viewModel extends AdminModel
 		{
 			return false;
 		}
-
-		return true;
-	}
-
-	/**
-	 * Method to perform batch operations on an item or a set of items.
-	 *
-	 * @param   array  $commands  An array of commands to perform.
-	 * @param   array  $pks       An array of item ids.
-	 * @param   array  $contexts  An array of item contexts.
-	 *
-	 * @return  boolean  Returns true on success, false on failure.
-	 * @since   12.2
-	 */
-	public function batch($commands, $pks, $contexts)
-	{
-		// Sanitize ids.
-		$pks = array_unique($pks);
-		ArrayHelper::toInteger($pks);
-
-		// Remove any values of zero.
-		if (array_search(0, $pks, true))
-		{
-			unset($pks[array_search(0, $pks, true)]);
-		}
-
-		if (empty($pks))
-		{
-			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
-			return false;
-		}
-
-		$done = false;
-
-		// Set some needed variables.
-		$this->user ??= $this->getCurrentUser();
-		$this->table = $this->getTable();
-		$this->tableClassName = get_class($this->table);
-		$this->contentType = new UCMType;
-		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo = ComponentbuilderHelper::getActions('site_view');
-		$this->batchSet = true;
-
-		if (!$this->canDo->get('core.batch'))
-		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		if ($this->type == false)
-		{
-			$type = new UCMType;
-			$this->type = $type->getTypeByAlias($this->typeAlias);
-		}
-
-		$this->tagsObserver = $this->table->getObserverOfClass('JTableObserverTags');
-
-		if (!empty($commands['move_copy']))
-		{
-			$cmd = ArrayHelper::getValue($commands, 'move_copy', 'c');
-
-			if ($cmd == 'c')
-			{
-				$result = $this->batchCopy($commands, $pks, $contexts);
-
-				if (is_array($result))
-				{
-					foreach ($result as $old => $new)
-					{
-						$contexts[$new] = $contexts[$old];
-					}
-					$pks = array_values($result);
-				}
-				else
-				{
-					return false;
-				}
-			}
-			elseif ($cmd == 'm' && !$this->batchMove($commands, $pks, $contexts))
-			{
-				return false;
-			}
-
-			$done = true;
-		}
-
-		if (!$done)
-		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		// Clear the cache
-		$this->cleanCache();
-
-		return true;
-	}
-
-	/**
-	 * Batch copy items to a new category or current.
-	 *
-	 * @param   integer  $values    The new values.
-	 * @param   array    $pks       An array of row IDs.
-	 * @param   array    $contexts  An array of item contexts.
-	 *
-	 * @return  mixed  An array of new IDs on success, boolean false on failure.
-	 *
-	 * @since 12.2
-	 */
-	protected function batchCopy($values, $pks, $contexts)
-	{
-		if (empty($this->batchSet))
-		{
-			// Set some needed variables.
-			$this->user 		= Factory::getApplication()->getIdentity();
-			$this->table 		= $this->getTable();
-			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
-		}
-
-		if (!$this->canDo->get('core.create') && !$this->canDo->get('site_view.batch'))
-		{
-			return false;
-		}
-
-		// get list of unique fields
-		$uniqueFields = $this->getUniqueFields();
-		// remove move_copy from array
-		unset($values['move_copy']);
-
-		// make sure published is set
-		if (!isset($values['published']))
-		{
-			$values['published'] = 0;
-		}
-		elseif (isset($values['published']) && !$this->canDo->get('core.edit.state'))
-		{
-				$values['published'] = 0;
-		}
-
-		$newIds = [];
-		// Parent exists so let's proceed
-		while (!empty($pks))
-		{
-			// Pop the first ID off the stack
-			$pk = array_shift($pks);
-
-			$this->table->reset();
-
-			// only allow copy if user may edit this item.
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
-			{
-				// Not fatal error
-				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-				continue;
-			}
-
-			// Check that the row actually exists
-			if (!$this->table->load($pk))
-			{
-				if ($error = $this->table->getError())
-				{
-					// Fatal error
-					$this->setError($error);
-					return false;
-				}
-				else
-				{
-					// Not fatal error
-					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-					continue;
-				}
-			}
-
-			// Only for strings
-			if (UtilitiesStringHelper::check($this->table->name) && !is_numeric($this->table->name))
-			{
-				$this->table->name = $this->generateUnique('name',$this->table->name);
-			}
-
-			// insert all set values
-			if (UtilitiesArrayHelper::check($values))
-			{
-				foreach ($values as $key => $value)
-				{
-					if (strlen($value) > 0 && isset($this->table->$key))
-					{
-						$this->table->$key = $value;
-					}
-				}
-			}
-
-			// update all unique fields
-			if (UtilitiesArrayHelper::check($uniqueFields))
-			{
-				foreach ($uniqueFields as $uniqueField)
-				{
-					$this->table->$uniqueField = $this->generateUnique($uniqueField,$this->table->$uniqueField);
-				}
-			}
-
-			// Reset the ID because we are making a copy
-			$this->table->id = 0;
-
-			// TODO: Deal with ordering?
-			// $this->table->ordering = 1;
-
-			// Check the row.
-			if (!$this->table->check())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-
-			if (!empty($this->type))
-			{
-				$this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
-			}
-
-			// Store the row.
-			if (!$this->table->store())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-
-			// Get the new item ID
-			$newId = $this->table->get('id');
-
-			// Add the new ID to the array
-			$newIds[$pk] = $newId;
-		}
-
-		// Clean the cache
-		$this->cleanCache();
-
-		return $newIds;
-	}
-
-	/**
-	 * Batch move items to a new category
-	 *
-	 * @param   integer  $value     The new category ID.
-	 * @param   array    $pks       An array of row IDs.
-	 * @param   array    $contexts  An array of item contexts.
-	 *
-	 * @return  boolean  True if successful, false otherwise and internal error is set.
-	 *
-	 * @since 12.2
-	 */
-	protected function batchMove($values, $pks, $contexts)
-	{
-		if (empty($this->batchSet))
-		{
-			// Set some needed variables.
-			$this->user		= Factory::getApplication()->getIdentity();
-			$this->table		= $this->getTable();
-			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
-		}
-
-		if (!$this->canDo->get('core.edit') && !$this->canDo->get('site_view.batch'))
-		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-			return false;
-		}
-
-		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('core.edit.state'))
-		{
-			unset($values['published']);
-		}
-		// remove move_copy from array
-		unset($values['move_copy']);
-
-		// Parent exists so we proceed
-		foreach ($pks as $pk)
-		{
-			if (!$this->user->authorise('core.edit', $contexts[$pk]))
-			{
-				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-				return false;
-			}
-
-			// Check that the row actually exists
-			if (!$this->table->load($pk))
-			{
-				if ($error = $this->table->getError())
-				{
-					// Fatal error
-					$this->setError($error);
-					return false;
-				}
-				else
-				{
-					// Not fatal error
-					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-					continue;
-				}
-			}
-
-			// insert all set values.
-			if (UtilitiesArrayHelper::check($values))
-			{
-				foreach ($values as $key => $value)
-				{
-					// Do special action for access.
-					if ('access' === $key && strlen($value) > 0)
-					{
-						$this->table->$key = $value;
-					}
-					elseif (strlen($value) > 0 && isset($this->table->$key))
-					{
-						$this->table->$key = $value;
-					}
-				}
-			}
-
-
-			// Check the row.
-			if (!$this->table->check())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-
-			if (!empty($this->type))
-			{
-				$this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
-			}
-
-			// Store the row.
-			if (!$this->table->store())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-		}
-
-		// Clean the cache
-		$this->cleanCache();
 
 		return true;
 	}
@@ -1307,10 +1010,10 @@ class Site_viewModel extends AdminModel
 			$data['custom_button'] = '';
 		}
 
-		// Set the js_document string to base64 string.
-		if (isset($data['js_document']))
+		// Set the php_ajaxmethod string to base64 string.
+		if (isset($data['php_ajaxmethod']))
 		{
-			$data['js_document'] = base64_encode($data['js_document']);
+			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
 		}
 
 		// Set the javascript_file string to base64 string.
@@ -1319,10 +1022,22 @@ class Site_viewModel extends AdminModel
 			$data['javascript_file'] = base64_encode($data['javascript_file']);
 		}
 
+		// Set the view_toolbar string to base64 string.
+		if (isset($data['view_toolbar']))
+		{
+			$data['view_toolbar'] = base64_encode($data['view_toolbar']);
+		}
+
 		// Set the default string to base64 string.
 		if (isset($data['default']))
 		{
 			$data['default'] = base64_encode($data['default']);
+		}
+
+		// Set the js_document string to base64 string.
+		if (isset($data['js_document']))
+		{
+			$data['js_document'] = base64_encode($data['js_document']);
 		}
 
 		// Set the css_document string to base64 string.
@@ -1335,12 +1050,6 @@ class Site_viewModel extends AdminModel
 		if (isset($data['css']))
 		{
 			$data['css'] = base64_encode($data['css']);
-		}
-
-		// Set the php_ajaxmethod string to base64 string.
-		if (isset($data['php_ajaxmethod']))
-		{
-			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
 		}
 
 		// Set the php_document string to base64 string.
@@ -1361,16 +1070,16 @@ class Site_viewModel extends AdminModel
 			$data['php_jview_display'] = base64_encode($data['php_jview_display']);
 		}
 
-		// Set the php_jview string to base64 string.
-		if (isset($data['php_jview']))
-		{
-			$data['php_jview'] = base64_encode($data['php_jview']);
-		}
-
 		// Set the php_controller string to base64 string.
 		if (isset($data['php_controller']))
 		{
 			$data['php_controller'] = base64_encode($data['php_controller']);
+		}
+
+		// Set the php_jview string to base64 string.
+		if (isset($data['php_jview']))
+		{
+			$data['php_jview'] = base64_encode($data['php_jview']);
 		}
 
 		// Set the php_model string to base64 string.

@@ -112,6 +112,14 @@ abstract class Config implements ConfigInterface
 	protected string $guid_field = 'guid';
 
 	/**
+	 * The item guid=unique helper field (another unique value)
+	 *
+	 * @var    string|null
+	 * @since  5.1.4
+	 */
+	protected ?string $guid_helper_field = null;
+
+	/**
 	 * The ignore fields
 	 *
 	 * @var   array
@@ -505,6 +513,17 @@ abstract class Config implements ConfigInterface
 	public function getGuidField(): string
 	{
 		return $this->guid_field;
+	}
+
+	/**
+	 * Get GUID Helper field
+	 *
+	 * @return string|null
+	 * @since  5.1.4
+	 */
+	public function getGuidHelperField(): ?string
+	{
+		return $this->guid_helper_field;
 	}
 
 	/**

@@ -87,6 +87,5 @@ $wa->useScript('core')
 
 	// add to page body
 	outerBodyDiv.appendChild(loadingDiv);
-</script>
 <?php echo LayoutHelper::render('exportlanguagetranslations', []); ?>
 </script>

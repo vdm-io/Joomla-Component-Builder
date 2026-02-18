@@ -25,12 +25,14 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use Joomla\CMS\Form\Form;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
+use Joomla\CMS\Toolbar\Toolbar;
 
 // No direct access to this file
 \defined('_JEXEC') or die; 
@@ -92,6 +94,14 @@ class HtmlView extends BaseHtmlView
 	protected array $scripts;
 
 	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -112,8 +122,10 @@ class HtmlView extends BaseHtmlView
 			: ComponentHelper::getParams('com_componentbuilder');
 		// get the user object
 		$this->user ??= $this->getCurrentUser();
-		// get global action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('search');
+
+		// get the permitted actions the current user can do.
+		$this->canDo = Actions::get('search');
+
 		// Load module values
 		$model = $this->getModel();
 		$this->styles = $model->getStyles();
@@ -384,24 +396,30 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
-		// hide the main menu
 		$this->input->set('hidemainmenu', true);
+
+		/** @var Toolbar $toolbar */
+		$toolbar = $this->getDocument()->getToolbar();
+
 		// set the title
-		if (isset($this->item->name) && $this->item->name)
+		if (!empty($this->item->name))
 		{
 			$title = $this->item->name;
 		}
-		// Check for empty title and add view name if param is set
+
+		// check for empty title to add the view name
 		if (empty($title))
 		{
 			$title = Text::_('COM_COMPONENTBUILDER_SEARCH');
 		}
+
 		// add title to the page
-		ToolbarHelper::title($title,'search');
+		ToolbarHelper::title($title, 'search');
 		// add cpanel button
 		ToolbarHelper::custom('search.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('search.compiler'))
@@ -409,18 +427,17 @@ class HtmlView extends BaseHtmlView
 			// add Compiler button.
 			ToolbarHelper::custom('search.openCompiler', 'cogs custom-button-opencompiler', '', 'COM_COMPONENTBUILDER_COMPILER', false);
 		}
-
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('search');
 		if (StringHelper::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_componentbuilder');
+			$toolbar->preferences('com_componentbuilder');
 		}
 	}
 

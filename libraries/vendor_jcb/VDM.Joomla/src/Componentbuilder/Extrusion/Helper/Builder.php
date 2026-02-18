@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Extrusion\Helper;
 
 use Joomla\CMS\Factory;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\User\IdentityTrait;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelperExtrusion as GetHelper;
 use VDM\Joomla\Componentbuilder\Extrusion\Helper\Mapping;
@@ -26,6 +27,12 @@ use VDM\Joomla\Componentbuilder\Extrusion\Helper\Mapping;
  */
 class Builder extends Mapping
 {
+	/**
+	 * To load the user identity
+	 * @since  5.1.4
+	 */
+	use IdentityTrait;
+
 	/**
 	 *	Some default fields
 	 */
@@ -57,7 +64,7 @@ class Builder extends Mapping
 			$data['buildcomp'] = 0;
 			$data['buildcompsql'] = '';
 			// set some globals
-			$this->user = Factory::getUser();
+			$this->user = $this->getIdentity();
 			$this->today = Factory::getDate()->toSql();
 
 			// no start the building of the views and fields

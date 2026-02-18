@@ -24,10 +24,10 @@
 		<element>pkg_component_builder</element>
 		<type>package</type>
 		<client>admininstrator</client>
-		<version>4.1.2</version>
+		<version>4.1.3</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v4.1.2.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v4.1.3.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>
@@ -35,6 +35,24 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="4\.[01234]"/>
+	</update>
+	<update>
+		<name>Component Builder</name>
+		<description>Builds Complex Joomla Components</description>
+		<element>pkg_component_builder</element>
+		<type>package</type>
+		<client>admininstrator</client>
+		<version>6.1.4</version>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v6.1.4.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>stable</tag>
+		</tags>
+		<maintainer>Llewellyn van der Merwe</maintainer>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
+		<targetplatform name="joomla" version="6\.0"/>
 	</update>
 	<update>
 		<name>Component Builder</name>
@@ -153,7 +171,7 @@
 		<version>5.1.2</version>
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v5.1.2.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v5.1.3.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>
@@ -172,6 +190,24 @@
 		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v5.1.3.zip</downloadurl>
+		</downloads>
+		<tags>
+			<tag>stable</tag>
+		</tags>
+		<maintainer>Llewellyn van der Merwe</maintainer>
+		<maintainerurl>https://dev.vdm.io</maintainerurl>
+		<targetplatform name="joomla" version="5\.[01234]"/>
+	</update>
+	<update>
+		<name>Component Builder</name>
+		<description>Builds Complex Joomla Components</description>
+		<element>pkg_component_builder</element>
+		<type>package</type>
+		<client>admininstrator</client>
+		<version>5.1.4</version>
+		<infourl title="Component Builder!">https://dev.vdm.io</infourl>
+		<downloads>
+			<downloadurl type="full" format="zip">https://github.com/joomengine/pkg-component-builder/archive/refs/tags/v5.1.4.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>

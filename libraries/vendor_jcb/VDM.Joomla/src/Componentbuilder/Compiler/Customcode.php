@@ -20,6 +20,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
 use VDM\Joomla\Componentbuilder\Compiler\JoomlaPower\Extractor as JoomlaPower;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\External;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -129,12 +130,28 @@ class Customcode implements CustomcodeInterface
 	protected External $external;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
 	 * @since 5.1.2
 	 **/
 	protected DatabaseInterface $db;
+
+	/**
+	 * The unique counter array
+	 *
+	 * @var   array
+	 * @since 5.1.4
+	 */
+	protected array $uniqueCounter = [];
 
 	/**
 	 * Constructor.
@@ -145,12 +162,14 @@ class Customcode implements CustomcodeInterface
 	 * @param Power              $power           The compiler power extractor object.
 	 * @param JoomlaPower        $joomla          The compiler joomla power extractor object.
 	 * @param External           $external        The compiler external custom code object.
+	 * @param Counter            $counter         The Counter Class.
 	 * @param DatabaseInterface  $db              The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
-		Extractor $extractor, Power $power, JoomlaPower $joomla, External $external, DatabaseInterface $db)
+		Extractor $extractor, Power $power, JoomlaPower $joomla,
+		External $external, Counter $counter, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->placeholder = $placeholder;
@@ -158,6 +177,7 @@ class Customcode implements CustomcodeInterface
 		$this->power = $power;
 		$this->joomla = $joomla;
 		$this->external = $external;
+		$this->counter = $counter;
 		$this->db = $db;
 	}
 
@@ -500,6 +520,12 @@ class Customcode implements CustomcodeInterface
 							unset($customCode['hashendtarget']);
 						}
 					}
+				}
+
+				if (empty($this->uniqueCounter[$nr]))
+				{
+					$this->counter->customCodeBlock++;
+					$this->uniqueCounter[$nr] = true;
 				}
 			}
 

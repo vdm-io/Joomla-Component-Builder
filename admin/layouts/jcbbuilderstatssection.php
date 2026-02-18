@@ -20,7 +20,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 // No direct access to this file
 defined('JPATH_BASE') or die;
 
-$weeks = $displayData->compiler->projectWeekTime ?? '';
+
 
 ?>
 <h2><?php echo Text::_('COM_COMPONENTBUILDER_TOTAL_TIME_SAVED'); ?></h2>
@@ -57,6 +57,6 @@ $weeks = $displayData->compiler->projectWeekTime ?? '';
 	</small>
 </p>
 <p>
-	<?php echo Text::_('COM_COMPONENTBUILDER_PROJECT_DURATION'); ?>: <b><?php echo $weeks; ?> <?php echo Text::_('COM_COMPONENTBUILDER_WEEKS'); ?></b> or
+	<?php echo Text::_('COM_COMPONENTBUILDER_PROJECT_DURATION'); ?>: <b><?php echo '#'.'##projectWeekTime##'.'#'; ?> <?php echo Text::_('COM_COMPONENTBUILDER_WEEKS'); ?></b> or
 	<b><?php echo '#'.'##projectMonthTime##'.'#'; ?> <?php echo Text::_('COM_COMPONENTBUILDER_MONTHS'); ?></b>
 </p>

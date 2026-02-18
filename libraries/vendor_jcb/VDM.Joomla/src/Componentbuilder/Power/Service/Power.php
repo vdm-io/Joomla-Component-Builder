@@ -97,7 +97,7 @@ class Power implements ServiceProviderInterface
 			$container->get('Power.Remote.Config'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Power.Config')->approved_paths,
 			$container->get('Power.Config')->local_powers_repository_path
 		);
@@ -132,8 +132,8 @@ class Power implements ServiceProviderInterface
 			$container->get('Power.Remote.Config'),
 			$container->get('Power.Grep'),
 			$container->get('Data.Item'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message')
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message')
 		);
 	}
 
@@ -154,8 +154,8 @@ class Power implements ServiceProviderInterface
 			$container->get('Power.Readme.Item'),
 			$container->get('Power.Readme.Main'),
 			$container->get('Git.Repository.Contents'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message'),
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message'),
 			$container->get('Power.Parser'),
 			$container->get('Power.Config')->approved_paths
 		);

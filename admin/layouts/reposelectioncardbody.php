@@ -56,7 +56,7 @@ $guid = $displayData['repo']->guid ?? 'error';
 		</div>
 		<div class="uk-card-footer">
 			<button type="button"
-				class="uk-button uk-button-primary uk-width-1-1 select-repo-to-initialize"
+				class="uk-button uk-button-primary uk-width-1-1 select-repo-to-load"
 				data-repo="<?php echo $guid; ?>"
 				data-area="<?php echo $area; ?>">
 					<?php echo Text::sprintf('COM_COMPONENTBUILDER_LOAD_ITEMS_FROM_THIS_S_REPOSITORY', $name); ?>

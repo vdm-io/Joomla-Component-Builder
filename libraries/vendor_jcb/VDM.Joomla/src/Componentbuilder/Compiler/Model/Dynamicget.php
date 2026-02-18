@@ -237,7 +237,8 @@ class Dynamicget
 	 */
 	private function configureViewSource(object &$item, string $viewCode, string $context): void
 	{
-		if ($item->select_all == 1)
+		$select_all = (int) ($item->select_all ?? 0);
+		if ($select_all === 1 || empty($item->view_selection))
 		{
 			$item->view_selection = '*';
 		}
@@ -271,7 +272,8 @@ class Dynamicget
 	 */
 	private function configureDbSource(object &$item, string $viewCode, string $context): void
 	{
-		if ($item->select_all == 1)
+		$select_all = (int) ($item->select_all ?? 0);
+		if ($select_all === 1 || empty($item->db_selection))
 		{
 			$item->db_selection = '*';
 		}

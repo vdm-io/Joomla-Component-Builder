@@ -16,13 +16,21 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use VDM\Joomla\Utilities\ArrayHelper;
 
 // No direct access to this file
 defined('JPATH_BASE') or die;
 
-$cPath = $displayData['model']->compiler->filepath['component'] ?? null;
+
 $cUrl  = $displayData['urls']['componentUrl'] ?? null;
+$cPath = CompilerFactory::_('FilePaths')->get('component');
+
+$modules = CompilerFactory::_('FilePaths')->get('modules', []);
+$modules_folders = CompilerFactory::_('FilePaths')->get('modules-folder', []);
+
+$plugins = CompilerFactory::_('FilePaths')->get('plugins', []);
+$plugins_folders = CompilerFactory::_('FilePaths')->get('plugins-folder', []);
 
 ?>
 <?php if (!empty($cUrl) && !empty($cPath)): ?>
@@ -35,8 +43,8 @@ $cUrl  = $displayData['urls']['componentUrl'] ?? null;
 	<br>
 	<b><?php echo Text::_('COM_COMPONENTBUILDER_COMPONENT_URL'); ?>:</b> <code><?php echo $cUrl; ?></code>
 	<br><br>
-	<?php if (!empty($displayData['model']->compiler->filepath['modules']) && is_array($displayData['model']->compiler->filepath['modules'])): ?>
-		<?php foreach ($displayData['model']->compiler->filepath['modules'] as $moduleId => $modulePath): ?>
+	<?php if (!empty($modules) && is_array($modules)): ?>
+		<?php foreach ($modules as $moduleId => $modulePath): ?>
 			<b><?php echo Text::_('COM_COMPONENTBUILDER_MODULE_PATH'); ?>:</b> <code><?php echo $modulePath; ?></code>
 			<br>
 			<?php $mUrl = $displayData['urls']['moduleUrls'][$moduleId] ?? 'error'; ?>
@@ -44,8 +52,8 @@ $cUrl  = $displayData['urls']['componentUrl'] ?? null;
 			<br>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if (!empty($displayData['model']->compiler->filepath['plugins']) && is_array($displayData['model']->compiler->filepath['plugins'])): ?>
-		<?php foreach ($displayData['model']->compiler->filepath['plugins'] as $pluginId => $pluginPath): ?>
+	<?php if (!empty($plugins) && is_array($plugins)): ?>
+		<?php foreach ($plugins as $pluginId => $pluginPath): ?>
 			<b><?php echo Text::_('COM_COMPONENTBUILDER_PLUGIN_PATH'); ?>:</b> <code><?php echo $pluginPath; ?></code>
 			<br>
 			<?php $pUrl = $displayData['urls']['pluginUrls'][$pluginId] ?? 'error'; ?>
@@ -62,13 +70,13 @@ $cUrl  = $displayData['urls']['componentUrl'] ?? null;
 		<?php endif; ?>
 		<?php if (!empty($displayData['urls']['moduleUrls']) && ArrayHelper::check($displayData['urls']['moduleUrls'])): ?>
 			<?php foreach ($displayData['urls']['moduleUrls'] as $moduleId => $moduleUrl): ?>
-				<?php $label = $displayData['model']->compiler->filepath['modules-folder'][$moduleId] ?? 'error'; ?>
+				<?php $label = $modules_folders[$moduleId] ?? 'error'; ?>
 				<a class="btn btn-success btn-small btn-sm" href="<?php echo $moduleUrl; ?>"><span class="icon-download icon-white"></span> <?php echo Text::sprintf('COM_COMPONENTBUILDER_DOWNLOAD_S', $label); ?></a>
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<?php if (!empty($displayData['urls']['pluginUrls']) && ArrayHelper::check($displayData['urls']['pluginUrls'])): ?>
 			<?php foreach ($displayData['urls']['pluginUrls'] as $pluginId => $pluginUrl): ?>
-				<?php $label = $displayData['model']->compiler->filepath['plugins-folder'][$pluginId] ?? 'error'; ?>
+				<?php $label = $plugins_folders[$pluginId] ?? 'error'; ?>
 				<a class="btn btn-success btn-small btn-sm" href="<?php echo $pluginUrl; ?>"><span class="icon-download icon-white"></span> <?php echo Text::sprintf('COM_COMPONENTBUILDER_DOWNLOAD_S', $label); ?></a>
 			<?php endforeach; ?>
 		<?php endif; ?>

@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=snippets&task=snippet.edit";
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
-		$canDo = ComponentbuilderHelper::getActions('snippet',$item,'snippets');
+				loadUserById((int) ($item->checked_out ?? 0));
+		$canDo = Actions::get('snippet', $item, 'snippets');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
@@ -104,7 +105,7 @@ $edit = "index.php?option=com_componentbuilder&view=snippets&task=snippet.edit";
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if (!$this->isModal && $this->user->authorise('library.edit', 'com_componentbuilder.library.' . (int) $item->library_id)): ?>
+				<?php if (!$this->isModal && $this->user->authorise('library.edit', 'com_componentbuilder.library.' . (int) ($item->library_id ?? 0))): ?>
 					<a href="index.php?option=com_componentbuilder&view=libraries&task=library.edit&id=<?php echo $item->library_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->library_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->library_name); ?>

@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Minify;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
 use VDM\Joomla\Componentbuilder\Compiler\Helper\Fields;
 use Joomla\CMS\Form\Form;
 
@@ -40,20 +41,18 @@ use Joomla\CMS\Form\Form;
 class Interpretation extends Fields
 {
 	/**
-	 * The global config Field Sets
+	 * The Import & Export View
 	 *
-	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Config.Fieldsets')->add($key, $value);
+	 * @var      array
 	 */
-	public $configFieldSets = [];
+	public $eximportView = [];
 
 	/**
-	 * The global config Field Sets Custom Fields
+	 * The Import & Export Custom Script
 	 *
-	 * @var     array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Config.Fieldsets.Customfield')->add($key, $value);
+	 * @var      array
 	 */
-	public $configFieldSetsCustomField = [];
+	public $importCustomScripts = [];
 
 	/**
 	 * The contributors
@@ -61,14 +60,6 @@ class Interpretation extends Fields
 	 * @var    string
 	 */
 	public $theContributors = '';
-
-	/**
-	 * The unistall builder
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Builder.Database.Uninstall')->set(...);
-	 */
-	public $uninstallBuilder = [];
 
 	/**
 	 * The unistall script builder
@@ -99,44 +90,11 @@ class Interpretation extends Fields
 	public $lastupdateURL;
 
 	/**
-	 * The update SQL builder
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Model.Updatesql')->set($old, $new, string $type, $key = null, ?array $ignore = null);
-	 */
-	public $updateSQLBuilder = [];
-
-	/**
 	 * The List Column Builder
 	 *
 	 * @var    array
 	 */
 	public $listColnrBuilder = [];
-
-	/**
-	 * The permissions Builder
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Action')->set($action, $nameView, $nameView);
-	 * @deprecated 3.3 or Use CFactory::_('Compiler.Builder.Permission.Global')->set($action, $nameView, $nameView);
-	 */
-	public $permissionBuilder = [];
-
-	/**
-	 * The dashboard permissions builder
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Dashboard')->add('icon', $key, $value)
-	 */
-	public $permissionDashboard = [];
-
-	/**
-	 * The permissions core
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Core')->set($nameView, $coreTarget, $action);
-	 */
-	public $permissionCore = [];
 
 	/**
 	 * The customs field builder
@@ -216,45 +174,6 @@ class Interpretation extends Fields
 	public $customAdminAdded = [];
 
 	/**
-	 * Switch to add form to views
-	 *
-	 * @var    array
-	 */
-	public $addCustomForm = [];
-
-	/**
-	 * The extensions params
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Extensions.Params')
-	 */
-	protected $extensionsParams = [];
-
-	/**
-	 * The asset rules
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Assets.Rules')
-	 */
-	public $assetsRules = [];
-
-	/**
-	 * View Has Category Request
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Request')->get("catid.$key")
-	 */
-	protected $hasCatIdRequest = [];
-
-	/**
-	 * All fields with permissions
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Permission.Fields')
-	 */
-	public $permissionFields = [];
-
-	/**
 	 * Custom Admin View List Link
 	 *
 	 * @var    array
@@ -267,52 +186,6 @@ class Interpretation extends Fields
 	 * @var    array
 	 */
 	protected $loadTracker = [];
-
-	/**
-	 * View Has Id Request
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Request')->get("id.$key")
-	 */
-	protected $hasIdRequest = [];
-
-	/**
-	 * Library warning
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Library.Warning')
-	 */
-	protected $libwarning = [];
-
-	/**
-	 * Language message bucket
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Language.Messages')
-	 */
-	public $langNot = [];
-
-	/**
-	 * Language message bucket
-	 *
-	 * @var    array
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Builder.Language.Messages')
-	 */
-	public $langSet = [];
-
-	/**
-	 * Component Image Type
-	 *
-	 * @var    string
-	 */
-	protected string $componentImageType;
-
-	/**
-	 * Only Function Button
-	 *
-	 * @var    array
-	 */
-	protected array $onlyFunctionButton;
 
 	/**
 	 * alignment names
@@ -338,35 +211,6 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * add email helper
-	 */
-	public function addEmailHelper()
-	{
-		if (CFactory::_('Component')->get('add_email_helper'))
-		{
-			// set email helper in place with component name
-			$component = CFactory::_('Config')->component_code_name;
-			$Component = CFactory::_('Compiler.Builder.Content.One')->get('Component');
-			$target    = array('admin' => 'emailer');
-			$done      = CFactory::_('Utilities.Structure')->build($target, 'emailer', $component);
-			if ($done)
-			{
-				// the text for the file BAKING
-				CFactory::_('Compiler.Builder.Content.Multi')->set('emailer_' . $component . '|BAKING', ''); // <<-- to insure it gets updated
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-				{
-					// return the code need to load the abstract class
-					return PHP_EOL . "\JLoader::register('" . $Component
-						. "Email', JPATH_ADMINISTRATOR . '/components/com_{$component}/helpers/"
-						. $component . "email.php'); ";
-				}
-			}
-		}
-
-		return '';
-	}
-
-	/**
 	 * set the lock license (NOT OKAY)
 	 */
 	public function setLockLicense()
@@ -376,7 +220,7 @@ class Interpretation extends Fields
 			if (!CFactory::_('Compiler.Builder.Content.One')->exists('HELPER_SITE_LICENSE_LOCK'))
 			{
 				$_WHMCS = '_' . StringHelper::safe(
-						$this->uniquekey(10), 'U'
+						Unique::get(10), 'U'
 					);
 				// add it to the system
 				CFactory::_('Compiler.Builder.Content.One')->set('HELPER_SITE_LICENSE_LOCK', $this->setHelperLicenseLock($_WHMCS, 'site'));
@@ -410,10 +254,10 @@ class Interpretation extends Fields
 			if (!CFactory::_('Compiler.Builder.Content.Multi')->exists($view . '|BOOLMETHOD'))
 			{
 				$boolMethod = 'get' . StringHelper::safe(
-						$this->uniquekey(3, false, 'ddd'), 'W'
+						Unique::get(3, false, 'ddd'), 'W'
 					);
 				$globalbool = 'set' . StringHelper::safe(
-						$this->uniquekey(3), 'W'
+						Unique::get(3), 'W'
 					);
 				// add it to the system
 				CFactory::_('Compiler.Builder.Content.Multi')->set($view . '|LICENSE_LOCKED_SET_BOOL',
@@ -1413,165 +1257,6 @@ class Interpretation extends Fields
 		}
 	}
 
-	/**
-	 * no Help
-	 *
-	 * @return string
-	 */
-	public function noHelp()
-	{
-		$help   = [];
-		$help[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-		$help[] = Indent::_(1) . " *	Can be used to build help urls.";
-		$help[] = Indent::_(1) . " **/";
-		$help[] = Indent::_(1) . "public static function getHelpUrl(\$view)";
-		$help[] = Indent::_(1) . "{";
-		$help[] = Indent::_(2) . "return false;";
-		$help[] = Indent::_(1) . "}";
-
-		// return the no help method
-		return implode(PHP_EOL, $help);
-	}
-
-	public function checkHelp($nameSingleCode)
-	{
-		if ($nameSingleCode == "help_document")
-		{
-			// set help file into admin place
-			$target    = array('admin' => 'help');
-			$admindone = CFactory::_('Utilities.Structure')->build($target, 'help');
-			// set the help file into site place
-			$target   = array('site' => 'help');
-			$sitedone = CFactory::_('Utilities.Structure')->build($target, 'help');
-			if ($admindone && $sitedone)
-			{
-				// HELP
-				CFactory::_('Compiler.Builder.Content.One')->set('HELP', $this->setHelp(1));
-				// HELP_SITE
-				CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', $this->setHelp(2));
-				// to make sure the file is updated TODO
-				CFactory::_('Compiler.Builder.Content.Multi')->set('help' . '|BLABLA', 'blabla');
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public function setHelp($location)
-	{
-		// set hte help function to the helper class
-		$target = 'admin_view';
-		if ($location == 2)
-		{
-			$target = 'site_view';
-		}
-		$help   = [];
-		$help[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-		$help[] = Indent::_(1) . " *	Load the Component Help URLs.";
-		$help[] = Indent::_(1) . " **/";
-		$help[] = Indent::_(1) . "public static function getHelpUrl(\$view)";
-		$help[] = Indent::_(1) . "{";
-		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-		{
-			$help[] = Indent::_(2) . "\$user	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-		}
-		else
-		{
-			$help[] = Indent::_(2) . "\$user	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-		}
-		$help[] = Indent::_(2) . "\$groups = \$user->get('groups');";
-		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-		{
-			$help[] = Indent::_(2) . "\$db	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getDbo();";
-		}
-		else
-		{
-			$help[] = Indent::_(2) . "\$db	= Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla__"."_7bd29d76_73c9_4c07_a5da_4f7a32aff78f___Power::class);";
-		}
-		$help[] = Indent::_(2) . "\$query	= \$db->getQuery(true);";
-		$help[] = Indent::_(2)
-			. "\$query->select(array('a.id','a.groups','a.target','a.type','a.article','a.url'));";
-		$help[] = Indent::_(2) . "\$query->from('#__" . CFactory::_('Config')->component_code_name
-			. "_help_document AS a');";
-		$help[] = Indent::_(2) . "\$query->where('a." . $target
-			. " = '.\$db->quote(\$view));";
-		$help[] = Indent::_(2) . "\$query->where('a.location = "
-			. (int) $location . "');";
-		$help[] = Indent::_(2) . "\$query->where('a.published = 1');";
-		$help[] = Indent::_(2) . "\$db->setQuery(\$query);";
-		$help[] = Indent::_(2) . "\$db->execute();";
-		$help[] = Indent::_(2) . "if(\$db->getNumRows())";
-		$help[] = Indent::_(2) . "{";
-		$help[] = Indent::_(3) . "\$helps = \$db->loadObjectList();";
-		$help[] = Indent::_(3) . "if (Super_" . "__0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$helps))";
-		$help[] = Indent::_(3) . "{";
-		$help[] = Indent::_(4) . "foreach (\$helps as \$nr => \$help)";
-		$help[] = Indent::_(4) . "{";
-		$help[] = Indent::_(5) . "if (\$help->target == 1)";
-		$help[] = Indent::_(5) . "{";
-		$help[] = Indent::_(6)
-			. "\$targetgroups = json_decode(\$help->groups, true);";
-		$help[] = Indent::_(6)
-			. "if (!array_intersect(\$targetgroups, \$groups))";
-		$help[] = Indent::_(6) . "{";
-		$help[] = Indent::_(7) . "//" . Line::_(__Line__, __Class__)
-			. " if user not in those target groups then remove the item";
-		$help[] = Indent::_(7) . "unset(\$helps[\$nr]);";
-		$help[] = Indent::_(7) . "continue;";
-		$help[] = Indent::_(6) . "}";
-		$help[] = Indent::_(5) . "}";
-		$help[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-			. " set the return type";
-		$help[] = Indent::_(5) . "switch (\$help->type)";
-		$help[] = Indent::_(5) . "{";
-		$help[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__)
-			. " set joomla article";
-		$help[] = Indent::_(6) . "case 1:";
-		$help[] = Indent::_(7)
-			. "return self::loadArticleLink(\$help->article);";
-		$help[] = Indent::_(7) . "break;";
-		$help[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__)
-			. " set help text";
-		$help[] = Indent::_(6) . "case 2:";
-		$help[] = Indent::_(7) . "return self::loadHelpTextLink(\$help->id);";
-		$help[] = Indent::_(7) . "break;";
-		$help[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__) . " set Link";
-		$help[] = Indent::_(6) . "case 3:";
-		$help[] = Indent::_(7) . "return \$help->url;";
-		$help[] = Indent::_(7) . "break;";
-		$help[] = Indent::_(5) . "}";
-		$help[] = Indent::_(4) . "}";
-		$help[] = Indent::_(3) . "}";
-		$help[] = Indent::_(2) . "}";
-		$help[] = Indent::_(2) . "return false;";
-		$help[] = Indent::_(1) . "}";
-		$help[] = PHP_EOL . Indent::_(1) . "/**";
-		$help[] = Indent::_(1) . " *	Get the Article Link.";
-		$help[] = Indent::_(1) . " **/";
-		$help[] = Indent::_(1)
-			. "protected static function loadArticleLink(\$id)";
-		$help[] = Indent::_(1) . "{";
-		$help[] = Indent::_(2)
-			. "return Joomla__"."_eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::root() . 'index.php?option=com_content&view=article&id='.\$id.'&tmpl=component&layout=modal';";
-		$help[] = Indent::_(1) . "}";
-		$help[] = PHP_EOL . Indent::_(1) . "/**";
-		$help[] = Indent::_(1) . " *	Get the Help Text Link.";
-		$help[] = Indent::_(1) . " **/";
-		$help[] = Indent::_(1)
-			. "protected static function loadHelpTextLink(\$id)";
-		$help[] = Indent::_(1) . "{";
-		$help[] = Indent::_(2) . "\$token = Joomla__"."_5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::getFormToken();";
-		$help[] = Indent::_(2) . "return 'index.php?option=com_"
-			. CFactory::_('Config')->component_code_name
-			. "&task=help.getText&id=' . (int) \$id . '&' . \$token . '=1';";
-		$help[] = Indent::_(1) . "}";
-
-		// return the help methods
-		return implode(PHP_EOL, $help);
-	}
-
 	public function setHelperExelMethods()
 	{
 		if (CFactory::_('Config')->get('add_eximport', false))
@@ -1871,26 +1556,6 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	/**
-	 * Generates the method definition for creating or updating a user based on the provided parameters.
-	 *
-	 * This method returns a string representation of a PHP function that includes various 
-	 * steps for handling user creation and updates, depending on the mode (site registration or admin registration).
-	 * 
-	 * @param   int   $add    Determines whether to generate the user creation method or not.
-	 *                                      If true, the method will be generated and returned as a string.
-	 *
-	 * @return  string  The generated method code as a string if $add is true. 
-	 *                              Returns an empty string if $add is false.
-	 *
-	 * @since  3.0
-	 * @deprecated 5.0.3 Use CFactory::_('Architecture.ComHelperClass.CreateUser')->get($add);
-	 */
-	public function setCreateUserHelperMethod($add): string
-	{
-		return CFactory::_('Architecture.ComHelperClass.CreateUser')->get($add);
-	}
-
 	public function setAdminViewMenu(&$nameSingleCode, &$view)
 	{
 		$xml = '';
@@ -2137,216 +1802,6 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * Set the custom view query.
-	 *
-	 * @param  array   $gets   The data to build the query from.
-	 * @param  string  $code   The build code.
-	 * @param  string  $tab    The tab indentation.
-	 * @param  string  $type   The query type (main|custom).
-	 *
-	 * @return string  The compiled query string.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Queries')->get(...)
-	 */
-	public function setCustomViewQuery($gets, &$code, $tab = '', $type = 'main'): string
-	{
-		return CFactory::_('Dynamicget.Queries')->get($gets, $code, $tab, $type);
-	}
-
-	/**
-	 * Get the Custom View Field Decode Filter code block.
-	 *
-	 * @param  array   $get            The GET metadata for the current field.
-	 * @param  array   $filters        The filters to apply on the field.
-	 * @param  string  $string         The variable name representing the current object.
-	 * @param  string  $removeString   The variable name for object removal context.
-	 * @param  string  $code           The custom view identifier code.
-	 * @param  string  $tab            The tab level for indent formatting.
-	 *
-	 * @return string  The generated PHP filter code block.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.FilterColumn')->get(...)
-	 */
-	public function setCustomViewFieldDecodeFilter($get, $filters, $string, $removeString, $code, $tab): string
-	{
-		return CFactory::_('Dynamicget.FilterColumn')->get($get, $filters, $string, $removeString, $code, $tab);
-	}
-
-	/**
-	 * Generate the decode logic for a column in the custom view.
-	 *
-	 * @param  array   $get      The get array with view configuration.
-	 * @param  array   $checker  Field decode configuration.
-	 * @param  string  $string   The variable representing the row object.
-	 * @param  string  $code     The calling context code string.
-	 * @param  string  $tab      Optional indentation tab prefix.
-	 *
-	 * @return string  The generated decode logic.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.DecodeColumn')->get(...)
-	 */
-	public function setCustomViewFieldDecode($get, $checker, $string, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.DecodeColumn')->get($get, $checker, $string, $code, $tab);
-	}
-
-	/**
-	 * Get the content preparation plugin logic for a field.
-	 *
-	 * @param  array   $get      The get array passed in.
-	 * @param  array   $checker  The checker structure containing field info.
-	 * @param  string  $string   The string name for the object.
-	 * @param  string  $code     The code to use as fallback context.
-	 * @param  string  $tab      Indentation tab prefix.
-	 *
-	 * @return string  The content preparation PHP string.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.FieldonContentPrepare')->get(...)
-	 */
-	public function setCustomViewFieldonContentPrepareChecker($get, $checker, $string, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.FieldonContentPrepare')->get($get, $checker, $string, $code, $tab);
-	}
-
-	/**
-	 * Check if custom view fields contain UIKit components that must be loaded.
-	 *
-	 * This method iterates through the given checker array, determines whether the
-	 * field should have UIKit components loaded based on the selection criteria,
-	 * and appends the relevant code for inclusion.
-	 *
-	 * @param  array   $get      The "get" array containing view configuration data.
-	 * @param  array   $checker  The array of fields and their configurations to check.
-	 * @param  string  $string   The string variable name or object reference in the generated code.
-	 * @param  string  $code     The code identifier used for generating unique load keys.
-	 * @param  string  $tab      Optional indentation tab for formatting generated code.
-	 *
-	 * @return string  The generated PHP code string for UIKit component inclusion.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.UikitLoader')->get(...)
-	 */
-	public function setCustomViewFieldUikitChecker($get, $checker, $string, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.UikitLoader')->get($get, $checker, $string, $code, $tab);
-	}
-
-	/**
-	 * Get the custom view custom join code.
-	 *
-	 * @param  array   $gets      The array of join definitions.
-	 * @param  string  $string    The target variable name in generated code.
-	 * @param  string  $code      The code identifier for the join.
-	 * @param  array   $asBucket  The array of already processed join aliases.
-	 * @param  string  $tab       The indentation tab string for formatting (optional).
-	 *
-	 * @return string  The generated custom join code block or an empty string.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.CustomJoin')->get(...)
-	 */
-	public function setCustomViewCustomJoin($gets, $string, $code, $asBucket, $tab = '')
-	{
-		return CFactory::_('Dynamicget.CustomJoin')->get($gets, $string, $code, $asBucket, $tab);
-	}
-
-	/**
-	 * Determine whether a join should be processed as a separate join.
-	 *
-	 * @param  array  $default   The join structure details (passed by reference).
-	 * @param  array  $get       The current join definition (passed by reference).
-	 * @param  array  $asBucket  The list of already processed join aliases (passed by reference).
-	 *
-	 * @return bool  True if the join should be processed separately, false otherwise.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.CustomJoin')->check(...)
-	 */
-	public function checkJoint($default, $get, $asBucket): bool
-	{
-		return CFactory::_('Dynamicget.CustomJoin')->check($default, $get, $asBucket);
-	}
-
-	/**
-	 * Build the dynamic query filters for a custom view.
-	 *
-	 * @param  array   $filter  The filter configuration array.
-	 * @param  string  $code    The code representing the view context.
-	 * @param  string  $tab     The indentation tab string.
-	 *
-	 * @return string  The generated filter query strings.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryFilter')->get(...)
-	 */
-	public function setCustomViewFilter($filter, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.QueryFilter')->get($filter, $code, $tab);
-	}
-
-	/**
-	 * Generate GROUP BY code for the query.
-	 *
-	 * @param  array   $group  The grouping configuration array.
-	 * @param  string  $code   The component code.
-	 * @param  string  $tab    The indentation tab characters.
-	 *
-	 * @return string  The generated GROUP BY code.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryGroup')->get(...)
-	 */
-	public function setCustomViewGroup($group, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.QueryGroup')->get($group, $code, $tab);
-	}
-
-	/**
-	 * Build the ordering part of a query for a custom view.
-	 *
-	 * @param  array   $order  The ordering rules array (passed by reference).
-	 * @param  string  $code   The code identifier (passed by reference).
-	 * @param  string  $tab    The tab indentation.
-	 *
-	 * @return string  The generated ordering query part.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryOrder')->get(...)
-	 */
-	public function setCustomViewOrder($order, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.QueryOrder')->get($order, $code, $tab);
-	}
-
-	/**
-	 * Process and build WHERE clauses for a given custom view.
-	 *
-	 * @param  array   $where  The WHERE clause definitions.
-	 * @param  string  $code   The code identifier for the view.
-	 * @param  string  $tab    Optional tab/indentation prefix.
-	 *
-	 * @return string  The generated WHERE clauses as a string.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.QueryWhere')->get(...)
-	 */
-	public function setCustomViewWhere($where, $code, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.QueryWhere')->get($where, $code, $tab);
-	}
-
-	/**
-	 * Generate PHP code for setting custom view global values.
-	 *
-	 * @param  array   $global  The list of global configuration items.
-	 * @param  string  $string  The base string reference to the data source.
-	 * @param  array   $as      The list of aliases to process.
-	 * @param  string  $tab     The tab indentation string (optional).
-	 *
-	 * @return string  The generated PHP code for setting global values.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Globals')->get(...)
-	 */
-	public function setCustomViewGlobals($global, $string, $as, $tab = ''): string
-	{
-		return CFactory::_('Dynamicget.Globals')->get($global, $string, $as, $tab);
-	}
-
-	/**
-	 * Remove the alias (AS) portion from a dot-notation string.
-	 *
-	 * @param  string  $string  The input string possibly containing a dot (e.g. `a.name`).
-	 *
-	 * @return string  The portion after the dot or the original string if no dot found.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.JoinStructure')->getFieldName(...);
-	 */
-	public function removeAsDot($string, $type = '')
-	{
-		return CFactory::_('Dynamicget.JoinStructure')->getFieldName($string);
-	}
-
-	/**
 	 * @param   type  $view
 	 * @param   type  $type
 	 */
@@ -2414,36 +1869,6 @@ class Interpretation extends Fields
 		}
 
 		return '';
-	}
-
-	/**
-	 * Get the dynamic get item method.
-	 *
-	 * @param  mixed   $get   The get object.
-	 * @param  string  $code  The code string.
-	 * @param  string  $tab   The tab spacing.
-	 * @param  string  $type  The type (main|custom).
-	 *
-	 * @return string  The generated PHP code block.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.GetItem')->get(...)
-	 */
-	public function setCustomViewGetItem($get, $code, $tab = '', $type = 'main'): string
-	{
-		return CFactory::_('Dynamicget.GetItem')->get($get, $code, $tab, $type);
-	}
-
-	/**
-	 * Get the required data to generate dynamicget methods.
-	 *
-	 * @param  array|object   $mainView  The main view data
-	 * @param  string         $code      The component code
-	 *
-	 * @return string  The generated methods
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Methods')->get(...)
-	 */
-	public function setCustomViewCustomMethods($mainView, $code): string
-	{
-		return CFactory::_('Dynamicget.Methods')->get($mainView, $code);
 	}
 
 	public function setUikitHelperMethods()
@@ -2571,95 +1996,6 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * Build and return the PHP method definition for retrieving the UIkit components.
-	 *
-	 * This method dynamically generates the source code for a `getUikitComp()` method
-	 * if the configured UIkit version is either `1` or `2`. The generated method
-	 * checks if the `$this->uikitComp` property is set and valid, and returns it;
-	 * otherwise, it returns `false`.
-	 *
-	 * @return string  The generated PHP code for the `getUikitComp()` method, or an
-	 *                 empty string if the UIkit version is not 1 or 2.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.UikitLoader')->getUikitComp(...)
-	 */
-	public function setUikitGetMethod(): string
-	{
-		return CFactory::_('Dynamicget.UikitLoader')->getUikitComp();
-	}
-
-	/**
-	 * Get the main custom method block.
-	 *
-	 * @param  string  $body   The PHP code body
-	 * @param  string  $name   The function name
-	 * @param  string  $type   The doc return type
-	 *
-	 * @return string  The built method block
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.Methods')->getMethod(...)
-	 */
-	public function setMainCustomMehtod($body, $name, $type): string
-	{
-		return CFactory::_('Dynamicget.Methods')->getMethod($body, $name, $type);
-	}
-
-	/**
-	 * Get the dynamic get custom item methods.
-	 *
-	 * @param   mixed   $mainGet   The main get object.
-	 * @param   string  $code      The code string.
-	 *
-	 * @return string  The generated methods code.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.CustomGetMethods')->get(...)
-	 */
-	public function setCustomViewCustomItemMethods($mainGet, $code)
-	{
-		return CFactory::_('Dynamicget.CustomGetMethods')->get($mainGet, $code);
-	}
-
-	/**
-	 * Get the default method structure for a custom view join.
-	 *
-	 * @param  array   $get   The method definition array.
-	 * @param  string  $code  The code snippet related to the method.
-	 *
-	 * @return array|null  The normalized method array or null on failure.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.JoinStructure')->get(...)
-	 */
-	public function setCustomViewMethodDefaults($get, $code): ?array
-	{
-		return CFactory::_('Dynamicget.JoinStructure')->get($get, $code);
-	}
-
-	/**
-	 * Build the custom view list query code block.
-	 *
-	 * @param  object  $get     The GET configuration object.
-	 * @param  string  $code    The current code name.
-	 * @param  bool    $return  Whether to include `return $query;`.
-	 *
-	 * @return string  The full PHP code block as a string.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.ListQuery')->get(...)
-	 */
-	public function setCustomViewListQuery($get, $code, $return = true)
-	{
-		return CFactory::_('Dynamicget.ListQuery')->get($get, $code, $return);
-	}
-
-	/**
-	 * Generate the GetItems code block for the dynamicget.
-	 *
-	 * @param  object  $get   The get object.
-	 * @param  string  $code  The component code.
-	 *
-	 * @return string  The resulting PHP code string.
-	 * @deprecated 5.1.2 use CFactory::_('Dynamicget.GetItems')->get(...)
-	 */
-	public function setCustomViewGetItems($get, $code)
-	{
-		return CFactory::_('Dynamicget.GetItems')->get($get, $code);
-	}
-
-	/**
 	 * build code for the admin view display method
 	 *
 	 * @param   string  $nameListCode  The list view name
@@ -2706,7 +2042,7 @@ class Interpretation extends Fields
 			}
 		}
 		// get the default ordering values
-		$default_ordering = $this->getListViewDefaultOrdering($nameListCode);
+		$default_ordering = CFactory::_('Adminview.DefaultOrdering')->get($nameListCode);
 		// now add the default ordering
 		$script .= PHP_EOL . Indent::_(2) . "//"
 			. Line::_(
@@ -3052,7 +2388,7 @@ class Interpretation extends Fields
 
 		// set the custom buttons CUSTOM_BUTTONS
 		CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|' . $TARGET . '_CUSTOM_BUTTONS',
-			$this->setCustomButtons($view)
+			CFactory::_('Architecture.CustomButtons')->get($view)
 		);
 
 		// see if we should add get modules to the view.html
@@ -3184,382 +2520,6 @@ class Interpretation extends Fields
 
 				return CFactory::_('Placeholder')->update_($_tmp);
 			}
-		}
-
-		return '';
-	}
-
-	public function setCustomButtons(&$view, $type = 1, $tab = '')
-	{
-		// do not validate selection
-		$validateSelection = 'false';
-		// ensure correct target is set
-		$TARGET = StringHelper::safe(CFactory::_('Config')->build_target, 'U');
-		if (1 == $type || 2 == $type)
-		{
-			if (1 == $type)
-			{
-				$viewCodeName = $view['settings']->code;
-			}
-			if (2 == $type)
-			{
-				$viewCodeName = $view['settings']->name_single_code;
-			}
-		}
-		elseif (3 == $type)
-		{
-			// set the names
-			$viewCodeName  = $view['settings']->name_single_code;
-			$viewsCodeName = $view['settings']->name_list_code;
-			// if it's not been set before
-			if (!CFactory::_('Compiler.Builder.Content.Multi')->exists($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST'))
-			{
-				// set the custom buttons CUSTOM_BUTTONS_CONTROLLER_LIST
-				CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST', '');
-				// set the custom buttons CUSTOM_BUTTONS_METHOD_LIST
-				CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD_LIST', '');
-			}
-			// validate selection
-			$validateSelection = 'true';
-		}
-		// if it's not been set before
-		if (!CFactory::_('Compiler.Builder.Content.Multi')->exists($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD'))
-		{
-			// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER', '');
-			// set the custom buttons CUSTOM_BUTTONS_METHOD
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_METHOD', '');
-		}
-		// reset buttons
-		$buttons = [];
-		// if site add buttons to view
-		if (CFactory::_('Config')->build_target === 'site')
-		{
-			// set the custom buttons SITE_TOP_BUTTON
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_TOP_BUTTON', '');
-			// set the custom buttons SITE_BOTTOM_BUTTON
-			CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_BOTTOM_BUTTON', '');
-			// load into place
-			switch ($view['settings']->button_position)
-			{
-				case 1:
-					// set buttons to top right of the view
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_TOP_BUTTON',
-						'<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>'
-					);
-					break;
-				case 2:
-					// set buttons to top left of the view
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_TOP_BUTTON', '<?php echo $this->toolbar->render(); ?>');
-					break;
-				case 3:
-					// set buttons to buttom right of the view
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_BOTTOM_BUTTON',
-						'<div class="uk-clearfix"><div class="uk-float-right"><?php echo $this->toolbar->render(); ?></div></div>'
-					);
-					break;
-				case 4:
-					// set buttons to buttom left of the view
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|SITE_BOTTOM_BUTTON', '<?php echo $this->toolbar->render(); ?>');
-					break;
-				case 5:
-					// set buttons to custom placement of the view
-					CFactory::_('Placeholder')->set_('SITE_TOOLBAR',
-						'<?php echo $this->toolbar->render(); ?>');
-					break;
-			}
-		}
-		// add some buttons if custom admin view
-		elseif (1 == $type)
-		{
-			// add this button only if this is not the default view
-			$dynamic_dashboard = CFactory::_('Registry')->get('build.dashboard', '');
-			$dynamic_dashboard_type = CFactory::_('Registry')->get('build.dashboard.type', '');
-			if ($dynamic_dashboard_type !== 'custom_admin_views'
-				|| ($dynamic_dashboard_type === 'custom_admin_views'
-					&& $dynamic_dashboard !== $viewCodeName))
-			{
-				$buttons[] = $tab . Indent::_(2)
-					. "//" . Line::_(__Line__, __Class__) . " add cpanel button";
-				$buttons[] = $tab . Indent::_(2)
-					. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewCodeName . "."
-					. "dashboard', 'grid-2', '', 'COM_"
-					. CFactory::_('Compiler.Builder.Content.One')->get('COMPONENT')
-					. "_DASH', false);";
-			}
-		}
-		// check if custom button should be added
-		if (isset($view['settings']->add_custom_button)
-			&& $view['settings']->add_custom_button == 1)
-		{
-			$this->onlyFunctionButton = [];
-			$functionNames            = [];
-			if (isset($view['settings']->custom_buttons)
-				&& ArrayHelper::check(
-					$view['settings']->custom_buttons
-				))
-			{
-				foreach ($view['settings']->custom_buttons as $custom_button)
-				{
-					// Load to lang
-					$keyLang = CFactory::_('Config')->lang_prefix . '_'
-						. StringHelper::safe(
-							$custom_button['name'], 'U'
-						);
-					$keyCode = StringHelper::safe(
-						$custom_button['name']
-					);
-					CFactory::_('Language')->set(
-						CFactory::_('Config')->lang_target, $keyLang, $custom_button['name']
-					);
-					// load the button
-					if (3 !== $type
-						&& ($custom_button['target'] != 2
-							|| CFactory::_('Config')->build_target === 'site'))
-					{
-						// add cpanel button TODO does not work well on site with permissions
-						if ($custom_button['target'] == 2
-							|| CFactory::_('Config')->build_target === 'site')
-						{
-							$buttons[] = Indent::_(1) . $tab . Indent::_(1)
-								. "if (\$this->user->authorise('"
-								. $viewCodeName
-								. "." . $keyCode . "', 'com_"
-								. CFactory::_('Config')->component_code_name . "'))";
-						}
-						else
-						{
-							$buttons[] = Indent::_(1) . $tab . Indent::_(1)
-								. "if (\$this->canDo->get('" . $viewCodeName
-								. "."
-								. $keyCode . "'))";
-						}
-						$buttons[] = Indent::_(1) . $tab . Indent::_(1) . "{";
-						$buttons[] = Indent::_(1) . $tab . Indent::_(2) . "//"
-							. Line::_(__Line__, __Class__) . " add "
-							. $custom_button['name'] . " button.";
-						$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-							. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewCodeName . "."
-							. $custom_button['method'] . "', '"
-							. $custom_button['icomoon'] . " custom-button-"
-							. strtolower((string) $custom_button['method']) . "', '', '"
-							. $keyLang
-							. "', false);";
-						$buttons[] = Indent::_(1) . $tab . Indent::_(1) . "}";
-					}
-					// load the list button
-					elseif (3 == $type && $custom_button['target'] != 1)
-					{
-						// This is only for list admin views
-						if (isset($custom_button['type'])
-							&& $custom_button['type'] == 2)
-						{
-							if (!isset($this->onlyFunctionButton[$viewsCodeName]))
-							{
-								$this->onlyFunctionButton[$viewsCodeName]
-									= [];
-							}
-							$this->onlyFunctionButton[$viewsCodeName][]
-								= Indent::_(
-									1
-								) . $tab . "if (\$this->user->authorise('"
-								. $viewCodeName . "." . $keyCode . "', 'com_"
-								. CFactory::_('Config')->component_code_name . "'))";
-							$this->onlyFunctionButton[$viewsCodeName][]
-								= Indent::_(
-									1
-								) . $tab . "{";
-							$this->onlyFunctionButton[$viewsCodeName][]
-								= Indent::_(
-									1
-								) . $tab . Indent::_(1) . "//" . Line::_(
-									__LINE__,__CLASS__
-								) . " add " . $custom_button['name']
-								. " button.";
-							$this->onlyFunctionButton[$viewsCodeName][]
-								= Indent::_(
-									1
-								) . $tab . Indent::_(1)
-								. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewsCodeName
-								. "."
-								. $custom_button['method'] . "', '"
-								. $custom_button['icomoon'] . " custom-button-"
-								. strtolower((string) $custom_button['method'])
-								. "', '', '"
-								. $keyLang . "', false);";
-							$this->onlyFunctionButton[$viewsCodeName][]
-								= Indent::_(
-									1
-								) . $tab . "}";
-						}
-						else
-						{
-							$buttons[] = Indent::_(1) . $tab . Indent::_(1)
-								. "if (\$this->user->authorise('"
-								. $viewCodeName
-								. "." . $keyCode . "', 'com_"
-								. CFactory::_('Config')->component_code_name . "'))";
-							$buttons[] = Indent::_(1) . $tab . Indent::_(1)
-								. "{";
-							$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-								. "//" . Line::_(__Line__, __Class__) . " add "
-								. $custom_button['name'] . " button.";
-							$buttons[] = Indent::_(1) . $tab . Indent::_(2)
-								. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('" . $viewsCodeName
-								. "."
-								. $custom_button['method'] . "', '"
-								. $custom_button['icomoon'] . " custom-button-"
-								. strtolower((string) $custom_button['method'])
-								. "', '', '"
-								. $keyLang . "', '" . $validateSelection
-								. "');";
-							$buttons[] = Indent::_(1) . $tab . Indent::_(1)
-								. "}";
-						}
-					}
-				}
-			}
-			// load the model and controller
-			if (3 == $type)
-			{
-				// insure the controller and model strings are added
-				if (isset($view['settings']->php_controller_list)
-					&& StringHelper::check(
-						$view['settings']->php_controller_list
-					)
-					&& $view['settings']->php_controller_list != '//')
-				{
-					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET . '_CUSTOM_BUTTONS_CONTROLLER_LIST',
-						PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-							$view['settings']->php_controller_list
-						));
-				}
-				// load the model
-				if (isset($view['settings']->php_model_list)
-					&& StringHelper::check(
-						$view['settings']->php_model_list
-					)
-					&& $view['settings']->php_model_list != '//')
-				{
-					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewsCodeName . '|' . $TARGET
-						. '_CUSTOM_BUTTONS_METHOD_LIST', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-							$view['settings']->php_model_list
-						));
-				}
-			}
-			else
-			{
-				// insure the controller and model strings are added
-				if (StringHelper::check(
-						$view['settings']->php_controller
-					)
-					&& $view['settings']->php_controller != '//')
-				{
-					// set the custom buttons CUSTOM_BUTTONS_CONTROLLER
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
-						. '_CUSTOM_BUTTONS_CONTROLLER', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-							$view['settings']->php_controller
-						));
-					if ('site' === CFactory::_('Config')->build_target)
-					{
-						// add the controller for this view
-						// build the file
-						$target = array(CFactory::_('Config')->build_target => $viewCodeName);
-						CFactory::_('Utilities.Structure')->build($target, 'custom_form');
-						// GET_FORM_CUSTOM
-					}
-				}
-				// load the model
-				if (StringHelper::check(
-						$view['settings']->php_model
-					) && $view['settings']->php_model != '//')
-				{
-					// set the custom buttons CUSTOM_BUTTONS_METHOD
-					CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
-						. '_CUSTOM_BUTTONS_METHOD', PHP_EOL . PHP_EOL . CFactory::_('Placeholder')->update_(
-							$view['settings']->php_model
-						)
-					);
-				}
-			}
-		}
-		// return buttons if they were build
-		if (ArrayHelper::check($buttons))
-		{
-			// just to check if the submission script is manually added
-			if (!isset($view['settings']->php_document)
-				|| (ArrayHelper::check(
-						$view['settings']->php_document
-					)
-					&& strpos(
-						implode(' ', $view['settings']->php_document),
-						'/submitbutton.js'
-					) === false)
-				|| (StringHelper::check(
-						$view['settings']->php_document
-					)
-					&& strpos(
-						(string) $view['settings']->php_document,
-						'/submitbutton.js'
-					) === false))
-			{
-				// set the custom get form method  JAVASCRIPT_FOR_BUTTONS
-				CFactory::_('Compiler.Builder.Content.Multi')->set($viewCodeName . '|' . $TARGET
-					. '_JAVASCRIPT_FOR_BUTTONS', $this->setJavaScriptForButtons()
-				);
-			}
-			// insure the form is added (only if no form exist)
-			if (isset($view['settings']->default)
-				&& strpos(
-					(string) $view['settings']->default, '<form'
-				) === false)
-			{
-				$this->addCustomForm[CFactory::_('Config')->build_target][$viewCodeName]
-					= true;
-			}
-
-			return PHP_EOL . implode(PHP_EOL, $buttons);
-		}
-
-		return '';
-	}
-
-	public function setJavaScriptForButtons()
-	{
-		// add behavior.framework to insure Joomla function is on the page
-		$script   = [];
-		$script[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-			. " Add the needed Javascript to insure that the buttons work.";
-		$script[] = Indent::_(2) . "Html::_('behavior.framework', true);";
-
-		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-		{
-			$script[] = Indent::_(2)
-				. "\$this->getDocument()->addScriptDeclaration(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
-		}
-		else
-		{
-			$script[] = Indent::_(2)
-				. "\$this->getDocument()->getWebAssetManager()->addInlineScript(\"Joomla.submitbutton = function(task){if (task == ''){ return false; } else { Joomla.submitform(task); return true; }}\");";
-		}
-
-		// return the script
-		return PHP_EOL . implode(PHP_EOL, $script);
-	}
-
-	public function setFunctionOnlyButtons($nameListCode)
-	{
-		// return buttons if they were build
-		if (isset($this->onlyFunctionButton[$nameListCode])
-			&& ArrayHelper::check(
-				$this->onlyFunctionButton[$nameListCode]
-			))
-		{
-			return PHP_EOL . implode(
-					PHP_EOL, $this->onlyFunctionButton[$nameListCode]
-				);
 		}
 
 		return '';
@@ -4098,47 +3058,6 @@ class Interpretation extends Fields
 		return $setter;
 	}
 
-	/**
-	 * Get the Library document loading code.
-	 *
-	 * @param   string  $id  The libary id/guid
-	 *
-	 * @deprecated 5.1.2  CFactory::_('Library.Document')->get(...);
-	 */
-	protected function setLibraryDocument($id)
-	{
-		// set notice that we could not get a valid string from the target
-		$this->app->enqueueMessage(
-			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
-		);
-		$this->app->enqueueMessage(
-			Text::sprintf(
-				'Use of a deprecated method (%s)!', __METHOD__
-			), 'Error'
-		);
-	}
-
-	/**
-	 * get Library Include string
-	 *
-	 * @param   string      $path      The path to the library
-	 * @param   array|null  $pathInfo  The path info if already set
-	 *
-	 * @deprecated 5.1.2  CFactory::_('Library.IncludeHelper')->get(...);
-	 */
-	protected function setIncludeLibScript(string $path, ?array $pathInfo = null)
-	{
-		// set notice that we could not get a valid string from the target
-		$this->app->enqueueMessage(
-			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
-		);
-		$this->app->enqueueMessage(
-			Text::sprintf(
-				'Use of a deprecated method (%s)!', __METHOD__
-			), 'Error'
-		);
-	}
-
 	public function setUikitLoader(&$view)
 	{
 		// reset setter
@@ -4554,8 +3473,7 @@ class Interpretation extends Fields
 				// insure the form is added (only if no form exist)
 				if (strpos((string) $view['settings']->default, '<form') === false)
 				{
-					$this->addCustomForm[CFactory::_('Config')->build_target][$view['settings']->code]
-						= true;
+					CFactory::_('Compiler.Builder.Custom.Form')->set(CFactory::_('Config')->build_target . "." . $view['settings']->code, true);
 				}
 
 				// return the body
@@ -4565,12 +3483,9 @@ class Interpretation extends Fields
 			{
 				// insure the form is added (only if no form exist)
 				if ('site' !== CFactory::_('Config')->build_target
-					&& strpos(
-						(string) $view['settings']->default, '<form'
-					) === false)
+					&& strpos((string) $view['settings']->default, '<form') === false)
 				{
-					$this->addCustomForm[CFactory::_('Config')->build_target][$view['settings']->code]
-						= true;
+					CFactory::_('Compiler.Builder.Custom.Form')->set(CFactory::_('Config')->build_target . "." . $view['settings']->code, true);
 				}
 
 				return PHP_EOL . CFactory::_('Placeholder')->update_(
@@ -4584,9 +3499,7 @@ class Interpretation extends Fields
 
 	public function setCustomViewForm(&$view, &$gettype, $type)
 	{
-		if (isset($this->addCustomForm[CFactory::_('Config')->build_target])
-			&& isset($this->addCustomForm[CFactory::_('Config')->build_target][$view])
-			&& $this->addCustomForm[CFactory::_('Config')->build_target][$view])
+		if (CFactory::_('Compiler.Builder.Custom.Form')->exists(CFactory::_('Config')->build_target . "." . $view))
 		{
 			switch ($type)
 			{
@@ -5498,7 +4411,7 @@ class Interpretation extends Fields
 				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
 				. CFactory::_('Config')->component_code_name . '/assets/images/vdm-component.'
-				. $this->componentImageType . '"/>';
+				. CFactory::_('Architecture.Component.ImageType')->get() . '"/>';
 			$script .= PHP_EOL . Indent::_(4) . '</a></div>\';';
 
 			return $script;
@@ -5650,7 +4563,7 @@ class Interpretation extends Fields
 				. CFactory::_('Compiler.Builder.Content.One')->get('Component_name') . '">';
 			$script .= PHP_EOL . Indent::_(4) . '<img src="components/com_'
 				. CFactory::_('Config')->component_code_name . '/assets/images/vdm-component.'
-				. $this->componentImageType . '"/>';
+				. CFactory::_('Architecture.Component.ImageType')->get() . '"/>';
 			$script .= PHP_EOL . Indent::_(4) . '</a>';
 			$script .= PHP_EOL . Indent::_(4) . "<h3>Upgrade to Version "
 				. CFactory::_('Compiler.Builder.Content.One')->get('ACTUALVERSION')
@@ -6699,46 +5612,62 @@ class Interpretation extends Fields
 		return $array;
 	}
 
-	public function setRouterHelp($nameSingleCode, $nameListCode,
-	                              $front = false
-	)
+	public function setRouterHelp($nameSingleCode, $nameListCode, $front = false)
 	{
 		// add if tags is added, also for all front item views
-		if ((CFactory::_('Compiler.Builder.Tags')->exists($nameSingleCode)
-				|| $front)
+		if ((CFactory::_('Compiler.Builder.Tags')->exists($nameSingleCode) || $front)
 			&& (!in_array($nameSingleCode, $this->setRouterHelpDone)))
 		{
 			// insure we load a view only once
 			$this->setRouterHelpDone[] = $nameSingleCode;
 			// build view route helper
-			$View          = StringHelper::safe(
+			$View = StringHelper::safe(
 				$nameSingleCode, 'F'
 			);
+
+			$hasCategory = (CFactory::_('Compiler.Builder.Category.Code')->exists($nameSingleCode) &&
+				'category' !== $nameSingleCode && 'categories' !== $nameSingleCode);
+
 			$routeHelper   = [];
 			$routeHelper[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-			$routeHelper[] = Indent::_(1) . " * @param int The route of the "
-				. $View;
-			$routeHelper[] = Indent::_(1) . " */";
-			if ('category' === $nameSingleCode
-				|| 'categories' === $nameSingleCode)
+			$routeHelper[] = Indent::_(1) . " * Get the URL route for {$nameSingleCode}";
+			$routeHelper[] = Indent::_(1) . " *";
+			$routeHelper[] = Indent::_(1) . " * @param   integer  \$id     The id of the {$nameSingleCode}";
+
+			if ($hasCategory)
 			{
-				$routeHelper[] = Indent::_(1) . "public static function get"
-					. $View . "Route(\$id = 0)";
+				$routeHelper[] = Indent::_(1) . " * @param   integer  \$catid  The id of the {$nameSingleCode}'s category";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @return  string  The link to the {$nameSingleCode}";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @since   1.5";
+				$routeHelper[] = Indent::_(1) . " */";
+				$routeHelper[] = Indent::_(1) . "public static function get" . $View . "Route(\$id = 0, \$catid = 0): string";
 			}
 			else
 			{
-				$routeHelper[] = Indent::_(1) . "public static function get"
-					. $View . "Route(\$id = 0, \$catid = 0)";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @return  string  The link to the {$nameSingleCode}";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @since   1.5";
+				$routeHelper[] = Indent::_(1) . " */";
+				$routeHelper[] = Indent::_(1) . "public static function get" . $View . "Route(\$id = 0): string";
 			}
+
 			$routeHelper[] = Indent::_(1) . "{";
 			$routeHelper[] = Indent::_(2) . "if (\$id > 0)";
 			$routeHelper[] = Indent::_(2) . "{";
-			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Initialize the needel array.";
-			$routeHelper[] = Indent::_(3) . "\$needles = array(";
-			$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
-				. "'  => array((int) \$id)";
-			$routeHelper[] = Indent::_(3) . ");";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+					. " Initialize the needel array.";
+				$routeHelper[] = Indent::_(3) . "\$needles = array(";
+				$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
+					. "'  => array((int) \$id)";
+				$routeHelper[] = Indent::_(3) . ");";
+			}
+
 			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Create the link";
 			$routeHelper[] = Indent::_(3) . "\$link = 'index.php?option=com_"
@@ -6747,52 +5676,77 @@ class Interpretation extends Fields
 			$routeHelper[] = Indent::_(2) . "}";
 			$routeHelper[] = Indent::_(2) . "else";
 			$routeHelper[] = Indent::_(2) . "{";
-			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Initialize the needel array.";
-			$routeHelper[] = Indent::_(3) . "\$needles = array(";
-			$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
-				. "'  => array()";
-			$routeHelper[] = Indent::_(3) . ");";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+					. " Initialize the needel array.";
+				$routeHelper[] = Indent::_(3) . "\$needles = array(";
+				$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
+					. "'  => array()";
+				$routeHelper[] = Indent::_(3) . ");";
+			}
+
 			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Create the link but don't add the id.";
 			$routeHelper[] = Indent::_(3) . "\$link = 'index.php?option=com_"
-				. CFactory::_('Config')->component_code_name . "&view=" . $nameSingleCode
-				. "';";
+				. CFactory::_('Config')->component_code_name . "&view=" . $nameSingleCode . "';";
 			$routeHelper[] = Indent::_(2) . "}";
-			if ('category' != $nameSingleCode
-				&& 'categories' != $nameSingleCode)
+
+			if ($hasCategory)
 			{
 				$routeHelper[] = Indent::_(2) . "if (\$catid > 1)";
 				$routeHelper[] = Indent::_(2) . "{";
-				$routeHelper[] = Indent::_(3)
-					. "\$categories = Categories::getInstance('"
-					. CFactory::_('Config')->component_code_name . "." . $nameListCode . "');";
-				$routeHelper[] = Indent::_(3)
-					. "\$category = \$categories->get(\$catid);";
-				$routeHelper[] = Indent::_(3) . "if (\$category)";
-				$routeHelper[] = Indent::_(3) . "{";
-				$routeHelper[] = Indent::_(4)
-					. "\$needles['category'] = array_reverse(\$category->getPath());";
-				$routeHelper[] = Indent::_(4)
-					. "\$needles['categories'] = \$needles['category'];";
-				$routeHelper[] = Indent::_(4) . "\$link .= '&catid='.\$catid;";
-				$routeHelper[] = Indent::_(3) . "}";
+
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$routeHelper[] = Indent::_(3)
+						. "\$categories = Categories::getInstance('"
+						. CFactory::_('Config')->component_code_name . "." . $nameListCode . "');";
+					$routeHelper[] = Indent::_(3)
+						. "\$category = \$categories->get(\$catid);";
+					$routeHelper[] = Indent::_(3) . "if (\$category)";
+					$routeHelper[] = Indent::_(3) . "{";
+					$routeHelper[] = Indent::_(4)
+						. "\$needles['category'] = array_reverse(\$category->getPath());";
+					$routeHelper[] = Indent::_(4)
+						. "\$needles['categories'] = \$needles['category'];";
+					$routeHelper[] = Indent::_(4) . "\$link .= '&catid='.\$catid;";
+					$routeHelper[] = Indent::_(3) . "}";
+				}
+				else
+				{
+					$routeHelper[] = Indent::_(3) . "\$link .= '&catid='.\$catid;";
+				}
+
 				$routeHelper[] = Indent::_(2) . "}";
 			}
+
 			if (CFactory::_('Compiler.Builder.Has.Menu.Global')->exists($nameSingleCode))
 			{
-				$routeHelper[] = PHP_EOL . Indent::_(2)
-					. "if (\$item = self::_findItem(\$needles, '"
-					. $nameSingleCode . "'))";
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$routeHelper[] = PHP_EOL . Indent::_(2)
+						. "if (\$item = self::_findItem(\$needles, '" . $nameSingleCode . "'))";
+				}
+				else
+				{
+					$routeHelper[] = PHP_EOL . Indent::_(2)
+						. "if ((\$item = self::_findItem('" . $nameSingleCode . "')) !== null)";
+				}
+				$routeHelper[] = Indent::_(2) . "{";
+				$routeHelper[] = Indent::_(3) . "\$link .= '&Itemid='.\$item;";
+				$routeHelper[] = Indent::_(2) . "}";
 			}
-			else
+			elseif (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$routeHelper[] = PHP_EOL . Indent::_(2)
 					. "if (\$item = self::_findItem(\$needles))";
+				$routeHelper[] = Indent::_(2) . "{";
+				$routeHelper[] = Indent::_(3) . "\$link .= '&Itemid='.\$item;";
+				$routeHelper[] = Indent::_(2) . "}";
 			}
-			$routeHelper[] = Indent::_(2) . "{";
-			$routeHelper[] = Indent::_(3) . "\$link .= '&Itemid='.\$item;";
-			$routeHelper[] = Indent::_(2) . "}";
+
 			$routeHelper[] = PHP_EOL . Indent::_(2) . "return \$link;";
 			$routeHelper[] = Indent::_(1) . "}";
 
@@ -6993,8 +5947,7 @@ class Interpretation extends Fields
 			. "\$this->table		= \$this->getTable();";
 		$batchmove[] = Indent::_(3)
 			. "\$this->tableClassName	= get_class(\$this->table);";
-		$batchmove[] = Indent::_(3) . "\$this->canDo		= " . $Helper
-			. "::getActions('" . $nameSingleCode . "');";
+		$batchmove[] = Indent::_(3) . "\$this->canDo		= Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "');";
 		$batchmove[] = Indent::_(2) . "}";
 
 		$batchmove[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
@@ -7219,8 +6172,7 @@ class Interpretation extends Fields
 			. "\$this->table 		= \$this->getTable();";
 		$batchcopy[] = Indent::_(3)
 			. "\$this->tableClassName	= get_class(\$this->table);";
-		$batchcopy[] = Indent::_(3) . "\$this->canDo		= " . $Helper
-			. "::getActions('" . $nameSingleCode . "');";
+		$batchcopy[] = Indent::_(3) . "\$this->canDo		= Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "');";
 		$batchcopy[] = Indent::_(2) . "}";
 		$batchcopy[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
 			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && !\$this->canDo->get('"
@@ -8359,7 +7311,7 @@ class Interpretation extends Fields
 					$placeholders = [
 						Placefix::_('component') => $component,
 						Placefix::_('view') => $for
-					]; // dont change this just use joomla_plugin_files_folders_urls or componentbuilder (took you a while to get here right :)
+					]; // dont change this just use ###view### or componentbuilder (took you a while to get here right :)
 
 					$db .= CFactory::_('Placeholder')->update(
 						$customSql, $placeholders
@@ -9035,8 +7987,7 @@ class Interpretation extends Fields
 							else
 							{
 								// now load it to the global object for tool bar
-								$this->customAdminDynamicButtons[$nameListCode][]
-									= $set;
+								CFactory::_('Compiler.Builder.Dynamic.Buttons')->add($nameListCode, $set);
 							}
 							// log that it has been added already
 							$this->customAdminAdded[$custom_admin_view['settings']->code]
@@ -9088,7 +8039,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3)
 					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
-					. "loadUserById(\$item->checked_out ?? 0);";
+					. "loadUserById((int) (\$item->checked_out ?? 0));";
 
 				$allowSortingWhen = "<?php if (!\$this->isModal && \$canDo->get('"
 					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')): ?>";
@@ -9097,9 +8048,7 @@ class Interpretation extends Fields
 				$allowPublishedWhen =  "<?php if (!\$this->isModal && \$canDo->get('"
 					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')) : ?>";
 			}
-			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
-				. "::getActions('" . $nameSingleCode . "',\$item,'"
-				. $nameListCode . "');";
+			$body .= PHP_EOL . Indent::_(2) . "\$canDo = Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "', \$item, '" . $nameListCode . "');";
 			$body .= PHP_EOL . Indent::_(1) . "?>";
 			$body .= PHP_EOL . Indent::_(1)
 				. '<tr class="row<?php echo $i % 2; ?>">';
@@ -9603,7 +8552,7 @@ class Interpretation extends Fields
 			{
 				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
+					. 'loadUserById((int) ($item->' . $item['code'] . ' ?? 0))->name';
 			}
 		}
 		// check if custom user
@@ -9620,7 +8569,7 @@ class Interpretation extends Fields
 			{
 				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) $item->' . $item['id_code'] . ' ?? 0)->name';
+					. 'loadUserById((int) ($item->' . $item['id_code'] . ' ?? 0))->name';
 			}
 		}
 		// check if translated value is used
@@ -9641,7 +8590,7 @@ class Interpretation extends Fields
 			{
 				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
+					. 'loadUserById((int) ($item->' . $item['code'] . ' ?? 0))->name';
 			}
 		}
 		elseif ($doNotEscape)
@@ -9767,7 +8716,7 @@ class Interpretation extends Fields
 			// return the authority to category
 			return $isModal . $user . "->authorise('core.edit', 'com_"
 				. CFactory::_('Config')->component_code_name . "." . $otherView
-				. ".category.' . (int)\$item->" . $item['code'] . ")";
+				. ".category.' . (int) (\$item->" . $item['code'] . " ?? 0))";
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
 		{
@@ -9787,13 +8736,13 @@ class Interpretation extends Fields
 			{
 				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
 					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . "_id)";
+					. $item['custom']['view'] . ".' . (int) (\$item->" . $item['id_code'] . "_id ?? 0))";
 			}
 			else
 			{
 				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
 					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . ")";
+					. $item['custom']['view'] . ".' . (int) (\$item->" . $item['id_code'] . " ?? 0))";
 			}
 		}
 		elseif (isset($item['custom'])
@@ -10814,7 +9763,7 @@ class Interpretation extends Fields
 				$linkedViewIdentifier[$linkedViewGuid] = $tabCodeName;
 				//set function name
 				$codeName = StringHelper::safe(
-					$this->uniquekey(3) . $tabCodeName
+					Unique::get(3) . $tabCodeName
 				);
 				// set as items layout
 				$this->setLayout(
@@ -11430,7 +10379,7 @@ class Interpretation extends Fields
 	{
 		$get_key = null;
 		// check if there is an override by component name, view name, & layout name
-		if ($this->setTemplateAndLayoutData(
+		if (CFactory::_('Templatelayout.Data')->set(
 			'override', $nameSingleCode, false, array(''),
 			array(CFactory::_('Config')->component_code_name . $nameSingleCode . $layoutName)
 		))
@@ -11438,7 +10387,7 @@ class Interpretation extends Fields
 			$get_key = CFactory::_('Config')->component_code_name . $nameSingleCode . $layoutName;
 		}
 		// check if there is an override by component name & layout name
-		elseif ($this->setTemplateAndLayoutData(
+		elseif (CFactory::_('Templatelayout.Data')->set(
 			'override', $nameSingleCode, false, array(''),
 			array(CFactory::_('Config')->component_code_name . $layoutName)
 		))
@@ -11446,7 +10395,7 @@ class Interpretation extends Fields
 			$get_key = CFactory::_('Config')->component_code_name . $layoutName;
 		}
 		// check if there is an override by view & layout name
-		elseif ($this->setTemplateAndLayoutData(
+		elseif (CFactory::_('Templatelayout.Data')->set(
 			'override', $nameSingleCode, false, array(''),
 			array($nameSingleCode . $layoutName)
 		))
@@ -11454,7 +10403,7 @@ class Interpretation extends Fields
 			$get_key = $nameSingleCode . $layoutName;
 		}
 		// check if there is an override by layout name (global layout)
-		elseif ($this->setTemplateAndLayoutData(
+		elseif (CFactory::_('Templatelayout.Data')->set(
 			'override', $nameSingleCode, false, array(''),
 			array($layoutName)
 		))
@@ -11530,6 +10479,21 @@ class Interpretation extends Fields
 		if (StringHelper::check($name_single_code)
 			&& StringHelper::check($name_list_code))
 		{
+			if (strpos((string) $parentKey, '-R>') !== false
+				|| strpos((string) $parentKey, '-A>') !== false)
+			{
+				list($parent_key) = explode('-', (string) $parentKey);
+			}
+			elseif (strpos((string) $parentKey, '-OR>') !== false)
+			{
+				// this is not good... (TODO)
+				$parent_keys = explode('-OR>', (string) $parentKey);
+			}
+			else
+			{
+				$parent_key = $parentKey;
+			}
+
 			$head         = $this->setListHeadLinked(
 				$name_single_code, $name_list_code, $addNewButon,
 				$nameSingleCode
@@ -11557,31 +10521,66 @@ class Interpretation extends Fields
 				. '&layout=edit&id=" . $id : "";';
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check for a return value';
-			$headerscript .= PHP_EOL
-				. '$jinput = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;';
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$headerscript .= PHP_EOL
+					. '$jinput = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;';
+			}
+			else
+			{
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' check for a return value';
+				$headerscript .= PHP_EOL
+					. '$jinput = $displayData->input ?? (method_exists($app, \'getInput\') ? $app->getInput() : $app->input);';
+			}
 			$headerscript .= PHP_EOL
 				. "if (\$_return = \$jinput->get('return', null, 'base64'))";
 			$headerscript .= PHP_EOL . '{';
 			$headerscript .= PHP_EOL . Indent::_(1)
 				. '$return .= "&return=" . $_return;';
 			$headerscript .= PHP_EOL . '}';
-			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
-				. ' check if return value was set';
-			$headerscript .= PHP_EOL . 'if ('
-				. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
-			$headerscript .= PHP_EOL . '{';
-			$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
-					__LINE__,__CLASS__
-				) . ' set the referral values';
-			$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
-				. $nameSingleCode
-				. '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
-			$headerscript .= PHP_EOL . '}';
-			$headerscript .= PHP_EOL . 'else';
-			$headerscript .= PHP_EOL . '{';
-			$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
-				. $nameSingleCode . '&refid=" . $id : "";';
-			$headerscript .= PHP_EOL . '}';
+			if ($parent_key === 'guid' && CFactory::_('Config')->get('joomla_version', 3) > 4) // only for 5+
+			{
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' get the GUID value';
+				$headerscript .= PHP_EOL . '$guid = $displayData->item->guid ?? null;';
+
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' check if return value was set';
+				$headerscript .= PHP_EOL . 'if ('
+					. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
+				$headerscript .= PHP_EOL . '{';
+				$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
+						__LINE__,__CLASS__
+					) . ' set the referral values';
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = $guid ? "&init_defaults=" . urlencode(\'{"' . $nameSingleCode . '":"\' . $guid . \'"}\') . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
+				$headerscript .= PHP_EOL . '}';
+				$headerscript .= PHP_EOL . 'else';
+				$headerscript .= PHP_EOL . '{';
+
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = $guid ? "&init_defaults=" . urlencode(\'{"' . $nameSingleCode . '":"\' . $guid . \'"}\') : "";';
+				$headerscript .= PHP_EOL . '}';
+			}
+			else
+			{
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' check if return value was set';
+				$headerscript .= PHP_EOL . 'if ('
+					. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
+				$headerscript .= PHP_EOL . '{';
+				$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
+						__LINE__,__CLASS__
+					) . ' set the referral values';
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
+					. $nameSingleCode
+					. '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
+				$headerscript .= PHP_EOL . '}';
+				$headerscript .= PHP_EOL . 'else';
+				$headerscript .= PHP_EOL . '{';
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
+					. $nameSingleCode . '&refid=" . $id : "";';
+				$headerscript .= PHP_EOL . '}';
+			}
 			if ($addNewButon > 0)
 			{
 				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
@@ -11615,10 +10614,7 @@ class Interpretation extends Fields
 				}
 				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 					. ' load the action object';
-				$headerscript .= PHP_EOL . '$can = '
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper::getActions(' . "'"
-					. $name_single_code . "'"
-					. ');';
+				$headerscript .= PHP_EOL . '$can = Super__' . '_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get(' . "'" . $name_single_code . "'" . ');';
 			}
 			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutCodeName . '|LAYOUTITEMSHEADER',
 				$headerscript
@@ -11633,20 +10629,6 @@ class Interpretation extends Fields
 			);
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
 			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWTABLESCRIPTS', $this->setFootableScripts());
-			if (strpos((string) $parentKey, '-R>') !== false
-				|| strpos((string) $parentKey, '-A>') !== false)
-			{
-				list($parent_key) = explode('-', (string) $parentKey);
-			}
-			elseif (strpos((string) $parentKey, '-OR>') !== false)
-			{
-				// this is not good... (TODO)
-				$parent_keys = explode('-OR>', (string) $parentKey);
-			}
-			else
-			{
-				$parent_key = $parentKey;
-			}
 
 			if (strpos((string) $key, '-R>') !== false || strpos((string) $key, '-A>') !== false)
 			{
@@ -11671,7 +10653,7 @@ class Interpretation extends Fields
 				{
 					$globalKey[$parent_key]
 						= StringHelper::safe(
-						$_key . $this->uniquekey(4)
+						$_key . Unique::get(4)
 					);
 					CFactory::_('Compiler.Builder.Content.Multi')->add($nameSingleCode . '|LINKEDVIEWGLOBAL',
 						PHP_EOL . Indent::_(2) . "\$this->"
@@ -11683,7 +10665,7 @@ class Interpretation extends Fields
 			{
 				// set the global key
 				$globalKey = StringHelper::safe(
-					$_key . $this->uniquekey(4)
+					$_key . Unique::get(4)
 				);
 				CFactory::_('Compiler.Builder.Content.Multi')->add($nameSingleCode . '|LINKEDVIEWGLOBAL',
 					PHP_EOL . Indent::_(2) . "\$this->" . $globalKey
@@ -11867,11 +10849,9 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3)
 					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
-					. "loadUserById(\$item->checked_out ?? 0);";
+					. "loadUserById((int) (\$item->checked_out ?? 0));";
 			}
-			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
-				. "::getActions('" . $nameSingleCode . "',\$item,'"
-				. $nameListCode . "');";
+			$body .= PHP_EOL . Indent::_(2) . "\$canDo = Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "', \$item, '" . $nameListCode . "');";
 			$body .= PHP_EOL . Indent::_(1) . "?>";
 			$body .= PHP_EOL . Indent::_(1) . '<tr>';
 			// check if this view has fields that should not be escaped
@@ -12722,68 +11702,13 @@ class Interpretation extends Fields
 	 *
 	 * @return array|string
 	 */
-	public function setCustomAdminDynamicButton($nameListCode)
-	{
-		$buttons = '';
-		if (isset($this->customAdminDynamicButtons[$nameListCode])
-			&& ArrayHelper::check(
-				$this->customAdminDynamicButtons[$nameListCode]
-			))
-		{
-			$buttons = [];
-			foreach (
-				$this->customAdminDynamicButtons[$nameListCode] as
-				$custom_button
-			)
-			{
-				// Load to lang
-				$keyLang = CFactory::_('Config')->lang_prefix . '_' . $custom_button['NAME'];
-				CFactory::_('Language')->set(
-					CFactory::_('Config')->lang_target, $keyLang, StringHelper::safe(
-					$custom_button['name'], 'Ww'
-				)
-				);
-				// add cpanel button
-				$buttons[] = Indent::_(2) . "if (\$this->canDo->get('"
-					. $custom_button['link'] . ".access'))";
-				$buttons[] = Indent::_(2) . "{";
-				$buttons[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " add " . $custom_button['name'] . " button.";
-				$buttons[] = Indent::_(3) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
-					. $nameListCode . ".redirectTo"
-					. StringHelper::safe(
-						$custom_button['link'], 'F'
-					) . "', '" . $custom_button['icon'] . "', '', '" . $keyLang
-					. "', true);";
-				$buttons[] = Indent::_(2) . "}";
-			}
-			if (ArrayHelper::check($buttons))
-			{
-				return implode(PHP_EOL, $buttons);
-			}
-		}
-
-		return $buttons;
-	}
-
-	/**
-	 * @param $nameListCode
-	 *
-	 * @return array|string
-	 */
 	public function setCustomAdminDynamicButtonController($nameListCode)
 	{
 		$method = '';
-		if (isset($this->customAdminDynamicButtons[$nameListCode])
-			&& ArrayHelper::check(
-				$this->customAdminDynamicButtons[$nameListCode]
-			))
+		if (CFactory::_('Compiler.Builder.Dynamic.Buttons')->isArray($nameListCode))
 		{
 			$method = [];
-			foreach (
-				$this->customAdminDynamicButtons[$nameListCode] as
-				$custom_button
-			)
+			foreach (CFactory::_('Compiler.Builder.Dynamic.Buttons')->get($nameListCode) as $custom_button)
 			{
 				// add the custom redirect method
 				$method[] = PHP_EOL . PHP_EOL . Indent::_(1)
@@ -14028,7 +12953,7 @@ class Interpretation extends Fields
 						$condition['match_name']
 					))
 				{
-					$uniqueVar      = $this->uniquekey(7);
+					$uniqueVar      = Unique::get(7);
 					$matchName      = $condition['match_name'] . '_'
 						. $uniqueVar;
 					$targetBehavior = ($condition['target_behavior'] == 1
@@ -14783,7 +13708,7 @@ class Interpretation extends Fields
 					if ($target['required'] === 'yes')
 					{
 						$unique                                 = $uniqueVar
-							. $this->uniquekey(3);
+							. Unique::get(3);
 						$bucket[$target['name']]['requiredVar'] = "jform_"
 							. $unique . "_required = false;" . PHP_EOL;
 					}
@@ -16067,7 +14992,7 @@ class Interpretation extends Fields
 								$function[] = Indent::_(5)
 									. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 								$function[] = Indent::_(5)
-									. "loadUserById(\$" . $filter['code'] . " ?? 0)->name";
+									. "loadUserById((int) (\$" . $filter['code'] . " ?? 0))->name";
 								$function[] = Indent::_(5) . ");";
 							}
 					}
@@ -16224,10 +15149,14 @@ class Interpretation extends Fields
 	 * @return  string The php to place in view.html.php
 	 *
 	 */
-	public function setFilterFieldSidebarDisplayHelper(&$nameSingleCode,
-	                                                   &$nameListCode
-	)
+	public function setFilterFieldSidebarDisplayHelper(&$nameSingleCode, &$nameListCode)
 	{
+		// temp fix
+		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
+		{
+			return '';
+		}
+
 		// start the filter bucket
 		$fieldFilters = [];
 		// add the default filter
@@ -16294,7 +15223,7 @@ class Interpretation extends Fields
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " " . $CodeName . " Filter";
-					$fieldFilters[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+					$fieldFilters[] = Indent::_(3) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 					$fieldFilters[] = Indent::_(4) . "'- Select ' . Text:"
 						. ":_('" . $filter['lang'] . "') . ' -',";
 					$fieldFilters[] = Indent::_(4) . "'filter_"
@@ -16359,7 +15288,7 @@ class Interpretation extends Fields
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " " . $Codename . " Filter";
-					$fieldFilters[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+					$fieldFilters[] = Indent::_(3) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 					$fieldFilters[] = Indent::_(4) . "'- Select '.Text:"
 						. ":_('" . $filter['lang'] . "').' -',";
 					$fieldFilters[] = Indent::_(4) . "'filter_"
@@ -16410,7 +15339,7 @@ class Interpretation extends Fields
 			$filter[] = Indent::_(2)
 				. "if (\$this->canState)";
 			$filter[] = Indent::_(2) . "{";
-			$filter[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+			$filter[] = Indent::_(3) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 			$filter[] = Indent::_(4) . "Text:"
 				. ":_('JOPTION_SELECT_PUBLISHED'),";
 			$filter[] = Indent::_(4) . "'filter_published',";
@@ -16422,7 +15351,7 @@ class Interpretation extends Fields
 			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
 				&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 			{
-				$filter[] = PHP_EOL . Indent::_(2) . "\JHtmlSidebar::addFilter(";
+				$filter[] = PHP_EOL . Indent::_(2) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 				$filter[] = Indent::_(3) . "Text:"
 					. ":_('JOPTION_SELECT_ACCESS'),";
 				$filter[] = Indent::_(3) . "'filter_access',";
@@ -16452,7 +15381,7 @@ class Interpretation extends Fields
 			// set filter
 			$filter[] = PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Category Filter.";
-			$filter[] = Indent::_(2) . "\JHtmlSidebar::addFilter(";
+			$filter[] = Indent::_(2) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 			$filter[] = Indent::_(3) . "Text:"
 				. ":_('JOPTION_SELECT_CATEGORY'),";
 			$filter[] = Indent::_(3) . "'filter_category_id',";
@@ -16794,34 +15723,6 @@ class Interpretation extends Fields
 		return '';
 	}
 
-	/**
-	 * Get Admin Controller Allow Add
-	 *
-	 * @param   string  $nameSingleCode  The view edit or single name
-	 * @param   string  $nameListCode    The view list name
-	 *
-	 * @return  string The method code
-	 * @deprecated 3.3 Use CFactory::_('Architecture.Controller.AllowAdd')->get($nameSingleCode);
-	 */
-	public function setJcontrollerAllowAdd($nameSingleCode, $nameListCode)
-	{
-		return CFactory::_('Architecture.Controller.AllowAdd')->get($nameSingleCode);
-	}
-
-	/**
-	 * Get Admin Controller Allow Edit
-	 *
-	 * @param   string  $nameSingleCode  The view edit or single name
-	 * @param   string  $nameListCode    The view list name
-	 *
-	 * @return  string The method code
-	 * @deprecated 3.3 Use CFactory::_('Architecture.Controller.AllowEdit')->get($nameSingleCode, $nameListCode);
-	 */
-	public function setJcontrollerAllowEdit($nameSingleCode, $nameListCode)
-	{
-		return CFactory::_('Architecture.Controller.AllowEdit')->get($nameSingleCode, $nameListCode);
-	}
-
 	public function setJmodelAdminGetForm($nameSingleCode, $nameListCode)
 	{
 		// set component name
@@ -16853,181 +15754,63 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(2) . "{";
 		$getForm[] = Indent::_(3) . "return false;";
 		$getForm[] = Indent::_(2) . "}";
-		// load license locker
-		if (CFactory::_('Component')->get('add_license') && CFactory::_('Component')->get('license_type') == 3
-			&& CFactory::_('Compiler.Builder.Content.Multi')->exists($nameSingleCode . '|BOOLMETHOD'))
+		$getForm[] = PHP_EOL . Indent::_(2)
+			. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
+		$getForm[] = PHP_EOL . Indent::_(2)
+			. "\$jinput = method_exists(\$app, 'getInput') ? \$app->getInput() : \$app->input;";
+		$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
+				__LINE__,__CLASS__
+			)
+			. " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
+		$getForm[] = Indent::_(2) . "if (\$jinput->get('a_id'))";
+		$getForm[] = Indent::_(2) . "{";
+		$getForm[] = Indent::_(3)
+			. "\$id = \$jinput->get('a_id', 0, 'INT');";
+		$getForm[] = Indent::_(2) . "}";
+		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " The back end uses id so we use that the rest of the time and set it to 0 by default.";
+		$getForm[] = Indent::_(2) . "else";
+		$getForm[] = Indent::_(2) . "{";
+		$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
+		$getForm[] = Indent::_(2) . "}";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$getForm[] = $this->checkStatmentLicenseLocked(
-				CFactory::_('Compiler.Builder.Content.Multi')->get($nameSingleCode . '|BOOLMETHOD', '')
-			);
-		}
-		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
-		{
-			// check if category has another name
-			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.view', $nameSingleCode);
-			// setup the category script
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
-			$getForm[] = Indent::_(2) . "if (\$jinput->get('a_id'))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3)
-				. "\$id = \$jinput->get('a_id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " The back end uses id so we use that the rest of the time and set it to 0 by default.";
-			$getForm[] = Indent::_(2) . "else";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Determine correct permissions to check.";
-			$getForm[] = Indent::_(2) . "if (\$this->getState('"
-				. $nameSingleCode . ".id'))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "\$id = \$this->getState('"
-				. $nameSingleCode . ".id');";
-			$getForm[] = PHP_EOL . Indent::_(3) . "\$catid = 0;";
-			$getForm[] = Indent::_(3)
-				. "if (isset(\$this->getItem(\$id)->catid))";
-			$getForm[] = Indent::_(3) . "{";
-			$getForm[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " set category id";
-			$getForm[] = Indent::_(4)
-				. "\$catid = \$this->getItem(\$id)->catid;";
-			$getForm[] = PHP_EOL . Indent::_(4) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Existing record. Can only edit in selected categories.";
-			$getForm[] = Indent::_(4)
-				. "\$form->setFieldAttribute('catid', 'action', 'core.edit');";
-			$getForm[] = PHP_EOL . Indent::_(4) . "//" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Existing record. Can only edit own items in selected categories.";
-			$getForm[] = Indent::_(4)
-				. "\$form->setFieldAttribute('catid', 'action', 'core.edit.own');";
-			$getForm[] = Indent::_(3) . "}";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "else";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " New record. Can only create in selected categories.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('catid', 'action', 'core.create');";
-			$getForm[] = Indent::_(2) . "}";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-			}
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Check for existing item.";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Modify the form based on Edit State access controls.";
-			// get the other view
-			$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.view", 'error');
-			// check if the item has permissions.
-			$getForm[] = Indent::_(2)
-				. "if (\$id != 0 && (!\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
-				. "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
-			$getForm[] = Indent::_(3)
-				. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
-				. $component . "." . $otherView
-				. ".category.' . (int) \$catid))";
-			$getForm[] = Indent::_(3)
-				. "|| (\$id == 0 && !\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
-				. "', 'com_" . $component . "')))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$getForm[] = PHP_EOL . Indent::_(3) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Disable fields while saving.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'filter', 'unset');";
-			$getForm[] = Indent::_(2) . "}";
+				. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
-			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = method_exists(\$app, 'getInput') ? \$app->getInput() : \$app->input;";
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
-			$getForm[] = Indent::_(2) . "if (\$jinput->get('a_id'))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3)
-				. "\$id = \$jinput->get('a_id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " The back end uses id so we use that the rest of the time and set it to 0 by default.";
-			$getForm[] = Indent::_(2) . "else";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-			}
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Check for existing item.";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Modify the form based on Edit State access controls.";
-			// check if the item has permissions.
-			$getForm[] = Indent::_(2)
-				. "if (\$id != 0 && (!\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
-			$getForm[] = Indent::_(3)
-				. "|| (\$id == 0 && !\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
-				. "')))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields while saving.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'filter', 'unset');";
-			$getForm[] = Indent::_(2) . "}";
+				. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 		}
+		$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
+				__LINE__,__CLASS__
+			) . " Check for existing item.";
+		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " Modify the form based on Edit State access controls.";
+		// check if the item has permissions.
+		$getForm[] = Indent::_(2)
+			. "if (\$id != 0 && (!\$user->authorise('"
+			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
+			. $nameSingleCode . ".' . (int) \$id))";
+		$getForm[] = Indent::_(3)
+			. "|| (\$id == 0 && !\$user->authorise('"
+			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
+			. "')))";
+		$getForm[] = Indent::_(2) . "{";
+		$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+			. " Disable fields for display.";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('published', 'disabled', 'true');";
+		$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+			. " Disable fields while saving.";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('published', 'filter', 'unset');";
+		$getForm[] = Indent::_(2) . "}";
 		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " If this is a new item insure the greated by is set.";
 		$getForm[] = Indent::_(2) . "if (0 == \$id)";
@@ -17213,9 +15996,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $getForm);
 	}
 
-	protected function setPermissionEditFields(&$allow, $nameSingleCode,
-	                                           $fieldName, $fieldType, $component
-	)
+	protected function setPermissionEditFields(&$allow, $nameSingleCode, $fieldName, $fieldType, $component)
 	{
 		// only for fields that can be edited
 		if (!CFactory::_('Field.Groups')->check($fieldType, 'spacer'))
@@ -17231,37 +16012,50 @@ class Interpretation extends Fields
 				. $nameSingleCode . ".edit." . $fieldName . "', 'com_"
 				. $component . "')))";
 			$allow[] = Indent::_(2) . "{";
+
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
+				. " Disable field on display.";
 			$allow[] = Indent::_(3) . "\$form->setFieldAttribute('" . $fieldName
 				. "', 'disabled', 'true');";
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
+				. " Make field readonly on display.";
 			$allow[] = Indent::_(3) . "\$form->setFieldAttribute('" . $fieldName
 				. "', 'readonly', 'true');";
-			if ('radio' === $fieldType || 'repeatable' === $fieldType)
+
+			if ('radio' === $fieldType || 'repeatable' === $fieldType || 'subform' === $fieldType)
 			{
 				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " Disable radio button for display.";
+					. " Disable the buttons form being clickable.";
 				$allow[] = Indent::_(3)
 					. "\$class = \$form->getFieldAttribute('" . $fieldName
 					. "', 'class', '');";
 				$allow[] = Indent::_(3) . "\$form->setFieldAttribute('"
-					. $fieldName . "', 'class', \$class.' disabled no-click');";
+					. $fieldName . "', 'class', \$class . ' disabled no-click');";
 			}
+
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " If there is no value continue.";
-			$allow[] = Indent::_(3) . "if (!\$form->getValue('" . $fieldName
-				. "'))";
+			$allow[] = Indent::_(3) . "if (!\$form->getValue('" . $fieldName . "'))";
 			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields while saving.";
-			$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
-				. "', 'filter', 'unset');";
-			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields while saving.";
-			$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
-				. "', 'required', 'false');";
+				
+			if ('repeatable' === $fieldType || 'subform' === $fieldType)
+			{
+				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+					. " Remove the field";
+				$allow[] = Indent::_(4) . "\$form->removeField('" . $fieldName . "');";
+			}
+			else
+			{
+				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+					. " Disable field while saving.";
+				$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
+					. "', 'filter', 'unset');";
+				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+					. " Disable field while saving.";
+				$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
+					. "', 'required', 'false');";
+			}
+
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
 		}
@@ -17360,103 +16154,6 @@ class Interpretation extends Fields
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
 		}
-	}
-
-	public function setJmodelAdminAllowEdit($nameSingleCode, $nameListCode)
-	{
-		$allow = [];
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-		// prepare custom permission script
-		$customAllow = CFactory::_('Customcode.Dispenser')->get(
-			'php_allowedit', $nameSingleCode, Indent::_(2)
-			. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;"
-			. PHP_EOL
-		);
-		// check if the item has permissions.
-		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit'))
-		{
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Check specific edit permission then general edit permission.";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-			}
-			// load custom permission script
-			$allow[] = $customAllow;
-			$allow[] = Indent::_(2) . "return \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit')
-				. "', 'com_" . $component . "." . $nameSingleCode
-				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit')
-				. "',  'com_" . $component . "');";
-		}
-		else
-		{
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Check specific edit permission then general edit permission.";
-			if (StringHelper::check($customAllow))
-			{
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-				{
-					$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-				}
-				else
-				{
-					$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-				}
-			}
-			// load custom permission script
-			$allow[] = $customAllow;
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$allow[] = Indent::_(2)
-					. "return Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser()->authorise('core.edit', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
-			}
-			else
-			{
-				$allow[] = Indent::_(2)
-					. "return Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity()->authorise('core.edit', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
-			}
-		}
-
-		return implode(PHP_EOL, $allow);
-	}
-
-	/**
-	 * Get Admin Module Can Delete
-	 *
-	 * @param   string  $nameSingleCode  The view edit or single name
-	 * @param   string  $nameListCode    The view list name
-	 *
-	 * @return  string The method code
-	 * @deprecated 3.3 Use CFactory::_('Architecture.Model.CanDelete')->get($nameSingleCode);
-	 */
-	public function setJmodelAdminCanDelete($nameSingleCode, $nameListCode)
-	{
-		return CFactory::_('Architecture.Model.CanDelete')->get($nameSingleCode);
-	}
-
-	/**
-	 * Get Admin Module Can Delete
-	 *
-	 * @param   string  $nameSingleCode  The view edit or single name
-	 * @param   string  $nameListCode    The view list name
-	 *
-	 * @return  string The method code
-	 * @deprecated 3.3 Use CFactory::_('Architecture.Model.CanEditState')->get($nameSingleCode);
-	 */
-	public function setJmodelAdminCanEditState($nameSingleCode, $nameListCode)
-	{
-		return CFactory::_('Architecture.Model.CanEditState')->get($nameSingleCode);
 	}
 
 	public function setJviewListCanDo($nameSingleCode, $nameListCode)
@@ -17855,450 +16552,6 @@ class Interpretation extends Fields
 		return $stored;
 	}
 
-	public function setAddToolBar(&$view)
-	{
-		// set view name
-		$nameSingleCode = $view['settings']->name_single_code;
-		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
-		{
-			$langViews = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_list_code, 'U'
-				);
-			$name_list = strtolower($view['settings']->name_list);
-			$name_single = strtolower($view['settings']->name_single);
-			// add empty title
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target,
-				$langViews . '_EMPTYSTATE_TITLE',
-				'No ' . $name_list . ' have been created yet.'
-			);
-			// add empty content
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target,
-				$langViews . '_EMPTYSTATE_CONTENT',
-				$view['settings']->description
-			);
-			// add empty button add
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target,
-				$langViews . '_EMPTYSTATE_BUTTON_ADD',
-				'Add your first ' . $name_single
-			);
-		}
-
-		// check type
-		if ($view['settings']->type == 2)
-		{
-			// set lang strings
-			$viewNameLang_readonly = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_single . ' readonly', 'U'
-				);
-			// load to lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $viewNameLang_readonly,
-				$view['settings']->name_single . ' :: Readonly'
-			);
-
-			// build toolbar
-			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
-			{
-				$toolBar = "\$this->input->set('hidemainmenu', true);";
-			}
-			else
-			{
-				$toolBar
-					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
-			}
-
-			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Text:"
-				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
-				. "');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
-		}
-		else
-		{
-			// set lang strings
-			$viewNameLang_new  = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_single . ' New', 'U'
-				);
-			$viewNameLang_edit = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_single . ' Edit', 'U'
-				);
-			// load to lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $viewNameLang_new,
-				'A New ' . $view['settings']->name_single
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $viewNameLang_edit,
-				'Editing the ' . $view['settings']->name_single
-			);
-
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				// build toolbar
-				$toolBar
-					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
-				$toolBar .= PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				// build toolbar
-				$toolBar = "\$this->input->set('hidemainmenu', true);";
-				$toolBar .= PHP_EOL . Indent::_(2)
-					. "\$user = \$this->getCurrentUser();";
-			}
-			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId = \$user->id;";
-			$toolBar .= PHP_EOL . Indent::_(2)
-				. "\$isNew = \$this->item->id == 0;";
-			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
-				. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title( Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(\$isNew ? '"
-				. $viewNameLang_new . "' : '" . $viewNameLang_edit
-				. "'), 'pencil-2 article-add');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Built the actions for new and existing records.";
-			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->referral))";
-			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && \$isNew)";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " We can create the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3)
-				. "elseif (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
-				. "'))";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " We can save the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Do not creat but cancel.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3) . "else";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " We can close it.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "else";
-			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " For new records, check the create permission.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
-			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
-				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
-				. $nameSingleCode
-				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
-			$toolBar .= PHP_EOL . Indent::_(4) . "};";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3) . "else";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "'))";
-			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " We can save the new record";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
-				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " We can save this record, but check the create permission to see";
-			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " if we can return to make a new one.";
-			$toolBar .= PHP_EOL . Indent::_(5) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
-			$toolBar .= PHP_EOL . Indent::_(5) . "{";
-			$toolBar .= PHP_EOL . Indent::_(6) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
-				. $nameSingleCode
-				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
-			$toolBar .= PHP_EOL . Indent::_(5) . "}";
-			$toolBar .= PHP_EOL . Indent::_(4) . "}";
-			if (CFactory::_('Compiler.Creator.Permission')->globalExist($nameSingleCode, 'core.edit'))
-			{
-				if (CFactory::_('Compiler.Builder.History')->exists($nameSingleCode))
-				{
-					$toolBar .= PHP_EOL . Indent::_(4)
-						. "\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('"
-						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.version')
-						. "'));";
-					$toolBar .= PHP_EOL . Indent::_(4)
-						. "if (\$this->state->params->get('save_history', 1) && \$this->canDo->get('"
-						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
-						. "') && \$canVersion)";
-					$toolBar .= PHP_EOL . Indent::_(4) . "{";
-					$toolBar .= PHP_EOL . Indent::_(5)
-						. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::versions('com_"
-						. CFactory::_('Config')->component_code_name . "." . $nameSingleCode
-						. "', \$this->item->id);";
-					$toolBar .= PHP_EOL . Indent::_(4) . "}";
-				}
-			}
-			else
-			{
-				if (CFactory::_('Compiler.Builder.History')->exists($nameSingleCode))
-				{
-					$toolBar .= PHP_EOL . Indent::_(4)
-						. "\$canVersion = (\$this->canDo->get('core.version') && \$this->canDo->get('"
-						. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.version') . "'));";
-					$toolBar .= PHP_EOL . Indent::_(4)
-						. "if (\$this->state->params->get('save_history', 1) && \$this->canDo->get('core.edit') && \$canVersion)";
-					$toolBar .= PHP_EOL . Indent::_(4) . "{";
-					$toolBar .= PHP_EOL . Indent::_(5)
-						. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::versions('com_"
-						. CFactory::_('Config')->component_code_name . "." . $nameSingleCode
-						. "', \$this->item->id);";
-					$toolBar .= PHP_EOL . Indent::_(4) . "}";
-				}
-			}
-			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
-			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
-				. $nameSingleCode
-				. ".save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);";
-			$toolBar .= PHP_EOL . Indent::_(4) . "}";
-			// add custom buttons
-			$toolBar .= $this->setCustomButtons($view, 2, Indent::_(2));
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::divider();";
-			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
-			{
-				$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::inlinehelp();";
-			}
-			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " set help url for this view if found";
-			$toolBar .= PHP_EOL . Indent::_(2) . "\$this->help_url = "
-				. CFactory::_('Compiler.Builder.Content.One')->get('Component') . "Helper::getHelpUrl('" . $nameSingleCode
-				. "');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->help_url))";
-			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::help('"
-				. CFactory::_('Config')->lang_prefix . "_HELP_MANAGER', false, \$this->help_url);";
-			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-		}
-
-		return $toolBar;
-	}
-
-	public function setAddModalToolBar(&$view)
-	{
-		// set view name
-		$nameSingleCode = $view['settings']->name_single_code;
-		if (CFactory::_('Config')->get('joomla_version', 3) != 3)
-		{
-			$langViews = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_list_code, 'U'
-				);
-			$name_list = strtolower($view['settings']->name_list);
-			$name_single = strtolower($view['settings']->name_single);
-			// add empty title
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target,
-				$langViews . '_EMPTYSTATE_TITLE',
-				'No ' . $name_list . ' have been created yet.'
-			);
-			// add empty content
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target,
-				$langViews . '_EMPTYSTATE_CONTENT',
-				$view['settings']->description
-			);
-			// add empty button add
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target,
-				$langViews . '_EMPTYSTATE_BUTTON_ADD',
-				'Add your first ' . $name_single
-			);
-		}
-		// check type
-		if ($view['settings']->type == 2)
-		{
-			// set lang strings
-			$viewNameLang_readonly = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_single . ' readonly', 'U'
-				);
-			// load to lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $viewNameLang_readonly,
-				$view['settings']->name_single . ' :: Readonly'
-			);
-
-			// build toolbar
-			if (CFactory::_('Config')->get('joomla_version', 3) != 3)
-			{
-				$toolBar = "\$this->input->set('hidemainmenu', true);";
-			}
-			else
-			{
-				$toolBar
-					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
-			}
-
-			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Text:"
-				. ":_('" . $viewNameLang_readonly . "'), '" . $nameSingleCode
-				. "');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
-		}
-		else
-		{
-			// set lang strings
-			$viewNameLang_new  = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_single . ' New', 'U'
-				);
-			$viewNameLang_edit = CFactory::_('Config')->lang_prefix . '_'
-				. StringHelper::safe(
-					$view['settings']->name_single . ' Edit', 'U'
-				);
-			// load to lang
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $viewNameLang_new,
-				'A New ' . $view['settings']->name_single
-			);
-			CFactory::_('Language')->set(
-				CFactory::_('Config')->lang_target, $viewNameLang_edit,
-				'Editing the ' . $view['settings']->name_single
-			);
-
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				// build toolbar
-				$toolBar
-					= "Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input->set('hidemainmenu', true);";
-				$toolBar .= PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				// build toolbar
-				$toolBar = "\$this->input->set('hidemainmenu', true);";
-				$toolBar .= PHP_EOL . Indent::_(2)
-					. "\$user = \$this->getCurrentUser();";
-			}
-
-			$toolBar .= PHP_EOL . Indent::_(2) . "\$userId = \$user->id;";
-			$toolBar .= PHP_EOL . Indent::_(2)
-				. "\$isNew = \$this->item->id == 0;";
-			$toolBar .= PHP_EOL . PHP_EOL . Indent::_(2)
-				. "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::title( Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_(\$isNew ? '"
-				. $viewNameLang_new . "' : '" . $viewNameLang_edit
-				. "'), 'pencil-2 article-add');";
-			$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Built the actions for new and existing records.";
-			$toolBar .= PHP_EOL . Indent::_(2) . "if ("
-				. "Super_" . "__1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check(\$this->referral))";
-			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && \$isNew)";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " We can create the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3)
-				. "elseif (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit')
-				. "'))";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " We can save the record.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Do not creat but cancel.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3) . "else";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " We can close it.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "else";
-			$toolBar .= PHP_EOL . Indent::_(2) . "{";
-			$toolBar .= PHP_EOL . Indent::_(3) . "if (\$isNew)";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " For new records, check the create permission.";
-			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "'))";
-			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
-				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::custom('"
-				. $nameSingleCode
-				. ".save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);";
-			$toolBar .= PHP_EOL . Indent::_(4) . "};";
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CANCEL');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(3) . "else";
-			$toolBar .= PHP_EOL . Indent::_(3) . "{";
-			$toolBar .= PHP_EOL . Indent::_(4) . "if (\$this->canDo->get('"
-				. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "'))";
-			$toolBar .= PHP_EOL . Indent::_(4) . "{";
-			$toolBar .= PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
-				. " We can save the new record";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::apply('"
-				. $nameSingleCode . ".apply', 'JTOOLBAR_APPLY');";
-			$toolBar .= PHP_EOL . Indent::_(5) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::save('"
-				. $nameSingleCode . ".save', 'JTOOLBAR_SAVE');";
-			$toolBar .= PHP_EOL . Indent::_(4) . "}";
-			$toolBar .= $this->setCustomButtons($view, 2, Indent::_(2));
-			$toolBar .= PHP_EOL . Indent::_(4) . "Joomla__"."_0c1a176a_304f_433a_8233_37d01ff87815___Power::cancel('"
-				. $nameSingleCode . ".cancel', 'JTOOLBAR_CLOSE');";
-			$toolBar .= PHP_EOL . Indent::_(3) . "}";
-			$toolBar .= PHP_EOL . Indent::_(2) . "}";
-		}
-
-		return $toolBar;
-	}
-
 	/**
 	 * set the populate state code
 	 *
@@ -18529,31 +16782,6 @@ class Interpretation extends Fields
 
 		// return fields
 		return $fields;
-	}
-
-	/**
-	 * Get the generated call snippet that invokes the check-in method.
-	 *
-	 * @return string  The code that calls the generated method.
-	 * @deprecated 5.1 Use CFactory::_('Architecture.Model.CheckInNow')->getCall();
-	 */
-	public function setCheckinCall()
-	{
-		return CFactory::_('Architecture.Model.CheckInNow')->getCall();
-	}
-
-	/**
-	 * Build the full `checkInNow()` method code for the given view/table.
-	 *
-	 * @param  string  $view       The view/table suffix (e.g. 'items').
-	 * @param  string  $component  The component name (without 'com_').
-	 *
-	 * @return string  The full method code as a string.
-	 * @deprecated 5.1 Use CFactory::_('Architecture.Model.CheckInNow')->getMethod(....);
-	 */
-	public function setAutoCheckin($view, $component)
-	{
-		return CFactory::_('Architecture.Model.CheckInNow')->getMethod($view, $component);
 	}
 
 	public function setGetItemsMethodStringFix($nameSingleCode, $nameListCode,
@@ -19221,65 +17449,6 @@ class Interpretation extends Fields
 		return $script . $forEachStart . $fix;
 	}
 
-	/**
-	 * Build headers for the various files
-	 *
-	 * @param   string  $context     The name of the context
-	 * @param   string  $codeName    The view, views, or layout code name
-	 * @param   string  $default     The default to return if none is found
-	 *
-	 * @return  string The php to place in the header
-	 * @deprecated 3.3 Use CFactory::_('Header')->get($context, $codeName, $default);
-	 */
-	public function setFileHeader($context, $codeName, $default = '')
-	{
-		return CFactory::_('Header')->get($context, $codeName, $default);
-	}
-
-	/**
-	 * set Helper Dynamic Headers
-	 *
-	 * @param   array   $headers  The headers array
-	 * @param   string  $target_client
-	 *
-	 * @return void
-	 * @deprecated 3.3
-	 */
-	protected function setHelperClassHeader(&$headers, $target_client)
-	{
-		// set notice that we could not get a valid string from the target
-		$this->app->enqueueMessage(
-			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
-		);
-		$this->app->enqueueMessage(
-			Text::sprintf(
-				'Use of a deprecated method (%s)!', __METHOD__
-			), 'Error'
-		);
-	}
-
-	/**
-	 * Build chosen multi selection headers for the view
-	 *
-	 * @param   array   $headers       The headers array
-	 * @param   string  $nameListCode  The list view name
-	 *
-	 * @return  void
-	 * @deprecated 3.3
-	 */
-	protected function setChosenMultiSelectionHeaders(&$headers, $nameListCode)
-	{
-		// set notice that we could not get a valid string from the target
-		$this->app->enqueueMessage(
-			Text::sprintf('COM_COMPONENTBUILDER_HR_HTHREES_WARNINGHTHREE', __CLASS__), 'Error'
-		);
-		$this->app->enqueueMessage(
-			Text::sprintf(
-				'Use of a deprecated method (%s)!', __METHOD__
-			), 'Error'
-		);
-	}
-
 	protected function setModelFieldRelation($item, $nameListCode, $tab)
 	{
 		$fix = '';
@@ -19461,28 +17630,6 @@ class Interpretation extends Fields
 		}
 
 		return '';
-	}
-
-	public function setComponentImageType($path)
-	{
-		$type = ComponentbuilderHelper::imageInfo($path);
-		if ($type)
-		{
-			$imagePath = CFactory::_('Utilities.Paths')->component_path . '/admin/assets/images';
-			// move the image to its place
-			File::copy(
-				JPATH_SITE . '/' . $path,
-				$imagePath . '/vdm-component.' . $type
-			);
-			// now set the type to global for re-use
-			$this->componentImageType = $type;
-
-			// return image type
-			return $type;
-		}
-		$this->componentImageType = 'jpg';
-
-		return 'jpg';
 	}
 
 	public function setDashboardIconAccess()
@@ -20225,7 +18372,7 @@ class Interpretation extends Fields
 			// set default dashboard
 			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
-				$menus .= "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang
+				$menus .= "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang
 					. "_DASHBOARD'), 'index.php?option=com_" . $codeName
 					. "&view=" . $codeName . "', \$submenu === '" . $codeName
 					. "');";
@@ -20267,7 +18414,7 @@ class Interpretation extends Fields
 						$has_permissions = true;
 					}
 					$menus .= PHP_EOL . Indent::_(2) . $tab
-						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+						. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper . "'), 'index.php?option=com_" . $codeName
 						. "&view=" . $nameListCode . "', \$submenu === '"
 						. $nameListCode . "');";
@@ -20300,7 +18447,7 @@ class Interpretation extends Fields
 						}
 						// now load the menus
 						$menus .= PHP_EOL . Indent::_(2) . $tab
-							. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
+							. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.name", 'error')
 							. "'), 'index.php?option=com_categories&view=categories&extension="
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
@@ -20322,13 +18469,13 @@ class Interpretation extends Fields
 						. "if (ComponentHelper::isEnabled('com_fields'))";
 					$menus .= PHP_EOL . Indent::_(2) . "{";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+						. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS'), 'index.php?option=com_fields&context=com_"
 						. $codeName . "." . $nameSingleCode
 						. "', \$submenu === 'fields.fields');";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+						. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_"
 						. $codeName . "." . $nameSingleCode
@@ -20462,7 +18609,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -20473,7 +18620,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -20520,7 +18667,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -20531,7 +18678,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -20567,10 +18714,10 @@ class Interpretation extends Fields
 			else
 			{
 				// set main menu prefix switch
-				$addPrefix = $this->params->get('add_menu_prefix', 1);
+				$addPrefix = CFactory::_('Config')->get('add_menu_prefix', 1);
 				if ($addPrefix == 1)
 				{
-					$prefix = trim((string) $this->params->get('menu_prefix', '&#187;'))
+					$prefix = trim((string) CFactory::_('Config')->get('menu_prefix', '&#187;'))
 						. ' ';
 				}
 			}
@@ -20816,212 +18963,6 @@ class Interpretation extends Fields
 		return $customMenu;
 	}
 
-	/**
-	 * Set Config Fieldsets
-	 *
-	 * @param int $timer
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets')->set($timer);
-	 */
-	public function setConfigFieldsets(int $timer = 0): void
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets')->set($timer);
-	}
-
-	/**
-	 * Set Site Control Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Site.Control')->set($lang);
-	 */
-	public function setSiteControlConfigFieldsets(string $lang): void
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Site.Control')->set($lang);
-	}
-
-	/**
-	 * Set the request values
-	 *
-	 * @param string $view
-	 * @param string $field
-	 * @param string $search
-	 * @param string $target
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Request')->set($view, $field, $search, $target);
-	 */
-	protected function setRequestValues(string $view, string $field, string $search, string $target): void
-	{
-		CFactory::_('Compiler.Creator.Request')->set($view, $field, $search, $target);
-	}
-
-	/**
-	 * Set Custom Control Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Customfield')->set($lang);
-	 */
-	public function setCustomControlConfigFieldsets(string $lang): void
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Customfield')->set($lang);
-	}
-
-	/**
-	 * Set Group Control Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Group.Control')->set($lang);
-	 */
-	public function setGroupControlConfigFieldsets(string $lang): void
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Group.Control')->set($lang);
-	}
-
-	/**
-	 * Set Global Config Fieldsets
-	 *
-	 * @param string $lang
-	 * @param string $authorName
-	 * @param string $authorEmail
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Global')->set($lang, $authorName, $authorEmail);
-	 */
-	public function setGlobalConfigFieldsets(string $lang, string $authorName, string $authorEmail): void
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Global')->set($lang, $authorName, $authorEmail);
-	}
-
-	/**
-	 * Set Uikit Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Uikit')->set($lang);
-	 */
-	public function setUikitConfigFieldsets($lang)
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Uikit')->set($lang);
-	}
-
-	/**
-	 * Set Email Helper Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Email.Helper')->set($lang);
-	 */
-	public function setEmailHelperConfigFieldsets($lang)
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Email.Helper')->set($lang);
-	}
-
-	/**
-	 * Set Googlechart Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Googlechart')->set($lang);
-	 */
-	public function setGooglechartConfigFieldsets($lang)
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Googlechart')->set($lang);
-	}
-
-	/**
-	 * Set Encryption Config Fieldsets
-	 *
-	 * @param string $lang
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Config.Fieldsets.Encryption')->set($lang);
-	 */
-	public function setEncryptionConfigFieldsets($lang)
-	{
-		CFactory::_('Compiler.Creator.Config.Fieldsets.Encryption')->set($lang);
-	}
-
-	/**
-	 * Set Access Sections Category
-	 *
-	 * @param string $nameSingleCode
-	 * @param string $nameListCode
-	 *
-	 * @return  string
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Access.Sections.Category')->get($nameSingleCode, $nameListCode);
-	 */
-	public function setAccessSectionsCategory(string $nameSingleCode, string $nameListCode): string
-	{
-		return CFactory::_('Compiler.Creator.Access.Sections.Category')->get($nameSingleCode, $nameListCode);
-	}
-
-	/**
-	 * Set Access Sections Joomla Fields
-	 *
-	 * @return  string
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Access.Sections.Joomla.Fields')->get();
-	 */
-	public function setAccessSectionsJoomlaFields(): string
-	{
-		return CFactory::_('Compiler.Creator.Access.Sections.Joomla.Fields')->get();
-	}
-
-	/**
-	 * Set Access Sections
-	 *
-	 * @return  string
-	 * @since 1.0
-	 * @deprecated 3.3 CFactory::_('Compiler.Creator.Access.Sections')->get();
-	 */
-	public function setAccessSections()
-	{
-		return CFactory::_('Compiler.Creator.Access.Sections')->get();
-	}
-
-	/**
-	 * Add Custom Button Permissions
-	 *
-	 * @param object    $settings    The view settings
-	 * @param string    $nameView    The view name
-	 * @param string    $code        The view code name.
-	 *
-	 * @since 1.0
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Custom.Button.Permissions')->add($settings, $nameView, $code);
-	 */
-	protected function addCustomButtonPermissions($settings, $nameView, $code)
-	{
-		CFactory::_('Compiler.Creator.Custom.Button.Permissions')->add($settings, $nameView, $code);
-	}
-
-	/**
-	 * Set the permissions
-	 *
-	 * @param   array   $view             View details
-	 * @param   string  $nameView         View Single Code Name
-	 * @param   string  $nameViews        View List Code Name
-	 * @param   array   $menuControllers  Menu Controllers
-	 * @param   string  $type             Type of permissions area
-	 *
-	 * @return  void
-	 * @deprecated 3.3 Use CFactory::_('Compiler.Creator.Permission')->set($view, $nameView, $nameViews, $menuControllers, $type);
-	 */
-	public function buildPermissions(&$view, $nameView, $nameViews, $menuControllers, $type = 'admin')
-	{
-		CFactory::_('Compiler.Creator.Permission')->set($view, $nameView, $nameViews, $menuControllers, $type);
-	}
-
 	public function getInbetweenStrings($str, $start = '#' . '#' . '#', $end = '#' . '#' . '#')
 	{
 		$matches = [];
@@ -21029,190 +18970,6 @@ class Interpretation extends Fields
 		preg_match_all($regex, (string) $str, $matches);
 
 		return $matches[1];
-	}
-
-	/**
-	 * get Module Main/Dispatcher Class
-	 *
-	 * @param   object  $module  The module object
-	 *
-	 * @return     string The fields set in xml
-	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Dispatcher')->get(...);
-	 */
-	public function getModCode($module): string
-	{
-		return CFactory::_('Architecture.Module.Dispatcher')->get($module);
-	}
-
-	/**
-	 * get Module Default HTML code
-	 *
-	 * @param   object  $module  The module object
-	 *
-	 * @return     string The default html code
-	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Template')->default(...);
-	 */
-	public function getModDefault($module, $key): string
-	{
-		return CFactory::_('Architecture.Module.Template')->default($module, $key);
-	}
-
-	/**
-	 * set Module extra templates
-	 *
-	 * @param   object  $module  The module object
-	 *
-	 * @return     void
-	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Template')->extra(...);
-	 */
-	public function setModTemplates($module): void
-	{
-		CFactory::_('Architecture.Module.Template')->extra($module);
-	}
-
-	/**
-	 * get Module Helper Class code
-	 *
-	 * @param   object  $module  The module object
-	 *
-	 * @return     string The helper class code
-	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Helper')->get(...);
-	 */
-	public function getModHelperCode($module): string
-	{
-		return CFactory::_('Architecture.Module.Helper')->get($module);
-	}
-
-	/**
-	 * get Module library loading code
-	 *
-	 * @param   object  $module  The module object
-	 *
-	 * @return     string The loading code
-	 * @deprecated 5.1.2 CFactory::_('Architecture.Module.Library')->get(...);
-	 */
-	public function getModLibCode($module): string
-	{
-		return CFactory::_('Architecture.Module.Library')->get($module);
-	}
-
-	/**
-	 * get Module Main XML
-	 *
-	 * @param   object  $module  The module object
-	 *
-	 * @return     string The xml
-	 * @deprecated 5.1.2  CFactory::_('Architecture.Module.MainXML')->get(...);
-	 */
-	public function getModuleMainXML($module): string
-	{
-		return CFactory::_('Architecture.Module.MainXML')->get($module);
-	}
-
-	/**
-	 * get Plugin Main Class
-	 *
-	 * @param   object  $plugin  The plugin object
-	 *
-	 * @return  string The fields set in xml
-	 * @deprecated 3.4 CFactory::_('Architecture.Plugin.Extension')->get(...);
-	 */
-	public function getPluginMainClass($plugin)
-	{
-		return CFactory::_('Architecture.Plugin.Extension')->get($plugin);
-	}
-
-	/**
-	 * get Plugin Main XML
-	 *
-	 * @param   object  $plugin  The plugin object
-	 *
-	 * @return  string The xml
-	 * @deprecated 3.4 CFactory::_('Architecture.Plugin.MainXML')->get(...);
-	 */
-	public function getPluginMainXML($plugin)
-	{
-		return CFactory::_('Architecture.Plugin.MainXML')->get($plugin);
-	}
-
-	/**
-	 * get power code
-	 *
-	 * @param   object  $power
-	 *
-	 * @return  string
-	 * @deprecated 3.4 (line 393 private Compiler.Power.Infusion->code())
-	 */
-	public function getPowerCode($power)
-	{
-		$code = [];
-		// set the name space
-		$code[] = 'namespace ' . $power->_namespace . ';' . PHP_EOL;
-		// check if we have header data
-		if (StringHelper::check($power->head))
-		{
-			$code[] = PHP_EOL . $power->head;
-		}
-		// add description if set
-		if (StringHelper::check($power->description))
-		{
-			// check if this is escaped
-			if (strpos((string) $power->description, '/*') === false)
-			{
-				// make this description escaped
-				$power->description = '/**' . PHP_EOL . ' * ' . implode(PHP_EOL . ' * ', explode(PHP_EOL, (string) $power->description)) . PHP_EOL . ' */';
-			}
-			$code[] = PHP_EOL . $power->description;
-		}
-		// build power declaration
-		$declaration = $power->type . ' ' . $power->class_name;
-		// check if we have extends
-		if (StringHelper::check($power->extends_name))
-		{
-			$declaration .= ' extends ' . $power->extends_name;
-		}
-		// check if we have implements
-		if (ArrayHelper::check($power->implement_names))
-		{
-			$declaration .= ' implements ' . implode(', ', $power->implement_names);
-		}
-		$code[] = $declaration;
-		$code[] = '{';
-		// add the main code if set
-		if (StringHelper::check($power->main_class_code))
-		{
-			$code[] = $power->main_class_code;
-		}
-		$code[] = '}' . PHP_EOL . PHP_EOL;
-
-		return CFactory::_('Placeholder')->update(implode(PHP_EOL, $code), CFactory::_('Compiler.Builder.Content.One')->allActive());
-	}
-
-	/**
-	 * build field set for an extention
-	 *
-	 * @param   object  $extension  The extention object
-	 * @param   array   $fields     The fields to build
-	 * @param   string  $dbkey      The database key
-	 *
-	 * @return  string The fields set in xml
-	 * @deprecated 3.4 CFactory::_('Compiler.Creator.Access.Sections.Joomla.Fields')->get(...);
-	 */
-	public function getExtensionFieldsetXML(&$extension, &$fields, $dbkey = 'zz'): string
-	{
-		// build the fieldset
-		return CFactory::_('Compiler.Creator.Fieldset.Extension')->get($extension, $fields, $dbkey);
-	}
-
-	/**
-	 * check if a translation should be added
-	 *
-	 * @return  bool
-	 * @deprecated 3.4 Use CFactory::_('Language.Translation')->check(...);
-	 */
-	public function shouldLanguageBeAdded(&$tag, &$languageStrings, &$total, &$file_name)
-	{
-		return CFactory::_('Language.Translation')->check($tag, $languageStrings, $total, $file_name);
 	}
 }
 

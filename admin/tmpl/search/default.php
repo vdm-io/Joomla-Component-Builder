@@ -246,23 +246,101 @@ const buttonUpdateItemObject = document.getElementById("item_button_update");
 const buttonUpdateAllObject = document.querySelectorAll(".update_all_block");
 
 // Define editorObject globally
-var editorObject;
+var editorObject = null;
+var editorPromise = null;
 
-// Function to attempt to set the editorObject with a retry logic
-function setEditorObject(retryCount = 0) {
-	if (Joomla.editors && Joomla.editors.instances && Joomla.editors.instances['item_code']) {
-		editorObject = Joomla.editors.instances['item_code'];
-	} else if (retryCount < 10) { // Retry up to 10 times with a delay
-		setTimeout(() => setEditorObject(retryCount + 1), 500);
-	} else {
-		console.log('Editor instance not found after retries.');
+/**
+ * Internal function that attempts to obtain the editor instance,
+ * retrying until it is found or a timeout is reached.
+ *
+ * @param {number} retry
+ * @returns {Promise<object|null>}
+ */
+async function SetEditor(retry = 0) {
+
+	// Already loaded?
+	if (editorObject) {
+		return editorObject;
 	}
+
+	// --- NEW API: JoomlaEditor.get('item_code') ----------------------------
+	try {
+		const instance = JoomlaEditor.get('item_code');
+		if (instance) {
+			editorObject = instance;
+			return instance;
+		}
+	} catch (e) {
+		// JoomlaEditor not ready; expected
+	}
+
+	// NEW API fallback: getActive()
+	try {
+		const active = JoomlaEditor.getActive();
+		if (active && active.getId && active.getId() === 'item_code') {
+			editorObject = active;
+			return active;
+		}
+	} catch (e2) {
+		// JoomlaEditor not ready; expected
+	}
+
+	// --- SILENT LEGACY API (NO WARNINGS) ----------------------------------
+	try {
+		if (
+			typeof Joomla !== "undefined" &&
+			Joomla.editors &&
+			Joomla.editors.instances
+		) {
+			// Bypass the proxy "get" trap — SILENT MODE
+			const raw = Reflect.get(
+				Joomla.editors.instances,
+				'item_code',
+				Joomla.editors.instances
+			);
+
+			if (raw) {
+				editorObject = raw;
+				return raw;
+			}
+		}
+	} catch (e3) {
+		// JoomlaEditor not ready; un-expected
+	}
+
+	// --- RETRY -------------------------------------------------------------
+	if (retry < 20) {
+		await new Promise(r => setTimeout(r, 250)); // wait for Joomla to load CodeMirror
+		return SetEditor(retry + 1);
+	}
+
+	console.warn('Editor instance not found after retries.');
+	return null;
 }
 
-// try to find the editor
-document.addEventListener('DOMContentLoaded', function () {
-	setEditorObject();
-});
+/**
+ * Retrieve the editor instance. Waits if needed.
+ *
+ * @returns {Promise<object|null>}
+ */
+async function GetEditor() {
+
+	if (editorObject) {
+		return editorObject;
+	}
+
+	if (editorPromise) {
+		return editorPromise;
+	}
+
+	editorPromise = SetEditor(0);
+
+	const result = await editorPromise;
+
+	editorPromise = null;
+
+	return result;
+}
 
 // configurations of the table
 const tableConfigObject = {

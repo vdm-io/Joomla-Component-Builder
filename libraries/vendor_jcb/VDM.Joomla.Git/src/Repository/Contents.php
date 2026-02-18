@@ -27,10 +27,10 @@ final class Contents implements ContentsInterface
 	/**
 	 * The target system
 	 *
-	 * @var string
+	 * @var string|null
 	 * @since 5.1.1
 	 */
-	protected string $target;
+	protected ?string $target = null;
 
 	/**
 	 * The Contents Class.
@@ -67,11 +67,11 @@ final class Contents implements ContentsInterface
 	 *
 	 * @param string $system
 	 *
-	 * @return void
+	 * @return self
 	 * @throws \DomainException
 	 * @since 5.1.1
 	 */
-	public function setTarget(string $system): void
+	public function setTarget(string $system): self
 	{
 		$system = strtolower(trim($system));
 
@@ -81,6 +81,8 @@ final class Contents implements ContentsInterface
 		}
 
 		$this->target = $system;
+
+		return $this;
 	}
 
 	/**
@@ -94,8 +96,9 @@ final class Contents implements ContentsInterface
 	{
 		if ($this->target === null)
 		{
-			throw new \DomainException('No target system selected. Use $this->target("gitea"|"github") before calling this method.');
+			throw new \DomainException('No target system selected. Use $this->setTarget("gitea"|"github") before calling this method.');
 		}
+
 		return $this->target;
 	}
 

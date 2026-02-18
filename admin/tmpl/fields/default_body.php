@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
-		$canDo = ComponentbuilderHelper::getActions('field',$item,'fields');
+				loadUserById((int) ($item->checked_out ?? 0));
+		$canDo = Actions::get('field', $item, 'fields');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
@@ -95,7 +96,7 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if (!$this->isModal && $this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int) $item->fieldtype_id)): ?>
+				<?php if (!$this->isModal && $this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int) ($item->fieldtype_id ?? 0))): ?>
 					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->fieldtype_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->fieldtype_name); ?>
@@ -116,7 +117,7 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if (!$this->isModal && $this->user->authorise('core.edit', 'com_componentbuilder.field.category.' . (int)$item->catid)): ?>
+				<?php if (!$this->isModal && $this->user->authorise('core.edit', 'com_componentbuilder.field.category.' . (int) ($item->catid ?? 0))): ?>
 					<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.field"><?php echo $this->escape($item->category_title); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->category_title); ?>

@@ -63,11 +63,15 @@ class ComponentbuilderModel extends ListModel
 	 * @since 5.1.1
 	 */
 	protected array $viewAccess = [
+		'compiler.access' => 'compiler.access',
 		'compiler.submenu' => 'compiler.submenu',
 		'compiler.dashboard_list' => 'compiler.dashboard_list',
 		'search.access' => 'search.access',
 		'search.submenu' => 'search.submenu',
 		'search.dashboard_list' => 'search.dashboard_list',
+		'initialization_selection.access' => 'initialization_selection.access',
+		'pull_selection.access' => 'pull_selection.access',
+		'import_translations.access' => 'import_translations.access',
 		'joomla_component.create' => 'joomla_component.create',
 		'joomla_components.access' => 'joomla_component.access',
 		'joomla_component.access' => 'joomla_component.access',
@@ -295,7 +299,7 @@ class ComponentbuilderModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		parent::__construct($config, $factory);
 
@@ -562,41 +566,40 @@ class ComponentbuilderModel extends ListModel
 
 
 	/**
-	 * Load and display the wiki page content using an AJAX call to the component endpoint.
+	 * Load and display the page content using an AJAX call to the component endpoint.
 	 *
-	 * This method injects an inline JavaScript script that asynchronously fetches the wiki page content
+	 * This method injects an inline JavaScript script that asynchronously fetches the page MD content
 	 * via a JSON API endpoint in the component. It uses the `marked` library to render markdown content
-	 * and inserts the result into the `wiki-md` container. Errors are displayed in a separate element.
+	 * and inserts the result into the `JcbDoc-page-md` container. Errors are displayed in a separate element.
 	 *
-	 * @return string  HTML markup including a container for the wiki content and an error message area.
-	 * @since 3.9.0
+	 * @return string  HTML markup including a container for the page content and an error message area.
+	 * @since  5.1.4
 	 */
-	public function getWiki()
+	public function getJcbDocGitHubMd()
 	{
 		// call the ajax get wiki endpoint
-		$call_url = Uri::base() . 'index.php?option=com_componentbuilder&task=ajax.getWiki&format=json&raw=true&' . Session::getFormToken() . '=1&name=Home';
+		$call_url = Uri::base() . 'index.php?option=com_componentbuilder&task=ajax.getJcbDocGitHubMd&format=json&raw=true&' . Session::getFormToken() . '=1&path=joomengine.jcb-documentation.refs.heads.master.english.README';
 
 		/** \Joomla\CMS\WebAsset\WebAssetManager $wa */
 		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 		$wa->addInlineScript('
-		function getWikiPage(){
+		function getJcbDocGitHubMd(){
 			fetch("' . $call_url . '").then((response) => {
 				if (response.ok) {
 					return response.json();
 				}
 			}).then((result) => {
 				if (typeof result.page !== "undefined") {
-					document.getElementById("wiki-md").innerHTML = marked.parse(result.page);
+					document.getElementById("JcbDoc-page-md").innerHTML = marked.parse(result.page);
 				} else if (typeof result.error !== "undefined") {
-					document.getElementById("wiki-md-error").innerHTML = result.error
+					document.getElementById("JcbDoc-page-md-error").innerHTML = result.error
 				}
 			});
 		}
-		setTimeout(getWikiPage, 1000);');
+		setTimeout(getJcbDocGitHubMd, 1000);');
 
-		return '<div id="wiki-md"><small>'.Text::_('COM_COMPONENTBUILDER_THE_WIKI_IS_LOADING').'.<span class="loading-dots">.</span></small></div><div id="wiki-md-error" style="color: red"></div>';
+		return '<div id="JcbDoc-page-md"><small>'.Text::_('COM_COMPONENTBUILDER_THE_PAGE_IS_LOADING').'.<span class="loading-dots">.</span></small></div><div id="JcbDoc-page-md-error" style="color: red"></div>';
 	}
-	
 
 	/**
 	 * Load and display the component's README file using JavaScript fetch and markdown rendering.

@@ -97,7 +97,8 @@ final class Config extends ExtendingConfig implements ConfigInterface
 	 * @since  5.1.1
 	 */
 	protected array $files = [
-		'image' => 'images'
+		'image' => 'images',
+		'bom' => 'compiler'
 	];
 
 	/**

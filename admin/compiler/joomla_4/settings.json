@@ -48,6 +48,7 @@
 			"language": {
 				"en-GB": "en-GB"
 			},
+			"layouts": "layouts",
 			"forms": "forms",
 			"src": {
 				"Controller": "Controller",

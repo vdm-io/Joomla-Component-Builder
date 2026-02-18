@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\File as JoomlaFile;
 use Joomla\Filesystem\Folder;

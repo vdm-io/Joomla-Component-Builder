@@ -145,6 +145,5 @@ abstract class BaseRegistry extends JoomlaRegistry implements \JsonSerializable,
 
 		return false;
 	}
-
 }
 

@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Power;
@@ -213,12 +213,25 @@ class Structure
 					$this->setDynamicFolders();
 
 					// power path
-					$power->full_path        = $this->paths->component_path . '/'
-						. $power->path;
-					$power->full_path_jcb    = $this->paths->component_path . '/'
-						. $power->path_jcb;
-					$power->full_path_parent = $this->paths->component_path . '/'
-						. $power->path_parent;
+					$pathRoot = $power->path_root ?? 'component';
+					if ($pathRoot === 'component')
+					{
+						$power->full_path        = $this->paths->component_path . '/'
+							. $power->path;
+						$power->full_path_jcb    = $this->paths->component_path . '/'
+							. $power->path_jcb;
+						$power->full_path_parent = $this->paths->component_path . '/'
+							. $power->path_parent;
+					}
+					else
+					{
+						$power->full_path        = $pathRoot . '/'
+							. $power->path;
+						$power->full_path_jcb    = $pathRoot . '/'
+							. $power->path_jcb;
+						$power->full_path_parent = $pathRoot . '/'
+							. $power->path_parent;
+					}
 
 					// set the power paths
 					$this->registry->set('dynamic_paths.' . $power->key, $power->full_path_parent);
@@ -282,6 +295,9 @@ class Structure
 
 		// Increment the file counter
 		$this->counter->file++;
+
+		// Increment the power counter
+		$this->counter->power++;
 	}
 
 	/**

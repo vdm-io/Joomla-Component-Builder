@@ -37,8 +37,6 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Archive\Archive;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
-use VDM\Joomla\Openai\Factory as OpenaiFactory;
-use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -59,9 +57,13 @@ use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\MathHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
+use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\FormHelper;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Client\FtpClient;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -95,11 +97,6 @@ abstract class ComponentbuilderHelper
 
 	}
 
-
-	/**
-	* Just to Add the OPEN AI api to JCB (soon)
-	* OpenaiFactory
-	**/
 
 	/**
 	* Locked Libraries (we can not have these change)
@@ -181,40 +178,6 @@ abstract class ComponentbuilderHelper
 		// The path to the templates folder.
 		'JPATH_THEMES' => JPATH_THEMES
 	);
-
-	/**
-	 * Retrieves an associative array of published language tags as headers.
-	 *
-	 * The returned array is used to build header labels for language translations.
-	 * Includes a default 'source' => 'source' entry.
-	 *
-	 * @return array<string, string>  Associative array of language headers
-	 * @since  5.1.1
-	 */
-	public static function getLanguageTranslationsHeaders(): array
-	{
-		$values = DataFactory::_('Load')->values(
-			['langtag'], ['language'], ['published' => 1], ['name' => 'ASC']
-		);
-
-		if (empty($values))
-		{
-			// return default array
-			return ['source' => 'source', 'af-ZA' => 'af-ZA', 'nl-NL' => 'nl-NL', 'fr-FR' => 'fr-FR', 'de-DE' => 'de-DE', 'pt-PT' => 'pt-PT', 'ru-RU' => 'ru-RU'];
-		}
-
-		$headers = ['source' => 'source'];
-
-		foreach ($values as $value)
-		{
-			if (is_string($value) && trim($value) !== '')
-			{
-				$headers[$value] = $value;
-			}
-		}
-
-		return $headers;
-	}
 
 	/**
 	 * Get the array of existing Joomla validation rule class names
@@ -904,190 +867,6 @@ abstract class ComponentbuilderHelper
 			return FileHelper::write($path_filename, $hash);
 		}
 		return false;
-	}
-
-	protected static $pkOwnerSearch = array(
-		'company' => 'COM_COMPONENTBUILDER_DTCOMPANYDTDDSDD',
-		'owner' => 'COM_COMPONENTBUILDER_DTOWNERDTDDSDD',
-		'email' => 'COM_COMPONENTBUILDER_DTEMAILDTDDSDD',
-		'website' => 'COM_COMPONENTBUILDER_DTWEBSITEDTDDSDD',
-		'license' => 'COM_COMPONENTBUILDER_DTLICENSEDTDDSDD',
-		'copyright' => 'COM_COMPONENTBUILDER_DTCOPYRIGHTDTDDSDD'
-		);
-
-	/**
-	* get the JCB package owner details display
-	**/
-	public static function getPackageOwnerDetailsDisplay(&$info, $trust = false)
-	{
-		$hasOwner = false;
-		$ownerDetails = '<h2 class="module-title nav-header">' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS') . '</h2>';
-		$ownerDetails .= '<dl class="uk-description-list-horizontal">';
-		// load the list items
-		foreach (self::$pkOwnerSearch as $key => $dd)
-		{
-			if ($value = self::getPackageOwnerValue($key, $info))
-			{
-				$ownerDetails .= Text::sprintf($dd, $value);
-				// check if we have a owner/source name
-				if (('owner' === $key || 'company' === $key) && !$hasOwner)
-				{
-					$hasOwner = true;
-					$owner = $value;
-				}
-			}
-		}
-		$ownerDetails .= '</dl>';
-
-		// provide some details to how the user can get a key
-		if ($hasOwner && isset($info['getKeyFrom']['buy_link']) && UtilitiesStringHelper::check($info['getKeyFrom']['buy_link']))
-		{
-			$ownerDetails .= '<hr />';
-			$ownerDetails .= Text::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROMB_A_SSA', 'class="btn btn-primary" href="'.$info['getKeyFrom']['buy_link'].'" target="_blank" title="get a key from '.$owner.'"', $owner);
-		}
-		// add more custom links
-		elseif ($hasOwner && isset($info['getKeyFrom']['buy_links']) && UtilitiesArrayHelper::check($info['getKeyFrom']['buy_links']))
-		{
-			$buttons = array();
-			foreach ($info['getKeyFrom']['buy_links'] as $keyName => $link)
-			{
-				$buttons[] = Text::sprintf('COM_COMPONENTBUILDER_BGET_THE_KEY_FROM_SB_FOR_A_SSA', $owner, 'class="btn btn-primary" href="'.$link.'" target="_blank" title="get a key from '.$owner.'"', $keyName);
-			}
-			$ownerDetails .= '<hr />';
-			$ownerDetails .= implode('<br />', $buttons);
-		}
-		// return the owner details
-		if (!$hasOwner)
-		{
-			$ownerDetails = '<h2>' . Text::_('COM_COMPONENTBUILDER_PACKAGE_OWNER_DETAILS_NOT_FOUND') . '</h2>';
-			if (!$trust)
-			{
-				$ownerDetails .= '<p style="color: #922924;">' . Text::_('COM_COMPONENTBUILDER_BE_CAUTIOUS_DO_NOT_CONTINUE_UNLESS_YOU_TRUST_THE_ORIGIN_OF_THIS_PACKAGE') . '</p>';
-			}
-		}
-		return '<div>'.$ownerDetails.'</div>';
-	}
-
-	public static function getPackageOwnerValue($key, &$info)
-	{
-		$source = (isset($info['source']) && isset($info['source'][$key])) ? 'source' : ((isset($info['getKeyFrom']) && isset($info['getKeyFrom'][$key])) ? 'getKeyFrom' : false);
-		if ($source && UtilitiesStringHelper::check($info[$source][$key]))
-		{
-			return $info[$source][$key];
-		}
-		return false;
-	}
-
-	/**
-	*  get the JCB package component key status
-	**/
-	public static function getPackageComponentsKeyStatus(&$info)
-	{
-		// check the package key status
-		if (!isset($info['key']))
-		{
-			if (isset($info['getKeyFrom']) && isset($info['getKeyFrom']['owner']))
-			{
-				// this just confirms it for older packages
-				$info['key'] = true;
-			}
-			else
-			{
-				// this just confirms it for older packages
-				$info['key'] = false;
-			}
-		}
-		return $info['key'];
-	}
-
-	protected static $compOwnerSearch = array(
-		'ul' => array (
-			'companyname' => 'COM_COMPONENTBUILDER_ICOMPANYI_BSB',
-			'author' => 'COM_COMPONENTBUILDER_IAUTHORI_BSB',
-			'email' => 'COM_COMPONENTBUILDER_IEMAILI_BSB',
-			'website' => 'COM_COMPONENTBUILDER_IWEBSITEI_BSB',
-			),
-		'other' => array(
-			'license' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERLICENSEHFOURPSP',
-			'copyright' => 'COM_COMPONENTBUILDER_HFOUR_CLASSNAVHEADERCOPYRIGHTHFOURPSP'
-			)
-		);
-
-	/**
-	* get the JCB package component details display
-	**/
-	public static function getPackageComponentsDetailsDisplay(&$info)
-	{
-		// check if these components need a key
-		$needKey = self::getPackageComponentsKeyStatus($info);
-		if (isset($info['name']) && UtilitiesArrayHelper::check($info['name'])) 
-		{
-			$cAmount = count((array) $info['name']);
-			$class2 = ($cAmount == 1) ? 'span12' : 'span6';
-			$counter = 1;
-			$display = array();
-			foreach ($info['name'] as $key => $value)
-			{
-				// set the name
-				$name= $value . ' v' . $info['component_version'][$key];
-				if ($cAmount > 1 && $counter == 3)
-				{
-					$display[] = '</div>';
-					$counter = 1;
-				}
-				if ($cAmount > 1 && $counter == 1)
-				{
-					$display[] = '<div>';
-				}
-				$display[] = '<div class="well well-small ' . $class2 . '">';
-				$display[] = '<h3>';
-				$display[] = $name;
-				if ($needKey)
-				{
-					$display[] = ' - <em>' . Text::sprintf('COM_COMPONENTBUILDER_PAIDLOCKED') . '</em>';
-				}
-				else
-				{
-					$display[] = ' - <em>' . Text::sprintf('COM_COMPONENTBUILDER_FREEOPEN') . '</em>';
-				}
-				$display[] = '</h3><h4>';
-				$display[] = $info['short_description'][$key];
-				$display[] = '</h4>';
-				$display[] = '<ul class="uk-list uk-list-striped">';
-				// load the list items
-				foreach (self::$compOwnerSearch['ul'] as $li => $value)
-				{
-					if (isset($info[$li]) && isset($info[$li][$key]))
-					{
-						$display[] = '<li>'.Text::sprintf($value, $info[$li][$key]).'</li>';
-					}
-				}
-				$display[] = '</ul>';
-				// if we have a source link we add it
-				if (isset($info['joomla_source_link']) && UtilitiesArrayHelper::check($info['joomla_source_link']) && isset($info['joomla_source_link'][$key]) && UtilitiesStringHelper::check($info['joomla_source_link'][$key]))
-				{
-					$display[] = '<a class="uk-button uk-button-mini uk-width-1-1 uk-margin-small-bottom " href="'.$info['joomla_source_link'][$key].'" target="_blank" title="Source Code for Joomla Component ('.$name.')">source code</a>';
-				}
-				// load other
-				foreach (self::$compOwnerSearch['other'] as $other => $value)
-				{
-					if (isset($info[$other]) && isset($info[$other][$key]))
-					{
-						$display[] = Text::sprintf($value, $info[$other][$key]);
-					}
-				}
-				$display[] = '</div>';
-
-				$counter++;
-			}
-			// close the div if needed
-			if ($cAmount > 1)
-			{
-				$display[] = '</div>';
-			}
-			return implode("\n",$display);
-		}
-		return '<div>'.Text::_('COM_COMPONENTBUILDER_NO_COMPONENT_DETAILS_FOUND_SO_IT_IS_NOT_SAFE_TO_CONTINUE').'</div>';
 	}
 
 	/**
@@ -2419,7 +2198,7 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = self::_t(2) . "if (\$this->getLayout() !== 'modal')";
 			$script['display'][] = self::_t(2) . "{";
 			$script['display'][] = self::_t(3) . "\$this->addToolbar();";
-			$script['display'][] = self::_t(3) . "\$this->sidebar = JHtmlSidebar::render();";
+			$script['display'][] = self::_t(3) . "\$this->sidebar = Sidebar::render();";
 			$script['display'][] = self::_t(2) . "}";
 			$script['display'][] = PHP_EOL . self::_t(2) . "// get the session object";
 			$script['display'][] = self::_t(2) . "\$session = Factory::getSession();";
@@ -2499,7 +2278,7 @@ abstract class ComponentbuilderHelper
 			$script['headers'][] = self::_t(1) . "public function getExImPortHeaders()";
 			$script['headers'][] = self::_t(1) . "{";
 			$script['headers'][] = self::_t(2) . "// Get a db connection.";
-			$script['headers'][] = self::_t(2) . "\$db = Factory::getDbo();";
+			$script['headers'][] = self::_t(2) . "\$db = Factory::getContainer()->get(DatabaseInterface::class);";
 			$script['headers'][] = self::_t(2) . "// get the columns";
 			$script['headers'][] = self::_t(2) . "\$columns = \$db->getTableColumns(\"#__[[[-#-#-component]]]_[[[-#-#-view]]]\");";
 			$script['headers'][] = self::_t(2) . "if (Super-#-#-___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$columns))";
@@ -2535,7 +2314,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = self::_t(2) . "if(Super-#-#-___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$data['array']))";
 			$script['save'][] = self::_t(2) . "{";
 			$script['save'][] = self::_t(3) . "// get user object";
-			$script['save'][] = self::_t(3) . "\$user" . self::_t(2) . "= Factory::getUser();";
+			$script['save'][] = self::_t(3) . "\$user" . self::_t(2) . "= Factory::getApplication()->getIdentity();";
 			$script['save'][] = self::_t(3) . "// remove header if it has headers";
 			$script['save'][] = self::_t(3) . "\$id_key" . self::_t(1) . "= \$data['target_headers']['id'];";
 			$script['save'][] = self::_t(3) . "\$published_key" . self::_t(1) . "= \$data['target_headers']['published'];";
@@ -2555,7 +2334,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = self::_t(4) . "// set target.";
 			$script['save'][] = self::_t(4) . "\$target" . self::_t(1) . "= array_flip(\$data['target_headers']);";
 			$script['save'][] = self::_t(4) . "// Get a db connection.";
-			$script['save'][] = self::_t(4) . "\$db = Factory::getDbo();";
+			$script['save'][] = self::_t(4) . "\$db = Factory::getContainer()->get(DatabaseInterface::class);";
 			$script['save'][] = self::_t(4) . "// set some defaults";
 			$script['save'][] = self::_t(4) . "\$todayDate" . self::_t(2) . "= Factory::getDate()->toSql();";
 			$script['save'][] = self::_t(4) . "// get global action permissions";
@@ -3652,7 +3431,7 @@ abstract class ComponentbuilderHelper
 		if ($server = self::getServerDetails($serverID, 1, $permission))
 		{
 			// check if we already have the server instance
-			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof JClientFtp)
+			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof FtpClient)
 			{
 				// always set the name and remote server path
 				self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
@@ -3697,7 +3476,7 @@ abstract class ComponentbuilderHelper
 				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
 				{
 					// load for reuse
-					self::$ftp[$server->cache] = JClientFtp::getInstance($host, $port, $options, $username, $password);
+					self::$ftp[$server->cache] = FtpClient::getInstance($host, $port, $options, $username, $password);
 				}
 				else
 				{
@@ -3706,7 +3485,7 @@ abstract class ComponentbuilderHelper
 					return false;
 				}
 				// check if we are connected
-				if (self::$ftp[$server->cache] instanceof JClientFtp && self::$ftp[$server->cache]->isConnected())
+				if (self::$ftp[$server->cache] instanceof FtpClient && self::$ftp[$server->cache]->isConnected())
 				{
 					// heads-up on protocol
 					self::$ftp[$server->cache]->jcb_protocol = 1; // FTP <-- if called not knowing what type of protocol is being used
@@ -3741,7 +3520,7 @@ abstract class ComponentbuilderHelper
 	public static function getServerDetails($serverID, $protocol = 2, $permission = 'core.export')
 	{
 		// check if this user has permission to access items
-		if (!Factory::getUser()->authorise($permission, 'com_componentbuilder'))
+		if (!Factory::getApplication()->getIdentity()->authorise($permission, 'com_componentbuilder'))
 		{
 			// set message to inform the user that permission was denied
 			Factory::getApplication()->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', UtilitiesStringHelper::safe($permission, 'w')), 'Error');
@@ -4032,7 +3811,7 @@ abstract class ComponentbuilderHelper
 	 */
 	protected static function periodFix(int $main): int
 	{
-		return round($main / 3) * 3;
+		return intdiv($main + 1, 3) * 3;
 	}
 
 	/**
@@ -4186,299 +3965,6 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * Workers to load tasks
-	 *
-	 * @var array
-	 * @since   3.1
-	 */
-	protected static array $worker = [];
-
-	/**
-	 * Set a worker dynamic URLs
-	 *
-	 * @var array 
-	 * @since   3.1
-	 */
-	protected static array $workerURL = [];	
-
-	/**
-	 * Set a worker dynamic HEADERs
-	 *
-	 * @var array 
-	 * @since   3.1
-	 */
-	protected static array $workerHEADER = [];
-
-	/**
-	 * 	Curl Error Notice
-	 *
-	 * @var bool 
-	 * @since   3.1
-	 */
-	protected static bool $curlErrorLoaded = false;
-
-	/**
-	 * check if a worker has more work
-	 * 
-	 * @param  string   $function    The function to target to perform the task
-	 *
-	 * @return  bool
-	 * @since   3.1
-	 */
-	public static function hasWork(string $function): bool
-	{
-		if (isset(self::$worker[$function]) && UtilitiesArrayHelper::check(self::$worker[$function]))
-		{
-			return count( (array) self::$worker[$function]);
-		}
-		return false;
-	}
-
-	/**
-	 * Set a worker url
-	 * 
-	 * @param  string   $function    The function to target to perform the task
-	 * @param  string   $url            The url of where the task is to be performed
-	 *
-	 * @return  void
-	 * @since   3.1
-	  */
-	public static function setWorkerUrl(string $function, string $url): void
-	{
-		// set the URL if found
-		if (UtilitiesStringHelper::check($url))
-		{
-			// make sure task function url is up
-			self::$workerURL[$function] = $url;
-		}
-	}
-
-	/**
-	 * Set a worker headers
-	 * 
-	 * @param  string      $function    The function to target to perform the task
-	 * @param  array|null  $headers    The headers needed for these workers/function
-	 *
-	 * @return  void
-	 * @since   3.1
-	 */
-	public static function setWorkerHeaders(string $function, ?array $headers): void
-	{
-		// set the Headers if found
-		if (UtilitiesArrayHelper::check($headers))
-		{
-			// make sure task function headers are set
-			self::$workerHEADER[$function] = $headers;
-		}
-	}
-
-	/**
-	 * Set a worker that needs to perform a task
-	 * 
-	 * @param  mixed    $data        The data to pass to the task
-	 * @param  string   $function    The function to target to perform the task
-	 * @param  string   $url         The url of where the task is to be performed
-	 * @param  array    $headers     The headers needed for these workers/function
-	 *
-	 * @return  void
-	 * @since   3.1
-	 */
-	public static function setWorker($data, string $function, ?string $url = null, ?array $headers = null)
-	{
-		// make sure task function is up
-		if (!isset(self::$worker[$function]))
-		{
-			self::$worker[$function] = [];
-		}
-
-		// load the task
-		self::$worker[$function][] = self::lock($data);
-
-		// set the Headers if found
-		if ($headers && !isset(self::$workerHEADER[$function]))
-		{
-			self::setWorkerHeaders($function, $headers);
-		}
-
-		// set the URL if found
-		if ($url && !isset(self::$workerURL[$function]))
-		{
-			self::setWorkerUrl($function, $url);
-		}
-	}
-
-	/**
-	 * Run set Workers
-	 *
-	 * @param  string      $function    The function to target to perform the task
-	 * @param  string      $perTask    The amount of task per worker
-	 * @param  function    $callback   The option to do a call back when task is completed
-	 * @param  int         $threadSize   The size of the thread
-	 *
-	 * @return  bool true   On success
-	 * @since   3.1
-	 */
-	public static function runWorker(string $function, $perTask = 50, $callback = null, $threadSize = 20): bool
-	{
-		// set task
-		$task = self::lock($function);
-		// build headers
-		$headers = array('VDM-TASK: ' .$task);
-		// build dynamic headers
-		if (isset(self::$workerHEADER[$function]) && UtilitiesArrayHelper::check(self::$workerHEADER[$function]))
-		{
-			foreach (self::$workerHEADER[$function] as $header)
-			{
-				$headers[] = $header;
-			}
-		}
-		// build worker options
-		$options = array();
-		// make sure worker is up
-		if (isset(self::$worker[$function]) && UtilitiesArrayHelper::check(self::$worker[$function]))
-		{
-			// this load method is for each
-			if (1 == $perTask)
-			{
-				// working with a string = 1
-				$headers[] = 'VDM-VALUE-TYPE: ' .self::lock(1);
-				// now load the options
-				foreach (self::$worker[$function] as $data)
-				{
-					$options[] = array(CURLOPT_HTTPHEADER => $headers, CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => 'VDM_DATA='. $data);
-				}
-			}
-			// this load method is for bundles 
-			else
-			{
-				// working with an array = 2
-				$headers[] = 'VDM-VALUE-TYPE: ' .self::lock(2);
-				// now load the options
-				$work = array_chunk(self::$worker[$function], $perTask);
-				foreach ($work as $data)
-				{
-					$options[] = array(CURLOPT_HTTPHEADER => $headers, CURLOPT_POST => 1,  CURLOPT_POSTFIELDS => 'VDM_DATA='. implode('___VDM___', $data));
-				}
-			}
-			// relieve worker of task/function
-			self::$worker[$function] = array();
-		}
-		// do the execution
-		if (UtilitiesArrayHelper::check($options))
-		{
-			if (isset(self::$workerURL[$function]))
-			{
-				$url = self::$workerURL[$function];
-			}
-			else
-			{
-				$url = Uri::root() . '/index.php?option=com_componentbuilder&task=api.worker';
-			}
-			return self::curlMultiExec($url, $options, $callback, $threadSize);
-		}
-		return false;
-	}
-
-	/**
-	 *	Do a multi curl execution of tasks
-	 *
-	 * @param  string      $url               The url of where the task is to be performed
-	 * @param  array       $_options      The array of curl options/headers to set
-	 * @param  function   $callback      The option to do a call back when task is completed
-	 * @param  int           $threadSize   The size of the thread
-	 *
-	 * @return  bool true   On success
-	 * @since   3.1
-	 */
-	public static function curlMultiExec(&$url, &$_options, $callback = null, $threadSize = 20)
-	{
-		// make sure we have curl available
-		if (!function_exists('curl_version'))
-		{
-			if (!self::$curlErrorLoaded)
-			{
-				// set the notice
-				Factory::getApplication()->enqueueMessage(Text::_('COM_COMPONENTBUILDER_HTWOCURL_NOT_FOUNDHTWOPPLEASE_SETUP_CURL_ON_YOUR_SYSTEM_OR_BCOMPONENTBUILDERB_WILL_NOT_FUNCTION_CORRECTLYP'), 'Error');
-				// load the notice only once
-				self::$curlErrorLoaded = true;
-			}
-			return false;
-		}
-		// make sure we have an url
-		if (UtilitiesStringHelper::check($url))
-		{
-			// make sure the thread size isn't greater than the # of _options
-			$threadSize = (count($_options) < $threadSize) ? count($_options) : $threadSize;
-			// set the options
-			$options = array();
-			$options[CURLOPT_URL] = $url;
-			$options[CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12';
-			$options[CURLOPT_RETURNTRANSFER] = TRUE;
-			$options[CURLOPT_SSL_VERIFYPEER] = FALSE;
-			// start multi threading :)
-			$handle = curl_multi_init();
-			// start the first batch of requests
-			for ($i = 0; $i < $threadSize; $i++)
-			{
-				if (isset($_options[$i]))
-				{
-					$ch = curl_init();
-					foreach ($_options[$i] as $curlopt => $string)
-					{
-						$options[$curlopt] = $string;
-					}
-					curl_setopt_array($ch, $options);
-					curl_multi_add_handle($handle, $ch);
-				}
-			}
-			// we wait for all the calls to finish (should not take long)
-			do {
-				while(($execrun = curl_multi_exec($handle, $working)) == CURLM_CALL_MULTI_PERFORM);
-					if($execrun != CURLM_OK)
-						break;
-				// a request was just completed -- find out which one
-				while($done = curl_multi_info_read($handle))
-				{
-					if (is_callable($callback))
-					{
-						// $info = curl_getinfo($done['handle']);
-						// request successful. process output using the callback function.
-						$output = curl_multi_getcontent($done['handle']);
-						$callback($output);
-					}
-					$key = $i + 1;
-					if(isset($_options[$key]))
-					{
-						// start a new request (it's important to do this before removing the old one)
-						$ch = curl_init(); $i++;
-						// add options
-						foreach ($_options[$key] as $curlopt => $string)
-						{
-							$options[$curlopt] = $string;
-						}
-						curl_setopt_array($ch, $options);
-						curl_multi_add_handle($handle, $ch);
-						// remove options again
-						foreach ($_options[$key] as $curlopt => $string)
-						{
-							unset($options[$curlopt]);
-						}
-					}
-					// remove the curl handle that just completed
-					curl_multi_remove_handle($handle, $done['handle']);
-				}
-				// stop wasting CPU cycles and rest for a couple ms
-				usleep(10000);
-			} while ($working);
-			// close the curl multi thread
-			curl_multi_close($handle);
-			// okay done
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Get an edit button
 	 * 
 	 * @param  mixed    $item       The item to edit
@@ -4570,11 +4056,11 @@ abstract class ComponentbuilderHelper
 				if (isset($checked_out) && $checked_out > 0)
 				{
 					// is this user the one who checked it out
-					if ($checked_out == Factory::getUser()->id)
+					if ($checked_out == Factory::getApplication()->getIdentity()->id)
 					{
 						return ' <a ' . $href . ' uk-icon="icon: lock" title="' . $title . '"></a>';
 					}
-					return ' <a href="#" disabled uk-icon="icon: lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '"></a>'; 
+					return ' <a href="#" disabled uk-icon="icon: lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '"></a>'; 
 				}
 				// return normal edit link
 				return ' <a ' . $href . ' uk-icon="icon: pencil" title="' . $title . '"></a>';
@@ -4584,11 +4070,11 @@ abstract class ComponentbuilderHelper
 			if (isset($checked_out) && $checked_out > 0)
 			{
 				// is this user the one who checked it out
-				if ($checked_out == Factory::getUser()->id)
+				if ($checked_out == Factory::getApplication()->getIdentity()->id)
 				{
 					return ' <a ' . $href . ' class="uk-icon-lock" title="' . $title . '"></a>';
 				}
-				return ' <a href="#" disabled class="uk-icon-lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '"></a>'; 
+				return ' <a href="#" disabled class="uk-icon-lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '"></a>'; 
 			}
 
 			// return normal edit link
@@ -4695,11 +4181,11 @@ abstract class ComponentbuilderHelper
 				if (isset($checked_out) && $checked_out > 0)
 				{
 					// is this user the one who checked it out
-					if ($checked_out == Factory::getUser()->id)
+					if ($checked_out == Factory::getApplication()->getIdentity()->id)
 					{
 						return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
 					}
-					return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+					return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '">' . $text . '</a>'; 
 				}
 				// return normal edit link
 				return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
@@ -4708,11 +4194,11 @@ abstract class ComponentbuilderHelper
 			if (isset($checked_out) && $checked_out > 0)
 			{
 				// is this user the one who checked it out
-				if ($checked_out == Factory::getUser()->id)
+				if ($checked_out == Factory::getApplication()->getIdentity()->id)
 				{
 					return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
 				}
-				return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+				return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '">' . $text . '</a>'; 
 			}
 			// return normal edit link
 			return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
@@ -4791,7 +4277,7 @@ abstract class ComponentbuilderHelper
 	protected static function canEditItem(&$record, &$item, $view, $views, $component = 'com_componentbuilder')
 	{
 		// make sure the user has access to view
-		if (!Factory::getUser()->authorise($view. '.access', $component))
+		if (!Factory::getApplication()->getIdentity()->authorise($view. '.access', $component))
 		{
 			return false;
 		}
@@ -5710,6 +5196,220 @@ abstract class ComponentbuilderHelper
 
 
 	/**
+	 * The Spreadsheet Headers
+	 *
+	 * @var   array
+	 * @since 5.0.2
+	 */
+	protected static array $SpreadsheetHeaders = [];
+
+	/**
+	 * Get the list of headers to show in column field
+	 *
+	 * @return  array  The list of headers
+	 * @since   5.0.2
+	 */
+	public static function getSpreadsheetHeaders(): array
+	{
+		$endColumn = 'DA';
+		$column = 'A';
+		$options = [];
+		while ($column !== $endColumn)
+		{
+			$options[$column] = self::getSpreadsheetHeader($column);
+			$column = ++$column;
+		}
+		return $options;
+	}
+
+	/**
+	 * Get the header column value (name)
+	 *
+	 * @return  string  The header value
+	 * @since   5.0.2
+	 */
+	protected static function getSpreadsheetHeader(string $column): string
+	{
+		return self::$SpreadsheetHeaders[$column] ?? $column;
+	}
+
+	/**
+	 * Set the header column values
+	 *
+	 * @return  void
+	 * @since   5.0.2
+	 */
+	public static function setSpreadsheetHeaders(array $headers): void
+	{
+		self::$SpreadsheetHeaders = $headers;
+	}
+
+	/**
+	 * Retrieves an associative array of published language tags as headers.
+	 *
+	 * The returned array is used to build header labels for language translations.
+	 * Includes a default 'source' => 'source' entry.
+	 *
+	 * @return array<string, string>  Associative array of language headers
+	 * @since  5.1.1
+	 */
+	public static function getLanguageTranslationsHeaders(bool $db = false): array
+	{
+		$values = DataFactory::_('Load')->values(
+			['langtag'], ['language'], ['published' => 1], ['name' => 'ASC']
+		);
+
+		$prefix = '';
+		$prefix_subform = '';
+		if ($db)
+		{
+			$prefix = 'language_translation.';
+			$prefix_subform = 'language_translation.translation|translation|language|'; // two value sub-from mapping [table.field|value|column|column_value]
+		}
+
+		if (empty($values))
+		{
+			// return default array
+			return [
+				"{$prefix}source" => 'Source',
+				"{$prefix_subform}af-ZA" => 'af-ZA',
+				"{$prefix_subform}nl-NL" => 'nl-NL',
+				"{$prefix_subform}fr-FR" => 'fr-FR',
+				"{$prefix_subform}de-DE" => 'de-DE',
+				"{$prefix_subform}pt-PT" => 'pt-PT',
+				"{$prefix_subform}ru-RU" => 'ru-RU'
+			];
+		}
+
+		$headers = ["{$prefix}source" => 'Source'];
+
+		foreach ($values as $value)
+		{
+			if (is_string($value) && trim($value) !== '')
+			{
+				$headers["{$prefix_subform}{$value}"] = $value;
+			}
+		}
+
+		return $headers;
+	}
+
+	/**
+	 * Retrieves a dynamic values of the import subform for item mapping
+	 *
+	 * @return array|null the values
+	 * @since  5.0.2
+	 */
+	public static function getItemImportSubformValues(): ?array
+	{
+		$subform_name = 'maps';
+		$values = [];
+		$headers = self::getSpreadsheetHeaders();
+		$target_fields = self::getLanguageTranslationsHeaders(true);
+		$number = 0;
+		foreach ($headers as $header => $text)
+		{
+			$values["{$subform_name}{$number}"] = ['column' => $header, 'target' => self::getImportFieldMatch($text, $target_fields)];
+			$number++;
+		}
+		return $values;
+	}
+
+	/**
+	 * Matches a name value against the keys and values of a given array.
+	 * The key must match strictly (===) and the value must start with the name (case-insensitive).
+	 *
+	 * @param string $name   The name to search for.
+	 * @param array  $fields The array of fields to match against. The array should have keys and values.
+	 *
+	 * @return string|null Returns the key if a match is found, or null if no match is found.
+	 * @since  5.0.2
+	 */
+	protected static function getImportFieldMatch(string $name, array $fields): string
+	{
+		foreach ($fields as $key => $value)
+		{
+			$field = self::getImportFieldMatchKey($key);
+
+			// Check if the name strictly matches the key
+			if ($key === $name || $field === $name)
+			{
+				return $key;
+			}
+
+			// Check if the name starts with the value (case-insensitive)
+			if (self::startsWithIgnoreCase($value, $name . ' '))
+			{
+				return $key;
+			}
+
+			// Check if the name starts with the value (case-insensitive)
+			if (self::startsWithIgnoreCase($field, $name . ' '))
+			{
+				return $key;
+			}
+		}
+
+		// Return null if no match is found
+		return '';
+	}
+
+	/**
+	 * Helper function to check if a string starts with another string (case-insensitive).
+	 *
+	 * @param string $haystack  The string to check.
+	 * @param string $needle    The string to match the beginning.
+	 *
+	 * @return bool Returns true if $needle matches the start of $haystack, false otherwise.
+	 * @since  5.0.2
+	 */
+	protected static function startsWithIgnoreCase(string $haystack, string $needle): bool
+	{
+		return stripos($haystack, $needle) === 0;
+	}
+
+	/**
+	 * Get the table and field name from an import key.
+	 *
+	 * Expected format:
+	 *   table.field
+	 *   table.field.subfield.another
+	 *
+	 * Only the first dot separates table and field.
+	 *
+	 * @param   string  $key  The import file key.
+	 *
+	 * @return  string|null  Object with table and field properties, or null if invalid.
+	 * @since   4.0.3
+	 */
+	protected static function getImportFieldMatchKey(string $key): ?string
+	{
+		// Split only on the first dot
+		$parts = explode('.', $key, 2);
+
+		// Must contain a table and a field
+		if (count($parts) !== 2 || $parts[0] === '' || $parts[1] === '')
+		{
+			return $key;
+		}
+
+		[$dump, $field] = $parts;
+
+		// Sub-from support (ONLY two values in subform)
+		if (strpos($field, '|') !== false)
+		{
+			$parts_ = array_map('trim', explode('|', $field));
+
+			if (count($parts_) === 4)
+			{
+				[$dump, $me, $to, $field] = $parts_;
+			}
+		}
+
+		return $field ?? null;
+	}
+
+	/**
 	 * Load the Composer Vendors
 	 */
 	public static function composerAutoload($target)
@@ -5797,7 +5497,7 @@ abstract class ComponentbuilderHelper
 	/**
 	 *	Load the Component Help URLs.
 	 **/
-	public static function getHelpUrl($view)
+	public static function getHelpUrl(string $view)
 	{
 		$user	= Factory::getApplication()->getIdentity();
 		$groups = $user->get('groups');
@@ -5822,26 +5522,18 @@ abstract class ComponentbuilderHelper
 						$targetgroups = json_decode($help->groups, true);
 						if (!array_intersect($targetgroups, $groups))
 						{
-							// if user not in those target groups then remove the item
 							unset($helps[$nr]);
 							continue;
 						}
 					}
-					// set the return type
 					switch ($help->type)
 					{
-						// set joomla article
 						case 1:
 							return self::loadArticleLink($help->article);
-							break;
-						// set help text
 						case 2:
 							return self::loadHelpTextLink($help->id);
-							break;
-						// set Link
 						case 3:
 							return $help->url;
-							break;
 					}
 				}
 			}
@@ -5874,110 +5566,110 @@ abstract class ComponentbuilderHelper
 		// load user for access menus
 		$user = Factory::getApplication()->getIdentity();
 		// load the submenus to sidebar
-		\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
-		// Access control (compiler.submenu).
-		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
+		Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
+		// Access control (compiler.access && compiler.submenu).
+		if ($user->authorise('compiler.access', 'com_componentbuilder') && $user->authorise('compiler.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
 		}
 		if ($user->authorise('joomla_component.access', 'com_componentbuilder') && $user->authorise('joomla_component.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');
 		}
 		if ($user->authorise('joomla_module.access', 'com_componentbuilder') && $user->authorise('joomla_module.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_MODULES'), 'index.php?option=com_componentbuilder&view=joomla_modules', $submenu === 'joomla_modules');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_MODULES'), 'index.php?option=com_componentbuilder&view=joomla_modules', $submenu === 'joomla_modules');
 		}
 		if ($user->authorise('joomla_plugin.access', 'com_componentbuilder') && $user->authorise('joomla_plugin.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_PLUGINS'), 'index.php?option=com_componentbuilder&view=joomla_plugins', $submenu === 'joomla_plugins');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_PLUGINS'), 'index.php?option=com_componentbuilder&view=joomla_plugins', $submenu === 'joomla_plugins');
 		}
 		if ($user->authorise('joomla_power.access', 'com_componentbuilder') && $user->authorise('joomla_power.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_POWERS'), 'index.php?option=com_componentbuilder&view=joomla_powers', $submenu === 'joomla_powers');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_POWERS'), 'index.php?option=com_componentbuilder&view=joomla_powers', $submenu === 'joomla_powers');
 		}
 		if ($user->authorise('power.access', 'com_componentbuilder') && $user->authorise('power.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_POWERS'), 'index.php?option=com_componentbuilder&view=powers', $submenu === 'powers');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_POWERS'), 'index.php?option=com_componentbuilder&view=powers', $submenu === 'powers');
 		}
 		// Access control (search.access && search.submenu).
 		if ($user->authorise('search.access', 'com_componentbuilder') && $user->authorise('search.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SEARCH'), 'index.php?option=com_componentbuilder&view=search', $submenu === 'search');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SEARCH'), 'index.php?option=com_componentbuilder&view=search', $submenu === 'search');
 		}
 		if ($user->authorise('admin_view.access', 'com_componentbuilder') && $user->authorise('admin_view.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=admin_views', $submenu === 'admin_views');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=admin_views', $submenu === 'admin_views');
 		}
 		if ($user->authorise('custom_admin_view.access', 'com_componentbuilder') && $user->authorise('custom_admin_view.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=custom_admin_views', $submenu === 'custom_admin_views');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=custom_admin_views', $submenu === 'custom_admin_views');
 		}
 		if ($user->authorise('site_view.access', 'com_componentbuilder') && $user->authorise('site_view.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SITE_VIEWS'), 'index.php?option=com_componentbuilder&view=site_views', $submenu === 'site_views');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SITE_VIEWS'), 'index.php?option=com_componentbuilder&view=site_views', $submenu === 'site_views');
 		}
 		if ($user->authorise('template.access', 'com_componentbuilder') && $user->authorise('template.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_TEMPLATES'), 'index.php?option=com_componentbuilder&view=templates', $submenu === 'templates');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_TEMPLATES'), 'index.php?option=com_componentbuilder&view=templates', $submenu === 'templates');
 		}
 		if ($user->authorise('layout.access', 'com_componentbuilder') && $user->authorise('layout.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LAYOUTS'), 'index.php?option=com_componentbuilder&view=layouts', $submenu === 'layouts');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LAYOUTS'), 'index.php?option=com_componentbuilder&view=layouts', $submenu === 'layouts');
 		}
 		if ($user->authorise('dynamic_get.access', 'com_componentbuilder') && $user->authorise('dynamic_get.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DYNAMIC_GETS'), 'index.php?option=com_componentbuilder&view=dynamic_gets', $submenu === 'dynamic_gets');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DYNAMIC_GETS'), 'index.php?option=com_componentbuilder&view=dynamic_gets', $submenu === 'dynamic_gets');
 		}
 		if ($user->authorise('custom_code.access', 'com_componentbuilder') && $user->authorise('custom_code.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_CODES'), 'index.php?option=com_componentbuilder&view=custom_codes', $submenu === 'custom_codes');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_CODES'), 'index.php?option=com_componentbuilder&view=custom_codes', $submenu === 'custom_codes');
 		}
 		if ($user->authorise('placeholder.access', 'com_componentbuilder') && $user->authorise('placeholder.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_PLACEHOLDERS'), 'index.php?option=com_componentbuilder&view=placeholders', $submenu === 'placeholders');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_PLACEHOLDERS'), 'index.php?option=com_componentbuilder&view=placeholders', $submenu === 'placeholders');
 		}
 		if ($user->authorise('library.access', 'com_componentbuilder') && $user->authorise('library.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LIBRARIES'), 'index.php?option=com_componentbuilder&view=libraries', $submenu === 'libraries');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LIBRARIES'), 'index.php?option=com_componentbuilder&view=libraries', $submenu === 'libraries');
 		}
 		if ($user->authorise('snippet.access', 'com_componentbuilder') && $user->authorise('snippet.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SNIPPETS'), 'index.php?option=com_componentbuilder&view=snippets', $submenu === 'snippets');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SNIPPETS'), 'index.php?option=com_componentbuilder&view=snippets', $submenu === 'snippets');
 		}
 		if ($user->authorise('validation_rule.access', 'com_componentbuilder') && $user->authorise('validation_rule.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_VALIDATION_RULES'), 'index.php?option=com_componentbuilder&view=validation_rules', $submenu === 'validation_rules');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_VALIDATION_RULES'), 'index.php?option=com_componentbuilder&view=validation_rules', $submenu === 'validation_rules');
 		}
 		if ($user->authorise('field.access', 'com_componentbuilder') && $user->authorise('field.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDS'), 'index.php?option=com_componentbuilder&view=fields', $submenu === 'fields');
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.field', $submenu === 'categories.field');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDS'), 'index.php?option=com_componentbuilder&view=fields', $submenu === 'fields');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.field', $submenu === 'categories.field');
 		}
 		if ($user->authorise('fieldtype.access', 'com_componentbuilder') && $user->authorise('fieldtype.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtype', $submenu === 'categories.fieldtype');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtype', $submenu === 'categories.fieldtype');
 		}
 		if ($user->authorise('language_translation.access', 'com_componentbuilder') && $user->authorise('language_translation.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGE_TRANSLATIONS'), 'index.php?option=com_componentbuilder&view=language_translations', $submenu === 'language_translations');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGE_TRANSLATIONS'), 'index.php?option=com_componentbuilder&view=language_translations', $submenu === 'language_translations');
 		}
 		if ($user->authorise('language.access', 'com_componentbuilder') && $user->authorise('language.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGES'), 'index.php?option=com_componentbuilder&view=languages', $submenu === 'languages');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGES'), 'index.php?option=com_componentbuilder&view=languages', $submenu === 'languages');
 		}
 		if ($user->authorise('server.access', 'com_componentbuilder') && $user->authorise('server.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SERVERS'), 'index.php?option=com_componentbuilder&view=servers', $submenu === 'servers');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SERVERS'), 'index.php?option=com_componentbuilder&view=servers', $submenu === 'servers');
 		}
 		if ($user->authorise('repository.access', 'com_componentbuilder') && $user->authorise('repository.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_REPOSITORIES'), 'index.php?option=com_componentbuilder&view=repositories', $submenu === 'repositories');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_REPOSITORIES'), 'index.php?option=com_componentbuilder&view=repositories', $submenu === 'repositories');
 		}
 		if ($user->authorise('help_document.access', 'com_componentbuilder') && $user->authorise('help_document.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_componentbuilder&view=help_documents', $submenu === 'help_documents');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_componentbuilder&view=help_documents', $submenu === 'help_documents');
 		}
 	}
 
@@ -6194,201 +5886,23 @@ abstract class ComponentbuilderHelper
 	}
 
 	/**
-	 * Get the action permissions
+	 * Get the permitted actions of a user.
 	 *
 	 * @param  string   $view        The related view name
-	 * @param  int      $record      The item to act upon
-	 * @param  string   $views       The related list view name
+	 * @param  ?object  $record      The item to act upon
+	 * @param  ?string  $views       The related list view name
 	 * @param  mixed    $target      Only get this permission (like edit, create, delete)
 	 * @param  string   $component   The target component
 	 * @param  object   $user        The user whose permissions we are loading
 	 *
-	 * @return  object   The CMSObject of permission/authorised actions
+	 * @return  object   The Registry of permission/authorised actions
+	 * @since   2.5.0
 	 *
+	 * @deprecated 5.1.4 Use Actions::get(...);
 	 */
 	public static function getActions($view, &$record = null, $views = null, $target = null, $component = 'componentbuilder', $user = 'null')
 	{
-		// load the user if not given
-		if (!ObjectHelper::check($user))
-		{
-			// get the user object
-			$user = Factory::getApplication()->getIdentity();
-		}
-		// load the CMSObject
-		$result = new CMSObject;
-		// make view name safe (just incase)
-		$view = UtilitiesStringHelper::safe($view);
-		if (UtilitiesStringHelper::check($views))
-		{
-			$views = UtilitiesStringHelper::safe($views);
-		 }
-		// get all actions from component
-		$actions = Access::getActionsFromFile(
-			JPATH_ADMINISTRATOR . '/components/com_' . $component . '/access.xml',
-			"/access/section[@name='component']/"
-		);
-		// if non found then return empty CMSObject
-		if (empty($actions))
-		{
-			return $result;
-		}
-		// get created by if not found
-		if (ObjectHelper::check($record) && !isset($record->created_by) && isset($record->id))
-		{
-			$record->created_by = GetHelper::var($view, $record->id, 'id', 'created_by', '=', $component);
-		}
-		// set actions only set in component settings
-		$componentActions = array('core.admin', 'core.manage', 'core.options', 'core.export');
-		// check if we have a target
-		$checkTarget = false;
-		if ($target)
-		{
-			// convert to an array
-			if (UtilitiesStringHelper::check($target))
-			{
-				$target = array($target);
-			}
-			// check if we are good to go
-			if (UtilitiesArrayHelper::check($target))
-			{
-				$checkTarget = true;
-			}
-		}
-		// loop the actions and set the permissions
-		foreach ($actions as $action)
-		{
-			// check target action filter
-			if ($checkTarget && self::filterActions($view, $action->name, $target))
-			{
-				continue;
-			}
-			// set to use component default
-			$fallback = true;
-			// reset permission per/action
-			$permission = false;
-			$catpermission = false;
-			// set area
-			$area = 'comp';
-			// check if the record has an ID and the action is item related (not a component action)
-			if (ObjectHelper::check($record) && isset($record->id) && $record->id > 0 && !in_array($action->name, $componentActions) &&
-				(strpos($action->name, 'core.') !== false || strpos($action->name, $view . '.') !== false))
-			{
-				// we are in item
-				$area = 'item';
-				// The record has been set. Check the record permissions.
-				$permission = $user->authorise($action->name, 'com_' . $component . '.' . $view . '.' . (int) $record->id);
-				// if no permission found, check edit own
-				if (!$permission)
-				{
-					// With edit, if the created_by matches current user then dig deeper.
-					if (($action->name === 'core.edit' || $action->name === $view . '.edit') && $record->created_by > 0 && ($record->created_by == $user->id))
-					{
-						// the correct target
-						$coreCheck = (array) explode('.', $action->name);
-						// check that we have both local and global access
-						if ($user->authorise($coreCheck[0] . '.edit.own', 'com_' . $component . '.' . $view . '.' . (int) $record->id) &&
-							$user->authorise($coreCheck[0]  . '.edit.own', 'com_' . $component))
-						{
-							// allow edit
-							$result->set($action->name, true);
-							// set not to use global default
-							// because we already validated it
-							$fallback = false;
-						}
-						else
-						{
-							// do not allow edit
-							$result->set($action->name, false);
-							$fallback = false;
-						}
-					}
-				}
-				elseif (UtilitiesStringHelper::check($views) && isset($record->catid) && $record->catid > 0)
-				{
-					// we are in item
-					$area = 'category';
-					// set the core check
-					$coreCheck = explode('.', $action->name);
-					$core = $coreCheck[0];
-					// make sure we use the core. action check for the categories
-					if (strpos($action->name, $view) !== false && strpos($action->name, 'core.') === false )
-					{
-						$coreCheck[0] = 'core';
-						$categoryCheck = implode('.', $coreCheck);
-					}
-					else
-					{
-						$categoryCheck = $action->name;
-					}
-					// The record has a category. Check the category permissions.
-					$catpermission = $user->authorise($categoryCheck, 'com_' . $component . '.' . $views . '.category.' . (int) $record->catid);
-					if (!$catpermission && !is_null($catpermission))
-					{
-						// With edit, if the created_by matches current user then dig deeper.
-						if (($action->name === 'core.edit' || $action->name === $view . '.edit') && $record->created_by > 0 && ($record->created_by == $user->id))
-						{
-							// check that we have both local and global access
-							if ($user->authorise('core.edit.own', 'com_' . $component . '.' . $views . '.category.' . (int) $record->catid) &&
-								$user->authorise($core . '.edit.own', 'com_' . $component))
-							{
-								// allow edit
-								$result->set($action->name, true);
-								// set not to use global default
-								// because we already validated it
-								$fallback = false;
-							}
-							else
-							{
-								// do not allow edit
-								$result->set($action->name, false);
-								$fallback = false;
-							}
-						}
-					}
-				}
-			}
-			// if allowed then fallback on component global settings
-			if ($fallback)
-			{
-				// if item/category blocks access then don't fall back on global
-				if ((($area === 'item') && !$permission) || (($area === 'category') && !$catpermission))
-				{
-					// do not allow
-					$result->set($action->name, false);
-				}
-				// Finally remember the global settings have the final say. (even if item allow)
-				// The local item permissions can block, but it can't open and override of global permissions.
-				// Since items are created by users and global permissions is set by system admin.
-				else
-				{
-					$result->set($action->name, $user->authorise($action->name, 'com_' . $component));
-				}
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * Filter the action permissions
-	 *
-	 * @param  string   $action   The action to check
-	 * @param  array    $targets  The array of target actions
-	 *
-	 * @return  boolean   true if action should be filtered out
-	 *
-	 */
-	protected static function filterActions(&$view, &$action, &$targets)
-	{
-		foreach ($targets as $target)
-		{
-			if (strpos($action, $view . '.' . $target) !== false ||
-				strpos($action, 'core.' . $target) !== false)
-			{
-				return false;
-				break;
-			}
-		}
-		return true;
+		return Actions::get($view, $record, $views, $target, $component, $user);
 	}
 
 	/**

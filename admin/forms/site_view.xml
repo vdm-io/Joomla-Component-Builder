@@ -166,34 +166,6 @@
 			class="input-large"
 			description="COM_COMPONENTBUILDER_SITE_VIEW_MAIN_GET_DESCRIPTION"
 		/>
-		<!-- Add_php_jview_display Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_jview_display"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_JVIEW_DISPLAY_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
-		</field>
-		<!-- Add_php_document Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_php_document"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_DOCUMENT_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
-		</field>
 		<!-- Add_php_view Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -208,38 +180,36 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
 		</field>
-		<!-- Js_document Field. Type: Editor. (joomla) -->
+		<!-- Php_ajaxmethod Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="js_document"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_JS_DOCUMENT_LABEL"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_JS_DOCUMENT_DESCRIPTION"
+			name="php_ajaxmethod"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_AJAXMETHOD_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_AJAXMETHOD_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
 			rows="30"
 			buttons="no"
-			syntax="javascript"
+			syntax="php"
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Note_add_php_language_string Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_add_php_language_string" label="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_ADD_PHP_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_ADD_PHP_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_php_language_string" />
-		<!-- Codename Field. Type: Text. (joomla) -->
+		<!-- Add_php_document Field. Type: Radio. (joomla) -->
 		<field
-			type="text"
-			name="codename"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_LABEL"
-			size="80"
-			maxlength="150"
-			default=""
-			description="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_DESCRIPTION"
-			class="text_area"
-			filter="CMD"
-			message="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_MESSAGE"
-			hint="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_HINT"
-		/>
+			type="radio"
+			name="add_php_document"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_DOCUMENT_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
+		</field>
 		<!-- Javascript_file Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -255,6 +225,27 @@
 			editor="codemirror|none"
 			filter="raw"
 			validate="code"
+		/>
+		<!-- Note_add_php_language_string Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_add_php_language_string" label="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_ADD_PHP_LANGUAGE_STRING_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_ADD_PHP_LANGUAGE_STRING_DESCRIPTION" heading="h4" class="note_add_php_language_string" />
+		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
+		<!-- View_toolbar Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="view_toolbar"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_VIEW_TOOLBAR_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_VIEW_TOOLBAR_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+			showon="add_view_toolbar:1"
 		/>
 		<!-- Context Field. Type: Text. (joomla) -->
 		<field
@@ -309,11 +300,11 @@
 			required="false"
 			button="true"
 		/>
-		<!-- Add_php_jview Field. Type: Radio. (joomla) -->
+		<!-- Add_php_jview_display Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_php_jview"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_JVIEW_LABEL"
+			name="add_php_jview_display"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_JVIEW_DISPLAY_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -332,8 +323,50 @@
 			layout="joomla.form.field.list-fancy-select"
 			multiple="true"
 		/>
-		<!-- Note_linked_to_notice Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="note_linked_to_notice" label="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_LINKED_TO_NOTICE_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_LINKED_TO_NOTICE_DESCRIPTION" heading="h4" class="note_linked_to_notice" />
+		<!-- Add_php_jview Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_php_jview"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_PHP_JVIEW_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
+		</field>
+		<!-- Js_document Field. Type: Editor. (joomla) -->
+		<field
+			type="editor"
+			name="js_document"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_JS_DOCUMENT_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_JS_DOCUMENT_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="javascript"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
+		/>
+		<!-- Codename Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="codename"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_LABEL"
+			size="80"
+			maxlength="150"
+			default=""
+			description="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_DESCRIPTION"
+			class="text_area"
+			filter="CMD"
+			message="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_MESSAGE"
+			hint="COM_COMPONENTBUILDER_SITE_VIEW_CODENAME_HINT"
+		/>
 		<!-- Css_document Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
@@ -395,36 +428,6 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
 		</field>
-		<!-- Php_ajaxmethod Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_ajaxmethod"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_AJAXMETHOD_LABEL"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_AJAXMETHOD_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="30"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
-		<!-- Add_css_document Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_css_document"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_CSS_DOCUMENT_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
-		</field>
 		<!-- Libraries Field. Type: Libraries. (custom) -->
 		<field
 			type="libraries"
@@ -438,11 +441,11 @@
 			required="false"
 			button="true"
 		/>
-		<!-- Add_css Field. Type: Radio. (joomla) -->
+		<!-- Add_css_document Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="add_css"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_CSS_LABEL"
+			name="add_css_document"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_CSS_DOCUMENT_LABEL"
 			class="btn-group btn-group-yesno"
 			default="0"
 			required="true">
@@ -462,6 +465,22 @@
 			multiple="false"
 			required="false"
 		/>
+		<!-- Add_css Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_css"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_CSS_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
+		</field>
+		<!-- Dynamic_values Field. Type: Note. A None Database Field. (joomla) -->
+		<field type="note" name="dynamic_values" label="COM_COMPONENTBUILDER_SITE_VIEW_DYNAMIC_VALUES_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_DYNAMIC_VALUES_DESCRIPTION" heading="h4" class="dynamic_values" />
 		<!-- Add_php_ajax Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
@@ -476,8 +495,20 @@
 			<option value="0">
 				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
 		</field>
-		<!-- Dynamic_values Field. Type: Note. A None Database Field. (joomla) -->
-		<field type="note" name="dynamic_values" label="COM_COMPONENTBUILDER_SITE_VIEW_DYNAMIC_VALUES_LABEL" description="COM_COMPONENTBUILDER_SITE_VIEW_DYNAMIC_VALUES_DESCRIPTION" heading="h4" class="dynamic_values" />
+		<!-- Add_custom_button Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_custom_button"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_CUSTOM_BUTTON_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
+		</field>
 		<!-- Ajax_input Field. Type: Subform. (joomla) -->
 		<field
 			type="subform"
@@ -618,36 +649,6 @@
 				/>
 			</form>
 		</field>
-		<!-- Add_custom_button Field. Type: Radio. (joomla) -->
-		<field
-			type="radio"
-			name="add_custom_button"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_CUSTOM_BUTTON_LABEL"
-			class="btn-group btn-group-yesno"
-			default="0"
-			required="true">
-			<!-- Option Set. -->
-			<option value="1">
-				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
-			<option value="0">
-				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
-		</field>
-		<!-- Php_document Field. Type: Editor. (joomla) -->
-		<field
-			type="editor"
-			name="php_document"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_DOCUMENT_LABEL"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_DOCUMENT_DESCRIPTION"
-			width="100%"
-			height="450px"
-			cols="15"
-			rows="50"
-			buttons="no"
-			syntax="php"
-			editor="codemirror|none"
-			filter="raw"
-			validate="code"
-		/>
 		<!-- Button_position Field. Type: List. (joomla) -->
 		<field
 			type="list"
@@ -674,16 +675,16 @@
 			<option value="5">
 				COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM</option>
 		</field>
-		<!-- Php_view Field. Type: Editor. (joomla) -->
+		<!-- Php_document Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_view"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_VIEW_LABEL"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_VIEW_DESCRIPTION"
+			name="php_document"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_DOCUMENT_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_DOCUMENT_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
-			rows="30"
+			rows="50"
 			buttons="no"
 			syntax="php"
 			editor="codemirror|none"
@@ -692,12 +693,12 @@
 		/>
 		<!-- Note_custom_toolbar_placeholder Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_custom_toolbar_placeholder" description="COM_COMPONENTBUILDER_SITE_VIEW_NOTE_CUSTOM_TOOLBAR_PLACEHOLDER_DESCRIPTION" heading="h4" class="note_custom_toolbar_placeholder" showon="button_position:5" />
-		<!-- Php_jview_display Field. Type: Editor. (joomla) -->
+		<!-- Php_view Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_jview_display"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_DISPLAY_LABEL"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_DISPLAY_DESCRIPTION"
+			name="php_view"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_VIEW_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_VIEW_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
@@ -1217,12 +1218,12 @@
 				</field>
 			</form>
 		</field>
-		<!-- Php_jview Field. Type: Editor. (joomla) -->
+		<!-- Php_jview_display Field. Type: Editor. (joomla) -->
 		<field
 			type="editor"
-			name="php_jview"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_LABEL"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_DESCRIPTION"
+			name="php_jview_display"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_DISPLAY_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_DISPLAY_DESCRIPTION"
 			width="100%"
 			height="450px"
 			cols="15"
@@ -1249,19 +1250,21 @@
 			filter="raw"
 			validate="code"
 		/>
-		<!-- Guid Field. Type: Text. (joomla) -->
+		<!-- Php_jview Field. Type: Editor. (joomla) -->
 		<field
-			type="text"
-			name="guid"
-			label="COM_COMPONENTBUILDER_SITE_VIEW_GUID_LABEL"
-			size="40"
-			maxlength="40"
-			description="COM_COMPONENTBUILDER_SITE_VIEW_GUID_DESCRIPTION"
-			class="text_area"
-			readonly="true"
-			filter="CMD"
-			validate="guid"
-			hint="COM_COMPONENTBUILDER_SITE_VIEW_GUID_HINT"
+			type="editor"
+			name="php_jview"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_LABEL"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_PHP_JVIEW_DESCRIPTION"
+			width="100%"
+			height="450px"
+			cols="15"
+			rows="30"
+			buttons="no"
+			syntax="php"
+			editor="codemirror|none"
+			filter="raw"
+			validate="code"
 		/>
 		<!-- Php_model Field. Type: Editor. (joomla) -->
 		<field
@@ -1279,6 +1282,34 @@
 			filter="raw"
 			validate="code"
 		/>
+		<!-- Guid Field. Type: Text. (joomla) -->
+		<field
+			type="text"
+			name="guid"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_GUID_LABEL"
+			size="40"
+			maxlength="40"
+			description="COM_COMPONENTBUILDER_SITE_VIEW_GUID_DESCRIPTION"
+			class="text_area"
+			readonly="true"
+			filter="CMD"
+			validate="guid"
+			hint="COM_COMPONENTBUILDER_SITE_VIEW_GUID_HINT"
+		/>
+		<!-- Add_view_toolbar Field. Type: Radio. (joomla) -->
+		<field
+			type="radio"
+			name="add_view_toolbar"
+			label="COM_COMPONENTBUILDER_SITE_VIEW_ADD_VIEW_TOOLBAR_LABEL"
+			class="btn-group btn-group-yesno"
+			default="0"
+			required="true">
+			<!-- Option Set. -->
+			<option value="1">
+				COM_COMPONENTBUILDER_SITE_VIEW_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_SITE_VIEW_NO</option>
+		</field>
 	</fieldset>
 
 	<!-- Access Control Fields. -->

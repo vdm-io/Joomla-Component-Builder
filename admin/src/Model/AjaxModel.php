@@ -32,24 +32,21 @@ use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
+use VDM\Joomla\Componentbuilder\Import\Factory as ImportFactory;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Componentbuilder\Remote\Version;
-use VDM\Joomla\Github\Factory as GithubFactory;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
-use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Table\Search;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper;
 use VDM\Joomla\Data\Factory as DataFactory;
-use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
-use VDM\Joomla\Componentbuilder\Fieldtype\Factory as FieldtypeFactory;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Factory as JoomlaPowerFactory;
-use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
-use VDM\Joomla\Componentbuilder\Snippet\Factory as SnippetFactory;
-use VDM\Joomla\Componentbuilder\Repository\Factory as RepositoryFactory;
+use VDM\Joomla\Componentbuilder\Factory as ComponentbuilderFactory;
+use VDM\Joomla\Componentbuilder\File\Factory as FileFactory;
+use VDM\Joomla\File\TypeDefinition;
 use Joomla\CMS\Form\FormHelper as FormFormHelper;
 
 // No direct access to this file
@@ -87,7 +84,7 @@ class AjaxModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		parent::__construct($config, $factory);
 
@@ -196,90 +193,7 @@ class AjaxModel extends ListModel
 			throw new \InvalidArgumentException(Text::_('COM_COMPONENTBUILDER_INVALID_COMPONENT_OBJECT_MISSING_REQUIRED_PROPERTIES'));
 		}
 
-		// Prepare image HTML if provided
-		$imageSrc = !empty($object->image) ? htmlspecialchars($object->image, ENT_QUOTES) : null;
-		$imageHtml = $imageSrc
-			? '<img alt="' . Text::_('COM_COMPONENTBUILDER_JOOMLA_COMPONENT_IMAGE') . '" src="' . Uri::root() . $imageSrc . '" class="img-fluid" style="max-width: 250px;">'
-			: '';
-
-		// Prepare description
-		$description = htmlspecialchars($object->description ?? $object->short_description ?? '', ENT_QUOTES);
-
-		// Prepare badges
-		$placeholderStatus = $object->add_placeholders
-			? '<span class="badge bg-success">' . Text::_('COM_COMPONENTBUILDER_YES') . '</span>'
-			: '<span class="badge bg-danger">' . Text::_('COM_COMPONENTBUILDER_NO') . '</span>';
-		$debugStatus = $object->debug_linenr
-			? '<span class="badge bg-success">' . Text::_('COM_COMPONENTBUILDER_YES') . '</span>'
-			: '<span class="badge bg-danger">' . Text::_('COM_COMPONENTBUILDER_NO') . '</span>';
-
-		// Prepare company and author details
-		$companyDetails = '<ul class="list-unstyled">';
-		$companyDetails .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_COMPANY') . ':</strong> ' . htmlspecialchars($object->companyname ?? 'Vast Development Method', ENT_QUOTES) . '</li>';
-		$companyDetails .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_AUTHOR') . ':</strong> ' . htmlspecialchars($object->author ?? 'Llewellyn van der Merwe', ENT_QUOTES) . '</li>';
-		$companyDetails .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_EMAIL') . ':</strong> <a href="mailto:' . htmlspecialchars($object->email ?? 'joomla@vdm.io', ENT_QUOTES) . '">' . htmlspecialchars($object->email ?? 'joomla@vdm.io', ENT_QUOTES) . '</a></li>';
-		$companyDetails .= '<li><strong>' . Text::_('COM_COMPONENTBUILDER_WEBSITE') . ':</strong> <a href="' . htmlspecialchars($object->website ?? 'https://dev.vdm.io', ENT_QUOTES) . '" target="_blank" rel="noopener">' . htmlspecialchars($object->website ?? 'https://dev.vdm.io', ENT_QUOTES) . '</a></li>';
-		$companyDetails .= '</ul>';
-
-		// Build HTML output
-		$html = [];
-
-		// Card container
-		$html[] = '<div class="card mb-4">';
-		$html[] = '<div class="card-body">';
-
-		// Header with component name and version
-		$html[] = '<h2 class="card-title">' . htmlspecialchars($object->name, ENT_QUOTES) . ' (v' . htmlspecialchars($object->component_version, ENT_QUOTES) . ')</h2>';
-
-		// Row with image and text
-		if (!empty($imageHtml))
-		{
-			$html[] = '<div class="row align-items-center">';
-			$html[] = '<div class="col-md-7">';
-			if (!empty($description))
-			{
-				$html[] = '<p>' . $description . '</p>';
-			}
-			$html[] = $companyDetails;
-			$html[] = '</div>';
-			$html[] = '<div class="col-md-5">' . $imageHtml . '</div>';
-			$html[] = '</div>'; // End row
-		}
-		else
-		{
-			$html[] = '<div class="row align-items-center">';
-			if (!empty($description))
-			{
-				$html[] = '<p>' . $description . '</p>';
-			}
-			$html[] = $companyDetails;
-			$html[] = '</div>';
-		}
-
-		// Component settings
-		$html[] = '<h3 class="mt-4">' . Text::_('COM_COMPONENTBUILDER_COMPONENT_SETTINGS') . '</h3>';
-		$html[] = '<p>';
-		$html[] = Text::_('COM_COMPONENTBUILDER_ADD_CUSTOM_CODE_PLACEHOLDERS') . ': ' . $placeholderStatus . '<br>';
-		$html[] = Text::_('COM_COMPONENTBUILDER_DEBUG_LINE_NUMBERS') . ': ' . $debugStatus;
-		$html[] = '</p>';
-
-		// License details
-		$html[] = '<h3 class="mt-4">' . Text::_('COM_COMPONENTBUILDER_LICENSE') . '</h3>';
-		$html[] = '<p>' . nl2br(htmlspecialchars($object->license ?? Text::_('COM_COMPONENTBUILDER_NONE_SET'), ENT_QUOTES)) . '</p>';
-
-		// Copyright
-		$html[] = '<h3 class="mt-4">' . Text::_('COM_COMPONENTBUILDER_COPYRIGHT') . '</h3>';
-		$html[] = '<p>' . nl2br(htmlspecialchars($object->copyright ?? Text::_('COM_COMPONENTBUILDER_NONE_SET'), ENT_QUOTES)) . '</p>';
-
-		// Edit button
-		$html[] = '<a href="index.php?option=com_componentbuilder&ref=compiler&view=joomla_components&task=joomla_component.edit&id=' . (int) $object->id . '" class="btn btn-outline-action btn-lg mt-3" style="width: 100%;">';
-		$html[] = '<span class="icon-edit"></span> ' . Text::_('COM_COMPONENTBUILDER_EDIT') . ' ' . htmlspecialchars($object->system_name, ENT_QUOTES);
-		$html[] = '</a>';
-
-		$html[] = '</div>'; // End card body
-		$html[] = '</div>'; // End card
-
-		return implode("\n", $html);
+		return LayoutHelper::render('jcbcompilercomponentdetails', $object);
 	}
 
 	/**
@@ -303,27 +217,162 @@ class AjaxModel extends ListModel
 	}
 
 	/**
-	 * Get the content of a GitHub wiki page.
+	 * Get the content of a GitHub markdown page.
 	 *
-	 * @param   string  $name  The name of the wiki page (default: 'Home').
+	 * @param   string  $path  The path to the markdown page
 	 *
 	 * @return  array  Associative array with 'page' or 'error' key.
 	 * @since   2.3.0
 	 */
-	public function getWiki(string $name = 'Home'): array
+	public function getJcbDocGitHubMd(string $path): array
 	{
 		try {
-			$wiki = GithubFactory::_('Github.Repository.Wiki')
-				->get('joomengine', 'Joomla-Component-Builder', $name);
+			$githubUrl = $this->toRawJcbDocGithubMarkdownUrl($path);
+			if (($page = SessionHelper::get($githubUrl, 'not_found')) === 'not_found')
+			{
+				$page = FileHelper::getContent($githubUrl);
+				if (!empty($page))
+				{
+					$page = $this->rewriteJcbDocRelativeMarkdownLinks($page, $githubUrl);
+				}
 
-			if (!empty($wiki->content)) {
-				return ['page' => base64_decode($wiki->content)];
+				SessionHelper::set($githubUrl, $page);
+			}
+
+			if (!empty($page))
+			{
+				return ['page' => $page];
 			}
 		} catch (\Throwable $e) {
 			return ['error' => $e->getMessage()];
 		}
 
-		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_PAGE_CAN_ONLY_BE_LOADED_WHEN_YOUR_SYSTEM_HAS_INTERNET_CONNECTION')];
+	}
+
+	/**
+	 * Convert a dot-notated GitHub repository path into a raw.githubusercontent.com URL
+	 * with strict structural and safety validation.
+	 *
+	 * Validation rules:
+	 * - The path must contain at least two dots (minimum three segments)
+	 * - No empty segments are allowed
+	 * - Each segment must be URL-safe (RFC 3986 unreserved characters only)
+	 *
+	 * @param  string  $path  Dot-notated repository path
+	 *
+	 * @return string  Fully-qualified raw GitHub Markdown URL
+	 *
+	 * @throws \InvalidArgumentException If the path is invalid or unsafe
+	 * @since  5.1.4
+	 */
+	protected function toRawJcbDocGithubMarkdownUrl(string $path): string
+	{
+		$path = trim($path);
+
+		// Must contain at least two dots (minimum three segments)
+		if (substr_count($path, '.') < 2)
+		{
+			throw new \InvalidArgumentException(
+				'Invalid path: must contain at least three dot-separated segments.'
+			);
+		}
+
+		$segments = explode('.', $path);
+
+		foreach ($segments as $segment)
+		{
+			// Reject empty segments (e.g. "..", ".foo", "foo.")
+			if ($segment === '')
+			{
+				throw new \InvalidArgumentException(
+					'Invalid path: empty segment detected.'
+				);
+			}
+
+			// RFC 3986 unreserved characters only: ALPHA / DIGIT / "-" / "." / "_" / "~"
+			// Fast ASCII-safe validation
+			if (!preg_match('/^[A-Za-z0-9._~-]+$/', $segment))
+			{
+				throw new \InvalidArgumentException(
+					'Invalid path segment detected: ' . $segment
+				);
+			}
+		}
+
+		return 'https://raw.githubusercontent.com/'
+			. str_replace('.', '/', $path)
+			. '.md';
+	}
+
+	/**
+	 * Rewrite relative Markdown links (./file.md) to absolute GitHub blob URLs.
+	 *
+	 * This method scans a Markdown document and replaces only links that:
+	 * - Use Markdown link syntax: [text](./path)
+	 * - Start with "./"
+	 *
+	 * It leaves untouched:
+	 * - Absolute URLs (http/https)
+	 * - Anchors (#section)
+	 * - Non-Markdown content
+	 *
+	 * The GitHub base URL is derived from a raw.githubusercontent.com URL.
+	 *
+	 * @param  string  $page       The full Markdown page content
+	 * @param  string  $rawPathUrl A raw.githubusercontent.com URL pointing to the same repo/path
+	 *
+	 * @return string  The Markdown page with corrected GitHub links
+	 *
+	 * @throws \InvalidArgumentException If the raw path URL is invalid
+	 * @since  5.1.4
+	 */
+	protected function rewriteJcbDocRelativeMarkdownLinks(string $page, string $rawPathUrl): string
+	{
+		// Validate raw GitHub URL structure
+		if (
+			!str_starts_with($rawPathUrl, 'https://raw.githubusercontent.com/')
+			|| !str_contains($rawPathUrl, '/refs/heads/')
+		)
+		{
+			throw new \InvalidArgumentException(
+				'Invalid raw GitHub URL provided.'
+			);
+		}
+
+		/*
+		 * Convert:
+		 * https://raw.githubusercontent.com/org/repo/refs/heads/branch/path/file.md
+		 * -->
+		 * https://github.com/org/repo/blob/branch/path/
+		 */
+		$githubBase = str_replace(
+			[
+				'https://raw.githubusercontent.com/',
+				'/refs/heads/'
+			],
+			[
+				'https://github.com/',
+				'/blob/'
+			],
+			$rawPathUrl
+		);
+
+		// Strip the filename (keep trailing slash)
+		$githubBase = substr($githubBase, 0, strrpos($githubBase, '/') + 1);
+
+		/*
+		 * Replace only Markdown links that start with "./"
+		 * Pattern matches: [label](./path)
+		 */
+		return preg_replace_callback(
+			'/\[(.*?)\]\(\.\/([^)]+)\)/',
+			static function (array $matches) use ($githubBase): string
+			{
+				return '[' . $matches[1] . '](' . $githubBase . $matches[2] . ')';
+			},
+			$page
+		);
 	}
 
 	// Used in joomla_module
@@ -5059,6 +5108,7 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in language_translation
+
 	/**
 	 * Export language translation data by filtering records based on extension, translated, and untranslated tags.
 	 *
@@ -5566,18 +5616,6 @@ class AjaxModel extends ListModel
 
 	// Used in initialization_selection
 	/**
-	 * Method to get the target power
-	 *
-	 * @return  string|null
-	 *
-	 * @since   5.1.1
-	 */
-	protected function getTargetAreaPower($power): ?string
-	{
-		return $this->powers[$power] ?? null;
-	}
-
-	/**
 	 * Method to get the power get class
 	 *
 	 * @param   string  $repo  The repo to list index
@@ -5593,14 +5631,14 @@ class AjaxModel extends ListModel
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
 		}
 
-		if (($Power = $this->getTargetAreaPower($area)) === null)
+		if (($entity = ComponentbuilderFactory::getEntity($area)) === null)
 		{
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
 		}
 
 		try
 		{
-			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			$class = ComponentbuilderFactory::_($entity, "{$area}.Remote.Get");
 			if ($class !== null)
 			{
 				$result = $class->list($repo);
@@ -5629,51 +5667,6 @@ class AjaxModel extends ListModel
 	}
 
 	/**
-	 * Method to initialize the selected powers
-	 *
-	 * @param   string  $repo      The repo to list index
-	 * @param   string  $area      The target area
-	 * @param   array   $selected  The selected powers
-	 *
-	 * @return  array
-	 * @since   5.1.1
-	 */
-	public function initSelectedPowers(string $repo, string $area, array $selected): array
-	{
-		if (!GuidHelper::valid($repo))
-		{
-			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
-		}
-
-		if (($Power = $this->getTargetAreaPower($area)) === null)
-		{
-			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
-		}
-
-		$result = [];
-		try
-		{
-			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
-			if ($class !== null)
-			{
-				$repo_path = $class->path($repo);
-				$result = $class->init($selected, $repo_path);
-			}
-		}
-		catch (\Exception $e)
-		{
-			return ['success' => false, 'message' => $e->getMessage()];
-		}
-
-		if ($result !== [])
-		{
-			return ['success' => true, 'result_log' => $result];
-		}
-
-		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_REPO_INDEX_FAILED_TO_LOAD_PLEASE_TRY_AGAIN')];
-	}
-
-	/**
 	 * Method to initialize the selected packages
 	 *
 	 * @param   string  $repo      The repo to list index
@@ -5690,7 +5683,7 @@ class AjaxModel extends ListModel
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
 		}
 
-		if (($Power = $this->getTargetAreaPower($area)) === null)
+		if (($entity = ComponentbuilderFactory::getEntity($area)) === null)
 		{
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
 		}
@@ -5698,13 +5691,12 @@ class AjaxModel extends ListModel
 		$result = [];
 		try
 		{
-			$class = $this->getPowerClass($Power, "Package.Builder.Get");
-			$entity = $this->getPowerClass($Power, "{$area}.Remote.Get");
-			if (!empty($selected) && $class !== null && $entity !== null)
+			$class = ComponentbuilderFactory::_($entity, "Package.Builder.Get");
+			$prep = ComponentbuilderFactory::_($entity, "{$area}.Remote.Get");
+			if (!empty($selected) && $class !== null && $prep !== null)
 			{
-				$table = $entity->getTable();
-				$repo_path = $entity->path($repo);
-				$result = $class->init($table, $selected, $repo_path);
+				$repo_path = $prep->path($repo);
+				$result = $class->init($entity, $selected, $repo_path);
 			}
 		}
 		catch (\Exception $e)
@@ -5733,55 +5725,230 @@ class AjaxModel extends ListModel
 		return (bool) array_filter($data);
 	}
 
+	// Used in pull_selection
 	/**
-	 * The powers that we can initialize
+	 * Method to pull the selected packages
 	 *
-	 * @var    array
-	 * @since  5.1.1
+	 * @param   string  $repo      The repo to list index
+	 * @param   string  $area      The target area
+	 * @param   array   $selected  The selected powers
+	 *
+	 * @return  array
+	 * @since   5.1.4
 	 */
-	protected array $powers = [
-		'AdminView' => 'PackageFactory',
-		'Component' => 'PackageFactory',
-		'CustomAdminView' => 'PackageFactory',
-		'CustomCode' => 'PackageFactory',
-		'DynamicGet' => 'PackageFactory',
-		'Field' => 'PackageFactory',
-		'Joomla.Fieldtype' => 'FieldtypeFactory',
-		'Joomla.Power' => 'JoomlaPowerFactory',
-		'Layout' => 'PackageFactory',
-		'Library' => 'PackageFactory',
-		'JoomlaModule' => 'PackageFactory',
-		'JoomlaPlugin' => 'PackageFactory',
-		'Power' => 'PowerFactory',
-		'SiteView' => 'PackageFactory',
-		'Snippet' => 'SnippetFactory',
-		'Template' => 'PackageFactory',
-		'ClassExtends' => 'PackageFactory',
-		'ClassProperty' => 'PackageFactory',
-		'ClassMethod' => 'PackageFactory',
-		'Placeholder' => 'PackageFactory',
-		'Repository' => 'RepositoryFactory'
-	];
+	public function pullSelectedPackages(string $repo, string $area, array $selected): array
+	{
+		if (!GuidHelper::valid($repo))
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
+		}
+
+		if (($entity = ComponentbuilderFactory::getEntity($area)) === null)
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
+		}
+
+		$result = [];
+		try
+		{
+			$class = ComponentbuilderFactory::_($entity, "Package.Builder.Get");
+			$prep = ComponentbuilderFactory::_($entity, "{$area}.Remote.Get");
+			if (!empty($selected) && $class !== null && $prep !== null)
+			{
+				$repo_path = $prep->path($repo);
+				$result = $class->init($entity, $selected, $repo_path, true);
+			}
+		}
+		catch (\Exception $e)
+		{
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+
+		if ($this->hasIntResults($result))
+		{
+			return ['success' => true, 'result_log' => $result];
+		}
+
+		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_PULL_FAILED_PLEASE_TRY_AGAIN')];
+	}
+
+	// Used in import_translations
+	/**
+	 * Get the translation details, if it exists.
+	 *
+	 * @param string $guid    The translation (file_type) guid
+	 * @param string $target  The target entity name
+	 *
+	 * @return array
+	 * @since  5.1.4
+	 */
+	public function getTranslationDetails(string $guid, string $target): array
+	{
+		if (GuidHelper::valid($guid))
+		{
+			try
+			{
+				$target = base64_decode($target);
+				if ('import_translations' === $target)
+				{
+					$importer_type = SessionHelper::get("componentbuilder_{$target}_{$guid}", null);
+					if (!empty($importer_type))
+					{
+						$type = (object) $importer_type;
+					}
+				}
+			}
+			catch (\Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
+
+			if (!empty($type))
+			{
+				return ['data' => $type];
+			}
+		}
+
+		return ['error' => Text::_('COM_COMPONENTBUILDER_TRANSLATION_DETAILS_COULD_NOT_BE_FOUND')];
+	}
 
 	/**
-	 * Method to get the power get class
+	 * Upload a file, of a translated.
 	 *
-	 * @param   string  $factoryName  The factory name
-	 * @param   string  $getClass          The remote power class name
+	 * @param string $guid    The translation session guid
+	 * @param string $entity  The entity guid
+	 * @param string $target  The target entity name
 	 *
-	 * @return  mixed
-	 * @since   5.1.1
+	 * @return array
+	 * @since  5.1.4
 	 */
-	protected function getPowerClass(string $factoryName, string $getClass)
+	public function uploadTranslation(string $guid, string $entity, string $target): array
 	{
-		return match ($factoryName) {
-			'PowerFactory' => PowerFactory::_($getClass),
-			'JoomlaPowerFactory' => JoomlaPowerFactory::_($getClass),
-			'FieldtypeFactory' => FieldtypeFactory::_($getClass),
-			'SnippetFactory' => SnippetFactory::_($getClass),
-			'PackageFactory' => PackageFactory::_($getClass),
-			'RepositoryFactory' => RepositoryFactory::_($getClass),
-			default => null,
-		};
+		if (GuidHelper::valid($guid)
+			&& GuidHelper::valid($entity))
+		{
+			try
+			{
+				$target = base64_decode($target);
+				if ('import_translations' === $target)
+				{
+					$type = SessionHelper::get("componentbuilder_{$target}_{$guid}", null);
+				}
+			}
+			catch (\Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
+
+			try
+			{
+				if (!empty($type))
+				{
+					$fileDefinition = FileFactory::_('File.Agent')->type(
+						(new TypeDefinition($type))
+					)->get();
+				}
+			}
+			catch (\Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
+
+			if (!empty($fileDefinition) && 'import_translations' === $target)
+			{
+				SessionHelper::set("componentbuilder_{$entity}", $fileDefinition->toArray());
+
+				return ['success' => Text::_('COM_COMPONENTBUILDER_THE_FILE_WAS_SUCCESSFULLY_UPLOADED')];
+			}
+		}
+
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_FILE_FAILED_TO_UPLOAD')];
+	}
+
+	/**
+	 * Load the display of the import linked this entity.
+	 *
+	 * @param string $entity  The entity guid
+	 * @param string $target  The target entity name
+	 *
+	 * @return array
+	 * @since 5.0.2
+	 */
+	public function displayTranslationColumns(string $entity, string $target): array
+	{
+		if (GuidHelper::valid($entity))
+		{
+			$display = null;
+
+			try
+			{
+				$target = base64_decode($target);
+				$fileDefinition = null;
+				if ('import_translations' === $target)
+				{
+					$fileDefinition = SessionHelper::get("componentbuilder_{$entity}");
+				}
+
+				if ($fileDefinition !== null)
+				{
+					$displayData =  ['data' => [(object) $fileDefinition], 'entity' => $entity, 'target' => $target];
+					// change this to the layout of your custom importer columns display
+					$display = LayoutHelper::render('translationimportercolumnsdisplay', $displayData);
+				}
+				else
+				{
+					// change this to the layout of your custom importer easy mapping
+					return ['data' => LayoutHelper::render('translationimportereasymapping', []), 'state' => 0];
+				}
+			}
+			catch (\Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
+
+			if (!empty($display))
+			{
+				return ['data' => $display, 'state' => 1];
+			}
+		}
+
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_FILE_DISPLAY_COULD_NOT_BE_LOADED')];
+	}
+
+	/**
+	 * Delete a file of a given entity.
+	 *
+	 * @param string $guid    The file guid
+	 *
+	 * @return array
+	 * @since  5.1.4
+	 */
+	public function deleteTranslation(string $guid): array
+	{
+		if (GuidHelper::valid($guid))
+		{
+			$success = false;
+
+			try
+			{
+				$fileDefinition = SessionHelper::get("componentbuilder_{$guid}", null);
+				if ($fileDefinition !== null)
+				{
+					SessionHelper::set("componentbuilder_{$guid}", null);
+					$success = FileFactory::_('File.Agent')->delete($fileDefinition->file_path);
+				}
+			}
+			catch (\Exception $error)
+			{
+				return ['error' => $error->getMessage()];
+			}
+
+			if ($success)
+			{
+				return ['success' => Text::_('COM_COMPONENTBUILDER_THE_TRANSLATIONS_FILE_WAS_SUCCESSFULLY_DELETED')];
+			}
+		}
+
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_TRANSLATIONS_FILE_COULD_NOT_BE_DELETED')];
 	}
 }

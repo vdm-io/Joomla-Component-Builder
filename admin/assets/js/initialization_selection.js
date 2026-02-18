@@ -148,7 +148,7 @@ class InitializationManager {
 	}
 
 	_bindRepoButtons() {
-		document.querySelectorAll('.select-repo-to-initialize').forEach(button => {
+		document.querySelectorAll('.select-repo-to-load').forEach(button => {
 			button.addEventListener('click', (e) => this._handleRepoClick(e));
 		});
 	}
@@ -160,17 +160,6 @@ class InitializationManager {
 		if (this.#backButton) {
 			this.#backButton.addEventListener('click', () => this._handleBackToRepos());
 		}
-	}
-
-	_getInitFunctionName(area) {
-		const powers = [
-			'Joomla.Fieldtype',
-			'Joomla.Power',
-			'Repository',
-			'Power'
-		];
-
-		return powers.includes(area) ? 'initSelectedPowers' : 'initSelectedPackages';
 	}
 
 	async _handleRepoClick(event) {
@@ -244,7 +233,7 @@ class InitializationManager {
 		const area = this.currentArea || 'error';
 		const repo = this.currentRepo || 'error';
 
-		const func = this._getInitFunctionName(area);
+		const func = 'initSelectedPackages';
 
 		try {
 			// Convert selected items to form data

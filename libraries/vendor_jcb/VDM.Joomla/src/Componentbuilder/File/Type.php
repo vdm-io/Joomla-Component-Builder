@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\File;
 
 use Joomla\Filesystem\Path;
 use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
+use VDM\Joomla\Componentbuilder\File\TypeDefinition;
 
 
 /**
@@ -84,15 +85,15 @@ final class Type
 	 * @param string $guid    The GUID (Globally Unique Identifier) used as the key to retrieve the file type
 	 * @param string $target  The entity target name.
 	 *
-	 * @return array|null   The item object if found, or null if the item does not exist.
+	 * @return TypeDefinition|null   The item object if found, or null if the item does not exist.
 	 * @since  5.0.2
 	 */
-	public function load(string $guid, string $target): ?array
+	public function definition(string $guid, string $target): ?TypeDefinition
 	{
 		if (($fileType = $this->details($guid)) !== null &&
 			$this->validTarget($fileType, $target))
 		{
-			return [
+			return new TypeDefinition([
 				'guid' => $fileType->guid ?? 'error',
 				'name' => $fileType->name ?? 'files',
 				'access' => $fileType->access ?? 1,
@@ -104,7 +105,7 @@ final class Type
 				'filter' => $fileType->filter ?? null,
 				'path' => $this->getFileTypePath($fileType),
 				'crop' => $this->getCropDetails($fileType)
-			];
+			]);
 		}
 
 		return null;

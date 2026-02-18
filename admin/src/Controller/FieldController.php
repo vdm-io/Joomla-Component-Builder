@@ -181,7 +181,7 @@ class FieldController extends FormController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -292,7 +292,7 @@ class FieldController extends FormController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -472,28 +472,6 @@ class FieldController extends FormController
 		}
 
 		return $append;
-	}
-
-	/**
-	 * Method to run batch operations.
-	 *
-	 * @param   object  $model  The model.
-	 *
-	 * @return  boolean   True if successful, false otherwise and internal error is set.
-	 *
-	 * @since   2.5
-	 */
-	public function batch($model = null)
-	{
-		Session::checkToken() or exit(Text::_('JINVALID_TOKEN'));
-
-		// Set the model
-		$model = $this->getModel('Field', '', []);
-
-		// Preset the redirect
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=fields' . $this->getRedirectToListAppend(), false));
-
-		return parent::batch($model);
 	}
 
 	/**

@@ -93,7 +93,7 @@ class Repository implements ServiceProviderInterface
 			$container->get('Repository.Remote.Config'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Repository.Config')->approved_joomla_paths
 		);
 	}
@@ -126,7 +126,7 @@ class Repository implements ServiceProviderInterface
 		return new Resolver(
 			$container->get('Repository.Remote.Config'),
 			$container->get('Utilities.Normalize'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Power.Table'),
 			$container->get('Load'),
 			$container->get('Data.Items')
@@ -147,8 +147,8 @@ class Repository implements ServiceProviderInterface
 			$container->get('Repository.Remote.Config'),
 			$container->get('Repository.Grep'),
 			$container->get('Data.Item'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message')
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message')
 		);
 	}
 
@@ -163,8 +163,8 @@ class Repository implements ServiceProviderInterface
 	public function getRepositorySet(Container $container): Set
 	{
 		return new Set(
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message'),
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message'),
 			$container->get('Repository.Grep'),
 			$container->get('Repository.Resolver'),
 			$container->get('Repository.Remote.Config'),

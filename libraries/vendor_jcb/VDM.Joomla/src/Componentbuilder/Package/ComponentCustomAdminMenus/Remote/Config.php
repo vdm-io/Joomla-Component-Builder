@@ -86,5 +86,19 @@ class Config extends ExtendingConfig implements ConfigInterface
 	 * @since  5.1.1
 	 */
 	protected string $guid_field = 'joomla_component';
+
+	/**
+	 * The files (to map target files to move in an entity)
+	 *
+	 *   Use a pipe in the name to denote
+	 *   subform location of the value
+	 *      format: [field_name => path, field_name|subfrom_key => path]
+	 *
+	 * @var   array
+	 * @since  5.1.4
+	 */
+	protected array $files = [
+		'addcustommenus|icon' => 'image'
+	];
 }
 

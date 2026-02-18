@@ -24,7 +24,7 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Helper\Compiler;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
@@ -136,7 +136,7 @@ class CompilerModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		parent::__construct($config, $factory);
 
@@ -145,9 +145,9 @@ class CompilerModel extends ListModel
 
 		// Set the current user for authorisation checks (for those calling this model directly)
 		$this->user ??= $this->getCurrentUser();
-		$this->userId = $this->user->get('id');
-		$this->guest = $this->user->get('guest');
-		$this->groups = $this->user->get('groups');
+		$this->userId = $this->user->id;
+		$this->guest = $this->user->guest;
+		$this->groups = $this->user->groups;
 		$this->authorisedGroups = $this->user->getAuthorisedGroups();
 		$this->levels = $this->user->getAuthorisedViewLevels();
 
@@ -304,24 +304,14 @@ class CompilerModel extends ListModel
 	}
 
 	/**
-	 * Compiler instance.
-	 *
-	 * @var   Compiler
-	 * @since 3.10
-	 */
-	public Compiler $compiler;
-
-	/**
 	 * Initialize the compiler and return whether it was created successfully.
 	 *
 	 * @return bool  True if compiler was created, false otherwise.
-	 * @since  3.10
+	 * @since  5.1.4
 	 */
-	public function builder(): bool
+	public function compile(): bool
 	{
-		$this->compiler = new Compiler();
-
-		return $this->compiler instanceof Compiler;
+		return CompilerFactory::_('Compiler')->run();
 	}
 
 	/**

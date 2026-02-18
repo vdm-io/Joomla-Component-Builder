@@ -25,8 +25,9 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -120,6 +121,46 @@ class HtmlView extends BaseHtmlView
 	public User $user;
 
 	/**
+	 * The Can Edit permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canEdit = null;
+
+	/**
+	 * The Can Edit State permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canState = null;
+
+	/**
+	 * The Can Create permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canCreate = null;
+
+	/**
+	 * The Can Delete permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canDelete = null;
+
+	/**
+	 * The Can Batch permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canBatch = null;
+
+	/**
 	 * Dynamic_gets view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -135,6 +176,7 @@ class HtmlView extends BaseHtmlView
 		$this->items = $model->getItems();
 		$this->pagination = $model->getPagination();
 		$this->state = $model->getState();
+		$this->isEmptyState = $model->getIsEmptyState();
 		$this->styles = $model->getStyles();
 		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();
@@ -148,8 +190,8 @@ class HtmlView extends BaseHtmlView
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
-		// get global action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('dynamic_get');
+		// get the permitted actions the current user can do
+		$this->canDo = Actions::get('dynamic_get');
 		$this->canEdit = $this->canDo->get('dynamic_get.edit');
 		$this->canState = $this->canDo->get('dynamic_get.edit.state');
 		$this->canCreate = $this->canDo->get('dynamic_get.create');
@@ -157,7 +199,7 @@ class HtmlView extends BaseHtmlView
 		$this->canBatch = ($this->canDo->get('dynamic_get.batch') && $this->canDo->get('core.batch'));
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState)
 		{
 			$this->setLayout('emptystate');
 		}
@@ -187,44 +229,58 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_DYNAMIC_GETS'), 'database');
-
+		/** @var  Toolbar $toolbar */
+		$toolbar = $this->getDocument()->getToolbar();
 		if ($this->canCreate)
 		{
-			ToolbarHelper::addNew('dynamic_get.add');
+			$toolbar->addNew('dynamic_get.add');
 		}
 
 		// Only load if there are items
-		if (ArrayHelper::check($this->items))
+		if (!$this->isEmptyState)
 		{
+			/** @var  DropdownButton $dropdown */
+			$dropdown = $toolbar->dropdownButton('status-group')
+				->text('JTOOLBAR_CHANGE_STATUS')
+				->toggleSplit(false)
+				->icon('icon-ellipsis-h')
+				->buttonClass('btn btn-action')
+				->listCheck(true);
+
+			$childBar = $dropdown->getChildToolbar();
+
 			if ($this->canEdit)
 			{
-				ToolbarHelper::editList('dynamic_get.edit');
+				$childBar->edit('dynamic_get.edit')->listCheck(true);
 			}
 
 			if ($this->canState)
 			{
-				ToolbarHelper::publishList('dynamic_gets.publish');
-				ToolbarHelper::unpublishList('dynamic_gets.unpublish');
-				ToolbarHelper::archiveList('dynamic_gets.archive');
+				$childBar->publish('dynamic_gets.publish')->listCheck(true);
+				$childBar->unpublish('dynamic_gets.unpublish')->listCheck(true);
+				$childBar->archive('dynamic_gets.archive')->listCheck(true);
 
 				if ($this->canDo->get('core.admin'))
 				{
-					ToolbarHelper::checkin('dynamic_gets.checkin');
+					$childBar->checkin('dynamic_gets.checkin')->listCheck(true);
 				}
-			}
 
-			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
-			{
-				ToolbarHelper::deleteList('', 'dynamic_gets.delete', 'JTOOLBAR_EMPTY_TRASH');
-			}
-			elseif ($this->canState && $this->canDelete)
-			{
-				ToolbarHelper::trash('dynamic_gets.trash');
+				if ($this->state->get('filter.published') == -2 && $this->canDelete)
+				{
+					$toolbar->delete('dynamic_gets.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
+						->message('JGLOBAL_CONFIRM_DELETE')
+						->listCheck(true);
+				}
+				elseif ($this->canDelete)
+				{
+					$childBar->trash('dynamic_gets.trash')->listCheck(true);
+				}
 			}
 		}
 		if ($this->user->authorise('dynamic_get.init', 'com_componentbuilder'))
@@ -242,18 +298,23 @@ class HtmlView extends BaseHtmlView
 			// add Push button.
 			ToolbarHelper::custom('dynamic_gets.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
 		}
+		if ($this->user->authorise('dynamic_get.pull', 'com_componentbuilder'))
+		{
+			// add Pull button.
+			ToolbarHelper::custom('dynamic_gets.pullPowers', 'undo custom-button-pullpowers', '', 'COM_COMPONENTBUILDER_PULL', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('dynamic_gets');
 		if (StringHelper::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_componentbuilder');
+			$toolbar->preferences('com_componentbuilder');
 		}
 	}
 

@@ -16,8 +16,6 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power as Powers;
 use VDM\Joomla\Componentbuilder\Power\Table;
-use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
-use VDM\Joomla\Componentbuilder\Package\MessageBus;
 use VDM\Joomla\Componentbuilder\Power\Remote\Config;
 use VDM\Joomla\Componentbuilder\Remote\Get;
 use VDM\Joomla\Componentbuilder\Power\Grep;
@@ -30,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Power\Readme\Item as ItemReadme;
 use VDM\Joomla\Componentbuilder\Power\Readme\Main as MainReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector;
+use VDM\Joomla\Componentbuilder\Compiler\Joomla\Path;
 
 
 /**
@@ -54,12 +53,6 @@ class Power implements ServiceProviderInterface
 
 		$container->alias(Table::class, 'Power.Table')
 			->share('Power.Table', [$this, 'getPowerTable'], true);
-
-		$container->alias(Tracker::class, 'Power.Tracker')
-			->share('Power.Tracker', [$this, 'getPowerTracker'], true);
-
-		$container->alias(MessageBus::class, 'Power.Message')
-			->share('Power.Message', [$this, 'getMessageBus'], true);
 
 		$container->alias(Config::class, 'Power.Remote.Config')
 			->share('Power.Remote.Config', [$this, 'getRemoteConfig'], true);
@@ -96,6 +89,9 @@ class Power implements ServiceProviderInterface
 
 		$container->alias(Injector::class, 'Power.Injector')
 			->share('Power.Injector', [$this, 'getInjector'], true);
+
+		$container->alias(Path::class, 'Joomla.Path')
+			->share('Joomla.Path', [$this, 'getJoomlaPath'], true);
 	}
 
 	/**
@@ -113,6 +109,8 @@ class Power implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
+			$container->get('Joomla.Path'),
+			$container->get('Joomla.Database'),
 			$container->get('Power.Remote.Get')
 		);
 	}
@@ -128,32 +126,6 @@ class Power implements ServiceProviderInterface
 	public function getPowerTable(Container $container): Table
 	{
 		return new Table();
-	}
-
-	/**
-	 * Get The Tracker Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Tracker
-	 * @since 5.1.1
-	 */
-	public function getPowerTracker(Container $container): Tracker
-	{
-		return new Tracker();
-	}
-
-	/**
-	 * Get The Message Bus Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  MessageBus
-	 * @since 5.1.1
-	 */
-	public function getMessageBus(Container $container): MessageBus
-	{
-		return new MessageBus();
 	}
 
 	/**
@@ -185,8 +157,8 @@ class Power implements ServiceProviderInterface
 			$container->get('Power.Remote.Config'),
 			$container->get('Power.Grep'),
 			$container->get('Data.Item'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message')
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message')
 		);
 	}
 
@@ -204,7 +176,7 @@ class Power implements ServiceProviderInterface
 			$container->get('Power.Remote.Config'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Config')->approved_paths,
 			$container->get('Config')->local_powers_repository_path
 		);
@@ -356,6 +328,21 @@ class Power implements ServiceProviderInterface
 			$container->get('Power'),
 			$container->get('Power.Extractor'),
 			$container->get('Power.Parser'),
+			$container->get('Placeholder')
+		);
+	}
+
+	/**
+	 * Get The Joomla Path Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return Path
+	 * @since  5.1.4
+	 */
+	public function getJoomlaPath(Container $container): Path
+	{
+		return new Path(
 			$container->get('Placeholder')
 		);
 	}

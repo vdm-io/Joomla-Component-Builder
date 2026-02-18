@@ -13,19 +13,21 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
+use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode;
+use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
+use VDM\Joomla\Componentbuilder\Compiler\Joomla\Path;
+use VDM\Joomla\Componentbuilder\Remote\Get as Superpower;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\NamespaceHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
-use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
-use VDM\Joomla\Componentbuilder\Compiler\Customcode;
-use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
-use VDM\Joomla\Componentbuilder\Remote\Get as Superpower;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PowerInterface;
 
 
@@ -133,6 +135,14 @@ class Power implements PowerInterface
 	protected Gui $gui;
 
 	/**
+	 * The Joomla Path (namespace) Class.
+	 *
+	 * @var   Path
+	 * @since 5.1.4
+	 */
+	protected Path $joomlapath;
+
+	/**
 	 * The Super Class.
 	 *
 	 * @var   Superpower
@@ -143,9 +153,10 @@ class Power implements PowerInterface
 	/**
 	 * Database object to query local DB
 	 *
+	 * @var   DatabaseInterface
 	 * @since 3.2.0
 	 **/
-	protected $db;
+	protected DatabaseInterface $db;
 
 	/**
 	 * Database object to query local DB
@@ -157,23 +168,27 @@ class Power implements PowerInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Config        $config        The Config Class.
-	 * @param Placeholder   $placeholder   The Placeholder Class.
-	 * @param Customcode    $customcode    The Customcode Class.
-	 * @param Gui           $gui           The Gui Class.
-	 * @param Superpower    $superpower    The Super Class.
+	 * @param Config             $config        The Config Class.
+	 * @param Placeholder        $placeholder   The Placeholder Class.
+	 * @param Customcode         $customcode    The Customcode Class.
+	 * @param Gui                $gui           The Gui Class.
+	 * @param Path               $joomlapath    The Path Class.
+	 * @param DatabaseInterface  $db            The Joomla Database Class.
+	 * @param Superpower         $superpower    The Super Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
-		Customcode $customcode, Gui $gui, Superpower $superpower)
+		Customcode $customcode, Gui $gui, Path $joomlapath,
+		DatabaseInterface $db, Superpower $superpower)
 	{
 		$this->config = $config;
 		$this->placeholder = $placeholder;
 		$this->customcode = $customcode;
 		$this->gui = $gui;
+		$this->joomlapath = $joomlapath;
+		$this->db = $db;
 		$this->superpower = $superpower;
-		$this->db = Factory::getDbo();
 		$this->app = Factory::getApplication();
 	}
 
@@ -553,10 +568,31 @@ class Power implements PowerInterface
 			);
 		}
 
-		// now we set the paths
-		$this->active[$guid]->path_jcb    = $this->config->get('jcb_powers_path', 'libraries/jcb_powers');
-		$this->active[$guid]->path_parent = $this->active[$guid]->path_jcb . '/' . $prefix_folder;
-		$this->active[$guid]->path        = $this->active[$guid]->path_parent . '/src' . $sub_folder;
+		$this->active[$guid]->path_root = 'component';
+
+		if (($target_area = $this->joomlapath->core($this->active[$guid]->_namespace)) !== null)
+		{
+			// now we set the paths to move this power into the Joomla core :)
+			$this->active[$guid]->path_jcb    = $target_area;
+			$this->active[$guid]->path_parent = $target_area;
+			$this->active[$guid]->path        = $target_area . '/src' . $sub_folder;
+
+			if ($target_area !== 'site' && $target_area !== 'admin')
+			{
+				$this->active[$guid]->path_root = $this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
+			}
+
+			// we don't use the autoloader for this class
+			// since its part of the core Joomla classes of this extension
+			unset($this->namespace[$prefix_folder]);
+		}
+		else
+		{
+			// now we set the paths
+			$this->active[$guid]->path_jcb    = $this->config->get('jcb_powers_path', 'libraries/jcb_powers');
+			$this->active[$guid]->path_parent = $this->active[$guid]->path_jcb . '/' . $prefix_folder;
+			$this->active[$guid]->path        = $this->active[$guid]->path_parent . '/src' . $sub_folder;
+		}
 
 		return true;
 	}

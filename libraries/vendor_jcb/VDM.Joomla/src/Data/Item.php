@@ -76,6 +76,14 @@ final class Item implements ItemInterface
 	protected string $table;
 
 	/**
+	 * The Active Action
+	 *
+	 * @var    string|null
+	 * @since 5.1.4
+	 */
+	protected ?string $activeAction = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Load        $load     The LoadInterface Class.
@@ -99,6 +107,43 @@ final class Item implements ItemInterface
 		{
 			$this->table = $table;
 		}
+	}
+
+	/**
+	 * Get the first ID of the most recent action.
+	 *
+	 * This method returns the first resolved entity ID from the most recent
+	 * INSERT or UPDATE action. If no IDs are available or the active action
+	 * is not supported, 0 is returned.
+	 *
+	 * Behavioral notes:
+	 * - Only INSERT and UPDATE actions are supported.
+	 * - The internal ID bucket of the active action is reset after retrieval.
+	 * - The returned ID represents the first affected entity in the batch.
+	 *
+	 * @return  int  The entity ID, or 0 if unavailable.
+	 *
+	 * @since   5.1.4
+	 */
+	public function id(): int
+	{
+		$action = $this->activeAction;
+
+		if ($action !== 'insert' && $action !== 'update')
+		{
+			return 0;
+		}
+
+		$method = $action . 'ids';
+
+		$ids = $this->{$action}->{$method}(true);
+
+		if ($ids === [])
+		{
+			return 0;
+		}
+
+		return (int) reset($ids);
 	}
 
 	/**
@@ -127,6 +172,8 @@ final class Item implements ItemInterface
 	 */
 	public function get(string $value, string $key = 'guid'): ?object
 	{
+		$this->activeAction = null;
+
 		return $this->load->table($this->getTable())->item([$key => $value]);
 	}
 
@@ -142,6 +189,8 @@ final class Item implements ItemInterface
 	 */
 	public function value(string $value, string $key = 'guid', string $get = 'id')
 	{
+		$this->activeAction = null;
+
 		return $this->load->table($this->getTable())->value([$key => $value], $get);
 	}
 
@@ -157,6 +206,8 @@ final class Item implements ItemInterface
 	 */
 	public function set(object $item, string $key = 'guid', ?string $action = null): bool
 	{
+		$this->activeAction = null;
+
 		if ($action !== null || (isset($item->{$key}) && ($action = $this->action($item->{$key}, $key)) !== null))
 		{
 			return method_exists($this, $action) ? $this->{$action}($item, $key) : false;
@@ -176,6 +227,8 @@ final class Item implements ItemInterface
 	 */
 	public function delete(string $value, string $key = 'guid'): bool
 	{
+		$this->activeAction = null;
+
 		return $this->delete->table($this->getTable())->items([$key => $value]);
 	}
 
@@ -200,6 +253,8 @@ final class Item implements ItemInterface
 	 */
 	private function insert(object $item): bool
 	{
+		$this->activeAction = 'insert';
+
 		return $this->insert->table($this->getTable())->item($item);
 	}
 
@@ -214,19 +269,21 @@ final class Item implements ItemInterface
 	 */
 	private function update(object $item, string $key): bool
 	{
+		$this->activeAction = 'update';
+
 		return $this->update->table($this->getTable())->item($item, $key);
 	}
 
 	/**
 	 * Get loading action
 	 *
-	 * @param string  $value The key value the item
+	 * @param mixed  $value The key value the item
 	 * @param string  $key   The item key
 	 *
 	 * @return string
 	 * @since 3.2.2
 	 */
-	private function action(string $value, string $key): string
+	private function action($value, string $key): string
 	{
 		$id = $this->database->value(
 			["a.id" => 'id'],

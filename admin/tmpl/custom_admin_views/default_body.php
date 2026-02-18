@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\User\UserFactoryInterface;
 
@@ -27,8 +28,8 @@ $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=cust
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
-		$canDo = ComponentbuilderHelper::getActions('custom_admin_view',$item,'custom_admin_views');
+				loadUserById((int) ($item->checked_out ?? 0));
+		$canDo = Actions::get('custom_admin_view', $item, 'custom_admin_views');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
@@ -118,7 +119,7 @@ $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=cust
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if (!$this->isModal && $this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) $item->main_get_id)): ?>
+				<?php if (!$this->isModal && $this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) ($item->main_get_id ?? 0))): ?>
 					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->main_get_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->main_get_name); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->main_get_name); ?>

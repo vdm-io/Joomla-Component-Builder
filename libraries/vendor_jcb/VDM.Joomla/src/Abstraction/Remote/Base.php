@@ -267,6 +267,17 @@ abstract class Base implements BaseInterface
 	}
 
 	/**
+	 * Get GUID Helper field
+	 *
+	 * @return string|null
+	 * @since  5.1.4
+	 */
+	public function getGuidHelperField(): ?string
+	{
+		return $this->config->getGuidHelperField();
+	}
+
+	/**
 	 * Get main readme path
 	 *
 	 * @return string

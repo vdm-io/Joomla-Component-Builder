@@ -68,7 +68,23 @@ class ###View###Controller extends FormController
 	 * @var    string
 	 * @since  1.6
 	 */
-	protected $view_list = '###SITE_DEFAULT_VIEW###';###ADMIN_CUSTOM_BUTTONS_CONTROLLER###
+	protected $view_list = '###SITE_DEFAULT_VIEW###';
+
+	/**
+	 * Referral value
+	 *
+	 * @var    string
+	 * @since  5.0
+	 */
+	protected string $ref;
+
+	/**
+	 * Referral ID value
+	 *
+	 * @var    int
+	 * @since  5.0
+	 */
+	protected int $refid;###ADMIN_CUSTOM_BUTTONS_CONTROLLER###
 
 	/**
 	 * Method override to check if you can add a new record.
@@ -136,28 +152,6 @@ class ###View###Controller extends FormController
 		}
 
 		return $append;
-	}
-
-	/**
-	 * Method to run batch operations.
-	 *
-	 * @param   object  $model  The model.
-	 *
-	 * @return  boolean   True if successful, false otherwise and internal error is set.
-	 *
-	 * @since   2.5
-	 */
-	public function batch($model = null)
-	{
-		Joomla___5ba38513_5c4f_4b0d_935e_49e986a6bce8___Power::checkToken() or jexit(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JINVALID_TOKEN'));
-
-		// Set the model
-		$model = $this->getModel('###View###', '', []);
-
-		// Preset the redirect
-		$this->setRedirect(Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=###views###' . $this->getRedirectToListAppend(), false));
-
-		return parent::batch($model);
 	}
 
 	/**

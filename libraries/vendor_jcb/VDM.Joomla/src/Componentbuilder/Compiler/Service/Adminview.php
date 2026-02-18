@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Adminview\Data as AdminviewData;
 use VDM\Joomla\Componentbuilder\Compiler\Adminview\Permission;
+use VDM\Joomla\Componentbuilder\Compiler\Adminview\DefaultOrdering;
 
 
 /**
@@ -40,6 +41,9 @@ class Adminview implements ServiceProviderInterface
 
 		$container->alias(Permission::class, 'Adminview.Permission')
 			->share('Adminview.Permission', [$this, 'getAdminviewPermission'], true);
+
+		$container->alias(DefaultOrdering::class, 'Adminview.DefaultOrdering')
+			->share('Adminview.DefaultOrdering', [$this, 'getAdminviewDefaultOrdering'], true);
 	}
 
 	/**
@@ -75,7 +79,9 @@ class Adminview implements ServiceProviderInterface
 			$container->get('Model.Sql'),
 			$container->get('Model.Mysqlsettings'),
 			$container->get('Compiler.Builder.Site.Edit.View'),
-			$container->get('Joomla.Database')
+			$container->get('Utilities.Counter'),
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 
@@ -91,6 +97,22 @@ class Adminview implements ServiceProviderInterface
 	{
 		return new Permission(
 			$container->get('Compiler.Builder.Has.Permissions')
+		);
+	}
+
+	/**
+	 * Get the Compiler Adminview Default Ordering
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  DefaultOrdering
+	 * @since   5.1.4
+	 */
+	public function getAdminviewDefaultOrdering(Container $container): DefaultOrdering
+	{
+		return new DefaultOrdering(
+			$container->get('Compiler.Builder.Views.Default.Ordering'),
+			$container->get('Field.Database.Name')
 		);
 	}
 }

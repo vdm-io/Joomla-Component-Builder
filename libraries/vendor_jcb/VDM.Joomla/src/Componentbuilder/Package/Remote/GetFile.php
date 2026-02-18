@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Package\Remote;
 
 
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Interfaces\Remote\GetInterface;

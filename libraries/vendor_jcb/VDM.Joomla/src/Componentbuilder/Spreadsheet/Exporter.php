@@ -101,7 +101,7 @@ final class Exporter
 	 */
 	public function __construct()
 	{
-		$this->user = Factory::getUser();
+		$this->user = Factory::getApplication()->getIdentity();
 		$this->spreadsheet = new Spreadsheet();
 		$this->headerStyles = [
 			'font' => [

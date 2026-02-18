@@ -25,8 +25,9 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -120,6 +121,46 @@ class HtmlView extends BaseHtmlView
 	public User $user;
 
 	/**
+	 * The Can Edit permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canEdit = null;
+
+	/**
+	 * The Can Edit State permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canState = null;
+
+	/**
+	 * The Can Create permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canCreate = null;
+
+	/**
+	 * The Can Delete permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canDelete = null;
+
+	/**
+	 * The Can Batch permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canBatch = null;
+
+	/**
 	 * Admins_custom_tabs view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -135,6 +176,7 @@ class HtmlView extends BaseHtmlView
 		$this->items = $model->getItems();
 		$this->pagination = $model->getPagination();
 		$this->state = $model->getState();
+		$this->isEmptyState = $model->getIsEmptyState();
 		$this->styles = $model->getStyles();
 		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();
@@ -148,8 +190,8 @@ class HtmlView extends BaseHtmlView
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
-		// get global action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('admin_custom_tabs');
+		// get the permitted actions the current user can do
+		$this->canDo = Actions::get('admin_custom_tabs');
 		$this->canEdit = $this->canDo->get('admin_custom_tabs.edit');
 		$this->canState = $this->canDo->get('admin_custom_tabs.edit.state');
 		$this->canCreate = $this->canDo->get('admin_custom_tabs.create');
@@ -157,7 +199,7 @@ class HtmlView extends BaseHtmlView
 		$this->canBatch = ($this->canDo->get('admin_custom_tabs.batch') && $this->canDo->get('core.batch'));
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState)
 		{
 			$this->setLayout('emptystate');
 		}
@@ -187,44 +229,58 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_ADMINS_CUSTOM_TABS'), 'joomla');
-
+		/** @var  Toolbar $toolbar */
+		$toolbar = $this->getDocument()->getToolbar();
 		if ($this->canCreate)
 		{
-			ToolbarHelper::addNew('admin_custom_tabs.add');
+			$toolbar->addNew('admin_custom_tabs.add');
 		}
 
 		// Only load if there are items
-		if (ArrayHelper::check($this->items))
+		if (!$this->isEmptyState)
 		{
+			/** @var  DropdownButton $dropdown */
+			$dropdown = $toolbar->dropdownButton('status-group')
+				->text('JTOOLBAR_CHANGE_STATUS')
+				->toggleSplit(false)
+				->icon('icon-ellipsis-h')
+				->buttonClass('btn btn-action')
+				->listCheck(true);
+
+			$childBar = $dropdown->getChildToolbar();
+
 			if ($this->canEdit)
 			{
-				ToolbarHelper::editList('admin_custom_tabs.edit');
+				$childBar->edit('admin_custom_tabs.edit')->listCheck(true);
 			}
 
 			if ($this->canState)
 			{
-				ToolbarHelper::publishList('admins_custom_tabs.publish');
-				ToolbarHelper::unpublishList('admins_custom_tabs.unpublish');
-				ToolbarHelper::archiveList('admins_custom_tabs.archive');
+				$childBar->publish('admins_custom_tabs.publish')->listCheck(true);
+				$childBar->unpublish('admins_custom_tabs.unpublish')->listCheck(true);
+				$childBar->archive('admins_custom_tabs.archive')->listCheck(true);
 
 				if ($this->canDo->get('core.admin'))
 				{
-					ToolbarHelper::checkin('admins_custom_tabs.checkin');
+					$childBar->checkin('admins_custom_tabs.checkin')->listCheck(true);
 				}
-			}
 
-			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
-			{
-				ToolbarHelper::deleteList('', 'admins_custom_tabs.delete', 'JTOOLBAR_EMPTY_TRASH');
-			}
-			elseif ($this->canState && $this->canDelete)
-			{
-				ToolbarHelper::trash('admins_custom_tabs.trash');
+				if ($this->state->get('filter.published') == -2 && $this->canDelete)
+				{
+					$toolbar->delete('admins_custom_tabs.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
+						->message('JGLOBAL_CONFIRM_DELETE')
+						->listCheck(true);
+				}
+				elseif ($this->canDelete)
+				{
+					$childBar->trash('admins_custom_tabs.trash')->listCheck(true);
+				}
 			}
 		}
 
@@ -232,13 +288,13 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('admins_custom_tabs');
 		if (StringHelper::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_componentbuilder');
+			$toolbar->preferences('com_componentbuilder');
 		}
 	}
 

@@ -14,21 +14,24 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FileInjector;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\ComplexityEngine;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Dynamicpath;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Structure;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Valuation;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Xml;
 use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
 use VDM\Joomla\Componentbuilder\Utilities\Uri;
 use VDM\Joomla\Componentbuilder\Utilities\Http;
 use VDM\Joomla\Componentbuilder\Utilities\Response;
+use VDM\Joomla\Componentbuilder\File\Image;
+use VDM\Joomla\Componentbuilder\Utilities\Normalize;
 
 
 /**
@@ -57,6 +60,9 @@ class Utilities implements ServiceProviderInterface
 		$container->alias(FileInjector::class, 'Utilities.FileInjector')
 			->share('Utilities.FileInjector', [$this, 'getFileInjector'], true);
 
+		$container->alias(ComplexityEngine::class, 'Utilities.ComplexityEngine')
+			->share('Utilities.ComplexityEngine', [$this, 'getComplexityEngine'], true);
+
 		$container->alias(Counter::class, 'Utilities.Counter')
 			->share('Utilities.Counter', [$this, 'getCounter'], true);
 
@@ -75,6 +81,9 @@ class Utilities implements ServiceProviderInterface
 		$container->alias(Structure::class, 'Utilities.Structure')
 			->share('Utilities.Structure', [$this, 'getStructure'], true);
 
+		$container->alias(Valuation::class, 'Utilities.Valuation')
+			->share('Utilities.Valuation', [$this, 'getValuation'], true);
+
 		$container->alias(Xml::class, 'Utilities.Xml')
 			->share('Utilities.Xml', [$this, 'getXml'], true);
 
@@ -89,6 +98,12 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Response::class, 'Utilities.Response')
 			->share('Utilities.Response', [$this, 'getResponse'], true);
+
+		$container->alias(Image::class, 'Utilities.Image')
+			->share('Utilities.Image', [$this, 'getImage'], true);
+
+		$container->alias(Normalize::class, 'Utilities.Normalize')
+			->share('Utilities.Normalize', [$this, 'getNormalize'], true);
 	}
 
 	/**
@@ -139,6 +154,21 @@ class Utilities implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The ComplexityEngine Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ComplexityEngine
+	 * @since   5.1.4
+	 */
+	public function getComplexityEngine(Container $container): ComplexityEngine
+	{
+		return new ComplexityEngine(
+			$container->get('Config'),
+		);
+	}
+
+	/**
 	 * Get the Compiler Counter
 	 *
 	 * @param   Container  $container  The DI container.
@@ -149,7 +179,7 @@ class Utilities implements ServiceProviderInterface
 	public function getCounter(Container $container): Counter
 	{
 		return new Counter(
-			$container->get('Compiler.Builder.Content.One')
+			$container->get('Utilities.Valuation')
 		);
 	}
 
@@ -232,6 +262,23 @@ class Utilities implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The Valuation Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Valuation
+	 * @since   5.1.4
+	 */
+	public function getValuation(Container $container): Valuation
+	{
+		return new Valuation(
+			$container->get('Config'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Utilities.ComplexityEngine')
+		);
+	}
+
+	/**
 	 * Get the Compiler Xml Helper
 	 *
 	 * @param   Container  $container  The DI container.
@@ -296,6 +343,32 @@ class Utilities implements ServiceProviderInterface
 	public function getResponse(Container $container): Response
 	{
 		return new Response();
+	}
+
+	/**
+	 * Get The Image Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Image
+	 * @since   5.1.4
+	 */
+	public function getImage(Container $container): Image
+	{
+		return new Image();
+	}
+
+	/**
+	 * Get The Normalize Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Normalize
+	 * @since   5.1.1
+	 */
+	public function getNormalize(Container $container): Normalize
+	{
+		return new Normalize();
 	}
 }
 

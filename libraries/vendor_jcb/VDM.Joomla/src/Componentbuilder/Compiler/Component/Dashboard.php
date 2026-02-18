@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Component;
 use VDM\Joomla\Utilities\StringHelper;

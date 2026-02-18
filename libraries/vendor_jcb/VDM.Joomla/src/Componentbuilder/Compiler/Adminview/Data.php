@@ -35,6 +35,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Customalias;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sql;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Mysqlsettings;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
+use VDM\Joomla\Componentbuilder\Package\Builder\Get as Superpower;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -63,6 +65,14 @@ class Data
 	 * @since  5.0.4
 	 */
 	protected array $index = [];
+
+	/**
+	 * The state of retry to loaded fields
+	 *
+	 * @var    array
+	 * @since  5.1.4
+	 **/
+	protected array $retry = [];
 
 	/**
 	 * The Config Class.
@@ -241,12 +251,28 @@ class Data
 	protected SiteEditView $siteeditview;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
 	 * @since 5.1.2
 	 **/
 	protected DatabaseInterface $db;
+
+	/**
+	 * The Super Class.
+	 *
+	 * @var   Superpower
+	 * @since 5.1.4
+	 */
+	protected Superpower $superpower;
 
 	/**
 	 * Constructor.
@@ -273,14 +299,16 @@ class Data
 	 * @param Sql                   $sql                   The Sql Class.
 	 * @param Mysqlsettings         $mysqlsettings         The Mysqlsettings Class.
 	 * @param SiteEditView          $siteeditview          The SiteEditView Class.
+	 * @param Counter               $counter               The Counter Class.
 	 * @param DatabaseInterface     $db                    The Joomla Database Class.
+	 * @param Superpower            $superpower            A Superpower Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Event $event, Placeholder $placeholder, Dispenser $dispenser, Customtabs $customtabs, Tabs $tabs, Fields $fields,
 		History $history, Permissions $permissions, Conditions $conditions, Relations $relations, Linkedviews $linkedviews, Javascript $javascript,
 		Css $css, Php $php, Custombuttons $custombuttons, Customimportscripts $customimportscripts, Ajax $ajax, Customalias $customalias, Sql $sql,
-		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, DatabaseInterface $db)
+		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, Counter $counter, DatabaseInterface $db, Superpower $superpower)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -304,7 +332,9 @@ class Data
 		$this->sql = $sql;
 		$this->mysqlsettings = $mysqlsettings;
 		$this->siteeditview = $siteeditview;
+		$this->counter = $counter;
 		$this->db = $db;
+		$this->superpower = $superpower;
 	}
 
 	/**
@@ -315,7 +345,7 @@ class Data
 	 * @return  object|null The view data
 	 * @since 3.2.0
 	 */
-	public function get($view): ?object
+	public function get(mixed $view): ?object
 	{
 		if (empty($view))
 		{
@@ -349,7 +379,7 @@ class Data
 	 * @return  void
 	 * @since   5.0.4
 	 */
-	private function set($view): void
+	private function set(mixed $view): void
 	{
 		if (GuidHelper::valid($view))
 		{
@@ -367,7 +397,44 @@ class Data
 			$this->data[$data->id] = $data;
 			$this->index[$data->id] = $data->id;
 			$this->index[$data->guid] = $data->id;
+
+			$this->counter->adminView++;
+
+			return;
 		}
+
+		// try loading it from remote source
+		if ($this->attemptRemoteFetch($view))
+		{
+			$this->set($view);
+		}
+	}
+
+	/**
+	 * Attempt a one-time remote fetch via Superpower.
+	 *
+	 * @param   mixed  $guid
+	 *
+	 * @return  bool
+	 * @since   5.1.4
+	 */
+	private function attemptRemoteFetch(mixed $guid): bool
+	{
+		if (!GuidHelper::valid($guid))
+		{
+			return false;
+		}
+
+		if (!empty($this->retry[$guid]))
+		{
+			return false;
+		}
+
+		$this->retry[$guid] = true;
+
+		$result = $this->superpower->get('admin_view', [$guid]);
+
+		return !empty($result['added'][$guid]);
 	}
 
 	/**
@@ -379,7 +446,7 @@ class Data
 	 * @return  string  The admin view data query
 	 * @since   5.0.4
 	 */
-	private function getQuery($value, string $key = 'id')
+	private function getQuery(mixed $value, string $key = 'id')
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
@@ -458,137 +525,137 @@ class Data
 		$this->db->setQuery($query);
 		$this->db->execute();
 
-		if ($this->db->getNumRows())
+		if (!$this->db->getNumRows())
 		{
-			$view = $this->db->loadObject();
-			$id = $view->id;
-
-			// set code names
-			$this->setCodeNames($view, $id);
-
-			// set table fix
-			$this->setAssetsTableFix($view);
-
-			// setup token check
-			if (!isset($this->dispenser->hub['token']))
-			{
-				$this->dispenser->hub['token'] = [];
-			}
-			$this->dispenser->hub['token'][$view->name_single_code] = false;
-			$this->dispenser->hub['token'][$view->name_list_code] = false;
-
-			// set the placeholders
-			$this->setPlaceholders($view);
-
-			// Trigger Event: jcb_ce_onBeforeModelViewData
-			$this->event->trigger(
-				'jcb_ce_onBeforeModelViewData', [&$view]
-			);
-
-			// should we add sql?
-			if ($view->add_sql !== 1)
-			{
-				unset($view->addtables);
-				unset($view->sql);
-			}
-
-			// add the tables
-			$view->addtables = (isset($view->addtables) && JsonHelper::check($view->addtables))
-				? json_decode((string) $view->addtables, true)
-				: null;
-
-			if (ArrayHelper::check($view->addtables))
-			{
-				$view->tables = array_values($view->addtables);
-			}
-			unset($view->addtables);
-
-			// Make sure the icon is only an icon path
-			if (strpos($view->icon, '#') !== false)
-			{
-				$view->icon = strstr($view->icon, '#', true);
-			}
-			// Make sure the icon_add is only an icon_add path
-			if (strpos($view->icon_add, '#') !== false)
-			{
-				$view->icon_add = strstr($view->icon_add, '#', true);
-			}
-			// Make sure the icon_add is only an icon_add path
-			if (strpos($view->icon_category, '#') !== false)
-			{
-				$view->icon_category = strstr($view->icon_category, '#', true);
-			}
-
-			// set custom tabs
-			$this->customtabs->set($view);
-
-			// set the local tabs
-			$this->tabs->set($view);
-
-			// set permissions
-			$this->permissions->set($view);
-
-			// set fields
-			$this->fields->set($view);
-
-			// build update SQL
-			$this->history->set($view);
-
-			// set the conditions
-			$this->conditions->set($view);
-
-			// set the relations
-			$this->relations->set($view);
-
-			// set linked views
-			$this->linkedviews->set($view);
-
-			// set the lang target
-			$this->config->lang_target = 'admin';
-			if ($this->siteeditview->exists($view->guid))
-			{
-				$this->config->lang_target = 'both';
-			}
-
-			// set javascript
-			$this->javascript->set($view);
-
-			// set css
-			$this->css->set($view);
-
-			// set php
-			$this->php->set($view);
-
-			// set custom buttons
-			$this->custombuttons->set($view);
-
-			// set custom import scripts
-			$this->customimportscripts->set($view);
-
-			// set Ajax for this view
-			$this->ajax->set($view);
-
-			// activate alias builder
-			$this->customalias->set($view);
-
-			// set sql
-			$this->sql->set($view);
-
-			// set mySql Table Settings
-			$this->mysqlsettings->set($view);
-
-			// Trigger Event: jcb_ce_onAfterModelViewData
-			$this->event->trigger(
-				'jcb_ce_onAfterModelViewData', [&$view]
-			);
-
-			// clear all placeholders related to this view
-			$this->clearPlaceholders();
-
-			return $view;
+			return null;
 		}
 
-		return null;
+		$view = $this->db->loadObject();
+		$id = $view->id;
+
+		// set code names
+		$this->setCodeNames($view, $id);
+
+		// set table fix
+		$this->setAssetsTableFix($view);
+
+		// setup token check
+		if (!isset($this->dispenser->hub['token']))
+		{
+			$this->dispenser->hub['token'] = [];
+		}
+		$this->dispenser->hub['token'][$view->name_single_code] = false;
+		$this->dispenser->hub['token'][$view->name_list_code] = false;
+
+		// set the placeholders
+		$this->setPlaceholders($view);
+
+		// Trigger Event: jcb_ce_onBeforeModelViewData
+		$this->event->trigger(
+			'jcb_ce_onBeforeModelViewData', [&$view]
+		);
+
+		// should we add sql?
+		if ($view->add_sql !== 1)
+		{
+			unset($view->addtables);
+			unset($view->sql);
+		}
+
+		// add the tables
+		$view->addtables = (isset($view->addtables) && JsonHelper::check($view->addtables))
+			? json_decode((string) $view->addtables, true)
+			: null;
+
+		if (ArrayHelper::check($view->addtables))
+		{
+			$view->tables = array_values($view->addtables);
+		}
+		unset($view->addtables);
+
+		// Make sure the icon is only an icon path
+		if (strpos($view->icon, '#') !== false)
+		{
+			$view->icon = strstr($view->icon, '#', true);
+		}
+		// Make sure the icon_add is only an icon_add path
+		if (strpos($view->icon_add, '#') !== false)
+		{
+			$view->icon_add = strstr($view->icon_add, '#', true);
+		}
+		// Make sure the icon_add is only an icon_add path
+		if (strpos($view->icon_category, '#') !== false)
+		{
+			$view->icon_category = strstr($view->icon_category, '#', true);
+		}
+
+		// set custom tabs
+		$this->customtabs->set($view);
+
+		// set the local tabs
+		$this->tabs->set($view);
+
+		// set permissions
+		$this->permissions->set($view);
+
+		// set fields
+		$this->fields->set($view);
+
+		// build update SQL
+		$this->history->set($view);
+
+		// set the conditions
+		$this->conditions->set($view);
+
+		// set the relations
+		$this->relations->set($view);
+
+		// set linked views
+		$this->linkedviews->set($view);
+
+		// set the lang target
+		$this->config->lang_target = 'admin';
+		if ($this->siteeditview->exists($view->guid))
+		{
+			$this->config->lang_target = 'both';
+		}
+
+		// set javascript
+		$this->javascript->set($view);
+
+		// set css
+		$this->css->set($view);
+
+		// set php
+		$this->php->set($view);
+
+		// set custom buttons
+		$this->custombuttons->set($view);
+
+		// set custom import scripts
+		$this->customimportscripts->set($view);
+
+		// set Ajax for this view
+		$this->ajax->set($view);
+
+		// activate alias builder
+		$this->customalias->set($view);
+
+		// set sql
+		$this->sql->set($view);
+
+		// set mySql Table Settings
+		$this->mysqlsettings->set($view);
+
+		// Trigger Event: jcb_ce_onAfterModelViewData
+		$this->event->trigger(
+			'jcb_ce_onAfterModelViewData', [&$view]
+		);
+
+		// clear all placeholders related to this view
+		$this->clearPlaceholders();
+
+		return $view;
 	}
 
 	/**

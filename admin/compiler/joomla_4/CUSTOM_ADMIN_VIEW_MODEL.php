@@ -135,7 +135,7 @@ class ###SView###Model extends ItemModel
 	 * @since   3.0
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		parent::__construct($config, $factory);
 
@@ -144,9 +144,9 @@ class ###SView###Model extends ItemModel
 
 		// Set the current user for authorisation checks (for those calling this model directly)
 		$this->user ??= $this->getCurrentUser();
-		$this->userId = $this->user->get('id');
-		$this->guest = $this->user->get('guest');
-		$this->groups = $this->user->get('groups');
+		$this->userId = $this->user->id;
+		$this->guest = $this->user->guest;
+		$this->groups = $this->user->groups;
 		$this->authorisedGroups = $this->user->getAuthorisedGroups();
 		$this->levels = $this->user->getAuthorisedViewLevels();
 

@@ -74,6 +74,7 @@ final class Config extends ExtendingConfig implements ConfigInterface
 	protected array $index_map = [
 		'name' => 'index_map_IndexName',
 		'desc' => 'index_map_ShortDescription',
+		'alias' => 'index_map_Alias',
 		'path' => 'index_map_IndexPath',
 		'settings' => 'index_map_IndexSettingsPath',
 		'guid' => 'index_map_IndexGUID',
@@ -93,10 +94,19 @@ final class Config extends ExtendingConfig implements ConfigInterface
 	protected array $index_header = [
 		'name',
 		'desc',
+		'alias',
 		'path',
 		'settings',
 		'guid',
 		'local'
 	];
+
+	/**
+	 * The item guid=unique helper field (another unique value)
+	 *
+	 * @var    string|null
+	 * @since  5.1.4
+	 */
+	protected ?string $guid_helper_field = 'alias';
 }
 

@@ -38,11 +38,12 @@ $items = 1;
 $file_name = 'Language_Translations';
 
 ?>
+</script>
 <div style="display: none;">
 <?php echo LayoutHelper::render('table',
 	[
 		'id' => $table_id,
-		'name' => $name,
+		'name' => $file_name,
 		'headers' => $headers,
 		'items' => $items,
 		'init' => false
@@ -50,38 +51,6 @@ $file_name = 'Language_Translations';
 ); ?>
 </div>
 <script type="text/javascript">
-document.addEventListener('DOMContentLoaded', function () {
-    // Create the toolbar export button using DOM methods
-    function createExportButton() {
-        const wrapper = document.createElement('joomla-toolbar-button');
-        wrapper.innerHTML = `
-            <button id="toolbar-export-language-translations" class="button-export btn btn-primary" type="button">
-                <span aria-hidden="true" class="icon-download"></span>
-                <?php echo Text::_('COM_COMPONENTBUILDER_EXPORT_TRANSLATIONS'); ?>
-            </button>
-        `;
-        return wrapper;
-    }
-    // Insert the export button next to the Edit button
-    function insertExportButton() {
-        const editButton = document.getElementById('toolbar-edit');
-        if (!editButton || !editButton.parentNode) {
-            console.warn('Edit button not found. Export button not inserted.');
-            return;
-        }
-        const exportButton = createExportButton();
-        editButton.parentNode.insertBefore(exportButton, editButton.nextSibling);
-        // Attach click event
-        const exportBtn = document.getElementById('toolbar-export-language-translations');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', exportLanguageTranslations);
-        } else {
-            console.warn('Export button element not found for event binding.');
-        }
-    }
-    // Run insertion
-    insertExportButton();
-});
 function exportLanguageTranslations() {
     document.getElementById("loading").style.display = 'block';
     const filterExtension = (() => {
@@ -110,19 +79,12 @@ function exportLanguageTranslations() {
     } else {
         const table = $(tableElement).DataTable({
             dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excel',
-                    text: 'Excel',
-                    title: '',
-                    filename: '<?php echo $file_name; ?>'
-                }
-            ],
+            buttons: [{extend: 'excel', text: 'Excel', title: '',filename: '<?php echo $file_name; ?>',exportOptions: {format:{body:function(data){return data;}}}}],
             select: false,
             ajax: { url: ajaxUrl },
             deferRender: true,
             columns: [<?php foreach ($fields as $field): ?>
-                { data: '<?php echo $field; ?>' },
+                { data: '<?php echo $field; ?>', render: function (data) { return data; }},
             <?php endforeach; ?>]
         });
         table.on('draw.dt', function () {
@@ -131,4 +93,3 @@ function exportLanguageTranslations() {
         });
     }
 }
-</script>

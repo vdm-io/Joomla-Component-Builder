@@ -25,8 +25,9 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -120,6 +121,46 @@ class HtmlView extends BaseHtmlView
 	public User $user;
 
 	/**
+	 * The Can Edit permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canEdit = null;
+
+	/**
+	 * The Can Edit State permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canState = null;
+
+	/**
+	 * The Can Create permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canCreate = null;
+
+	/**
+	 * The Can Delete permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canDelete = null;
+
+	/**
+	 * The Can Batch permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canBatch = null;
+
+	/**
 	 * Joomla_plugins view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -135,6 +176,7 @@ class HtmlView extends BaseHtmlView
 		$this->items = $model->getItems();
 		$this->pagination = $model->getPagination();
 		$this->state = $model->getState();
+		$this->isEmptyState = $model->getIsEmptyState();
 		$this->styles = $model->getStyles();
 		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();
@@ -148,8 +190,8 @@ class HtmlView extends BaseHtmlView
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
-		// get global action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('joomla_plugin');
+		// get the permitted actions the current user can do
+		$this->canDo = Actions::get('joomla_plugin');
 		$this->canEdit = $this->canDo->get('joomla_plugin.edit');
 		$this->canState = $this->canDo->get('joomla_plugin.edit.state');
 		$this->canCreate = $this->canDo->get('joomla_plugin.create');
@@ -157,7 +199,7 @@ class HtmlView extends BaseHtmlView
 		$this->canBatch = ($this->canDo->get('joomla_plugin.batch') && $this->canDo->get('core.batch'));
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState)
 		{
 			$this->setLayout('emptystate');
 		}
@@ -187,44 +229,58 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_JOOMLA_PLUGINS'), 'power-cord');
-
+		/** @var  Toolbar $toolbar */
+		$toolbar = $this->getDocument()->getToolbar();
 		if ($this->canCreate)
 		{
-			ToolbarHelper::addNew('joomla_plugin.add');
+			$toolbar->addNew('joomla_plugin.add');
 		}
 
 		// Only load if there are items
-		if (ArrayHelper::check($this->items))
+		if (!$this->isEmptyState)
 		{
+			/** @var  DropdownButton $dropdown */
+			$dropdown = $toolbar->dropdownButton('status-group')
+				->text('JTOOLBAR_CHANGE_STATUS')
+				->toggleSplit(false)
+				->icon('icon-ellipsis-h')
+				->buttonClass('btn btn-action')
+				->listCheck(true);
+
+			$childBar = $dropdown->getChildToolbar();
+
 			if ($this->canEdit)
 			{
-				ToolbarHelper::editList('joomla_plugin.edit');
+				$childBar->edit('joomla_plugin.edit')->listCheck(true);
 			}
 
 			if ($this->canState)
 			{
-				ToolbarHelper::publishList('joomla_plugins.publish');
-				ToolbarHelper::unpublishList('joomla_plugins.unpublish');
-				ToolbarHelper::archiveList('joomla_plugins.archive');
+				$childBar->publish('joomla_plugins.publish')->listCheck(true);
+				$childBar->unpublish('joomla_plugins.unpublish')->listCheck(true);
+				$childBar->archive('joomla_plugins.archive')->listCheck(true);
 
 				if ($this->canDo->get('core.admin'))
 				{
-					ToolbarHelper::checkin('joomla_plugins.checkin');
+					$childBar->checkin('joomla_plugins.checkin')->listCheck(true);
 				}
-			}
 
-			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
-			{
-				ToolbarHelper::deleteList('', 'joomla_plugins.delete', 'JTOOLBAR_EMPTY_TRASH');
-			}
-			elseif ($this->canState && $this->canDelete)
-			{
-				ToolbarHelper::trash('joomla_plugins.trash');
+				if ($this->state->get('filter.published') == -2 && $this->canDelete)
+				{
+					$toolbar->delete('joomla_plugins.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
+						->message('JGLOBAL_CONFIRM_DELETE')
+						->listCheck(true);
+				}
+				elseif ($this->canDelete)
+				{
+					$childBar->trash('joomla_plugins.trash')->listCheck(true);
+				}
 			}
 		}
 		if ($this->user->authorise('joomla_plugin.init', 'com_componentbuilder'))
@@ -242,18 +298,23 @@ class HtmlView extends BaseHtmlView
 			// add Push button.
 			ToolbarHelper::custom('joomla_plugins.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
 		}
+		if ($this->user->authorise('joomla_plugin.pull', 'com_componentbuilder'))
+		{
+			// add Pull button.
+			ToolbarHelper::custom('joomla_plugins.pullPowers', 'undo custom-button-pullpowers', '', 'COM_COMPONENTBUILDER_PULL', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('joomla_plugins');
 		if (StringHelper::check($this->help_url))
 		{
-			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			ToolbarHelper::preferences('com_componentbuilder');
+			$toolbar->preferences('com_componentbuilder');
 		}
 	}
 

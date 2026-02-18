@@ -16,8 +16,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
+use VDM\Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Version;
@@ -25,23 +25,25 @@ use Joomla\CMS\Version;
 // No direct access to this file
 defined('JPATH_BASE') or die;
 
-function computeZipUrls(object $model): array
+
+function computeZipUrls(): array
 {
 	$componentUrl = null;
 	$moduleUrls   = [];
 	$pluginUrls   = [];
 
 	// Component URL
-	$componentPath = $model->compiler->filepath['component'] ?? '';
+	$componentPath = CompilerFactory::_('FilePaths')->get('component', '');
 	if ($componentPath !== '' && ($pos = strpos($componentPath, '/tmp/')) !== false)
 	{
 		$componentUrl = Uri::root() . substr($componentPath, $pos + 1);
 	}
 
 	// Module URLs
-	if (!empty($model->compiler->filepath['modules']) && is_array($model->compiler->filepath['modules']))
+	$modules = CompilerFactory::_('FilePaths')->get('modules');
+	if (!empty($modules) && is_array($modules))
 	{
-		foreach ($model->compiler->filepath['modules'] as $moduleId => $modulePath)
+		foreach ($modules as $moduleId => $modulePath)
 		{
 			$path = (string) $modulePath;
 
@@ -53,9 +55,10 @@ function computeZipUrls(object $model): array
 	}
 
 	// Plugin URLs
-	if (!empty($model->compiler->filepath['plugins']) && is_array($model->compiler->filepath['plugins']))
+	$plugins = CompilerFactory::_('FilePaths')->get('plugins');
+	if (!empty($plugins) && is_array($plugins))
 	{
-		foreach ($model->compiler->filepath['plugins'] as $pluginId => $pluginPath)
+		foreach ($plugins as $pluginId => $pluginPath)
 		{
 			$path = (string) $pluginPath;
 
@@ -73,14 +76,15 @@ function computeZipUrls(object $model): array
 	];
 }
 
-$urls = computeZipUrls($displayData);
-$hasPlugins = ArrayHelper::check($displayData->compiler->filepath['plugins'] ?? [], true);
-$hasModules = ArrayHelper::check($displayData->compiler->filepath['modules'] ?? [], true);
+$urls = computeZipUrls();
+$hasPlugins = ArrayHelper::check($urls['pluginUrls'] ?? [], true);
+$hasModules = ArrayHelper::check($urls['moduleUrls'] ?? [], true);
 $multi = ($hasPlugins || $hasModules);
-$componentFolder = $displayData->compiler->filepath['component-folder'] ?? '';
+$componentFolder = CompilerFactory::_('FilePaths')->get('component-folder', '');
 $redirect = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
 $allowInstall = ((int) (CompilerFactory::_('Config')->joomla_version ?? 0) === (int) Version::MAJOR_VERSION);
 
+// LayoutHelper::render('jcbbuildersuccessmessagecli', []); // so its loaded for the CLI
 
 ?>
 <style>
@@ -132,15 +136,16 @@ $allowInstall = ((int) (CompilerFactory::_('Config')->joomla_version ?? 0) === (
 		<h1><?php echo Text::sprintf('COM_COMPONENTBUILDER_THE_S_WAS_SUCCESSFULLY_COMPILED', $componentFolder); ?></h1>
 	<?php endif; ?>
 	<?php if ($allowInstall): ?>
-		<?php echo LayoutHelper::render('jcbbuilderinstallbuttons', ['model' => $displayData, 'has_modules' => $hasModules, 'has_plugins' => $hasPlugins, 'multi' => $multi]); ?>
+		<?php echo LayoutHelper::render('jcbbuilderinstallbuttons', ['has_modules' => $hasModules, 'has_plugins' => $hasPlugins, 'multi' => $multi]); ?>
 	<?php endif; ?>
-	<?php echo LayoutHelper::render('jcbbuilderstatssection', $displayData); ?>
+	<?php echo LayoutHelper::render('jcbbuilderstatssection', []); ?>
 	<?php if ($multi): ?>
-		<?php echo LayoutHelper::render('jcbmultipathsdownloads', ['model' => $displayData, 'urls' => $urls]); ?>
+		<?php echo LayoutHelper::render('jcbmultipathsdownloads', ['urls' => $urls]); ?>
 	<?php else: ?>
-		<?php echo LayoutHelper::render('jcbsinglepathdownload', ['model' => $displayData, 'url' => $urls['componentUrl'] ?? null]); ?>
+		<?php echo LayoutHelper::render('jcbsinglepathdownload', ['url' => $urls['componentUrl'] ?? null]); ?>
 	<?php endif; ?>
 	<p>
-		<small><?php echo Text::_('COM_COMPONENTBUILDER_COMPILATION_TOOK'); ?> <b><?php '#'.'##COMPILER_TIMER##'.'#'; ?></b> <?php echo Text::_('COM_COMPONENTBUILDER_SECONDS_TO_COMPLETE'); ?>.</small>
+		<small><?php echo Text::_('COM_COMPONENTBUILDER_COMPILATION_TOOK'); ?> <b><?php echo '#'.'##COMPILER_TIMER##'.'#'; ?></b> <?php echo Text::_('COM_COMPONENTBUILDER_SECONDS_TO_COMPLETE'); ?>.</small>
 	</p>
+	<?php echo LayoutHelper::render('jcbbuildervaluationandcostingreport', []); ?>
 </div>

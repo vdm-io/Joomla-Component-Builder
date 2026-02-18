@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customcode;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
@@ -69,9 +69,10 @@ class Gui implements GuiInterface
 	/**
 	 * The application layer
 	 *
+	 * @var   CMSApplication
 	 * @since 3.2.0
 	 **/
-	protected $app;
+	protected CMSApplication $app;
 
 	/**
 	 * Constructor.

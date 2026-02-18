@@ -174,10 +174,10 @@
 			type="number"
 			name="joomla_version"
 			label="COM_COMPONENTBUILDER_CUSTOM_CODE_JOOMLA_VERSION_LABEL"
-			default="3"
+			default="6"
 			class="text_area"
 			min="3"
-			max="5"
+			max="6"
 			step="1"
 			showon="target:1"
 		/>

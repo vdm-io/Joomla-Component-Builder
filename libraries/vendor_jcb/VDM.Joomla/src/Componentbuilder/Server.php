@@ -12,11 +12,12 @@
 namespace VDM\Joomla\Componentbuilder;
 
 
-use Joomla\CMS\Factory as JoomlaFactory;
+use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
 use VDM\Joomla\Componentbuilder\Server\Load;
 use VDM\Joomla\Componentbuilder\Server\Ftp;
 use VDM\Joomla\Componentbuilder\Server\Sftp;
+use VDM\Joomla\Componentbuilder\User\IdentityTrait;
 use VDM\Joomla\Utilities\StringHelper;
 
 
@@ -27,6 +28,12 @@ use VDM\Joomla\Utilities\StringHelper;
  */
 class Server
 {
+	/**
+	 * To load the user identity
+	 * @since  5.1.4
+	 */
+	use IdentityTrait;
+
 	/**
 	 * The Loader
 	 *
@@ -74,8 +81,9 @@ class Server
 		$this->load = $load;
 		$this->ftp = $ftp;
 		$this->sftp = $sftp;
-		$this->user = $user ?: JoomlaFactory::getUser();
+		$this->user = $user ?: $this->getIdentity();
 	}
+
 
 	/**
 	 * Move File to Server
@@ -160,6 +168,5 @@ class Server
 	{
 		return $this->move($serverID,  $localPath, $fileName, $protocol, $permission);
 	}
-
 }
 

@@ -234,6 +234,7 @@ final class Resolver implements ResolverInterface
 		$this->extractChildren($item);
 		$this->extractDynamicContent($item);
 		$this->extractSubformFields($item);
+		$this->extractValidationRule($item);
 		$this->extractFiles($item);
 		$this->extractFolders($item);
 
@@ -394,6 +395,44 @@ final class Resolver implements ResolverInterface
 				'guid'
 			);
 		}
+	}
+
+	/**
+	 * Extract validation rule dependencies from an field.
+	 *
+	 * This method checks if the item has a rule and, if so,
+	 * extracts the referenced rule name from its XML definition.
+	 * Each valid validation rule is recorded as a parent dependency.
+	 *
+	 * @param  object  $item  The field item to inspect.
+	 *
+	 * @return void
+	 * @since  5.1.4
+	 */
+	protected function extractValidationRule(object $item): void
+	{
+		// Only continue if we are on the field table and this is a subform field
+		if (
+			$this->config->getTable() !== 'field'
+		) {
+			return;
+		}
+
+		// Attempt to extract the `validate` attribute value from XML
+		$rule = GetHelper::between($item->xml, 'validate="', '"');
+
+		if (empty($rule))
+		{
+			return;
+		}
+
+		$this->record(
+			'parent',
+			'validation_rule',
+			$rule,
+			'#__componentbuilder_validation_rule',
+			'name'
+		);
 	}
 
 	/**
@@ -706,24 +745,40 @@ final class Resolver implements ResolverInterface
 	}
 
 	/**
-	 * Normalizes a raw field value into an array of strings.
+	 * Normalizes a raw field value into a flat array of scalar values.
 	 *
-	 * Accepts strings, arrays of strings, or Traversable of strings. Any invalid or
-	 * non-scalar values are excluded.
+	 * Accepts:
+	 * - string, int, float, bool
+	 * - array of scalar values
+	 * - Traversable
+	 * - object (public properties only)
 	 *
-	 * @param   mixed  $raw  The raw value from the item field.
+	 * Behavior:
+	 * - Scalars are wrapped into an array
+	 * - Arrays and Traversables are used as-is (no flattening)
+	 * - Objects yield public properties only
+	 * - Nested arrays are ignored (not traversed)
+	 * - Empty strings are removed
+	 * - Integers and floats are preserved
 	 *
-	 * @return  string[]  A list of clean, non-empty string values.
+	 * @param   mixed  $raw  The raw field input.
+	 *
+	 * @return  array<int, string|int|float|bool>  Cleaned list of scalar values.
 	 * @since   5.1.1
 	 */
 	protected function normalizeToStringArray(mixed $raw): array
 	{
-		return array_values(array_filter(match (true) {
-			is_string($raw)               => [$raw],
-			is_array($raw)                => $raw,
-			$raw instanceof \Traversable   => iterator_to_array($raw),
-			default                       => [],
-		}, static fn($v) => is_string($v) && trim($v) !== ''));
+		$values = match (true) {
+			is_string($raw)                 => [$raw],
+			is_array($raw)                  => $raw,
+			$raw instanceof \Traversable    => iterator_to_array($raw),
+			is_object($raw)                 => get_object_vars($raw),
+			default                         => [],
+		};
+
+		return array_values(array_filter($values, static function ($v): bool {
+			return is_string($v) && trim($v) !== '';
+		}));
 	}
 
 	/**

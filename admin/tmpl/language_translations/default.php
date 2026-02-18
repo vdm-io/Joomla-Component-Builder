@@ -73,6 +73,5 @@ if ($this->saveOrder)
 
 	// add to page body
 	outerBodyDiv.appendChild(loadingDiv);
-</script>
 <?php echo LayoutHelper::render('exportlanguagetranslations', []); ?>
 </script>

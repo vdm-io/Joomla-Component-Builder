@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Package\Remote;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Language\Text;
+use VDM\Joomla\Utilities\FileHelper;
 use VDM\Joomla\Interfaces\Remote\GetInterface;
 use VDM\Joomla\Componentbuilder\Package\Remote\GetContent;
 
@@ -69,15 +70,7 @@ final class GetFolder extends GetContent implements GetInterface
 				throw new \RuntimeException("Failed to write temporary zip file to: {$tmpZipPath}");
 			}
 
-			// Unzip content
-			if (!is_dir($fullPath))
-			{
-				Folder::create($fullPath);
-			}
-
-			$unzipResult = Folder::unpack($tmpZipPath, $fullPath);
-
-			if (!$unzipResult || !is_array($unzipResult) || empty($unzipResult))
+			if (!FileHelper::unzip($tmpZipPath, $fullPath))
 			{
 				throw new \RuntimeException("Unzipping failed or returned no files for: {$tmpZipPath}");
 			}

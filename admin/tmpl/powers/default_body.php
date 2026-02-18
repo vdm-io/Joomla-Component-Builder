@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
-		$canDo = ComponentbuilderHelper::getActions('power',$item,'powers');
+				loadUserById((int) ($item->checked_out ?? 0));
+		$canDo = Actions::get('power', $item, 'powers');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
@@ -102,7 +103,7 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 		<td class="hidden-phone">
 			<div><?php echo Text::_('COM_COMPONENTBUILDER_TYPE'); ?>: 
 			<?php echo Text::_($item->type); ?><?php if (ComponentbuilderHelper::validGUID($item->extends)) : ?><br /><?php echo Text::_('COM_COMPONENTBUILDER_EXTENDS'); ?>: 
-			<?php if (!$this->isModal && $this->user->authorise('power.edit', 'com_componentbuilder.power.' . (int) $item->extends_id)): ?>
+			<?php if (!$this->isModal && $this->user->authorise('power.edit', 'com_componentbuilder.power.' . (int) ($item->extends_id ?? 0))): ?>
 				<a href="index.php?option=com_componentbuilder&view=powers&task=power.edit&id=<?php echo $item->extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->extends_name); ?></a>
 			<?php else: ?>
 				<?php echo $this->escape($item->extends_name); ?>

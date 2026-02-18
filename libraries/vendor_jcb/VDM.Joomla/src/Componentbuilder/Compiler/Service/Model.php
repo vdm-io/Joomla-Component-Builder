@@ -309,7 +309,8 @@ class Model implements ServiceProviderInterface
 	{
 		return new Ajaxcustomview(
 			$container->get('Config'),
-			$container->get('Customcode.Dispenser')
+			$container->get('Customcode.Dispenser'),
+			$container->get('Templatelayout.Data')
 		);
 	}
 
@@ -507,7 +508,8 @@ class Model implements ServiceProviderInterface
 		return new Ajaxadmin(
 			$container->get('Config'),
 			$container->get('Compiler.Builder.Site.Edit.View'),
-			$container->get('Customcode.Dispenser')
+			$container->get('Customcode.Dispenser'),
+			$container->get('Templatelayout.Data')
 		);
 	}
 

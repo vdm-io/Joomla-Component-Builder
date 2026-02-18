@@ -40,68 +40,151 @@ abstract class FileHelper
 	protected static $curlError = false;
 
 	/**
-	 *  Zips all contents of a directory without including full system paths.
-	 * 
-	 * @param  string   $workingDirectory    The directory where the items must be zipped
-	 * @param  string   $filepath          The path to where the zip file must be placed
+	 * Zips all contents of a directory without including full system paths.
 	 *
-	 * @return  bool    True on success, false on failure.
+	 * @param  string  $workingDirectory  The directory where the items must be zipped.
+	 * @param  string  $filepath          The path to where the zip file must be placed.
+	 *
+	 * @return bool  True on success, false on failure.
 	 *
 	 * @since  3.0.9
 	 */
-	public static function zip($workingDirectory, &$filepath): bool
+	public static function zip(string $workingDirectory, string &$filepath): bool
 	{
-		// check the work directory is set
-		if (!is_dir($workingDirectory))
+		// Normalize paths
+		$workingDirectory = Path::clean($workingDirectory);
+		$filepath         = Path::clean($filepath);
+
+		// Validate working directory
+		if (!is_dir($workingDirectory) || !is_readable($workingDirectory))
 		{
+			Log::add('ZIP failed: Working directory is invalid or not readable.', Log::ERROR, 'zip');
 			return false;
 		}
 
-		// Backup original working directory and change to target
-		$original_dir = getcwd();
-		if (!@chdir($workingDirectory))
+		// Ensure destination directory exists
+		$zipDir = dirname($filepath);
+		if (!is_dir($zipDir) && !Folder::create($zipDir))
 		{
+			Log::add('ZIP failed: Unable to create destination directory.', Log::ERROR, 'zip');
 			return false;
 		}
 
-		// Normalize file path
-		$filepath = Path::clean($filepath);
-
-		// delete an existing zip file
-		if (is_file($filepath))
+		// Remove existing archive
+		if (is_file($filepath) && !File::delete($filepath))
 		{
-			if (!File::delete($filepath))
+			Log::add('ZIP failed: Unable to remove existing archive.', Log::ERROR, 'zip');
+			return false;
+		}
+
+		$originalDir = getcwd();
+
+		try
+		{
+			if (!@chdir($workingDirectory))
 			{
-				return false;
+				throw new \RuntimeException('Unable to change to working directory.');
 			}
-		}
 
-		try {
-			// Collect files recursively (excluding common unwanted files)
-			$files = Folder::files('.', '', true, true, ['.svn', 'CVS', '.DS_Store', '__MACOSX'], ['.*~']);
+			$files = Folder::files(
+				'.',
+				'',
+				true,
+				true,
+				['.svn', 'CVS', '.DS_Store', '__MACOSX'],
+				['.*~']
+			);
+
+			if (empty($files))
+			{
+				throw new \RuntimeException('No files found to zip.');
+			}
 
 			$zipArray = [];
+
 			foreach ($files as $file)
 			{
 				$zipArray[] = [
-					'name' => str_replace('./', '', (string) $file),
+					'name' => ltrim(str_replace('./', '', (string) $file), '/'),
 					'data' => self::getContent($file),
 					'time' => @filemtime($file) ?: time(),
 				];
 			}
 
-			// Get ZIP archive adapter
 			$zip = (new Archive())->getAdapter('zip');
 
-			// Create the ZIP file
-			return (bool) $zip->create($filepath, $zipArray);
-		} catch (\Throwable $e) {
-			// Log the error for diagnostics
+			if (!$zip->create($filepath, $zipArray))
+			{
+				throw new \RuntimeException('ZIP adapter failed to create archive.');
+			}
+
+			return true;
+		}
+		catch (\Throwable $e)
+		{
 			Log::add('ZIP creation failed: ' . $e->getMessage(), Log::ERROR, 'zip');
 			return false;
-		} finally {
-			// Always return to original working directory
-			@chdir($original_dir);
+		}
+		finally
+		{
+			@chdir($originalDir);
+		}
+	}
+
+	/**
+	 * Extracts a ZIP archive to a target directory.
+	 *
+	 * ZIP archives only are supported intentionally.
+	 *
+	 * @param  string  $archivename  The path to the ZIP archive.
+	 * @param  string  $extractdir   Directory to extract into.
+	 *
+	 * @return bool  True on success, false on failure.
+	 *
+	 * @since  5.1.4
+	 */
+	public static function unzip(string $archivename, string $extractdir): bool
+	{
+		// Normalize paths
+		$archivename = Path::clean($archivename);
+		$extractdir  = Path::clean($extractdir);
+
+		// Validate archive file
+		if (!is_file($archivename) || !is_readable($archivename))
+		{
+			Log::add('UNZIP failed: Archive does not exist or is not readable.', Log::ERROR, 'zip');
+			return false;
+		}
+
+		// Enforce ZIP-only extraction
+		if (strtolower(pathinfo($archivename, PATHINFO_EXTENSION)) !== 'zip')
+		{
+			Log::add('UNZIP failed: Only ZIP archives are supported.', Log::ERROR, 'zip');
+			return false;
+		}
+
+		// Ensure extraction directory exists
+		if (!is_dir($extractdir) && !Folder::create($extractdir))
+		{
+			Log::add('UNZIP failed: Unable to create extraction directory.', Log::ERROR, 'zip');
+			return false;
+		}
+
+		try
+		{
+			$zip = (new Archive())->getAdapter('zip');
+
+			if (!$zip->extract($archivename, $extractdir))
+			{
+				throw new \RuntimeException('ZIP adapter failed to extract archive.');
+			}
+
+			return true;
+		}
+		catch (\Throwable $e)
+		{
+			Log::add('UNZIP extraction failed: ' . $e->getMessage(), Log::ERROR, 'zip');
+			return false;
 		}
 	}
 

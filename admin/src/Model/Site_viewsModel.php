@@ -78,7 +78,7 @@ class Site_viewsModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		if (empty($config['filter_fields']))
 		{
@@ -420,7 +420,7 @@ class Site_viewsModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.system_name LIKE '.$search.' OR a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.main_get LIKE '.$search.' OR g.name LIKE '.$search.' OR a.codename LIKE '.$search.' OR a.context LIKE '.$search.')');
+				$query->where('(a.system_name LIKE '.$search.' OR a.name LIKE '.$search.' OR a.description LIKE '.$search.' OR a.main_get LIKE '.$search.' OR g.name LIKE '.$search.' OR a.context LIKE '.$search.' OR a.codename LIKE '.$search.')');
 			}
 		}
 

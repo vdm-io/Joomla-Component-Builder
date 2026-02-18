@@ -12,7 +12,7 @@ namespace VDM\Joomla\Componentbuilder\Spreadsheet;
 
 
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
-use VDM\Joomla\Componentbuilder\Interfaces\Spreadsheet\RowDataProcessorInterface;
+use VDM\Joomla\Interfaces\Spreadsheet\RowDataInterface;
 
 
 /**
@@ -20,7 +20,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\Spreadsheet\RowDataProcessorInterface
  * 
  * @since 5.0.2
  */
-final class RowDataArray implements RowDataProcessorInterface
+final class RowDataArray implements RowDataInterface
 {
 	/**
 	 * Processes a given spreadsheet row and returns an associative array containing the row index and cell values indexed by column letters.

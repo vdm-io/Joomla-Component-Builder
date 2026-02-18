@@ -109,7 +109,7 @@ class Load implements LoadInterface
 		// check if this is a valid table
 		if ($id > 0 && $this->table->exist($table, $field) &&
 			($value = $this->load->value(
-				["a.${field}" => $field],  // select
+				["a.{$field}" => $field],  // select
 				['a' => $table],  // tables
 				['a.id' => $id]  // where
 			)) !== null)

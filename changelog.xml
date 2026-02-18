@@ -38,51 +38,78 @@
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
-    <version>4.1.2</version>
+    <version>4.1.3</version>
+    <security>
+      <item>Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.</item>
+    </security>
     <fix>
-      <item>Fix the template and layout linker for packages.</item>
-      <item>Fix auto-check(in) method for Joomla 4/5 compatibility</item>
-      <item>Fix Custom Rule Validation Bug</item>
-      <item>Fix issues in the site view HtmlView caused by the refactor, including missing class calls and outdated function references.</item>
-      <item>Fix issue where the DatabaseSchemaCheckAll pulled all Component Builder tables into DB on install. #1253</item>
-      <item>Fix issue in the Dynamic Get when the value key is 0 it wouldn't add the 'WHERE' statement to the generated code. #1254</item>
-      <item>Fix issue where custom powers was not added to PowerloaderHelper. #1256</item>
-      <item>Fix normalization issue when compiling on Windows systems. #1219</item>
-      <item>Fix installer issue on Joomla 6 where components containing multiple plugins failed during installation.</item>
+      <item>Fix the linked [new] button to use the correct init_default params.</item>
+      <item>Fix the Components list view to better display long website urls.</item>
+      <item>Fix language text area css. #1264</item>
+      <item>Add fix for empty currentFullPath in the Structuresingle class.</item>
+      <item>Fix the buildSelectPart method to not access an empty select value in the Queries class.</item>
+      <item>Fix that ensure that we always load and int into loadUserById.</item>
+      <item>Fix the subform permission behaviour to use removeField.</item>
+      <item>Fixed linked admin views with New and New &amp; Close buttons to correctly initialize fields using global unique IDs and default conventions.</item>
+      <item>Fixed a bug caused by missing option settings in the model configuration.</item>
+      <item>Fix permission issue in the list view. #1266</item>
+      <item>Fix an issue where the Email Helper send() function was executed twice.</item>
+      <item>Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.</item>
+      <item>Fix the Compiler success message to display both build seconds and project weeks.</item>
+      <item>Fix bug in the search editor in JCB Search Engine.</item>
+      <item>Fix issue where Custom Gets linked to a Site view did not ship correctly with JCB packages. #1272</item>
+      <item>Fix issue where the Icon linked to a Custom Admin Menu did not ship with JCB packages. #1271</item>
+      <item>Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274</item>
+      <item>Fix an issue with the JCB version notice on Joomla 5.</item>
+      <item>Fix an issue where components without a component image failed to compile successfully. #1282</item>
     </fix>
+    <language>
+      <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
+    </language>
     <addition>
-      <item>Add native module builder for Joomla 4/5</item>
-      <item>Add Joomla 6 build option</item>
-      <item>Adds check to ensure expert mode subforms in the Demo Component remain set and unchanged when user lacks edit permissions</item>
-      <item>Add functionality to add component changelog into the package if configured.</item>
-      <item>Add a default VARCHAR(36) length to easily create fields intended to store GUID values.</item>
+      <item>Add version 5 to the version 4 update server, for easier upgrade path.</item>
+      <item>Added user access verification logic in the model to prevent unauthorized direct item loading.</item>
+      <item>Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
+      <item>Add Development Valuation Model to calculate JCB component pricing.</item>
+      <item>Add functionality to push JCB packages to Self hosted Git system that uses a self signed SSL.</item>
+      <item>Add functionality that will include Validation Rules linked to fields in JCB packages. #1273</item>
+      <item>Add a Pull button to all main JCB entities, allowing a complete reset of a selected entity together with all entities linked to it.</item>
+      <item>Add functionality to the Compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.</item>
+      <item>Add new Compiler Classes to modernise ancient tech previously embedded in the compiler and replace it with a clean, modern architecture.</item>
+      <item>Add a dedicated CLI plugin to the JCB core, enabling direct interaction with JCB through the Joomla CLI console.</item>
+      <item>Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.</item>
+      <item>Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.</item>
+      <item>Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.</item>
+      <item>Add functionality to the CLI compiler to directly install compiled components and apply compiler options used during compilation.</item>
+      <item>Add functionality to the compiler to automatically pull a missing component from a remote repository when a compilation is triggered and the component is not locally available.</item>
+      <item>Add functionality to add and replace classes in module and plugin src folders that are linked to a component, when using correct namespace resolution.</item>
+      <item>Add a Documentation tab to the Joomla Component Builder dashboard.</item>
     </addition>
     <change>
-      <item>Refactor dynamic get methods into dedicated classes</item>
-      <item>Refactores event handling (contentPrepare, titlePrepare, contentBeforeDisplay, contentAfterDisplay) to use Joomla 5's native event dispatcher via the model's new getDispatcher() method.</item>
-      <item>Updates table classes to properly support NULL values, both in the store() method and in table variable definitions. #1245</item>
-      <item>Refactors the Compiler Model by dropping deprecated calls and adopting Joomla 5+ conventions</item>
-      <item>Refactors Compiler Controller to remove deprecated usage and follow Joomla 5+ best practices</item>
-      <item>Refactor PHP classes for building HTML view files in admin and site views to align with Joomla 5+ standards.</item>
-      <item>Change radio buttons with a empty option to save Datatype CHAR instead of TINYINT as other radio buttons. #1252</item>
-      <item>Refactor compiler Move file update to classes.</item>
-      <item>Refactor compiler Move plugin and module fields and rules files mover to classes.</item>
-      <item>Completely refactors the Compiler Dashboard to align with Joomla 5+ architecture and Bootstrap 5 standards.</item>
-      <item>Update the file uploader in the Demo Component for more dynamic file display and naming.</item>
-      <item>Update the SQL file dump generator to handle large SQL dumps in batches, ensuring safe and reliable database imports.</item>
-      <item>Update example hints in the field expert mode options.</item>
+      <item>Refactor the JS selText method.</item>
+      <item>Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.</item>
+      <item>Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.</item>
+      <item>Updated and refined the site view class for greater consistency with backend view logic.</item>
+      <item>Refactor the list view buttons</item>
+      <item>Refactor the getActions helper method</item>
+      <item>Refactor toolbar into version-specific classes to resolve getToolbar errors. #1267</item>
+      <item>Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.</item>
+      <item>Refactor and Improve Router Helper Class to new standard Site Router practice.</item>
+      <item>Refactor and Improve JCB Search engine for better searching of JCB areas.</item>
+      <item>Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.</item>
+      <item>Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.</item>
+      <item>Refactor the Item Importer to improve data management, structural clarity, and long-term maintainability of the import process.</item>
+      <item>Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.</item>
+      <item>Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.</item>
+      <item>Refactor the Compiler to remove deprecated code paths and legacy classes that are no longer maintained.</item>
     </change>
     <remove>
-      <item>Remove setDocumentTitle method from the admin view since it is not being used by Joomla. #1255</item>
+      <item>Remove batch feature from JCB compiler Templates due to lack of use and outdated code.</item>
     </remove>
     <note>
-      <item>Move Joomla DB handling into compiler injector flow</item>
-      <item>Migrates view HTML classes to use getModel() directly instead of the deprecated magic get() calls to model methods.</item>
-      <item>Extractes the setAutoCheckIn() and setCheckInCall() logic into a dedicated CheckInNow class for cleaner design.</item>
-      <item>Replace all direct $app-&gt;input property calls with the recommended $app-&gt;getInput() method across the entire codebase.</item>
-      <item>Unpublish Joomla 6 Backward Compatibility Plugin</item>
-      <item>Improves validation handling of Fields by ensuring field validation rules are properly registered</item>
-      <item>Replace StringHelper with the correct Super Power key so it loads in the Compiler Controller</item>
+      <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
+      <item>Improved initialization handling in the view to reduce dependency errors during rendering.</item>
+      <item>Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.</item>
     </note>
   </changelog>
   <changelog>
@@ -382,5 +409,175 @@
       <item>Stability update addressing a post-release field issue. #1262</item>
       <item>Add an alert to the Compiler view when no Components exist. #1263</item>
     </addition>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>5.1.4</version>
+    <security>
+      <item>Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.</item>
+    </security>
+    <fix>
+      <item>Fix the linked [new] button to use the correct init_default params.</item>
+      <item>Fix the Components list view to better display long website urls.</item>
+      <item>Fix language text area css. #1264</item>
+      <item>Add fix for empty currentFullPath in the Structuresingle class.</item>
+      <item>Fix the buildSelectPart method to not access an empty select value in the Queries class.</item>
+      <item>Fix that ensure that we always load and int into loadUserById.</item>
+      <item>Fix the subform permission behaviour to use removeField.</item>
+      <item>Fixed linked admin views with New and New &amp; Close buttons to correctly initialize fields using global unique IDs and default conventions.</item>
+      <item>Fixed a bug caused by missing option settings in the model configuration.</item>
+      <item>Fix permission issue in the list view. #1266</item>
+      <item>Fix php8.3 deprecation warnings in compiler templates. #1265</item>
+      <item>Fix an issue where the Email Helper send() function was executed twice.</item>
+      <item>Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.</item>
+      <item>Fix the Compiler success message to display both build seconds and project weeks.</item>
+      <item>Fix bug in the search editor in JCB Search Engine.</item>
+      <item>Fix issue where Custom Gets linked to a Site view did not ship correctly with JCB packages. #1272</item>
+      <item>Fix issue where the Icon linked to a Custom Admin Menu did not ship with JCB packages. #1271</item>
+      <item>Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274</item>
+      <item>Fix an issue with the JCB version notice on Joomla 5.</item>
+      <item>Fix an issue where components without a component image failed to compile successfully. #1282</item>
+      <item>Fix issue where the Language Translations export button was not displayed due to recent toolbar changes.</item>
+      <item>Fix a bug that caused language filters to malfunction because of a broken field configuration. #1278</item>
+      <item>Fix issue where components without a layout added to the Component failed to compile correctly. #1132</item>
+    </fix>
+    <language>
+      <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
+      <item>Add functionality for importing translated language strings directly into the Language Translations area of JCB.</item>
+    </language>
+    <addition>
+      <item>Add version 6 to the version 5 update server, for easier upgrade path.</item>
+      <item>Added user access verification logic in the model to prevent unauthorized direct item loading.</item>
+      <item>Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268</item>
+      <item>Added method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
+      <item>Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.</item>
+      <item>Add Development Valuation Model to calculate JCB component pricing.</item>
+      <item>Add functionality to push JCB packages to Self hosted Git system that uses a self signed SSL.</item>
+      <item>Add functionality that will include Validation Rules linked to fields in JCB packages. #1273</item>
+      <item>Add a Pull button to all main JCB entities, allowing a complete reset of a selected entity together with all entities linked to it from a selected remote repository.</item>
+      <item>Add functionality to the compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.</item>
+      <item>Add new Compiler Classes to modernise ancient tech previously embedded in the compiler and replace it with a clean, modern architecture.</item>
+      <item>Add a dedicated CLI plugin to the JCB core, enabling direct interaction with JCB through the Joomla CLI console.</item>
+      <item>Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.</item>
+      <item>Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.</item>
+      <item>Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.</item>
+      <item>Add functionality to the CLI compiler to directly install compiled components and apply compiler options used during compilation.</item>
+      <item>Add functionality to the compiler to automatically pull a missing component from a remote repository when a compilation is triggered and the component is not locally available.</item>
+      <item>Add functionality to add and replace classes in module and plugin src folders that are linked to a component, when using correct namespace resolution.</item>
+      <item>Add a Documentation tab to the Joomla Component Builder dashboard.</item>
+    </addition>
+    <change>
+      <item>Refactor the JS selText method.</item>
+      <item>Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.</item>
+      <item>Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.</item>
+      <item>Updated and refined the site view class for greater consistency with backend view logic.</item>
+      <item>Refactor the list view buttons.</item>
+      <item>Refactor the getActions helper method.</item>
+      <item>Refactored toolbar into version specific classes to resolve getToolbar errors. #1267</item>
+      <item>Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.</item>
+      <item>Refactor and Improve Router Helper Class to new standard Site Router practice.</item>
+      <item>Refactor and Improve JCB Search engine for better searching of JCB areas.</item>
+      <item>Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.</item>
+      <item>Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.</item>
+      <item>Refactor the Item Importer to improve data management, structural clarity, and long-term maintainability of the import process.</item>
+      <item>Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.</item>
+      <item>Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.</item>
+      <item>Refactor the Compiler to remove deprecated code paths and legacy classes that are no longer maintained.</item>
+    </change>
+    <remove>
+      <item>Remove batch feature from JCB compiler Templates due to lack of use and outdated code.</item>
+    </remove>
+    <note>
+      <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
+      <item>Improved initialization handling in the view to reduce dependency errors during rendering.</item>
+      <item>Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.</item>
+      <item>Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>6.1.4</version>
+    <security>
+      <item>Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.</item>
+    </security>
+    <fix>
+      <item>Fix the linked [new] button to use the correct init_default params.</item>
+      <item>Fix the Components list view to better display long website urls.</item>
+      <item>Fix language text area css. #1264</item>
+      <item>Add fix for empty currentFullPath in the Structuresingle class.</item>
+      <item>Fix the buildSelectPart method to not access an empty select value in the Queries class.</item>
+      <item>Fix that ensure that we always load and int into loadUserById.</item>
+      <item>Fix the subform permission behaviour to use removeField.</item>
+      <item>Fixed linked admin views with New and New &amp; Close buttons to correctly initialize fields using global unique IDs and default conventions.</item>
+      <item>Fixed a bug caused by missing option settings in the model configuration.</item>
+      <item>Fix permission issue in the list view. #1266</item>
+      <item>Fix php8.3 deprecation warnings in compiler templates. #1265</item>
+      <item>Fix an issue where the Email Helper send() function was executed twice.</item>
+      <item>Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.</item>
+      <item>Fix the Compiler success message to display both build seconds and project weeks.</item>
+      <item>Fix bug in the search editor in JCB Search Engine.</item>
+      <item>Fix issue where Custom Gets linked to a Site view did not ship correctly with JCB packages. #1272</item>
+      <item>Fix issue where the Icon linked to a Custom Admin Menu did not ship with JCB packages. #1271</item>
+      <item>Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274</item>
+      <item>Fix an issue with the JCB version notice on Joomla 5.</item>
+      <item>Fix an issue where components without a component image failed to compile successfully. #1282</item>
+      <item>Fix issue where the Language Translations export button was not displayed due to recent toolbar changes.</item>
+      <item>Fix a bug that caused language filters to malfunction because of a broken field configuration. #1278</item>
+      <item>Fix issue where components without a layout added to the Component failed to compile correctly. #1132</item>
+    </fix>
+    <language>
+      <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
+      <item>Add functionality for importing translated language strings directly into the Language Translations area of JCB.</item>
+    </language>
+    <addition>
+      <item>Add version 6 to the version 5 update server, for easier upgrade path.</item>
+      <item>Added user access verification logic in the model to prevent unauthorized direct item loading.</item>
+      <item>Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268</item>
+      <item>Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
+      <item>Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.</item>
+      <item>Add Development Valuation Model to calculate JCB component pricing.</item>
+      <item>Add functionality to push JCB packages to Self hosted Git system that uses a self signed SSL.</item>
+      <item>Add functionality that will include Validation Rules linked to fields in JCB packages. #1273</item>
+      <item>Add a Pull button to all main JCB entities, allowing a complete reset of a selected entity together with all entities linked to it, from a selected remote repository.</item>
+      <item>Add functionality to the compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.</item>
+      <item>Add new Compiler Classes to modernise ancient tech previously embedded in the compiler and replace it with a clean, modern architecture.</item>
+      <item>Add a dedicated CLI plugin to the JCB core, enabling direct interaction with JCB through the Joomla CLI console.</item>
+      <item>Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.</item>
+      <item>Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.</item>
+      <item>Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.</item>
+      <item>Add functionality to the CLI compiler to directly install compiled components and apply compiler options used during compilation.</item>
+      <item>Add functionality to the compiler to automatically pull a missing component from a remote repository when a compilation is triggered and the component is not locally available.</item>
+      <item>Add functionality to add and replace classes in module and plugin src folders that are linked to a component, when using correct namespace resolution.</item>
+      <item>Add a Documentation tab to the Joomla Component Builder dashboard.</item>
+    </addition>
+    <change>
+      <item>Refactor the JS selText method.</item>
+      <item>Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.</item>
+      <item>Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.</item>
+      <item>Updated and refined the site view class for greater consistency with backend view logic.</item>
+      <item>Refactor the list view buttons.</item>
+      <item>Refactor the getActions helper method.</item>
+      <item>Refactor toolbar into version specific classes to resolve getToolbar errors. #1267</item>
+      <item>Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.</item>
+      <item>Refactor and Improve Router Helper Class to new standard Site Router practice.</item>
+      <item>Refactor and Improve JCB Search engine for better searching of JCB areas.</item>
+      <item>Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.</item>
+      <item>Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.</item>
+      <item>Refactor the Item Importer to improve data management, structural clarity, and long-term maintainability of the import process.</item>
+      <item>Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.</item>
+      <item>Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.</item>
+      <item>Refactor the Compiler to remove deprecated code paths and legacy classes that are no longer maintained.</item>
+    </change>
+    <remove>
+      <item>Remove batch feature from JCB compiler Templates due to lack of use and outdated code.</item>
+    </remove>
+    <note>
+      <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
+      <item>Improved initialization handling in the view to reduce dependency errors during rendering.</item>
+      <item>Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.</item>
+      <item>Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268</item>
+    </note>
   </changelog>
 </changelogs>

@@ -16,11 +16,13 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 
 // No direct access to this file
 defined('JPATH_BASE') or die;
 
-$path = $displayData['model']->compiler->filepath['component'] ?? null;
+
+$path = CompilerFactory::_('FilePaths')->get('component', '');
 $url  = $displayData['url'] ?? null;
 
 ?>

@@ -45,7 +45,7 @@ final class RouterMethodsManual
 	}
 
 	/**
-	 * Get Methods Code (SOON)
+	 * Get Methods Code
 	 *
 	 * @return  string
 	 * @since   3.2.0
@@ -64,9 +64,10 @@ final class RouterMethodsManual
 				{
 					continue;
 				}
+
 				$code[] = '';
 				$code[] = Indent::_(1) . "/**";
-				$code[] = Indent::_(1) . " * Method to get the segment(s) for an {$view->view}";
+				$code[] = Indent::_(1) . " * Method to get the segment(s) for {$view->view}";
 				$code[] = Indent::_(1) . " *";
 				$code[] = Indent::_(1) . " * @param   string  \$segment  Segment of the article to retrieve the ID for";
 				$code[] = Indent::_(1) . " * @param   array   \$query    The request that is parsed right now";
@@ -96,7 +97,7 @@ final class RouterMethodsManual
 				$code[] = Indent::_(1) . "}";
 				$code[] = '';
 				$code[] = Indent::_(1) . "/**";
-				$code[] = Indent::_(1) . " * Method to get the segment(s) for a {$view->view}";
+				$code[] = Indent::_(1) . " * Method to get the segment(s) for {$view->view}";
 				$code[] = Indent::_(1) . " *";
 				$code[] = Indent::_(1) . " * @param   string  \$id     ID of the contact to retrieve the segments for";
 				$code[] = Indent::_(1) . " * @param   array   \$query  The request that is built right now";
@@ -106,31 +107,38 @@ final class RouterMethodsManual
 				$code[] = Indent::_(1) . " */";
 				$code[] = Indent::_(1) . "public function get{$view->View}Segment(\$id, \$query)";
 				$code[] = Indent::_(1) . "{";
+				$code[] = Indent::_(2) . "\$id = (string) (\$id ?? '');";
+				$code[] = Indent::_(2) . "if (empty(\$id))";
+				$code[] = Indent::_(2) . "{";
+				$code[] = Indent::_(3) . "return '';";
+				$code[] = Indent::_(2) . "}";
+				$code[] = '';
 				$code[] = Indent::_(2) . "if (strpos(\$id, ':') === false)";
 				$code[] = Indent::_(2) . "{";
-				$code[] = Indent::_(3) . "\$id = (int) \$id;";
 				$code[] = Indent::_(3) . "\$dbquery = \$this->db->getQuery(true);";
 				$code[] = Indent::_(3) . "\$dbquery->select(\$this->db->quoteName('{$view->alias}'))";
 				$code[] = Indent::_(4) . "->from(\$this->db->quoteName('{$view->table}'))";
 				$code[] = Indent::_(4) . "->where(\$this->db->quoteName('{$view->key}') . ' = :id')";
-				$code[] = Indent::_(4) . "->bind(':id', \$id, ParameterType::INTEGER);";
+				$code[] = Indent::_(4) . "->bind(':id', (int) \$id, ParameterType::INTEGER);";
 				$code[] = Indent::_(3) . "\$this->db->setQuery(\$dbquery);";
 				$code[] = '';
 				$code[] = Indent::_(3) . "\$id .= ':' . \$this->db->loadResult();";
 				$code[] = Indent::_(2) . "}";
 				$code[] = '';
-				$code[] = Indent::_(2) . "if (\$this->noIDs)";
+				$code[] = Indent::_(2) . "if (\$this->noIDs && strpos(\$id, ':') !== false)";
 				$code[] = Indent::_(2) . "{";
 				$code[] = Indent::_(3) . "list(\$void, \$segment) = explode(':', \$id, 2);";
 				$code[] = '';
-				$code[] = Indent::_(3) . "return [\$void => \$segment];";
+				$code[] = Indent::_(3) . "return [(int) \$void => \$segment];";
 				$code[] = Indent::_(2) . "}";
 				$code[] = '';
 				$code[] = Indent::_(2) . "return [(int) \$id => \$id];";
 				$code[] = Indent::_(1) . "}";
 			}
+
 			return PHP_EOL . implode(PHP_EOL, $code);
 		}
+
 		return '';
 	}
 }

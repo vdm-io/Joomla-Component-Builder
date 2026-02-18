@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Language\ExtractorInterface;
 
 
 /**
@@ -25,7 +26,7 @@ use VDM\Joomla\Utilities\GetHelper;
  * 
  * @since 3.2.0
  */
-final class Extractor
+final class Extractor implements ExtractorInterface
 {
 	/**
 	 * The lang keys for extensions

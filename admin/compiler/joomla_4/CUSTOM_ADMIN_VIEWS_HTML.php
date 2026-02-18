@@ -105,8 +105,10 @@ class HtmlView extends BaseHtmlView
 			: Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		// get the user object
 		$this->user ??= $this->getCurrentUser();
-		// get global action permissions
-		$this->canDo = ###Component###Helper::getActions('###sview###');
+
+		// get the permitted actions the current user can do.
+		$this->canDo = Super___7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('###sview###');
+
 		// Load module values
 		$model = $this->getModel();
 		$this->styles = $model->getStyles() ?? [];
@@ -122,25 +124,12 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
-	{###HIDEMAINMENU###
-		// add title to the page
-		Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
-
-		// set help url for this view if found
-		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
-		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
-		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the options comp button
-		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::preferences('com_###component###');
-		}
+	{
+		###CUSTOM_ADMIN_ADDTOOLBAR###
 	}
 
 	/**

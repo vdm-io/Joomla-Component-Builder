@@ -79,14 +79,12 @@ class ###Component###View###View### extends HtmlView
 		parent::display($tpl);
 	}
 
-
 	/**
 	 * Setting the toolbar
 	 */
 	protected function addToolBar()
-	{###ADDTOOLBAR###
-		// now initiate the toolbar
-		$this->toolbar = Toolbar::getInstance();
+	{
+		###ADDTOOLBAR######INITTOOLBAR###
 	}
 
 	/**

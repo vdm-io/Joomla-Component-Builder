@@ -63,7 +63,7 @@ class DisplayController extends BaseController
 	 * @throws \Exception
 	 * @since   3.0.1
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null, $app = null, $input = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null, $app = null, $input = null)
 	{
 		$app ??= Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
 		$this->identity ??= $app->getIdentity();

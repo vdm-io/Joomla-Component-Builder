@@ -66,7 +66,9 @@ class Library implements ServiceProviderInterface
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
 			$container->get('Field.Data'),
-			$container->get('Model.Filesfolders')
+			$container->get('Model.Filesfolders'),
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 
