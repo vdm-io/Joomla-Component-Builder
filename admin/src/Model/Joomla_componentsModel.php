@@ -29,7 +29,6 @@ use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\FOF\Encrypt\AES;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -79,7 +78,7 @@ class Joomla_componentsModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		if (empty($config['filter_fields']))
 		{
@@ -401,184 +400,6 @@ class Joomla_componentsModel extends ListModel
 		}
 
 		return $query;
-	}
-
-	/**
-	 * Method to get list export data.
-	 *
-	 * @param   array  $pks  The ids of the items to get
-	 * @param   JUser  $user  The user making the request
-	 *
-	 * @return mixed  An array of data items on success, false on failure.
-	 */
-	public function getExportData($pks, $user = null)
-	{
-		// setup the query
-		if (($pks_size = UtilitiesArrayHelper::check($pks)) !== false || 'bulk' === $pks)
-		{
-			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
-			$_export = true;
-			// Get the user object if not set.
-			if (!isset($user) || !ObjectHelper::check($user))
-			{
-				$user = $this->getCurrentUser();
-			}
-			// Create a new query object.
-			$db = $this->getDatabase();
-			$query = $db->getQuery(true);
-
-			// Select some fields
-			$query->select('a.*');
-
-			// From the componentbuilder_joomla_component table
-			$query->from($db->quoteName('#__componentbuilder_joomla_component', 'a'));
-			// The bulk export path
-			if ('bulk' === $pks)
-			{
-				$query->where('a.id > 0');
-			}
-			// A large array of ID's will not work out well
-			elseif ($pks_size > 500)
-			{
-				// Use lowest ID
-				$query->where('a.id >= ' . (int) min($pks));
-				// Use highest ID
-				$query->where('a.id <= ' . (int) max($pks));
-			}
-			// The normal default path
-			else
-			{
-				$query->where('a.id IN (' . implode(',',$pks) . ')');
-			}
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
-
-			// Order the results by ordering
-			$query->order('a.id desc');
-
-			// Load the items
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				$items = $db->loadObjectList();
-
-				// Get the basic encryption key.
-				$basickey = ComponentbuilderHelper::getCryptKey('basic');
-				// Get the encryption object.
-				$basic = new AES($basickey);
-
-				// Set values to display correctly.
-				if (UtilitiesArrayHelper::check($items))
-				{
-					foreach ($items as $nr => &$item)
-					{
-						// Remove items the user can't access.
-						$access = ($user->authorise('joomla_component.access', 'com_componentbuilder.joomla_component.' . (int) $item->id) && $user->authorise('joomla_component.access', 'com_componentbuilder'));
-						if (!$access)
-						{
-							unset($items[$nr]);
-							continue;
-						}
-
-						// decode buildcompsql
-						$item->buildcompsql = base64_decode($item->buildcompsql);
-						if ($basickey && !is_numeric($item->crowdin_username) && $item->crowdin_username === base64_encode(base64_decode($item->crowdin_username, true)))
-						{
-							// decrypt crowdin_username
-							$item->crowdin_username = $basic->decryptString($item->crowdin_username);
-						}
-						// decode readme
-						$item->readme = base64_decode($item->readme);
-						// decode javascript
-						$item->javascript = base64_decode($item->javascript);
-						// decode css_admin
-						$item->css_admin = base64_decode($item->css_admin);
-						// decode css_site
-						$item->css_site = base64_decode($item->css_site);
-						// decode php_preflight_install
-						$item->php_preflight_install = base64_decode($item->php_preflight_install);
-						// decode php_preflight_update
-						$item->php_preflight_update = base64_decode($item->php_preflight_update);
-						// decode php_postflight_install
-						$item->php_postflight_install = base64_decode($item->php_postflight_install);
-						// decode php_postflight_update
-						$item->php_postflight_update = base64_decode($item->php_postflight_update);
-						// decode php_method_uninstall
-						$item->php_method_uninstall = base64_decode($item->php_method_uninstall);
-						// decode php_method_install
-						$item->php_method_install = base64_decode($item->php_method_install);
-						// decode sql
-						$item->sql = base64_decode($item->sql);
-						// decode sql_uninstall
-						$item->sql_uninstall = base64_decode($item->sql_uninstall);
-						// decode php_helper_both
-						$item->php_helper_both = base64_decode($item->php_helper_both);
-						// decode php_helper_admin
-						$item->php_helper_admin = base64_decode($item->php_helper_admin);
-						// decode php_admin_event
-						$item->php_admin_event = base64_decode($item->php_admin_event);
-						if ($basickey && !is_numeric($item->crowdin_project_api_key) && $item->crowdin_project_api_key === base64_encode(base64_decode($item->crowdin_project_api_key, true)))
-						{
-							// decrypt crowdin_project_api_key
-							$item->crowdin_project_api_key = $basic->decryptString($item->crowdin_project_api_key);
-						}
-						// decode php_helper_site
-						$item->php_helper_site = base64_decode($item->php_helper_site);
-						if ($basickey && !is_numeric($item->crowdin_account_api_key) && $item->crowdin_account_api_key === base64_encode(base64_decode($item->crowdin_account_api_key, true)))
-						{
-							// decrypt crowdin_account_api_key
-							$item->crowdin_account_api_key = $basic->decryptString($item->crowdin_account_api_key);
-						}
-						// decode php_site_event
-						$item->php_site_event = base64_decode($item->php_site_event);
-						// unset the values we don't want exported.
-						unset($item->asset_id);
-						unset($item->checked_out);
-						unset($item->checked_out_time);
-					}
-				}
-				// Add headers to items array.
-				$headers = $this->getExImPortHeaders();
-				if (ObjectHelper::check($headers))
-				{
-					array_unshift($items,$headers);
-				}
-				return $items;
-			}
-		}
-		return false;
-	}
-
-	/**
-	* Method to get header.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getExImPortHeaders()
-	{
-		// Get a db connection.
-		$db = Factory::getDbo();
-		// get the columns
-		$columns = $db->getTableColumns("#__componentbuilder_joomla_component");
-		if (UtilitiesArrayHelper::check($columns))
-		{
-			// remove the headers you don't import/export.
-			unset($columns['asset_id']);
-			unset($columns['checked_out']);
-			unset($columns['checked_out_time']);
-			$headers = new \stdClass();
-			foreach ($columns as $column => $type)
-			{
-				$headers->{$column} = $column;
-			}
-			return $headers;
-		}
-		return false;
 	}
 
 	/**

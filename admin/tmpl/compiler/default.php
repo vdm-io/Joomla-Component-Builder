@@ -36,60 +36,124 @@ $noticeboardOptions = ['vdm', 'pro'];
 
 ?>
 <?php if ($this->canDo->get('compiler.access')): ?>
-
 <script type="text/javascript">
-Joomla.submitbutton = function(task, key) {
-	if (task === '') {
-		return false;
-	} else {
-		var component = document.getElementById('component_id').value;
-		var isValid = true;
-
-		if (component === '' && task === 'compiler.compiler') {
-			isValid = false;
-		}
-		if (isValid) {
-			document.getElementById('form').style.display = 'none';
-			var form = document.getElementById('adminForm');
-			if (task === 'compiler.installCompiledModule' || task === 'compiler.installCompiledPlugin') {
-				form.install_item_id.value = key;
-			}
-			form.task.value = task;
-			setTimeout(function() {
-				form.submit();
-			}, 100);
-
-			if (task === 'compiler.compiler') {
-				let component_name = document.querySelector("#component_id option:checked").textContent;
-				document.querySelectorAll(".component-name").forEach(elem => {
-					elem.textContent = component_name;
-				});
-				setTimeout(function() {
-					document.getElementById('compiler').style.display = 'block';
-					document.getElementById('compiling').style.display = 'block';
-					setTimeout(function() {
-						document.getElementById('compiler-spinner').style.display = 'block';
-						document.getElementById('compiler-notice').style.display = 'block';
-					}, 100);
-				}, 100);
-			} else if (task === 'compiler.clearTmp') {
-				document.getElementById('clear').style.display = 'block';
-				document.getElementById('loading').style.display = 'block';
-			} else if (task === 'compiler.getCompilerAnimations') {
-				document.getElementById('get-compiler-animations').style.display = 'block';
-				document.getElementById('loading').style.display = 'block';
-			} else {
-				document.getElementById('loading').style.display = 'block';
-			}
-			return true;
-		} else {
-			document.querySelectorAll('.notice').forEach(elem => {
-				elem.style.display = 'block';
-			});
+	Joomla.submitbutton = function(task) {
+		if (task === 'compiler.back') {
+			parent.history.back();
 			return false;
+		} else {
+			var form = document.getElementById('adminForm');
+			form.task.value = task;
+			form.submit();
 		}
 	}
-}
+</script>
+
+<script type="text/javascript">
+/**
+ * Enhanced Joomla submit button handler for the compiler interface.
+ *
+ * Handles form submission tasks safely with DOM validation,
+ * smooth UI transitions, and contextual loading states.
+ *
+ * @param {string} task  The Joomla task to perform.
+ * @param {string} [key] Optional key for install-related tasks.
+ *
+ * @return {boolean} Returns true if the form submission proceeds, false otherwise.
+ * @since 5.1.3
+ */
+Joomla.submitbutton = function (task, key = '') {
+	// Abort early if task is not provided
+	if (!task) {
+		console.warn('Joomla.submitbutton: No task provided.');
+		return false;
+	}
+
+	const form = document.getElementById('adminForm');
+	if (!form) {
+		console.error('Joomla.submitbutton: #adminForm not found.');
+		return false;
+	}
+
+	const componentField = document.getElementById('component_id');
+	const component = componentField ? componentField.value.trim() : '';
+	const isCompilerTask = task === 'compiler.compiler';
+	let isValid = true;
+
+	// Validate component selection for compilation
+	if (!component && isCompilerTask) {
+		isValid = false;
+	}
+
+	if (!isValid) {
+		document.querySelectorAll('.notice').forEach(elem => {
+			elem.style.display = 'block';
+		});
+		console.warn('Joomla.submitbutton: Component not selected.');
+		return false;
+	}
+
+	// Hide form while processing
+	const formContainer = document.getElementById('form');
+	if (formContainer) {
+		formContainer.style.display = 'none';
+	}
+
+	// Handle install tasks with key assignment
+	if (task === 'compiler.installCompiledModule' || task === 'compiler.installCompiledPlugin') {
+		if (form.install_item_id) {
+			form.install_item_id.value = key;
+		} else {
+			console.warn('Joomla.submitbutton: install_item_id field not found.');
+		}
+	}
+
+	// Set the task and safely submit
+	form.task.value = task;
+	setTimeout(() => form.submit(), 100);
+
+	// UI update helper
+	const show = (id, delay = 0) => {
+		setTimeout(() => {
+			const el = document.getElementById(id);
+			if (el) el.style.display = 'block';
+		}, delay);
+	};
+
+	// Manage contextual UI loading animations
+	switch (task) {
+		case 'compiler.compiler': {
+			const selectedOption = document.querySelector('#component_id option:checked');
+			const componentName = selectedOption ? selectedOption.textContent.trim() : '';
+
+			document.querySelectorAll('.component-name').forEach(elem => {
+				elem.textContent = componentName;
+			});
+
+			show('compiler', 100);
+			show('compiling', 100);
+			show('compiler-spinner', 200);
+			show('compiler-notice', 200);
+			break;
+		}
+
+		case 'compiler.clearTmp':
+			show('clear');
+			show('loading');
+			break;
+
+		case 'compiler.getCompilerAnimations':
+			show('get-compiler-animations');
+			show('loading');
+			break;
+
+		default:
+			show('loading');
+			break;
+	}
+
+	return true;
+};
 // Add spindle-wheel for importations:
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -135,6 +199,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	outerBodyDiv.appendChild(compilingDiv);
 });
 </script>
+<?php if (empty($this->Components)): ?>
+	<?php echo $this->loadTemplate('nocomponentstocompile'); ?>
+	<form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=compiler'); ?>"
+		method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+		<input type="hidden" name="task" value="" />
+		<?php echo Html::_('form.token'); ?>
+	</form>
+<?php else: ?>
 <div class="main-card p-md-3">
 	<?php if (StringHelper::check($this->SuccessMessage)): ?>
 		<div class="alert alert-success">
@@ -259,6 +331,7 @@ function JRouter(link) {
 	return url+link;
 }
 </script>
+<?php endif; ?>
 <?php else: ?>
 		<h1><?php echo Text::_('COM_COMPONENTBUILDER_NO_ACCESS_GRANTED'); ?></h1>
 <?php endif; ?>

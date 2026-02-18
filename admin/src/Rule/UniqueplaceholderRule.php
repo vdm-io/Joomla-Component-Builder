@@ -44,7 +44,7 @@ class UniqueplaceholderRule extends FormRule
 	 *
 	 * @since   11.1
 	 */
-	public function test(\SimpleXMLElement $element, $value, $group = null, Registry $input = null, Form $form = null)
+	public function test(\SimpleXMLElement $element, $value, $group = null, ?Registry $input = null, ?Form $form = null)
 	{
 		// Get the extra field check attribute.
 		$id = ($input instanceof Registry) ? $input->get('id', null) : null;

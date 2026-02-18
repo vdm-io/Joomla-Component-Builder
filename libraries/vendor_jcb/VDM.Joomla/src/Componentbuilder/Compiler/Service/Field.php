@@ -171,7 +171,8 @@ class Field implements ServiceProviderInterface
 			$container->get('Customcode'),
 			$container->get('Field.Customcode'),
 			$container->get('Field.Rule'),
-			$container->get('Joomla.Database')
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 

@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Interfaces\Database;
 
 
-use VDM\Joomla\Interfaces\Database\VersioningInterface;
 use VDM\Joomla\Interfaces\Database\DefaultInterface;
+use VDM\Joomla\Interfaces\Database\VersioningInterface;
 
 
 /**
@@ -21,8 +21,30 @@ use VDM\Joomla\Interfaces\Database\DefaultInterface;
  * 
  * @since 3.2.0
  */
-interface UpdateInterface extends VersioningInterface, DefaultInterface
+interface UpdateInterface extends DefaultInterface, VersioningInterface
 {
+	/**
+	 * Get the IDs affected by the most recent UPDATE batch.
+	 *
+	 * This method returns the ordered list of entity IDs that were affected
+	 * by the last UPDATE operation or batch of UPDATE operations.
+	 *
+	 * Behavioral notes:
+	 * - IDs are resolved deterministically (ID, GUID, or WHERE-clause fallback).
+	 * - The order of IDs reflects the order in which they were resolved.
+	 * - IDs may represent one or many rows, depending on the UPDATE scope.
+	 * - When `$reset` is enabled, the internal update ID bucket is cleared
+	 *   after the values are retrieved.
+	 *
+	 * @param   bool  $reset  Whether to reset the internal update ID bucket
+	 *                        after retrieval.
+	 *
+	 * @return  array<int|string>  The affected entity IDs.
+	 *
+	 * @since   5.1.4
+	 */
+	public function updateids(bool $reset = false): array;
+
 	/**
 	 * Update rows in the database (with remapping and filtering columns option)
 	 *

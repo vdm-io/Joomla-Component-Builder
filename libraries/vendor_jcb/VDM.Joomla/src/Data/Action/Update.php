@@ -68,6 +68,31 @@ class Update implements UpdateInterface
 	}
 
 	/**
+	 * Get the IDs affected by the most recent UPDATE batch.
+	 *
+	 * This method returns the ordered list of entity IDs that were affected
+	 * by the last UPDATE operation or batch of UPDATE operations.
+	 *
+	 * Behavioral notes:
+	 * - IDs are resolved deterministically (ID, GUID, or WHERE-clause fallback).
+	 * - The order of IDs reflects the order in which they were resolved.
+	 * - IDs may represent one or many rows, depending on the UPDATE scope.
+	 * - When `$reset` is enabled, the internal update ID bucket is cleared
+	 *   after the values are retrieved.
+	 *
+	 * @param   bool  $reset  Whether to reset the internal update ID bucket
+	 *                        after retrieval.
+	 *
+	 * @return  array<int|string>  The affected entity IDs.
+	 *
+	 * @since   5.1.4
+	 */
+	public function updateids(bool $reset = true): array
+	{
+		return $this->database->updateids($reset);
+	}
+
+	/**
 	 * Set the current active table
 	 *
 	 * @param string|null $table The table that should be active

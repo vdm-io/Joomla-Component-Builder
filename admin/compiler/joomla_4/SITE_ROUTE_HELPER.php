@@ -15,12 +15,8 @@ defined('_JCB_TEMPLATE') or die;
 ###BOM###
 namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Site\Helper;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Categories\CategoryNode;
-use Joomla\CMS\Categories\Categories;
+use Joomla\Registry\Registry;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -32,110 +28,54 @@ use Joomla\CMS\Categories\Categories;
  */
 abstract class RouteHelper
 {
-	protected static $lookup;###ROUTEHELPER###
+	/**
+	 * Registry to hold the ###component### params
+	 *
+	 * @var    Registry
+	 * @since  5.1.3
+	 */
+	protected static Registry $params;###ROUTEHELPER###
 
-	protected static function _findItem($needles = null,$type = null)
+	/**
+	 * Retrieve a legacy-configured menu item override.
+	 *
+	 * This method is preserved for backward compatibility with older
+	 * JCB-generated components where menu item overrides could be defined
+	 * in the component's **global Options** panel. Administrators were able
+	 * to add menu-item selector fields under the same tab name as the
+	 * related entity/view type, using the naming convention:
+	 *
+	 *     {type}_menu
+	 *
+	 * Example:
+	 *   - A field named `tag_menu` allowed administrators to force all tag
+	 *     routing to use a specific menu item.
+	 *
+	 * These overrides served as a convenience mechanism for redirecting
+	 * routing behaviour *without* modifying the router code.
+	 *
+	 * Joomla 5's recommended pattern now is to implement all routing
+	 * decisions directly inside the router class. This method therefore
+	 * remains solely as a **legacy fallback**, ensuring older sites continue
+	 * functioning during migrations or long-term upgrade paths.
+	 *
+	 * If a matching `{type}_menu` parameter exists and contains a valid
+	 * menu item ID (>0), that ID is returned. Otherwise, `null` is returned.
+	 *
+	 * @param  string  $type  The entity/view type whose `{type}_menu`
+	 *                        override should be checked.
+	 *
+	 * @return int|null  The overridden menu item ID if available, otherwise null.
+	 * @since   5.1.3
+	 */
+	protected static function _findItem(string $type): ?int
 	{
-		$app      = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
-		$menus    = $app->getMenu('site');
-		$language = isset($needles['language']) ? $needles['language'] : '*';
+		// Lazy-load the component parameters only once.
+		self::$params ??= ComponentHelper::getParams('com_###component###');
 
-		// Prepare the reverse lookup array.
-		if (!isset(self::$lookup[$language]))
-		{
-			self::$lookup[$language] = [];
+		// Read the legacy override (0 means "not set").
+		$override = (int) self::$params->get($type . '_menu', 0);
 
-			$component  = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getComponent('com_###component###');
-
-			$attributes = array('component_id');
-			$values     = array($component->id);
-
-			if ($language != '*')
-			{
-				$attributes[] = 'language';
-				$values[]     = array($needles['language'], '*');
-			}
-
-			$items = $menus->getItems($attributes, $values);
-
-			foreach ($items as $item)
-			{
-				if (isset($item->query) && isset($item->query['view']))
-				{
-					$view = $item->query['view'];
-
-					if (!isset(self::$lookup[$language][$view]))
-					{
-						self::$lookup[$language][$view] = [];
-					}
-
-					if (isset($item->query['id']))
-					{
-						/**
-						 * Here it will become a bit tricky
-						 * language != * can override existing entries
-						 * language == * cannot override existing entries
-						 */
-						if (!isset(self::$lookup[$language][$view][$item->query['id']]) || $item->language != '*')
-						{
-							self::$lookup[$language][$view][$item->query['id']] = $item->id;
-						}
-					}
-					else
-					{
-						self::$lookup[$language][$view][0] = $item->id;
-					}
-				}
-			}
-		}
-
-		if ($needles)
-		{
-			foreach ($needles as $view => $ids)
-			{
-				if (isset(self::$lookup[$language][$view]))
-				{
-					if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($ids))
-					{
-						foreach ($ids as $id)
-						{
-							if (isset(self::$lookup[$language][$view][(int) $id]))
-							{
-								return self::$lookup[$language][$view][(int) $id];
-							}
-						}
-					}
-					elseif (isset(self::$lookup[$language][$view][0]))
-					{
-						return self::$lookup[$language][$view][0];
-					}
-				}
-			}
-		}
-
-		if ($type)
-		{
-			// Check if the global menu item has been set.
-			$params = Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
-			if ($item = $params->get($type.'_menu', 0))
-			{
-				return $item;
-			}
-		}
-
-		// Check if the active menuitem matches the requested language
-		$active = $menus->getActive();
-
-		if ($active
-			&& $active->component == 'com_###component###'
-			&& ($language == '*' || in_array($active->language, array('*', $language)) || !Multilanguage::isEnabled()))
-		{
-			return $active->id;
-		}
-
-		// If not found, return language specific home link
-		$default = $menus->getDefault($language);
-
-		return !empty($default->id) ? $default->id : null;
+		return $override > 0 ? $override : null;
 	}
 }

@@ -20,6 +20,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Customcode as FieldCustomcode;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Rule;
+use VDM\Joomla\Componentbuilder\Package\Builder\Get as Superpower;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -31,7 +32,7 @@ use VDM\Joomla\Utilities\GuidHelper;
  * 
  * @since 3.2.0
  */
-class Data
+final class Data
 {
 	/**
 	 * Compiler Fields
@@ -48,6 +49,14 @@ class Data
 	 * @since  5.0.4
 	 */
 	protected array $index = [];
+
+	/**
+	 * The state of retry to loaded fields
+	 *
+	 * @var    array
+	 * @since  5.1.4
+	 **/
+	protected array $retry = [];
 
 	/**
 	 * The Config Class.
@@ -114,6 +123,14 @@ class Data
 	protected DatabaseInterface $db;
 
 	/**
+	 * The Super Class.
+	 *
+	 * @var   Superpower
+	 * @since 5.1.4
+	 */
+	protected Superpower $superpower;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config                 $config            The Config Class.
@@ -124,12 +141,14 @@ class Data
 	 * @param FieldCustomcode        $fieldcustomcode   The Customcode Class.
 	 * @param Rule                   $rule              The Rule Class.
 	 * @param DatabaseInterface      $db                The Joomla Database Class.
+	 * @param Superpower             $superpower        A Superpower Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Event $event, History $history,
 		Placeholder $placeholder, Customcode $customcode,
-		FieldCustomcode $fieldcustomcode, Rule $rule, DatabaseInterface $db)
+		FieldCustomcode $fieldcustomcode, Rule $rule,
+		DatabaseInterface $db, Superpower $superpower)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -139,6 +158,7 @@ class Data
 		$this->fieldcustomcode = $fieldcustomcode;
 		$this->rule = $rule;
 		$this->db = $db;
+		$this->superpower = $superpower;
 	}
 
 	/**
@@ -151,7 +171,7 @@ class Data
 	 * @return  object|null The field data
 	 * @since 3.2.0
 	 */
-	public function get($field, ?string $singleViewName = null, ?string $listViewName = null): ?object
+	public function get(mixed $field, ?string $singleViewName = null, ?string $listViewName = null): ?object
 	{
 		if (empty($field))
 		{
@@ -209,7 +229,7 @@ class Data
 	 * @return  void
 	 * @since   5.0.4
 	 */
-	private function set($field): void
+	private function set(mixed $field): void
 	{
 		if (GuidHelper::valid($field))
 		{
@@ -227,7 +247,42 @@ class Data
 			$this->fields[$data->id] = $data;
 			$this->index[$data->id] = $data->id;
 			$this->index[$data->guid] = $data->id;
+
+			return;
 		}
+
+		// try loading it from remote source
+		if ($this->attemptRemoteFetch($field))
+		{
+			$this->set($field);
+		}
+	}
+
+	/**
+	 * Attempt a one-time remote fetch via Superpower.
+	 *
+	 * @param   mixed  $guid
+	 *
+	 * @return  bool
+	 * @since   5.1.4
+	 */
+	private function attemptRemoteFetch(mixed $guid): bool
+	{
+		if (!GuidHelper::valid($guid))
+		{
+			return false;
+		}
+
+		if (!empty($this->retry[$guid]))
+		{
+			return false;
+		}
+
+		$this->retry[$guid] = true;
+
+		$result = $this->superpower->get('field', [$guid]);
+
+		return !empty($result['added'][$guid]);
 	}
 
 	/**
@@ -287,134 +342,134 @@ class Data
 		$this->db->setQuery($query);
 		$this->db->execute();
 
-		if ($this->db->getNumRows())
+		if (!$this->db->getNumRows())
 		{
-			// Load the results as a list of stdClass objects (see later for more options on retrieving data).
-			$field = $this->db->loadObject();
-			$id = $field->id;
-
-			// Trigger Event: jcb_ce_onBeforeModelFieldData
-			$this->event->trigger(
-				'jcb_ce_onBeforeModelFieldData', [&$field]
-			);
-
-			// adding a fix for the changed name of type to fieldtype
-			$field->type = $field->fieldtype;
-
-			// load the values form params
-			$field->xml = $this->customcode->update(json_decode((string) $field->xml));
-
-			// check if we have validate (validation rule and set it if found)
-			$this->rule->set($id, $field->xml);
-
-			// load the type values form type params
-			$field->properties = (isset($field->properties) && JsonHelper::check($field->properties))
-				? json_decode((string) $field->properties, true)
-				: null;
-
-			if (ArrayHelper::check($field->properties))
-			{
-				$field->properties = array_values($field->properties);
-			}
-
-			// check if we have WHMCS encryption
-			if (4 == $field->store
-				&& !$this->config->whmcs_encryption)
-			{
-				$this->config->whmcs_encryption = true;
-			}
-			// check if we have basic encryption
-			elseif (3 == $field->store
-				&& !$this->config->basic_encryption)
-			{
-				$this->config->basic_encryption = true;
-			}
-			// check if we have better encryption
-			elseif (5 == $field->store
-				&& $this->config->medium_encryption)
-			{
-				$this->config->medium_encryption = true;
-			}
-			// check if we have better encryption
-			elseif (6 == $field->store
-				&& StringHelper::check(
-					$field->on_get_model_field
-				)
-				&& StringHelper::check(
-					$field->on_save_model_field
-				))
-			{
-				// add only if string lenght found
-				if (StringHelper::check(
-					$field->initiator_on_save_model
-				))
-				{
-					$field->initiator_save_key = md5(
-						(string) $field->initiator_on_save_model
-					);
-					$field->initiator_save     = explode(
-						PHP_EOL, $this->placeholder->update_(
-							$this->customcode->update(
-								base64_decode(
-									(string) $field->initiator_on_save_model
-								)
-							)
-						)
-					);
-				}
-				if (StringHelper::check(
-					$field->initiator_on_save_model
-				))
-				{
-					$field->initiator_get_key = md5(
-						(string) $field->initiator_on_get_model
-					);
-					$field->initiator_get     = explode(
-						PHP_EOL, $this->placeholder->update_(
-							$this->customcode->update(
-								base64_decode(
-									(string) $field->initiator_on_get_model
-								)
-							)
-						)
-					);
-				}
-				// set the field modelling
-				$field->model_field['save'] = explode(
-					PHP_EOL, $this->placeholder->update_(
-						$this->customcode->update(
-							base64_decode((string) $field->on_save_model_field)
-						)
-					)
-				);
-				$field->model_field['get']  = explode(
-					PHP_EOL, $this->placeholder->update_(
-						$this->customcode->update(
-							base64_decode((string) $field->on_get_model_field)
-						)
-					)
-				);
-				// remove the original values
-				unset(
-					$field->on_save_model_field,
-					$field->on_get_model_field,
-					$field->initiator_on_save_model,
-					$field->initiator_on_get_model
-					);
-			}
-
-			// get the last used version
-			$field->history = $this->history->get('field', $id);
-
-			// Trigger Event: jcb_ce_onAfterModelFieldData
-			$this->event->trigger(
-				'jcb_ce_onAfterModelFieldData', [&$field]
-			);
-
-			return $field;
+			return null;
 		}
 
-		return null;
+		// Load the results as a list of stdClass objects (see later for more options on retrieving data).
+		$field = $this->db->loadObject();
+		$id = $field->id;
+
+		// Trigger Event: jcb_ce_onBeforeModelFieldData
+		$this->event->trigger(
+			'jcb_ce_onBeforeModelFieldData', [&$field]
+		);
+
+		// adding a fix for the changed name of type to fieldtype
+		$field->type = $field->fieldtype;
+
+		// load the values form params
+		$field->xml = $this->customcode->update(json_decode((string) $field->xml));
+
+		// check if we have validate (validation rule and set it if found)
+		$this->rule->set($id, $field->xml);
+
+		// load the type values form type params
+		$field->properties = (isset($field->properties) && JsonHelper::check($field->properties))
+			? json_decode((string) $field->properties, true)
+			: null;
+
+		if (ArrayHelper::check($field->properties))
+		{
+			$field->properties = array_values($field->properties);
+		}
+
+		// check if we have WHMCS encryption
+		if (4 == $field->store
+			&& !$this->config->whmcs_encryption)
+		{
+			$this->config->whmcs_encryption = true;
+		}
+		// check if we have basic encryption
+		elseif (3 == $field->store
+			&& !$this->config->basic_encryption)
+		{
+			$this->config->basic_encryption = true;
+		}
+		// check if we have better encryption
+		elseif (5 == $field->store
+			&& $this->config->medium_encryption)
+		{
+			$this->config->medium_encryption = true;
+		}
+		// check if we have better encryption
+		elseif (6 == $field->store
+			&& StringHelper::check(
+				$field->on_get_model_field
+			)
+			&& StringHelper::check(
+				$field->on_save_model_field
+			))
+		{
+			// add only if string lenght found
+			if (StringHelper::check(
+				$field->initiator_on_save_model
+			))
+			{
+				$field->initiator_save_key = md5(
+					(string) $field->initiator_on_save_model
+				);
+				$field->initiator_save     = explode(
+					PHP_EOL, $this->placeholder->update_(
+						$this->customcode->update(
+							base64_decode(
+								(string) $field->initiator_on_save_model
+							)
+						)
+					)
+				);
+			}
+			if (StringHelper::check(
+				$field->initiator_on_save_model
+			))
+			{
+				$field->initiator_get_key = md5(
+					(string) $field->initiator_on_get_model
+				);
+				$field->initiator_get     = explode(
+					PHP_EOL, $this->placeholder->update_(
+						$this->customcode->update(
+							base64_decode(
+								(string) $field->initiator_on_get_model
+							)
+						)
+					)
+				);
+			}
+			// set the field modelling
+			$field->model_field['save'] = explode(
+				PHP_EOL, $this->placeholder->update_(
+					$this->customcode->update(
+						base64_decode((string) $field->on_save_model_field)
+					)
+				)
+			);
+			$field->model_field['get']  = explode(
+				PHP_EOL, $this->placeholder->update_(
+					$this->customcode->update(
+						base64_decode((string) $field->on_get_model_field)
+					)
+				)
+			);
+			// remove the original values
+			unset(
+				$field->on_save_model_field,
+				$field->on_get_model_field,
+				$field->initiator_on_save_model,
+				$field->initiator_on_get_model
+				);
+		}
+
+		// get the last used version
+		$field->history = $this->history->get('field', $id);
+
+		// Trigger Event: jcb_ce_onAfterModelFieldData
+		$this->event->trigger(
+			'jcb_ce_onAfterModelFieldData', [&$field]
+		);
+
+		return $field;
 	}
 }
 

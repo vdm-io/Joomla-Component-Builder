@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use VDM\Joomla\Componentbuilder\Utilities\Normalize;
 use VDM\Joomla\Componentbuilder\Utilities\Uri;
 use VDM\Joomla\Componentbuilder\Utilities\Http;
 use VDM\Joomla\Componentbuilder\Utilities\Response;
@@ -36,6 +37,9 @@ class Utilities implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(Normalize::class, 'Utilities.Normalize')
+			->share('Utilities.Normalize', [$this, 'getNormalize'], true);
+
 		$container->alias(Uri::class, 'Utilities.Uri')
 			->share('Utilities.Uri', [$this, 'getUri'], true);
 
@@ -44,6 +48,19 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Response::class, 'Utilities.Response')
 			->share('Utilities.Response', [$this, 'getResponse'], true);
+	}
+
+	/**
+	 * Get The Normalize Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Normalize
+	 * @since   5.1.1
+	 */
+	public function getNormalize(Container $container): Normalize
+	{
+		return new Normalize();
 	}
 
 	/**

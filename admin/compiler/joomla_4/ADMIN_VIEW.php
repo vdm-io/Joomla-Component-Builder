@@ -24,7 +24,7 @@ $tmpl    = $this->input->get('tmpl');
 $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 ?>
 ###EDITBODYFADEIN###
-<form action="<?php echo Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Joomla___d4c76099_4c32_408a_8701_d0a724484dfd___Power::_('index.php?option=com_###component###&view=###view###&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 ###EDITBODY###
 </form>
 </div>###EDITBODYSCRIPT###

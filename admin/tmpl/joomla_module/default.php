@@ -45,7 +45,7 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 	});
 </script>
 <div id="componentbuilder_loader" style="display: none;">
-<form action="<?php echo Route::_('index.php?option=com_componentbuilder&&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=joomla_module&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <?php echo LayoutHelper::render('joomla_module.html_above', $this); ?>
 <div class="main-card">
@@ -417,19 +417,38 @@ var select_a_snippet = '<?php echo Text::_('COM_COMPONENTBUILDER_SELECT_A_SNIPPE
 var create_a_snippet = '<?php echo Text::_('COM_COMPONENTBUILDER_CREATE_A_SNIPPET'); ?>';
 
 
-HTMLElement.prototype.selText = function() {
-    var obj = this;
+/**
+ * Select all text content within an HTMLElement.
+ *
+ * Adds a convenient `selText()` method to all HTMLElements.
+ * Works across modern browsers and gracefully handles errors.
+ *
+ * @return {HTMLElement}  Returns the element itself for chaining.
+ * @since  5.1.3
+ */
+HTMLElement.prototype.selText = function () {
+	try {
+		const selection = window.getSelection();
+		if (!selection) {
+			console.warn('selText: window.getSelection() not supported in this environment.');
+			return this;
+		}
 
-    // For modern browsers, handle the selection
-    var selection = window.getSelection();
-    var range = document.createRange();
+		const range = document.createRange();
+		range.selectNodeContents(this);
 
-    // Select the content of the element
-    range.selectNodeContents(obj);
-    selection.removeAllRanges();  // Clear any previous selections
-    selection.addRange(range);    // Add the new selection range
+		selection.removeAllRanges(); // clear any prior selections
+		selection.addRange(range);   // select the element's text content
 
-    return this;
+		// Optionally bring the element into view if it's outside viewport
+		if (typeof this.scrollIntoView === 'function') {
+			this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	} catch (error) {
+		console.error('selText failed:', error);
+	}
+
+	return this;
 };
 
 <?php

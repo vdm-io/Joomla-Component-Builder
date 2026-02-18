@@ -9,7 +9,7 @@ This is a professional-grade [Joomla 4.x](https://extensions.joomla.org/extensio
 
 JCB generates native Joomla components, plugins, and modules for Joomla 3.x, 4.x, and 5.x - and is already prepared for Joomla 6. Every compiled project is tailored for the specific version without needing backward compatibility plugins. With integrated version-aware compiling, smart boilerplating, and Git-powered project syncing, JCB is much more than a code generator-it's a **full-stack development pipeline for Joomla extensions**.
 
-You can install this component easily. The latest release (**4.1.2**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
+You can install this component easily. The latest release (**4.1.3**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
 
 Upgrades are seamless through Joomla's built-in extension update mechanism.
 
@@ -36,8 +36,7 @@ Here are just some of the key powers JCB brings:
 * 🌐 **Update Server Support** - Integrate custom update mechanisms for extensions post-deployment.
 
 <details>
-<summary>📚 View 100+ Additional Advanced Features</summary>
-
+<summary>📚 View 80+ Additional Advanced Features</summary>
 ### 🧩 Architecture & Core Logic
 
 * 🧠 **Super Powers**: Namespaced PHP classes (interfaces, traits, abstracts, finals) managed from GUI
@@ -50,11 +49,9 @@ Here are just some of the key powers JCB brings:
 * 🔄 **Round-trip code integration** with file-to-database inserts/replaces
 * 🧬 **Custom Admin Views** with full MVC override power
 * 🧩 **Site Views** supporting public display of data with custom logic
-* 📊 **Dynamic dashboards** built via custom admin view chart helpers
 * 🔗 **Model linking between views** using subforms and dynamic selectors
 * 🧩 **Shared field reuse across views** and components
-* 📥 **Drag & Drop field mapping** for layout and logic assignment
-* 🎯 **Dynamic Field Visibility** conditions via GUI
+* 🎯 **Dynamic Field Visibility** conditions via user permission structure
 * 📦 **Independent packaging** of views and logic for reuse
 
 ### 📁 File & Code Management
@@ -64,27 +61,19 @@ Here are just some of the key powers JCB brings:
 * 🛠️ **Automatic file synchronization** on rebuild
 * 🧮 **Reverse string parser** to restore lang strings back to natural text
 * 📋 **Line tracking** to see where code was compiled from
-* 🗂️ **Smart override detection** and conflict management
-* 🔍 **Compiler debug tracking**
-* ✍️ **Dynamic use-statement generation** with alias auto-resolving
 * 💾 **Auto language string export** from templates & views
 * 🧰 **Helper classes and static utilities** included by default
 
 ### 🧠 Code Reuse & Blueprints
 
 * 🧱 **Demo component blueprints** for rapid prototyping
-* 🔁 **Blueprint export/import** via JSON or Git sync
+* 🔁 **Blueprint export/import** via JSON files and Git repos
 * 📎 **Shared field types** serve as field templates
-* 🧪 **Test-friendly compiler mode** for internal checking
-* 🧩 **Template-based file creation** with dynamic variables
-* 📚 **Smart template merging** for updates
-* 🚧 **Field definitions drive DB schema**
 * 🎛️ **Custom scripting per field** on get/save
 * 🔀 **Field view-type override (admin vs config)**
 
 ### 🌐 Joomla CMS Integration
 
-* 🛡️ **Token integration** via Joomla methods
 * 🔐 **ACL per view, field, item**
 * 🧾 **Field-based Joomla config generation**
 * 📘 **Support for Joomla categories/tags/custom fields**
@@ -98,11 +87,8 @@ Here are just some of the key powers JCB brings:
 * 🎨 **Layout builder** with inline layout reusability
 * 📁 **Template builder** with overrides
 * 🧠 **Snippets GUI** for code blocks linked to layouts/templates
-* 📚 **Custom documentation sections** linked into generated components
 * 🧬 **Field injection points in layout/template snippets**
 * 🔁 **Dynamic reload on selection change** via JavaScript binding
-* 📦 **Reusable custom admin view templates**
-* 🧠 **JS callback logic on field events**
 * 📄 **Inline help descriptions** from config
 * 🖱️ **Custom admin menus** and dashboard menu builders
 
@@ -119,9 +105,7 @@ Here are just some of the key powers JCB brings:
 
 * 📤 **Push component to Git repo**
 * 🔄 **Auto-compile and auto-tag packages**
-* 🗂️ **Blueprints stored and versioned by metadata**
 * 🎁 **Auto-generated changelog from commits**
-* 🔐 **Signed zip packaging supported**
 * 📬 **Component update URLs via GUI settings**
 * 🏷️ **Version-aware build ID assignment**
 
@@ -129,9 +113,6 @@ Here are just some of the key powers JCB brings:
 
 * ⚡ **Under-30-second build time** on large components
 * 📦 **Memory-optimized ZIP builder**
-* 🔁 **Repeatable fields** via subform templates
-* 💥 **Fail-safe error protection** and rollback
-* 🔍 **Detailed compiler logs with stack trace and UUIDs**
 * 📃 **Build summary report** after compilation
 
 ### 🧱 Custom Code System (Powerful Dual Feature)
@@ -143,25 +124,18 @@ Here are just some of the key powers JCB brings:
 * 🔁 **Nested custom code support**
 * 🔥 **Advanced compiler hooks per code block**
 * 🧠 **Round-trip tag tracking in PHP/HTML**
-* 📜 [Learn more about this here](https://git.vdm.dev/joomla/Component-Builder/wiki/TIPS:-Custom-Code)
 
 ### 🛠 Field Type System
 
-* 🧬 **Field types define templates and data types**
 * 💡 **GUI-defined rules (required, unique, nullable)**
-* 🧠 **Save/get hooks per field**
 * 🛡️ **Database schema auto-generated from field settings**
 * 📄 **Per-display field rendering config (list/edit)**
-* 🧩 **Create dynamic models with modals/selectors**
-* 🧠 **Conditional JS & CSS per field**
 
 ### 📐 Dynamic GET (Visual SQL Engine)
 
 * 📊 **Design complex joins from GUI**
-* 🧠 **Multiple GETs per view**
 * 🔄 **Reusable query sets**
 * 🧾 **Where/group/order statements supported**
-* 📃 **Auto model method generation**
 * 🔧 **Switch between list/item GETs**
 * 🛡️ **Output Joomla-native query builder logic**
 
@@ -170,38 +144,31 @@ Here are just some of the key powers JCB brings:
 * 🧠 **Snippets = reusable HTML blocks**
 * 🧩 **Layouts = reusable PHP render templates**
 * 🖼️ **Templates = page-level views linked to custom admin/site views**
-* 📦 **Libraries = JS/CSS assets linked to UI**
+* 📦 **Libraries = JS/CSS assets linked to custom admin/site views**
 * 🌐 **CDN/local toggle for library delivery**
-* 📁 **Media folder injection with override support**
 * 🔧 **Repository push/pull/reset workflow**
 * 📥 **Init snippets/layouts/templates via GUI**
 
 ### 📚 Documentation & Metadata
 
-* 📄 **Per-entity README auto-generation**
 * 📑 **Markdown + PHPDoc docblock support**
-* 🧾 **Internal documentation tables**
 * 🔄 **Update version history logs per entity**
-* 🧠 **Field reference mapping table output**
 * 📘 **Auto-documented component structure**
 
 ### 📊 Analytics & Insights
 
 * 📈 **Track last build, size, line count, field count**
-* 🔄 **Compare current vs previous builds**
-* 🧠 **Export component metadata as JSON**
-* 🗃️ **Stats per model/view**
 * 📁 **Total file/folder/line counters**
 
 </details>
-
 ---
 
 ## 📦 Get Started Now
 
-* 🔽 **Download**: [Stable Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) · [Nightly J5](https://git.vdm.dev/joomla/pkg-component-builder/archive/5.x.zip) · [Nightly J4](https://git.vdm.dev/joomla/pkg-component-builder/archive/4.x.zip)
+* 🔽 **Download**: [Stable Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) · [Nightly J6](https://git.vdm.dev/joomla/pkg-component-builder/archive/6.x.zip) · [Nightly J5](https://git.vdm.dev/joomla/pkg-component-builder/archive/5.x.zip) · [Nightly J4](https://git.vdm.dev/joomla/pkg-component-builder/archive/4.x.zip)
 * 📥 **Install**: Use Joomla's extension manager
-* 🎓 **Learn**: [Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE) · [How to Install Demo Blueprints](https://vdm.bz/how-to-install-jcb-packages)
+* 🐳 **Docker**: Run instantly using the [official JCB Docker images](https://hub.docker.com/r/octoleo/joomengine)
+* 🎓 **Learn**: [Onboarding](https://github.com/joomengine/jcb-documentation/blob/master/english/README.md) · [Documentation](https://github.com/joomengine/jcb-documentation/blob/master/english/index.md)
 
 ---
 
@@ -209,9 +176,9 @@ Here are just some of the key powers JCB brings:
 
 * 💬 [GitHub Discussions](https://github.com/orgs/joomengine/discussions)
 * 🐛 [Report Issues](https://git.vdm.dev/joomla/Component-Builder/issues)
-* 📚 [JCB Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki)
-* 👨‍🏫 [Video Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE)
-* 🇩🇪 [German Series](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
+* 📚 [JCB Documentation](https://github.com/joomengine/jcb-documentation/blob/master/english/README.md)
+* 👨‍🏫 [Video Channel](https://www.youtube.com/@OctoYou) (offical)
+* 🏛️ [Legacy Channel](https://www.youtube.com/@Joomlamount) (outdated)
 * 🔔 [Telegram Groups](https://t.me/jcb_group) · [Announcements](https://t.me/Joomla_component_builder)
 * 📶 [Status](https://status.vdm.dev/status/jcb)
 * 🛡️ [Security Reports](https://www.vdm.io/report-security-issues)
@@ -229,17 +196,17 @@ JCB is developed by developers for developers. Its purpose is to democratize hig
 * **Company:** [Vast Development Method](https://dev.vdm.io)
 * **Author:** [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 * **Component:** [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
-* **Created:** 30th April, 2015 · **Last Build:** 15th October, 2025 · **Version:** 4.1.2
+* **Created:** 30th April, 2015 · **Last Build:** 18th February, 2026 · **Version:** 4.1.3
 * **License:** GNU General Public License version 2 or later; see LICENSE.txt · **Copyright:** Copyright (C) 2015 Vast Development Method. All rights reserved.
-* **Lines:** 1195284 · **Fields:** 2092 · **Files:** 7913 · **Folders:** 737
+* **Lines:** 1326055 · **Fields:** 2115 · **Files:** 8632 · **Folders:** 788
 
 > Generated with [JCB](https://www.joomlacomponentbuilder.com) — The Smartest Way to Build Joomla Extensions.
 
 
 ## Contributors
-This project exists thanks to all the people who contribute to the [Joomla Component Builder Project](https://github.com/vdm-io/Joomla-Component-Builder).
+This project exists thanks to all the people who contribute to the [Joomla Component Builder Project](https://github.com/joomengine/Joomla-Component-Builder).
 
-[![Contributors](https://opencollective.com/Joomla-Component-Builder/contributors.svg?width=890&button=false)](https://github.com/vdm-io/Joomla-Component-Builder/graphs/contributors)
+[![Contributors](https://opencollective.com/Joomla-Component-Builder/contributors.svg?width=890&button=false)](https://github.com/joomengine/Joomla-Component-Builder/graphs/contributors)
 
 ### Backers
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/Joomla-Component-Builder#backer)]

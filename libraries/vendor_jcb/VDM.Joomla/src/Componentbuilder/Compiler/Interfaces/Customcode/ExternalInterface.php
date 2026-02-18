@@ -29,5 +29,17 @@ interface ExternalInterface
 	 * @since 3.2.0
 	 */
 	public function set(string $string, int $debug = 0): string;
+
+	/**
+	 * Get the number of external code entries registered during the current session.
+	 *
+	 * This method returns the total count of externally provided code fragments
+	 * that have been collected and stored on this instance for the active build
+	 * or compilation cycle.
+	 *
+	 * @return int  The total number of external code entries.
+	 * @since  5.1.4
+	 */
+	public function count(): int;
 }
 

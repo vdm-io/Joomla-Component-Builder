@@ -131,6 +131,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			$this->deleteFiles = [
 				'/administrator/components/com_componentbuilder/componentbuilder.php',
 				'/administrator/components/com_componentbuilder/controller.php',
+				'/administrator/components/com_componentbuilder/script.php',
 				'/components/com_componentbuilder/componentbuilder.php',
 				'/components/com_componentbuilder/controller.php',
 				'/components/com_componentbuilder/router.php',
@@ -559,7 +560,6 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			$jcb_cleaner = [];
 			$jcb_cleaner[] = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/compiler';
 			$jcb_cleaner[] = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/helpers/extrusion';
-			$jcb_cleaner[] = JPATH_LIBRARIES . '/vendor_jcb/VDM.Joomla/src/Componentbuilder';
 			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla/src/Componentbuilder';
 			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.FOF';
 			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Gitea';
@@ -567,6 +567,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Joomla.Wasabi';
 			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Minify';
 			$jcb_cleaner[] = JPATH_LIBRARIES . '/jcb_powers/VDM.Psr';
+			$jcb_cleaner[] = JPATH_LIBRARIES . '/vendor_jcb';
 
 			foreach ($jcb_cleaner as $cleaner)
 			{
@@ -1516,10 +1517,10 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 
 
 			// Fix the assets table rules column size.
-			$this->setDatabaseAssetsRulesFix(101440, "MEDIUMTEXT");
+			$this->setDatabaseAssetsRulesFix(106720, "MEDIUMTEXT");
 			// Install the global extension params.
 			$this->setExtensionsParams(
-				'{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":{"subform_layouts0":{"view_field":"default","layout":"repeatablejcbjfive"}},"editor":"none","manage_jcb_package_directories":"2","set_browser_storage":"1","storage_time_to_live":"global","super_powers_documentation":"0","powers_repository":"0","super_powers_repositories":"0","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","namespace_prefix":"JCB","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"2","type_name_builder":"2","export_company":"Vast Development Method","export_owner":"Llewellyn van der Merwe","export_email":"joomla@vdm.io","export_website":"https://dev.vdm.io/","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'
+				'{"autorName":"Llewellyn van der Merwe","autorEmail":"joomla@vdm.io","subform_layouts":{"subform_layouts0":{"view_field":"default","layout":"repeatablejcbjfive"}},"editor":"none","allow_selfsigned_certificates":"0","set_browser_storage":"1","storage_time_to_live":"global","builder_gif_size":"480-272","compiler_plugin":["componentbuilderactionlogcompiler","componentbuilderfieldorderingcompiler","componentbuilderheaderscompiler","componentbuilderpowersautoloadercompiler","componentbuilderprivacycompiler"],"add_menu_prefix":"1","menu_prefix":"»","namespace_prefix":"JCB","minify":"0","language":"en-GB","percentagelanguageadd":"30","assets_table_fix":"2","compiler_field_builder_type":"2","field_name_builder":"2","type_name_builder":"2","avg_seconds_per_folder":"3.0","avg_seconds_per_file":"5.0","avg_seconds_per_line":"9.5","avg_lines_per_page":"56","avg_hourly_rate_usd":"75.0","debugging_factor":"0.25","planning_factor":"0.14","mapping_factor":"0.10","office_factor":"0.16","license_seat_annual_cost":"3000.0","assumed_developer_count":"1","workdays_per_year":"240","assumed_subscription_per_month":"100","market_multiplier_low":"0.9","market_multiplier_medium":"1.2","market_multiplier_high":"2.0","market_multiplier_revolutionary":"4.0","profit_margin_factor":"0.6","blueprint_replication_potential":"50","blueprint_risk_factor":"0.2","export_company":"Vast Development Method","export_owner":"Llewellyn van der Merwe","export_email":"joomla@vdm.io","export_website":"https://dev.vdm.io/","export_license":"GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html","export_copyright":"Copyright (C) 2015. All Rights Reserved","check_in":"-1 day","save_history":"1","history_limit":"10","add_jquery_framework":"1","uikit_load":"1","uikit_min":"","uikit_style":""}'
 			);
 
 
@@ -3292,7 +3293,7 @@ class Com_ComponentbuilderInstallerScript implements InstallerScriptInterface
 			echo '<div style="background-color: #fff;" class="alert alert-info"><a target="_blank" href="https://dev.vdm.io" title="Component Builder">
 				<img src="components/com_componentbuilder/assets/images/vdm-component.jpg"/>
 				</a>
-				<h3>Upgrade to Version 4.1.2 Was Successful! Let us know if anything is not working as expected.</h3></div>';
+				<h3>Upgrade to Version 4.1.3 Was Successful! Let us know if anything is not working as expected.</h3></div>';
 
 			// Add/Update component in the action logs extensions table.
 			$this->setActionLogsExtensions();

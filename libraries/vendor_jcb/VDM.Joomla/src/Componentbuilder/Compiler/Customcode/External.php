@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Customcode;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\Database\DatabaseInterface;
@@ -190,6 +190,21 @@ class External implements ExternalInterface
 		}
 
 		return $string;
+	}
+
+	/**
+	 * Get the number of external code entries registered during the current session.
+	 *
+	 * This method returns the total count of externally provided code fragments
+	 * that have been collected and stored on this instance for the active build
+	 * or compilation cycle.
+	 *
+	 * @return int  The total number of external code entries.
+	 * @since  5.1.4
+	 */
+	public function count(): int
+	{
+		return count($this->code);
 	}
 
 	/**

@@ -215,6 +215,14 @@ interface ConfigInterface
 	public function getGuidField(): string;
 
 	/**
+	 * Get GUID Helper field
+	 *
+	 * @return string|null
+	 * @since  5.1.4
+	 */
+	public function getGuidHelperField(): ?string;
+
+	/**
 	 * Get Prefix Key
 	 *
 	 * @return string

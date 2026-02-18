@@ -14,6 +14,11 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Model\AllowEditInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Model\AllowEdit as J6ModelAllowEdit;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Model\AllowEdit as J5ModelAllowEdit;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Model\AllowEdit as J4ModelAllowEdit;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Model\AllowEdit as J3ModelAllowEdit;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Model\CanDeleteInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Model\CanDelete as J6ModelCanDelete;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Model\CanDelete as J5ModelCanDelete;
@@ -56,6 +61,21 @@ class ArchitectureModel implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
+		$container->alias(J3ModelAllowEdit::class, 'Architecture.Model.J3.AllowEdit')
+			->share('Architecture.Model.J3.AllowEdit', [$this, 'getJ3ModelAllowEdit'], true);
+
+		$container->alias(J4ModelAllowEdit::class, 'Architecture.Model.J4.AllowEdit')
+			->share('Architecture.Model.J4.AllowEdit', [$this, 'getJ4ModelAllowEdit'], true);
+
+		$container->alias(J5ModelAllowEdit::class, 'Architecture.Model.J5.AllowEdit')
+			->share('Architecture.Model.J5.AllowEdit', [$this, 'getJ5ModelAllowEdit'], true);
+
+		$container->alias(J6ModelAllowEdit::class, 'Architecture.Model.J6.AllowEdit')
+			->share('Architecture.Model.J6.AllowEdit', [$this, 'getJ6ModelAllowEdit'], true);
+
+		$container->alias(AllowEditInterface::class, 'Architecture.Model.AllowEdit')
+			->share('Architecture.Model.AllowEdit', [$this, 'getModelAllowEdit'], true);
+
 		$container->alias(J3ModelCanDelete::class, 'Architecture.Model.J3.CanDelete')
 			->share('Architecture.Model.J3.CanDelete', [$this, 'getJ3ModelCanDelete'], true);
 
@@ -100,6 +120,98 @@ class ArchitectureModel implements ServiceProviderInterface
 
 		$container->alias(J3CheckInNow::class, 'Architecture.Model.J3.CheckInNow')
 			->share('Architecture.Model.J3.CheckInNow', [$this, 'getJ3CheckInNow'], true);
+	}
+
+	/**
+	 * Get The AllowEdit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  AllowEditInterface
+	 * @since   5.1.4
+	 */
+	public function getModelAllowEdit(Container $container): AllowEditInterface
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		return $container->get('Architecture.Model.J' . $this->targetVersion . '.AllowEdit');
+	}
+
+	/**
+	 * Get The AllowEdit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J6ModelAllowEdit
+	 * @since   5.1.4
+	 */
+	public function getJ6ModelAllowEdit(Container $container): J6ModelAllowEdit
+	{
+		return new J6ModelAllowEdit(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEdit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J5ModelAllowEdit
+	 * @since   5.1.4
+	 */
+	public function getJ5ModelAllowEdit(Container $container): J5ModelAllowEdit
+	{
+		return new J5ModelAllowEdit(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEdit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J4ModelAllowEdit
+	 * @since   5.1.4
+	 */
+	public function getJ4ModelAllowEdit(Container $container): J4ModelAllowEdit
+	{
+		return new J4ModelAllowEdit(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser'),
+			$container->get('Compiler.Builder.Category'),
+			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The AllowEdit Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3ModelAllowEdit
+	 * @since   5.1.4
+	 */
+	public function getJ3ModelAllowEdit(Container $container): J3ModelAllowEdit
+	{
+		return new J3ModelAllowEdit(
+			$container->get('Config'),
+			$container->get('Compiler.Creator.Permission'),
+			$container->get('Customcode.Dispenser')
+		);
 	}
 
 	/**

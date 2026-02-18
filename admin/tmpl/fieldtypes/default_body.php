@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use Joomla\CMS\User\UserFactoryInterface;
 
 // No direct access to this file
@@ -26,8 +27,8 @@ $edit = "index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.ed
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
-		$canDo = ComponentbuilderHelper::getActions('fieldtype',$item,'fieldtypes');
+				loadUserById((int) ($item->checked_out ?? 0));
+		$canDo = Actions::get('fieldtype', $item, 'fieldtypes');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">
@@ -98,7 +99,7 @@ $edit = "index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.ed
 		</td>
 		<td class="nowrap">
 			<div class="name">
-				<?php if (!$this->isModal && $this->user->authorise('core.edit', 'com_componentbuilder.fieldtype.category.' . (int)$item->catid)): ?>
+				<?php if (!$this->isModal && $this->user->authorise('core.edit', 'com_componentbuilder.fieldtype.category.' . (int) ($item->catid ?? 0))): ?>
 					<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.fieldtype"><?php echo $this->escape($item->category_title); ?></a>
 				<?php else: ?>
 					<?php echo $this->escape($item->category_title); ?>

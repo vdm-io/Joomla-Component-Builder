@@ -152,7 +152,7 @@ class LibrariesController extends AdminController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -265,7 +265,7 @@ class LibrariesController extends AdminController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -318,6 +318,47 @@ class LibrariesController extends AdminController
 		// set redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=libraries', false);
 		$this->setRedirect($redirect_url);
+
+		return $success;
+	}
+
+	/**
+	 * Redirect the request to the Pull selection page.
+	 *
+	 * @return bool True on successful pull, false on failure.
+	 * @since  5.1.1
+	 */
+	public function pullPowers()
+	{
+		// Check for request forgeries
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		// check if user has the right
+		$user = $this->app->getIdentity();
+
+		// set default error message
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_PULL_LIBRARIES') . '</p>';
+		$status = 'error';
+		$success = false;
+
+		if($user->authorise('library.pull', 'com_componentbuilder'))
+		{
+			// set success message
+			$message = null;
+
+			$status = null;
+			$success = true;
+
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=pull_selection&power=Library&target=Libraries', false);
+		}
+		else
+		{
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=libraries', false);
+		}
+		$this->setRedirect($redirect_url, $message, $status);
 
 		return $success;
 	}

@@ -25,6 +25,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 
@@ -120,6 +121,46 @@ class HtmlView extends BaseHtmlView
 	public User $user;
 
 	/**
+	 * The Can Edit permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canEdit = null;
+
+	/**
+	 * The Can Edit State permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canState = null;
+
+	/**
+	 * The Can Create permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canCreate = null;
+
+	/**
+	 * The Can Delete permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canDelete = null;
+
+	/**
+	 * The Can Batch permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canBatch = null;
+
+	/**
 	 * Admin_views view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -135,6 +176,7 @@ class HtmlView extends BaseHtmlView
 		$this->items = $model->getItems();
 		$this->pagination = $model->getPagination();
 		$this->state = $model->getState();
+		$this->isEmptyState = $model->getIsEmptyState();
 		$this->styles = $model->getStyles();
 		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();
@@ -148,8 +190,8 @@ class HtmlView extends BaseHtmlView
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
-		// get global action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('admin_view');
+		// get the permitted actions the current user can do
+		$this->canDo = Actions::get('admin_view');
 		$this->canEdit = $this->canDo->get('admin_view.edit');
 		$this->canState = $this->canDo->get('admin_view.edit.state');
 		$this->canCreate = $this->canDo->get('admin_view.create');
@@ -157,7 +199,7 @@ class HtmlView extends BaseHtmlView
 		$this->canBatch = ($this->canDo->get('admin_view.batch') && $this->canDo->get('core.batch'));
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState)
 		{
 			$this->setLayout('emptystate');
 		}
@@ -187,10 +229,12 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
+		
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_ADMIN_VIEWS'), 'stack');
 
 		if ($this->canCreate)
@@ -241,6 +285,11 @@ class HtmlView extends BaseHtmlView
 		{
 			// add Push button.
 			ToolbarHelper::custom('admin_views.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+		}
+		if ($this->user->authorise('admin_view.pull', 'com_componentbuilder'))
+		{
+			// add Pull button.
+			ToolbarHelper::custom('admin_views.pullPowers', 'undo custom-button-pullpowers', '', 'COM_COMPONENTBUILDER_PULL', false);
 		}
 
 		// set help url for this view if found

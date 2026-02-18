@@ -44,7 +44,7 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 	});
 </script>
 <div id="componentbuilder_loader" style="display: none;">
-<form action="<?php echo Route::_('index.php?option=com_componentbuilder&&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
+<form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=library_files_folders_urls&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <?php echo LayoutHelper::render('library_files_folders_urls.basic_above', $this); ?>
 <div class="main-card">

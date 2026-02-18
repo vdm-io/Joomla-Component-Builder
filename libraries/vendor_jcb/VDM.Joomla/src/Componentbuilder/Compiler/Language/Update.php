@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Language;
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
+use VDM\Joomla\Componentbuilder\User\IdentityTrait;
 
 
 /**
@@ -23,6 +24,12 @@ use Joomla\Database\DatabaseInterface;
  */
 final class Update
 {
+	/**
+	 * To load the user identity
+	 * @since  5.1.4
+	 */
+	use IdentityTrait;
+
 	/**
 	 * The items to update
 	 *
@@ -54,8 +61,7 @@ final class Update
 	public function __construct(DatabaseInterface $db)
 	{
 		$this->db = $db;
-
-		$this->user = Factory::getUser();
+		$this->user = $this->getIdentity();
 	}
 
 	/**

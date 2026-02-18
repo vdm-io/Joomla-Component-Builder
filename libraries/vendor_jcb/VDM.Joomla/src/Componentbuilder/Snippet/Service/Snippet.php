@@ -20,9 +20,6 @@ use VDM\Joomla\Componentbuilder\Snippet\Remote\Config as RemoteConfig;
 use VDM\Joomla\Componentbuilder\Package\Dependency\Resolver;
 use VDM\Joomla\Componentbuilder\Remote\Get;
 use VDM\Joomla\Componentbuilder\Remote\Set;
-use VDM\Joomla\Componentbuilder\Snippet\Builder\Entities;
-use VDM\Joomla\Componentbuilder\Package\Builder\Set as BuilderSet;
-use VDM\Joomla\Componentbuilder\Package\Builder\Get as BuilderGet;
 use VDM\Joomla\Componentbuilder\Snippet\Readme\Item as ItemReadme;
 use VDM\Joomla\Componentbuilder\Snippet\Readme\Main as MainReadme;
 use VDM\Joomla\Componentbuilder\SnippetType\Remote\Config as SnippetType;
@@ -62,15 +59,6 @@ class Snippet implements ServiceProviderInterface
 
 		$container->alias(Set::class, 'Snippet.Remote.Set')
 			->share('Snippet.Remote.Set', [$this, 'getSnippetSet'], true);
-
-		$container->alias(Entities::class, 'Snippet.Entities')
-			->share('Snippet.Entities', [$this, 'getSnippetEntities'], true);
-
-		$container->alias(BuilderSet::class, 'Package.Builder.Set')
-			->share('Package.Builder.Set', [$this, 'getBuilderSet'], true);
-
-		$container->alias(BuilderGet::class, 'Package.Builder.Get')
-			->share('Package.Builder.Get', [$this, 'getBuilderGet'], true);
 
 		$container->alias(ItemReadme::class, 'Snippet.Readme.Item')
 			->share('Snippet.Readme.Item', [$this, 'getItemReadme'], true);
@@ -121,7 +109,7 @@ class Snippet implements ServiceProviderInterface
 			$container->get('Snippet.Remote.Config'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Snippet.Config')->approved_joomla_paths
 		);
 	}
@@ -154,7 +142,7 @@ class Snippet implements ServiceProviderInterface
 		return new Resolver(
 			$container->get('Snippet.Remote.Config'),
 			$container->get('Utilities.Normalize'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Power.Table'),
 			$container->get('Load'),
 			$container->get('Data.Items')
@@ -175,8 +163,8 @@ class Snippet implements ServiceProviderInterface
 			$container->get('Snippet.Remote.Config'),
 			$container->get('Snippet.Grep'),
 			$container->get('Data.Item'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message')
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message')
 		);
 	}
 
@@ -191,8 +179,8 @@ class Snippet implements ServiceProviderInterface
 	public function getSnippetSet(Container $container): Set
 	{
 		return new Set(
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message'),
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message'),
 			$container->get('Snippet.Grep'),
 			$container->get('Snippet.Resolver'),
 			$container->get('Snippet.Remote.Config'),
@@ -201,53 +189,6 @@ class Snippet implements ServiceProviderInterface
 			$container->get('Git.Repository.Contents'),
 			$container->get('Data.Items'),
 			$container->get('Snippet.Config')->approved_joomla_paths
-		);
-	}
-
-	/**
-	 * Get The Entities Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Entities
-	 * @since   5.1.1
-	 */
-	public function getSnippetEntities(Container $container): Entities
-	{
-		return new Entities();
-	}
-
-	/**
-	 * Get The Builder Set Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  BuilderSet
-	 * @since   5.1.1
-	 */
-	public function getBuilderSet(Container $container): BuilderSet
-	{
-		return new BuilderSet(
-			$container->get('Snippet.Entities'),
-			$container->get('Power.Tracker'),
-			$container,
-		);
-	}
-
-	/**
-	 * Get The Builder Get Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  BuilderGet
-	 * @since   5.1.1
-	 */
-	public function getBuilderGet(Container $container): BuilderGet
-	{
-		return new BuilderGet(
-			$container->get('Snippet.Entities'),
-			$container->get('Power.Tracker'),
-			$container,
 		);
 	}
 
@@ -291,7 +232,7 @@ class Snippet implements ServiceProviderInterface
 			$container->get('SnippetType.Remote.Config'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Snippet.Config')->approved_joomla_paths
 		);
 	}
@@ -324,7 +265,7 @@ class Snippet implements ServiceProviderInterface
 		return new Resolver(
 			$container->get('SnippetType.Remote.Config'),
 			$container->get('Utilities.Normalize'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Power.Table'),
 			$container->get('Load'),
 			$container->get('Data.Items')
@@ -345,8 +286,8 @@ class Snippet implements ServiceProviderInterface
 			$container->get('SnippetType.Remote.Config'),
 			$container->get('SnippetType.Grep'),
 			$container->get('Data.Item'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message')
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message')
 		);
 	}
 
@@ -361,8 +302,8 @@ class Snippet implements ServiceProviderInterface
 	public function getSnippetTypeRemoteSet(Container $container): Set
 	{
 		return new Set(
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message'),
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message'),
 			$container->get('SnippetType.Grep'),
 			$container->get('SnippetType.Resolver'),
 			$container->get('SnippetType.Remote.Config'),

@@ -34,6 +34,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\MovedPublishingFields;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Multilingual;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\MysqlTableSetting;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\NewPublishingFields;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\OnlyFunctionButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\OrderZero;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\OtherFilter;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\OtherGroup;
@@ -147,6 +148,9 @@ class BuilderLZ implements ServiceProviderInterface
 
 		$container->alias(NewPublishingFields::class, 'Compiler.Builder.New.Publishing.Fields')
 			->share('Compiler.Builder.New.Publishing.Fields', [$this, 'getNewPublishingFields'], true);
+
+		$container->alias(OnlyFunctionButtons::class, 'Compiler.Builder.Only.Function.Buttons')
+			->share('Compiler.Builder.Only.Function.Buttons', [$this, 'getOnlyFunctionButtons'], true);
 
 		$container->alias(OrderZero::class, 'Compiler.Builder.Order.Zero')
 			->share('Compiler.Builder.Order.Zero', [$this, 'getOrderZero'], true);
@@ -512,6 +516,19 @@ class BuilderLZ implements ServiceProviderInterface
 	public function getNewPublishingFields(Container $container): NewPublishingFields
 	{
 		return new NewPublishingFields();
+	}
+
+	/**
+	 * Get The OnlyFunctionButtons Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  OnlyFunctionButtons
+	 * @since   5.1.4
+	 */
+	public function getOnlyFunctionButtons(Container $container): OnlyFunctionButtons
+	{
+		return new OnlyFunctionButtons();
 	}
 
 	/**

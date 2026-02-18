@@ -57,7 +57,7 @@ class LanguagesController extends AdminController
 		// Check for request forgeries
 		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		// check if user has the right
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 		if($user->authorise('core.create', 'com_componentbuilder'))
 		{
 			// get the model

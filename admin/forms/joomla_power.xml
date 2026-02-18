@@ -178,12 +178,14 @@
 					<!-- Option Set. -->
 					<option value="0">
 						COM_COMPONENTBUILDER_JOOMLA_POWER_ALL</option>
-					<option value="3">
-						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_3</option>
-					<option value="4">
-						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_4</option>
+					<option value="6">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_6</option>
 					<option value="5">
 						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_5</option>
+					<option value="4">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_4</option>
+					<option value="3">
+						COM_COMPONENTBUILDER_JOOMLA_POWER_JOOMLA_3</option>
 				</field>
 			</form>
 		</field>

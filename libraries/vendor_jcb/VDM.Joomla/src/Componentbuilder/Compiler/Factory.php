@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\History;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Customcode;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Package;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Service\JoomlaPower;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
@@ -44,9 +45,10 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Utilities;
 use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderAJ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderLZ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
-use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComHelperClass;
-use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComponent;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureView;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitecturePlugin;
 use VDM\Joomla\Componentbuilder\Power\Service\Git;
@@ -63,6 +65,19 @@ use VDM\Joomla\Gitea\Service\Issue as GiteaIssue;
 use VDM\Joomla\Gitea\Service\Notifications as GiteNotifi;
 use VDM\Joomla\Gitea\Service\Miscellaneous as GiteaMisc;
 use VDM\Joomla\Gitea\Service\Admin as GiteaAdmin;
+use VDM\Joomla\Componentbuilder\Package\Service\ComponentGet;
+use VDM\Joomla\Componentbuilder\Package\Service\JoomlaPluginGet;
+use VDM\Joomla\Componentbuilder\Package\Service\JoomlaModuleGet;
+use VDM\Joomla\Componentbuilder\Package\Service\AdminViewGet;
+use VDM\Joomla\Componentbuilder\Package\Service\CustomAdminViewGet;
+use VDM\Joomla\Componentbuilder\Package\Service\SiteViewGet;
+use VDM\Joomla\Componentbuilder\Package\Service\TemplateGet;
+use VDM\Joomla\Componentbuilder\Package\Service\LayoutGet;
+use VDM\Joomla\Componentbuilder\Package\Service\DynamicGet;
+use VDM\Joomla\Componentbuilder\Package\Service\CustomCodeGet;
+use VDM\Joomla\Componentbuilder\Package\Service\LibraryGet;
+use VDM\Joomla\Componentbuilder\Package\Service\FieldGet;
+use VDM\Joomla\Componentbuilder\Package\Service\DependenciesGet;
 use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
@@ -83,12 +98,15 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	protected static ?Container $container = null;
 
 	/**
-	 * Current Joomla Version Being Build
+	 * Unset the container (for a fresh start)
 	 *
-	 * @var     int
-	 * @since 3.2.0
-	 **/
-	protected static int $JoomlaVersion;
+	 * @return  void
+	 * @since  5.1.5
+	 */
+	public static function unset(): void
+	{
+		self::$container = null;
+	}
 
 	/**
 	 * Get array of all keys in container
@@ -102,24 +120,6 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	}
 
 	/**
-	 * Get version specific class from the compiler container
-	 *
-	 * @param   string  $key  The container class key
-	 *
-	 * @return  mixed
-	 * @since 3.2.0
-	 */
-	public static function _J($key)
-	{
-		if (empty(self::$JoomlaVersion))
-		{
-			self::$JoomlaVersion = self::getContainer()->get('Config')->joomla_version;
-		}
-
-		return self::getContainer()->get('J' . self::$JoomlaVersion . '.' . $key);
-	}
-
-	/**
 	 * Create a container object
 	 *
 	 * @return  Container
@@ -127,6 +127,22 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	 */
 	protected static function createContainer(): Container
 	{
+		/**
+		 * Ensure JPATH_COMPONENT_ADMINISTRATOR is defined. (YES I WILL)
+		 *
+		 * This constant is not guaranteed to exist in CLI or certain bootstrap paths.
+		 * We safely derive it using JPATH_ADMINISTRATOR, which is always defined in Joomla.
+		 *
+		 * @since  5.1.4
+		 */
+		if (!defined('JPATH_COMPONENT_ADMINISTRATOR'))
+		{
+			define(
+				'JPATH_COMPONENT_ADMINISTRATOR',
+				JPATH_ADMINISTRATOR . '/components/com_componentbuilder'
+			);
+		}
+
 		return (new Container())
 			->registerServiceProvider(new Crypt())
 			->registerServiceProvider(new Server())
@@ -143,6 +159,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Language())
 			->registerServiceProvider(new Placeholder())
 			->registerServiceProvider(new Customcode())
+			->registerServiceProvider(new Package())
 			->registerServiceProvider(new Power())
 			->registerServiceProvider(new JoomlaPower())
 			->registerServiceProvider(new Component())
@@ -159,9 +176,10 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new BuilderAJ())
 			->registerServiceProvider(new BuilderLZ())
 			->registerServiceProvider(new Creator())
-			->registerServiceProvider(new ArchitectureComHelperClass())
-			->registerServiceProvider(new ArchitectureController())
+			->registerServiceProvider(new ArchitectureComponent())
 			->registerServiceProvider(new ArchitectureModel())
+			->registerServiceProvider(new ArchitectureView())
+			->registerServiceProvider(new ArchitectureController())
 			->registerServiceProvider(new ArchitectureModule())
 			->registerServiceProvider(new ArchitecturePlugin())
 			->registerServiceProvider(new Git())
@@ -177,7 +195,20 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new GiteaIssue())
 			->registerServiceProvider(new GiteNotifi())
 			->registerServiceProvider(new GiteaMisc())
-			->registerServiceProvider(new GiteaAdmin());
+			->registerServiceProvider(new GiteaAdmin())
+			->registerServiceProvider(new ComponentGet())
+			->registerServiceProvider(new JoomlaPluginGet())
+			->registerServiceProvider(new JoomlaModuleGet())
+			->registerServiceProvider(new AdminViewGet())
+			->registerServiceProvider(new CustomAdminViewGet())
+			->registerServiceProvider(new SiteViewGet())
+			->registerServiceProvider(new TemplateGet())
+			->registerServiceProvider(new LayoutGet())
+			->registerServiceProvider(new DynamicGet())
+			->registerServiceProvider(new CustomCodeGet())
+			->registerServiceProvider(new LibraryGet())
+			->registerServiceProvider(new FieldGet())
+			->registerServiceProvider(new DependenciesGet());
 	}
 }
 

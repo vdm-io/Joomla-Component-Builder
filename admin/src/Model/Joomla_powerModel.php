@@ -30,9 +30,8 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
-use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -129,20 +128,20 @@ class Joomla_powerModel extends AdminModel
 	{
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params) && !is_array($item->params))
-			{
-				// Convert the params field to an array.
-				$registry = new Registry;
-				$registry->loadString($item->params);
-				$item->params = $registry->toArray();
-			}
-
-			if (!empty($item->metadata))
+			if (property_exists($item, 'metadata') && !is_array($item->metadata))
 			{
 				// Convert the metadata field to an array.
-				$registry = new Registry;
-				$registry->loadString($item->metadata);
-				$item->metadata = $registry->toArray();
+				$metadata       = new Registry($item->metadata);
+				$item->metadata = $metadata->toArray();
+			}
+
+			// check edit access permissions
+			if (!empty($item->id) && !$this->allowEdit((array) $item))
+			{
+ 				$app = Factory::getApplication();
+  				$app->enqueueMessage(Text::_('Not authorised!'), 'error');
+				$app->redirect('index.php?option=com_componentbuilder');
+				return false;
 			}
 
 			if (!empty($item->settings))
@@ -379,20 +378,60 @@ class Joomla_powerModel extends AdminModel
 	}
 
 	/**
-	 * Method override to check if you can edit an existing record.
+	 * Method to check if you can edit an existing record.
+	 *   We know this is a double access check (Controller already does an allowEdit check)
+	 *   But when the item is directly accessed the controller is skipped (2025_).
 	 *
 	 * @param    array    $data   An array of input data.
 	 * @param    string   $key    The name of the key for the primary key.
 	 *
-	 * @return   boolean
+	 * @return   boolean  True if allowed to edit the record. Defaults to the permission set in the component.
 	 * @since    2.5
 	 */
-	protected function allowEdit($data = [], $key = 'id')
+	protected function allowEdit(array $data = [], string $key = 'id'): bool
 	{
-		// Check specific edit permission then general edit permission.
-		$user = Factory::getApplication()->getIdentity();
+		// get user object.
+		$user = $this->getCurrentUser();
+		// get record id.
+		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
 
-		return $user->authorise('joomla_power.edit', 'com_componentbuilder.joomla_power.'. ((int) isset($data[$key]) ? $data[$key] : 0)) or $user->authorise('joomla_power.edit',  'com_componentbuilder');
+
+		// Access check.
+		$access = ($user->authorise('joomla_power.access', 'com_componentbuilder.joomla_power.' . (int) $recordId) && $user->authorise('joomla_power.access', 'com_componentbuilder'));
+		if (!$access)
+		{
+			return false;
+		}
+
+		if ($recordId)
+		{
+			// The record has been set. Check the record permissions.
+			$permission = $user->authorise('joomla_power.edit', 'com_componentbuilder.joomla_power.' . (int) $recordId);
+			if (!$permission)
+			{
+				if ($user->authorise('joomla_power.edit.own', 'com_componentbuilder.joomla_power.' . $recordId))
+				{
+					// Now test the owner is the user.
+					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+					if (empty($ownerId))
+					{
+						return false;
+					}
+
+					// If the owner matches 'me' then allow.
+					if ($ownerId == $user->id)
+					{
+						if ($user->authorise('joomla_power.edit.own', 'com_componentbuilder'))
+						{
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		}
+		// Since there is no permission, revert to the component permissions.
+		return $user->authorise('joomla_power.edit', $this->option);
 	}
 
 	/**
@@ -468,7 +507,7 @@ class Joomla_powerModel extends AdminModel
 			$data = $this->getItem();
 		}
 
-		// run the perprocess of the data
+		// run the per process of the data
 		$this->preprocessData('com_componentbuilder.joomla_power', $data);
 
 		return $data;
@@ -519,351 +558,6 @@ class Joomla_powerModel extends AdminModel
 		{
 			return false;
 		}
-
-		return true;
-	}
-
-	/**
-	 * Method to perform batch operations on an item or a set of items.
-	 *
-	 * @param   array  $commands  An array of commands to perform.
-	 * @param   array  $pks       An array of item ids.
-	 * @param   array  $contexts  An array of item contexts.
-	 *
-	 * @return  boolean  Returns true on success, false on failure.
-	 * @since   12.2
-	 */
-	public function batch($commands, $pks, $contexts)
-	{
-		// Sanitize ids.
-		$pks = array_unique($pks);
-		ArrayHelper::toInteger($pks);
-
-		// Remove any values of zero.
-		if (array_search(0, $pks, true))
-		{
-			unset($pks[array_search(0, $pks, true)]);
-		}
-
-		if (empty($pks))
-		{
-			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
-			return false;
-		}
-
-		$done = false;
-
-		// Set some needed variables.
-		$this->user ??= $this->getCurrentUser();
-		$this->table = $this->getTable();
-		$this->tableClassName = get_class($this->table);
-		$this->contentType = new UCMType;
-		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo = ComponentbuilderHelper::getActions('joomla_power');
-		$this->batchSet = true;
-
-		if (!$this->canDo->get('core.batch'))
-		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		if ($this->type == false)
-		{
-			$type = new UCMType;
-			$this->type = $type->getTypeByAlias($this->typeAlias);
-		}
-
-		$this->tagsObserver = $this->table->getObserverOfClass('JTableObserverTags');
-
-		if (!empty($commands['move_copy']))
-		{
-			$cmd = ArrayHelper::getValue($commands, 'move_copy', 'c');
-
-			if ($cmd == 'c')
-			{
-				$result = $this->batchCopy($commands, $pks, $contexts);
-
-				if (is_array($result))
-				{
-					foreach ($result as $old => $new)
-					{
-						$contexts[$new] = $contexts[$old];
-					}
-					$pks = array_values($result);
-				}
-				else
-				{
-					return false;
-				}
-			}
-			elseif ($cmd == 'm' && !$this->batchMove($commands, $pks, $contexts))
-			{
-				return false;
-			}
-
-			$done = true;
-		}
-
-		if (!$done)
-		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		// Clear the cache
-		$this->cleanCache();
-
-		return true;
-	}
-
-	/**
-	 * Batch copy items to a new category or current.
-	 *
-	 * @param   integer  $values    The new values.
-	 * @param   array    $pks       An array of row IDs.
-	 * @param   array    $contexts  An array of item contexts.
-	 *
-	 * @return  mixed  An array of new IDs on success, boolean false on failure.
-	 *
-	 * @since 12.2
-	 */
-	protected function batchCopy($values, $pks, $contexts)
-	{
-		if (empty($this->batchSet))
-		{
-			// Set some needed variables.
-			$this->user 		= Factory::getApplication()->getIdentity();
-			$this->table 		= $this->getTable();
-			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_power');
-		}
-
-		if (!$this->canDo->get('joomla_power.create') && !$this->canDo->get('joomla_power.batch'))
-		{
-			return false;
-		}
-
-		// get list of unique fields
-		$uniqueFields = $this->getUniqueFields();
-		// remove move_copy from array
-		unset($values['move_copy']);
-
-		// make sure published is set
-		if (!isset($values['published']))
-		{
-			$values['published'] = 0;
-		}
-		elseif (isset($values['published']) && !$this->canDo->get('joomla_power.edit.state'))
-		{
-				$values['published'] = 0;
-		}
-
-		$newIds = [];
-		// Parent exists so let's proceed
-		while (!empty($pks))
-		{
-			// Pop the first ID off the stack
-			$pk = array_shift($pks);
-
-			$this->table->reset();
-
-			// only allow copy if user may edit this item.
-			if (!$this->user->authorise('joomla_power.edit', $contexts[$pk]))
-			{
-				// Not fatal error
-				$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-				continue;
-			}
-
-			// Check that the row actually exists
-			if (!$this->table->load($pk))
-			{
-				if ($error = $this->table->getError())
-				{
-					// Fatal error
-					$this->setError($error);
-					return false;
-				}
-				else
-				{
-					// Not fatal error
-					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-					continue;
-				}
-			}
-
-			// Only for strings
-			if (UtilitiesStringHelper::check($this->table->system_name) && !is_numeric($this->table->system_name))
-			{
-				$this->table->system_name = $this->generateUnique('system_name',$this->table->system_name);
-			}
-
-			// insert all set values
-			if (UtilitiesArrayHelper::check($values))
-			{
-				foreach ($values as $key => $value)
-				{
-					if (strlen($value) > 0 && isset($this->table->$key))
-					{
-						$this->table->$key = $value;
-					}
-				}
-			}
-
-			// update all unique fields
-			if (UtilitiesArrayHelper::check($uniqueFields))
-			{
-				foreach ($uniqueFields as $uniqueField)
-				{
-					$this->table->$uniqueField = $this->generateUnique($uniqueField,$this->table->$uniqueField);
-				}
-			}
-
-			// Reset the ID because we are making a copy
-			$this->table->id = 0;
-
-			// TODO: Deal with ordering?
-			// $this->table->ordering = 1;
-
-			// Check the row.
-			if (!$this->table->check())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-
-			if (!empty($this->type))
-			{
-				$this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
-			}
-
-			// Store the row.
-			if (!$this->table->store())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-
-			// Get the new item ID
-			$newId = $this->table->get('id');
-
-			// Add the new ID to the array
-			$newIds[$pk] = $newId;
-		}
-
-		// Clean the cache
-		$this->cleanCache();
-
-		return $newIds;
-	}
-
-	/**
-	 * Batch move items to a new category
-	 *
-	 * @param   integer  $value     The new category ID.
-	 * @param   array    $pks       An array of row IDs.
-	 * @param   array    $contexts  An array of item contexts.
-	 *
-	 * @return  boolean  True if successful, false otherwise and internal error is set.
-	 *
-	 * @since 12.2
-	 */
-	protected function batchMove($values, $pks, $contexts)
-	{
-		if (empty($this->batchSet))
-		{
-			// Set some needed variables.
-			$this->user		= Factory::getApplication()->getIdentity();
-			$this->table		= $this->getTable();
-			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_power');
-		}
-
-		if (!$this->canDo->get('joomla_power.edit') && !$this->canDo->get('joomla_power.batch'))
-		{
-			$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-			return false;
-		}
-
-		// make sure published only updates if user has the permission.
-		if (isset($values['published']) && !$this->canDo->get('joomla_power.edit.state'))
-		{
-			unset($values['published']);
-		}
-		// remove move_copy from array
-		unset($values['move_copy']);
-
-		// Parent exists so we proceed
-		foreach ($pks as $pk)
-		{
-			if (!$this->user->authorise('joomla_power.edit', $contexts[$pk]))
-			{
-				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
-				return false;
-			}
-
-			// Check that the row actually exists
-			if (!$this->table->load($pk))
-			{
-				if ($error = $this->table->getError())
-				{
-					// Fatal error
-					$this->setError($error);
-					return false;
-				}
-				else
-				{
-					// Not fatal error
-					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-					continue;
-				}
-			}
-
-			// insert all set values.
-			if (UtilitiesArrayHelper::check($values))
-			{
-				foreach ($values as $key => $value)
-				{
-					// Do special action for access.
-					if ('access' === $key && strlen($value) > 0)
-					{
-						$this->table->$key = $value;
-					}
-					elseif (strlen($value) > 0 && isset($this->table->$key))
-					{
-						$this->table->$key = $value;
-					}
-				}
-			}
-
-
-			// Check the row.
-			if (!$this->table->check())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-
-			if (!empty($this->type))
-			{
-				$this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
-			}
-
-			// Store the row.
-			if (!$this->table->store())
-			{
-				$this->setError($this->table->getError());
-
-				return false;
-			}
-		}
-
-		// Clean the cache
-		$this->cleanCache();
 
 		return true;
 	}

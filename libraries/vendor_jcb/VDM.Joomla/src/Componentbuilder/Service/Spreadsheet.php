@@ -14,10 +14,11 @@ namespace VDM\Joomla\Componentbuilder\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Spreadsheet\Header;
 use VDM\Joomla\Componentbuilder\Spreadsheet\Exporter;
-use VDM\Joomla\Componentbuilder\Spreadsheet\Importer;
-use VDM\Joomla\Componentbuilder\Spreadsheet\FileReader;
+use VDM\Joomla\Componentbuilder\Spreadsheet\RowDataArray;
+use VDM\Joomla\Spreadsheet\Header;
+use VDM\Joomla\Import\Spreadsheet\Reader;
+use VDM\Joomla\Import\Spreadsheet\FileReader;
 
 
 /**
@@ -37,30 +38,20 @@ class Spreadsheet implements ServiceProviderInterface
 	 */
 	public function register(Container $container)
 	{
-		$container->alias(Header::class, 'Spreadsheet.Header')
-			->share('Spreadsheet.Header', [$this, 'getHeader'], true);
-
 		$container->alias(Exporter::class, 'Spreadsheet.Exporter')
 			->share('Spreadsheet.Exporter', [$this, 'getExporter'], true);
 
-		$container->alias(Importer::class, 'Spreadsheet.Importer')
-			->share('Spreadsheet.Importer', [$this, 'getImporter'], true);
+		$container->alias(RowDataArray::class, 'Spreadsheet.RowDataArray')
+			->share('Spreadsheet.RowDataArray', [$this, 'getRowDataArray'], true);
+
+		$container->alias(Header::class, 'Spreadsheet.Header')
+			->share('Spreadsheet.Header', [$this, 'getHeader'], true);
+
+		$container->alias(Reader::class, 'Spreadsheet.Reader')
+			->share('Spreadsheet.Reader', [$this, 'getReader'], true);
 
 		$container->alias(FileReader::class, 'Spreadsheet.FileReader')
 			->share('Spreadsheet.FileReader', [$this, 'getFileReader'], true);
-	}
-
-	/**
-	 * Get The Header Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Header
-	 * @since 5.0.3
-	 */
-	public function getHeader(Container $container): Header
-	{
-		return new Header();
 	}
 
 	/**
@@ -77,16 +68,42 @@ class Spreadsheet implements ServiceProviderInterface
 	}
 
 	/**
-	 * Get The Importer Class.
+	 * Get The RowDataArray Class.
 	 *
 	 * @param   Container  $container  The DI container.
 	 *
-	 * @return  Importer
+	 * @return  RowDataArray
+	 * @since 5.0.2
+	 */
+	public function getRowDataArray(Container $container): RowDataArray
+	{
+		return new RowDataArray();
+	}
+
+	/**
+	 * Get The Header Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Header
 	 * @since 5.0.3
 	 */
-	public function getImporter(Container $container): Importer
+	public function getHeader(Container $container): Header
 	{
-		return new Importer(
+		return new Header();
+	}
+
+	/**
+	 * Get The Reader Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Reader
+	 * @since 5.0.3
+	 */
+	public function getReader(Container $container): Reader
+	{
+		return new Reader(
 			$container->get('Spreadsheet.FileReader')
 		);
 	}

@@ -207,28 +207,6 @@ class Component_files_foldersController extends FormController
 	}
 
 	/**
-	 * Method to run batch operations.
-	 *
-	 * @param   object  $model  The model.
-	 *
-	 * @return  boolean   True if successful, false otherwise and internal error is set.
-	 *
-	 * @since   2.5
-	 */
-	public function batch($model = null)
-	{
-		Session::checkToken() or exit(Text::_('JINVALID_TOKEN'));
-
-		// Set the model
-		$model = $this->getModel('Component_files_folders', '', []);
-
-		// Preset the redirect
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=components_files_folders' . $this->getRedirectToListAppend(), false));
-
-		return parent::batch($model);
-	}
-
-	/**
 	 * Method to cancel an edit.
 	 *
 	 * @param   string  $key  The name of the primary key of the URL variable.

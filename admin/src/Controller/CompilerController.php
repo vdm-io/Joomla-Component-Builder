@@ -18,9 +18,6 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Version;
-use VDM\Joomla\Componentbuilder\File\Factory as FileFactory;
-use VDM\Joomla\Componentbuilder\Import\Factory as ImportFactory;
-use VDM\Joomla\Abstraction\Console\Import;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as CompilerFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -73,15 +70,6 @@ class CompilerController extends AdminController
 	}
 
 	/**
-	 * Adding this so that the upload factory gets build for Super Powers
-	 * FileFactory
-	 * Adding this so that the import factory gets build for Super Powers
-	 * ImportFactory
-	 * Adding this so that the import cli gets build for Super Powers
-	 * Import
-	 */
-
-	/**
 	 * get all the animations used in the compiler
 	 *
 	 * @return  bool true on success
@@ -122,30 +110,39 @@ class CompilerController extends AdminController
 	{
 		// Check for request forgeries
 		Session::checkToken() or \jexit(Text::_('JINVALID_TOKEN'));
+
 		// Access control (admins only)
 		$user = $this->app->getIdentity();
 		if (!$user->authorise('core.manage', 'com_componentbuilder'))
 		{
 			return false;
 		}
+
 		$model = $this->getModel('Compiler');
-		if (!$model->builder())
+		if (!$model->compile())
 		{
 			return false;
 		}
+
 		// Clear menu cache (same as before) TODO: remove if not needed, lets see
-		// $cache = Factory::getCache('mod_menu');
-		// $cache->clean();
 		$redirectUrl = (string) $this->app->getUserState('com_componentbuilder.redirect_url');
 		$message = $this->app->getUserState('com_componentbuilder.message');
+
 		if (empty($redirectUrl) && CompilerFactory::_('Config')->component_id > 0)
 		{
-			$hasPlugins = UtilitiesArrayHelper::check($model->compiler->filepath['plugins'] ?? [], true);
-			$hasModules = UtilitiesArrayHelper::check($model->compiler->filepath['modules'] ?? [], true);
+			$hasPlugins = UtilitiesArrayHelper::check(
+				CompilerFactory::_('FilePaths')->get('plugins', [])
+			, true);
+
+			$hasModules = UtilitiesArrayHelper::check(
+				CompilerFactory::_('FilePaths')->get('modules', [])
+			, true);
+
 			$redirect = Route::_('index.php?option=com_componentbuilder&view=compiler', false);
 
 			// Build the success payload (messages + UI)
-			$success_message = LayoutHelper::render('jcbbuildersuccessmessage', $model);
+			$success_message = LayoutHelper::render('jcbbuildersuccessmessage');
+
 			// Persist message to user state (as before) with your placeholder flow
 			$this->app->setUserState(
 				'com_componentbuilder.success_message',
@@ -153,22 +150,24 @@ class CompilerController extends AdminController
 					$success_message, CompilerFactory::_('Compiler.Builder.Content.One')->allActive()
 				)
 			);
+
 			// Set redirect target and flash message
 			$this->setRedirect($redirect, '<h2>' . Text::_('COM_COMPONENTBUILDER_SUCCESSFUL_BUILD') . '</h2>', 'message');
+
 			// Persist names for follow-up UI (unchanged)
-			$this->app->setUserState('com_componentbuilder.component_folder_name', $model->compiler->filepath['component-folder'] ?? '');
+			$this->app->setUserState('com_componentbuilder.component_folder_name', CompilerFactory::_('FilePaths')->get('component-folder', ''));
 			if ($hasModules)
 			{
-				$this->app->setUserState('com_componentbuilder.modules_folder_name', $model->compiler->filepath['modules-folder'] ?? []);
+				$this->app->setUserState('com_componentbuilder.modules_folder_name', CompilerFactory::_('FilePaths')->get('modules-folder', []));
 			}
 			if ($hasPlugins)
 			{
-				$this->app->setUserState('com_componentbuilder.plugins_folder_name', $model->compiler->filepath['plugins-folder'] ?? []);
+				$this->app->setUserState('com_componentbuilder.plugins_folder_name', CompilerFactory::_('FilePaths')->get('plugins-folder', []));
 			}
 		}
 		else
 		{
-			// Reset state on redirect (unchanged behavior)
+			// Reset state on redirect (unchanged behaviour)
 			$this->app->setUserState('com_componentbuilder.redirect_url', '');
 			$this->app->setUserState('com_componentbuilder.message', '');
 			$this->app->setUserState('com_componentbuilder.extension_message', '');

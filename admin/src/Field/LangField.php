@@ -16,6 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -42,44 +43,118 @@ class LangField extends ListField
 	 */
 	protected function getOptions()
 	{
-		$db = Factory::getDBO();
+				$db = Factory::getContainer()
+			->get(DatabaseInterface::class);
+
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.langtag','a.name'),array('langtag','language_name')));
+		$query->select(
+			$db->quoteName(
+				['a.langtag', 'a.name'],
+				['langtag', 'language_name']
+			)
+		);
 		$query->from($db->quoteName('#__componentbuilder_language', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.langtag ASC');
-		$db->setQuery((string)$query);
+		$db->setQuery((string) $query);
+
 		$items = $db->loadObjectList();
-		// add the main language
-		$main_lang = trim(ComponentHelper::getParams('com_componentbuilder')->get('language', 'en-GB'));
-		// make sure the main language is added
-		$wasAdded = false;
-		$options = array();
-		if ($items)
+
+		$mainLangRaw = ComponentHelper::getParams('com_componentbuilder')->get('language', 'en-GB');
+		$mainLang = trim((string) $mainLangRaw);
+		if ($mainLang === '')
 		{
-			$options[] = Html::_('select.option', '', 'Select an option');
-			foreach($items as $item)
+			$mainLang = 'en-GB';
+		}
+
+		$normalize = static function (string $value): string
+		{
+			$value = trim($value);
+
+			// Normalize to canonical Joomla style: xx-YY
+			$value = str_replace('_', '-', $value);
+
+			$value = strtolower($value);
+
+			if (strpos($value, '-') !== false)
 			{
-				$item->langtag = trim($item->langtag);
-				$options[] = Html::_('select.option', $item->langtag, $item->language_name . ' (' .$item->langtag.')');
-				if ($main_lang === $item->langtag)
+				[$a, $b] = explode('-', $value, 2);
+
+				$value = strtolower($a) . '-' . strtoupper($b);
+			}
+
+			return $value;
+		};
+
+		// Normalized main language
+		$mainLangNorm = $normalize($mainLang);
+
+		$options = [];
+
+		/**
+		 * Tracks normalized language codes that were added.
+		 * Prevents duplicates under all circumstances.
+		 *
+		 * @var array<string,bool>
+		 */
+		$added = [];
+
+		// Default option
+		$options[] = Html::_(
+			'select.option',
+			'',
+			'Select an option'
+		);
+
+		if (!empty($items))
+		{
+			foreach ($items as $item)
+			{
+				$rawId = trim((string) $item->langtag);
+
+				if ($rawId === '')
 				{
-					$wasAdded = true;
+					continue;
 				}
+
+				$normId = $normalize($rawId);
+
+				// Skip if already added (absolute safety)
+				if (isset($added[$normId]))
+				{
+					continue;
+				}
+
+				$options[] = Html::_(
+					'select.option',
+					$rawId,
+					$item->language_name . ' (' . $rawId . ')'
+				);
+
+				$added[$normId] = true;
 			}
 		}
-		// now add it if not already added (it must default to $main_lang)
-		if (!$wasAdded)
+
+		if (!isset($added[$mainLangNorm]))
 		{
-			if ('en-GB' === $main_lang)
+			if ($mainLangNorm === 'en-GB')
 			{
-				$options[] = Html::_('select.option', $main_lang, 'English GB (' . $main_lang . ')');
+				$label = 'English GB (' . $mainLang . ')';
 			}
 			else
 			{
-				$options[] = Html::_('select.option', $main_lang, 'Main Language (' . $main_lang . ')');
+				$label = 'Main Language (' . $mainLang . ')';
 			}
+
+			$options[] = Html::_(
+				'select.option',
+				$mainLang,
+				$label
+			);
+
+			$added[$mainLangNorm] = true;
 		}
+
 		return $options;
 	}
 }

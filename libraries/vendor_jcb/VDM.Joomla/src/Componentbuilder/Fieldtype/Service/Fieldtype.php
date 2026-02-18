@@ -115,7 +115,7 @@ class Fieldtype implements ServiceProviderInterface
 			$container->get('Joomla.Fieldtype.Remote.Config'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Network.Resolve'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container->get('Joomla.Fieldtype.Config')->approved_joomla_paths
 		);
 	}
@@ -149,8 +149,8 @@ class Fieldtype implements ServiceProviderInterface
 			$container->get('Joomla.Fieldtype.Remote.Config'),
 			$container->get('Joomla.Fieldtype.Grep'),
 			$container->get('Data.Item'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message')
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message')
 		);
 	}
 
@@ -171,8 +171,8 @@ class Fieldtype implements ServiceProviderInterface
 			$container->get('Joomla.Fieldtype.Readme.Item'),
 			$container->get('Joomla.Fieldtype.Readme.Main'),
 			$container->get('Git.Repository.Contents'),
-			$container->get('Power.Tracker'),
-			$container->get('Power.Message'),
+			$container->get('Package.Tracker'),
+			$container->get('Package.Message'),
 			$container->get('Joomla.Fieldtype.Config')->approved_joomla_paths
 		);
 	}

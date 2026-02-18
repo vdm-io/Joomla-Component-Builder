@@ -132,6 +132,7 @@ class Com_###Component###InstallerScript implements InstallerScriptInterface
 			$this->deleteFiles = [
 				'/administrator/components/com_###component###/###component###.php',
 				'/administrator/components/com_###component###/controller.php',
+				'/administrator/components/com_###component###/script.php',
 				'/components/com_###component###/###component###.php',
 				'/components/com_###component###/controller.php',
 				'/components/com_###component###/router.php',

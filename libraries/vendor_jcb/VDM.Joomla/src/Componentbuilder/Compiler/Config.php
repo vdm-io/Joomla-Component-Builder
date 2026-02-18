@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 use Joomla\Registry\Registry as JoomlaRegistry;
 use Joomla\CMS\Factory as JoomlaFactory;
+use Joomla\CMS\Version;
 use Joomla\Input\Input;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -57,6 +58,17 @@ class Config extends ComponentConfig
 		parent::__construct($input, $params);
 
 		$this->config = $config ?: JoomlaFactory::getConfig();
+	}
+
+	/**
+	 * get git folder path
+	 *
+	 * @return  string  The git folder path
+	 * @since   5.1.4
+	 */
+	protected function getGitfolderpath(): ?string
+	{
+		return $this->params->get('git_folder_path');
 	}
 
 	/**
@@ -105,16 +117,6 @@ class Config extends ComponentConfig
 	{
 		// some defaults repos we need by JCB
 		$repos = [];
-
-		// get the users own power repo (can overwrite all)
-		if ($this->gitea_username !== null)
-		{
-			$repos[$this->gitea_username . '.super-powers'] = (object) [
-				'organisation' => $this->gitea_username,
-				'repository' => 'super-powers',
-				'read_branch' => 'master'
-			];
-		}
 
 		$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) [
 			'base' => 'https://codeberg.org',
@@ -340,6 +342,28 @@ class Config extends ComponentConfig
 	}
 
 	/**
+	 * get add menu prefix
+	 *
+	 * @return int     The add menu prefix switch
+	 * @since  5.1.4
+	 */
+	protected function getAddmenuprefix(): int
+	{
+		return $this->params->get('add_menu_prefix', 1);
+	}
+
+	/**
+	 * get menu prefix
+	 *
+	 * @return string   The menu prefix
+	 * @since  5.1.4
+	 */
+	protected function getMenuprefix(): string
+	{
+		return (string) $this->params->get('menu_prefix', '&#187;');
+	}
+
+	/**
 	 * get add namespace prefix
 	 *
 	 * @return  bool  The add namespace prefix switch
@@ -383,7 +407,7 @@ class Config extends ComponentConfig
 	 */
 	protected function getJoomlaversion(): int
 	{
-		return $this->input->post->get('joomla_version', 5, 'INT');
+		return $this->input->post->get('joomla_version', Version::MAJOR_VERSION, 'INT');
 	}
 
 	/**
@@ -397,8 +421,8 @@ class Config extends ComponentConfig
 		return [
 			3 => ['folder_key' => 3, 'xml_version' => '3.10'],
 			4 => ['folder_key' => 4, 'xml_version' => '4.0'],
-			5 => ['folder_key' => 4, 'xml_version' => '5.0'], // for now we build 4 and 5 from same templates ;),
-			6 => ['folder_key' => 4, 'xml_version' => '6.0'] // for now we build 4 and 6 from same templates ;)
+			5 => ['folder_key' => 4, 'xml_version' => '5.0'],
+			6 => ['folder_key' => 4, 'xml_version' => '6.0'] // for now we build 4 to 6 from same templates ;)
 		];
 	}
 
@@ -863,15 +887,7 @@ class Config extends ComponentConfig
 	{
 		// some defaults repos we need by JCB
 		$repos = [];
-		// get the users own power repo (can overwrite all)
-		if ($this->gitea_username !== null)
-		{
-			$repos[$this->gitea_username . '.joomla-powers'] = (object) [
-				'organisation' => $this->gitea_username,
-				'repository' => 'joomla-powers',
-				'read_branch' => 'master'
-			];
-		}
+
 		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) [
 			'base' => 'https://codeberg.org',
 			'organisation' => $this->joomla_powers_core_organisation,
@@ -907,6 +923,71 @@ class Config extends ComponentConfig
 		$approved = $this->joomla_powers_init_repos;
 
 		$paths = RepoHelper::get(2); // Joomla Power = 2
+
+		if ($paths !== null)
+		{
+			foreach ($paths as $path)
+			{
+				$owner = $path->organisation ?? null;
+				$repo = $path->repository ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$approved = ["{$owner}.{$repo}" => $path] + $approved;
+				}
+			}
+		}
+
+		return array_values($approved);
+	}
+
+	/**
+	 * Get template core organisation
+	 *
+	 * @return  string   The template core organisation
+	 * @since   5.1.4
+	 */
+	protected function getPackagecoreorganisation(): string
+	{
+		// the VDM default organisation is [joomla]
+		$organisation = 'joomla';
+
+		return $this->params->get('package_core_organisation', $organisation);
+	}
+
+	/**
+	 * Get Template init repos
+	 *
+	 * @return  array The init repositories on Gitea
+	 * @since   5.1.4
+	 */
+	protected function getPackageinitrepos(): array
+	{
+		// some defaults repos we need by JCB
+		$repos = [];
+
+		$repos[$this->package_core_organisation . '.packages'] = (object) [
+			'base' => 'https://codeberg.org',
+			'organisation' => $this->package_core_organisation,
+			'repository' => 'packages',
+			'read_branch' => 'master'
+		];
+
+		return $repos;
+	}
+
+	/**
+	 * Get joomla template approved paths
+	 *
+	 * @return  array The approved paths to the repositories on Gitea
+	 * @since   5.1.4
+	 */
+	protected function getApprovedpackagepaths(): array
+	{
+		// some defaults repos we need by JCB
+		$approved = $this->package_init_repos;
+
+		$paths = RepoHelper::get(4); // JCB Packages = 4
 
 		if ($paths !== null)
 		{
@@ -1058,7 +1139,7 @@ class Config extends ComponentConfig
 	 */
 	protected function getAddsuperpowers(): bool
 	{
-		$default = (bool) $this->params->get('powers_repository', 0);
+		$default = (bool) $this->params->get('powers_repository', 1); // default to always add
 
 		if (!$this->show_advanced_options)
 		{
@@ -1080,7 +1161,7 @@ class Config extends ComponentConfig
 	{
 		if ($this->add_super_powers)
 		{
-			return (bool) $this->params->get('super_powers_repositories', 0);
+			return (bool) $this->params->get('super_powers_repositories', 1);
 		}
 
 		return false;

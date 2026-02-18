@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Import;
 
 
 use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
-use VDM\Joomla\Componentbuilder\Interfaces\ImportStatusInterface;
+use VDM\Joomla\Interfaces\Import\StatusInterface;
 
 
 /**
@@ -21,7 +21,7 @@ use VDM\Joomla\Componentbuilder\Interfaces\ImportStatusInterface;
  * 
  * @since  5.0.2
  */
-final class Status implements ImportStatusInterface
+final class Status implements StatusInterface
 {
 	/**
 	 * The Item Class.
@@ -75,21 +75,18 @@ final class Status implements ImportStatusInterface
 	 * Updates the status in the database.
 	 *
 	 * This method updates the import status in the database based on the result of the import process.
-	 * Status codes:
-	 *  - 2: Being Processed.
-	 *  - 3: Import completed successfully.
-	 *  - 4: Import completed with errors.
 	 *
-	 * @param int     $status  The status code to set for the import (2 => processing, 3 => success, 4 => errors).
-	 * @param string  $guid    The target import GUID
+	 * @param int     $status  The status code to set for the import
+	 * @param string  $value   The target status value
+	 * @param string  $key     The target key [default: `guid`]
 	 *
 	 * @return void
 	 * @since  5.0.2
 	 */
-	public function set(int $status, string $guid): void
+	public function set(int $status, string $value, $key = 'guid'): void
 	{
 		$this->item->table($this->getTable())->set((object) [
-			'guid' => $guid,
+			$key => $value,
 			$this->getField() => $status
 		]);
 	}

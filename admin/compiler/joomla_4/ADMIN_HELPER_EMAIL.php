@@ -43,7 +43,7 @@ abstract class ###Component###Email
 	/**
 	 * Mail instances container.
 	 *
-	 * @var    Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power[]
+	 * @var    array<string, Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power>
 	 * @since  1.7.3
 	 */
 	protected static array $instances = [];
@@ -139,7 +139,7 @@ abstract class ###Component###Email
 	}
 
 	/**
-	 * Set a custom email header.
+	 * Set a custom email header (sanitized).
 	 *
 	 * @param   string  $key    Header name.
 	 * @param   string  $value  Header value.
@@ -149,7 +149,13 @@ abstract class ###Component###Email
 	 */
 	public static function setHeader(string $key, string $value): void
 	{
-		self::$header[$key] = $value;
+		$cleanKey   = preg_replace('/[^A-Za-z0-9\-]/', '', $key) ?? '';
+		$cleanValue = str_replace(["\r", "\n"], '', $value);
+
+		if ($cleanKey !== '')
+		{
+			self::$header[$cleanKey] = $cleanValue;
+		}
 	}
 
 	/**
@@ -167,7 +173,10 @@ abstract class ###Component###Email
 		{
 			$config = clone self::getGlobalConfig();
 			$config->set('throw_exceptions', $exceptions);
-			self::$instances[$id] = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla___3e2779e9_b33f_42b8_a13b_53f08d99f15b___Power::class)->createMailer($config);
+
+			/** @var Joomla___3e2779e9_b33f_42b8_a13b_53f08d99f15b___Power $factory */
+			$factory = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->get(Joomla___3e2779e9_b33f_42b8_a13b_53f08d99f15b___Power::class);
+			self::$instances[$id] = $factory->createMailer($config);
 		}
 
 		return self::$instances[$id];
@@ -182,13 +191,14 @@ abstract class ###Component###Email
 	protected static function createMailer(): Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power
 	{
 		$conf   = self::getConfig();
-		$mailer = $conf->get('mailer', 'global');
+		$mailer = (string) $conf->get('mailer', 'global');
 		$mail   = self::getInstance();
 
 		if ($mailer === 'global')
 		{
 			$global = self::getGlobalConfig();
-			$mailer = $global->get('mailer');
+			$mailer = (string) $global->get('mailer');
+
 			$params = [
 				'smtpauth'     => $global->get('smtpauth') ? 1 : null,
 				'smtpuser'     => $global->get('smtpuser'),
@@ -223,7 +233,7 @@ abstract class ###Component###Email
 		$mail->setSender([$params['from'], $params['name']]);
 
 		if (!empty($params['replyto']) && !empty($params['replytoname']))
-        {
+		{
 			$mail->ClearReplyTos();
 			$mail->addReplyTo($params['replyto'], $params['replytoname']);
 		}
@@ -232,13 +242,13 @@ abstract class ###Component###Email
 		{
 			case 'smtp':
 				$mail->useSMTP(
-                    $params['smtpauth'],
-                    $params['smtphost'],
-                    $params['smtpuser'],
-                    $params['smtppass'],
-                    $params['smtpsecure'],
-                    $params['smtpport']
-                );
+					$params['smtpauth'],
+					$params['smtphost'],
+					$params['smtpuser'],
+					$params['smtppass'],
+					$params['smtpsecure'],
+					$params['smtpport']
+				);
 				break;
 			case 'sendmail':
 				$mail->useSendmail($params['sendmail']);
@@ -254,7 +264,7 @@ abstract class ###Component###Email
 	/**
 	 * Compose and send an email with full options including attachments, HTML, DKIM, and reply-to support.
 	 *
-	 * @param   string|array       $recipient    Email or list of recipients.
+	 * @param   array|string       $recipient    Email or list of recipients.
 	 * @param   string             $subject      Subject line.
 	 * @param   string             $body         HTML body.
 	 * @param   string|null        $textonly     Optional plain text fallback.
@@ -268,8 +278,7 @@ abstract class ###Component###Email
 	 * @param   array|null         $cc           CC recipients.
 	 * @param   array|null         $bcc          BCC recipients.
 	 * @param   array|string|null  $attachment   Attachments.
-	 * @param   bool               $embeded      Embed image flag.
-	 * @param   array|null         $embeds       Embedded image definitions.
+	 * @param   array|string|null  $embeds       Embedded image definitions.
 	 *
 	 * @return  bool  True on success, false on failure.
 	 * @since   3.0
@@ -289,74 +298,63 @@ abstract class ###Component###Email
 		?array $cc = null,
 		?array $bcc = null,
 		$attachment = null,
-		bool $embeded = false,
-		?array $embeds = null
+		$embeds = null
 	): bool {
 		$mail = self::getMailer();
 		$conf = self::getConfig();
 
-		if ($mailfrom && $fromname)
-		{
-			$mail->setSender([$mailfrom, $fromname]);
-		}
-
-		if ($bounce_email)
-		{
-			$mail->Sender = $bounce_email;
-		}
-
-		if ($idsession)
-		{
-			$mail->addCustomHeader('X-VDMmethodID:' . $idsession);
-		}
-
-		foreach (self::$header as $key => $val)
-		{
-			$mail->addCustomHeader($key . ':' . $val);
-		}
-
-		$mail->setSubject($subject);
-		$mail->setBody($body);
-
-		if ($mode)
-		{
-			$mail->isHTML(true);
-			$mail->AltBody = $textonly;
-		}
-
-		if ($embeded && !empty($embeds))
-		{
-			foreach ($embeds as $embed)
-			{
-				$mail->addEmbeddedImage($embed->Path, $embed->FileName);
-			}
-		}
-
-		$mail->addRecipient($recipient);
-		if (!empty($cc)) $mail->addCC($cc);
-		if (!empty($bcc)) $mail->addBCC($bcc);
-		if (!empty($attachment)) $mail->addAttachment($attachment);
-
-		if (!empty($mailreply))
-		{
-			$mail->ClearReplyTos();
-			if (is_array($mailreply))
-			{
-				foreach ($mailreply as $i => $reply)
-				{
-					$mail->addReplyTo($reply, $replyname[$i] ?? '');
-				}
-			}
-			else
-			{
-				$mail->addReplyTo($mailreply, (string) $replyname);
-			}
-		}
-
 		$sent = false;
 		$tmp = null;
 
-		try {
+		try
+		{
+			if ($mailfrom)
+			{
+				$mail->setSender($mailfrom, (string) ($fromname ?? ''));
+			}
+
+			if ($bounce_email)
+			{
+				$mail->Sender = $bounce_email;
+			}
+
+			if ($idsession)
+			{
+				$mail->addCustomHeader('X-VDMmethodID:' . $idsession);
+			}
+
+			foreach (self::$header as $key => $val)
+			{
+				$mail->addCustomHeader($key . ':' . $val);
+			}
+
+			$mail->setSubject(str_replace(["\r", "\n"], '', $subject));
+			$mail->setBody($body);
+
+			if ($mode)
+			{
+				$mail->isHTML(true);
+				$mail->AltBody = $textonly ?? strip_tags($body);
+			}
+
+			// Recipients
+			self::applyRecipient($mail, $recipient, 'to');
+			self::applyRecipient($mail, $cc, 'cc');
+			self::applyRecipient($mail, $bcc, 'bcc');
+
+			// Reply-to
+			if (!empty($mailreply))
+			{
+				self::applyRecipient($mail, $mailreply, 'reply', $replyname);
+			}
+
+			// EmbeddedImage
+			self::applyEmbeds($mail, $embeds);
+
+			// Attachments
+			self::applyAttachments($mail, $attachment);
+
+			// DKIM
 			if (
 				$conf->get('enable_dkim') &&
 				($domain = $conf->get('dkim_domain')) &&
@@ -377,7 +375,11 @@ abstract class ###Component###Email
 				$mail->DKIM_private = $tmp;
 			}
 
-			$sent = $mail->Send();
+			$mail->send();
+			$sent = true;
+		} catch (\Throwable $e) {
+			$sent = false;
+			Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getLogger()->error('Email send failed: ' . $e->getMessage());
 		} finally {
 			if ($tmp && file_exists($tmp))
 			{
@@ -385,14 +387,7 @@ abstract class ###Component###Email
 			}
 		}
 
-		$sent = $mail->Send();
-
-		if ($tmp)
-		{
-			@unlink($tmp);
-		}
-
-		if (method_exists('###Component###Helper', 'storeMessage'))
+		if (\method_exists('###Component###Helper', 'storeMessage'))
 		{
 			$data = self::$active[$recipient] ?? $recipient;
 			###Component###Helper::storeMessage($sent, $data, $subject, $body, $textonly, $mode, 'email');
@@ -481,5 +476,163 @@ abstract class ###Component###Email
 			'</body>',
 			'</html>'
 		]);
+	}
+
+	/**
+	 * Apply a set of recipients (TO, CC, BCC, or REPLY-TO) to the given mailer instance.
+	 *
+	 * This method normalizes input into individual address/name pairs and safely
+	 * calls the corresponding MailerInterface methods:
+	 *  - 'to'    → addRecipient()
+	 *  - 'cc'    → addCc()
+	 *  - 'bcc'   → addBcc()
+	 *  - 'reply' → addReplyTo()
+	 *
+	 * Accepted input formats:
+	 *  - string  A single email address.
+	 *  - array<string>  A list of email addresses.
+	 *  - array<array{email:string,name?:string}>  A list of associative arrays.
+	 *  - mixed keys will be matched with $names if provided.
+	 *
+	 * @param  MailerInterface  $mail   The mailer instance to apply recipients to.
+	 * @param  mixed            $input  The recipient data (string or array).
+	 * @param  string           $type   The recipient type: 'to', 'cc', 'bcc', or 'reply'. Defaults to 'to'.
+	 * @param  mixed|null       $names  Optional parallel names array or string for labeling recipients.
+	 *
+	 * @return void
+	 * @since  5.1.5
+	 */
+	protected static function applyRecipient(MailerInterface $mail, $input, string $type = 'to', $names = null): void
+	{
+		if (empty($input))
+		{
+			return;
+		}
+
+		$list = is_array($input) ? $input : [$input];
+
+		foreach ($list as $key => $item)
+		{
+			$email = '';
+			$name  = '';
+
+			if (is_array($item))
+			{
+				$email = (string) ($item['email'] ?? reset($item));
+				$name  = (string) ($item['name'] ?? '');
+			}
+			elseif (is_string($item))
+			{
+				$email = $item;
+				if (is_array($names) && isset($names[$key]))
+				{
+					$name = (string) $names[$key];
+				}
+				elseif (is_string($names))
+				{
+					$name = $names;
+				}
+			}
+
+			if ($email === '')
+			{
+				continue;
+			}
+
+			switch ($type)
+			{
+				case 'cc':
+					$mail->addCc($email, $name);
+					break;
+				case 'bcc':
+					$mail->addBcc($email, $name);
+					break;
+				case 'reply':
+					$mail->addReplyTo($email, $name);
+					break;
+				default:
+					$mail->addRecipient($email, $name);
+			}
+		}
+	}
+
+	/**
+	 * Apply embedded images to the email.
+	 *
+	 * Accepts string paths, associative arrays, or objects containing
+	 * `Path` and optional `FileName` properties.
+	 *
+	 * @param  Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power  $mail    The mailer instance to apply embeds to.
+	 * @param  mixed            $embeds  A single embed or list of embeds (string|array|object).
+	 *
+	 * @return void
+	 * @throws \Exception
+	 * @since  5.1.4
+	 */
+	protected static function applyEmbeds(Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power $mail, $embeds): void
+	{
+        $mail->clearAttachments();
+
+		if (empty($embeds))
+		{
+			return;
+		}
+
+		$list = is_array($embeds) ? $embeds : [$embeds];
+
+		foreach ($list as $embed)
+		{
+			if (is_string($embed) && file_exists($embed))
+			{
+				$mail->addEmbeddedImage($embed, basename($embed));
+			}
+			elseif (is_array($embed) && isset($embed['Path']) && file_exists($embed['Path']))
+			{
+				$mail->addEmbeddedImage($embed['Path'], $embed['FileName'] ?? basename($embed['Path']));
+			}
+			elseif (is_object($embed) && isset($embed->Path) && file_exists($embed->Path))
+			{
+				$mail->addEmbeddedImage($embed->Path, $embed->FileName ?? basename($embed->Path));
+			}
+		}
+	}
+
+	/**
+	 * Apply file attachments to the email.
+	 *
+	 * Accepts string paths, associative arrays, or objects containing
+	 * `Path` and optional `FileName` properties.
+	 *
+	 * @param  Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power  $mail         The mailer instance to apply attachments to.
+	 * @param  mixed            $attachment   A single file or list of files (string|array|object).
+	 *
+	 * @return void
+	 * @throws  \InvalidArgumentException
+	 * @since  5.1.4
+	 */
+	protected static function applyAttachments(Joomla___890fd6b1_0127_4f35_9b6e_ee6f2dc61bcc___Power $mail, $attachment): void
+	{
+        if (empty($attachment))
+		{
+			return;
+		}
+
+		$list = is_array($attachment) ? $attachment : [$attachment];
+
+		foreach ($list as $file)
+		{
+			if (is_string($file) && file_exists($file))
+			{
+				$mail->addAttachment($file, basename($file));
+			}
+			elseif (is_array($file) && isset($file['Path']) && file_exists($file['Path']))
+			{
+				$mail->addAttachment($file['Path'], $file['FileName'] ?? basename($file['Path']));
+			}
+			elseif (is_object($file) && isset($file->Path) && file_exists($file->Path))
+			{
+				$mail->addAttachment($file->Path, $file->FileName ?? basename($file->Path));
+			}
+		}
 	}
 }

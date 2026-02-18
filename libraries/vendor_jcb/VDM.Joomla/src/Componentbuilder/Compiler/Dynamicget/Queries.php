@@ -171,6 +171,7 @@ final class Queries
 	 */
 	protected function buildSelectPart(array $theGet, string $tab): string
 	{
+		$getItem = '';
 		if (isset($theGet['selection']['type']) && StringHelper::check($theGet['selection']['type']))
 		{
 			$getItem = PHP_EOL . PHP_EOL . Indent::_(1) . $tab
@@ -181,7 +182,7 @@ final class Queries
 			$getItem .= PHP_EOL . Indent::_(1) . $tab . Indent::_(1)
 				. $theGet['selection']['select'];
 		}
-		else
+		elseif (!empty($theGet['selection']['select']))
 		{
 			$getItem = PHP_EOL . PHP_EOL . Indent::_(1) . $tab
 				. Indent::_(1) . "//" . Line::_(__LINE__, __CLASS__)

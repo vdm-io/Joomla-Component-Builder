@@ -17,10 +17,10 @@ use VDM\Joomla\Service\Table;
 use VDM\Joomla\Service\Database;
 use VDM\Joomla\Service\Model;
 use VDM\Joomla\Service\Data;
-use VDM\Joomla\Componentbuilder\Import\Service\Import;
+use VDM\Joomla\Service\Import;
 use VDM\Joomla\Componentbuilder\File\Service\File;
 use VDM\Joomla\Componentbuilder\Service\Spreadsheet;
-use VDM\Joomla\Componentbuilder\Service\Item\Import as ItemImport;
+use VDM\Joomla\Componentbuilder\Service\Import as EntityImport;
 use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
@@ -56,7 +56,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Import())
 			->registerServiceProvider(new File())
 			->registerServiceProvider(new Spreadsheet())
-			->registerServiceProvider(new ItemImport());
+			->registerServiceProvider(new EntityImport());
 	}
 }
 

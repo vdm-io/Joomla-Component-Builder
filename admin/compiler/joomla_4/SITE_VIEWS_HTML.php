@@ -70,10 +70,10 @@ class HtmlView extends BaseHtmlView
 	/**
 	 * The toolbar object
 	 *
-	 * @var    Toolbar
+	 * @var    Joomla___47ee1f2b_9902_4f26_a856_04930ac9ddc3___Power
 	 * @since  3.10.11
 	 */
-	public Toolbar $toolbar;
+	public Joomla___47ee1f2b_9902_4f26_a856_04930ac9ddc3___Power $toolbar;
 
 	/**
 	 * The styles url array
@@ -121,6 +121,7 @@ class HtmlView extends BaseHtmlView
 		$this->menu = $this->app->getMenu()->getActive();
 		// get the user object
 		$this->user ??= $this->getCurrentUser();
+
 		// Load module values
 		$model = $this->getModel();
 		$this->styles = $model->getStyles() ?? [];
@@ -133,20 +134,12 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
-	{###SITE_CUSTOM_BUTTONS###
-
-		// set help url for this view if found
-		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
-		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
-		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the toolbar if it's not already loaded
-		$this->toolbar ??= $this->getDocument()->getToolbar();
+	{
+		###SITE_ADDTOOLBAR###
 	}
 
 	/**

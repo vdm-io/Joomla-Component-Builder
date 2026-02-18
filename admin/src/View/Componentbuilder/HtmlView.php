@@ -101,7 +101,7 @@ class HtmlView extends BaseHtmlView
 
 		// get the manifest details of the component
 		$this->manifest = ComponentbuilderHelper::manifest();
-		$this->wiki = $this->get('Wiki');
+		$this->jcbdocgithubmd = $this->get('JcbDocGitHubMd');
 		$this->readme = $this->get('Readme');
 		$this->version = $this->get('Version');
 

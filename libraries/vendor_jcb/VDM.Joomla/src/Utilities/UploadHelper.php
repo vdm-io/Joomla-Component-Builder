@@ -94,7 +94,7 @@ abstract class UploadHelper
 	 * @return  array|null   File details or false on failure.
 	 * @since  3.0.11
 	 */
-	public static function get(string $field, string $type, string $filter = null, string $path = null): ?array
+	public static function get(string $field, string $type, ?string $filter = null, ?string $path = null): ?array
 	{
 		// Get the uploaded file information.
 		$app = Factory::getApplication();
@@ -105,8 +105,8 @@ abstract class UploadHelper
 		{
 			$filter = 'array';
 		}
-		// if raw then also unsafe
-		// see: https://github.com/joomla/joomla-cms/blob/4.1-dev/administrator/components/com_installer/src/Model/InstallModel.php#L259
+		// Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See InputFiles::get.
+		// see: /administrator/components/com_installer/src/Model/InstallModel.php#L275 (5.4-dev)
 		elseif ($filter === 'raw')
 		{
 			static::$allowUnsafe = true;

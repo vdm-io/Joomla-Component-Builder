@@ -13,8 +13,10 @@ namespace VDM\Joomla\Componentbuilder\Remote;
 
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Version as JoomlaVersion;
 use VDM\Joomla\Github\Factory as Github;
 use VDM\Joomla\Gitea\Factory as Gitea;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 
 
@@ -90,32 +92,34 @@ final class Version
 	{
 		$defaultDownloadLink = 'https://git.vdm.dev/joomla/pkg-component-builder/releases';
 
-		$manifest     = ComponentbuilderHelper::manifest();
+		$manifest = ComponentbuilderHelper::manifest();
 		$localVersion = (string) ($manifest->version ?? $version ?? '1.0.0');
-		$major        = explode('.', $localVersion)[0] ?? '1';
+		$joomlaMajor = (string) JoomlaVersion::MAJOR_VERSION;
 
 		$errors = [
-			'error' => Text::sprintf(
-				'There was an error getting the %sVersion details</a>.',
+			'error' => Text::sprintf('COM_COMPONENTBUILDER_THERE_WAS_AN_ERROR_GETTING_THE_SVERSION_DETAILSA',
 				'<a href="' . $defaultDownloadLink . '" title="Version Tag details">'
 			)
 		];
 
-		$tags = $this->getRepositoryTags($errors);
+		$tags = $this->getRepositoryTags($errors, $localVersion);
 
 		if (empty($tags) || !isset($tags[0]->name))
 		{
 			return $this->mergeErrors($errors);
 		}
 
-		$grouped = $this->groupTagsByType($tags, $major);
+		$grouped = $this->groupTagsByType($tags, $joomlaMajor);
 
 		$latestStableTag   = $grouped['stable'][0] ?? null;
-		$latestStableVer   = $latestStableTag ? ltrim($latestStableTag->name, 'vV') : '1.0.0';
+		$latestStableVer   = $latestStableTag ? $this->normalizeVersion($latestStableTag->name) : '1.0.0';
 		$latestStableLink  = $latestStableTag->zipball_url ?? $defaultDownloadLink;
 
-		$versionType       = $this->getVersionType($localVersion);
-		$versionCompare    = version_compare($localVersion, $latestStableVer);
+		$versionType = $this->getVersionType($localVersion);
+		$versionCompare    = version_compare(
+			$this->normalizeVersion($localVersion),
+			$latestStableVer
+		);
 
 		// Handle pre-release versions
 		if ($versionType !== 'stable')
@@ -174,6 +178,19 @@ final class Version
 	}
 
 	/**
+	 * Normalize version string (strip v/V).
+	 *
+	 * @param   string   $version  The version string.
+	 *
+	 * @return  string
+	 * @since   5.1.4
+	 */
+	protected function normalizeVersion(string $version): string
+	{
+		return ltrim(trim($version), 'vV');
+	}
+
+	/**
 	 * Check if the local pre-release version is the latest.
 	 *
 	 * @param   string         $localVersion  The current local version.
@@ -184,16 +201,22 @@ final class Version
 	 */
 	protected function isLatestPreRelease(string $localVersion, array $preTags): bool
 	{
-		if (empty($preTags))
+		if (!$preTags)
 		{
 			return false;
 		}
 
-		usort($preTags, static fn($a, $b) => version_compare($b->name, $a->name));
+		usort($preTags, fn($a, $b) =>
+			version_compare(
+				$this->normalizeVersion($b->name),
+				$this->normalizeVersion($a->name)
+			)
+		);
 
-		$latestPre = ltrim($preTags[0]->name, 'vV');
-
-		return version_compare($localVersion, $latestPre) === 0;
+		return version_compare(
+			$this->normalizeVersion($localVersion),
+			$this->normalizeVersion($preTags[0]->name)
+		) === 0;
 	}
 
 	/**
@@ -201,22 +224,30 @@ final class Version
 	 *
 	 * Appends source keys to the return array on failure.
 	 *
-	 * @param   array  &$errors  The response array to populate error messages into.
+	 * @param   array   &$errors       The response array to populate error messages into.
+	 * @param   string  $localVersion  The current local version of the component.
 	 *
 	 * @return  array<int, object>  List of tags or an empty array.
 	 * @since   5.1.1
 	 */
-	protected function getRepositoryTags(array &$errors): array
+	protected function getRepositoryTags(array &$errors, $localVersion): array
 	{
+		if (($tags = SessionHelper::get("jcb-version-tags-{$localVersion}")) !== null)
+		{
+			return $tags;
+		}
+
 		// Attempt GitHub fetch
 		if ($tags = $this->tryFetchTags('github', $errors))
 		{
+			SessionHelper::set("jcb-version-tags-{$localVersion}", $tags);
 			return $tags;
 		}
 
 		// Try default VDM Gitea instance
 		if ($tags = $this->tryFetchTags('gitea', $errors))
 		{
+			SessionHelper::set("jcb-version-tags-{$localVersion}", $tags);
 			return $tags;
 		}
 
@@ -232,6 +263,7 @@ final class Version
 			Gitea::_('Gitea.Repository.Tags')->load_($url, '');
 			if ($tags = $this->tryFetchTags($key, $errors))
 			{
+				SessionHelper::set("jcb-version-tags-{$localVersion}", $tags);
 				return $tags;
 			}
 		}
@@ -253,8 +285,8 @@ final class Version
 	{
 		try {
 			return match ($source) {
-				'github' => Github::_('Github.Repository.Tags')->list($this->githubOrg, $this->githubRepo),
-				default  => Gitea::_('Gitea.Repository.Tags')->list($this->giteaOrg, $this->giteaRepo),
+				'github' => Github::_('Github.Repository.Tags')->list($this->githubOrg, $this->githubRepo, 1, 50),
+				default  => Gitea::_('Gitea.Repository.Tags')->list($this->giteaOrg, $this->giteaRepo, 1, 50),
 			};
 		} catch (\Throwable $e) {
 			$errors["{$source}-error"] = $e->getMessage();
@@ -283,22 +315,38 @@ final class Version
 
 		foreach ($tags as $tag)
 		{
-			if (!isset($tag->name) || strpos($tag->name, 'v' . $major) !== 0)
+			if (!isset($tag->name))
 			{
 				continue;
 			}
 
-			$version = strtolower($tag->name);
+			$version = $this->normalizeVersion($tag->name);
 
-			if (preg_match('/-(alpha|beta|rc)\d*/', $version)) {
+			if (!preg_match('#^' . preg_quote($major, '#') . '\.#', $version))
+			{
+				continue;
+			}
+
+			if (preg_match('/-(alpha|beta|rc)\d*/i', $version)) {
 				$pre[] = $tag;
 			} else {
 				$stable[] = $tag;
 			}
 		}
 
-		usort($stable, static fn($a, $b) => version_compare($b->name, $a->name));
-		usort($pre, static fn($a, $b) => version_compare($b->name, $a->name));
+		usort($stable, fn($a, $b) =>
+			version_compare(
+				$this->normalizeVersion($b->name),
+				$this->normalizeVersion($a->name)
+			)
+		);
+
+		usort($pre, fn($a, $b) =>
+			version_compare(
+				$this->normalizeVersion($b->name),
+				$this->normalizeVersion($a->name)
+			)
+		);
 
 		return ['stable' => $stable, 'pre' => $pre];
 	}
@@ -315,22 +363,9 @@ final class Version
 	{
 		$version = strtolower($version);
 
-		if (str_contains($version, '-alpha'))
-		{
-			return 'alpha';
-		}
-
-		if (str_contains($version, '-beta'))
-		{
-			return 'beta';
-		}
-
-		if (str_contains($version, '-rc'))
-		{
-			return 'rc';
-		}
-
-		return 'stable';
+		return str_contains($version, '-alpha') ? 'alpha'
+			: (str_contains($version, '-beta') ? 'beta'
+			: (str_contains($version, '-rc') ? 'rc' : 'stable'));
 	}
 
 	/**

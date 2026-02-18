@@ -13,40 +13,22 @@ namespace VDM\Joomla\Componentbuilder\Import;
 
 
 use Joomla\CMS\Language\Text;
-use VDM\Joomla\Componentbuilder\Import\Data;
-use VDM\Joomla\Componentbuilder\Interfaces\ImportStatusInterface as Status;
-use VDM\Joomla\Componentbuilder\Interfaces\ImportMessageInterface as Message;
-use VDM\Joomla\Componentbuilder\Interfaces\ImportAssessorInterface;
+use VDM\Joomla\Interfaces\Import\MessageInterface as Message;
+use VDM\Joomla\Interfaces\Import\AssessorInterface;
 
 
 /**
  * Import Assessor Class
  * 
- * @since  4.0.3
+ * @since  5.1.4
  */
-final class Assessor implements ImportAssessorInterface
+final class Assessor implements AssessorInterface
 {
-	/**
-	 * The Data Class.
-	 *
-	 * @var   Data
-	 * @since 4.0.3
-	 */
-	protected Data $data;
-
-	/**
-	 * The Import Status Class.
-	 *
-	 * @var   Status
-	 * @since 4.0.3
-	 */
-	protected Status $status;
-
 	/**
 	 * The Import Message Class.
 	 *
 	 * @var   Message
-	 * @since 4.0.3
+	 * @since 5.1.4
 	 */
 	protected Message $message;
 
@@ -54,7 +36,7 @@ final class Assessor implements ImportAssessorInterface
 	 * Constants for defining the success threshold
 	 * Minimum success rate to consider the import successful
 	 *
-	 * @since 4.0.3
+	 * @since 5.1.4
 	 */
 	private const SUCCESS_THRESHOLD = 0.80;
 
@@ -62,15 +44,12 @@ final class Assessor implements ImportAssessorInterface
 	 * Constructor.
 	 *
 	 * @param Data      $data      The Data Class.
-	 * @param Status    $status    The Import Status Class.
 	 * @param Message   $message   The Import Message Class.
 	 *
-	 * @since 4.0.3
+	 * @since 5.1.4
 	 */
-	public function __construct(Data $data, Status $status, Message $message)
+	public function __construct(Message $message)
 	{
-		$this->data = $data;
-		$this->status = $status;
 		$this->message = $message;
 	}
 
@@ -82,7 +61,7 @@ final class Assessor implements ImportAssessorInterface
 	 * @param int $errorCounter   Number of rows that failed to process.
 	 *
 	 * @return void
-	 * @since 4.0.3
+	 * @since 5.1.4
 	 */
 	public function evaluate(int $rowCounter, int $successCounter, int $errorCounter): void
 	{
@@ -90,11 +69,6 @@ final class Assessor implements ImportAssessorInterface
 		if ($rowCounter === 0)
 		{
 			$this->message->addError(Text::_('COM_COMPONENTBUILDER_NO_ROWS_WERE_PROCESSED'));
-
-			if (($guid = $this->data->get('import.guid')) !== null)
-			{
-				$this->status->set(4, $guid); // Status 4 => completed with errors
-			}
 			return;
 		}
 
@@ -109,22 +83,14 @@ final class Assessor implements ImportAssessorInterface
 				$rowCounter, 
 				$successPercentage
 			));
-		}
-		else
-		{
-			$this->message->addError(Text::sprintf('COM_COMPONENTBUILDER_IMPORT_FAILED_D_ROWS_PROCESSED_WITH_ONLY_D_SUCCESSES_ERROR_RATE_TWOF', 
-				$rowCounter, 
-				$successCounter, 
-				$errorRate
-			));
+			return;
 		}
 
-		if (($guid = $this->data->get('import.guid')) !== null)
-		{
-			// Update import status based on success rate
-			$importStatus = ($successPercentage == 100) ? 3 : 4; // 3 => completed, 4 => completed with errors
-			$this->status->set($importStatus, $guid);
-		}
+		$this->message->addError(Text::sprintf('COM_COMPONENTBUILDER_IMPORT_FAILED_D_ROWS_PROCESSED_WITH_ONLY_D_SUCCESSES_ERROR_RATE_TWOF', 
+			$rowCounter, 
+			$successCounter, 
+			$errorRate
+		));
 	}
 }
 

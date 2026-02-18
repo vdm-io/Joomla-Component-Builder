@@ -18,11 +18,17 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\File;
 use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
 use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
-use VDM\Joomla\Data\Guid;
 use VDM\Joomla\Componentbuilder\File\Type;
-use VDM\Joomla\Componentbuilder\File\Handler;
+use VDM\Joomla\Interfaces\File\AgentInterface as Agent;
 use VDM\Joomla\Componentbuilder\File\Image;
+use VDM\Joomla\Componentbuilder\File\Definition as Definition;
+use VDM\Joomla\File\Definition as FileDefinition;
+use VDM\Joomla\Componentbuilder\Interfaces\File\DefinitionInterface as FileDefinitionInterface;
+use VDM\Joomla\Interfaces\File\DefinitionInterface as FileInterface;
+use VDM\Joomla\Componentbuilder\Interfaces\File\TypeDefinitionInterface as TypeDefinition;
+use VDM\Joomla\Data\Guid;
 use VDM\Joomla\Utilities\MimeHelper;
+use VDM\Joomla\Interfaces\File\PersistentManagerInterface;
 
 
 /**
@@ -30,7 +36,7 @@ use VDM\Joomla\Utilities\MimeHelper;
  * 
  * @since  5.0.2
  */
-class Manager
+class Manager implements PersistentManagerInterface
 {
 	/**
 	 * The Globally Unique Identifier.
@@ -64,12 +70,12 @@ class Manager
 	protected Type $type;
 
 	/**
-	 * The Handler Class.
+	 * The Agent Class.
 	 *
-	 * @var   Handler
-	 * @since 5.0.2
+	 * @var   Agent
+	 * @since 5.1.4
 	 */
-	protected Handler $handler;
+	protected Agent $agent;
 
 	/**
 	 * The Image Class.
@@ -98,21 +104,21 @@ class Manager
 	/**
 	 * Constructor.
 	 *
-	 * @param Item      $item      The Item Class.
-	 * @param Items     $items     The Items Class.
-	 * @param Type      $type      The Type Class.
-	 * @param Handler   $handler   The Handler Class.
-	 * @param Image     $image     The Image Class.
+	 * @param Item   $item   The Item Class.
+	 * @param Items  $items  The Items Class.
+	 * @param Type   $type   The Type Class.
+	 * @param Agent  $agent  The Agent Class.
+	 * @param Image  $image  The Image Class.
 	 *
 	 * @since 5.0.2
 	 */
-	public function __construct(Item $item, Items $items, Type $type, Handler $handler,
+	public function __construct(Item $item, Items $items, Type $type, Agent $agent,
 		Image $image)
 	{
 		$this->item = $item;
 		$this->items = $items;
 		$this->type = $type;
-		$this->handler = $handler;
+		$this->agent = $agent;
 		$this->image = $image;
 		$this->user = Factory::getApplication()->getIdentity();
 	}
@@ -131,55 +137,63 @@ class Manager
 	 */
 	public function upload(string $guid, string $entity, string $target): void
 	{
-		if (($fileType = $this->type->load($guid, $target)) === null)
+		if (($typeDefinition = $this->type->definition($guid, $target)) === null)
 		{
 			throw new \InvalidArgumentException(Text::sprintf('COM_COMPONENTBUILDER_FILE_TYPE_NOT_VALID_IN_S_AREA', $target));
 		}
 
 		// make sure the user have permissions to upload this file type
-		if (!in_array($fileType['access'], $this->user->getAuthorisedViewLevels()))
+		if (!in_array($typeDefinition->access(), $this->user->getAuthorisedViewLevels()))
 		{
-			throw new \InvalidArgumentException(Text::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSIONS_TO_UPLOAD_S', $fileType['name']));
+			throw new \InvalidArgumentException(Text::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSIONS_TO_UPLOAD_S', $typeDefinition->name()));
 		}
 
-		$details = $this->handler
-			->setEnqueueError(false)
-			->setLegalFormats($fileType['formats'])
-			->getFile(
-				$fileType['field'],   // The input field name
-				$fileType['type'],    // The file type
-				$fileType['filter'],  // The filter to use when uploading the file
-				$fileType['path']     // The path to the directory where the file must be placed
-			);
+		$fileDefinition = $this->agent->type($typeDefinition)->get();
 
-		if ($details === null)
+		if ($typeDefinition->type() === 'image' && !empty($typeDefinition->crop()))
 		{
-			// Throw an exception if file details couldn't be retrieved
-			throw new \RuntimeException($this->handler->getErrors());
-		}
-
-		if ($fileType['type'] === 'image' && !empty($fileType['crop']))
-		{
-			$this->processImages($details, $guid, $entity, $target, $fileType);
+			$this->processImages($fileDefinition, $guid, $entity, $target, $typeDefinition);
 		}
 		else
 		{
 			// store file in the file table
 			$this->item->table($this->getTable())->set(
-				$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
+				$this->modelFileDefinition($fileDefinition, $guid, $entity, $target, $typeDefinition)
 			);
 		}
 
-		$this->limitFileType($fileType, $guid, $entity, $target);
+		$this->limitFileType($typeDefinition, $guid, $entity, $target);
 	}
 
 	/**
-	 * Get the file details for download
+	 * Get the file definition
+	 *
+	 * @param string $guid The file guid
+	 *
+	 * @return FileDefinitionInterface|null
+	 * @since 5.1.4
+	 */
+	public function definition(string $guid): ?FileDefinitionInterface
+	{
+		if (($file = $this->item->table($this->getTable())->get($guid)) !== null &&
+			in_array($file->access, $this->user->getAuthorisedViewLevels()))
+		{
+			return new Definition((array) $file);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the file definition as array
 	 *
 	 * @param string $guid The file guid
 	 *
 	 * @return array|null
 	 * @since 5.0.2
+	 *
+	 * @deprecated 5.1.4 Use $this->definition(...); 
+	 * @removal x.2  (means 4.2, 5.2 , 6.2 if JCB)
 	 */
 	public function download(string $guid): ?array
 	{
@@ -206,11 +220,7 @@ class Manager
 			in_array($file->access, $this->user->getAuthorisedViewLevels()))
 		{
 			$this->item->table($this->getTable())->delete($guid); // from DB
-
-			if (is_file($file->file_path) && is_writable($file->file_path))
-			{
-				File::delete($file->file_path); // from file system
-			}
+			$this->agent->delete($file->file_path); // from file system
 		}
 	}
 
@@ -243,25 +253,26 @@ class Manager
 	/**
 	 * Process the image(s) as needed based on crop settings
 	 *
-	 * @param array  $details   The uploaded file details.
-	 * @param string $guid      The file type guid
-	 * @param string $entity    The entity guid
-	 * @param string $target    The target entity name
-	 * @param array $fileType   The file type
+	 * @param FileInterface  $fileDefinition   The uploaded file details.
+	 * @param string         $guid             The file type guid
+	 * @param string         $entity           The entity guid
+	 * @param string         $target           The target entity name
+	 * @param TypeDefinition $typeDefinition   The file type
 	 *
 	 * @return void
 	 * @since  5.1.1
 	 */
-	protected function processImages(array $details, string $guid, string $entity, string $target, array $fileType): void
+	protected function processImages(FileInterface $fileDefinition, string $guid, string $entity, string $target, TypeDefinition $typeDefinition): void
 	{
-		$source = $details['full_path'];
-		$path = $details['path'];
-		$cropping = $fileType['crop'];
+		$source = $fileDefinition->filePath();
+		$details = $fileDefinition->toArray();
+		$path = $typeDefinition->path();
+		$cropping = $typeDefinition->crop();
 
 		$placeholders = [
-			'{number}' => $this->getFileNumber($fileType, $entity),
-			'{name}' => $this->getFileName($details, $entity),
-			'{extension}' => $this->getFileExtension($source),
+			'{number}' => $this->getFileNumber($typeDefinition, $entity),
+			'{name}' => $this->getFileName($fileDefinition, $entity),
+			'{extension}' => $fileDefinition->extension(),
 			'{random}' => $this->getRandomFileName($entity)
 		];
 
@@ -286,65 +297,64 @@ class Manager
 			$details['mime'] = $image['mime'];
 			$details['full_path'] = $image['path'];
 
+			$newFileDefinition = new FileDefinition($details);
+
 			// store file in the file table
 			$this->item->table($this->getTable())->set(
-				$this->modelFileDetails($details, $guid, $entity, $target, $fileType)
+				$this->modelFileDefinition($newFileDefinition, $guid, $entity, $target, $typeDefinition)
 			);
 		}
 
 		// clean up source image
-		if (\is_file($source) && \is_writable($source))
-		{
-			File::delete($source); // from file system
-		}
+		$this->agent->delete($source);
 	}
 
 	/**
-	 * model the file details to store in the file table
+	 * model the file definition to store in the file table
 	 *
-	 * @param array  $details   The uploaded file details.
-	 * @param string $guid      The file type guid
-	 * @param string $entity    The entity guid
-	 * @param string $target    The target entity name
-	 * @param array $fileType   The file type
+	 * @param FileInterface  $fileDefinition  The uploaded file details.
+	 * @param string         $guid            The file type guid
+	 * @param string         $entity          The entity guid
+	 * @param string         $target          The target entity name
+	 * @param TypeDefinition $typeDefinition  The file type
 	 *
 	 * @return object
-	 * @since 5.0.2
+	 * @since 5.1.4
 	 */
-	protected function modelFileDetails(array $details, string $guid, string $entity, string $target, array $fileType): object
+	protected function modelFileDefinition(FileInterface $fileDefinition, string $guid, string $entity, string $target, TypeDefinition $typeDefinition): object
 	{
 		return (object) [
-			'name' => $details['name'],
+			'name' => $fileDefinition->name(),
 			'file_type' => $guid,
-			'extension' => $details['extension'] ?? 'error',
-			'size' => $details['size'] ?? 0,
-			'mime' => $details['mime'] ?? '',
-			'file_path' => $details['full_path'],
+			'extension' => $fileDefinition->extension(),
+			'size' => $fileDefinition->size(),
+			'mime' => $fileDefinition->mime(),
+			'file_path' => $fileDefinition->filePath(),
 			'entity_type' => $target,
 			'entity' => $entity,
-			'access' => $fileType['download_access'] ?? 1,
+			'access' => $typeDefinition->downloadAccess(),
 			'guid' => $this->getGuid('guid'),
 			'created_by' => $this->user->id
 		];
 	}
 
 	/**
-	 * Get the file name without extension for download.
+	 * Get the file name without extension.
 	 *
 	 * If the original name is empty, return the entity GUID.
 	 * If the name does not contain a '.', return the name as is.
 	 * Otherwise, return the name without the final extension.
 	 *
-	 * @param   array   $details  The uploaded file details.
-	 * @param   string  $entity   The entity GUID used as fallback.
+	 * @param   FileInterface  $fileDefinition  The uploaded file details.
+	 * @param   string         $entity          The entity GUID used as fallback.
 	 *
 	 * @return  string  The extracted or fallback file name.
 	 * @since   5.1.1
 	 */
-	protected function getFileName(array $details, string $entity): string
+	protected function getFileName(FileInterface $fileDefinition, string $entity): string
 	{
 		// Check if name is set and non-empty
-		$name = trim($details['name'] ?? '');
+		$name = trim($fileDefinition->name());
 
 		// Return entity if name is empty
 		if ($name === '')
@@ -366,36 +376,47 @@ class Manager
 	}
 
 	/**
-	 * Get the file number TODO: not ideal, if images are deleted we need a better solution
+	 * Get the file number.
 	 *
-	 * @param array  $fileType  The uploaded file type details.
-	 * @param string $entity    The entity guid
+	 * NOTE:
+	 * This logic assumes files are append-only.
+	 * Deletions will cause numbering inconsistencies.
+	 *
+	 * @param  TypeDefinition  $typeDefinition  The uploaded file type definition.
+	 * @param  string          $entity          The entity GUID.
 	 *
 	 * @return int
 	 * @since  5.1.1
 	 */
-	protected function getFileNumber(array $fileType, string $entity): int
+	protected function getFileNumber(TypeDefinition $typeDefinition, string $entity): int
 	{
-		if (empty($fileType['crop']))
+		$cropConfig = $typeDefinition->crop();
+
+		if (empty($cropConfig))
 		{
 			return 1;
 		}
 
-		$number = count($fileType['crop']);
-		$number_files = 1;
+		$cropCount = count($cropConfig);
+		$fileNumber = 1;
 
-		if (($files = $this->items->table($this->getTable())->values([$entity], 'entity')) !== null)
+		$files = $this->items
+			->table($this->getTable())
+			->values([$entity], 'entity');
+
+		if ($files !== null)
 		{
 			$total = count($files);
-			if ($total >= $number)
+
+			if ($total >= $cropCount)
 			{
-				$number_files = round($total / $number);
+				$fileNumber = intdiv($total, $cropCount);
 			}
 
-			return ++$number_files;
+			return ++$fileNumber;
 		}
 
-		return $number_files;
+		return $fileNumber;
 	}
 
 	/**
@@ -404,7 +425,7 @@ class Manager
 	 * Guarantees:
 	 * - The same GUID will *never* produce the same value twice, even across executions.
 	 * - Different GUIDs will never collide (practically impossible).
-	 * - Safe alphanumeric output (A–Z, a–z, 0–9).
+	 * - Safe alphanumeric output (A-Z, a-z, 0-9).
 	 * - Lightweight, stateless, and reproducible randomness within one call.
 	 *
 	 * @param   string  $guid  The entity GUID.
@@ -427,39 +448,26 @@ class Manager
 	}
 
 	/**
-	 * Get the file extension
-	 *
-	 * @param sring  $source  The full path to the file
-	 *
-	 * @return string
-	 * @since  5.1.1
-	 */
-	protected function getFileExtension(string $source): string
-	{
-		return MimeHelper::extension($source);
-	}
-
-	/**
 	 * Enforces a file-count limit per entity and removes oldest excess files.
 	 * Also validates crop consistency for images.
 	 *
-	 * @param  array   $fileType  The uploaded file-type details.
-	 * @param  string  $type      The file-type GUID fallback.
-	 * @param  string  $entity    The entity GUID.
-	 * @param  string  $target    The entity target.
+	 * @param  TypeDefinition   $typeDefinition  The uploaded file-type details.
+	 * @param  string           $type            The file-type GUID fallback.
+	 * @param  string           $entity          The entity GUID.
+	 * @param  string           $target          The entity target.
 	 *
 	 * @return void
 	 * @since   5.1.4
 	 */
-	protected function limitFileType(array $fileType, string $type, string $entity, string $target): void
+	protected function limitFileType(TypeDefinition $typeDefinition, string $type, string $entity, string $target): void
 	{
-		$limit = (int) ($fileType['quantity'] ?? 0);
+		$limit = $typeDefinition->quantity() ?? 0;
 		if ($limit <= 0)
 		{
 			return;
 		}
 
-		$fileTypeGuid = (string) ($fileType['guid'] ?? $type);
+		$fileTypeGuid = $typeDefinition->guid() ?? '';
 		if ($fileTypeGuid === '')
 		{
 			return;
@@ -467,12 +475,14 @@ class Manager
 
 		$isImage   = false;
 		$cropCount = 1;
+		$crop = $typeDefinition->crop() ?? null;
+		$fileType = $typeDefinition->type() ?? '';
 
 		// Handle image type with crops
-		if (($fileType['type'] ?? '') === 'image' && !empty($fileType['crop']))
+		if ($fileType === 'image' && !empty($crop))
 		{
 			$isImage = true;
-			$cropCount = (int) \count($fileType['crop']);
+			$cropCount = (int) \count($crop);
 			$limit *= $cropCount;
 		}
 

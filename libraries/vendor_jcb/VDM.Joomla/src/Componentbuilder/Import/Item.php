@@ -14,17 +14,17 @@ namespace VDM\Joomla\Componentbuilder\Import;
 
 use VDM\Joomla\Interfaces\TableValidatorInterface as Validator;
 use VDM\Joomla\Interfaces\Data\ItemInterface as DataItem;
-use VDM\Joomla\Componentbuilder\Interfaces\ImportRowInterface as Row;
+use VDM\Joomla\Interfaces\Import\RowInterface as Row;
 use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Componentbuilder\Interfaces\ImportItemInterface;
+use VDM\Joomla\Interfaces\Import\RowItemInterface;
 
 
 /**
- * Import Item Class
+ * Import Row => Item Class
  * 
  * @since  4.0.3
  */
-final class Item implements ImportItemInterface
+final class Item implements RowItemInterface
 {
 	/**
 	 * The Table Validator Class.
@@ -67,30 +67,109 @@ final class Item implements ImportItemInterface
 	}
 
 	/**
-	 * Get the item from the import row values and ensure it is valid
+	 * Get the item from the import row values and ensure it is valid.
+	 *
+	 * Extracts mapped values from the current import row, processes normal
+	 * and subform fields, validates importable values, and removes consumed
+	 * values from the row buffer.
 	 *
 	 * @param   string  $table    The table these columns belongs to.
 	 * @param   array   $columns  The columns to extract.
 	 *
-	 * @return  array|null
+	 * @return  array|null  The mapped item data or null if empty.
 	 * @since  4.0.3
 	 */
 	public function get(string $table, array $columns): ?array
 	{
-		$item = [];
+		$item              = [];
+		$subformData       = [];
+		$subformCounters   = [];
+
 		foreach ($columns as $column => $map)
 		{
-			if (($value = $this->row->getValue($column)) !== null && !isset($item[$map['name']]))
-			{
-				// get the valid importable value
-				$item[$map['name']] = $this->getImportValue($value, $map['name'], $table, $map['link'] ?? null);
+			$name = $map['name'] ?? 'error';
+			$value = $this->row->getValue($column);
 
-				// remove value from global row values set
+			if ($value === null)
+			{
+				continue;
+			}
+
+			// Handle subform level-2 mapping
+			if (!empty($map['subform_2']))
+			{
+				$this->processSubform2(
+					$subformData,
+					$subformCounters,
+					$name,
+					$map['subform_2'],
+					$value
+				);
+
 				$this->row->unsetValue($column);
+
+				continue;
+			}
+
+			// Prevent duplicate assignment
+			if (isset($item[$name]))
+			{
+				continue;
+			}
+
+			// Resolve validated import value
+			$item[$name] = $this->getImportValue(
+				$value,
+				$name,
+				$table,
+				$map['link'] ?? null
+			);
+
+			$this->row->unsetValue($column);
+		}
+
+		// Merge subform data into item
+		if (!empty($subformData))
+		{
+			foreach ($subformData as $field => $data)
+			{
+				$item[$field] = (object) $data;
 			}
 		}
 
-		return $item ?? null;
+		return $item ?: null;
+	}
+
+	/**
+	 * Process subform level-2 field mapping.
+	 *
+	 * @param  array   &$storage   Subform data store.
+	 * @param  array   &$counters  Field counters.
+	 * @param  string  $name       Field name.
+	 * @param  object  $subform    Subform config object.
+	 * @param  mixed   $value      Field value.
+	 *
+	 * @return void
+	 * @since  5.1.4
+	 */
+	private function processSubform2(
+		array &$storage,
+		array &$counters,
+		string $name,
+		object $subform,
+		$value
+	): void
+	{
+		$fieldName = $subform->field ?? $name;
+
+		$index = $counters[$fieldName] ?? 0;
+
+		$storage[$name]["{$fieldName}{$index}"] = (object) [
+			$subform->column => $subform->column_value,
+			$subform->value  => $value,
+		];
+
+		$counters[$fieldName] = $index + 1;
 	}
 
 	/**

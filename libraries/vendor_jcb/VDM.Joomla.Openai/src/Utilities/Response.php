@@ -36,16 +36,20 @@ final class Response
 	 * @since   3.2.0
 	 * @throws  \DomainException
 	 **/
-	public function get($response, int  $expectedCode = 200, $default = null)
+	public function get(JoomlaResponse $response, int  $expectedCode = 200, $default = null)
 	{
 		// Validate the response code.
-		if ($response->code != $expectedCode)
+		$code = method_exists($response, 'getStatusCode')
+			? (string) $response->getStatusCode()
+			: ($response->code ?? null);
+
+		if ($code != $expectedCode)
 		{
 			// Decode the error response and throw an exception.
 			$message = $this->error($response);
 
 			// Throw an exception with the OpenAI error message and code.
-			throw new \DomainException($message, $response->code);
+			throw new \DomainException($message, $code);
 		}
 
 		return $this->body($response, $default);
@@ -62,20 +66,24 @@ final class Response
 	 * @since   3.2.0
 	 * @throws  \DomainException
 	 **/
-	public function get_($response, array $validate = [200 => null])
+	public function get_(JoomlaResponse $response, array $validate = [200 => null])
 	{
 		// Validate the response code.
-		if (!isset($validate[$response->code]))
+		$code = method_exists($response, 'getStatusCode')
+			? (string) $response->getStatusCode()
+			: ($response->code ?? null);
+
+		if (!isset($validate[$code]))
 		{
 			// Decode the error response and throw an exception.
 			$message = $this->error($response);
 
 			// Throw an exception with the OpenAI error message and code.
-			throw new \DomainException($message, $response->code);
+			throw new \DomainException($message, $code);
 
 		}
 
-		return $this->body($response, $validate[$response->code]);
+		return $this->body($response, $validate[$code]);
 	}
 
 	/**
@@ -87,9 +95,12 @@ final class Response
 	 * @return  mixed
 	 * @since   3.2.0
 	 **/
-	protected function body($response, $default = null)
+	protected function body(JoomlaResponse $response, $default = null)
 	{
-		$body = $response->body ?? null;
+		$body = is_object($response) && method_exists($response, 'getBody')
+			? (string) $response->getBody()
+			: (isset($response->body) ? (string) $response->body : null);
+
 		// check that we have a body
 		if (StringHelper::check($body))
 		{
@@ -112,12 +123,16 @@ final class Response
 	 * @return  string
 	 * @since   3.2.0
 	 **/
-	protected function error($response): string
+	protected function error(JoomlaResponse $response): string
 	{
+		$body = is_object($response) && method_exists($response, 'getBody')
+			? (string) $response->getBody()
+			: (isset($response->body) ? (string) $response->body : null);
+
 		// do we have a json string
-		if (isset($response->body) && JsonHelper::check($response->body))
+		if ($body !== null && JsonHelper::check($body))
 		{
-			$error = json_decode($response->body);
+			$error = json_decode($body);
 		}
 		else
 		{

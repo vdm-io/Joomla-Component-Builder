@@ -142,7 +142,9 @@ class Joomlamodule implements ServiceProviderInterface
 			$container->get('Model.Libraries'),
 			$container->get('Dynamicget.Data'),
 			$container->get('Templatelayout.Data'),
-			$container->get('Joomla.Database')
+			$container->get('Utilities.Counter'),
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 
@@ -168,7 +170,9 @@ class Joomlamodule implements ServiceProviderInterface
 			$container->get('Model.Libraries'),
 			$container->get('Dynamicget.Data'),
 			$container->get('Templatelayout.Data'),
-			$container->get('Joomla.Database')
+			$container->get('Utilities.Counter'),
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 
@@ -194,7 +198,9 @@ class Joomlamodule implements ServiceProviderInterface
 			$container->get('Model.Libraries'),
 			$container->get('Dynamicget.Data'),
 			$container->get('Templatelayout.Data'),
-			$container->get('Joomla.Database')
+			$container->get('Utilities.Counter'),
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 
@@ -220,7 +226,9 @@ class Joomlamodule implements ServiceProviderInterface
 			$container->get('Model.Libraries'),
 			$container->get('Dynamicget.Data'),
 			$container->get('Templatelayout.Data'),
-			$container->get('Joomla.Database')
+			$container->get('Utilities.Counter'),
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 

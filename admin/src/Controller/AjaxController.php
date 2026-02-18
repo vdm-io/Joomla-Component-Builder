@@ -50,7 +50,7 @@ class AjaxController extends BaseController
 		$this->app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks
 		$this->registerTask('getComponentDetails', 'ajax');
-		$this->registerTask('getWiki', 'ajax');
+		$this->registerTask('getJcbDocGitHubMd', 'ajax');
 		$this->registerTask('getVersion', 'ajax');
 		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('getModuleCode', 'ajax');
@@ -81,7 +81,6 @@ class AjaxController extends BaseController
 		$this->registerTask('checkRuleName', 'ajax');
 		$this->registerTask('fieldTypeProperties', 'ajax');
 		$this->registerTask('getFieldPropertyDesc', 'ajax');
-		$this->registerTask('exportLanguageTranslations', 'ajax');
 		$this->registerTask('getCodeGlueOptions', 'ajax');
 		$this->registerTask('doSearch', 'ajax');
 		$this->registerTask('replaceAll', 'ajax');
@@ -89,8 +88,12 @@ class AjaxController extends BaseController
 		$this->registerTask('getReplaceValue', 'ajax');
 		$this->registerTask('setValue', 'ajax');
 		$this->registerTask('getRepoIndex', 'ajax');
-		$this->registerTask('initSelectedPowers', 'ajax');
 		$this->registerTask('initSelectedPackages', 'ajax');
+		$this->registerTask('pullSelectedPackages', 'ajax');
+		$this->registerTask('getTranslationDetails', 'ajax');
+		$this->registerTask('uploadTranslation', 'ajax');
+		$this->registerTask('deleteTranslation', 'ajax');
+		$this->registerTask('displayTranslationColumns', 'ajax');
 	}
 
     /**
@@ -166,16 +169,16 @@ class AjaxController extends BaseController
 						}
 					}
 				break;
-				case 'getWiki':
+				case 'getJcbDocGitHubMd':
 					try
 					{
-						$nameValue = $jinput->get('name', NULL, 'WORD');
-						if($nameValue && $user->id != 0)
+						$pathValue = $jinput->get('path', NULL, 'STRING');
+						if($pathValue && $user->id != 0)
 						{
 							$ajaxModule = $this->getModel('ajax', 'Administrator');
 							if ($ajaxModule)
 							{
-								$result = $ajaxModule->getWiki($nameValue);
+								$result = $ajaxModule->getJcbDocGitHubMd($pathValue);
 							}
 							else
 							{
@@ -1704,57 +1707,6 @@ class AjaxController extends BaseController
 						}
 					}
 				break;
-				case 'exportLanguageTranslations':
-					try
-					{
-						$filter_extensionValue = $jinput->get('filter_extension', NULL, 'STRING');
-						$filter_translatedValue = $jinput->get('filter_translated', NULL, 'STRING');
-						$filter_not_translatedValue = $jinput->get('filter_not_translated', NULL, 'STRING');
-						if($user->id != 0)
-						{
-							$ajaxModule = $this->getModel('ajax', 'Administrator');
-							if ($ajaxModule)
-							{
-								$result = $ajaxModule->exportLanguageTranslations($filter_extensionValue, $filter_translatedValue, $filter_not_translatedValue);
-							}
-							else
-							{
-								$result = ['error' => 'There was an error! [149]'];
-							}
-						}
-						else
-						{
-							$result = ['error' => 'There was an error! [149]'];
-						}
-						if($callback)
-						{
-							echo $callback . "(".json_encode($result).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($result);
-						}
-						else
-						{
-							echo "(".json_encode($result).");";
-						}
-					}
-					catch(\Exception $e)
-					{
-						if($callback)
-						{
-							echo $callback."(".json_encode($e).");";
-						}
-						elseif($returnRaw)
-						{
-							echo json_encode($e);
-						}
-						else
-						{
-							echo "(".json_encode($e).");";
-						}
-					}
-				break;
 				case 'getCodeGlueOptions':
 					try
 					{
@@ -2132,7 +2084,7 @@ class AjaxController extends BaseController
 						}
 					}
 				break;
-				case 'initSelectedPowers':
+				case 'initSelectedPackages':
 					try
 					{
 						$repoValue = $jinput->get('repo', NULL, 'STRING');
@@ -2143,7 +2095,7 @@ class AjaxController extends BaseController
 							$ajaxModule = $this->getModel('ajax', 'Administrator');
 							if ($ajaxModule)
 							{
-								$result = $ajaxModule->initSelectedPowers($repoValue, $areaValue, $selectedValue);
+								$result = $ajaxModule->initSelectedPackages($repoValue, $areaValue, $selectedValue);
 							}
 							else
 							{
@@ -2183,7 +2135,7 @@ class AjaxController extends BaseController
 						}
 					}
 				break;
-				case 'initSelectedPackages':
+				case 'pullSelectedPackages':
 					try
 					{
 						$repoValue = $jinput->get('repo', NULL, 'STRING');
@@ -2194,7 +2146,207 @@ class AjaxController extends BaseController
 							$ajaxModule = $this->getModel('ajax', 'Administrator');
 							if ($ajaxModule)
 							{
-								$result = $ajaxModule->initSelectedPackages($repoValue, $areaValue, $selectedValue);
+								$result = $ajaxModule->pullSelectedPackages($repoValue, $areaValue, $selectedValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'getTranslationDetails':
+					try
+					{
+						$guidValue = $jinput->get('guid', NULL, 'STRING');
+						$targetValue = $jinput->get('target', NULL, 'BASE64');
+						if($guidValue && $user->id != 0 && $targetValue)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->getTranslationDetails($guidValue, $targetValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'uploadTranslation':
+					try
+					{
+						$guidValue = $jinput->get('guid', NULL, 'STRING');
+						$entityValue = $jinput->get('entity', NULL, 'STRING');
+						$targetValue = $jinput->get('target', NULL, 'BASE64');
+						if($guidValue && $user->id != 0 && $entityValue && $targetValue)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->uploadTranslation($guidValue, $entityValue, $targetValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'deleteTranslation':
+					try
+					{
+						$guidValue = $jinput->get('guid', NULL, 'STRING');
+						if($guidValue && $user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->deleteTranslation($guidValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'displayTranslationColumns':
+					try
+					{
+						$entityValue = $jinput->get('entity', NULL, 'STRING');
+						$targetValue = $jinput->get('target', NULL, 'BASE64');
+						if($entityValue && $user->id != 0 && $targetValue)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->displayTranslationColumns($entityValue, $targetValue);
 							}
 							else
 							{

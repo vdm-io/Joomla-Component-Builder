@@ -177,10 +177,6 @@ final class Structure implements StructureInterface
 		$this->file = $file;
 		$this->files = $files;
 		$this->placeholder = $placeholder;
-
-		// set some global values
-		$this->NamespacePrefix = $this->placeholder->get('NamespacePrefix');
-		$this->ComponentNamespace = $this->placeholder->get('ComponentNamespace');
 	}
 
 	/**
@@ -193,6 +189,10 @@ final class Structure implements StructureInterface
 	{
 		if ($this->plugin->exists())
 		{
+			// set some global values
+			$this->NamespacePrefix ??= $this->placeholder->get('NamespacePrefix');
+			$this->ComponentNamespace ??= $this->placeholder->get('ComponentNamespace');
+
 			// for plugin event TODO change event api signatures
 			$component_context = $this->config->component_context;
 			$plugins = $this->plugin->get();

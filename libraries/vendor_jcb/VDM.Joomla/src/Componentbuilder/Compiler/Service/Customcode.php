@@ -84,6 +84,7 @@ class Customcode implements ServiceProviderInterface
 			$container->get('Power.Extractor'),
 			$container->get('Joomla.Power.Extractor'),
 			$container->get('Customcode.External'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}

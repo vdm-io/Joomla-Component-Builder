@@ -111,6 +111,7 @@ class Joomla_powerController extends FormController
 		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_RESET_THIS_JOOMLA_POWER') . '</p>';
 		$status = 'error';
 		$success = false;
+		$has_error = false;
 
 		// get the guid field of this entity
 		$key_field = JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->getGuidField();
@@ -119,28 +120,59 @@ class Joomla_powerController extends FormController
 		$id = $item['id'] ?? null;
 		$guid = $item[$key_field] ?? null;
 
+		$message_bus = ['success', 'warning', 'error'];
+
 		// check if there is any selections
 		if ($id === null || $guid === null)
 		{
 			// set error message
-			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_RESET') . '</h1>';
 			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_JOOMLA_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
 		}
 		elseif($user->authorise('joomla_power.reset', 'com_componentbuilder'))
 		{
 			try {
-				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Get')->reset([$guid]))
+				JoomlaPowerFactory::_('Package.Builder.Get')->reset('joomla_power', [$guid]);
+
+				foreach ($message_bus as $message_key)
+				{
+					if (($messages = JoomlaPowerFactory::_('Package.Message')->get($message_key, null)) !== null)
+					{
+						$messages = '<p>' . implode('<br>', $messages) . '</p>';
+						$this->app->enqueueMessage($messages, $message_key);
+
+						if (!$success && $message_key === 'success')
+						{
+							$success = true;
+						}
+
+						if (!$has_error && $message_key === 'error')
+						{
+							$has_error = true;
+						}
+					}
+				}
+
+				if ($success)
 				{
 					// set success message
 					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESS') . '</h1>';
 					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_JOOMLA_POWER_HAS_SUCCESSFULLY_BEEN_RESET') . '</p>';
 					$status = 'success';
-					$success = true;
+				}
+				elseif ($has_error)
+				{
+					// set error message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_JOOMLA_POWER_HAS_FAILED') . '</p>';
+					$status = 'error';
 				}
 				else
 				{
-					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
-					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_JOOMLA_POWER_HAS_FAILED') . '</p>';
+					// set warning message
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_UNSUCCESSFUL') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_RESET_OF_THIS_JOOMLA_POWER_HAS_NOT_BEEN_SUCCESSFUL') . '</p>';
+					$status = 'warning';
 				}
 			} catch (\Exception $e) {
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_RESET_FAILED') . '</h1>';
@@ -190,6 +222,7 @@ class Joomla_powerController extends FormController
 		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_PUSH_THIS_JOOMLA_POWER') . '</p>';
 		$status = 'error';
 		$success = false;
+		$has_error = false;
 
 		// get the guid field of this entity
 		$key_field = JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->getGuidField();
@@ -198,65 +231,59 @@ class Joomla_powerController extends FormController
 		$id = $item['id'] ?? null;
 		$guid = $item[$key_field] ?? null;
 
-		$message_bus = ['warning', 'error'];
+		$message_bus = ['success', 'warning', 'error'];
 
 		// check if there is any selections
 		if ($id === null || $guid === null)
 		{
 			// set error message
-			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_SAVED') . '</h1>';
+			$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_NOT_PUSHED') . '</h1>';
 			$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_MUST_FIRST_SAVE_THE_JOOMLA_POWER_BEFORE_YOU_CAN_USE_THIS_FEATURE') . '</p>';
 		}
 		elseif($user->authorise('joomla_power.push', 'com_componentbuilder'))
 		{
 			try {
-				if (JoomlaPowerFactory::_('Joomla.Power.Remote.Set')->items([$guid]))
+				JoomlaPowerFactory::_('Package.Builder.Set')->items('joomla_power', [$guid]);
+
+				foreach ($message_bus as $message_key)
+				{
+					if (($messages = JoomlaPowerFactory::_('Package.Message')->get($message_key, null)) !== null)
+					{
+						$messages = '<p>' . implode('<br>', $messages) . '</p>';
+						$this->app->enqueueMessage($messages, $message_key);
+
+						if (!$success && $message_key === 'success')
+						{
+							$success = true;
+						}
+
+						if (!$has_error && $message_key === 'error')
+						{
+							$has_error = true;
+						}
+					}
+				}
+
+				if ($success)
 				{
 					// set success message
 					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_SUCCESS') . '</h1>';
 					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_JOOMLA_POWER_HAS_SUCCESSFULLY_BEEN_PUSHED') . '</p>';
 					$status = 'success';
-					$success = true;
 				}
-				else
+				elseif ($has_error)
 				{
-					// Load any messages from the message bus
-					$message_bucket = [];
-
-					foreach ($message_bus as $message_key)
-					{
-						if (($messages = JoomlaPowerFactory::_('Power.Message')->get($message_key, null)) !== null)
-						{
-							$message_bucket[$message_key] = $messages;
-						}
-					}
-
 					// Initialize base values
 					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
 					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_JOOMLA_POWER_HAS_FAILED') . '</p>';
 					$status = 'error';
-
-					// Handle both error and warning
-					if (isset($message_bucket['error'], $message_bucket['warning']))
-					{
-						$message .= '<p>' . implode('<br>', $message_bucket['error']) . '</p>';
-
-						foreach ($message_bucket['warning'] as $warning)
-						{
-							$this->app->enqueueMessage($warning, 'warning');
-						}
-					}
-					elseif (isset($message_bucket['error']))
-					{
-						$message .= '<p>' . implode('<br>', $message_bucket['error']) . '</p>';
-					}
-					elseif (isset($message_bucket['warning']))
-					{
-						$status = 'warning';
-						$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_WAS_UNSUCCESSFUL') . '</h1>';
-						$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_JOOMLA_POWER_COULD_NOT_BE_COMPLETED') . '</p>';
-						$message .= '<p>' . implode('<br>', $message_bucket['warning']) . '</p>';
-					}
+				}
+				else
+				{
+					// Initialize base values
+					$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_UNSUCCESSFUL') . '</h1>';
+					$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_THE_PUSH_OF_THIS_JOOMLA_POWER_HAS_NOT_BEEN_SUCCESSFUL') . '</p>';
+					$status = 'warning';
 				}
 			} catch (\Exception $e) {
 				$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PUSH_FAILED') . '</h1>';
@@ -401,28 +428,6 @@ class Joomla_powerController extends FormController
 		}
 
 		return $append;
-	}
-
-	/**
-	 * Method to run batch operations.
-	 *
-	 * @param   object  $model  The model.
-	 *
-	 * @return  boolean   True if successful, false otherwise and internal error is set.
-	 *
-	 * @since   2.5
-	 */
-	public function batch($model = null)
-	{
-		Session::checkToken() or exit(Text::_('JINVALID_TOKEN'));
-
-		// Set the model
-		$model = $this->getModel('Joomla_power', '', []);
-
-		// Preset the redirect
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_powers' . $this->getRedirectToListAppend(), false));
-
-		return parent::batch($model);
 	}
 
 	/**

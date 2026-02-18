@@ -42,7 +42,7 @@ class CodeRule extends FormRule
 	 *
 	 * @return  boolean  True if the value is valid, false otherwise.
 	 */
-	public function test(\SimpleXMLElement $element, $value, $group = null, Registry $input = null, Form $form = null)
+	public function test(\SimpleXMLElement $element, $value, $group = null, ?Registry $input = null, ?Form $form = null)
 	{
 		// This removes all validation (is dangerous) but needed to submit code via JCB
 		return true;

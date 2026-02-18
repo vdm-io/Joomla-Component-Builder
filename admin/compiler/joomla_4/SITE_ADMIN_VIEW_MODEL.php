@@ -103,20 +103,20 @@ class ###View###Model extends AdminModel
 	{###LICENSE_LOCKED_CHECK###
 		if ($item = parent::getItem($pk))
 		{
-			if (!empty($item->params) && !is_array($item->params))
-			{
-				// Convert the params field to an array.
-				$registry = new Registry;
-				$registry->loadString($item->params);
-				$item->params = $registry->toArray();
-			}
-
-			if (!empty($item->metadata))
+			if (property_exists($item, 'metadata') && !is_array($item->metadata))
 			{
 				// Convert the metadata field to an array.
-				$registry = new Registry;
-				$registry->loadString($item->metadata);
-				$item->metadata = $registry->toArray();
+				$metadata       = new Registry($item->metadata);
+				$item->metadata = $metadata->toArray();
+			}
+
+			// check edit access permissions
+			if (!empty($item->id) && !$this->allowEdit((array) $item))
+			{
+ 				$app = Factory::getApplication();
+  				$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Not authorised!'), 'error');
+				$app->redirect('index.php?option=com_###component###&view=###SITE_DEFAULT_VIEW###');
+				return false;
 			}###METHOD_GET_ITEM###
 		}###LINKEDVIEWGLOBAL###
 
@@ -190,7 +190,6 @@ class ###View###Model extends AdminModel
 	 * @param   object  $record  A record object.
 	 *
 	 * @return  boolean  True if allowed to delete the record. Defaults to the permission set in the component.
-	 *
 	 * @since   1.6
 	 */
 	protected function canDelete($record)
@@ -203,7 +202,6 @@ class ###View###Model extends AdminModel
 	 * @param   object  $record  A record object.
 	 *
 	 * @return  boolean  True if allowed to change the state of the record. Defaults to the permission set in the component.
-	 *
 	 * @since   1.6
 	 */
 	protected function canEditState($record)
@@ -211,15 +209,17 @@ class ###View###Model extends AdminModel
 	}
 
 	/**
-	 * Method override to check if you can edit an existing record.
+	 * Method to check if you can edit an existing record.
+	 *   We know this is a double access check (Controller already does an allowEdit check)
+	 *   But when the item is directly accessed the controller is skipped (2025_).
 	 *
 	 * @param   array    $data   An array of input data.
 	 * @param   string   $key    The name of the key for the primary key.
 	 *
-	 * @return    boolean
+	 * @return   boolean True if allowed to edit the record. Defaults to the permission set in the component.
 	 * @since    2.5
 	 */
-	protected function allowEdit($data = [], $key = 'id')
+	protected function allowEdit(array $data = [], string $key = 'id'): bool
 	{###JMODELADMIN_ALLOWEDIT###
 	}
 
@@ -342,101 +342,6 @@ class ###View###Model extends AdminModel
 
 		return true;
 	}
-
-	/**
-	 * Method to perform batch operations on an item or a set of items.
-	 *
-	 * @param   array  $commands  An array of commands to perform.
-	 * @param   array  $pks       An array of item ids.
-	 * @param   array  $contexts  An array of item contexts.
-	 *
-	 * @return  boolean  Returns true on success, false on failure.
-	 *
-	 * @since   12.2
-	 */
-	public function batch($commands, $pks, $contexts)
-	{
-		// Sanitize ids.
-		$pks = array_unique($pks);
-		ArrayHelper::toInteger($pks);
-
-		// Remove any values of zero.
-		if (array_search(0, $pks, true))
-		{
-			unset($pks[array_search(0, $pks, true)]);
-		}
-
-		if (empty($pks))
-		{
-			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JGLOBAL_NO_ITEM_SELECTED'));
-			return false;
-		}
-
-		$done = false;
-
-		// Set some needed variables.
-		$this->user ??= $this->getCurrentUser();
-		$this->table = $this->getTable();
-		$this->tableClassName = get_class($this->table);
-		$this->contentType = new UCMType;
-		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo = ###Component###Helper::getActions('###view###');
-		$this->batchSet = true;
-
-		if (!$this->canDo->get('core.batch'))
-		{
-			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		if ($this->type == false)
-		{
-			$type = new UCMType;
-			$this->type = $type->getTypeByAlias($this->typeAlias);
-		}
-
-		$this->tagsObserver = $this->table->getObserverOfClass('JTableObserverTags');
-
-		if (!empty($commands['move_copy']))
-		{
-			$cmd = ArrayHelper::getValue($commands, 'move_copy', 'c');
-
-			if ($cmd == 'c')
-			{
-				$result = $this->batchCopy($commands, $pks, $contexts);
-
-				if (is_array($result))
-				{
-					foreach ($result as $old => $new)
-					{
-						$contexts[$new] = $contexts[$old];
-					}
-					$pks = array_values($result);
-				}
-				else
-				{
-					return false;
-				}
-			}
-			elseif ($cmd == 'm' && !$this->batchMove($commands, $pks, $contexts))
-			{
-				return false;
-			}
-
-			$done = true;
-		}
-
-		if (!$done)
-		{
-			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		// Clear the cache
-		$this->cleanCache();
-
-		return true;
-	}###MODEL_BATCH_COPY######MODEL_BATCH_MOVE###
 
 	/**
 	 * Method to save the form data.

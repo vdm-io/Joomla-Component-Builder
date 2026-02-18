@@ -33,6 +33,54 @@ final class Update extends Versioning implements UpdateInterface
 	use DefaultTrait;
 
 	/**
+	 * The updated multiple
+	 *
+	 * @var      bool
+	 * @since  5.1.4
+	 **/
+	protected bool $multiple = false;
+
+	/**
+	 * The updated id tracker bucket
+	 *
+	 * @var      array
+	 * @since  5.1.4
+	 **/
+	protected array $updateids = [];
+
+	/**
+	 * Get the IDs affected by the most recent UPDATE batch.
+	 *
+	 * This method returns the ordered list of entity IDs that were affected
+	 * by the last UPDATE operation or batch of UPDATE operations.
+	 *
+	 * Behavioral notes:
+	 * - IDs are resolved deterministically (ID, GUID, or WHERE-clause fallback).
+	 * - The order of IDs reflects the order in which they were resolved.
+	 * - IDs may represent one or many rows, depending on the UPDATE scope.
+	 * - When `$reset` is enabled, the internal update ID bucket is cleared
+	 *   after the values are retrieved.
+	 *
+	 * @param   bool  $reset  Whether to reset the internal update ID bucket
+	 *                        after retrieval.
+	 *
+	 * @return  array<int|string>  The affected entity IDs.
+	 *
+	 * @since   5.1.4
+	 */
+	public function updateids(bool $reset = false): array
+	{
+		$ids = $this->updateids;
+
+		if ($reset && $ids !== [])
+		{
+			$this->updateids = [];
+		}
+
+		return $ids;
+	}
+
+	/**
 	 * Update rows in the database (with remapping and filtering columns option)
 	 *
 	 * @param   array    $data      Dataset to update in database [array of arrays (key => value)]
@@ -46,10 +94,15 @@ final class Update extends Versioning implements UpdateInterface
 	public function rows(array $data, string $key, string $table, array $columns = []): bool
 	{
 		// set the update columns
-		if ($data === [] || strlen($key) == 0)
+		if ($data === [] || $key === '')
 		{
 			return false;
 		}
+
+		// reset update ids bucket
+		$this->updateids = [];
+
+		$this->multiple = true;
 
 		// set the update values
 		foreach ($data as $values)
@@ -76,6 +129,15 @@ final class Update extends Versioning implements UpdateInterface
 			}
 		}
 
+		if ($this->updateids !== [])
+		{
+			$this->trackHistory($this->updateids);
+		}
+
+		// always reset the switch's
+		$this->defaults()->history();
+		$this->multiple = false;
+
 		return true;
 	}
 
@@ -93,10 +155,15 @@ final class Update extends Versioning implements UpdateInterface
 	public function items(array $data, string $key, string $table, array $columns = []): bool
 	{
 		// set the update columns
-		if ($data === [] || strlen($key) == 0)
+		if ($data === [] || $key === '')
 		{
 			return false;
 		}
+
+		// reset update ids bucket
+		$this->updateids = [];
+
+		$this->multiple = true;
 
 		// set the update values
 		foreach ($data as $nr => $values)
@@ -123,116 +190,114 @@ final class Update extends Versioning implements UpdateInterface
 			}
 		}
 
+		if ($this->updateids !== [])
+		{
+			$this->trackHistory($this->updateids);
+		}
+
+		// always reset the switch's
+		$this->defaults()->history();
+		$this->multiple = false;
+
 		return true;
 	}
 
 	/**
-	 * Update row in the database
+	 * Update row in the database.
 	 *
-	 * @param   array    $data      Dataset to update in database (key => value)
-	 * @param   string   $key       Dataset key column to use in updating the values in the Database
-	 * @param   string   $table     The table where the data is being updated
+	 * Notes on ID tracking (critical for dependency + history workflows):
+	 * - This method ALWAYS tracks the affected ID(s) in `$this->updateids`, even when history tracking is disabled.
+	 * - ID resolution order (only fall back when the previous fails):
+	 *   1) Use `id` from the provided dataset (if present).
+	 *   2) Use `guid` from the provided dataset and resolve to ID(s).
+	 *   3) Resolve ID(s) via the UPDATE WHERE clause (based on `$key` and its value).
+	 *
+	 * Multi-row safety:
+	 * - If the WHERE clause matches more than one row, all matching IDs are tracked.
+	 *
+	 * @param   array   $data   Dataset to update in database (key => value).
+	 * @param   string  $key    Dataset key column to use in updating the values in the Database.
+	 * @param   string  $table  The table where the data is being updated.
 	 *
 	 * @return  bool
 	 * @since   3.2.0
 	 **/
 	public function row(array $data, string $key, string $table): bool
 	{
-		// set the update columns
-		if ($data === [] || strlen($key) == 0)
+		// basic validation
+		if ($data === [] || $key === '')
 		{
 			return false;
 		}
 
-		// set joomla default columns
-		$add_modified = false;
-		$add_modified_by = false;
-
-		// check if we should load the defaults
-		if ($this->defaults)
+		if (!$this->multiple)
 		{
-			if (!isset($data['modified']))
-			{
-				$add_modified = true;
-			}
-
-			if (!isset($data['modified_by']))
-			{
-				$add_modified_by = true;
-			}
+			// reset update ids bucket
+			$this->updateids = [];
 		}
 
 		// set history vars
 		$this->entity = $this->getTableEntityName($table);
 		$table = $this->getTable($table);
 
-		// get a query object
-		$query = $this->db->createQuery();
+		// extract identifier values from payload (id/guid/key value)
+		[$keyValue, $id, $guid] = $this->extractUpdateIdentifiers($data, $key);
 
-		// set the query targets
+		// must have a WHERE key value
+		if ($keyValue === null)
+		{
+			return false;
+		}
+
+		// build the UPDATE query (keep original structure + quoting behaviour)
+		$query = $this->db->createQuery();
 		$query->update($this->db->quoteName($table));
 
-		// set the update values
-		$key_ = null;
-		$guid = null;
-		$id = null;
 		foreach ($data as $column => $value)
 		{
+			// do not set the key column; it is used in WHERE
 			if ($column === $key)
 			{
-				$key_ = $value;
-			}
-			else
-			{
-				$query->set($this->db->quoteName($column) . ' = ' . $this->quote($value));
+				continue;
 			}
 
-			if (!empty($this->entity) && $this->history && !empty($value))
+			$query->set($this->db->quoteName($column) . ' = ' . $this->quote($value));
+		}
+
+		// apply modified defaults exactly when needed
+		$this->applyUpdateDefaults($query, $data);
+
+		// build WHERE clause once (used for UPDATE and (if needed) fallback SELECT)
+		$where = $this->db->quoteName($key) . ' = ' . $this->quote($keyValue);
+		$query->where($where);
+
+		$resolvedIds = $this->resolveUpdateIds($id, $guid, $table, $where);
+
+		// execute the update
+		$this->db->setQuery($query);
+		$result = $this->db->execute();
+
+		if ($result && $resolvedIds !== [])
+		{
+			$this->updateids = array_values(
+				array_unique(
+					array_merge($this->updateids, $resolvedIds)
+				)
+			);
+
+			if (!$this->multiple)
 			{
-				if ($column === 'guid')
-				{
-					$guid = $value;
-				}
-				elseif ($column === 'id')
-				{
-					$id = (int) $value;
-				}
+				$this->trackHistory($resolvedIds);
 			}
 		}
 
-		// add the key condition
-		if ($key_ !== null)
+		if (!$this->multiple)
 		{
-			if ($add_modified)
-			{
-				$query->set($this->db->quoteName('modified') . ' = ' . $this->quote((new Date())->toSql()));
-			}
-
-			if ($add_modified_by)
-			{
-				$query->set($this->db->quoteName('modified_by') . ' = ' . $this->userId);
-			}
-
-			$query->where($this->db->quoteName($key) . ' = ' . $this->quote($key_));
-
-			// execute the final query
-			$this->db->setQuery($query);
-
-			$result = $this->db->execute();
-
-			// tract history
-			if ($result && $this->history && !empty($this->entity) && (!empty($id) || !empty($guid)))
-			{
-				$this->trackHistory($id, $guid, $table);
-			}
-
 			// always reset the switch's
 			$this->defaults()->history();
-
-			return $result;
 		}
 
-		return false;
+		return (bool) $result;
 	}
 
 	/**
@@ -283,38 +348,139 @@ final class Update extends Versioning implements UpdateInterface
 	}
 
 	/**
-	 * Attempt to set history records for the specified entity.
+	 * Extract update identifiers from the dataset.
 	 *
-	 * Any exceptions during this process are silently caught and ignored.
+	 * Identifier resolution inputs:
+	 * - `$keyValue` is always required to build the WHERE clause.
+	 * - `$id` and `$guid` are optional and are used to avoid the fallback WHERE lookup.
 	 *
-	 * @param  int     $id      The entity id.
-	 * @param  string  $guid    The entity GUID.
-	 * @param  string  $table   The full table name.
+	 * @param   array   $data  The update dataset.
+	 * @param   string  $key   The WHERE key column name.
 	 *
-	 * @return void
-	 * @since  5.1.1
+	 * @return  array{0:mixed,1:?int,2:?string}  Key value, id, guid.
+	 * @since   5.1.4
 	 */
-	protected function trackHistory(?int $id, ?string $guid, $table): void
+	protected function extractUpdateIdentifiers(array $data, string $key): array
 	{
-		if ($id !== null)
+		$keyValue = null;
+		$id = null;
+		$guid = null;
+
+		foreach ($data as $column => $value)
 		{
-			try
+			if (empty($value))
 			{
-				$this->setHistory($id);
+				continue;
 			}
-			catch (\Throwable $e)
+
+			if ($column === $key)
 			{
-				// Silently ignore all errors
+				$keyValue = $value;
+				continue;
 			}
+
+			// capture identifiers if present
+			if ($column === 'id')
+			{
+				$id = (int) $value;
+			}
+			elseif ($column === 'guid')
+			{
+				$guid = (string) $value;
+			}
+		}
+
+		return [$keyValue, $id, $guid];
+	}
+
+	/**
+	 * Apply Joomla update defaults (modified / modified_by) if enabled and missing.
+	 *
+	 * This preserves the original behaviour:
+	 * - Only applied when `$this->defaults` is enabled.
+	 * - Only applied when the caller did not provide the columns already.
+	 *
+	 * @param   object  $query  The update query object.
+	 * @param   array   $data   The update dataset.
+	 *
+	 * @return  void
+	 * @since   5.1.4
+	 */
+	protected function applyUpdateDefaults($query, array $data): void
+	{
+		if (!$this->defaults)
+		{
 			return;
 		}
 
-		if ($guid === null)
+		$add_modified = !isset($data['modified']);
+		$add_modified_by = !isset($data['modified_by']);
+
+		if ($add_modified)
 		{
-			// should never happen
-			return;
+			$query->set(
+				$this->db->quoteName('modified') . ' = ' . $this->quote((new Date())->toSql())
+			);
 		}
 
+		if ($add_modified_by)
+		{
+			$query->set(
+				$this->db->quoteName('modified_by') . ' = ' . (int) $this->userId
+			);
+		}
+	}
+
+	/**
+	 * Resolve the affected ID(s) for an UPDATE operation.
+	 *
+	 * Resolution order (only fall back when the previous fails):
+	 * 1) Use the provided `$id` if present and valid (>0).
+	 * 2) Resolve by `$guid` if provided (returns one or multiple IDs).
+	 * 3) Resolve by the WHERE clause (returns one or multiple IDs).
+	 *
+	 * @param   int|null     $id     The entity ID if provided.
+	 * @param   string|null  $guid   The entity GUID if provided.
+	 * @param   string       $table  The full table name.
+	 * @param   string       $where  The WHERE clause used by the UPDATE.
+	 *
+	 * @return  array<int>  The resolved ID(s).
+	 * @since   5.1.4
+	 */
+	protected function resolveUpdateIds(?int $id, ?string $guid, string $table, string $where): array
+	{
+		// 1) Direct ID
+		if (!empty($id) && $id > 0)
+		{
+			return [$id];
+		}
+
+		// 2) GUID -> ID(s)
+		if (!empty($guid))
+		{
+			$ids = $this->lookupIdsByGuid($guid, $table);
+
+			if ($ids !== [])
+			{
+				return $ids;
+			}
+		}
+
+		// 3) WHERE clause -> ID(s)
+		return $this->lookupIdsByWhere($where, $table);
+	}
+
+	/**
+	 * Lookup ID(s) by GUID.
+	 *
+	 * @param   string  $guid   The entity GUID.
+	 * @param   string  $table  The full table name.
+	 *
+	 * @return  array<int>  Matching ID(s), empty array if none found.
+	 * @since   5.1.4
+	 */
+	protected function lookupIdsByGuid(string $guid, string $table): array
+	{
 		try
 		{
 			$query = $this->db->createQuery()
@@ -327,10 +493,88 @@ final class Update extends Versioning implements UpdateInterface
 
 			if ($this->db->getNumRows())
 			{
-				$this->setHistory(
-					$this->db->loadResult()
-				);
+				return $this->db->loadColumn();
 			}
+		}
+		catch (\Throwable $e)
+		{
+			// Silently ignore all errors
+		}
+
+		return [];
+	}
+
+	/**
+	 * Lookup ID(s) by an UPDATE WHERE clause.
+	 *
+	 * This is the final fallback and must only be used when:
+	 * - no valid `$id` was provided, and
+	 * - no `$guid` was provided or it could not be resolved.
+	 *
+	 * @param   string  $where  The WHERE clause string.
+	 * @param   string  $table  The full table name.
+	 *
+	 * @return  array<int>  Matching ID(s), empty array if none found.
+	 * @since   5.1.4
+	 */
+	protected function lookupIdsByWhere(string $where, string $table): array
+	{
+		if ($where === '')
+		{
+			return [];
+		}
+
+		try
+		{
+			$query = $this->db->createQuery()
+				->select($this->db->quoteName('id'))
+				->from($this->db->quoteName($table))
+				->where($where);
+
+			$this->db->setQuery($query);
+			$this->db->execute();
+
+			if ($this->db->getNumRows())
+			{
+				return $this->db->loadColumn();
+			}
+		}
+		catch (\Throwable $e)
+		{
+			// Silently ignore all errors
+		}
+
+		return [];
+	}
+
+	/**
+	 * Apply history tracking for updated IDs.
+	 *
+	 * History is optional.
+	 * - If history tracking is enabled and entity context exists, history is recorded.
+	 *
+	 * @param   array<int>  $ids  The affected IDs.
+	 *
+	 * @return  void
+	 * @since   5.1.4
+	 */
+	protected function trackHistory(array $ids): void
+	{
+		if (!$this->history || empty($this->entity) || $ids === [])
+		{
+			return;
+		}
+
+		try
+		{
+			// Use the most efficient history call available
+			if (count($ids) === 1)
+			{
+				$this->setHistory((int) $ids[0]);
+				return;
+			}
+
+			$this->setMultipleHistory($ids);
 		}
 		catch (\Throwable $e)
 		{

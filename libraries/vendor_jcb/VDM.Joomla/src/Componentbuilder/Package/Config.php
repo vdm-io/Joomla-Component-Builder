@@ -104,12 +104,8 @@ class Config extends ComponentConfig
 	{
 		// some defaults repos we need by JCB
 		$repos = [];
-		// get the users own power repo (can overwrite all)
-		if (!empty($this->gitea_username))
-		{
-			$repos[$this->gitea_username . '.package'] = (object) ['organisation' => $this->gitea_username, 'repository' => 'package', 'read_branch' => 'master'];
-		}
-		$repos[$this->package_core_organisation . '.package'] = (object) ['organisation' => $this->package_core_organisation, 'repository' => 'package', 'read_branch' => 'master'];
+
+		$repos[$this->package_core_organisation . '.packages'] = (object) ['organisation' => $this->package_core_organisation, 'repository' => 'packages', 'read_branch' => 'master'];
 
 		return $repos;
 	}

@@ -251,7 +251,7 @@
 					name="value"
 					label="COM_COMPONENTBUILDER_REPOSITORY_VALUE_LABEL"
 					rows="1"
-					cols="5"
+					cols="110"
 					default="default text"
 					description="COM_COMPONENTBUILDER_REPOSITORY_VALUE_DESCRIPTION"
 					message="COM_COMPONENTBUILDER_REPOSITORY_VALUE_MESSAGE"

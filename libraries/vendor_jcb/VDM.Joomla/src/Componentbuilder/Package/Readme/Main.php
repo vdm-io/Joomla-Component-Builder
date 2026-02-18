@@ -52,6 +52,7 @@ abstract class Main
 	 */
 	protected function generateIndex(array &$classes): string
 	{
+		$result = '';
 		foreach ($classes as $class)
 		{
 			// Add the class details

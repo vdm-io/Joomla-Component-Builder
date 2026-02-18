@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
@@ -448,7 +448,7 @@ final class Structuresingle
 			// register the file
 			$this->registerFile($target, $details);
 		}
-		elseif ($details->type === 'folder')
+		elseif ($details->type === 'folder' && is_dir($this->currentFullPath))
 		{
 			// move the folder to its place
 			Folder::copy(

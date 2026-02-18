@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Abstraction\Remote;
 
 
-use Joomla\CMS\Language\Text;
 use VDM\Joomla\Interfaces\Remote\ConfigInterface as Config;
 use VDM\Joomla\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
@@ -203,13 +202,13 @@ abstract class Set extends Base implements SetInterface
 		if (!$this->canWrite())
 		{
 			$target_network = $this->grep->getNetworkTarget() ?? $this->getArea();
-			$this->messages->add('error', Text::sprintf('COM_COMPONENTBUILDER_AT_LEAST_ONE_S_CONTENT_REPOSITORY_MUST_BE_CONFIGURED_WITH_A_WRITE_BRANCH_VALUE_IN_THE_REPOSITORIES_AREA_FOR_THE_PUSH_FUNCTION_TO_OPERATE_CORRECTLY', $target_network));
+			$this->messages->add('error', sprintf('At least one [%s] content repository must be configured with a [Write Branch] value in the repositories area, for the push function to operate correctly.', $target_network));
 			return false;
 		}
 
 		if (($items = $this->getLocalItems($guids)) === null)
 		{
-			$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_THE_S_ITEMS_COULD_NOT_BE_FOUND', strtolower($area)));
+			$this->messages->add('warning', sprintf('The %s item(s) could not be found.', strtolower($area)));
 			return false;
 		}
 
@@ -236,7 +235,7 @@ abstract class Set extends Base implements SetInterface
 		{
 			$this->tracker->set("message.{$table}", true);
 			$item_name = $counter == 1 ? 'item has' : 'items have';
-			$this->messages->add('success', Text::sprintf('COM_COMPONENTBUILDER_S_S_BEEN_PUSHED_SUCCESSFULLY', $area, $item_name));
+			$this->messages->add('success', sprintf('%s %s been pushed successfully.', $area, $item_name));
 		}
 
 		return $counter === count($items);
@@ -523,7 +522,7 @@ abstract class Set extends Base implements SetInterface
 		$guid_field = $this->getGuidField();
 		if (empty($item->{$guid_field}))
 		{
-			$this->messages->add('error', Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_MISSING_THE_S_KEY_VALUE', $area, $item_name, $item_id, $guid_field));
+			$this->messages->add('error', sprintf('%s item [%s] id [%s] missing the ::%s:: key value.', $area, $item_name, $item_id, $guid_field));
 			return false;
 		}
 		$table = $this->getTable();
@@ -599,13 +598,13 @@ abstract class Set extends Base implements SetInterface
 				{
 					$repo_name = $this->getRepoName($repo);
 					$this->messages->add('error',
-						Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_COULD_NOT_BE_CREATED_OR_FOUND_IN_REPOS',
+						sprintf('%s item [%s] id [%s] could not be ::created:: or ::found:: in repo(%s).',
 							$area, $item_name, $item_id, $repo_name));
 				}
 			} catch (\Throwable $e) {
 				$repo_name = $this->getRepoName($repo);
 				$this->messages->add('error',
-					Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_ENCOUNTERED_AN_ERROR_IN_REPOSBRERROR_MESSAGEBRS',
+					sprintf('%s item [%s] id [%s] encountered an ::error:: in repo(%s).<br>Error Message:<br>%s',
 						$area, $item_name, $item_id, $repo_name, $e->getMessage()));
 			} finally {
 				$this->git->reset_();
@@ -614,7 +613,7 @@ abstract class Set extends Base implements SetInterface
 
 		if (!$at_least_once && $not_approved)
 		{
-			$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_S_ITEM_S_ID_S_IS_NOT_APPROVED_AND_THEREFORE_NOT_LINKED_TO_ANY_REPOSITORY', $area, $item_name, $item_id));
+			$this->messages->add('warning', sprintf('%s item [%s] id [%s] is not ::approved:: and therefore not ::linked:: to any repository.', $area, $item_name, $item_id));
 		}
 
 		$this->tracker->set("save.{$table}.{$guid_field}|{$guid}", $at_least_once);

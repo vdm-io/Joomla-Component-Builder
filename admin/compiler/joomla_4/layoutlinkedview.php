@@ -22,10 +22,10 @@ use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Administrator\Helpe
 // No direct access to this file
 defined('_JEXEC') or die;
 
-// set the defaults
+$app = $displayData->app ?? Factory::getApplication();
 $items = $displayData->###LAYOUTITEMS###;
-$user = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();
-$id = $displayData->item->id;
+$user = $displayData->user ?? $app->getIdentity();
+$id = (int) ($displayData->item->id ?? 0);
 ###LAYOUTITEMSHEADER###
 
 ?>

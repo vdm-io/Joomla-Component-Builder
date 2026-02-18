@@ -16,6 +16,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\LayoutData;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\TemplateData;
 use VDM\Joomla\Componentbuilder\Compiler\Alias\Data as Aliasdata;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -60,21 +61,33 @@ class Data
 	protected Aliasdata $aliasdata;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config         $config         The Config Class.
 	 * @param LayoutData     $layoutdata     The LayoutData Class.
 	 * @param TemplateData   $templatedata   The TemplateData Class.
 	 * @param Aliasdata      $aliasdata      The AliasData Class.
+	 * @param Counter        $counter        The Counter Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config, LayoutData $layoutdata, TemplateData $templatedata, Aliasdata $aliasdata)
+	public function __construct(Config $config, LayoutData $layoutdata,
+		TemplateData $templatedata, Aliasdata $aliasdata,
+		Counter $counter)
 	{
 		$this->config = $config;
 		$this->layoutdata = $layoutdata;
 		$this->templatedata = $templatedata;
 		$this->aliasdata = $aliasdata;
+		$this->counter = $counter;
 	}
 
 	/**
@@ -142,6 +155,9 @@ class Data
 						// call self to get child data
 						$again[] = ['content' => $data['html'], 'view' => $view];
 						$again[] = ['content' => $data['php_view'], 'view' => $view];
+
+						// count entity
+						$this->counter->template++;
 					}
 				}
 
@@ -221,6 +237,9 @@ class Data
 						// call self to get child data
 						$again[] = ['content' => $data['html'], 'view' => $view];
 						$again[] = ['content' => $data['php_view'], 'view' => $view];
+
+						// count entity
+						$this->counter->layout++;
 					}
 				}
 

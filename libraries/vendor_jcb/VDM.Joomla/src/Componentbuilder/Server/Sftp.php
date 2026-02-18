@@ -14,7 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Server;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use phpseclib3\Net\SFTP as SftpClient;
 use VDM\Joomla\Componentbuilder\Crypt\KeyLoader;
 use VDM\Joomla\Utilities\StringHelper;

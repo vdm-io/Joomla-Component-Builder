@@ -13,8 +13,11 @@ namespace VDM\Joomla\Gitea\Utilities;
 
 
 use Joomla\CMS\Http\Http as JoomlaHttp;
+use Joomla\Http\Transport\Curl;
+use Joomla\Http\Transport\Stream;
+use Joomla\Http\Transport\Socket;
 use Joomla\Registry\Registry;
-
+use VDM\Joomla\Gitea\Utilities\Http\Transport\UnsafeCurl;
 
 
 /**
@@ -59,8 +62,20 @@ final class Http extends JoomlaHttp
 
 		$options = new Registry($config);
 
+		// Force-create the transport WITH your options
+		$transport = null;
+		if (UnsafeCurl::isSupported()) {
+			$transport = new UnsafeCurl($options);
+		} elseif (Curl::isSupported()) {
+			$transport = new Curl($options);
+		} elseif (Stream::isSupported()) {
+			$transport = new Stream($options);
+		} else {
+			$transport = new Socket($options);
+		}
+
 		// run parent constructor
-		parent::__construct($options);
+		parent::__construct($options, $transport);
 	}
 
 	/**

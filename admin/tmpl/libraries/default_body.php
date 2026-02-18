@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use Joomla\CMS\User\UserFactoryInterface;
@@ -29,8 +30,8 @@ $edit = "index.php?option=com_componentbuilder&view=libraries&task=library.edit"
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
-		$canDo = ComponentbuilderHelper::getActions('library',$item,'libraries');
+				loadUserById((int) ($item->checked_out ?? 0));
+		$canDo = Actions::get('library', $item, 'libraries');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">

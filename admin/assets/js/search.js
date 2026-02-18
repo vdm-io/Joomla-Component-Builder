@@ -396,7 +396,8 @@ const setValueCheck = (row, field, table) => {
 const setValue = async (row, field, table) => {
 	try {
 		// get the value from the editor
-		let value = editorObject.getValue();
+		const editor = await GetEditor();
+		let value = editor ? editor.getValue() : '';
 
 		// build form
 		const formData = new FormData();
@@ -439,7 +440,10 @@ const addSelectedItem = async (value, table, row, field, line) => {
 	if (value.length > 1)
 	{
 		// add value to editor
-		editorObject.setValue(value);
+		const editor = await GetEditor();
+		if (editor) {
+			editor.setValue(value);
+		}
 
 		// set item details notice area
 		itemNoticeObject.style.display = '';
@@ -454,13 +458,14 @@ const addSelectedItem = async (value, table, row, field, line) => {
 			buttonUpdateItemObject.style.display = '';
 			buttonUpdateItemObject.setAttribute('onclick',"setValueCheck(" + row + ", '" + field + "', '" + table + "');");
 			// Get line info from current state.
-			const line_info = editorObject.instance.state.doc.line(line);
-			editorObject.instance.dispatch({
-				// Set selection to that entire line.
-				selection: { head: line_info.from, anchor: line_info.to },
-				// Ensure the selection is shown in viewport
-				scrollIntoView: true
-			});
+			const editor = await GetEditor();
+			if (editor) {
+				const lineInfo = editor.instance.state.doc.line(line);
+				editor.instance.dispatch({
+					selection: { head: lineInfo.from, anchor: lineInfo.to },
+					scrollIntoView: true
+				});
+			}
 		} else {
 			// no line so no data we can't save this data
 			buttonUpdateItemObject.setAttribute('onclick', "");
@@ -474,7 +479,10 @@ const addSelectedItem = async (value, table, row, field, line) => {
  */
 const clearSelectedItem = async () => {
 	// display area
-	editorObject.setValue('');
+	const editor = await GetEditor();
+	if (editor) {
+		editor.setValue('');
+	}
 	// clear notice area
 	itemNoticeObject.style.display = 'none';
 	itemEditButtonObject.innerHTML = '...';

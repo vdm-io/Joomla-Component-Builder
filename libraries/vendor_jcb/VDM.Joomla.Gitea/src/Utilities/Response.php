@@ -39,12 +39,16 @@ final class Response
 	public function get(JoomlaResponse $response, int  $expectedCode = 200, $default = null)
 	{
 		// Validate the response code.
-		if ($response->code != $expectedCode)
+		$code = method_exists($response, 'getStatusCode')
+			? (string) $response->getStatusCode()
+			: ($response->code ?? null);
+
+		if ($code != $expectedCode)
 		{
 			// Decode the error response and throw an exception.
 			$message =  $this->error($response);
 
-			throw new \DomainException("Invalid response received from Gitea API. $message", $response->code);
+			throw new \DomainException("Invalid response received from Gitea API. $message", $code);
 		}
 
 		return $this->body($response, $default);
@@ -64,15 +68,19 @@ final class Response
 	public function get_(JoomlaResponse $response, array $validate = [200 => null])
 	{
 		// Validate the response code.
-		if (!isset($validate[$response->code]))
+		$code = method_exists($response, 'getStatusCode')
+			? (string) $response->getStatusCode()
+			: ($response->code ?? null);
+
+		if (!isset($validate[$code]))
 		{
 			// Decode the error response and throw an exception.
 			$message =  $this->error($response);
 
-			throw new \DomainException("Invalid response received from Gitea API. $message", $response->code);
+			throw new \DomainException("Invalid response received from Gitea API. $message", $code);
 		}
 
-		return $this->body($response, $validate[$response->code]);
+		return $this->body($response, $validate[$code]);
 	}
 
 	/**
@@ -86,11 +94,11 @@ final class Response
 	 **/
 	protected function body(JoomlaResponse $response, $default = null)
 	{
+		// check that we have a body
 		$body = is_object($response) && method_exists($response, 'getBody')
 			? (string) $response->getBody()
 			: (isset($response->body) ? (string) $response->body : null);
 
-		// check that we have a body
 		if ($body !== null && StringHelper::check($body))
 		{
 			if (JsonHelper::check($body))

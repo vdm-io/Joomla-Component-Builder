@@ -42,6 +42,17 @@ class Custombuttons
 	];
 
 	/**
+	 * The toolbars override array
+	 *
+	 * @var    array
+	 * @since 5.2.4
+	 */
+	protected array $toolbars = [
+		'views_toolbar',
+		'view_toolbar'
+	];
+
+	/**
 	 * The gui mapper array
 	 *
 	 * @var    array
@@ -106,16 +117,16 @@ class Custombuttons
 	 */
 	public function set(object &$item, string $table = 'admin_view')
 	{
+		// set some gui mapper values
+		$this->guiMapper['table'] = $table;
+		$this->guiMapper['id'] = (int) $item->id;
+
+		// get the code
+		$code = $item->name_single_code ?? $item->code ?? 'error';
+
 		if (isset($item->add_custom_button)
 			&& $item->add_custom_button == 1)
 		{
-			// set some gui mapper values
-			$this->guiMapper['table'] = $table;
-			$this->guiMapper['id'] = (int) $item->id;
-
-			// get the code
-			$code = $item->name_single_code ?? $item->code ?? 'error';
-
 			// set for the code
 			foreach ($this->areas as $area)
 			{
@@ -152,7 +163,35 @@ class Custombuttons
 
 			unset($item->custom_button);
 		}
-	}
 
+		// add default toolbar override if set
+		foreach ($this->toolbars as $toolbar)
+		{
+			if (empty($item->{"add_{$toolbar}"})
+				|| (int) $item->{"add_{$toolbar}"} !== 1
+				|| empty($item->{$toolbar})
+				|| !StringHelper::check(
+					$item->{$toolbar}
+				))
+			{
+				$item->{$toolbar} = null; // ensure its empty
+				continue;
+			}
+
+			// set field
+			$this->guiMapper['field'] = $toolbar;
+			$item->{$toolbar} = $this->gui->set(
+				$this->customcode->update(
+					base64_decode((string) $item->{$toolbar})
+				),
+				$this->guiMapper
+			);
+
+			// check if we have template or layouts to load
+			$this->templateLayout->set(
+				$item->{$toolbar}, $code
+			);
+		}
+	}
 }
 

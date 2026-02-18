@@ -48,6 +48,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldDynamic;
 use VDM\Joomla\Componentbuilder\Compiler\Creator\FieldAsString;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Creator\Fieldtypeinterface as FieldType;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Creator\Fieldsetinterface as Fieldset;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\Helper;
+use VDM\Joomla\Componentbuilder\Compiler\Creator\EmailHelper;
 
 
 /**
@@ -168,6 +170,12 @@ class Creator implements ServiceProviderInterface
 
 		$container->alias(Fieldset::class, 'Compiler.Creator.Fieldset')
 			->share('Compiler.Creator.Fieldset', [$this, 'getFieldset'], true);
+
+		$container->alias(Helper::class, 'Compiler.Creator.Helper')
+			->share('Compiler.Creator.Helper', [$this, 'getHelper'], true);
+
+		$container->alias(EmailHelper::class, 'Compiler.Creator.Email.Helper')
+			->share('Compiler.Creator.Email.Helper', [$this, 'getEmailHelper'], true);
 	}
 
 	/**
@@ -889,6 +897,43 @@ class Creator implements ServiceProviderInterface
 			// build field set with simpleXMLElement class
 			return $container->get('Compiler.Creator.Fieldset.XML');
 		}
+	}
+
+	/**
+	 * Get The Helper Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Helper
+	 * @since   5.1.4
+	 */
+	public function getHelper(Container $container): Helper
+	{
+		return new Helper(
+			$container->get('Config'),
+			$container->get('Utilities.Structure'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Content.Multi')
+		);
+	}
+
+	/**
+	 * Get The EmailHelper Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  EmailHelper
+	 * @since   5.1.4
+	 */
+	public function getEmailHelper(Container $container): EmailHelper
+	{
+		return new EmailHelper(
+			$container->get('Config'),
+			$container->get('Component'),
+			$container->get('Utilities.Structure'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Content.Multi')
+		);
 	}
 }
 

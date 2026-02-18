@@ -186,7 +186,7 @@
 					name="icon"
 					label="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ICON_LABEL"
 					directory="images"
-					default=""
+					default="true"
 					description="COM_COMPONENTBUILDER_COMPONENT_CUSTOM_ADMIN_MENUS_ICON_DESCRIPTION"
 					hide_default="true"
 				/>

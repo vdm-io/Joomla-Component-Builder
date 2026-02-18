@@ -13,27 +13,29 @@ namespace VDM\Joomla\Componentbuilder\Package\Builder;
 
 
 use Joomla\DI\Container;
-use VDM\Joomla\Interfaces\Registryinterface as Entities;
 use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
+use VDM\Joomla\Componentbuilder\Factory;
 
 
 /**
- * Package Builder Set
+ * Set Remote entity persistence orchestrator.
+ * 
+ * Coordinates saving entities, files, and folders to remote systems
+ * while resolving dependencies via the Tracker.
+ * 
+ * This class treats the DI container as a capability registry:
+ * - If a remote handler does not exist, the operation is skipped.
+ * - No exceptions are thrown due to missing services.
  * 
  * @since 5.1.1
  */
 class Set
 {
 	/**
-	 * The Entities Class.
-	 *
-	 * @var   Entities
-	 * @since 5.1.1
-	 */
-	protected Entities $entities;
-
-	/**
 	 * The Tracker Class.
+	 *
+	 * Tracks deferred entity, file, and folder save operations
+	 * discovered during remote persistence.
 	 *
 	 * @var   Tracker
 	 * @since 5.1.1
@@ -43,6 +45,9 @@ class Set
 	/**
 	 * The DI Container Class.
 	 *
+	 * Used strictly as a service capability registry.
+	 * All access is guarded via `has()` to prevent runtime failures.
+	 *
 	 * @var   Container
 	 * @since 5.1.1
 	 */
@@ -51,68 +56,91 @@ class Set
 	/**
 	 * Constructor.
 	 *
-	 * @param Entities   $entities   The Entities Class.
 	 * @param Tracker    $tracker    The Tracker Class.
-	 * @param Container  $container  The container Class.
+	 * @param Container  $container  The DI container.
 	 *
 	 * @since 5.1.1
 	 */
-	public function __construct(Entities $entities, Tracker $tracker, Container $container)
+	public function __construct(Tracker $tracker, Container $container)
 	{
-		$this->entities = $entities;
-		$this->tracker = $tracker;
+		$this->tracker   = $tracker;
 		$this->container = $container;
 	}
 
 	/**
-	 * Save items remotely
+	 * Save items remotely.
 	 *
-	 * @param string  $entity   The target entity
-	 * @param array   $guids    The global unique id of the item
+	 * This method performs the following steps:
+	 * - Resolves the entity class via the Entities registry.
+	 * - Executes the entity-specific remote save handler if available.
+	 * - Recursively processes tracked entity dependencies.
+	 * - Processes queued file and folder save operations.
+	 *
+	 * If a required remote handler is not registered in the container,
+	 * the operation is silently skipped and execution continues.
+	 *
+	 * @param string  $entity  The target entity.
+	 * @param array   $guids   The global unique identifiers of the items.
 	 *
 	 * @return void
 	 * @since  5.1.1
 	 */
 	public function items(string $entity, array $guids): void
 	{
-		if (($class = $this->entities->get($entity)) === null)
+		if ($guids === [] || ($area = Factory::getArea($entity)) === null)
 		{
 			return;
 		}
 
-		$this->container->get("{$class}.Remote.Set")->items($guids);
+		$service = "{$area}.Remote.Set";
+
+		if ($this->container->has($service))
+		{
+			$this->container->get($service)->items($guids);
+		}
 
 		while (($dependencies = $this->tracker->get('set')) !== null)
 		{
 			$this->tracker->remove('set');
-			foreach ($dependencies as $next_entity => $next_items)
+
+			foreach ($dependencies as $nextEntity => $nextItems)
 			{
-				$this->items($next_entity, $this->getGuids($next_items));
+				$this->items($nextEntity, $this->getGuids($nextItems));
 			}
 		}
 
 		while (($files = $this->tracker->get('file.set')) !== null)
 		{
 			$this->tracker->remove('file.set');
-			$this->container->get("File.Remote.Set")->items($files);
+
+			if ($this->container->has('File.Remote.Set'))
+			{
+				$this->container->get('File.Remote.Set')->items($files);
+			}
 		}
 
 		while (($folders = $this->tracker->get('folder.set')) !== null)
 		{
 			$this->tracker->remove('folder.set');
-			$this->container->get("Folder.Remote.Set")->items($folders);
+
+			if ($this->container->has('Folder.Remote.Set'))
+			{
+				$this->container->get('Folder.Remote.Set')->items($folders);
+			}
 		}
 	}
 
 	/**
 	 * Extract only the `value` property from an array of arrays or objects.
 	 *
-	 * This method supports mixed input types (arrays or objects)
-	 * and will extract the `value` from each entity as long as it is not empty.
+	 * This method safely supports mixed input types (arrays or objects)
+	 * and extracts the `value` field when present and non-empty.
+	 *
+	 * Invalid or unsupported structures are ignored.
 	 *
 	 * @param array $entities  The entities keyed by GUID.
 	 *
-	 * @return array  An indexed array of extracted `value` strings.
+	 * @return array  An indexed array of extracted GUID strings.
 	 * @since 5.1.1
 	 */
 	protected function getGuids(array $entities): array

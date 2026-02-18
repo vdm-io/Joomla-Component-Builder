@@ -13,6 +13,7 @@ namespace VDM\Joomla\Utilities;
 
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\Component\Helper;
 
 
@@ -104,7 +105,7 @@ abstract class GuidHelper
 					$component = (string) Helper::getCode();
 				}
 				// Get the database object and a new query object.
-				$db = Factory::getDbo();
+				$db = Factory::getContainer()->get(DatabaseInterface::class);
 				$query = $db->getQuery(true);
 				$query->select('COUNT(*)')
 					->from('#__' . (string) $component . '_' . (string) $table)
@@ -154,7 +155,7 @@ abstract class GuidHelper
 				$component = (string) Helper::getCode();
 			}
 			// Get the database object and a new query object.
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 
 			if (ArrayHelper::check($what))

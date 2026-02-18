@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
+use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as Templatelayout;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -57,17 +58,27 @@ class Ajaxcustomview
 	protected Dispenser $dispenser;
 
 	/**
+	 * Compiler Template Layout Data
+	 *
+	 * @var    Templatelayout
+	 * @since 3.2.0
+	 */
+	protected Templatelayout $templatelayout;
+
+	/**
 	 * Constructor
 	 *
-	 * @param Config|null         $config         The compiler config object.
-	 * @param Dispenser|null      $dispenser      The compiler customcode dispenser
+	 * @param Config         $config         The compiler config object.
+	 * @param Dispenser      $dispenser      The compiler customcode dispenser
+	 * @param Templatelayout $templatelayout The template layout data.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Config $config = null, ?Dispenser $dispenser = null)
+	public function __construct(Config $config, Dispenser $dispenser, Templatelayout $templatelayout)
 	{
-		$this->config = $config ?: Compiler::_('Config');
-		$this->dispenser = $dispenser ?: Compiler::_('Customcode.Dispenser');
+		$this->config = $config;
+		$this->dispenser = $dispenser;
+		$this->templatelayout = $templatelayout;
 	}
 
 	/**
@@ -98,7 +109,7 @@ class Ajaxcustomview
 				$target = 'admin';
 			}
 
-			$add_ajax_site = false;
+			$add_ajax = false;
 
 			// check if controller input as been set
 			$item->ajax_input = (isset($item->ajax_input)
@@ -110,11 +121,11 @@ class Ajaxcustomview
 				$this->dispenser->hub[$target]['ajax_controller'][$item->code]
 					     = array_values($item->ajax_input);
 
-				$add_ajax_site = true;
+				$add_ajax = true;
 			}
 			unset($item->ajax_input);
 
-			// load the ajax class mathods (if set)
+			// load the ajax class methods (if set)
 			if (StringHelper::check($item->php_ajaxmethod))
 			{
 				// set field
@@ -127,15 +138,20 @@ class Ajaxcustomview
 					$this->guiMapper
 				);
 
-				$add_ajax_site = true;
+				// check if we have template or layouts to load
+				$this->templatelayout->set(
+					$item->php_ajaxmethod, $item->code
+				);
+
+				$add_ajax = true;
 			}
 			unset($item->php_ajaxmethod);
 
 			// should ajax be set
-			if ($add_ajax_site)
+			if ($add_ajax)
 			{
 				// turn on ajax area
-				if ('site' === $this->config->build_target)
+				if ('site' === $target)
 				{
 					$this->config->set('add_site_ajax', true);
 				}
@@ -146,6 +162,5 @@ class Ajaxcustomview
 			}
 		}
 	}
-
 }
 

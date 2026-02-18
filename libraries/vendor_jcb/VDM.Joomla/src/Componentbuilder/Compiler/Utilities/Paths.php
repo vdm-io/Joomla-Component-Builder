@@ -52,6 +52,104 @@ class Paths extends Registry
 	{
 		$this->config = $config;
 		$this->component = $component;
+	}
+
+	/**
+	 * Checks whether a particular registry path exists.
+	 *
+	 * This override guarantees that the registry is fully initialized before
+	 * any existence checks are performed. Initialization is idempotent and
+	 * will only execute once per registry lifecycle.
+	 *
+	 * After initialization, the existence check is delegated entirely to the
+	 * parent registry implementation, ensuring full behavioral compatibility.
+	 *
+	 * @param  string  $path  Registry path (e.g. vdm.content.builder)
+	 *
+	 * @throws \InvalidArgumentException If any segment of the path is not a string or number.
+	 *
+	 * @return bool  True if the registry path exists, false otherwise.
+	 *
+	 * @since  5.1.4
+	 */
+	public function exists(string $path): bool
+	{
+		// Ensure the registry is fully initialized before access
+		$this->init();
+
+		// Delegate existence check to the base registry implementation
+		return parent::exists($path);
+	}
+
+	/**
+	 * Retrieves a value (or sub-array) from the registry using a dot-notated path.
+	 *
+	 * This override guarantees that the registry is fully initialized before
+	 * any read operation is performed. Initialization is idempotent and will
+	 * only occur once for the lifetime of the registry instance.
+	 *
+	 * After initialization, value resolution is delegated entirely to the
+	 * parent registry implementation, preserving full backward compatibility
+	 * and expected behavior.
+	 *
+	 * @param  string  $path     Registry path (e.g. vdm.content.builder)
+	 * @param  mixed   $default  Optional default value, returned if the path does not exist.
+	 *
+	 * @throws \InvalidArgumentException If any segment of the path is not a string or number.
+	 *
+	 * @return mixed  The resolved value, sub-array, or the provided default.
+	 *
+	 * @since  5.1.4
+	 */
+	public function get(string $path, $default = null): mixed
+	{
+		// Ensure the registry is fully initialized before access
+		$this->init();
+
+		// Delegate value resolution to the base registry implementation
+		return parent::get($path, $default);
+	}
+
+	/**
+	 * Initialize the registry state.
+	 *
+	 * This method performs a one-time, ordered initialization of all
+	 * registry-derived component paths and naming conventions required
+	 * by the system.
+	 *
+	 * Initialization is idempotent:
+	 * - If the registry is already active, the method exits immediately.
+	 * - No state is recalculated or overwritten once activation is complete.
+	 *
+	 * Responsibilities performed during initialization:
+	 * - Resolve and register the base template path.
+	 * - Resolve and register the component sales name.
+	 * - Resolve and register the component backup name.
+	 * - Resolve and register the component folder name.
+	 * - Resolve and register the absolute component path.
+	 * - Resolve and register the custom template path.
+	 *
+	 * This method acts as the single authoritative bootstrap point for
+	 * registry readiness. Any consumer relying on registry values may
+	 * safely assume that, once this method has completed, all dependent
+	 * paths and identifiers are valid, consistent, and immutable for the
+	 * lifetime of the request.
+	 *
+	 * This initializer must never:
+	 * - Perform conditional logic beyond activation checks.
+	 * - Load external services or perform I/O.
+	 * - Be called partially or out of order.
+	 *
+	 * @return void
+	 *
+	 * @since  5.1.4
+	 */
+	private function init(): void
+	{
+		if ($this->isActive())
+		{
+			return;
+		}
 
 		// set the template path
 		$this->setTemplatePath();

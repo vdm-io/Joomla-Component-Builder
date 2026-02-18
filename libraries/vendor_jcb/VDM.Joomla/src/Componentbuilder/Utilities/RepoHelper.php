@@ -13,6 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Utilities;
 
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 
@@ -30,30 +31,13 @@ abstract class RepoHelper
 	 * @param int   $target    The target area
 	 *
 	 * @return array|null   The result set
-	 * @since 3.2.0
+	 * @since  3.2.0
 	 **/
 	public static function get(int $target): ?array
 	{
-		$db = Factory::getDbo();
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array(
-				'type',
-				'base',
-				'organisation',
-				'repository',
-				'read_branch',
-				'write_branch',
-				'token',
-				'username',
-				'author_name',
-				'author_email',
-				'target',
-				'access_repo',
-				'addplaceholders',
-				'guid'
-			)))
-			->from($db->quoteName('#__componentbuilder_repository'))
-			->where($db->quoteName('published') . ' >= 1')
+		$db = self::getDbo();
+		$query = self::getQuery($db);
+		$query->where($db->quoteName('published') . ' >= 1')
 			->where($db->quoteName('target') . ' = ' . $target)
 			->order($db->quoteName('ordering') . ' desc');
 		$db->setQuery($query);
@@ -75,6 +59,79 @@ abstract class RepoHelper
 		}
 
 		return null;
+	}
+
+	/**
+	 * get a repository
+	 *
+	 * @param string   $guid    The repository guid
+	 *
+	 * @return array|null   The repository
+	 * @since  5.1.4
+	 **/
+	public static function getRepo(string $guid): ?object
+	{
+		$db = self::getDbo();
+		$query = self::getQuery($db);
+		$query->where($db->quoteName('guid') . ' = ' . $db->quote($guid));
+		$db->setQuery($query);
+		$db->execute();
+
+		if ($db->getNumRows())
+		{
+			$item = $db->loadObject();
+			self::modelRepoDetails($item);
+
+			return $item;
+		}
+		return null;
+	}
+
+	/**
+	 * get query object
+	 *
+	 * @return object   The result set
+	 * @since  5.1.4
+	 **/
+	protected static function getQuery(?DatabaseInterface $db = null): object
+	{
+		$db ??= self::getDbo();
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(array(
+				'type',
+				'base',
+				'organisation',
+				'repository',
+				'read_branch',
+				'write_branch',
+				'token',
+				'username',
+				'author_name',
+				'author_email',
+				'target',
+				'access_repo',
+				'addplaceholders',
+				'guid'
+			)))
+			->from($db->quoteName('#__componentbuilder_repository'));
+
+		return $query;
+	}
+
+	/**
+	 * get the database
+	 *
+	 * @return DatabaseInterface
+	 * @since  5.1.4
+	 */
+	protected static function getDbo(): DatabaseInterface
+	{
+		if (Factory::getContainer()->has(DatabaseInterface::class))
+		{
+			return Factory::getContainer()->get(DatabaseInterface::class);
+		}
+
+		return Factory::getDbo();
 	}
 
 	/**

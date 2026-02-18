@@ -33,10 +33,10 @@ defined('_JEXEC') or die;
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
 
-		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'wiki', Text::_('Wiki', true)); ?>
+		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'doc', Text::_('Doc', true)); ?>
 		<div class="row">
 			<div class="col-md-12">
-				<?php echo $this->loadTemplate('wiki_tutorials');?>
+				<?php echo $this->loadTemplate('doc_start_here');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>

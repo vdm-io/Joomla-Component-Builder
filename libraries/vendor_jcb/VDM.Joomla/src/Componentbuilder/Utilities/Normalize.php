@@ -12,12 +12,21 @@
 namespace VDM\Joomla\Componentbuilder\Utilities;
 
 
-use VDM\Joomla\Utilities\MimeHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
 
 
 /**
- * Utilities Normalize Paths
+ * Path Normalize & Key Generator
+ * 
+ * Provides deterministic path normalization and UUID-v5 key generation
+ * for files and directories used throughout the JCB system.
+ * 
+ * Responsibilities:
+ *   - Resolve absolute paths from logical scopes (custom, compiler, images, image, full)
+ *   - Normalize filesystem paths safely
+ *   - Derive deterministic UUIDv5 keys
+ *   - Ensure consistent identifiers across Linux & Windows
+ *   - Convert absolute paths into stable relative-key formats
  * 
  * @since 5.1.1
  */
@@ -27,9 +36,9 @@ class Normalize extends Constantpaths
 	 * Normalize a given file or folder path based on the target type.
 	 *
 	 * @param  string  $path    The input path, may contain constants or hashes.
-	 * @param  string  $target  One of: 'custom', 'full', or 'images'.
+	 * @param  string  $target  One of: 'custom', 'compiler', 'image', 'images', 'full'
 	 *
-	 * @return array|null  ['path' => relative path, 'full' => absolute path, 'key' => unique key]
+	 * @return array|null  ['path' => relative, 'full' => absolute, 'key' => uuidv5]
 	 * @since  5.1.1
 	 */
 	public function path(string $path, string $target): ?array
@@ -42,13 +51,20 @@ class Normalize extends Constantpaths
 
 		$result = $this->build($path, $target);
 
-		if ($result === null || !($absolutePath = realpath($result['full'])) || (!is_file($absolutePath) && !is_dir($absolutePath)))
+		if ($result === null)
+		{
+			return null;
+		}
+
+		$absolutePath = realpath($result['full']);
+
+		if ($absolutePath === false || (!is_file($absolutePath) && !is_dir($absolutePath)))
 		{
 			return null;
 		}
 
 		// Sanitize relative path by removing base
-		$relativePath = ltrim(str_replace(str_replace('\\', '/', $result['base']), '', str_replace('\\', '/', $absolutePath)), '/');
+		$relativePath = $this->getRelativePath($result['base'], $absolutePath);
 
 		// Build UUID key
 		$key = $this->key($relativePath);
@@ -85,10 +101,7 @@ class Normalize extends Constantpaths
 	 */
 	public function full(string $path, string $target): ?string
 	{
-		$path = ltrim($path, '/\\');
-
 		$result = $this->build($path, $target);
-
 		return $result ? $result['full'] : null;
 	}
 
@@ -142,45 +155,105 @@ class Normalize extends Constantpaths
 	}
 
 	/**
-	 * Internal logic to build the full absolute path and base root for a given target.
+	 * Build the absolute file system path for a given input path based on a target scope.
 	 *
-	 * @param  string  $path    Raw input or relative path.
-	 * @param  string  $target  One of: 'custom', 'full', or 'images'.
+	 * This method expands Joomla constants when operating in `full` mode and ensures
+	 * that JPATH_ROOT is only applied when the resolved path is not already absolute.
 	 *
-	 * @return array|null   ['base' => base path, 'full' => absolute path]
+	 * Target resolution rules:
+	 * - custom : Path is resolved inside the component custom directory.
+	 * - compiler : Path is resolved inside the component compiler directory.
+	 * - images : Path already includes `images/...` and is resolved from JPATH_SITE.
+	 * - image  : Bare filename; resolved inside `/images`.
+	 * - full   : Constants are expanded and JPATH_ROOT is only prepended if missing.
+	 *
+	 * @param  string  $path    Raw input or constant-based path.
+	 * @param  string  $target  One of: `custom`, `images`, `image`, `full`.
+	 *
+	 * @return array|null  ['base' => string, 'full' => string]
 	 * @since  5.1.1
 	 */
 	protected function build(string $path, string $target): ?array
 	{
-		$path = ltrim($path, '/\\');
+		$path = trim(ltrim($path, '/\\'));
 
-		switch ($target)
+		$targets = [
+			'custom' => JPATH_ADMINISTRATOR . '/components/com_componentbuilder/custom',
+			'compiler' => JPATH_ADMINISTRATOR . '/components/com_componentbuilder/compiler',
+			'image'  => JPATH_SITE . '/images',
+			'images' => JPATH_SITE,
+			'full'   => JPATH_ROOT,
+		];
+
+		if (!isset($targets[$target]))
 		{
-			case 'custom':
-				$basePath = JPATH_ADMINISTRATOR . '/components/com_componentbuilder/custom';
-				break;
-
-			case 'images':
-				$basePath = JPATH_SITE;
-				break;
-
-			case 'full':
-				$basePath = JPATH_ROOT;
-
-				// Replace constants (e.g. JPATH_SITE) with real values
-				$path = str_replace(array_keys($this->paths), array_values($this->paths), $path);
-				break;
-
-			default:
-				return null;
+			return null;
 		}
 
-		$fullPath = str_replace(['\\', '//'], '/', $basePath . '/' . $path);
+		$basePath = $targets[$target];
+
+		// FULL PATH MODE
+		if ($target === 'full')
+		{
+			// Expand Joomla constants
+			$path = str_replace(
+				array_keys($this->paths),
+				array_values($this->paths),
+				$path
+			);
+
+			$fullPath = $this->canonicalizePathString($path);
+
+			// If already rooted at $basePath -> return as-is
+			if (str_starts_with($fullPath, $basePath))
+			{
+				return [
+					'base' => dirname($fullPath),
+					'full' => $fullPath,
+				];
+			}
+		}
 
 		return [
-			'base' => str_replace(['\\', '//'], '/', $basePath),
-			'full' => $fullPath
+			'base' => $this->canonicalizePathString($basePath),
+			'full' => $this->canonicalizePathString($basePath . '/' . $path),
 		];
+	}
+
+	/**
+	 * Canonicalize path string for hashing & identity.
+	 *
+	 * @param  string  $path
+	 *
+	 * @return string
+	 * @since  5.1.4
+	 */
+	protected function canonicalizePathString(string $path): string
+	{
+		$path = str_replace('\\', '/', $path);
+		$path = preg_replace('#/+#', '/', $path);
+		return rtrim($path, '/');
+	}
+
+	/**
+	 * Remove base path from the start of an absolute path if present.
+	 *
+	 * @param  string  $base
+	 * @param  string  $full
+	 *
+	 * @return string
+	 * @since  5.1.4
+	 */
+	protected function getRelativePath(string $base, string $full): string
+	{
+		// Remove base only if it is at the START
+		if (str_starts_with($full, $base))
+		{
+			return substr($full, strlen($base) + 1);
+		}
+
+		// Otherwise return unchanged
+		return ltrim($full, '/');
 	}
 }
 

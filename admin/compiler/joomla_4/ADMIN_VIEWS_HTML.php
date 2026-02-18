@@ -109,6 +109,46 @@ class HtmlView extends BaseHtmlView
 	public Joomla___effdaf6d_2275_425d_9f52_d4952e564d34___Power $user;
 
 	/**
+	 * The Can Edit permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canEdit = null;
+
+	/**
+	 * The Can Edit State permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canState = null;
+
+	/**
+	 * The Can Create permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canCreate = null;
+
+	/**
+	 * The Can Delete permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canDelete = null;
+
+	/**
+	 * The Can Batch permission
+	 *
+	 * @var    ?bool
+	 * @since  5.2.1
+	 */
+	public ?bool $canBatch = null;
+
+	/**
 	 * ###Views### view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -124,17 +164,18 @@ class HtmlView extends BaseHtmlView
 		$this->items = $model->getItems();
 		$this->pagination = $model->getPagination();
 		$this->state = $model->getState();
+		$this->isEmptyState = $model->getIsEmptyState();
 		$this->styles = $model->getStyles();
 		$this->scripts = $model->getScripts();
 		$this->user ??= $this->getCurrentUser();###ADMIN_DIPLAY_METHOD###
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Joomla___eecc143e_b5cf_4c33_ba4d_97da1df61422___Power::getInstance()));
-		// get global action permissions
-		$this->canDo = ###Component###Helper::getActions('###view###');###JVIEWLISTCANDO###
+		// get the permitted actions the current user can do
+		$this->canDo = Super___7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('###view###');###JVIEWLISTCANDO###
 
 		// If we don't have items we load the empty state
-		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState = $model->getIsEmptyState())
+		if (is_array($this->items) && !count((array) $this->items) && $this->isEmptyState)
 		{
 			$this->setLayout('emptystate');
 		}
@@ -164,59 +205,12 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
-		Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEWS###'), '###ICOMOON###');
-
-		if ($this->canCreate)
-		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::addNew('###view###.add');
-		}
-
-		// Only load if there are items
-		if (Super___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check($this->items))
-		{
-			if ($this->canEdit)
-			{
-				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::editList('###view###.edit');
-			}
-
-			if ($this->canState)
-			{
-				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::publishList('###views###.publish');
-				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::unpublishList('###views###.unpublish');
-				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::archiveList('###views###.archive');
-
-				if ($this->canDo->get('core.admin'))
-				{
-					Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::checkin('###views###.checkin');
-				}
-			}###CUSTOM_ADMIN_DYNAMIC_BUTTONS######ADMIN_CUSTOM_BUTTONS_LIST###
-
-			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
-			{
-				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::deleteList('', '###views###.delete', 'JTOOLBAR_EMPTY_TRASH');
-			}
-			elseif ($this->canState && $this->canDelete)
-			{
-				Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::trash('###views###.trash');
-			}###EXPORTBUTTON###
-		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST######IMPORTBUTTON###
-
-		// set help url for this view if found
-		$this->help_url = ###Component###Helper::getHelpUrl('###views###');
-		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
-		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the options comp button
-		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::preferences('com_###component###');
-		}###FILTERFIELDDISPLAYHELPER######BATCHDISPLAYHELPER###
+		###ADDTOOLBAR###
 	}
 
 	/**

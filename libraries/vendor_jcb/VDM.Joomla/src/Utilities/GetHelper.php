@@ -43,24 +43,52 @@ abstract class GetHelper
 		string $whereString = 'user', string $what = 'id',
 		string $operator = '=', ?string $main = null)
 	{
-		if(empty($where))
+		/**
+		 * Resolve identity safely if no where value was provided.
+		 */
+		if ($where === null || $where === '')
 		{
-			$where = Factory::getUser()->id;
+			$app = Factory::getApplication();
+
+			// If the application does not support identity resolution, exit early
+			if (!method_exists($app, 'getIdentity'))
+			{
+				return false;
+			}
+
+			$identity = $app->getIdentity();
+
+			// Identity may legitimately be null (CLI, unauthenticated context)
+			if ($identity === null)
+			{
+				return false;
+			}
+
+			$where = $identity->id;
+
+			if ($where === null)
+			{
+				return false;
+			}
 		}
 
-		if(empty($main))
+		/**
+		 * Resolve component code safely.
+		 */
+		if ($main === null || $main === '')
 		{
 			$main = Helper::getCode();
 		}
 
-		// Get a db connection.
+		// Get a database connection
 		$db = Factory::getDbo();
 
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array($what)));
+		// Build query
+		$query = $db->getQuery(true)
+			->select($db->quoteName($what));
 
-		if (empty($table))
+		// Resolve table
+		if ($table === null || $table === '')
 		{
 			$query->from($db->quoteName('#__' . $main));
 		}
@@ -69,23 +97,29 @@ abstract class GetHelper
 			$query->from($db->quoteName('#__' . $main . '_' . $table));
 		}
 
+		// Apply where clause
 		if (is_numeric($where))
 		{
-			$query->where($db->quoteName($whereString) . ' ' . $operator . ' ' . (int) $where);
+			$query->where(
+				$db->quoteName($whereString) . ' ' . $operator . ' ' . (int) $where
+			);
 		}
 		elseif (is_string($where))
 		{
-			$query->where($db->quoteName($whereString) . ' ' . $operator . ' ' . $db->quote((string)$where));
+			$query->where(
+				$db->quoteName($whereString) . ' ' . $operator . ' ' . $db->quote($where)
+			);
 		}
 		else
 		{
 			return false;
 		}
 
+		// Execute query
 		$db->setQuery($query);
 		$db->execute();
 
-		if ($db->getNumRows())
+		if ($db->getNumRows() > 0)
 		{
 			return $db->loadResult();
 		}
@@ -115,7 +149,7 @@ abstract class GetHelper
 	{
 		if(empty($where))
 		{
-			$where = Factory::getUser()->id;
+			$where = Factory::getApplication()->getIdentity()->id;
 		}
 
 		if($main === null)

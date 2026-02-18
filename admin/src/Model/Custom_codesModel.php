@@ -75,7 +75,7 @@ class Custom_codesModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		if (empty($config['filter_fields']))
 		{
@@ -229,10 +229,10 @@ class Custom_codesModel extends ListModel
 			{
 				if ($item->target == 2)
 				{
-					$item->path = '[CUSTO' . 'MCODE='.$item->id.']'; // so it is not detected
+					$item->path = '[CUSTO' . 'MCODE=' . $item->id . ']'; // so it is not detected
 					if (StringHelper::check($item->function_name))
 					{
-						$item->path =  '[CUSTO' . 'MCODE='.$item->function_name.']'; // so it is not detected
+						$item->path =  '[CUSTO' . 'MCODE=' . $item->function_name . ']'; // so it is not detected
 					}
 					$item->type = 2;
 				}

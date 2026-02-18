@@ -33,6 +33,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\Contributors;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomAlias;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomField;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomFieldLinks;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomForm;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomList;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomTabs;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseKeys;
@@ -40,6 +41,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseTables;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseUniqueGuid;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseUniqueKeys;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DatabaseUninstall;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\DynamicButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\EventDispatcher;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DoNotEscape;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DynamicFields;
@@ -140,6 +142,9 @@ class BuilderAJ implements ServiceProviderInterface
 		$container->alias(CustomFieldLinks::class, 'Compiler.Builder.Custom.Field.Links')
 			->share('Compiler.Builder.Custom.Field.Links', [$this, 'getCustomFieldLinks'], true);
 
+		$container->alias(CustomForm::class, 'Compiler.Builder.Custom.Form')
+			->share('Compiler.Builder.Custom.Form', [$this, 'getCustomForm'], true);
+
 		$container->alias(CustomList::class, 'Compiler.Builder.Custom.List')
 			->share('Compiler.Builder.Custom.List', [$this, 'getCustomList'], true);
 
@@ -160,6 +165,9 @@ class BuilderAJ implements ServiceProviderInterface
 
 		$container->alias(DatabaseUninstall::class, 'Compiler.Builder.Database.Uninstall')
 			->share('Compiler.Builder.Database.Uninstall', [$this, 'getDatabaseUninstall'], true);
+
+		$container->alias(DynamicButtons::class, 'Compiler.Builder.Dynamic.Buttons')
+			->share('Compiler.Builder.Dynamic.Buttons', [$this, 'getDynamicButtons'], true);
 
 		$container->alias(EventDispatcher::class, 'Compiler.Builder.Event.Dispatcher')
 			->share('Compiler.Builder.Event.Dispatcher', [$this, 'getEventDispatcher'], true);
@@ -482,6 +490,19 @@ class BuilderAJ implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The CustomForm Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomForm
+	 * @since 3.2.0
+	 */
+	public function getCustomForm(Container $container): CustomForm
+	{
+		return new CustomForm();
+	}
+
+	/**
 	 * Get The CustomList Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -565,11 +586,24 @@ class BuilderAJ implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  DatabaseUninstall
-	 * @since   3.2.0
+	 * @since 3.2.0
 	 */
 	public function getDatabaseUninstall(Container $container): DatabaseUninstall
 	{
 		return new DatabaseUninstall();
+	}
+
+	/**
+	 * Get The DynamicButtons Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  DynamicButtons
+	 * @since   5.1.4
+	 */
+	public function getDynamicButtons(Container $container): DynamicButtons
+	{
+		return new DynamicButtons();
 	}
 
 	/**
@@ -578,13 +612,12 @@ class BuilderAJ implements ServiceProviderInterface
 	 * @param   Container  $container  The DI container.
 	 *
 	 * @return  EventDispatcher
-	 * @since   5.1.2
+	 * @since 3.2.0
 	 */
 	public function getEventDispatcher(Container $container): EventDispatcher
 	{
 		return new EventDispatcher();
 	}
-
 
 	/**
 	 * Get The DoNotEscape Class.

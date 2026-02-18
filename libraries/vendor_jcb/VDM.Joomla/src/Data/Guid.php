@@ -45,7 +45,7 @@ trait Guid
 		{
 			try {
 				$data = random_bytes(16);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				// Handle the error appropriately (logging, throwing, etc.)
 				return $this->fallbackGuid($key);
 			}

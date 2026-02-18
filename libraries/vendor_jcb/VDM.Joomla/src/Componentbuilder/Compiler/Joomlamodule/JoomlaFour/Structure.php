@@ -188,10 +188,6 @@ final class Structure implements StructureInterface
 		$this->files = $files;
 		$this->templatedata = $templatedata;
 		$this->placeholder = $placeholder;
-
-		// set some global values
-		$this->NamespacePrefix = $this->placeholder->get('NamespacePrefix');
-		$this->ComponentNamespace = $this->placeholder->get('ComponentNamespace');
 	}
 
 	/**
@@ -204,6 +200,10 @@ final class Structure implements StructureInterface
 	{
 		if ($this->module->exists())
 		{
+			// set some global values
+			$this->NamespacePrefix ??= $this->placeholder->get('NamespacePrefix');
+			$this->ComponentNamespace ??= $this->placeholder->get('ComponentNamespace');
+
 			$component_context = $this->config->component_context;
 			$modules = $this->module->get();
 

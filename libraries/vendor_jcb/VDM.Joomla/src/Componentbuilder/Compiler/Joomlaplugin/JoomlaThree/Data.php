@@ -23,6 +23,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name as FieldName;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
+use VDM\Joomla\Componentbuilder\Package\Builder\Get as Superpower;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
@@ -55,6 +57,14 @@ final class Data implements PluginDataInterface
 	 * @since  5.0.4
 	 */
 	protected array $index = [];
+
+	/**
+	 * The state of retry to loaded plugins
+	 *
+	 * @var    array
+	 * @since  5.1.4
+	 **/
+	protected array $retry = [];
 
 	/**
 	 * The Configure Class.
@@ -121,12 +131,28 @@ final class Data implements PluginDataInterface
 	protected Filesfolders $filesfolders;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
 	 * @since 5.1.2
 	 **/
 	protected DatabaseInterface $db;
+
+	/**
+	 * The Super Class.
+	 *
+	 * @var   Superpower
+	 * @since 5.1.4
+	 */
+	protected Superpower $superpower;
 
 	/**
 	 * Constructor.
@@ -139,14 +165,16 @@ final class Data implements PluginDataInterface
 	 * @param Field              $field          The Field Class.
 	 * @param FieldName          $fieldname      The Name Class.
 	 * @param Filesfolders       $filesfolders   The Filesfolders Class.
+	 * @param Counter            $counter        The Counter Class.
 	 * @param DatabaseInterface  $db             The Joomla Database Class.
+	 * @param Superpower         $superpower     A Superpower Class.
 	 *
 	 * @since 5.0.2
 	 */
 	public function __construct(Config $config, Customcode $customcode, Gui $gui,
 		Placeholder $placeholder, Language $language,
 		Field $field, FieldName $fieldname,
-		Filesfolders $filesfolders, DatabaseInterface $db)
+		Filesfolders $filesfolders, Counter $counter, DatabaseInterface $db, Superpower $superpower)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -156,18 +184,20 @@ final class Data implements PluginDataInterface
 		$this->field = $field;
 		$this->fieldname = $fieldname;
 		$this->filesfolders = $filesfolders;
+		$this->counter = $counter;
 		$this->db = $db;
+		$this->superpower = $superpower;
 	}
 
 	/**
 	 * Get the Joomla Plugin/s
 	 *
-	 * @param   int|string|null   $plugin  The plugin ID/GUID
+	 * @param   mixed   $plugin  The plugin ID/GUID
 	 *
 	 * @return  object|array|null    if ID|GUID found it returns object, if no ID|GUID given it returns all set
 	 * @since 3.2.0
 	 */
-	public function get($plugin = null)
+	public function get(mixed $plugin = null)
 	{
 		if ($plugin === null && $this->exists())
 		{
@@ -185,12 +215,12 @@ final class Data implements PluginDataInterface
 	/**
 	 * Check if the Joomla Plugin/s exists
 	 *
-	 * @param   int|string|null   $plugin  The plugin ID/GUID
+	 * @param   mixed   $plugin  The plugin ID/GUID
 	 *
 	 * @return  bool    if ID|GUID found it returns true, if no ID|GUID given it returns true if any are set
 	 * @since 3.2.0
 	 */
-	public function exists($plugin = null): bool
+	public function exists(mixed $plugin = null): bool
 	{
 		if ($plugin === null)
 		{
@@ -207,12 +237,12 @@ final class Data implements PluginDataInterface
 	/**
 	 * Set the plugin
 	 *
-	 * @param   int|string|null   $plugin  The plugin ID/GUID
+	 * @param   mixed   $plugin  The plugin ID/GUID
 	 *
 	 * @return  bool    true on success
 	 * @since   5.0.4
 	 */
-	public function set($plugin): bool
+	public function set(mixed $plugin): bool
 	{
 		if (!GuidHelper::valid($plugin) && !is_numeric($plugin))
 		{
@@ -240,10 +270,44 @@ final class Data implements PluginDataInterface
 			$this->index[$data->id] = $data->id;
 			$this->index[$data->guid] = $data->id;
 
+			$this->counter->plugin++;
+
 			return true;
 		}
 
+		if ($this->attemptRemoteFetch($plugin))
+		{
+			return $this->set($plugin);
+		}
+
 		return false;
+	}
+
+	/**
+	 * Attempt a one-time remote fetch via Superpower.
+	 *
+	 * @param   mixed  $guid
+	 *
+	 * @return  bool
+	 * @since   5.1.4
+	 */
+	private function attemptRemoteFetch(mixed $guid): bool
+	{
+		if (!GuidHelper::valid($guid))
+		{
+			return false;
+		}
+
+		if (!empty($this->retry[$guid]))
+		{
+			return false;
+		}
+
+		$this->retry[$guid] = true;
+
+		$result = $this->superpower->get('joomla_plugin', [$guid]);
+
+		return !empty($result['added'][$guid]);
 	}
 
 	/**
@@ -255,7 +319,7 @@ final class Data implements PluginDataInterface
 	 * @return  string  The plugin data query
 	 * @since   5.0.4
 	 */
-	private function getQuery($value, string $key = 'id')
+	private function getQuery(mixed $value, string $key = 'id')
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);

@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\File;
 
 
+use VDM\Joomla\Interfaces\File\HandlerInterface;
 use VDM\Joomla\Utilities\UploadHelper;
 
 
@@ -20,7 +21,7 @@ use VDM\Joomla\Utilities\UploadHelper;
  * 
  * @since  5.0.2
  */
-final class Handler extends UploadHelper
+final class Handler extends UploadHelper implements HandlerInterface
 {
 	/**
 	 * Set the $useStreams property to use streams for file handling
@@ -108,9 +109,30 @@ final class Handler extends UploadHelper
 	 * @return  array|null   File details or false on failure.
 	 * @since   3.0.11
 	 */
-	public function getFile(string $field, string $type, string $filter = null, string $path = null): ?array
+	public function getFile(string $field, string $type, ?string $filter = null, ?string $path = null): ?array
 	{
 		return static::get($field, $type, $filter, $path);
+	}
+
+	/**
+	 * Remove a previously uploaded file.
+	 *
+	 * This method uses the same internal removal mechanism as the uploader,
+	 * ensuring consistent cleanup logic across the system.
+	 *
+	 * It accepts either:
+	 * - a full filesystem path
+	 * - or a filename resolvable by Path::clean
+	 *
+	 * @param  string  $path  Absolute or relative file path.
+	 *
+	 * @return bool  TRUE on success, FALSE on failure or missing file.
+	 *
+	 * @since  5.1.4
+	 */
+	public function removeFile(string $path): bool
+	{
+		return static::remove($path);
 	}
 
 	/**

@@ -17,8 +17,6 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
-use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
 
 // No direct access to this file
@@ -53,69 +51,6 @@ class Joomla_componentsController extends AdminController
 	public function getModel($name = 'Joomla_component', $prefix = 'Administrator', $config = ['ignore_request' => true])
 	{
 		return parent::getModel($name, $prefix, $config);
-	}
-
-	public function exportData()
-	{
-		// Check for request forgeries
-		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
-		// check if export is allowed for this user.
-		$user = Factory::getApplication()->getIdentity();
-		if ($user->authorise('joomla_component.export', 'com_componentbuilder') && $user->authorise('core.export', 'com_componentbuilder'))
-		{
-			// Get the input
-			$input = Factory::getApplication()->input;
-			$pks = $input->post->get('cid', array(), 'array');
-			// Sanitize the input
-			$pks = ArrayHelper::toInteger($pks);
-			// Get the model
-			$model = $this->getModel('Joomla_components');
-			// get the data to export
-			$data = $model->getExportData($pks);
-			if (UtilitiesArrayHelper::check($data))
-			{
-				// now set the data to the spreadsheet
-				$date = Factory::getDate();
-				ComponentbuilderHelper::xls($data,'Joomla_components_'.$date->format('jS_F_Y'),'Joomla components exported ('.$date->format('jS F, Y').')','joomla components');
-			}
-		}
-		// Redirect to the list screen with error.
-		$message = Text::_('COM_COMPONENTBUILDER_EXPORT_FAILED');
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
-		return;
-	}
-
-
-	public function importData()
-	{
-		// Check for request forgeries
-		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
-		// check if import is allowed for this user.
-		$user = Factory::getApplication()->getIdentity();
-		if ($user->authorise('joomla_component.import', 'com_componentbuilder') && $user->authorise('core.import', 'com_componentbuilder'))
-		{
-			// Get the import model
-			$model = $this->getModel('Joomla_components');
-			// get the headers to import
-			$headers = $model->getExImPortHeaders();
-			if (ObjectHelper::check($headers))
-			{
-				// Load headers to session.
-				$session = Factory::getSession();
-				$headers = json_encode($headers);
-				$session->set('joomla_component_VDM_IMPORTHEADERS', $headers);
-				$session->set('backto_VDM_IMPORT', 'joomla_components');
-				$session->set('dataType_VDM_IMPORTINTO', 'joomla_component');
-				// Redirect to import view.
-				$message = Text::_('COM_COMPONENTBUILDER_IMPORT_SELECT_FILE_FOR_JOOMLA_COMPONENTS');
-				$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=import_joomla_components', false), $message);
-				return;
-			}
-		}
-		// Redirect to the list screen with error.
-		$message = Text::_('COM_COMPONENTBUILDER_IMPORT_FAILED');
-		$this->setRedirect(Route::_('index.php?option=com_componentbuilder&view=joomla_components', false), $message, 'error');
-		return;
 	}
 
 
@@ -259,7 +194,7 @@ class Joomla_componentsController extends AdminController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -372,7 +307,7 @@ class Joomla_componentsController extends AdminController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -425,6 +360,47 @@ class Joomla_componentsController extends AdminController
 		// set redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_components', false);
 		$this->setRedirect($redirect_url);
+
+		return $success;
+	}
+
+	/**
+	 * Redirect the request to the Pull selection page.
+	 *
+	 * @return bool True on successful pull, false on failure.
+	 * @since  5.1.1
+	 */
+	public function pullPowers()
+	{
+		// Check for request forgeries
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		// check if user has the right
+		$user = $this->app->getIdentity();
+
+		// set default error message
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_PULL_JOOMLA_COMPONENTS') . '</p>';
+		$status = 'error';
+		$success = false;
+
+		if($user->authorise('joomla_component.pull', 'com_componentbuilder'))
+		{
+			// set success message
+			$message = null;
+
+			$status = null;
+			$success = true;
+
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=pull_selection&power=Component&target=Joomla Components', false);
+		}
+		else
+		{
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=joomla_components', false);
+		}
+		$this->setRedirect($redirect_url, $message, $status);
 
 		return $success;
 	}

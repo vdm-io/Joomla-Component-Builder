@@ -64,7 +64,7 @@ final class Item implements ItemInterface
 		$namespace = $item->_namespace ?? 'Unknown\\Namespace';
 		$extends   = $item->extends_name ?? null;
 		$guid      = $item->guid ?? 'error_missing_guid';
-		$parsed    = (is_array($item->parsed_class_code) ? $item->parsed_class_code : []);
+		$parsed    = ((isset($item->parsed_class_code) && is_array($item->parsed_class_code)) ? $item->parsed_class_code : []);
 
 		$readme[] = "# {$type} {$codeName} (Details)";
 		$readme[] = "> namespace: **{$namespace}**";

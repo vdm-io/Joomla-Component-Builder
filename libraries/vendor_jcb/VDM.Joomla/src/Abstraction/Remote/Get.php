@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Abstraction\Remote;
 
 
-use Joomla\CMS\Language\Text;
 use VDM\Joomla\Interfaces\Remote\ConfigInterface as Config;
 use VDM\Joomla\Interfaces\GrepInterface as Grep;
 use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
@@ -136,7 +135,7 @@ abstract class Get extends Base implements GetInterface
 			// Check if item exists in the local database
 			if ($force === false && $this->item->table($table)->value($guid, $guid_field) !== null)
 			{
-				$logger['local'][$guid] = $guid;
+				$logger['local'][$guid] = $table;
 				continue;
 			}
 
@@ -145,14 +144,14 @@ abstract class Get extends Base implements GetInterface
 
 			if ($item === null)
 			{
-				$logger['not_found'][$guid] = $guid;
+				$logger['not_found'][$guid] = $table;
 				continue;
 			}
 
 			// Store the retrieved remote item into the local structure
 			$this->item->table($table)->set($item, $guid_field);
 
-			$logger['added'][$guid] = $guid;
+			$logger['added'][$guid] = $table;
 		}
 
 		return $logger;
@@ -267,13 +266,13 @@ abstract class Get extends Base implements GetInterface
 			if (!$this->item($guid, ['remote']))
 			{
 				$success = false;
-				$this->messages->add('warning', Text::sprintf('COM_COMPONENTBUILDER_THE_S_ITEMS_DID_NOT_RESET', strtolower($area), $guid));
+				$this->messages->add('warning', sprintf('The %s item:%s did not reset.', strtolower($area), $guid));
 			}
 		}
 
 		if ($success)
 		{
-			$this->messages->add('success', Text::sprintf('COM_COMPONENTBUILDER_THE_S_ITEMS_WAS_RESET', strtolower($area)));
+			$this->messages->add('success', sprintf('The %s item(s) was reset.', strtolower($area)));
 		}
 
 		return $success;

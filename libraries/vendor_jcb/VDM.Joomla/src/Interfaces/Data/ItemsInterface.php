@@ -20,6 +20,27 @@ namespace VDM\Joomla\Interfaces\Data;
 interface ItemsInterface
 {
 	/**
+	 * Get the IDs affected by the most recent actions batch.
+	 *
+	 * This method returns the complete set of entity IDs affected by the most
+	 * recent persistence operations, regardless of whether the underlying
+	 * action was an INSERT, UPDATE, or a mixture of both.
+	 *
+	 * Behavioral notes:
+	 * - IDs from INSERT and UPDATE operations are merged into a single set.
+	 * - The internal ID buckets for both operations are reset immediately
+	 *   after retrieval to prevent cross-contamination between batches.
+	 * - Duplicate IDs are removed while preserving their original order.
+	 * - The returned IDs represent *all* entities affected during the
+	 *   most recent execution cycle.
+	 *
+	 * @return  array<int|string>  The affected entity IDs.
+	 *
+	 * @since   5.1.4
+	 */
+	public function ids(): array;
+
+	/**
 	 * Set the current active table
 	 *
 	 * @param string $table The table that should be active

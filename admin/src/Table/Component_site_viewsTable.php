@@ -12,6 +12,7 @@ namespace VDM\Component\Componentbuilder\Administrator\Table;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Table\Table;
+use Joomla\CMS\Table\Asset;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\String\PunycodeHelper;
 use Joomla\CMS\Access\Access as AccessRules;
@@ -22,9 +23,10 @@ use Joomla\CMS\User\CurrentUserInterface;
 use Joomla\CMS\User\CurrentUserTrait;
 use Joomla\CMS\Versioning\VersionableTableInterface;
 use Joomla\CMS\Application\ApplicationHelper;
-use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\DatabaseNotFoundException;
 use Joomla\Event\DispatcherInterface;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
@@ -128,7 +130,7 @@ class Component_site_viewsTable extends Table implements VersionableTableInterfa
 		if (isset($this->alias))
 		{
 			// Verify that the alias is unique
-			$table = new self($this->getDbo(), $this->getDispatcher());
+			$table = new self($this->getDatabase(), $this->getDispatcher());
 
 			if ($table->load(['alias' => $this->alias]) && ($table->id != $this->id || $this->id == 0))
 			{
@@ -180,7 +182,7 @@ class Component_site_viewsTable extends Table implements VersionableTableInterfa
 			// Generate a valid alias
 			$this->generateAlias();
 
-			$table = new self($this->getDbo(), $this->getDispatcher());
+			$table = new self($this->getDatabase(), $this->getDispatcher());
 
 			while ($table->load(['alias' => $this->alias]) && ($table->id != $this->id || $this->id == 0))
 			{
@@ -246,14 +248,16 @@ class Component_site_viewsTable extends Table implements VersionableTableInterfa
 	/**
 	 * Gets the default asset values for a component.
 	 *
-	 * @param   $string  $component  The component asset name to search for
+	 * @param   string  $component  The component asset name to search for
+	 * @param   bool    $try        The retry flag
 	 *
-	 * @return  AccessRules  The AccessRules object for the asset
+	 * @return  Rules  The AccessRules object for the asset
+	 * @since   2.5.0
 	 */
-	protected function getDefaultAssetValues($component, $try = true)
+	protected function getDefaultAssetValues(string $component, bool $try = true)
 	{
 		// Need to find the asset id by the name of the component.
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__assets'))
@@ -269,9 +273,9 @@ class Component_site_viewsTable extends Table implements VersionableTableInterfa
 		// try again
 		elseif ($try)
 		{
-			$try = explode('.',$component);
+			$try = explode('.', $component);
 			$result =  $this->getDefaultAssetValues($try[0], false);
-			if ($result instanceof AccessRules)
+			if ($result instanceof Rules)
 			{
 				if (isset($try[1]))
 				{
@@ -297,7 +301,7 @@ class Component_site_viewsTable extends Table implements VersionableTableInterfa
 						$_result = json_encode($_result);
 						$_result = array($_result);
 						// Instantiate and return the AccessRules object for the asset rules.
-						$rules = new AccessRules;
+						$rules = new Rules;
 						$rules->mergeCollection($_result);
 
 						return $rules;
@@ -346,23 +350,90 @@ class Component_site_viewsTable extends Table implements VersionableTableInterfa
 	 * By default, all assets are registered to the ROOT node with ID, which will default to 1 if none exists.
 	 * An extended class can define a table and ID to lookup.  If the asset does not exist it will be created.
 	 *
-	 * @param   Table    $table  A Table object for the asset parent.
-	 * @param   integer  $id     Id to look up
+	 * @param   ?Table    $table  A Table object for the asset parent.
+	 * @param   ?integer  $id     Id to look up
 	 *
 	 * @return  integer
 	 *
 	 * @since   1.7.0
 	 */
-	protected function _getAssetParentId(Table $table = null, $id = null)
+	protected function _getAssetParentId(?Table $table = null, $id = null)
 	{
 		/** @var Asset $assets */
-		$assets = self::getInstance('Asset', 'JTable', ['dbo' => $this->getDbo()]);
+		$assets = new Asset($this->getDatabase(), $this->getDispatcher());
 		$rootId = $assets->getRootId();
 
 		// load the componentbuilder asset
 		$assets->loadByName('com_componentbuilder');
 
 		return $assets->id ?? $rootId ?? 1;
+	}
+
+	/**
+	 * Retrieve the database connection in a version-safe and cached manner.
+	 *
+	 * Compatible with Joomla 4 -> 7:
+	 * - If the parent class implements getDatabase() (DatabaseAwareTrait), that is used.
+	 * - Otherwise it falls back to getDbo() for legacy versions.
+	 * - The detected instance is cached to avoid repeated reflection or lookups.
+	 *
+	 * @return  DatabaseInterface
+	 *
+	 * @throws  DatabaseNotFoundException  If the database connection cannot be determined.
+	 * @since   5.1.4
+	 */
+	protected function getDatabase(): DatabaseInterface
+	{
+		static $cache = null;
+
+		// Return cached connection if available
+		if ($cache instanceof DatabaseInterface)
+		{
+			return $cache;
+		}
+
+		// --- Step 1: Use parent::getDatabase() if available (J7+ or DatabaseAwareTrait) ---
+		$parent = get_parent_class($this);
+
+		if ($parent && method_exists($parent, 'getDatabase'))
+		{
+			try
+			{
+				$db = parent::getDatabase();
+
+				if ($db instanceof DatabaseInterface)
+				{
+					$cache = $db;
+					return $cache;
+				}
+			}
+			catch (\Throwable)
+			{
+				// Continue to next fallback
+			}
+		}
+
+		// --- Step 2: Fallback to getDbo() (J3-J6 style) ---
+		if (method_exists($this, 'getDbo'))
+		{
+			try
+			{
+				$db = $this->getDbo();
+
+				if ($db instanceof DatabaseInterface)
+				{
+					$cache = $db;
+					return $cache;
+				}
+			}
+			catch (\Throwable)
+			{
+				// Continue to next fallback
+			}
+		}
+
+		// --- Step 3: No valid database found ---
+		throw new DatabaseNotFoundException('Database not set in ' . static::class);
 	}
 
 	/**

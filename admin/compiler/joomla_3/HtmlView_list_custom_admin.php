@@ -53,22 +53,8 @@ class ###Component###View###SViews### extends HtmlView
 	 * Setting the toolbar
 	 */
 	protected function addToolBar()
-	{###HIDEMAINMENU###
-		// add title to the page
-		ToolbarHelper::title(Text::_('COM_###COMPONENT###_###SVIEWS###'),'###ICOMOON###');###CUSTOM_ADMIN_CUSTOM_BUTTONS###
-
-		// set help url for this view if found
-		$this->help_url = ###Component###Helper::getHelpUrl('###sviews###');
-		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
-		{
-			ToolbarHelper::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the options comp button
-		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-		{
-			ToolbarHelper::preferences('com_###component###');
-		}
+	{
+		###CUSTOM_ADMIN_ADDTOOLBAR###
 	}###CUSTOM_ADMIN_GET_MODULE###
 
 	/**

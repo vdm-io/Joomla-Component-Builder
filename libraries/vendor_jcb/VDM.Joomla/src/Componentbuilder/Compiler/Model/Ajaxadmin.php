@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
+use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as Templatelayout;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -65,19 +66,29 @@ class Ajaxadmin
 	protected Dispenser $dispenser;
 
 	/**
+	 * Compiler Template Layout Data
+	 *
+	 * @var    Templatelayout
+	 * @since 3.2.0
+	 */
+	protected Templatelayout $templatelayout;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config         $config         The Config Class.
 	 * @param SiteEditView   $siteeditview   The SiteEditView Class.
 	 * @param Dispenser      $dispenser      The Dispenser Class.
+	 * @param Templatelayout $templatelayout The template layout data.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config, SiteEditView $siteeditview, Dispenser $dispenser)
+	public function __construct(Config $config, SiteEditView $siteeditview, Dispenser $dispenser, Templatelayout $templatelayout)
 	{
 		$this->config = $config;
 		$this->siteeditview = $siteeditview;
 		$this->dispenser = $dispenser;
+		$this->templatelayout = $templatelayout;
 	}
 
 	/**
@@ -149,6 +160,12 @@ class Ajaxadmin
 
 				if ($add_ajax_site)
 				{
+					// get current target
+					$target = $this->config->build_target;
+
+					// set target to aim at site
+					$this->config->build_target = 'site';
+
 					$this->dispenser->set(
 						$item->php_ajaxmethod,
 						'site',
@@ -158,7 +175,20 @@ class Ajaxadmin
 						false,
 						false
 					);
+
+					// check if we have template or layouts to load
+					$this->templatelayout->set(
+						$item->php_ajaxmethod, $item->name_single_code
+					);
+
+					// reset target to current target again (admin)
+					$this->config->build_target = $target;
 				}
+
+				// check if we have template or layouts to load
+				$this->templatelayout->set(
+					$item->php_ajaxmethod, $item->name_single_code
+				);
 
 				// switch ajax on
 				$this->config->set('add_ajax', true);

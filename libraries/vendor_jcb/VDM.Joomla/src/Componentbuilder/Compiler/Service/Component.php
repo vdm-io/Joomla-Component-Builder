@@ -101,7 +101,8 @@ class Component implements ServiceProviderInterface
 	public function getCompilerComponent(Container $container): CompilerComponent
 	{
 		return new CompilerComponent(
-			$container->get('Component.Data')
+			$container->get('Component.Data'),
+			$container->get('Event')
 		);
 	}
 

@@ -78,7 +78,7 @@ class Language_translationsModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		if (empty($config['filter_fields']))
 		{
@@ -97,6 +97,7 @@ class Language_translationsModel extends ListModel
 
 		$this->app ??= Factory::getApplication();
 	}
+
 
 	/**
 	 * Get the filter form - Override the parent method
@@ -307,6 +308,7 @@ class Language_translationsModel extends ListModel
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
 
+
 		// Filtering "translated in"
 		$filter_translated = $this->state->get("filter.translated");
 		if ($filter_translated !== null && !empty($filter_translated))
@@ -414,176 +416,6 @@ class Language_translationsModel extends ListModel
 		}
 
 		return $query;
-	}
-
-	/**
-	 * Method to get list export data.
-	 *
-	 * @param   array  $pks  The ids of the items to get
-	 * @param   JUser  $user  The user making the request
-	 *
-	 * @return mixed  An array of data items on success, false on failure.
-	 */
-	public function getExportData($pks, $user = null)
-	{
-		// setup the query
-		if (($pks_size = UtilitiesArrayHelper::check($pks)) !== false || 'bulk' === $pks)
-		{
-			// Set a value to know this is export method. (USE IN CUSTOM CODE TO ALTER OUTCOME)
-			$_export = true;
-			// Get the user object if not set.
-			if (!isset($user) || !ObjectHelper::check($user))
-			{
-				$user = $this->getCurrentUser();
-			}
-			// Create a new query object.
-			$db = $this->getDatabase();
-			$query = $db->getQuery(true);
-
-			// Select some fields
-			$query->select('a.*');
-
-			// From the componentbuilder_language_translation table
-			$query->from($db->quoteName('#__componentbuilder_language_translation', 'a'));
-			// The bulk export path
-			if ('bulk' === $pks)
-			{
-				$query->where('a.id > 0');
-			}
-			// A large array of ID's will not work out well
-			elseif ($pks_size > 500)
-			{
-				// Use lowest ID
-				$query->where('a.id >= ' . (int) min($pks));
-				// Use highest ID
-				$query->where('a.id <= ' . (int) max($pks));
-			}
-			// The normal default path
-			else
-			{
-				$query->where('a.id IN (' . implode(',',$pks) . ')');
-			}
-
-			// Filtering "translated in"
-		$filter_translated = $this->state->get("filter.translated");
-		if ($filter_translated !== null && !empty($filter_translated))
-		{
-			if (($ids = JCBFilterHelper::translations($filter_translated)) !== null)
-			{
-				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
-			}
-			else
-			{
-				// there is none
-				$query->where($db->quoteName('a.id') . ' = ' . 0);
-			}
-		}
-
-		// Filtering "not translated in"
-		$filter_not_translated = $this->state->get("filter.not_translated");
-		if ($filter_not_translated !== null && !empty($filter_not_translated))
-		{
-			if (($ids = JCBFilterHelper::translations($filter_not_translated, false)) !== null)
-			{
-				$query->where($db->quoteName('a.id') . ' IN (' . implode(',',$ids) . ')');
-			}
-			else
-			{
-				// there is none
-				$query->where($db->quoteName('a.id') . ' = ' . 0);
-			}
-		}
-
-		// Filtering "extension"
-		$filter_extension = $this->state->get("filter.extension");
-		if ($filter_extension !== null && !empty($filter_extension))
-		{
-			// column name, and id
-			$type_extension = explode('__', $filter_extension);
-			if (($ids = JCBFilterHelper::translation((string) $type_extension[1], (string) $type_extension[0])) !== null)
-			{
-				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
-			}
-			else
-			{
-				// there is none
-				$query->where($db->quoteName('a.id') . ' = ' . 0);
-			}
-		}
-			// Implement View Level Access
-			if (!$user->authorise('core.options', 'com_componentbuilder'))
-			{
-				$groups = implode(',', $user->getAuthorisedViewLevels());
-				$query->where('a.access IN (' . $groups . ')');
-			}
-
-			// Order the results by ordering
-			$query->order('a.ordering  ASC');
-
-			// Load the items
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getNumRows())
-			{
-				$items = $db->loadObjectList();
-
-				// Set values to display correctly.
-				if (UtilitiesArrayHelper::check($items))
-				{
-					foreach ($items as $nr => &$item)
-					{
-						// Remove items the user can't access.
-						$access = ($user->authorise('language_translation.access', 'com_componentbuilder.language_translation.' . (int) $item->id) && $user->authorise('language_translation.access', 'com_componentbuilder'));
-						if (!$access)
-						{
-							unset($items[$nr]);
-							continue;
-						}
-
-						// escape all strings if not being exported
-						if (!isset($_export))
-						{
-							$item->source = StringHelper::html($item->source, 'UTF-8', true, 150);
-						}
-						// unset the values we don't want exported.
-						unset($item->asset_id);
-						unset($item->checked_out);
-						unset($item->checked_out_time);
-					}
-				}
-				// Add headers to items array.
-				$headers = $this->getExImPortHeaders();
-				if (ObjectHelper::check($headers))
-				{
-					array_unshift($items,$headers);
-				}
-				return $items;
-			}
-		}
-		return false;
-	}
-
-	/**
-	* Method to get header.
-	*
-	* @return mixed  An array of data items on success, false on failure.
-	*/
-	public function getExImPortHeaders()
-	{
-		$languages = ComponentbuilderHelper::getVars('language', 1, 'published', 'langtag');
-		// start setup of headers
-		$headers = new \stdClass();
-		$headers->id = 'id';
-		$headers->Source = 'Source';
-		// add the languages
-		if (UtilitiesArrayHelper::check($languages))
-		{
-			foreach ($languages as $language)
-			{
-				$headers->{$language} = $language;
-			}
-		}
-		return $headers;
 	}
 
 	/**
