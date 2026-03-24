@@ -136,7 +136,7 @@ class Wiki extends Api implements WikiInterface
 		string $pageName,
 		string $title,
 		string $content,
-		string $message = null
+		?string $message = null
 	): ?object
 	{
 		return null; // github does not support wiki over API

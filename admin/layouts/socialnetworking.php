@@ -27,6 +27,9 @@ defined('JPATH_BASE') or die;
 	<a href="https://volunteers.joomla.org/joomlers/1396-llewellyn-van-der-merwe" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_JOIN_LLEWELLYN_ON_THE_JOOMLA_VOLUNTEER_PORTAL_SHAPING_THE_FUTURE_TOGETHER'); ?>">
 		<i class="fa fa-joomla"></i>
 	</a>
+	<a href="https://github.com/joomengine" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_BUILD_PREMIUM_JOOMLA_EXTENSIONS_WITH_JOOMENGINE_ON_GITHUB_HELP_US_RAISE_JOOMLA_EXTENSION_STANDARDS'); ?>">
+		<i class="fa fa-git"></i>
+	</a>
 	<a href="https://git.vdm.dev/octoleo" class="text-decoration-none me-2" data-description="--quiet">
 		<i class="fa fa-linux"></i>
 	</a>
@@ -51,7 +54,7 @@ defined('JPATH_BASE') or die;
 	<a href="https://n8n.io/creators/octoleo" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_EFFORTLESS_AUTOMATION_AND_IMPACTFUL_WORKFLOWS_WITH_LLEWELLYN_ON_NEIGHTN'); ?>">
 		<i class="fa fa-code-fork"></i>
 	</a>
-	<a href="https://hub.docker.com/u/llewellyn" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_LLEWELLYN_ON_DOCKER_CONTAINERIZE_YOUR_CREATIVITY'); ?>">
+	<a href="https://hub.docker.com/r/octoleo/joomengine" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_JOOMENGINE_ON_DOCKER_CONTAINERIZE_YOUR_CREATIVITY'); ?>">
 		<i class="fa-brands fa-docker"></i>
 	</a>
 	<a href="https://opencollective.com/joomla-component-builder" class="text-decoration-none me-2" data-description="<?php echo Text::_('COM_COMPONENTBUILDER_DONATE_TOWARDS_JCB_HELP_LLEWELLYN_FINANCIALLY_SO_HE_CAN_CONTINUE_DEVELOPING_THIS_GREAT_TOOL'); ?>">

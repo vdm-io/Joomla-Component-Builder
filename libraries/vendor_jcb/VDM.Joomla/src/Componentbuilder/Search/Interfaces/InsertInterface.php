@@ -55,6 +55,6 @@ interface InsertInterface
 	 * @return  bool
 	 * @since 3.2.0
 	 */
-	public function items(array $items, string $table = null): bool;
+	public function items(array $items, ?string $table = null): bool;
 }
 

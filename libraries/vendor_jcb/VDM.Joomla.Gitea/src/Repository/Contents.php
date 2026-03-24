@@ -467,7 +467,7 @@ class Contents extends Api implements ContentsInterface
 	 * @return  string|null
 	 * @since   3.2.0
 	 **/
-	public function editor(string $owner, string $repo, string $filepath, string $ref = null): ?string
+	public function editor(string $owner, string $repo, string $filepath, ?string $ref = null): ?string
 	{
 		// Build the request path.
 		$path = "/repos/{$owner}/{$repo}/editorconfig/{$filepath}";

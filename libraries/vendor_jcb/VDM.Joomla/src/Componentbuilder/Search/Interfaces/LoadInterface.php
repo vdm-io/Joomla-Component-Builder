@@ -30,7 +30,7 @@ interface LoadInterface
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function value(int $id, string $field, string $table = null);
+	public function value(int $id, string $field, ?string $table = null);
 
 	/**
 	 * Get values from a given table
@@ -42,7 +42,7 @@ interface LoadInterface
 	 * @return  object|null
 	 * @since 3.2.0
 	 */
-	public function item(int $id, string $table = null): ?object;
+	public function item(int $id, ?string $table = null): ?object;
 
 	/**
 	 * Get values from a given table
@@ -54,7 +54,7 @@ interface LoadInterface
 	 * @return  array|null
 	 * @since 3.2.0
 	 */
-	public function items(string $table = null, int $bundle = 0): ?array;
+	public function items(?string $table = null, int $bundle = 0): ?array;
 
 }
 

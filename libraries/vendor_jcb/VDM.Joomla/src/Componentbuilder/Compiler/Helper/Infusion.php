@@ -1661,7 +1661,7 @@ class Infusion extends Interpretation
 
 				// DASH_DISPLAY_DATA
 				CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '|DASH_DISPLAY_DATA',
-					$this->setDashboardDisplayData()
+					CFactory::_('Architecture.Dashboard.View')->get()
 				);
 
 				// DASH_VIEW_HEADER

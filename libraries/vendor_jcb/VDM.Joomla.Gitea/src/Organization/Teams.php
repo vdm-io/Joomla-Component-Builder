@@ -99,8 +99,8 @@ class Teams extends Api
 		string $permission = 'read',
 		array $units = [],
 		array $unitsMap = [],
-		bool $canCreateOrgRepo = null,
-		bool $includesAllRepositories = null
+		?bool $canCreateOrgRepo = null,
+		?bool $includesAllRepositories = null
 	): ?object
 	{
 		// Build the request path.

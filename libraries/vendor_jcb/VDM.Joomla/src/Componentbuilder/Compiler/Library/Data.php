@@ -120,7 +120,7 @@ class Data
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Registry $registry,
-		Customcode $customcode = null, Gui $gui,
+		Customcode $customcode, Gui $gui,
 		FieldData $field, Filesfolders $filesFolders,
 		DatabaseInterface $db, Superpower $superpower)
 	{

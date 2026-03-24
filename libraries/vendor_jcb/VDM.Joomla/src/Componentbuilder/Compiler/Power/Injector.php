@@ -101,15 +101,15 @@ class Injector implements InjectorInterface
 	/**
 	 * Constructor.
 	 *
-	 * @param Power|null         $power        The power object.
-	 * @param Extractor|null     $extractor    The powers extractor object.
-	 * @param Parser|null        $parser       The powers parser object.
-	 * @param Placeholder|null      $placeholder  The compiler placeholder object.
+	 * @param Power         $power        The power object.
+	 * @param Extractor     $extractor    The powers extractor object.
+	 * @param Parser        $parser       The powers parser object.
+	 * @param Placeholder   $placeholder  The compiler placeholder object.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Power $power = null, Extractor $extractor = null,
-		Parser $parser = null, Placeholder $placeholder = null)
+	public function __construct(Power $power, Extractor $extractor,
+		Parser $parser, Placeholder $placeholder)
 	{
 		$this->power = $power;
 		$this->extractor = $extractor;

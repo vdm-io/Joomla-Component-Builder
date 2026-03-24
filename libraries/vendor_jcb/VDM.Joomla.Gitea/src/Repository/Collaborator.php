@@ -94,7 +94,7 @@ class Collaborator extends Api
 		string $owner,
 		string $repo,
 		string $collaborator,
-		string $permission = null
+		?string $permission = null
 	): string
 	{
 		// Build the request path.

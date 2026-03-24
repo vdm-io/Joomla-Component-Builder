@@ -46,6 +46,12 @@ use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\CustomAdminViews
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\CustomAdminViews\AddToolBar as J5CustomAdminViewsAddToolBar;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\CustomAdminViews\AddToolBar as J4CustomAdminViewsAddToolBar;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\CustomAdminViews\AddToolBar as J3CustomAdminViewsAddToolBar;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ListItemBuilder;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ListItem;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ListItem\ItemCode;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ListItem\Link;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ListItem\LinkAuthority;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ListItem\LinkLogic;
 
 
 /**
@@ -130,7 +136,6 @@ class ArchitectureView implements ServiceProviderInterface
 		$container->alias(J3AdminViewsAddToolBar::class, 'Architecture.AdminViews.J3.AddToolBar')
 			->share('Architecture.AdminViews.J3.AddToolBar', [$this, 'getJ3AdminViewsAddToolBar'], true);
 
-
 		$container->alias(SiteViewAddToolBar::class, 'Architecture.SiteView.AddToolBar')
 			->share('Architecture.SiteView.AddToolBar', [$this, 'getSiteViewAddToolBar'], true);
 
@@ -177,6 +182,25 @@ class ArchitectureView implements ServiceProviderInterface
 
 		$container->alias(J3CustomAdminViewsAddToolBar::class, 'Architecture.CustomAdminViews.J3.AddToolBar')
 			->share('Architecture.CustomAdminViews.J3.AddToolBar', [$this, 'getJ3CustomAdminViewsAddToolBar'], true);
+
+
+		$container->alias(ListItemBuilder::class, 'Architecture.AdminViews.ListItemBuilder')
+			->share('Architecture.AdminViews.ListItemBuilder', [$this, 'getAdminViewsListItemBuilder'], true);
+
+		$container->alias(ListItem::class, 'Architecture.AdminViews.ListItem')
+			->share('Architecture.AdminViews.ListItem', [$this, 'getAdminViewsListItem'], true);
+
+		$container->alias(ItemCode::class, 'Architecture.AdminViews.ListItem.ItemCode')
+			->share('Architecture.AdminViews.ListItem.ItemCode', [$this, 'getAdminViewsListItemItemCode'], true);
+
+		$container->alias(Link::class, 'Architecture.AdminViews.ListItem.Link')
+			->share('Architecture.AdminViews.ListItem.Link', [$this, 'getAdminViewsListItemLink'], true);
+
+		$container->alias(LinkAuthority::class, 'Architecture.AdminViews.ListItem.LinkAuthority')
+			->share('Architecture.AdminViews.ListItem.LinkAuthority', [$this, 'getAdminViewsListItemLinkAuthority'], true);
+
+		$container->alias(LinkLogic::class, 'Architecture.AdminViews.ListItem.LinkLogic')
+			->share('Architecture.AdminViews.ListItem.LinkLogic', [$this, 'getAdminViewsListItemLinkLogic'], true);
 	}
 
 	/**
@@ -781,6 +805,106 @@ class ArchitectureView implements ServiceProviderInterface
 			$container->get('Config'),
 			$container->get('Compiler.Builder.Content.One'),
 			$container->get('Architecture.CustomButtons')
+		);
+	}
+
+	/**
+	 * Get The ListItemBuilder Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ListItemBuilder
+	 * @since   5.1.5
+	 */
+	public function getAdminViewsListItemBuilder(Container $container): ListItemBuilder
+	{
+		return new ListItemBuilder(
+			$container->get('Placeholder'),
+			$container->get('Architecture.AdminViews.ListItem'),
+			$container->get('Compiler.Builder.Field.Relations'),
+			$container->get('Compiler.Builder.List.Join')
+		);
+	}
+
+	/**
+	 * Get The ListItem Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ListItem
+	 * @since   5.1.5
+	 */
+	public function getAdminViewsListItem(Container $container): ListItem
+	{
+		return new ListItem(
+			$container->get('Architecture.AdminViews.ListItem.ItemCode'),
+			$container->get('Architecture.AdminViews.ListItem.Link'),
+			$container->get('Architecture.AdminViews.ListItem.LinkAuthority'),
+			$container->get('Architecture.AdminViews.ListItem.LinkLogic')
+		);
+	}
+
+	/**
+	 * Get The ItemCode Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ItemCode
+	 * @since   5.1.5
+	 */
+	public function getAdminViewsListItemItemCode(Container $container): ItemCode
+	{
+		return new ItemCode(
+			$container->get('Config'),
+			$container->get('Compiler.Builder.Selection.Translation'),
+			$container->get('Compiler.Builder.Do.Not.Escape')
+		);
+	}
+
+	/**
+	 * Get The Link Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Link
+	 * @since   5.1.5
+	 */
+	public function getAdminViewsListItemLink(Container $container): Link
+	{
+		return new Link(
+			$container->get('Compiler.Builder.Category')
+		);
+	}
+
+	/**
+	 * Get The LinkAuthority Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  LinkAuthority
+	 * @since   5.1.5
+	 */
+	public function getAdminViewsListItemLinkAuthority(Container $container): LinkAuthority
+	{
+		return new LinkAuthority(
+			$container->get('Config'),
+			$container->get('Compiler.Builder.Category.Code'),
+			$container->get('Compiler.Creator.Permission')
+		);
+	}
+
+	/**
+	 * Get The LinkLogic Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  LinkLogic
+	 * @since   5.1.5
+	 */
+	public function getAdminViewsListItemLinkLogic(Container $container): LinkLogic
+	{
+		return new LinkLogic(
+			$container->get('Config')
 		);
 	}
 }

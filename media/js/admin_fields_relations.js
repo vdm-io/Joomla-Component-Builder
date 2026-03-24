@@ -17,74 +17,270 @@ jQuery(document).ready(function()
 	getEditCustomCodeButtons();
 });
 
-// the isSet function
+/**
+ * Track active requests per subform row so stale responses
+ * do not overwrite newer values.
+ *
+ * @type {Object.<string, AbortController>}
+ */
+var codeGlueOptionsControllers = {};
+
+/**
+ * Check whether a value is set.
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
 function _isSet(value) {
 	return value !== undefined && value !== null && value !== '';
 }
 
-// Function to set the value
-function getCodeGlueOptions(field) {
-	// Get the ID
-	var id = field.id;
-	var target = id.split('__');
+/**
+ * Get a DOM element by ID.
+ *
+ * @param {string} id
+ * @returns {HTMLElement|null}
+ */
+function getElement(id) {
+	return document.getElementById(id);
+}
 
-	// Set the subID
-	var subID = target[0] + '__' + target[1];
+/**
+ * Get the subform row prefix from a field element.
+ *
+ * Expected field ID format:
+ * prefix__rowindex__fieldname
+ *
+ * @param {HTMLElement} field
+ * @returns {string}
+ */
+function getSubformRowId(field) {
+	if (!field || !field.id || typeof field.id !== 'string') {
+		return '';
+	}
 
-	// Get listfield value
-	var listfield = document.getElementById(subID + '__listfield')?.value || '';
-	// Get type value
-	var type = document.getElementById(subID + '__join_type')?.value || '';
-	// Get area value
-	var area = document.getElementById(subID + '__area')?.value || '';
+	var parts = field.id.split('__');
 
-	// Check that values are set
-	if (_isSet(listfield) && _isSet(type) && _isSet(area)) {
-		// Get joinfields values
-		var joinfields = document.getElementById(subID + '__joinfields')?.value || '';
+	if (parts.length < 3) {
+		return '';
+	}
 
-		// Fetch CodeGlueOptions
-		getCodeGlueOptions_server(listfield, joinfields, type, area)
-			.then(result => {
-				document.getElementById(subID + '__set').value = result || '';
-			})
-			.catch(() => {
-				document.getElementById(subID + '__set').value = '';
-			});
-	} else {
-		document.getElementById(subID + '__set').value = '';
+	return parts[0] + '__' + parts[1];
+}
+
+/**
+ * Get a trimmed field value by ID.
+ *
+ * @param {string} id
+ * @returns {string}
+ */
+function getFieldValue(id) {
+	var element = getElement(id);
+
+	if (!element || element.value === undefined || element.value === null) {
+		return '';
+	}
+
+	return String(element.value).trim();
+}
+
+/**
+ * Extract selected values from a select element.
+ *
+ * For a multiple select, all selected values are returned.
+ * For a normal select, the selected value is returned as a one-item array.
+ *
+ * @param {HTMLSelectElement|null} selectElement
+ * @returns {string[]}
+ */
+function getSelectedValues(selectElement) {
+	if (!selectElement || !selectElement.selectedOptions) {
+		return [];
+	}
+
+	return Array.from(selectElement.selectedOptions, function(option) {
+		return String(option.value || '').trim();
+	}).filter(function(value) {
+		return value !== '';
+	});
+}
+
+/**
+ * Convert selected join field values into the exact format
+ * expected by the PHP server method:
+ *
+ * - "guid1,guid2,guid3" when values exist
+ * - "none" when no values are selected
+ *
+ * @param {string[]} values
+ * @returns {string}
+ */
+function buildJoinfieldsString(values) {
+	if (!Array.isArray(values) || values.length === 0) {
+		return 'none';
+	}
+
+	return values.join(',');
+}
+
+/**
+ * Normalize the AJAX response into a string.
+ *
+ * Your PHP method returns a string or false.
+ * Depending on the Joomla AJAX wrapper, the JSON response may contain
+ * that value directly or inside a property like result/data/value.
+ *
+ * @param {*} result
+ * @returns {string}
+ */
+function normalizeCodeGlueResponse(result) {
+	if (result === false || result === null || result === undefined) {
+		return '';
+	}
+
+	if (typeof result === 'string') {
+		return result;
+	}
+
+	if (typeof result === 'object') {
+		if (_isSet(result.result)) {
+			return String(result.result);
+		}
+
+		if (_isSet(result.data)) {
+			return String(result.data);
+		}
+
+		if (_isSet(result.value)) {
+			return String(result.value);
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Abort an in-flight request for a given subform row.
+ *
+ * @param {string} subID
+ * @returns {void}
+ */
+function abortCodeGlueOptionsRequest(subID) {
+	if (codeGlueOptionsControllers[subID]) {
+		codeGlueOptionsControllers[subID].abort();
+		delete codeGlueOptionsControllers[subID];
 	}
 }
 
-// Function to fetch data from the server
-function getCodeGlueOptions_server(listfield, joinfields, type, area) {
-	var getUrl = JRouter("index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json");
+/**
+ * Triggered on subform field change.
+ * Reads sibling field values, fetches CodeGlue options,
+ * and writes the result into the set field.
+ *
+ * @param {HTMLElement} field
+ * @returns {void}
+ */
+function getCodeGlueOptions(field) {
+	var subID = getSubformRowId(field);
 
-	// Ensure joinfields is set
-	if (!_isSet(joinfields)) {
-		joinfields = 'none';
+	if (!subID) {
+		console.warn('getCodeGlueOptions: could not determine subform row ID.', field);
+		return;
 	}
 
-	if (typeof token !== 'undefined' && token.length > 0 && listfield.length > 0 && type > 0 && area > 0) {
-		var params = new URLSearchParams({
-			[token]: '1',
-			listfield: listfield,
-			type: type,
-			area: area,
-			joinfields: joinfields
-		});
+	var setField = getElement(subID + '__set');
 
-		return fetch(getUrl + '&' + params.toString(), {
-			method: 'GET',
-			headers: {
-				'Accept': 'application/json'
-			}
+	if (!setField) {
+		console.warn('getCodeGlueOptions: target "set" field not found for row:', subID);
+		return;
+	}
+
+	var listfield = getFieldValue(subID + '__listfield');
+	var type = getFieldValue(subID + '__join_type');
+	var area = getFieldValue(subID + '__area');
+	var joinfieldsSelect = getElement(subID + '__joinfields');
+	var joinfields = buildJoinfieldsString(getSelectedValues(joinfieldsSelect));
+
+	if (!_isSet(listfield) || !_isSet(type) || !_isSet(area)) {
+		abortCodeGlueOptionsRequest(subID);
+		setField.value = '';
+		return;
+	}
+
+	getCodeGlueOptions_server(subID, listfield, joinfields, type, area)
+		.then(function(result) {
+			setField.value = normalizeCodeGlueResponse(result);
 		})
-			.then(response => response.json())
-			.catch(() => null);
+		.catch(function(error) {
+			if (error && error.name === 'AbortError') {
+				return;
+			}
+
+			console.error('getCodeGlueOptions failed:', error);
+			setField.value = '';
+		});
+}
+
+/**
+ * Fetch CodeGlue options from the server.
+ *
+ * The PHP side expects:
+ * - joinfields = "guid1,guid2,guid3"
+ * - or joinfields = "none"
+ *
+ * @param {string} subID
+ * @param {string} listfield
+ * @param {string} joinfields
+ * @param {string} type
+ * @param {string} area
+ * @returns {Promise<*>}
+ */
+function getCodeGlueOptions_server(subID, listfield, joinfields, type, area) {
+	if (
+		typeof token === 'undefined' ||
+		!_isSet(token) ||
+		!_isSet(listfield) ||
+		!_isSet(type) ||
+		!_isSet(area)
+	) {
+		return Promise.resolve(null);
 	}
 
-	return Promise.resolve(null);
+	var getUrl = JRouter('index.php?option=com_componentbuilder&task=ajax.getCodeGlueOptions&format=json');
+	var params = new URLSearchParams();
+
+	params.append(token, '1');
+	params.append('listfield', listfield);
+	params.append('joinfields', _isSet(joinfields) ? joinfields : 'none');
+	params.append('type', type);
+	params.append('area', area);
+
+	abortCodeGlueOptionsRequest(subID);
+
+	var controller = new AbortController();
+	codeGlueOptionsControllers[subID] = controller;
+
+	return fetch(getUrl + '&' + params.toString(), {
+		method: 'GET',
+		headers: {
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest'
+		},
+		credentials: 'same-origin',
+		signal: controller.signal
+	})
+		.then(function(response) {
+			if (!response.ok) {
+				throw new Error('Server responded with status ' + response.status);
+			}
+
+			return response.json();
+		})
+		.finally(function() {
+			if (codeGlueOptionsControllers[subID] === controller) {
+				delete codeGlueOptionsControllers[subID];
+			}
+		});
 }
 
 /**
@@ -219,4 +415,3 @@ async function getEditCustomCodeButtons() {
 		console.error('[getEditCustomCodeButtons] Error rendering buttons:', error);
 	}
 }
-

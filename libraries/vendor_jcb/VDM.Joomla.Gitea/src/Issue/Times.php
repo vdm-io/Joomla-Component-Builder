@@ -41,11 +41,11 @@ class Times extends Api
 		string $owner,
 		string $repo,
 		int $index,
-		string $user = null,
-		string $since = null,
-		string $before = null,
-		int $page = null,
-		int $limit = null
+		?string $user = null,
+		?string $since = null,
+		?string $before = null,
+		?int $page = null,
+		?int $limit = null
 	): ?array
 	{
 		// Build the request path.
@@ -98,8 +98,8 @@ class Times extends Api
 		string $repo,
 		int $index,
 		int $time,
-		string $created = null,
-		string $userName = null
+		?string $created = null,
+		?string $userName = null
 	): ?object
 	{
 		// Set the lines data

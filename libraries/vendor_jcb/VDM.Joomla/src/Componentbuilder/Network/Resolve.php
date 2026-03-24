@@ -61,22 +61,22 @@ final class Resolve
 	 *
 	 * @param string   $target        The target network.
 	 * @param string   &$domain       The API base domain (passed by reference).
-	 * @param string   &$organisation The repository organisation (passed by reference).
+	 * @param string   &$organization The repository organization (passed by reference).
 	 * @param string   &$repository   The repository name (passed by reference).
 	 *
 	 * @return void
 	 * @since  5.0.4
 	 */
-	public function api(string $target, string &$domain, string &$organisation, string &$repository): void
+	public function api(string $target, string &$domain, string &$organization, string &$repository): void
 	{
 		try {
 			// Check the status of the current API
-			$status = $this->status->get($target, $domain, $repository, $organisation);
+			$status = $this->status->get($target, $domain, $repository, $organization);
 
 			// If the API is inactive, attempt to find another active URL
 			if ($status == 0)
 			{
-				$this->resolve($target, $domain, $organisation, $repository);
+				$this->resolve($target, $domain, $organization, $repository);
 			}
 		} catch (\Exception $e) {
 			// ignore any none [in]active urls
@@ -87,18 +87,18 @@ final class Resolve
 	/**
 	 * Resolves an active API URL if the current API is inactive.
 	 *
-	 * Updates the `$domain`, `$organisation`, and `$repository` parameters to point to an active API URL.
+	 * Updates the `$domain`, `$organization`, and `$repository` parameters to point to an active API URL.
 	 *
 	 * @param string   $target        The target network.
 	 * @param string   &$domain       The API base domain (passed by reference).
-	 * @param string   &$organisation The repository organisation (passed by reference).
+	 * @param string   &$organization The repository organization (passed by reference).
 	 * @param string   &$repository   The repository name (passed by reference).
 	 *
 	 * @return void
 	 * @throws \Exception
 	 * @since  5.0.4
 	 */
-	private function resolve(string $target, string &$domain, string &$organisation, string &$repository): void
+	private function resolve(string $target, string &$domain, string &$organization, string &$repository): void
 	{
 		$activeRepo = $this->active($target);
 
@@ -111,12 +111,12 @@ final class Resolve
 			// Parse the active repository's URL and update the references
 			$parsedUrl = $this->url->parse($activeRepo->url);
 
-			$noneActiveDomain = "{$domain}/{$organisation}/{$repository}";
-			$activeDomain = "{$parsedUrl->scheme}://{$parsedUrl->domain}/{$parsedUrl->organisation}/{$parsedUrl->repository}";
+			$noneActiveDomain = "{$domain}/{$organization}/{$repository}";
+			$activeDomain = "{$parsedUrl->scheme}://{$parsedUrl->domain}/{$parsedUrl->organization}/{$parsedUrl->repository}";
 
 			// update the values passed by reference
 			$domain = $parsedUrl->scheme . '://' . $parsedUrl->domain;
-			$organisation = $parsedUrl->organisation ?? $organisation;
+			$organization = $parsedUrl->organization ?? $organization;
 			$repository = $parsedUrl->repository ?? $repository;
 
 			// add info

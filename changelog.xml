@@ -399,6 +399,24 @@
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
+    <version>4.1.4</version>
+    <fix>
+      <item>Fix variable name mismatch for organization in the Network Resolve class. #1291</item>
+      <item>Fix issue where Admin Field relations using custom code did not automatically include multiple fields as expected. #1293</item>
+      <item>Fix issue where Admin Field relations did not correctly apply concatenation/glue options. #1294</item>
+      <item>Fix deprecated warnings triggered in the JCB CLI.</item>
+      <item>Fix resolve PHP syntax errors and PHP 8.4 deprecations across codebase.</item>
+      <item>Fix four fatal parse/compile errors.</item>
+      <item>Fix implicit nullable parameter deprecations.</item>
+    </fix>
+    <change>
+      <item>Refactor Compiler functions to improve maintainability and align with modern PHP coding best practices.</item>
+      <item>Major refactor of the JCB Dashboard, introducing a modernized layout, improved usability, and full responsiveness across desktop, tablet, and mobile devices.</item>
+    </change>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
     <version>5.1.4</version>
     <security>
       <item>Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.</item>

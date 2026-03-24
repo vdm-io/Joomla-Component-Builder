@@ -111,7 +111,7 @@ interface WikiInterface extends ApiInterface
 		string $pageName,
 		string $title,
 		string $content,
-		string $message = null
+		?string $message = null
 	): ?object;
 
 	/**

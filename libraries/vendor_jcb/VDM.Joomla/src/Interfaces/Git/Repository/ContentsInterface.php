@@ -192,7 +192,7 @@ interface ContentsInterface extends ApiInterface
 	 * @return  string|null
 	 * @since   3.2.0
 	 **/
-	public function editor(string $owner, string $repo, string $filepath, string $ref = null): ?string;
+	public function editor(string $owner, string $repo, string $filepath, ?string $ref = null): ?string;
 
 	/**
 	 * Get the blob of a repository.
