@@ -73,8 +73,6 @@ class Hooks extends Api
 		string $repo,
 		string $type,
 		array $config,
-		string $type,
-		array $config,
 		bool $active = false,
 		?array $events = null,
 		string $branchFilter = ''

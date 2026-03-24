@@ -80,7 +80,7 @@ interface HandlerInterface
 	 * @return  array|null   File details or false on failure.
 	 * @since   3.0.11
 	 */
-	public function getFile(string $field, string $type, string $filter = null, string $path = null): ?array;
+	public function getFile(string $field, string $type, ?string $filter = null, ?string $path = null): ?array;
 
 	/**
 	 * Remove a previously uploaded file.

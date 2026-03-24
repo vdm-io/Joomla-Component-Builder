@@ -345,7 +345,7 @@ final class Contents implements ContentsInterface
 	 * @return  string|null
 	 * @since   5.1.1
 	 **/
-	public function editor(string $owner, string $repo, string $filepath, string $ref = null): ?string
+	public function editor(string $owner, string $repo, string $filepath, ?string $ref = null): ?string
 	{
 		$target = $this->getTarget();
 		return $this->{$target}->editor($owner, $repo, $filepath, $ref);

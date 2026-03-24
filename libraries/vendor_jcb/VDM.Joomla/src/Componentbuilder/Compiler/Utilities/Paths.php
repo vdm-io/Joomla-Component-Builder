@@ -48,7 +48,7 @@ class Paths extends Registry
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(Config $config = null, Component $component = null)
+	public function __construct(Config $config, Component $component)
 	{
 		$this->config = $config;
 		$this->component = $component;

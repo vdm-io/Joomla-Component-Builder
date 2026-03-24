@@ -78,7 +78,7 @@ class Libraries
 	 * @return  void
 	 * @since 3.2.0
 	 */
-	public function set(string $key, object &$item, string $target = null)
+	public function set(string $key, object &$item, ?string $target = null)
 	{
 		// set the target
 		$target = $target ?: $this->config->build_target;

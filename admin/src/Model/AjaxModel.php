@@ -5340,57 +5340,86 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in admin_fields_relations
-	public function getCodeGlueOptions($listfield, $joinfields, $type, $area)
+	/**
+	 * Get the code glue options string.
+	 *
+	 * @param   string  $listfield   The main list field GUID.
+	 * @param   string  $joinfields  A comma-separated list of join field GUIDs or 'none'.
+	 * @param   int     $type        The glue type.
+	 * @param   int     $area        The target area.
+	 *
+	 * @return  string|false
+	 * @since   5.3.10
+	 */
+	public function getCodeGlueOptions(string $listfield, string $joinfields, int $type, int $area)
 	{
 		// CONCATENATE GLUE
-		if ($type == 1)
+		if ($type === 1)
 		{
 			// MODEL
-			if ($area == 1 || $area == 3)
+			if ($area === 1 || $area === 3)
 			{
 				return ', ';
 			}
+
 			// VIEW
-			elseif ($area == 2)
+			if ($area === 2)
 			{
 				return '<br />';
 			}
 		}
 		// CUSTOM CODE
-		elseif ($type == 2)
+		elseif ($type === 2)
 		{
-			// build fields array
-			if ('none' !== $joinfields)
+			if ($joinfields !== 'none')
 			{
-				$fields = array_map( function ($guid) {
-					return (string) $guid;
-				}, (array) explode(',', $joinfields));
-				// add the list field to array
-				array_unshift($fields, (string) $listfield);
+				$fields = array_filter(
+					array_map(
+						static function ($guid) {
+							return trim((string) $guid);
+						},
+						explode(',', $joinfields)
+					),
+					static function ($guid) {
+						return $guid !== '';
+					}
+				);
+
+				array_unshift($fields, $listfield);
 			}
 			else
 			{
-				$fields = array((string) $listfield);
+				$fields = [$listfield];
 			}
-			// get field names
-			$names = array_map( function ($guid) {
-				return '[' . $guid . ']=> ' . GetHelper::var('field', $guid, 'guid', 'name');
-			}, $fields);
+
+			$names = array_map(
+				static function ($guid) {
+					return '[' . $guid . ']=> ' . GetHelper::var('field', $guid, 'guid', 'name');
+				},
+				$fields
+			);
+
 			// MODEL
-			if ($area == 1 || $area == 3)
+			if ($area === 1 || $area === 3)
 			{
-				// create note
-				$note = "// ". implode('; ', $names);
-				return $note . PHP_EOL . '$item->{'.(string)$listfield.'} = $item->{' . implode("} . ', ' . \$item->{", $fields) . '};';
+				$note = '// ' . implode('; ', $names);
+
+				return $note . PHP_EOL
+					. '$item->{' . $listfield . '} = $item->{'
+					. implode("} . ', ' . \$item->{", $fields)
+					. '};';
 			}
+
 			// VIEW
-			elseif ($area == 2)
+			if ($area === 2)
 			{
-				// create note
-				$note = "<!--  " . implode('; ', $names) . " -->";
-				return '[field=' . implode("]<br />[field=", $fields). ']' . PHP_EOL . PHP_EOL . $note;
+				$note = '<!--  ' . implode('; ', $names) . ' -->';
+
+				return '[field=' . implode(']<br />[field=', $fields) . ']'
+					. PHP_EOL . PHP_EOL . $note;
 			}
 		}
+
 		return false;
 	}
 

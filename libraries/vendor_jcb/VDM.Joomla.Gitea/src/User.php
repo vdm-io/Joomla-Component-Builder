@@ -88,7 +88,7 @@ class User extends Api
 	 * @return  object|null
 	 * @since   3.2.0
 	 **/
-	public function get(string $username): o?bject
+	public function get(string $username): ?object
 	{
 		// Build the request path.
 		$path = "/users/{$username}";

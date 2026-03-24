@@ -450,7 +450,7 @@ final class Contents extends Api implements ContentsInterface
 	 * @return  string|null
 	 * @since   5.1.1
 	 **/
-	public function editor(string $owner, string $repo, string $filepath, string $ref = null): ?string
+	public function editor(string $owner, string $repo, string $filepath, ?string $ref = null): ?string
 	{
 		// Not supported in GitHub
 		return null;

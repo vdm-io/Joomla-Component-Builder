@@ -67,7 +67,7 @@ else
 	/**
 	 * Error case
 	 */
-	$lines[] = Text::_('COM_COMPONENTBUILDER_ERROR_THE_EXTENSION_WAS_NOT_COMPILED')
+	$lines[] = Text::_('COM_COMPONENTBUILDER_ERROR_THE_EXTENSION_WAS_NOT_COMPILED');
 }
 
 ?>

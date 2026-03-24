@@ -2551,20 +2551,31 @@ class Interpretation extends Fields
 				$view['settings']->css_document
 			))
 			{
-				$script      = PHP_EOL . Indent::_(2) . "//" . Line::_(
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$script      = PHP_EOL . Indent::_(2) . "//" . Line::_(
 						__LINE__,__CLASS__
-					) . " Set the Custom CSS script to view" . PHP_EOL
-					. Indent::_(2) . '$this->document->addStyleDeclaration("';
+						) . " Set the Custom CSS script to view" . PHP_EOL
+						. Indent::_(2) . '$this->document->addStyleDeclaration("';
+				}
+				else
+				{
+					$script = PHP_EOL . Indent::_(2) . "//" . Line::_(
+							__LINE__,__CLASS__
+						) . " Set the Custom JS script to view" . PHP_EOL
+						. Indent::_(2) . '$this->getDocument()->getWebAssetManager()->addInlineStyle("';
+				}
+
 				$cssDocument = PHP_EOL . Indent::_(3) . str_replace(
-						'"', '\"', implode(
-							PHP_EOL . Indent::_(3),
-							$view['settings']->css_document
-						)
-					);
+					'"', '\"', implode(
+						PHP_EOL . Indent::_(3),
+						$view['settings']->css_document
+					)
+				);
 
 				return $script . CFactory::_('Placeholder')->update_(
-						$cssDocument
-					) . PHP_EOL . Indent::_(2) . '");';
+					$cssDocument
+				) . PHP_EOL . Indent::_(2) . '");';
 			}
 		}
 
@@ -3507,10 +3518,19 @@ class Interpretation extends Fields
 					// top
 					if ('site' === CFactory::_('Config')->build_target)
 					{
-						return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php?option=com_'
-							. CFactory::_('Config')->component_code_name
-							. '\'); ?>" method="post" name="adminForm" id="adminForm">'
-							. PHP_EOL;
+						if (CFactory::_('Config')->get('joomla_version', 3) >= 6)
+						{
+							return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php'
+								. '\'); ?>" method="post" name="adminForm" id="adminForm">'
+								. PHP_EOL; // yes we only need index.php
+						}
+						else
+						{
+							return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php?option=com_'
+								. CFactory::_('Config')->component_code_name
+								. '\'); ?>" method="post" name="adminForm" id="adminForm">'
+								. PHP_EOL;
+						}
 					}
 					else
 					{
@@ -8121,7 +8141,7 @@ class Interpretation extends Fields
 					// set the item default class
 					$itemClass = 'hidden-phone';
 					// set the item row
-					$itemRow = $this->getListItemBuilder(
+					$itemRow = CFactory::_('Architecture.AdminViews.ListItemBuilder')->get(
 						$item, $nameSingleCode, $nameListCode, $itemClass, $doNotEscape
 					);
 					// check if buttons was already added
@@ -8194,263 +8214,18 @@ class Interpretation extends Fields
 	}
 
 	/**
-	 * Get the list item dynamic row
+	 * Get the list field class
 	 *
-	 * @param   array   $item            The item array
-	 * @param   string  $nameSingleCode  The single view code name
-	 * @param   string  $nameListCode    The list view code name
-	 * @param   string  $itemClass       The table row default class
-	 * @param   bool    $doNotEscape     The do not escape global switch
-	 * @param   bool    $class           The dive class adding switch
-	 * @param   string  $ref             The link referral string
-	 * @param   string  $classPointer          The class pointer (this or displaydata)
-	 * @param   string  $user            The user code name
-	 * @param   string  $refview         The override of the referral view code name
+	 * @param   string  $name          The field code name
+	 * @param   string  $nameListCode  The list view code name
+	 * @param   string  $default       The default
 	 *
-	 * @return  string of the completer item value for the table row
+	 * @return  string  The list field class
 	 *
 	 */
-	protected function getListItemBuilder($item, $nameSingleCode,
-	                                      $nameListCode, &$itemClass, $doNotEscape,
-	                                      $class = true, $ref = null, $classPointer = '$this->',
-	                                      $user = '$this->user', $refview = null
-	)
+	protected function getListFieldClass($name, $nameListCode, $default = '')
 	{
-		// check if we have relation fields
-		if (($field_relations =
-			CFactory::_('Compiler.Builder.Field.Relations')->get($nameListCode . '.' . (string) $item['guid'] . '.2')) !== null)
-		{
-			// set the fields array
-			$field = [];
-			// use custom code
-			$useCustomCode
-				= (isset($field_relations['join_type'])
-				&& $field_relations['join_type']
-				== 2
-				&& isset($field_relations['set'])
-				&& StringHelper::check(
-					$field_relations['set']
-				));
-			// load the main list view field
-			$field_list_item = $this->getListItem(
-				$item, $nameSingleCode, $nameListCode, $itemClass,
-				$doNotEscape, false, $ref, $classPointer, $user,
-				$refview
-			);
-			$field['[field=' . (int) $item['id'] . ']'] = $field_list_item;
-			$field['[field=' . (string) $item['guid'] . ']'] = $field_list_item;
-			// code name
-			if (isset($item['code']))
-			{
-				$field['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
-				$field['$item->{' . (string) $item['guid'] . '}'] = '$item->' . $item['code'];
-			}
-			// now load the relations
-			if (isset($field_relations['joinfields'])
-				&& ArrayHelper::check($field_relations['joinfields']))
-			{
-				foreach ($field_relations['joinfields'] as $join)
-				{
-					$blankClass = '';
-					if (($join_item =
-						CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join)) !== null &&  is_array($join_item))
-					{
-						$join_id = CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join . '.id', 0);
-						// code block
-						$join_field_list_item = $this->getListItem(
-							$join_item, $nameSingleCode, $nameListCode, $blankClass,
-							$doNotEscape, false, $ref,
-							$classPointer, $user, $refview
-						);
-						$field['[field=' . (int) $join_id . ']'] = $join_field_list_item;
-						$field['[field=' . (string) $join . ']'] = $join_field_list_item;
-						// code name
-						if (isset($join_item['code']))
-						{
-							$field['$item->{' . (int) $join_id . '}'] = '$item->' . $join_item['code'];
-							$field['$item->{' . (string) $join . '}'] = '$item->' . $join_item['code'];
-						}
-					}
-				}
-			}
-			// join based on join type
-			if ($useCustomCode)
-			{
-				// custom code
-				return PHP_EOL . Indent::_(3) . "<div>"
-					. CFactory::_('Placeholder')->update_(
-						str_replace(
-							array_keys($field), array_values($field),
-							(string) $field_relations['set']
-						)
-					) . PHP_EOL . Indent::_(3) . "</div>";
-			}
-			elseif (isset($field_relations['set'])
-				&& StringHelper::check(
-					$field_relations['set']
-				))
-			{
-				// concatenate
-				return PHP_EOL . Indent::_(3) . "<div>" . implode(
-						$field_relations['set'],
-						$field
-					) . PHP_EOL . Indent::_(3) . "</div>";
-			}
-
-			// default
-			return PHP_EOL . Indent::_(3) . "<div>" . implode('', $field)
-				. PHP_EOL . Indent::_(3) . "</div>";
-		}
-
-		return $this->getListItem(
-			$item, $nameSingleCode, $nameListCode, $itemClass, $doNotEscape,
-			$class, $ref, $classPointer, $user, $refview
-		);
-	}
-
-	/**
-	 * Get the list item row value
-	 *
-	 * @param   array   $item            The item array
-	 * @param   string  $nameSingleCode  The single view code name
-	 * @param   string  $nameListCode    The list view code name
-	 * @param   string  $itemClass       The table row default class
-	 * @param   bool    $doNotEscape     The do not escape global switch
-	 * @param   bool    $class           The dive class adding switch
-	 * @param   string  $ref             The link referral string
-	 * @param   string  $classPointer          The class pointer
-	 * @param   string  $user            The user code name
-	 * @param   string  $refview         The override of the referral view code name
-	 *
-	 * @return  string of the single item value for the table row
-	 *
-	 */
-	protected function getListItem($item, $nameSingleCode, $nameListCode,
-		&$itemClass, $doNotEscape, $class = true, $ref = null,
-		$classPointer = '$this->', $user = '$this->user', $refview = null)
-	{
-		// get list item code
-		$itemCode = $this->getListItemCode(
-			$item, $nameListCode, $doNotEscape, $classPointer
-		);
-		// add default links
-		$defaultLink = true;
-		if (StringHelper::check($refview) && isset($item['custom'])
-			&& isset($item['custom']['view']) && $refview === $item['custom']['view'])
-		{
-			$defaultLink = false;
-		}
-		// is this a linked item
-		$extends_field = $item['custom']['extends'] ?? '';
-		if (($item['link'] || $extends_field === 'user') && $defaultLink)
-		{
-			// set some defaults
-			$checkoutTriger = false;
-			// set the item default class
-			$itemClass = 'nowrap';
-			// get list item link
-			$itemLink = $this->getListItemLink(
-				$item, $checkoutTriger, $nameSingleCode, $nameListCode, $ref
-			);
-			// get list item link authority
-			$itemLinkAuthority = $this->getListItemLinkAuthority(
-				$item, $nameSingleCode, $nameListCode, $classPointer, $user
-			);
-
-			// set item row
-			return $this->getListItemLinkLogic(
-				$item, $itemCode, $itemLink, $itemLinkAuthority, $nameSingleCode,
-				$nameListCode, $classPointer, $checkoutTriger, $class
-			);
-		}
-
-		// return the default (no link)
-		return PHP_EOL . Indent::_(3) . "<?php echo " . $itemCode . "; ?>";
-	}
-
-	/**
-	 * Get the list item link logic
-	 *
-	 * @param   array  $item               The item
-	 * @param   string  $itemCode           The item code string
-	 * @param   string  $itemLink           The item link string
-	 * @param   string  $itemLinkAuthority  The link authority string
-	 * @param   string  $nameSingleCode     The single view code name
-	 * @param   string  $nameListCode       The list view code name
-	 * @param   bool    $checkoutTriger     The check out trigger
-	 * @param   string  $classPointer       The class pointer
-	 * @param   bool    $class              The dive class adding switch
-	 *
-	 * @return  string of the complete link logic of row item
-	 *
-	 */
-	protected function getListItemLinkLogic($item, $itemCode, $itemLink,
-		$itemLinkAuthority, $nameSingleCode, $nameListCode, $classPointer, $checkoutTriger, $class = true)
-	{
-		// set some local values
-		$code = $item['code'];
-		// build link
-		$link = '';
-		// add class
-		$tab = '';
-		if ($class)
-		{
-			$link .= PHP_EOL . Indent::_(3) . '<div class="name">';
-			$tab  = Indent::_(1);
-		}
-		// the link logic
-		$link .= PHP_EOL . $tab . Indent::_(3) . "<?php if ("
-			. $itemLinkAuthority . "): ?>";
-		$link .= PHP_EOL . $tab . Indent::_(4) . '<a href="' . $itemLink
-			. '"><?php echo ' . $itemCode . '; ?></a>';
-		$addModalFix = false;
-		if ($checkoutTriger)
-		{
-			$link .= PHP_EOL . $tab . Indent::_(4)
-				. "<?php if (\$item->checked_out): ?>";
-			$link .= PHP_EOL . $tab . Indent::_(5)
-				. "<?php echo Html::_('jgrid.checkedout', \$i, \$userChkOut->name, \$item->checked_out_time, '"
-				. $nameListCode . ".', \$canCheckin); ?>";
-			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php endif; ?>";
-			if (CFactory::_('Config')->get('joomla_version', 3) !== 3)
-			{
-				$addModalFix = true;
-			}
-		}
-		$link .= PHP_EOL . $tab . Indent::_(3) . "<?php else: ?>";
-		if ($addModalFix)
-		{
-			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php if (!{$classPointer}isModal): ?>";
-			$link .= PHP_EOL . $tab . Indent::_(5) . "<?php echo " . $itemCode . "; ?>";
-			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php else: ?>";
-			$link .= PHP_EOL . $tab . Indent::_(5) . "<?php";
-			$link .= PHP_EOL . $tab . Indent::_(6) . "\$link = \"{\$edit}&id={\$item->id}\";";
-			$link .= PHP_EOL . $tab . Indent::_(6) . "\$dataId = \$item->{{$classPointer}getModalTitleKey()} ?? 0;";
-			$link .= PHP_EOL . $tab . Indent::_(6) . "\$itemHtml = '<a href=\"' . {$classPointer}escape(\$link, false) . '\">' . {$classPointer}escape(\$item->{$code}, false) . '</a>';";
-			$link .= PHP_EOL . $tab . Indent::_(6) . "\$attribs = 'data-content-select data-content-type=\"com_" . CFactory::_('Config')->component_code_name . ".". $nameSingleCode . "\"'";
-			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-id=\"' . \$dataId . '\"'";
-			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-title=\"' . {$classPointer}escape(\$item->{$code}, false) . '\"'";
-			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-uri=\"' . {$classPointer}escape(\$link, false) . '\"'";
-			$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-html=\"' . {$classPointer}escape(\$itemHtml, false) . '\"';";
-			$link .= PHP_EOL . $tab . Indent::_(5) . "?>";
-			$link .= PHP_EOL . $tab . Indent::_(5) . "<a class=\"select-link\" href=\"javascript:void(0)\" <?php echo \$attribs; ?>>";
-			$link .= PHP_EOL . $tab . Indent::_(6) . "<?php echo " . $itemCode . "; ?>";
-			$link .= PHP_EOL . $tab . Indent::_(5) . "</a>";
-			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php endif; ?>";
-		}
-		else
-		{
-			$link .= PHP_EOL . $tab . Indent::_(4) . "<?php echo " . $itemCode . "; ?>";
-		}
-		$link .= PHP_EOL . $tab . Indent::_(3) . "<?php endif; ?>";
-		// add class
-		if ($class)
-		{
-			$link .= PHP_EOL . Indent::_(3) . "</div>";
-		}
-
-		// return the link logic
-		return $link;
+		return CFactory::_('Compiler.Builder.List.Field.Class')->get($nameListCode . '.' . $name, $default);
 	}
 
 	/**
@@ -8504,276 +8279,6 @@ class Interpretation extends Fields
 		}
 
 		return $customAdminViewButton;
-	}
-
-	/**
-	 * Get the list item code value
-	 *
-	 * @param   array   $item          The item array
-	 * @param   string  $nameListCode  The list view code name
-	 * @param   bool    $doNotEscape   The do not escape global switch
-	 * @param   string  $classPointer        The class pointer
-	 *
-	 * @return  string of the single item code
-	 *
-	 */
-	protected function getListItemCode(&$item, $nameListCode, $doNotEscape, $classPointer = '$this->')
-	{
-		// first update the code id needed
-		if (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& isset($item['custom']['table'])
-			&& StringHelper::check($item['custom']['table']))
-		{
-			$item['id_code'] = $item['code'];
-			if (!$item['multiple'])
-			{
-				$item['code'] = $item['code'] . '_' . $item['custom']['text'];
-			}
-		}
-		//  set the extends value
-		$extends_field = $item['custom']['extends'] ?? '';
-		$extends_text = $item['custom']['text'] ?? '';
-		// check if category
-		if ($item['type'] === 'category' && !$item['title'])
-		{
-			return $classPointer .  'escape($item->category_title)';
-		}
-		// check if user
-		elseif ($item['type'] === 'user')
-		{
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser((int)$item->' . $item['code'] . ')->name';
-			}
-			else
-			{
-				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
-					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) ($item->' . $item['code'] . ' ?? 0))->name';
-			}
-		}
-		// check if custom user
-		elseif (isset($item['custom'])
-			&& ArrayHelper::check($item['custom'])
-			&& $extends_field === 'user'
-			&& isset($item['id_code']))
-		{
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser((int)$item->' . $item['id_code'] . ')->name';
-			}
-			else
-			{
-				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
-					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) ($item->' . $item['id_code'] . ' ?? 0))->name';
-			}
-		}
-		// check if translated value is used
-		elseif (CFactory::_('Compiler.Builder.Selection.Translation')->
-			exists($nameListCode . '.' . $item['code']))
-		{
-			return 'Joomla__'.'_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_($item->' . $item['code'] . ')';
-		}
-		elseif (isset($item['custom'])
-			&& ArrayHelper::check($item['custom'])
-			&& ($extends_text === 'user' || $extends_field === 'user'))
-		{
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser((int)$item->' . $item['code'] . ')->name';
-			}
-			else
-			{
-				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
-					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) ($item->' . $item['code'] . ' ?? 0))->name';
-			}
-		}
-		elseif ($doNotEscape)
-		{
-			if (CFactory::_('Compiler.Builder.Do.Not.Escape')->exists($nameListCode . '.' . $item['code']))
-			{
-				return '$item->' . $item['code'];
-			}
-		}
-
-		// default
-		return $classPointer .  'escape($item->' . $item['code'] . ')';
-	}
-
-	/**
-	 * Get the list item link
-	 *
-	 * @param   array   $item            The item array
-	 * @param   bool    $checkoutTriger  The checkout trigger switch
-	 * @param   string  $nameSingleCode  The single view code name
-	 * @param   string  $nameListCode    The list view code name
-	 * @param   string  $ref             The link referral string
-	 *
-	 * @return  string of the single item link
-	 *
-	 */
-	protected function getListItemLink($item, &$checkoutTriger,
-		$nameSingleCode, $nameListCode, $ref = null)
-	{
-		// set referal if not set
-		$referal = '';
-		if (!$ref)
-		{
-			$ref = '&return=<?php echo $this->return_here; ?>';
-		}
-		// in linked tab/view so must add ref to default
-		else
-		{
-			$referal = $ref;
-		}
-		// if to be linked
-		if ($item['type'] === 'category' && !$item['title'])
-		{
-			// return the link to category
-			return 'index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->'
-				. $item['code'] . '; ?>&extension='
-				. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension", 'error');
-		}
-		elseif ($item['type'] === 'user' && !$item['title'])
-		{
-			// return user link
-			return 'index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'
-				. $item['code'] . ' ?>';
-		}
-		elseif (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& $item['custom']['extends'] != 'user'
-			&& !$item['title']
-			&& isset($item['id_code']))
-		{
-			// build GUID link
-			if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
-			{
-				// link to that linked item
-				return 'index.php?option=' . $item['custom']['component'] . '&view='
-					. $item['custom']['views'] . '&task=' . $item['custom']['view']
-					. '.edit&id=<?php echo $item->' . $item['id_code'] . '_id; ?>'
-					. $ref;
-			}
-			// link to that linked item
-			return 'index.php?option=' . $item['custom']['component'] . '&view='
-				. $item['custom']['views'] . '&task=' . $item['custom']['view']
-				. '.edit&id=<?php echo $item->' . $item['id_code'] . '; ?>'
-				. $ref;
-		}
-		elseif (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& $item['custom']['extends'] === 'user'
-			&& !$item['title']
-			&& isset($item['id_code']))
-		{
-			// return user link
-			return 'index.php?option=com_users&task=user.edit&id=<?php echo (int) $item->'
-				. $item['id_code'] . ' ?>';
-		}
-		// make sure to triger the checkout
-		$checkoutTriger = true;
-
-		// basic default item link
-		return '<?php echo $edit; ?>&id=<?php echo $item->id; ?>' . $referal;
-	}
-
-	/**
-	 * Get the list item authority
-	 *
-	 * @param   array   $item            The item array
-	 * @param   string  $nameSingleCode  The single view code name
-	 * @param   string  $nameListCode    The list view code name
-	 * @param   string  $classPointer          The class pointer
-	 * @param   string  $user            The user code name
-	 *
-	 * @return  string of the single item link authority
-	 *
-	 */
-	protected function getListItemLinkAuthority($item, $nameSingleCode, $nameListCode, $classPointer= '$this->', $user = '$this->user')
-	{
-		// add modal fix
-		$isModal = '';
-		if (CFactory::_('Config')->get('joomla_version', 3) !== 3)
-		{
-			$isModal = "!{$classPointer}isModal && ";
-		}
-		// if to be linked
-		if ($item['type'] === 'category' && !$item['title'])
-		{
-			// get the other view
-			$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.view", 'error');
-
-			// return the authority to category
-			return $isModal . $user . "->authorise('core.edit', 'com_"
-				. CFactory::_('Config')->component_code_name . "." . $otherView
-				. ".category.' . (int) (\$item->" . $item['code'] . " ?? 0))";
-		}
-		elseif ($item['type'] === 'user' && !$item['title'])
-		{
-			// return user authority
-			return $isModal . $user . "->authorise('core.edit', 'com_users')";
-		}
-		elseif (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& $item['custom']['extends'] != 'user'
-			&& !$item['title']
-			&& isset($item['id_code']))
-		{
-			// do this with GUID
-			if (isset($item['custom']['id']) && $item['custom']['id'] !== 'id')
-			{
-				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
-					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-					. $item['custom']['view'] . ".' . (int) (\$item->" . $item['id_code'] . "_id ?? 0))";
-			}
-			else
-			{
-				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
-					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-					. $item['custom']['view'] . ".' . (int) (\$item->" . $item['id_code'] . " ?? 0))";
-			}
-		}
-		elseif (isset($item['custom'])
-			&& ArrayHelper::check(
-				$item['custom']
-			)
-			&& $item['custom']['extends'] === 'user'
-			&& !$item['title']
-			&& isset($item['id_code']))
-		{
-			// return user link
-			return $isModal . $user . "->authorise('core.edit', 'com_users')";
-		}
-
-		// set core permissions.
-		return $isModal . "\$canDo->get('" . CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit') . "')";
-	}
-
-	/**
-	 * Get the list field class
-	 *
-	 * @param   string  $name          The field code name
-	 * @param   string  $nameListCode  The list view code name
-	 * @param   string  $default       The default
-	 *
-	 * @return  string  The list field class
-	 *
-	 */
-	protected function getListFieldClass($name, $nameListCode, $default = '')
-	{
-		return CFactory::_('Compiler.Builder.List.Field.Class')->get($nameListCode . '.' . $name, $default);
 	}
 
 	/**
@@ -9346,7 +8851,7 @@ class Interpretation extends Fields
 			foreach ($tabBucket as $tabCodeName => $positions)
 			{
 				// get lang string
-				$tabLangName = $positions['lang'];
+				$tabLangName = $positions['lang'] ?? 'error_missing_lang';
 				// build main center position
 				$main       = '';
 				$mainbottom = '';
@@ -10831,6 +10336,7 @@ class Interpretation extends Fields
 			// make sure the custom links are only added once
 			$firstTimeBeingAdded = true;
 			$counter = 0;
+			$itemClass = '';
 			// add the default
 			$body = PHP_EOL . "<tbody>";
 			$body .= PHP_EOL . "<?php foreach (\$items as \$i => \$item): ?>";
@@ -10871,7 +10377,7 @@ class Interpretation extends Fields
 					// set some defaults
 					$customAdminViewButtons = '';
 					// set the item row
-					$itemRow = $this->getListItemBuilder(
+					$itemRow = CFactory::_('Architecture.AdminViews.ListItemBuilder')->get(
 						$item, $nameSingleCode, $nameListCode, $itemClass,
 						$doNotEscape, false, $ref,
 						'$displayData->', '$user', $refview
@@ -16871,7 +16377,7 @@ class Interpretation extends Fields
 			{
 				foreach ($fields as $area => $field)
 				{
-					if ($area == 1 && isset($field['code']))
+					if ((int) $area === 1 && !empty($field['code']))
 					{
 						$fix .= $this->setModelFieldRelation(
 							$field, $nameListCode, $tab
@@ -17226,7 +16732,7 @@ class Interpretation extends Fields
 			{
 				foreach ($fields as $area => $field)
 				{
-					if ($area == 3 && isset($field['code']))
+					if ((int) $area === 3 && !empty($field['code']))
 					{
 						$fix .= $this->setModelFieldRelation(
 							$field, $nameListCode, $tab
@@ -17453,11 +16959,12 @@ class Interpretation extends Fields
 	{
 		$fix = '';
 		// set fields
-		$field = [];
+		$field_placeholders = [];
 
 		// set list field name
-		$field['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
-		$field['$item->{' . (string) $item['guid'] . '}'] = '$item->' . $item['code'];
+		$field_placeholders['$item->{' . (int) $item['id'] . '}'] = '$item->' . $item['code'];
+		$field_placeholders['$item->{' . (string) $item['guid'] . '}'] = '$item->' . $item['code'];
+		$field_array[] = '$item->' . $item['code'];
 
 		// load joint field names
 		if (isset($item['joinfields'])
@@ -17470,18 +16977,19 @@ class Interpretation extends Fields
 				$join_id = CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join . '.id', 0);
 				$join_string = '$item->' . CFactory::_('Compiler.Builder.List.Join')->get($nameListCode . '.' . (string) $join . '.code', 'error');
 
-				$field['$item->{' . (int) $join_id . '}'] = $join_string;
-				$field['$item->{' . $join . '}'] = $join_string;
+				$field_placeholders['$item->{' . (int) $join_id . '}'] = $join_string;
+				$field_placeholders['$item->{' . $join . '}'] = $join_string;
+				$field_array[] = $join_string;
 			}
 		}
 
 		// set based on join_type
-		if ($item['join_type'] == 2)
+		if ((int) $item['join_type'] === 2)
 		{
 			// code
 			$code = (array) explode(
 				PHP_EOL, str_replace(
-					array_keys($field), array_values($field), (string) $item['set']
+					array_keys($field_placeholders), array_values($field_placeholders), (string) $item['set']
 				)
 			);
 			$fix  .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . implode(
@@ -17496,7 +17004,7 @@ class Interpretation extends Fields
 			$fix .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3) . "\$item->"
 				. $item['code'] . ' = ' . implode(
 					" . '" . str_replace("'", '&apos;', (string) $item['set']) . "' . ",
-					$field
+					$field_array
 				) . ';';
 		}
 
@@ -17903,274 +17411,6 @@ class Interpretation extends Fields
 		}
 
 		return '';
-	}
-
-	public function setDashboardDisplayData()
-	{
-		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-		{
-			return $this->setDashboardDisplayDataJ3();
-		}
-		return $this->setDashboardDisplayDataJ4();
-	}
-
-	public function setDashboardDisplayDataJ3()
-	{
-		// display array reset
-		$display           = [];
-		$mainAccordianName = 'cPanel';
-		$builder           = [];
-		$tab               = Indent::_(3);
-		$loadTabs          = false;
-		$width_class       = 'span';
-		$row_class         = 'row-fluid';
-		$form_class        = 'form-horizontal';
-		$uitab             = 'bootstrap';
-
-		// check if we have custom tabs
-		if (CFactory::_('Component')->isArray('dashboard_tab'))
-		{
-			// build the tabs and accordians
-			foreach (CFactory::_('Component')->get('dashboard_tab') as $data)
-			{
-				$builder[$data['name']][$data['header']]
-					= CFactory::_('Placeholder')->update_(
-					$data['html']
-				);
-			}
-			// since we have custom tabs we must load the tab structure around the cpanel
-			$display[] = '<div id="j-main-container">';
-			$display[] = Indent::_(1) . '<div class="' . $form_class . '">';
-			$display[] = Indent::_(1)
-				. "<?php echo Html::_('{$uitab}.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
-			$display[] = PHP_EOL . Indent::_(2)
-				. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', 'cpanel', Text:"
-				. ":_('cPanel', true)); ?>";
-			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
-			// change the name of the main tab
-			$mainAccordianName = 'Control Panel';
-			$loadTabs          = true;
-		}
-		else
-		{
-			$display[] = '<div id="j-main-container">';
-			$display[] = Indent::_(1) . '<div class="' . $form_class . '" style="padding: 20px;">';
-			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
-		}
-		// set dashboard display
-		$display[] = $tab . '<div class="' . $width_class . '9">';
-		$display[] = $tab . Indent::_(1)
-			. "<?php echo Html::_('bootstrap.startAccordion', 'dashboard_left', array('active' => 'main')); ?>";
-		$display[] = $tab . Indent::_(2)
-			. "<?php echo Html::_('bootstrap.addSlide', 'dashboard_left', '"
-			. $mainAccordianName . "', 'main'); ?>";
-		$display[] = $tab . Indent::_(3)
-			. "<?php echo \$this->loadTemplate('main');?>";
-		$display[] = $tab . Indent::_(2)
-			. "<?php echo Html::_('bootstrap.endSlide'); ?>";
-		$display[] = $tab . Indent::_(1)
-			. "<?php echo Html::_('bootstrap.endAccordion'); ?>";
-		$display[] = $tab . "</div>";
-		$display[] = $tab . '<div class="' . $width_class . '3">';
-		$display[] = $tab . Indent::_(1)
-			. "<?php echo Html::_('bootstrap.startAccordion', 'dashboard_right', array('active' => 'vdm')); ?>";
-		$display[] = $tab . Indent::_(2)
-			. "<?php echo Html::_('bootstrap.addSlide', 'dashboard_right', '"
-			. CFactory::_('Compiler.Builder.Content.One')->get('COMPANYNAME')
-			. "', 'vdm'); ?>";
-		$display[] = $tab . Indent::_(3)
-			. "<?php echo \$this->loadTemplate('vdm');?>";
-		$display[] = $tab . Indent::_(2)
-			. "<?php echo Html::_('bootstrap.endSlide'); ?>";
-		$display[] = $tab . Indent::_(1)
-			. "<?php echo Html::_('bootstrap.endAccordion'); ?>";
-		$display[] = $tab . "</div>";
-
-		if ($loadTabs)
-		{
-			$display[] = Indent::_(2) . "</div>";
-			$display[] = Indent::_(2)
-				. "<?php echo Html::_('{$uitab}.endTab'); ?>";
-			// load the new tabs
-			foreach ($builder as $tabname => $accordians)
-			{
-				$alias        = StringHelper::safe($tabname);
-				$display[]    = PHP_EOL . Indent::_(2)
-					. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', '"
-					. $alias . "', Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $tabname
-					. "', true)); ?>";
-				$display[]    = Indent::_(2) . '<div class="' . $row_class . '">';
-				$display[]    = $tab . '<div class="' . $width_class . '12">';
-				$display[]    = $tab . Indent::_(1)
-					. "<?php  echo Html::_('bootstrap.startAccordion', '"
-					. $alias . "_accordian', array('active' => '" . $alias
-					. "_one')); ?>";
-				$slidecounter = 1;
-				foreach ($accordians as $accordianname => $html)
-				{
-					$ac_alias    = StringHelper::safe(
-						$accordianname
-					);
-					$counterName = StringHelper::safe(
-						$slidecounter
-					);
-					$tempName    = $alias . '_' . $ac_alias;
-					$display[]   = $tab . Indent::_(2)
-						. "<?php  echo Html::_('bootstrap.addSlide', '"
-						. $alias . "_accordian', '" . $accordianname . "', '"
-						. $alias . "_" . $counterName . "'); ?>";
-					$display[]   = $tab . Indent::_(3)
-						. "<?php echo \$this->loadTemplate('" . $tempName
-						. "');?>";
-					$display[]   = $tab . Indent::_(2)
-						. "<?php  echo Html::_('bootstrap.endSlide'); ?>";
-					$slidecounter++;
-					// build the template file
-					$target = array('custom_admin' => CFactory::_('Config')->component_code_name);
-					CFactory::_('Utilities.Structure')->build($target, 'template', $tempName);
-					// set the file data
-					$TARGET = StringHelper::safe(
-						CFactory::_('Config')->build_target, 'U'
-					);
-					// CUSTOM_ADMIN_TEMPLATE_BODY <<<DYNAMIC>>>
-					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
-					// CUSTOM_ADMIN_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
-					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
-				}
-				$display[] = $tab . Indent::_(1)
-					. "<?php  echo Html::_('bootstrap.endAccordion'); ?>";
-				$display[] = $tab . "</div>";
-				$display[] = Indent::_(2) . "</div>";
-				$display[] = Indent::_(2)
-					. "<?php echo Html::_('{$uitab}.endTab'); ?>";
-			}
-
-			$display[] = PHP_EOL . Indent::_(1)
-				. "<?php echo Html::_('{$uitab}.endTabSet'); ?>";
-		}
-		else
-		{
-			$display[] = Indent::_(2) . "</div>";
-		}
-		$display[] = Indent::_(1) . "</div>";
-		$display[] = "</div>";
-
-		// return the display
-		return PHP_EOL . implode(PHP_EOL, $display);
-	}
-
-	public function setDashboardDisplayDataJ4()
-	{
-		// display array reset
-		$display           = [];
-		$mainAccordianName = 'cPanel';
-		$builder           = [];
-		$tab               = Indent::_(3);
-		$loadTabs          = false;
-		$width_class       = 'col-md-';
-		$row_class         = 'row';
-		$form_class        = 'main-card';
-		$uitab             = 'uitab';
-
-		// check if we have custom tabs
-		if (CFactory::_('Component')->isArray('dashboard_tab'))
-		{
-			// build the tabs and accordians
-			foreach (CFactory::_('Component')->get('dashboard_tab') as $data)
-			{
-				$builder[$data['name']][$data['header']]
-					= CFactory::_('Placeholder')->update_(
-					$data['html']
-				);
-			}
-			// since we have custom tabs we must load the tab structure around the cpanel
-			$display[] = '<div id="j-main-container">';
-			$display[] = Indent::_(1) . '<div class="' . $form_class . '">';
-			$display[] = Indent::_(1)
-				. "<?php echo Html::_('{$uitab}.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>";
-			$display[] = PHP_EOL . Indent::_(2)
-				. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', 'cpanel', Text:"
-				. ":_('cPanel', true)); ?>";
-			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
-			// change the name of the main tab
-			$mainAccordianName = 'Control Panel';
-			$loadTabs          = true;
-		}
-		else
-		{
-			$display[] = '<div id="j-main-container">';
-			$display[] = Indent::_(1) . '<div class="' . $form_class . '" style="padding: 20px;">';
-			$display[] = Indent::_(2) . '<div class="' . $row_class . '">';
-		}
-		// set dashboard display
-		$display[] = $tab . '<div class="' . $width_class . '9">';
-		$display[] = $tab . Indent::_(1)
-			. "<?php echo \$this->loadTemplate('main');?>";
-		$display[] = $tab . "</div>";
-		$display[] = $tab . '<div class="' . $width_class . '3">';
-		$display[] = $tab . Indent::_(1)
-			. "<?php echo \$this->loadTemplate('vdm');?>";
-		$display[] = $tab . "</div>";
-
-		if ($loadTabs)
-		{
-			$display[] = Indent::_(2) . "</div>";
-			$display[] = Indent::_(2)
-				. "<?php echo Html::_('{$uitab}.endTab'); ?>";
-			// load the new tabs
-			foreach ($builder as $tabname => $accordians)
-			{
-				$alias        = StringHelper::safe($tabname);
-				$display[]    = PHP_EOL . Indent::_(2)
-					. "<?php echo Html::_('{$uitab}.addTab', 'cpanel_tab', '"
-					. $alias . "', Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $tabname
-					. "', true)); ?>";
-				$display[]    = Indent::_(2) . '<div class="' . $row_class . '">';
-				$display[]    = $tab . '<div class="' . $width_class . '12">';
-				$slidecounter = 1;
-				foreach ($accordians as $accordianname => $html)
-				{
-					$ac_alias    = StringHelper::safe(
-						$accordianname
-					);
-					$counterName = StringHelper::safe(
-						$slidecounter
-					);
-					$tempName    = $alias . '_' . $ac_alias;
-					$display[]   = $tab . Indent::_(1)
-						. "<?php echo \$this->loadTemplate('" . $tempName
-						. "');?>";
-					$slidecounter++;
-					// build the template file
-					$target = array('custom_admin' => CFactory::_('Config')->component_code_name);
-					CFactory::_('Utilities.Structure')->build($target, 'template', $tempName);
-					// set the file data
-					$TARGET = StringHelper::safe(
-						CFactory::_('Config')->build_target, 'U'
-					);
-					// SITE_TEMPLATE_BODY <<<DYNAMIC>>>
-					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_BODY', PHP_EOL . $html);
-					// SITE_TEMPLATE_CODE_BODY <<<DYNAMIC>>>
-					CFactory::_('Compiler.Builder.Content.Multi')->set(CFactory::_('Config')->component_code_name . '_' . $tempName . '|CUSTOM_ADMIN_TEMPLATE_CODE_BODY', '');
-				}
-				$display[] = $tab . "</div>";
-				$display[] = Indent::_(2) . "</div>";
-				$display[] = Indent::_(2)
-					. "<?php echo Html::_('{$uitab}.endTab'); ?>";
-			}
-
-			$display[] = PHP_EOL . Indent::_(1)
-				. "<?php echo Html::_('{$uitab}.endTabSet'); ?>";
-		}
-		else
-		{
-			$display[] = Indent::_(2) . "</div>";
-		}
-		$display[] = Indent::_(1) . "</div>";
-		$display[] = "</div>";
-
-		// return the display
-		return PHP_EOL . implode(PHP_EOL, $display);
 	}
 
 	public function addCustomDashboardIcons(&$view, &$counter)

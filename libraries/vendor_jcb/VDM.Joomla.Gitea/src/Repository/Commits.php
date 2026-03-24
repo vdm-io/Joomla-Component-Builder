@@ -158,8 +158,8 @@ class Commits extends Api
 		string $owner,
 		string $repo,
 		string $ref,
-		string $sort = null,
-		string $state = null,
+		?string $sort = null,
+		?string $state = null,
 		int $page = 1,
 		int $limit = 10
 	): ?array

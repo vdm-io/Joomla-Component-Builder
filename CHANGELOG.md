@@ -67,6 +67,18 @@
 - Fix a bug that caused language filters to malfunction because of a broken field configuration. #1278
 - Fix issue where components without a layout added to the Component failed to compile correctly. #1132
 
+# v5.1.5
+
+- Fix variable name mismatch for organization in the Network Resolve class. #1291
+- Fix issue where Admin Field relations using custom code did not automatically include multiple fields as expected. #1293
+- Fix issue where Admin Field relations did not correctly apply concatenation/glue options. #1294
+- Refactor Compiler functions to improve maintainability and align with modern PHP coding best practices.
+- Refactor the JCB Dashboard, introducing a modernized layout, improved usability, and full responsiveness across desktop, tablet, and mobile devices.
+- Fix deprecated warnings triggered in the JCB CLI.
+- Fix resolve PHP syntax errors and PHP 8.4 deprecations across codebase.
+- Fix four fatal parse/compile errors.
+- Fix implicit nullable parameter deprecations.
+
 # v5.1.4
 
 - Fix the linked [new] button to use the correct init_default params.

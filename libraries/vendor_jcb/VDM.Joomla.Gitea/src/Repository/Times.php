@@ -39,9 +39,9 @@ class Times extends Api
 	public function list(
 		string $ownerName,
 		string $repoName,
-		string $user = null,
-		string $since = null,
-		string $before = null,
+		?string $user = null,
+		?string $since = null,
+		?string $before = null,
 		int $page = 1,
 		int $limit = 10
 	): ?array

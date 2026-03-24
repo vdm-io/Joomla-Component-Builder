@@ -98,7 +98,7 @@ class Load implements LoadInterface
 	 * @return  mixed
 	 * @since 3.2.0
 	 */
-	public function value(int $id, string $field, string $table = null)
+	public function value(int $id, string $field, ?string $table = null)
 	{
 		// load the table
 		if (empty($table))
@@ -132,7 +132,7 @@ class Load implements LoadInterface
 	 * @return  object|null
 	 * @since 3.2.0
 	 */
-	public function item(int $id, string $table = null): ?object
+	public function item(int $id, ?string $table = null): ?object
 	{
 		// load the table
 		if (empty($table))
@@ -165,7 +165,7 @@ class Load implements LoadInterface
 	 * @return  array|null
 	 * @since 3.2.0
 	 */
-	public function items(string $table = null, int $bundle = 0): ?array
+	public function items(?string $table = null, int $bundle = 0): ?array
 	{
 		// load the table
 		if (empty($table))

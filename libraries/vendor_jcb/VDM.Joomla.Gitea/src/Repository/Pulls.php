@@ -517,7 +517,7 @@ class Pulls extends Api
 	 * @return string
 	 * @since 3.2.0
 	 */
-	public function update(
+	public function mergeUpdate(
 		string $owner,
 		string $repo,
 		int $index,

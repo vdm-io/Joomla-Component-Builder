@@ -23,35 +23,35 @@ defined('_JEXEC') or die;
 	<?php echo Html::_('uitab.startTabSet', 'cpanel_tab', array('active' => 'cpanel')); ?>
 
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'cpanel', Text::_('cPanel', true)); ?>
-		<div class="row">
-			<div class="col-md-9">
+		<div class="row g-4">
+			<div class="col-12 col-xl-9">
 				<?php echo $this->loadTemplate('main');?>
 			</div>
-			<div class="col-md-3">
+			<div class="col-12 col-xl-3">
 				<?php echo $this->loadTemplate('vdm');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
 
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'doc', Text::_('Doc', true)); ?>
-		<div class="row">
-			<div class="col-md-12">
+		<div class="row g-4">
+			<div class="col-12">
 				<?php echo $this->loadTemplate('doc_start_here');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
 
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'notice_board', Text::_('Notice Board', true)); ?>
-		<div class="row">
-			<div class="col-md-12">
+		<div class="row g-4">
+			<div class="col-12">
 				<?php echo $this->loadTemplate('notice_board_vast_development_method');?>
 			</div>
 		</div>
 		<?php echo Html::_('uitab.endTab'); ?>
 
 		<?php echo Html::_('uitab.addTab', 'cpanel_tab', 'readme', Text::_('Readme', true)); ?>
-		<div class="row">
-			<div class="col-md-12">
+		<div class="row g-4">
+			<div class="col-12">
 				<?php echo $this->loadTemplate('readme_information');?>
 			</div>
 		</div>

@@ -172,7 +172,7 @@ class Wiki extends Api implements WikiInterface
 		string $pageName,
 		string $title,
 		string $content,
-		string $message = null
+		?string $message = null
 	): ?object
 	{
 		// Build the request path.
