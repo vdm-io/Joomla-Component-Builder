@@ -30,7 +30,7 @@ foreach ($repo_items as $repo)
 {
 	if (!empty($repo->base) && !empty($repo->path))
 	{
-		$repos[] = LayoutHelper::render('reposelectioncardbody', ['repo' => $repo, 'area' => $area, 'name' => $area_name]);
+		$repos[] = LayoutHelper::render('reposelectioncardbodyjfive', ['repo' => $repo, 'area' => $area, 'name' => $area_name]);
 	}
 }
 // set the base URL
@@ -41,23 +41,29 @@ $url_base = Uri::base() . 'index.php?option=com_componentbuilder';
 <script type="text/javascript">
 
 	// get page body
-	var outerBodyDiv = document.querySelector('body');
+	var outerBodyDiv = document.body || document.querySelector('body');
 
 	// start loading spinner
 	var loadingDiv = document.createElement('div');
 	loadingDiv.id = 'loading';
 
-	// Set CSS properties individually
-	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
-	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
-	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
-	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
-	loadingDiv.style.height = outerBodyDiv.offsetHeight + "px";
+	// Set CSS properties (robust, no calculations)
 	loadingDiv.style.position = 'fixed';
-	loadingDiv.style.opacity = '0.80';
+	loadingDiv.style.top = '0';
+	loadingDiv.style.left = '0';
+	loadingDiv.style.right = '0';
+	loadingDiv.style.bottom = '0';
+	loadingDiv.style.width = '100%';
+	loadingDiv.style.height = '100%';
+
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
+	loadingDiv.style.opacity = '0.8';
+	loadingDiv.style.zIndex = '9999';
+	loadingDiv.style.display = 'none';
+
+	// legacy IE fallback (safe to keep)
 	loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
 	loadingDiv.style.filter = "alpha(opacity=80)";
-	loadingDiv.style.display = 'none';
 
 	// add to page body
 	outerBodyDiv.appendChild(loadingDiv);
@@ -66,7 +72,7 @@ $url_base = Uri::base() . 'index.php?option=com_componentbuilder';
 	});
 </script>
 <div id="select-repo-area">
-	<p><?php echo Text::_('COM_COMPONENTBUILDER_SELECT_A_REPOSITORY_TO_PULL_ITEMS_FROM'); ?>...</p>
+	<p><?php echo Text::_('COM_COMPONENTBUILDER_SELECT_A_REPOSITORY_TO_FETCH_ITEMS_FOR_INITIALIZATION'); ?>...</p>
 	<div class="uk-child-width-1-2@s uk-child-width-1-3@m" uk-grid>
 	<?php foreach ($repos as $repo): ?>
 		<?php echo $repo; ?>
@@ -74,18 +80,19 @@ $url_base = Uri::base() . 'index.php?option=com_componentbuilder';
 	</div>
 </div>
 <div id="select-powers-area" style="display: none">
-	<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_SELECT_THE_S_ITEMS_TO_PULL', $area_name); ?>...</p>
-	<?php echo LayoutHelper::render('powerpullselectiontable', ['area' => $area, 'headers' => $headers, 'id' => $table_id]); ?>
+	<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_SELECT_THE_NEW_S_ITEMS_TO_INITIALIZE', $area_name); ?>...</p>
+	<?php echo LayoutHelper::render('powerselectiontable', ['area' => $area, 'headers' => $headers, 'id' => $table_id]); ?>
 	<div class="subhead">
 		<div class="btn-toolbar d-flex">
 			<joomla-toolbar-button>
-				<button type="button" id="pull-selected-powers" class="btn btn-primary" disable><?php echo Text::sprintf('COM_COMPONENTBUILDER_PULL_SELECTED_S_ITEMS', $area_name); ?></button>
+				<button type="button" id="init-selected-powers" class="btn btn-primary" disable><?php echo Text::sprintf('COM_COMPONENTBUILDER_INITIALIZE_SELECTED_S_ITEMS', $area_name); ?></button>
 			</joomla-toolbar-button>
 			<joomla-toolbar-button>
 				<button type="button" id="back-to-select-repo" class="btn btn-info"><?php echo Text::_('COM_COMPONENTBUILDER_BACK_TO_REPOSITORY_SELECTION'); ?></button>
 			</joomla-toolbar-button>
 		</div>
 	</div>
+	<p><?php echo Text::sprintf('COM_COMPONENTBUILDER_ITEMS_SHOWN_IN_GREY_ARE_ALREADY_IN_YOUR_LOCAL_JCB_SYSTEM_AND_CANNOT_BE_INITIALIZED_AGAIN_USE_THE_RESET_OPTION_TO_REPLACE_THEM_OR_THIS_INIT_OPTION_TO_ONLY_PULL_IN_NEW_S_ITEMS', $area_name); ?></p>
 </div>
 <script type="text/javascript">
 // the search Ajax URLs

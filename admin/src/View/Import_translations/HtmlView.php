@@ -245,10 +245,10 @@ class HtmlView extends BaseHtmlView
 		 		// these comments are here so the layouts will be linked and loaded for the ajax (don't remove it)
 		
 				// change this to the layout of your custom importer columns display
-				// LayoutHelper::render('translationimportercolumnsdisplay', [?]);
+				// LayoutHelper::render('translationimportercolumnsdisplayjfive', [?]);
 		
 				// change this to the layout of your custom importer easy mapping
-				// LayoutHelper::render('translationimportereasymapping', [?]);
+				// LayoutHelper::render('translationimportereasymappingjfive', [?]);
 		
 				// add the libs for subform (since not adding it via xml but ajax)
 				$this->getDocument()

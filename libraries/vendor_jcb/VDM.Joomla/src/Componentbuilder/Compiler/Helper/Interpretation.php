@@ -3071,6 +3071,12 @@ class Interpretation extends Fields
 
 	public function setUikitLoader(&$view)
 	{
+		// we do not load this for Joomla 6+ (use the libraries to add it if you still need it)
+		if ((int) CFactory::_('Config')->get('joomla_version', 3) === 6)
+		{
+			return '';
+		}
+
 		// reset setter
 		$setter = '';
 		// load the defaults needed
@@ -9747,33 +9753,53 @@ class Interpretation extends Fields
 
 	public function setFadeInEfect(&$view)
 	{
+		$component = CFactory::_('Config')->component_code_name;
+
 		// check if we should load the fade in affect
 		if ($view['settings']->add_fadein == 1)
 		{
-			// set view name
+			$fadein   = [];
 			$fadein[] = "<script type=\"text/javascript\">";
-			$fadein[] = Indent::_(1) . "// waiting spinner";
-			$fadein[] = Indent::_(1) . "var outerDiv = document.querySelector('body');";
-			$fadein[] = Indent::_(1) . "var loadingDiv = document.createElement('div');";
-			$fadein[] = Indent::_(1) . "loadingDiv.id = 'loading';";
-			$fadein[] = Indent::_(1) . "loadingDiv.style.cssText = \"background: rgba(255, 255, 255, .8) url('components/com_"
-				. CFactory::_('Config')->component_code_name
-				. "/assets/images/ajax.gif') 50% 35% no-repeat; top: \" + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + \"px; left: \" + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + \"px; width: \" + outerDiv.offsetWidth + \"px; height: \" + outerDiv.offsetHeight + \"px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;\";";
-			$fadein[] = Indent::_(1) . "outerDiv.appendChild(loadingDiv);";
-			$fadein[] = Indent::_(1) . "loadingDiv.style.display = 'block';";
-			$fadein[] = Indent::_(1) . "// when page is ready remove and show";
-			$fadein[] = Indent::_(1) . "window.addEventListener('load', function() {";
-			$fadein[] = Indent::_(2) . "var componentLoader = document.getElementById('" . CFactory::_('Config')->component_code_name . "_loader');";
-			$fadein[] = Indent::_(2) . "if (componentLoader) componentLoader.style.display = 'block';";
-			$fadein[] = Indent::_(2) . "loadingDiv.style.display = 'none';";
-			$fadein[] = Indent::_(1) . "});";
+			$fadein[] = Indent::_(1) . "(function() {";
+			$fadein[] = Indent::_(2) . "// create loading overlay";
+			$fadein[] = Indent::_(2) . "var loadingDiv = document.createElement('div');";
+			$fadein[] = Indent::_(2) . "loadingDiv.id = 'loading';";
+
+			// robust styling (no size calculations)
+			$fadein[] = Indent::_(2) . "loadingDiv.style.position = 'fixed';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.top = '0';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.left = '0';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.right = '0';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.bottom = '0';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.width = '100%';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.height = '100%';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.background = \"rgba(255,255,255,0.8) url('components/com_{$component}/assets/images/ajax.gif') 50% 35% no-repeat\";";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.opacity = '0.8';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.zIndex = '9999';";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.display = 'block';";
+
+			// IE fallback (harmless elsewhere)
+			$fadein[] = Indent::_(2) . "loadingDiv.style.msFilter = \"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)\";";
+			$fadein[] = Indent::_(2) . "loadingDiv.style.filter = \"alpha(opacity=80)\";";
+
+			$fadein[] = Indent::_(2) . "document.body.appendChild(loadingDiv);";
+
+			$fadein[] = Indent::_(2) . "// remove overlay when page fully loaded";
+			$fadein[] = Indent::_(2) . "window.addEventListener('load', function() {";
+			$fadein[] = Indent::_(3) . "var componentLoader = document.getElementById('{$component}_loader');";
+			$fadein[] = Indent::_(3) . "if (componentLoader) componentLoader.style.display = 'block';";
+			$fadein[] = Indent::_(3) . "loadingDiv.style.display = 'none';";
+			$fadein[] = Indent::_(2) . "});";
+
+			$fadein[] = Indent::_(1) . "})();";
 			$fadein[] = "</script>";
-			$fadein[] = "<div id=\"" . CFactory::_('Config')->component_code_name . "_loader\" style=\"display: none;\">";
+
+			$fadein[] = "<div id=\"{$component}_loader\" style=\"display: none;\">";
 
 			return implode(PHP_EOL, $fadein);
 		}
 
-		return "<div id=\"" . CFactory::_('Config')->component_code_name . "_loader\">";
+		return "<div id=\"{$component}_loader\">";
 	}
 
 	/**

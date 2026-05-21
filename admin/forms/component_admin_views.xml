@@ -746,7 +746,7 @@
 					label="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ORDER_LABEL"
 					default="0"
 					description="COM_COMPONENTBUILDER_COMPONENT_ADMIN_VIEWS_ORDER_DESCRIPTION"
-					class="fieldSmall"
+					class="text_area"
 					first="0"
 					last="400"
 					step="1"

@@ -646,153 +646,207 @@ function isSet(val)
 }
 
 
-jQuery(document).ready(function()
-{
+
+document.addEventListener('DOMContentLoaded', () => {
 	// check if this view has alias field
 	checkAliasField();
+
 	// check if this view has category field
 	checkCategoryField();
+
 	// get the linked details
 	getLinked();
+
 	// set button
-	addButtonID('admin_fields','create_edit_buttons', 1); // <-- first
-	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	getDynamicScripts(valueSwitch);
+	addButtonID('admin_fields', 'create_edit_buttons', 1); // <-- first
+
+	const checkedRadio = document.querySelector("#jform_add_custom_import input[type='radio']:checked");
+	const valueSwitch = checkedRadio ? checkedRadio.value : null;
+
 	// now load the fields
 	getAjaxDisplay('admin_fields');
 	getAjaxDisplay('admin_fields_conditions');
 	getAjaxDisplay('admin_fields_relations');
+
 	// set button
-	addButtonID('admin_fields_conditions','create_edit_buttons', 1); // <-- second
+	addButtonID('admin_fields_conditions', 'create_edit_buttons', 1); // <-- second
+
 	// set button to create more fields
-	addButton('field','create_edit_buttons'); // <-- third
+	addButton('field', 'create_edit_buttons'); // <-- third
+
 	// set button
-	addButtonID('admin_fields_relations','create_edit_buttons', 1); // <-- forth
+	addButtonID('admin_fields_relations', 'create_edit_buttons', 1); // <-- forth
+
 	// set button
-	addButtonID('admin_custom_tabs','addtabs-lbl', 1); // <-- fifth
+	addButtonID('admin_custom_tabs', 'addtabs-lbl', 1); // <-- fifth
+
 	// check and load all the customcode edit buttons
 	getEditCustomCodeButtons();
 });
 
-function checkAliasField() {
-	getCodeFrom_server(1, 'type', 'type', 'checkAliasField').then(function(result) {
-		if(result){
-			// remove the notice
-			jQuery('.note_create_edit_notice_p').remove();
-		} else {
-			// hide everything about alias management
-			jQuery('#jform_alias_builder_type').closest('.control-group').remove();
-			jQuery('#jform_alias_builder').closest('.control-group').remove();
-			jQuery('.note_alias_builder_default').closest('.control-group').remove();
-			jQuery('.note_alias_builder_custom').closest('.control-group').remove();
+/**
+ * Remove all matched elements from the DOM.
+ *
+ * @param {string} selector
+ * @returns {void}
+ */
+function removeElements(selector) {
+	document.querySelectorAll(selector).forEach((element) => {
+		element.remove();
+	});
+}
+
+/**
+ * Remove the closest parent matching the selector for all matched elements.
+ *
+ * @param {string} selector
+ * @param {string} closestSelector
+ * @returns {void}
+ */
+function removeClosest(selector, closestSelector) {
+	document.querySelectorAll(selector).forEach((element) => {
+		const parent = element.closest(closestSelector);
+
+		if (parent) {
+			parent.remove();
 		}
 	});
 }
 
-function checkCategoryField() {
-	getCodeFrom_server(1, 'type', 'type', 'checkCategoryField').then(function(result) {
-		if(result){
-			// remove the notice
-			jQuery('.note_create_edit_notice_p').remove();
-		} else {
-			// hide everything about category management
-			jQuery('#jform_add_category_submenu').closest('.control-group').remove();
-			jQuery('.note_category_menu_switch').closest('.control-group').remove();
-		}
-	});
-}
+/**
+ * Set HTML content on an element if it exists.
+ *
+ * @param {string} selector
+ * @param {string} html
+ * @returns {void}
+ */
+function setHTML(selector, html) {
+	const element = document.querySelector(selector);
 
-function getAjaxDisplay(type){
-	getCodeFrom_server(1, type, 'type', 'getAjaxDisplay').then(function(result) {
-		if(result){
-			jQuery('#display_'+type).html(result);
-		}
-		// set button
-		addButtonID(type,'header_'+type+'_buttons', 2); // <-- little edit button
-	});
-}
-
-function getTableColumns(fieldKey, table_, nr_){
-	// first check if the field is set
-	if(jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table").length) {
-		// get options
-		var tableName = jQuery("#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_table option:selected").val();
-		getCodeFrom_server(1, tableName, 'table', 'tableColumns').then(function(result) {
-			if(result){
-				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val(result);
-			} else {
-				jQuery("textarea#jform_addtables_"+table_+"addtables"+fieldKey+nr_+"_sourcemap").val('');
-			}
-		});
+	if (element) {
+		element.innerHTML = html;
 	}
 }
 
-function getDynamicScripts(id){
-	if (1 == id) {
-		// get the current values
-		var current_import_display = jQuery('textarea#jform_php_import_display').val();
-		var current_import = jQuery('textarea#jform_php_import').val();
-		var current_headers = jQuery('textarea#jform_php_import_headers').val();
-		var current_setdata = jQuery('textarea#jform_php_import_setdata').val();
-		var current_save = jQuery('textarea#jform_php_import_save').val();
-		var current_view = jQuery('textarea#jform_html_import_view').val();
-		var current_ext = jQuery('textarea#jform_php_import_ext').val();
-		// set the display method script
-		if(current_import_display.length == 0){
-			getCodeFrom_server(1, 'display', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_import_display').val(result);
-				}
+/**
+ * Set value on an element if it exists.
+ *
+ * @param {string} selector
+ * @param {string} value
+ * @returns {void}
+ */
+function setValue(selector, value) {
+	const element = document.querySelector(selector);
+
+	if (element) {
+		element.value = value;
+	}
+}
+
+/**
+ * Get value from an element if it exists.
+ *
+ * @param {string} selector
+ * @returns {string}
+ */
+function getValue(selector) {
+	const element = document.querySelector(selector);
+
+	return element ? element.value : '';
+}
+
+/**
+ * Check whether alias field support exists.
+ *
+ * @returns {void}
+ */
+function checkAliasField() {
+	getCodeFrom_server(1, 'type', 'type', 'checkAliasField')
+		.then((result) => {
+			if (result) {
+				// remove the notice
+				removeElements('.note_create_edit_notice_p');
+			} else {
+				// hide everything about alias management
+				removeClosest('#jform_alias_builder_type', '.control-group');
+				removeClosest('#jform_alias_builder', '.control-group');
+				removeClosest('.note_alias_builder_default', '.control-group');
+				removeClosest('.note_alias_builder_custom', '.control-group');
+			}
+		})
+		.catch((error) => {
+			console.error('checkAliasField failed:', error);
+		});
+}
+
+/**
+ * Check whether category field support exists.
+ *
+ * @returns {void}
+ */
+function checkCategoryField() {
+	getCodeFrom_server(1, 'type', 'type', 'checkCategoryField')
+		.then((result) => {
+			if (result) {
+				// remove the notice
+				removeElements('.note_create_edit_notice_p');
+			} else {
+				// hide everything about category management
+				removeClosest('#jform_add_category_submenu', '.control-group');
+				removeClosest('.note_category_menu_switch', '.control-group');
+			}
+		})
+		.catch((error) => {
+			console.error('checkCategoryField failed:', error);
+		});
+}
+
+/**
+ * Load AJAX display content for the given type.
+ *
+ * @param {string} type
+ * @returns {void}
+ */
+function getAjaxDisplay(type) {
+	getCodeFrom_server(1, type, 'type', 'getAjaxDisplay')
+		.then((result) => {
+			if (result) {
+				setHTML(`#display_${type}`, result);
+			}
+
+			// set button
+			addButtonID(type, `header_${type}_buttons`, 2); // <-- little edit button
+		})
+		.catch((error) => {
+			console.error(`getAjaxDisplay failed for type "${type}":`, error);
+		});
+}
+
+/**
+ * Get table columns and set them into the sourcemap textarea.
+ *
+ * @param {string} fieldKey
+ * @param {string|number} table_
+ * @param {string|number} nr_
+ * @returns {void}
+ */
+function getTableColumns(fieldKey, table_, nr_) {
+	const tableSelector = `#jform_addtables_${table_}addtables${fieldKey}${nr_}_table`;
+	const sourcemapSelector = `textarea#jform_addtables_${table_}addtables${fieldKey}${nr_}_sourcemap`;
+	const tableElement = document.querySelector(tableSelector);
+
+	// first check if the field is set
+	if (tableElement) {
+		const tableName = tableElement.value || '';
+
+		getCodeFrom_server(1, tableName, 'table', 'tableColumns')
+			.then((result) => {
+				setValue(sourcemapSelector, result || '');
+			})
+			.catch((error) => {
+				console.error(`getTableColumns failed for table "${tableName}":`, error);
+				setValue(sourcemapSelector, '');
 			});
-		}
-		// set the import method script
-		if(current_import.length == 0){
-			getCodeFrom_server(1, 'import', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_import').val(result);
-				}
-			});
-		}
-		// set the headers method script
-		if(current_headers.length == 0){
-			getCodeFrom_server(1, 'headers', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_import_headers').val(result);
-				}
-			});
-		}
-		// set the setData method script
-		if(current_setdata.length == 0){
-			getCodeFrom_server(1, 'setdata', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_import_setdata').val(result);
-				}
-			});
-		}
-		// set the save method script
-		if(current_save.length == 0){
-			getCodeFrom_server(1, 'save', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_import_save').val(result);
-				}
-			});
-		}
-		// set the view script
-		if(current_view.length == 0){
-			getCodeFrom_server(1, 'view', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_html_import_view').val(result);
-				}
-			});
-		}
-		// set the import ext script
-		if(current_ext.length == 0){
-			getCodeFrom_server(1, 'ext', 'type', 'getDynamicScripts').then(function(result) {
-				if(result){
-					jQuery('textarea#jform_php_import_ext').val(result);
-				}
-			});
-		}
 	}
 }
 

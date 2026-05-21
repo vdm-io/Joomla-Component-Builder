@@ -688,6 +688,11 @@ class HtmlView extends BaseHtmlView
 			// add Clear tmp button.
 			ToolbarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
 		}
+		if ($this->canDo->get('compiler.health_check'))
+		{
+			// add Health Check button.
+			ToolbarHelper::custom('compiler.healthCheck', 'health custom-button-healthcheck', '', 'COM_COMPONENTBUILDER_HEALTH_CHECK', false);
+		}
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('compiler');
 		if (StringHelper::check($this->help_url))

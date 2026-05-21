@@ -639,6 +639,7 @@ class Admin_viewModel extends AdminModel
 					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
+
 			// update the mysql_table_engine defaults
 			if (isset($item->mysql_table_engine) && is_numeric($item->mysql_table_engine))
 			{
@@ -1100,7 +1101,8 @@ class Admin_viewModel extends AdminModel
 			return false;
 		}
 
-		// linked tables to update
+
+		// linked tables
 		$_tables_array = [
 			'admin_fields' => 'admin_view',
 			'admin_fields_conditions' => 'admin_view',
@@ -1195,7 +1197,8 @@ class Admin_viewModel extends AdminModel
 			return false;
 		}
 
-		// linked tables to update
+
+		// linked tables
 		$_tables_array = [
 			'admin_fields' => 'admin_view',
 			'admin_fields_conditions' => 'admin_view',
@@ -1290,6 +1293,7 @@ class Admin_viewModel extends AdminModel
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
 
 		// if system name is empty create a system name from the name_single
 		if (empty($data['system_name']) || !UtilitiesStringHelper::check($data['system_name']))

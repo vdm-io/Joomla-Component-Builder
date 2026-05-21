@@ -160,9 +160,9 @@ final class Customtabs implements CustomtabsInterface
 						{
 							// add the tab
 							$tmp = PHP_EOL . $_tab . Indent::_(1)
-								. "<?php echo Html::_('uitab.addTab', '"
+								. "<?php echo Joomla__" . "_34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('uitab.addTab', '"
 								. $tab['view'] . "Tab', '" . $tab['code']
-								. "', JT" . "ext::_('" . $tab['lang']
+								. "', Joomla__" . "_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $tab['lang']
 								. "', true)); ?>";
 							$tmp .= PHP_EOL . $_tab . Indent::_(2)
 								. '<div class="row">';
@@ -175,7 +175,7 @@ final class Customtabs implements CustomtabsInterface
 							$tmp .= PHP_EOL . $_tab . Indent::_(3) . '</div>';
 							$tmp .= PHP_EOL . $_tab . Indent::_(2) . '</div>';
 							$tmp .= PHP_EOL . $_tab . Indent::_(1)
-								. "<?php echo Html::_('uitab.endTab'); ?>";
+								. "<?php echo Joomla__" . "_34690c75_1090_47eb_8c06_7228dc7eedd6___Power::_('uitab.endTab'); ?>";
 
 							// update html
 							$tab['html'] = $tmp;

@@ -106,6 +106,14 @@ class Data
 	protected array $retry = [];
 
 	/**
+	 * The target Joomla Version
+	 *
+	 * @var    int
+	 * @since  6.1.5
+	 **/
+	protected int $joomla_version;
+
+	/**
 	 * Constructor
 	 *
 	 * @param Config              $config         The compiler config object.
@@ -132,6 +140,8 @@ class Data
 		$this->filesFolders = $filesFolders;
 		$this->db = $db;
 		$this->superpower = $superpower;
+
+		$this->joomla_version = (int) $this->config->joomla_version;
 	}
 
 	/**
@@ -156,7 +166,7 @@ class Data
 		}
 
 		// Handle static / baseline libraries
-		if ($this->handleStaticLibraries($guid))
+		if ($this->joomla_version <= 5 && $this->handleStaticLibraries($guid))
 		{
 			$this->registry->set("builder.libraries.$guid", false);
 			return false;
@@ -230,8 +240,8 @@ class Data
 	}
 
 	/**
-	 * Apply built-in fallback behaviour for libraries that map to
-	 * compiler-level features (UIkit, FooTable, etc.).
+	 * Apply built-in fallback behaviour for core libraries that map to
+	 * compiler-level features like UIkit and FooTable.
 	 *
 	 * This method mutates the library object by reference.
 	 *
@@ -242,41 +252,42 @@ class Data
 	 */
 	protected function applyBuildInFallback(object $library): void
 	{
-		// Only libraries explicitly marked for built-in handling
-		if ((int) $library->how !== 4)
+		$how = (int) ($library->how ?? 0);
+		$id  = (int) ($library->id ?? 0);
+
+		$buildin = [
+			3 => ['uikit' => 3],
+			4 => ['uikit' => 1],
+			5 => ['footable_version' => 2, 'footable' => true],
+			6 => ['footable_version' => 3, 'footable' => true],
+		];
+
+		if (!isset($buildin[$id]))
 		{
 			return;
 		}
 
-		/**
-		 * Built-in fallback mappings.
-		 *
-		 * Library ID => config changes
-		 */
-		$buildin = [
-			3 => ['uikit' => 3],                         // UIkit v3
-			4 => ['uikit' => 1],                         // UIkit v2
-			5 => ['footable_version' => 2, 'footable' => true], // FooTable v2
-			6 => ['footable_version' => 3, 'footable' => true], // FooTable v3
-		];
-
-		// Apply built-in configuration if available
-		if (isset($buildin[$library->id])
-			&& ArrayHelper::check($buildin[$library->id]))
+		if ($this->joomla_version >= 6)
 		{
-			foreach ($buildin[$library->id] as $key => $value)
+			if ($how === 4)
 			{
-				$this->config->set($key, $value);
+				$library->how = 1;
 			}
 
-			// Built-in fallback replaces dynamic loading
-			$library->how = 0;
+			return;
 		}
-		else
+
+		if ($how !== 4)
 		{
-			// No built-in mapping found: force dynamic loading
-			$library->how = 1;
+			return;
 		}
+
+		foreach ($buildin[$id] as $key => $value)
+		{
+			$this->config->set($key, $value);
+		}
+
+		$library->how = 0;
 	}
 
 	/**

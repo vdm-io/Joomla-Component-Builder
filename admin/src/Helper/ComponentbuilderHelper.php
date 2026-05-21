@@ -1197,6 +1197,7 @@ abstract class ComponentbuilderHelper
 		}
 		return false;
 	}
+
 	/**
 	 * The array of dynamic content
 	 *
@@ -1438,8 +1439,6 @@ abstract class ComponentbuilderHelper
 		}
 		return $default;
 	}
-
-
 
 	/**
 	 * Tab/spacer bucket (to speed-up the build)

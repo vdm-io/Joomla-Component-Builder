@@ -437,7 +437,10 @@ class LibraryModel extends AdminModel
 		{
 			$form->setValue('guid', null, GuidHelper::get());
 		}
- 
+
+
+		// update the addconditions (sub form) layout
+		$form->setFieldAttribute('addconditions', 'layout', ComponentbuilderHelper::getSubformLayout('library', 'addconditions'));
 		return $form;
 	}
 

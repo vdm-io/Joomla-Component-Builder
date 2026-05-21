@@ -293,7 +293,7 @@
 					label="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_EDIT_LABEL"
 					default="0"
 					description="COM_COMPONENTBUILDER_ADMIN_FIELDS_ORDER_EDIT_DESCRIPTION"
-					class="fieldSmall"
+					class="text_area"
 					first="0"
 					last="100"
 					step="1"

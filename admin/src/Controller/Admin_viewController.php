@@ -629,7 +629,8 @@ class Admin_viewController extends FormController
 
 			$this->setRedirect(Route::_($return, false));
 		}
-		// linked tables to update
+
+		// linked tables
 		$_tables_array = [
 			'admin_fields' => 'admin_view',
 			'admin_fields_conditions' => 'admin_view',

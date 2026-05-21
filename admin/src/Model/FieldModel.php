@@ -835,6 +835,7 @@ class FieldModel extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+
 		// get the properties
 		$properties = $input->get('properties', null, 'ARRAY');
 		// get the extra properties

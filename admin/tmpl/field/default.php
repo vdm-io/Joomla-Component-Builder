@@ -30,19 +30,31 @@ $tmpl    = $this->input->get('tmpl');
 $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 ?>
 <script type="text/javascript">
-	// waiting spinner
-	var outerDiv = document.querySelector('body');
-	var loadingDiv = document.createElement('div');
-	loadingDiv.id = 'loading';
-	loadingDiv.style.cssText = "background: rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat; top: " + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + "px; left: " + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + "px; width: " + outerDiv.offsetWidth + "px; height: " + outerDiv.offsetHeight + "px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;";
-	outerDiv.appendChild(loadingDiv);
-	loadingDiv.style.display = 'block';
-	// when page is ready remove and show
-	window.addEventListener('load', function() {
-		var componentLoader = document.getElementById('componentbuilder_loader');
-		if (componentLoader) componentLoader.style.display = 'block';
-		loadingDiv.style.display = 'none';
-	});
+	(function() {
+		// create loading overlay
+		var loadingDiv = document.createElement('div');
+		loadingDiv.id = 'loading';
+		loadingDiv.style.position = 'fixed';
+		loadingDiv.style.top = '0';
+		loadingDiv.style.left = '0';
+		loadingDiv.style.right = '0';
+		loadingDiv.style.bottom = '0';
+		loadingDiv.style.width = '100%';
+		loadingDiv.style.height = '100%';
+		loadingDiv.style.background = "rgba(255,255,255,0.8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
+		loadingDiv.style.opacity = '0.8';
+		loadingDiv.style.zIndex = '9999';
+		loadingDiv.style.display = 'block';
+		loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+		loadingDiv.style.filter = "alpha(opacity=80)";
+		document.body.appendChild(loadingDiv);
+		// remove overlay when page fully loaded
+		window.addEventListener('load', function() {
+			var componentLoader = document.getElementById('componentbuilder_loader');
+			if (componentLoader) componentLoader.style.display = 'block';
+			loadingDiv.style.display = 'none';
+		});
+	})();
 </script>
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=field&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
@@ -283,30 +295,45 @@ jQuery('#adminForm').on('change', '#jform_add_javascript_views_footer',function 
 
 
 
-jQuery(function() {
-	setTimeout(
-		function() {
-			// make sure the code bocks are active
-			document.querySelectorAll("code").forEach(function(codeBlock) {
-				codeBlock.addEventListener("click", function() {
-					codeBlock.selText(); // Call the custom selText function
-					codeBlock.classList.add("selected"); // Add the "selected" class
-				});
+
+/**
+ * Initialize form listeners and code block click handlers.
+ *
+ * Fully replaces the original jQuery logic in pure JavaScript.
+ *
+ * @since 5.1.3
+ */
+document.addEventListener('DOMContentLoaded', function () {
+	setTimeout(function () {
+		document.querySelectorAll('code').forEach(function (codeBlock) {
+			codeBlock.addEventListener('click', function () {
+				codeBlock.selText();
+				codeBlock.classList.add('selected');
 			});
-		}, 2000);
-});
+		});
+	}, 2000);
 
-jQuery('#adminForm').on('change', '#jform_fieldtype',function (e) {
-	e.preventDefault();
-	// get type value
-	var fieldId = jQuery("#jform_fieldtype option:selected").val();
-	getFieldTypeProperties(fieldId, true);
-	// get the field type text
-	var fieldText = jQuery("#jform_fieldtype option:selected").text().toLowerCase();
-	// now check if database input is needed
-	dbChecker(fieldText);
-});
+	const adminForm = document.getElementById('adminForm');
+	if (adminForm) {
+		adminForm.addEventListener('change', function (e) {
+			if (e.target && e.target.id === 'jform_fieldtype') {
+				e.preventDefault();
 
+				// Get selected option
+				const select = document.getElementById('jform_fieldtype');
+				const selected = select.options[select.selectedIndex];
+				if (!selected) return;
+
+				const fieldId = selected.value;
+				const fieldText = selected.textContent.trim().toLowerCase();
+
+				// Run your existing functions (kept identical)
+				getFieldTypeProperties(fieldId, true);
+				dbChecker(fieldText);
+			}
+		});
+	}
+});
 
 /**
  * Select all text content within an HTMLElement.

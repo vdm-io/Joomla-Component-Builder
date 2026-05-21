@@ -128,7 +128,7 @@
 			type="subform"
 			name="version_update"
 			label="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_UPDATE_LABEL"
-			layout="repeatablejcb"
+			layout="joomla.form.field.subform.repeatable"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_COMPONENT_UPDATES_VERSION_UPDATE_DESCRIPTION"
 			default=""

@@ -30,19 +30,31 @@ $tmpl    = $this->input->get('tmpl');
 $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 ?>
 <script type="text/javascript">
-	// waiting spinner
-	var outerDiv = document.querySelector('body');
-	var loadingDiv = document.createElement('div');
-	loadingDiv.id = 'loading';
-	loadingDiv.style.cssText = "background: rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat; top: " + (outerDiv.getBoundingClientRect().top + window.pageYOffset) + "px; left: " + (outerDiv.getBoundingClientRect().left + window.pageXOffset) + "px; width: " + outerDiv.offsetWidth + "px; height: " + outerDiv.offsetHeight + "px; position: fixed; opacity: 0.80; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80); filter: alpha(opacity=80); display: none;";
-	outerDiv.appendChild(loadingDiv);
-	loadingDiv.style.display = 'block';
-	// when page is ready remove and show
-	window.addEventListener('load', function() {
-		var componentLoader = document.getElementById('componentbuilder_loader');
-		if (componentLoader) componentLoader.style.display = 'block';
-		loadingDiv.style.display = 'none';
-	});
+	(function() {
+		// create loading overlay
+		var loadingDiv = document.createElement('div');
+		loadingDiv.id = 'loading';
+		loadingDiv.style.position = 'fixed';
+		loadingDiv.style.top = '0';
+		loadingDiv.style.left = '0';
+		loadingDiv.style.right = '0';
+		loadingDiv.style.bottom = '0';
+		loadingDiv.style.width = '100%';
+		loadingDiv.style.height = '100%';
+		loadingDiv.style.background = "rgba(255,255,255,0.8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
+		loadingDiv.style.opacity = '0.8';
+		loadingDiv.style.zIndex = '9999';
+		loadingDiv.style.display = 'block';
+		loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+		loadingDiv.style.filter = "alpha(opacity=80)";
+		document.body.appendChild(loadingDiv);
+		// remove overlay when page fully loaded
+		window.addEventListener('load', function() {
+			var componentLoader = document.getElementById('componentbuilder_loader');
+			if (componentLoader) componentLoader.style.display = 'block';
+			loadingDiv.style.display = 'none';
+		});
+	})();
 </script>
 <div id="componentbuilder_loader" style="display: none;">
 <form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=admin_view&layout=' . $layout . $tmpl . '&id='. (int) $this->item->id . $this->referral); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
@@ -687,33 +699,40 @@ jQuery('#adminForm').on('change', '#jform_add_custom_button',function (e)
 
 
 
-<?php $numberAddtables = range(0, count( (array) $this->item->addtables) + 3, 1);?>
 
-// for the values already set
-jQuery(document).ready(function(){
-<?php foreach($numberAddtables as $fieldNr): ?>
-	jQuery('#adminForm').on('change', '#jform_addtables__addtables<?php echo $fieldNr ?>__table',function (e) {
-		e.preventDefault();
-		getTableColumns(<?php echo $fieldNr ?>, "_", "_");
-	});
-<?php endforeach; ?>
-	jQuery(document).on('subform-row-add', function(event, row){
-		var groupName = jQuery(row).data('group');
-		var fieldName = groupName.replace(/([0-9])/g, '');
-		var fieldNr = groupName.replace(/([A-z_])/g, '');
-		if ('addtables' === fieldName) {
-			jQuery('#adminForm').on('change', '#jform_addtables_addtables'+fieldNr+'_table',function (e) {
-				e.preventDefault();
-				getTableColumns(fieldNr, "", "");
-			});
+document.addEventListener('DOMContentLoaded', () => {
+	const adminForm = document.getElementById('adminForm');
+
+	if (!adminForm) {
+		return;
+	}
+
+	adminForm.addEventListener('change', (event) => {
+		const target = event.target;
+
+		if (!(target instanceof Element)) {
+			return;
+		}
+
+		const id = target.id || '';
+
+		// Existing preloaded fields:
+		// jform_addtables__addtables0__table
+		let match = id.match(/^jform_addtables__addtables(\d+)__table$/);
+
+		if (match) {
+			getTableColumns(match[1], '_', '_');
+			return;
+		}
+
+		// Dynamically added subform rows:
+		// jform_addtables_addtables3_table
+		match = id.match(/^jform_addtables_addtables(\d+)_table$/);
+
+		if (match) {
+			getTableColumns(match[1], '', '');
 		}
 	});
-});
-
-// #jform_add_custom_import listeners
-jQuery('#jform_add_custom_import').on('change',function() {
-	var valueSwitch = jQuery("#jform_add_custom_import input[type='radio']:checked").val();
-	getDynamicScripts(valueSwitch);
 });
 
 <?php

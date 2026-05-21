@@ -425,45 +425,6 @@ class Site_viewModel extends AdminModel
 					SessionHelper::set($this->vastDevMod . '__guid', $item->guid);
 				}
 			}
-
-			// update the fields
-			$objectUpdate = new \stdClass();
-			$objectUpdate->id = (int) $item->id;
-			// check what type of custom_button array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->custom_button) && isset($item->custom_button['name']))
-			{
-				$bucket = array();
-				foreach($item->custom_button as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['custom_button'.$nr][$option] = $value;
-					}
-				}
-				$item->custom_button = $bucket;
-				$objectUpdate->custom_button = json_encode($bucket);
-			}
-			// check what type of ajax_input array we have here (should be subform... but just incase)
-			// This could happen due to huge data sets
-			if (isset($item->ajax_input) && isset($item->ajax_input['value_name']))
-			{
-				$bucket = array();
-				foreach($item->ajax_input as $option => $values)
-				{
-					foreach($values as $nr => $value)
-					{
-						$bucket['ajax_input'.$nr][$option] = $value;
-					}
-				}
-				$item->ajax_input = $bucket;
-				$objectUpdate->ajax_input = json_encode($bucket);
-			}
-			// be sure to update the table if we found repeatable fields that are still not converted
-			if (count((array) $objectUpdate) > 1)
-			{
-				$this->_db->updateObject('#__componentbuilder_site_view', $objectUpdate, 'id');
-			}
 		}
 
 		return $item;
@@ -915,6 +876,7 @@ class Site_viewModel extends AdminModel
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}
+
 
 		// always reset the snippets
 		$data['snippet'] = 0;
