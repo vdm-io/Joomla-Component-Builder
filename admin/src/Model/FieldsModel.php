@@ -106,6 +106,7 @@ class FieldsModel extends ListModel
 		$this->app ??= Factory::getApplication();
 	}
 
+
 	/**
 	 * Get the filter form - Override the parent method
 	 *
@@ -133,25 +134,25 @@ class FieldsModel extends ListModel
 		array_push($this->filter_fields, 'extension');
 
 		// Create the "admin_view" filter
-		$attributes = array(
+		$attributes = [
 			'name' => 'admin_view',
 			'type' => 'list',
 			'onchange' => 'this.form.submit();',
-		);
-		$options = array(
+		];
+		$options = [
 			'' => '-  ' . Text::_('COM_COMPONENTBUILDER_NO_ADMIN_VIEWS_FOUND') . '  -'
-		);
+		];
 		// check if we have admin views (and limit to an extension if it is set)
 		if (($admin_views = JCBFilterHelper::names('admin_view', $this->state->get("filter.extension"))) !== null)
 		{
-			$options = array(
+			$options = [
 				'' => '-  ' . Text::_('COM_COMPONENTBUILDER_SELECT_ADMIN_VIEW') . '  -'
-			);
+			];
 			// make sure we do not lose the key values in normal merge
 			$options = $options + $admin_views;
 		}
 
-		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
+		$form->setField(JCBFormHelper::xml($attributes, $options), 'filter');
 		$form->setValue(
 			'admin_view',
 			'filter',
@@ -161,7 +162,6 @@ class FieldsModel extends ListModel
 
 		return $form;
 	}
-
 
 	/**
 	 * Method to auto-populate the model state.
@@ -430,6 +430,7 @@ class FieldsModel extends ListModel
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
 		$query->join('LEFT', $db->quoteName('#__categories', 'c') . ' ON (' . $db->quoteName('a.catid') . ' = ' . $db->quoteName('c.id') . ')');
+
 
 		// Filtering "extension"
 		$filter_extension = $this->state->get("filter.extension");

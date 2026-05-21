@@ -104,6 +104,7 @@ class Site_viewsModel extends ListModel
 		$this->app ??= Factory::getApplication();
 	}
 
+
 	/**
 	 * Get the filter form - Override the parent method
 	 *
@@ -356,6 +357,7 @@ class Site_viewsModel extends ListModel
 
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_site_view', 'a'));
+
 
 		// Filtering "joomla components"
 		$filter_joomla_component = $this->state->get("filter.joomla_component");

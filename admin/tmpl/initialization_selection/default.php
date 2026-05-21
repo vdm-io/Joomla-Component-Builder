@@ -42,7 +42,7 @@ defined('_JEXEC') or die;
 <form action="<?php echo Route::_('index.php?option=com_componentbuilder&view=initialization_selection' . $urlId); ?>" method="post" name="adminForm" id="adminForm" class="form-validate" enctype="multipart/form-data">
 
 <?php echo $this->loadTemplate('selectionheader'); ?>
-<?php echo $this->loadTemplate('selectionarea'); ?>
+<?php echo $this->loadTemplate('selectionareajfour'); ?>
 <input type="hidden" name="task" value="" />
 <?php echo Html::_('form.token'); ?>
 </form>

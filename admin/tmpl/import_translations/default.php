@@ -46,7 +46,7 @@ $this->app->getInput()->set('hidemainmenu', false);
 <div class="main-card">
 	<div class="row">
 		<div class="col-md-12">
-			<?php echo $this->loadTemplate('translationimporterarea'); ?>
+			<?php echo $this->loadTemplate('translationimporterareajfour'); ?>
 		</div>
 	</div>
 </div>

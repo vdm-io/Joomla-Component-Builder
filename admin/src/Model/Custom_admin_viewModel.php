@@ -561,6 +561,9 @@ class Custom_admin_viewModel extends AdminModel
 			}
 		}
 
+		// update the custom_button (sub form) layout
+		$form->setFieldAttribute('custom_button', 'layout', ComponentbuilderHelper::getSubformLayout('custom_admin_view', 'custom_button'));
+
 		// update the ajax_input (sub form) layout
 		$form->setFieldAttribute('ajax_input', 'layout', ComponentbuilderHelper::getSubformLayout('custom_admin_view', 'ajax_input'));
 

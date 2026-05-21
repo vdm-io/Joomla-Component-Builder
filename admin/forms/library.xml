@@ -223,7 +223,7 @@
 			type="subform"
 			name="addconditions"
 			label="COM_COMPONENTBUILDER_LIBRARY_ADDCONDITIONS_LABEL"
-			layout="joomla.form.field.subform.repeatable"
+			layout="repeatablejcb"
 			multiple="true"
 			description="COM_COMPONENTBUILDER_LIBRARY_ADDCONDITIONS_DESCRIPTION"
 			default=""

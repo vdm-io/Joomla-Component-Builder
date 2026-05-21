@@ -89,12 +89,12 @@ trait IdentityTrait
 		{
 			$userId = (int) Helper::getParams('com_componentbuilder')->get('cli_user', 0);
 
-			//if ($userId <= 0) // allow quest mode for now
-			//{
-			//	throw new \RuntimeException(
-			//		'User resolution failed: No CLI user configured.'
-			//	);
-			//}
+			// if ($userId <= 0) // allow quest mode for now
+			// {
+			// 	throw new \RuntimeException(
+			// 		'User resolution failed: No CLI user configured.'
+			// 	);
+			// }
 
 			$container = Factory::getContainer();
 

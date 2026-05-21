@@ -73,6 +73,8 @@
 					<!-- Option Set. -->
 					<option value="default">
 						COM_COMPONENTBUILDER_CONFIG_DEFAULT</option>
+					<option value="admin_view.custom_button">
+						COM_COMPONENTBUILDER_CONFIG_ADMIN_VIEWS_CUSTOM_BUTTON</option>
 					<option value="admin_view.ajax_input">
 						COM_COMPONENTBUILDER_CONFIG_ADMIN_VIEWS_AJAX_INPUT</option>
 					<option value="admin_custom_tabs.tabs">
@@ -95,6 +97,8 @@
 						COM_COMPONENTBUILDER_CONFIG_COMPONENT_CUSTOM_ADMIN_MENUS_ADDCUSTOMMENUS</option>
 					<option value="component_site_views.addsite_views">
 						COM_COMPONENTBUILDER_CONFIG_COMPONENT_SITE_VIEWS_ADDSITE_VIEWS</option>
+					<option value="custom_admin_view.custom_button">
+						COM_COMPONENTBUILDER_CONFIG_CUSTOM_ADMIN_VIEWS_CUSTOM_BUTTON</option>
 					<option value="custom_admin_view.ajax_input">
 						COM_COMPONENTBUILDER_CONFIG_CUSTOM_ADMIN_VIEWS_AJAX_INPUT</option>
 					<option value="dynamic_get.join_db_table">
@@ -107,6 +111,8 @@
 						COM_COMPONENTBUILDER_CONFIG_JOOMLA_MODULE_UPDATES_VERSION_UPDATE</option>
 					<option value="joomla_plugin_updates.version_update">
 						COM_COMPONENTBUILDER_CONFIG_JOOMLA_PLUGIN_UPDATES_VERSION_UPDATE</option>
+					<option value="site_view.custom_button">
+						COM_COMPONENTBUILDER_CONFIG_SITE_VIEWS_CUSTOM_BUTTON</option>
 					<option value="site_view.ajax_input">
 						COM_COMPONENTBUILDER_CONFIG_SITE_VIEWS_AJAX_INPUT</option>
 				</field>
@@ -127,6 +133,8 @@
 						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_JOOMLA</option>
 					<option value="repeatablejcbjfive">
 						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_UIKIT</option>
+					<option value="repeatablejcbjsix">
+						COM_COMPONENTBUILDER_CONFIG_REPEATABLE_BOOTSTRAP</option>
 				</field>
 			</form>
 		</field>

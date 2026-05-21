@@ -140,7 +140,7 @@ if (!empty($headers))
 }
 
 ?>
-<?php // echo LayoutHelper::render('filedisplay', $displayData); ?>
+<?php // echo LayoutHelper::render('filedisplayjfour', $displayData); ?>
 <?php if ($map === null): ?>
 	<?php echo Text::_('COM_COMPONENTBUILDER_SPREADSHEET_SEEMS_TO_HAVE_NO_HEADERS_SET_THERE_WAS_AN_ERROR'); ?>
 <?php else: ?>

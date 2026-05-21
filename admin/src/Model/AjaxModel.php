@@ -45,6 +45,7 @@ use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Componentbuilder\Factory as ComponentbuilderFactory;
 use VDM\Joomla\Componentbuilder\File\Factory as FileFactory;
 use VDM\Joomla\File\TypeDefinition;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Form\FormHelper as FormFormHelper;
 
 // No direct access to this file
@@ -91,6 +92,7 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in joomla_component
+
 	/**
 	 * Retrieves the component details as an HTML display and metadata.
 	 *
@@ -126,7 +128,7 @@ class AjaxModel extends ListModel
 
 		try {
 			// Need to find the asset id by the name of the component.
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true)
 				->select($db->quoteName([
 					'id','companyname','component_version','copyright','debug_linenr',
@@ -526,6 +528,7 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in admin_view
+
 	/**
 	 * Defines the maximum number of rows allowed for specific item types.
 	 *
@@ -633,6 +636,7 @@ class AjaxModel extends ListModel
 		'history' => 'setYesNo',
 		'joomla_fields' => 'setYesNo',
 		'port' => 'setYesNo',
+		'add_api' => 'setAddApiType',
 		'edit_create_site_view' => 'setYesNo',
 		'icomoon' => 'setIcoMoon',
 		'customadminview' => 'setItemNames',
@@ -641,16 +645,6 @@ class AjaxModel extends ListModel
 		'siteview' => 'setItemNames',
 		'before' => 'setItemNames',
 	];
-
-	/**
-	 * Reference variable for internal operations.
-	 *
-	 * This string is used as a reference in various methods and mappings.
-	 *
-	 * @var    string
-	 * @since  3.0.0
-	 */
-	protected string $ref = '';
 
 	/**
 	 * Maps specific field types to their respective field handlers.
@@ -1624,10 +1618,11 @@ class AjaxModel extends ListModel
 	 */
 	protected function setYesNo(string $header, $value): string
 	{
-		if (1 == $value)
+		if (1 === (int) $value)
 		{
 			return '<span style="color: #46A546;" class="icon-ok"></span>';
 		}
+
 		return '<span style="color: #e6e6e6;" class="icon-delete"></span>';
 	}
 
@@ -1784,27 +1779,30 @@ class AjaxModel extends ListModel
 			return null;
 		}
 
+		// Get a db connection.
+		$db = $this->getDatabase();
+
 		// Create a new query object.
-		$query = $this->_db->getQuery(true);
-		$query->select($this->_db->quoteName(['a.xml', 'b.name']));
-		$query->from($this->_db->quoteName('#__componentbuilder_field', 'a'));
-		$query->join('LEFT', $this->_db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $this->_db->quoteName('a.fieldtype') . ' = ' . $this->_db->quoteName('b.id') . ')');
-		$query->where($this->_db->quoteName('a.published') . ' = 1');
-		$query->where($this->_db->quoteName('a.' . $key) . ' = ' . $this->_db->quote($target));
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(['a.xml', 'b.name']));
+		$query->from($db->quoteName('#__componentbuilder_field', 'a'));
+		$query->join('LEFT', $db->quoteName('#__componentbuilder_fieldtype', 'b') . ' ON (' . $db->quoteName('a.fieldtype') . ' = ' . $db->quoteName('b.id') . ')');
+		$query->where($db->quoteName('a.published') . ' = 1');
+		$query->where($db->quoteName('a.' . $key) . ' = ' . $db->quote($target));
 
 		// Reset the query using our newly populated query object.
-		$this->_db->setQuery($query);
-		$this->_db->execute();
-		if ($this->_db->getNumRows())
+		$db->setQuery($query);
+		$db->execute();
+		if ($db->getNumRows())
 		{
-			$result = $this->_db->loadObject();
+			$result = $db->loadObject();
 			$result->name = strtolower($result->name);
 			if (ComponentbuilderHelper::fieldCheck($result->name,'list'))
 			{
 				// load the values form params
 				$xml = json_decode($result->xml);
 
-				$xmlOptions = GetHelper::between($xml,'option="','"');
+				$xmlOptions = GetHelper::between($xml, 'option="', '"');
 
 				$optionSet = '';
 				if (strpos($xmlOptions,',') !== false)
@@ -1847,7 +1845,7 @@ class AjaxModel extends ListModel
 			{
 				return "keywords=\"\"\nlength=\"\"";
 			}
-			elseif (ComponentbuilderHelper::fieldCheck($result->name,'dynamic'))
+			elseif (ComponentbuilderHelper::fieldCheck($result->name, 'dynamic'))
 			{
 				return 'dynamic_list';
 			}
@@ -1876,18 +1874,24 @@ class AjaxModel extends ListModel
 	 */
 	public function getTableColumns(string $tableName): ?string
 	{
+		// Get a db connection.
+		$db = $this->getDatabase();
+
         	// get the columns
-		$columns = $this->_db->getTableColumns("#__".$tableName);
+		$columns = $db->getTableColumns("#__" . $tableName);
 		if (UtilitiesArrayHelper::check($columns))
 		{
         	   	// build the return string
-			$tableColumns = array();
+			$tableColumns = [];
+
 			foreach ($columns as $column => $type)
 			{
 				$tableColumns[] = $column . ' => ' . $column;
 			}
+
 			return implode("\n",$tableColumns);
 		}
+
 		return null;
 	}
 
@@ -1952,283 +1956,758 @@ class AjaxModel extends ListModel
 	}
 
 	/**
-	 * Get Linked to Items
-	 * 
-	 * @param   string         $view    View that is being searched for
-	 * @param   int            $id      ID
-	 * @param   string|null    $guid    GUID
+	 * Get linked to items.
 	 *
-	 * @return  array|null   Found items
+	 * @param   string       $view  View that is being searched for.
+	 * @param   int          $id    ID.
+	 * @param   string|null  $guid  GUID.
+	 *
+	 * @return  array|null  Found items.
 	 * @since   3.0.0
 	 */
 	protected function getLinkedTo(string $view, int $id, ?string $guid): ?array
 	{
-		// reset bucket
-		$linked = [];
+		if (
+			!isset($this->linkedKeys[$view])
+			|| !UtilitiesArrayHelper::check($this->linkedKeys[$view])
+		)
+		{
+			return null;
+		}
 
-		// start search
+		$linked = [];
+		$db = $this->getDatabase();
+
 		foreach ($this->linkedKeys[$view] as $search)
 		{
-			// Create a new query object.
-			$query = $this->_db->getQuery(true);
+			$items = $this->getLinkedSearchItems($db, $search);
 
-			// get all history values
-			$selection = array_keys($search['fields']);
-			$selection[] = 'id';
-			$query->select($selection);
-			$query->from('#__componentbuilder_' . $search['table']);
-			$this->_db->setQuery($query);
-			$this->_db->execute();
-			if ($this->_db->getNumRows())
+			if ($items === [])
 			{
-				// load all items
-				$items = $this->_db->loadObjectList();
+				continue;
+			}
 
-				// search the items
-				foreach ($items as $item)
+			foreach ($items as $item)
+			{
+				$match = $this->findLinkedItemMatch($item, $search, $id, $guid);
+
+				if ($match['found'])
 				{
-					$found = false;
-					$type_name = null;
-					foreach ($search['fields'] as $key => $target)
-					{
-						if ('NAME' === $target)
-						{
-							$linked_name = $item->{$key};
-							$linked_nameTable = $key;
-							continue;
-						}
-						elseif ('TYPE' === $target)
-						{
-							$type_name = $item->{$key};
-							$type_nameTable = $key;
-							continue;
-						}
-						elseif (!$found)
-						{
-							if ('INT' === $target)
-							{
-								// check if ID match
-								if ($item->{$key} == $id)
-								{
-									$found = true;
-								}
-							}
-							elseif ('GUID' === $target)
-							{
-								// check if GUID match
-								if ($this->linkedGuid($guid, $item->{$key}))
-								{
-									$found = true;
-								}
-							}
-							else
-							{
-								// check if we have a json
-								if (JsonHelper::check($item->{$key}))
-								{
-									$item->{$key} = json_decode($item->{$key}, true);
-								}
-								// if array
-								if (UtilitiesArrayHelper::check($item->{$key}))
-								{
-									if ('ARRAY' === $target)
-									{
-										// check if ID match
-										foreach ($item->{$key} as $_id)
-										{
-											if ($_id == $id || $this->linkedGuid($guid, $_id))
-											{
-												$found = true;
-											}
-										}
-									}
-									else
-									{
-										// check if this is a sub sub form target
-										if (strpos($target, '.') !== false)
-										{
-											$_target = (array) explode('.', $target);
-											// check that we have an array and get the size
-											if (($_size = UtilitiesArrayHelper::check($_target)) !== false)
-											{
-												foreach ($item->{$key} as $row)
-												{
-													if ($_size == 2)
-													{
-														if (isset($row[$_target[0]]) && isset($row[$_target[0]][$_target[1]]) && ($row[$_target[0]][$_target[1]] == $id || $this->linkedGuid($guid, $row[$_target[0]][$_target[1]])))
-														{
-															$found = true;
-														}
-													}
-													elseif ($_size == 3 && isset($row[$_target[0]]) && UtilitiesArrayHelper::check($row[$_target[0]]))
-													{
-														foreach ($row[$_target[0]] as $_row)
-														{
-															if (!$found && isset($_row[$_target[2]]) && ($_row[$_target[2]] == $id || $this->linkedGuid($guid, $_row[$_target[2]]))) 
-															{
-																$found = true;
-															}
-														}
-													}
-												}
-											}
-										}
-										elseif (strpos($target, ':') !== false)
-										{
-											$_target = (array) explode(':', $target);
-											// check that we have an array and get the size
-											if (($_size = UtilitiesArrayHelper::check($_target)) == 2)
-											{
-												foreach ($item->{$key} as $field_name => $row)
-												{
-													if (!$found && $field_name === $_target[0])
-													{
-														foreach ($row as $_key => $_ids)
-														{
-															if (!$found && strpos($_key, $_target[1]) !== false && (in_array($id, $_ids) || $this->linkedGuid($guid, $_ids)))
-															{
-																$found = true;
-															}
-														}
-													}
-												}
-											}
-											// check that we have an array and get the size
-											if (($_size = UtilitiesArrayHelper::check($_target)) == 3)
-											{
-												foreach ($item->{$key} as $field_name => $row)
-												{
-													if (!$found && $field_name === $_target[0])
-													{
-														foreach ($row as $_key => $_items)
-														{
-															if (!$found && strpos($_key, $_target[1]) !== false && is_array($_items) && count($_items) > 0)
-															{
-																foreach ($_items as $_item)
-																{
-																	if (!$found && isset($_item[$_target[2]]) && ($id == $_item[$_target[2]] || $this->linkedGuid($guid, $_item[$_target[2]])))
-																	{
-																		$found = true;
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-										else
-										{
-											foreach ($item->{$key} as $row)
-											{
-												if (!$found && isset($row[$target]) && ($row[$target] == $id || $this->linkedGuid($guid, $row[$target])))
-												{
-													$found = true;
-												}
-											}
-										}
-									}
-								}
-								// if string (fields)
-								if (!$found &&  'xml' === $key && StringHelper::check($item->{$key})
-									&& strpos($item->{$key}, $target.'="') !== false)
-								{
-									// now get the fields between
-									$_fields = GetHelper::between($item->{$key},  $target.'="', '"');
-									// check the result
-									if (StringHelper::check($_fields))
-									{
-										// get the ids of all the fields linked here
-										$_fields = array_map('trim', (array) explode(',', $_fields));
-										// check the result
-										if (UtilitiesArrayHelper::check($_fields))
-										{
-											foreach ($_fields as $_field)
-											{
-												if ($_field == $id || $this->linkedGuid($guid, $_field))
-												{
-													$found = true;
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					// check if found
-					if ($found)
-					{
-						// build the name
-						$edit = true;
-						if ((is_numeric($linked_name) || GuidHelper::valid($linked_name)) && isset($search['linked_name']))
-						{
-							$key_field = GuidHelper::valid($linked_name) ? 'guid':'id';
-							if (!$linked_name =  GetHelper::var($linked_nameTable, $linked_name, $key_field, $search['linked_name']))
-							{
-								$linked_name = Text::_('COM_COMPONENTBUILDER_NO_FOUND');
-								$edit = false;
-							}
-						}
-
-						// build the local type
-						if ((is_numeric($type_name) || GuidHelper::valid($type_name)) && isset($search['type_name']))
-						{
-							$key_field = GuidHelper::valid($type_name) ? 'guid':'id';
-							if (!$type_name =  GetHelper::var($type_nameTable, $type_name, $key_field, $search['type_name']))
-							{
-								$type_name = '';
-							}
-							else
-							{
-								$type_name = ' (' . $type_name . ') ';
-							}
-						}
-						elseif (StringHelper::check($type_name) || is_numeric($type_name))
-						{
-							$type_name = ' (' . $type_name . ') ';
-						}
-
-						// set edit link
-						$link = ($edit) ? ComponentbuilderHelper::getEditButton($item->id, $search['table'], $search['tables'], $this->ref) : '';
-						// build the linked
-						$linked[] = Text::_($search['linked']) . $type_name . ' - ' . $linked_name . ' ' . $link;
-					}
+					$linked[] = $this->buildLinkedItemDisplay($item, $search, $match);
 				}
 			}
 		}
-		// check if we found any
+
 		if (UtilitiesArrayHelper::check($linked))
 		{
 			return $linked;
 		}
+
 		return null;
 	}
 
 	/**
-	 * Check if we have a GUID match
-	 * 
-	 * @param   string|null      $guid       The active power guid
-	 * @param   string|array     $setGuid    The linked power guid
+	 * Load candidate items for a linked search definition.
 	 *
-	 * @return  bool true if match is found
-	 * @since  3.0.0
+	 * @param   object  $db      The database object.
+	 * @param   array   $search  The linked search configuration.
+	 *
+	 * @return  array
+	 * @since   6.1.6
 	 */
-	protected function linkedGuid(?string $guid, $setGuid): bool
+	protected function getLinkedSearchItems($db, array $search): array
 	{
-		// check if GUID is valid
-		if ($guid !== null && GuidHelper::valid($guid))
+		$query = $db->getQuery(true);
+
+		$selection = array_keys($search['fields']);
+		$selection[] = 'id';
+
+		$query->select($selection);
+		$query->from('#__componentbuilder_' . $search['table']);
+
+		$db->setQuery($query);
+
+		$items = $db->loadObjectList();
+
+		if (!UtilitiesArrayHelper::check($items))
 		{
-			if (is_string($setGuid) && GuidHelper::valid($setGuid) && $guid === $setGuid)
+			return [];
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Find a match for the current linked item.
+	 *
+	 * @param   object       $item    The database row item.
+	 * @param   array        $search  The linked search configuration.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  array  Match result with keys: found, linked_name, linked_name_table, type_name, type_name_table.
+	 * @since   6.1.6
+	 */
+	protected function findLinkedItemMatch(object $item, array $search, int $id, ?string $guid): array
+	{
+		$match = [
+			'found' => false,
+			'linked_name' => null,
+			'linked_name_table' => null,
+			'type_name' => null,
+			'type_name_table' => null,
+		];
+
+		foreach ($search['fields'] as $key => $target)
+		{
+			if ('NAME' === $target)
 			{
-				return true;
+				$match['linked_name'] = property_exists($item, $key) ? $item->{$key} : null;
+				$match['linked_name_table'] = $key;
+				continue;
 			}
-			elseif (is_array($setGuid) && in_array($guid, $setGuid))
+
+			if ('TYPE' === $target)
+			{
+				$match['type_name'] = property_exists($item, $key) ? $item->{$key} : null;
+				$match['type_name_table'] = $key;
+				continue;
+			}
+
+			if ($match['found'])
+			{
+				continue;
+			}
+
+			$value = property_exists($item, $key) ? $item->{$key} : null;
+
+			if ($value !== null && $this->fieldContainsLinkedReference($key, $target, $value, $id, $guid))
+			{
+				$match['found'] = true;
+			}
+		}
+
+		return $match;
+	}
+
+	/**
+	 * Determine whether a field contains the linked reference.
+	 *
+	 * @param   string       $key     The field name.
+	 * @param   string       $target  The field target definition.
+	 * @param   mixed        $value   The field value.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function fieldContainsLinkedReference(
+		string $key,
+		string $target,
+		$value,
+		int $id,
+		?string $guid
+	): bool
+	{
+		if ('INT' === $target)
+		{
+			return ($value == $id);
+		}
+
+		if ('GUID' === $target)
+		{
+			return $this->linkedGuid($guid, $value);
+		}
+
+		// Attempt JSON decode for complex field types.
+		$decodedValue = $this->decodeLinkedFieldValue($value);
+
+		// Check array-based structures first.
+		if (UtilitiesArrayHelper::check($decodedValue))
+		{
+			return $this->arrayFieldContainsLinkedReference($decodedValue, $target, $id, $guid);
+		}
+
+		// Fall through to XML check using the raw value (not decoded),
+		// since only non-array string values can be valid XML fields.
+		if ('xml' === $key)
+		{
+			return $this->xmlFieldContainsLinkedReference($value, $target, $id, $guid);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Decode a linked field value from JSON when possible.
+	 *
+	 * @param   mixed  $value  The raw field value.
+	 *
+	 * @return  mixed  The decoded value, or the original value if decoding fails or is not applicable.
+	 * @since   6.1.6
+	 */
+	protected function decodeLinkedFieldValue($value)
+	{
+		if (JsonHelper::check($value))
+		{
+			$decoded = json_decode($value, true);
+
+			if (json_last_error() === JSON_ERROR_NONE)
+			{
+				return $decoded;
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Determine whether an array-based field contains the linked reference.
+	 *
+	 * @param   array        $value   The decoded array value.
+	 * @param   string       $target  The field target definition.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function arrayFieldContainsLinkedReference(array $value, string $target, int $id, ?string $guid): bool
+	{
+		if ('ARRAY' === $target)
+		{
+			return $this->simpleArrayContainsLinkedReference($value, $id, $guid);
+		}
+
+		if (strpos($target, '.') !== false)
+		{
+			return $this->dotTargetContainsLinkedReference($value, $target, $id, $guid);
+		}
+
+		if (strpos($target, ':') !== false)
+		{
+			return $this->colonTargetContainsLinkedReference($value, $target, $id, $guid);
+		}
+
+		return $this->rowFieldContainsLinkedReference($value, $target, $id, $guid);
+	}
+
+	/**
+	 * Check a simple array for a linked reference.
+	 *
+	 * @param   array        $values  The array values.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function simpleArrayContainsLinkedReference(array $values, int $id, ?string $guid): bool
+	{
+		foreach ($values as $_id)
+		{
+			if ($_id == $id || $this->linkedGuid($guid, $_id))
 			{
 				return true;
 			}
 		}
+
 		return false;
+	}
+
+	/**
+	 * Check a dot-notation target for a linked reference.
+	 *
+	 * Supports two-level (e.g. "subfield.key") and three-level (e.g. "subfield.ignored.key")
+	 * dot-separated targets within subform row structures.
+	 *
+	 * @param   array        $value   The array value.
+	 * @param   string       $target  The dot notation target.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function dotTargetContainsLinkedReference(array $value, string $target, int $id, ?string $guid): bool
+	{
+		$_target = explode('.', $target);
+		$_size = UtilitiesArrayHelper::check($_target);
+
+		if ($_size === false)
+		{
+			return false;
+		}
+
+		foreach ($value as $row)
+		{
+			if (!is_array($row))
+			{
+				continue;
+			}
+
+			if ($_size == 2 && $this->dotTwoLevelMatch($row, $_target, $id, $guid))
+			{
+				return true;
+			}
+
+			if ($_size == 3 && $this->dotThreeLevelMatch($row, $_target, $id, $guid))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check a two-level dot target match within a single row.
+	 *
+	 * @param   array        $row      The row data.
+	 * @param   array        $_target  The exploded target parts.
+	 * @param   int          $id       The target ID.
+	 * @param   string|null  $guid     The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function dotTwoLevelMatch(array $row, array $_target, int $id, ?string $guid): bool
+	{
+		return (
+			isset($row[$_target[0]][$_target[1]])
+			&& (
+				$row[$_target[0]][$_target[1]] == $id
+				|| $this->linkedGuid($guid, $row[$_target[0]][$_target[1]])
+			)
+		);
+	}
+
+	/**
+	 * Check a three-level dot target match within a single row.
+	 *
+	 * @param   array        $row      The row data.
+	 * @param   array        $_target  The exploded target parts.
+	 * @param   int          $id       The target ID.
+	 * @param   string|null  $guid     The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function dotThreeLevelMatch(array $row, array $_target, int $id, ?string $guid): bool
+	{
+		if (
+			!isset($row[$_target[0]])
+			|| !UtilitiesArrayHelper::check($row[$_target[0]])
+		)
+		{
+			return false;
+		}
+
+		foreach ($row[$_target[0]] as $_row)
+		{
+			if (
+				is_array($_row)
+				&& isset($_row[$_target[2]])
+				&& (
+					$_row[$_target[2]] == $id
+					|| $this->linkedGuid($guid, $_row[$_target[2]])
+				)
+			)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check a colon-notation target for a linked reference.
+	 *
+	 * @param   array        $value   The array value.
+	 * @param   string       $target  The colon notation target.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function colonTargetContainsLinkedReference(array $value, string $target, int $id, ?string $guid): bool
+	{
+		$_target = explode(':', $target);
+		$_size = UtilitiesArrayHelper::check($_target);
+
+		if ($_size == 2)
+		{
+			return $this->colonTwoPartMatch($value, $_target, $id, $guid);
+		}
+
+		if ($_size == 3)
+		{
+			return $this->colonThreePartMatch($value, $_target, $id, $guid);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check a two-part colon target for a linked reference.
+	 *
+	 * @param   array        $value    The array value.
+	 * @param   array        $_target  The exploded target parts.
+	 * @param   int          $id       The target ID.
+	 * @param   string|null  $guid     The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function colonTwoPartMatch(array $value, array $_target, int $id, ?string $guid): bool
+	{
+		foreach ($value as $field_name => $row)
+		{
+			if ($field_name !== $_target[0] || !is_array($row))
+			{
+				continue;
+			}
+
+			foreach ($row as $_key => $_ids)
+			{
+				if (
+					strpos($_key, $_target[1]) !== false
+					&& is_array($_ids)
+					&& (
+						in_array($id, $_ids)
+						|| $this->linkedGuid($guid, $_ids)
+					)
+				)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check a three-part colon target for a linked reference.
+	 *
+	 * @param   array        $value    The array value.
+	 * @param   array        $_target  The exploded target parts.
+	 * @param   int          $id       The target ID.
+	 * @param   string|null  $guid     The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function colonThreePartMatch(array $value, array $_target, int $id, ?string $guid): bool
+	{
+		foreach ($value as $field_name => $row)
+		{
+			if ($field_name !== $_target[0] || !is_array($row))
+			{
+				continue;
+			}
+
+			foreach ($row as $_key => $_items)
+			{
+				if (
+					strpos($_key, $_target[1]) === false
+					|| !is_array($_items)
+					|| count($_items) === 0
+				)
+				{
+					continue;
+				}
+
+				foreach ($_items as $_item)
+				{
+					if (
+						is_array($_item)
+						&& isset($_item[$_target[2]])
+						&& (
+							$id == $_item[$_target[2]]
+							|| $this->linkedGuid($guid, $_item[$_target[2]])
+						)
+					)
+					{
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check row arrays for a linked reference using a direct field name.
+	 *
+	 * @param   array        $value   The array value.
+	 * @param   string       $target  The target field name.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function rowFieldContainsLinkedReference(array $value, string $target, int $id, ?string $guid): bool
+	{
+		foreach ($value as $row)
+		{
+			if (
+				is_array($row)
+				&& isset($row[$target])
+				&& (
+					$row[$target] == $id
+					|| $this->linkedGuid($guid, $row[$target])
+				)
+			)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check whether an XML field contains the linked reference.
+	 *
+	 * @param   mixed        $value   The raw field value (must be a string for XML parsing).
+	 * @param   string       $target  The target XML attribute.
+	 * @param   int          $id      The target ID.
+	 * @param   string|null  $guid    The target GUID.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function xmlFieldContainsLinkedReference($value, string $target, int $id, ?string $guid): bool
+	{
+		if (
+			!StringHelper::check($value)
+			|| strpos($value, $target . '="') === false
+		)
+		{
+			return false;
+		}
+
+		$_fields = GetHelper::between($value, $target . '="', '"');
+
+		if (!StringHelper::check($_fields))
+		{
+			return false;
+		}
+
+		$_fields = array_map('trim', (array) explode(',', $_fields));
+
+		if (!UtilitiesArrayHelper::check($_fields))
+		{
+			return false;
+		}
+
+		foreach ($_fields as $_field)
+		{
+			if ($_field == $id || $this->linkedGuid($guid, $_field))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Build the display value for a found linked item.
+	 *
+	 * @param   object  $item    The database row item.
+	 * @param   array   $search  The linked search configuration.
+	 * @param   array   $match   The match details.
+	 *
+	 * @return  string
+	 * @since   6.1.6
+	 */
+	protected function buildLinkedItemDisplay(object $item, array $search, array $match): string
+	{
+		$nameResult = $this->resolveLinkedName($match, $search);
+		$typeName = $this->resolveTypeName($match, $search);
+		$link = $this->buildLinkedEditButton($item, $search, $nameResult['edit']);
+
+		return Text::_($search['linked']) . $typeName . ' - ' . $nameResult['name'] . ' ' . $link;
+	}
+
+	/**
+	 * Resolve the linked item name.
+	 *
+	 * @param   array  $match   The match details.
+	 * @param   array  $search  The linked search configuration.
+	 *
+	 * @return  array  With keys 'name' (string) and 'edit' (bool).
+	 * @since   6.1.6
+	 */
+	protected function resolveLinkedName(array $match, array $search): array
+	{
+		$linkedName = $match['linked_name'];
+		$linkedNameTable = $match['linked_name_table'];
+		$edit = true;
+
+		if (
+			(is_numeric($linkedName) || GuidHelper::valid($linkedName))
+			&& isset($search['linked_name'])
+		)
+		{
+			$key_field = GuidHelper::valid($linkedName) ? 'guid' : 'id';
+
+			$resolved = GetHelper::var(
+				$linkedNameTable,
+				$linkedName,
+				$key_field,
+				$search['linked_name']
+			);
+
+			if (!$resolved)
+			{
+				return ['name' => Text::_('COM_COMPONENTBUILDER_NO_FOUND'), 'edit' => false];
+			}
+
+			$linkedName = $resolved;
+		}
+
+		return ['name' => (string) $linkedName, 'edit' => $edit];
+	}
+
+	/**
+	 * Resolve the linked item type display.
+	 *
+	 * @param   array  $match   The match details.
+	 * @param   array  $search  The linked search configuration.
+	 *
+	 * @return  string  The formatted type string (empty if none).
+	 * @since   6.1.6
+	 */
+	protected function resolveTypeName(array $match, array $search): string
+	{
+		$typeName = $match['type_name'];
+		$typeNameTable = $match['type_name_table'];
+
+		if (
+			(is_numeric($typeName) || GuidHelper::valid($typeName))
+			&& isset($search['type_name'])
+		)
+		{
+			$key_field = GuidHelper::valid($typeName) ? 'guid' : 'id';
+
+			$resolved = GetHelper::var(
+				$typeNameTable,
+				$typeName,
+				$key_field,
+				$search['type_name']
+			);
+
+			if (!$resolved)
+			{
+				return '';
+			}
+
+			return ' (' . $resolved . ') ';
+		}
+
+		if (StringHelper::check($typeName) || is_numeric($typeName))
+		{
+			return ' (' . $typeName . ') ';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Build the edit button for a linked item.
+	 *
+	 * @param   object  $item    The database row item.
+	 * @param   array   $search  The linked search configuration.
+	 * @param   bool    $edit    Whether edit access is enabled.
+	 *
+	 * @return  string
+	 * @since   6.1.6
+	 */
+	protected function buildLinkedEditButton(object $item, array $search, bool $edit): string
+	{
+		if (!$edit)
+		{
+			return '';
+		}
+
+		return ComponentbuilderHelper::getEditButton(
+			$item->id,
+			$search['table'],
+			$search['tables'],
+			$this->ref
+		);
+	}
+
+	/**
+	 * Check if we have a GUID match.
+	 *
+	 * @param   string|null   $guid     The active power GUID.
+	 * @param   string|array  $setGuid  The linked power GUID.
+	 *
+	 * @return  bool  True if match is found.
+	 * @since   3.0.0
+	 */
+	protected function linkedGuid(?string $guid, $setGuid): bool
+	{
+		if ($guid === null || !GuidHelper::valid($guid))
+		{
+			return false;
+		}
+
+		if (
+			is_string($setGuid)
+			&& GuidHelper::valid($setGuid)
+			&& $guid === $setGuid
+		)
+		{
+			return true;
+		}
+
+		if (is_array($setGuid) && in_array($guid, $setGuid))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Converts Add Api Type values into human-readable strings.
+	 *
+	 * This function translates numeric values into add API types.
+	 *
+	 * @param string $header The header name (not used in this function but kept for consistency).
+	 * @param mixed  $value  The numeric value representing the Api Type.
+	 *
+	 * @return string The human-readable label for the add API Type. Returns "not set" if the value is invalid.
+	 * @since  6.1.6
+	 */
+	protected function setAddApiType($header, $value)
+	{
+		switch ($value)
+		{
+			case 0:
+				return Text::_('COM_COMPONENTBUILDER_NONE');
+			break;
+			case 1:
+				return Text::_('COM_COMPONENTBUILDER_LIST');
+			break;
+			case 2:
+				return Text::_('COM_COMPONENTBUILDER_BOTH');
+			break;
+			case 3:
+				return Text::_('COM_COMPONENTBUILDER_ITEM');
+			break;
+		}
+		return  Text::_('COM_COMPONENTBUILDER_NOT_SET');
 	}
 
 	/**
@@ -4462,6 +4941,7 @@ class AjaxModel extends ListModel
 	}
 
 	// Used in field
+
 	/**
 	 * The current extras available
 	 *
@@ -4816,7 +5296,7 @@ class AjaxModel extends ListModel
 		}
 
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = $this->getDatabase();
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -5498,12 +5978,12 @@ class AjaxModel extends ListModel
 				{
 					$displayData =  ['data' => [(object) $fileDefinition], 'entity' => $entity, 'target' => $target];
 					// change this to the layout of your custom importer columns display
-					$display = LayoutHelper::render('translationimportercolumnsdisplay', $displayData);
+					$display = LayoutHelper::render('translationimportercolumnsdisplayjfour', $displayData);
 				}
 				else
 				{
 					// change this to the layout of your custom importer easy mapping
-					return ['data' => LayoutHelper::render('translationimportereasymapping', []), 'state' => 0];
+					return ['data' => LayoutHelper::render('translationimportereasymappingjfour', []), 'state' => 0];
 				}
 			}
 			catch (\Exception $error)

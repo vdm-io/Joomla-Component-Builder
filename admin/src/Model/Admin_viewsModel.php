@@ -104,6 +104,7 @@ class Admin_viewsModel extends ListModel
 		$this->app ??= Factory::getApplication();
 	}
 
+
 	/**
 	 * Get the filter form - Override the parent method
 	 *
@@ -120,25 +121,26 @@ class Admin_viewsModel extends ListModel
 		$form = parent::getFilterForm($data, $loadData);
 
 		// Create the "joomla_component" filter
-		$attributes = array(
+		$attributes = [
 			'name' => 'joomla_component',
 			'type' => 'list',
 			'onchange' => 'this.form.submit();',
-		);
-		$options = array(
+		];
+		$options = [
 			'' => '-  ' . Text::_('COM_COMPONENTBUILDER_NO_COMPONENTS_FOUND') . '  -'
-		);
+		];
+
 		// check if we have joomla components
 		if (($joomla_components = JCBFilterHelper::names('joomla_component')) !== null)
 		{
-			$options = array(
+			$options = [
 				'' => '-  ' . Text::_('COM_COMPONENTBUILDER_SELECT_COMPONENT') . '  -'
-			);
+			];
 			// make sure we do not lose the key values in normal merge
 			$options = $options + $joomla_components;
 		}
 
-		$form->setField(JCBFormHelper::xml($attributes, $options),'filter');
+		$form->setField(JCBFormHelper::xml($attributes, $options), 'filter');
 		$form->setValue(
 			'joomla_component',
 			'filter',
@@ -148,7 +150,6 @@ class Admin_viewsModel extends ListModel
 
 		return $form;
 	}
-
 
 	/**
 	 * Method to auto-populate the model state.
@@ -387,6 +388,7 @@ class Admin_viewsModel extends ListModel
 
 		// From the componentbuilder_item table
 		$query->from($db->quoteName('#__componentbuilder_admin_view', 'a'));
+
 
 		// Filtering "joomla components"
 		$filter_joomla_component = $this->state->get("filter.joomla_component");

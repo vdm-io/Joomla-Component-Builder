@@ -69,50 +69,143 @@ class Libraries
 	}
 
 	/**
-	 * Set Libraries
+	 * Set libraries for the given item and target area.
 	 *
-	 * @param   string       $key      The key mapper
-	 * @param   object       $item     The item data
-	 * @param   string|null  $target   The area being targeted
+	 * @param  string       $key     The key mapper.
+	 * @param  object       $item    The item data.
+	 * @param  string|null  $target  The area being targeted.
 	 *
-	 * @return  void
-	 * @since 3.2.0
+	 * @return void
+	 * @since  3.2.0
 	 */
-	public function set(string $key, object &$item, ?string $target = null)
+	public function set(string $key, object &$item, ?string $target = null): void
 	{
-		// set the target
-		$target = $target ?: $this->config->build_target;
-
-		// make sure json become array
-		if (JsonHelper::check($item->libraries))
+		if (!isset($item->libraries))
 		{
-			$item->libraries = json_decode((string) $item->libraries, true);
+			return;
 		}
 
-		// if we have an array add it
-		if (ArrayHelper::check($item->libraries))
+		$target = $this->resolveTarget($target);
+		$libraries = $this->normalizeLibraries($item);
+
+		if ($libraries === null)
 		{
-			foreach ($item->libraries as $library)
+			return;
+		}
+
+		if (is_array($libraries))
+		{
+			foreach ($libraries as $library)
 			{
-				if (!GuidHelper::valid($library))
-				{
-					continue;
-				}
-
-				if (!$this->librarymanager->exists($target . '.' . $key . '.' . (string) $library)
-					&& $this->library->get((string) $library))
-				{
-					$this->librarymanager->set($target . '.' . $key . '.' . (string) $library, true);
-				}
+				$this->registerLibrary($target, $key, $library);
 			}
+
+			return;
 		}
-		elseif (GuidHelper::valid($item->libraries)
-			&& !$this->librarymanager->exists($target . '.' . $key . '.' . (string) $item->libraries)
-			&& $this->library->get((string) $item->libraries))
-		{
-			$this->librarymanager->set($target . '.' . $key . '.' . (string) $item->libraries, true);
-		}
+
+		$this->registerLibrary($target, $key, $libraries);
 	}
 
+	/**
+	 * Resolve the active target area.
+	 *
+	 * @param  string|null  $target  The provided target area.
+	 *
+	 * @return string  The resolved target area.
+	 * @since  3.2.0
+	 */
+	protected function resolveTarget(?string $target): string
+	{
+		return $target ?: $this->config->build_target;
+	}
+
+	/**
+	 * Normalize the item libraries value into an array, string, or null.
+	 *
+	 * @param  object  $item  The item data.
+	 *
+	 * @return array|string|null  The normalized libraries value.
+	 * @since  3.2.0
+	 */
+	protected function normalizeLibraries(object &$item): array|string|null
+	{
+		$libraries = $item->libraries ?? null;
+
+		if ($libraries === null)
+		{
+			return null;
+		}
+
+		if (is_string($libraries) && JsonHelper::check($libraries))
+		{
+			$decoded = json_decode($libraries, true);
+
+			if (is_array($decoded))
+			{
+				$item->libraries = $decoded;
+
+				return $decoded;
+			}
+		}
+
+		if (ArrayHelper::check($libraries))
+		{
+			return $libraries;
+		}
+
+		if (is_string($libraries) && GuidHelper::valid($libraries))
+		{
+			return $libraries;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Register a library if it is valid, not yet loaded, and exists in storage.
+	 *
+	 * @param  string  $target   The target area.
+	 * @param  string  $key      The key mapper.
+	 * @param  mixed   $library  The library GUID candidate.
+	 *
+	 * @return void
+	 * @since  3.2.0
+	 */
+	protected function registerLibrary(string $target, string $key, $library): void
+	{
+		if (!is_string($library) || !GuidHelper::valid($library))
+		{
+			return;
+		}
+
+		$managerKey = $this->getManagerKey($target, $key, $library);
+
+		if ($this->librarymanager->exists($managerKey))
+		{
+			return;
+		}
+
+		if (!$this->library->get($library))
+		{
+			return;
+		}
+
+		$this->librarymanager->set($managerKey, true);
+	}
+
+	/**
+	 * Build the manager key for a library registration.
+	 *
+	 * @param  string  $target   The target area.
+	 * @param  string  $key      The key mapper.
+	 * @param  string  $library  The library GUID.
+	 *
+	 * @return string  The manager key.
+	 * @since  3.2.0
+	 */
+	protected function getManagerKey(string $target, string $key, string $library): string
+	{
+		return $target . '.' . $key . '.' . $library;
+	}
 }
 

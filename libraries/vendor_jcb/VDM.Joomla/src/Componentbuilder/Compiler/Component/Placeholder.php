@@ -13,13 +13,11 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
 use Joomla\Database\DatabaseInterface;
+use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Utilities\String\NamespaceHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\String\NamespaceHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\PlaceholderInterface;
 
@@ -34,35 +32,35 @@ final class Placeholder implements PlaceholderInterface
 	/**
 	 * Placeholders
 	 *
-	 * @var    array
+	 * @var   ?array
 	 * @since 3.2.0
-	 **/
-	protected $placeholders = null;
+	 */
+	protected ?array $placeholders = null;
 
 	/**
 	 * Compiler Config
 	 *
-	 * @var    Config
+	 * @var   Config
 	 * @since 3.2.0
-	 **/
-	protected $config;
+	 */
+	protected Config $config;
 
 	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
 	 * @since 5.1.2
-	 **/
+	 */
 	protected DatabaseInterface $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param  Config              $config    The compiler config object.
-	 * @param  DatabaseInterface   $db        The Joomla Database Class.
+	 * @param  Config             $config  The compiler config object.
+	 * @param  DatabaseInterface  $db      The Joomla Database Class.
 	 *
 	 * @since 3.2.0
-	 **/
+	 */
 	public function __construct(Config $config, DatabaseInterface $db)
 	{
 		$this->config = $config;
@@ -70,84 +68,219 @@ final class Placeholder implements PlaceholderInterface
 	}
 
 	/**
-	 * get all System Placeholders
+	 * Get all system placeholders.
 	 *
-	 * @return  array   The global placeholders
-	 *
-	 * @since 3.2.0
+	 * @return  array  The global placeholders.
+	 * @since   3.2.0
 	 */
 	public function get(): array
 	{
-		// set only once
-		if (is_array($this->placeholders))
+		if ($this->placeholders !== null)
 		{
 			return $this->placeholders;
 		}
 
-		// load the config
-		$config = $this->config;
-		// load the db
-		$db = $this->db;
-		// reset bucket
-		$bucket = [];
-		// Create a new query object.
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.target', 'a.value')));
-		// from these tables
-		$query->from('#__componentbuilder_placeholder AS a');
-		// Reset the query using our newly populated query object.
-		$db->setQuery($query);
+		$this->placeholders = [];
 
-		// Load the items
-		$db->execute();
-		if ($db->getNumRows())
+		$this->loadStoredPlaceholders();
+		$this->addCorePlaceholders();
+		$this->applyComponentOverrides();
+
+		return $this->placeholders;
+	}
+
+	/**
+	 * Load stored placeholders from the database.
+	 *
+	 * @return  void
+	 * @since   6.1.6
+	 */
+	protected function loadStoredPlaceholders(): void
+	{
+		$query = $this->db->getQuery(true);
+		$query->select(
+			$this->db->quoteName(['a.target', 'a.value'])
+		);
+		$query->from(
+			$this->db->quoteName('#__componentbuilder_placeholder', 'a')
+		);
+
+		$this->db->setQuery($query);
+		$this->db->execute();
+
+		if (!$this->db->getNumRows())
 		{
-			$bucket = $db->loadAssocList('target', 'value');
-			// open all the code
-			foreach ($bucket as $key => &$code)
-			{
-				$code = base64_decode((string) $code);
-			}
+			return;
 		}
 
-		// set component place holders
-		$bucket[Placefix::_h('component')] = $config->component_code_name;
-		$bucket[Placefix::_h('Component')] = StringHelper::safe($config->component_code_name, 'F');
-		$bucket[Placefix::_h('COMPONENT')] = StringHelper::safe($config->component_code_name, 'U');
-		$bucket[Placefix::_('component')]   = $bucket[Placefix::_h('component')];
-		$bucket[Placefix::_('Component')]   = $bucket[Placefix::_h('Component')];
-		$bucket[Placefix::_('COMPONENT')]   = $bucket[Placefix::_h('COMPONENT')];
-		$bucket[Placefix::_h('LANG_PREFIX')] = $config->lang_prefix;
-		$bucket[Placefix::_('LANG_PREFIX')] = $bucket[Placefix::_h('LANG_PREFIX')];
-		$bucket[Placefix::_h('ComponentNamespace')] = NamespaceHelper::safeSegment(StringHelper::safe($config->component_code_name, 'F'));
-		$bucket[Placefix::_('ComponentNamespace')] = $bucket[Placefix::_h('ComponentNamespace')];
-		$bucket[Placefix::_h('NamespacePrefix')] = $config->namespace_prefix;
-		$bucket[Placefix::_('NamespacePrefix')] = $config->namespace_prefix;
-		$bucket[Placefix::_h('NAMESPACEPREFIX')] = $config->namespace_prefix;
-		$bucket[Placefix::_('NAMESPACEPREFIX')] = $config->namespace_prefix;
-		$bucket[Placefix::_('POWERLOADERPATH')] = $config->component_autoloader_path;
-		$bucket[Placefix::_h('POWERLOADERPATH')] = $config->component_autoloader_path;
+		$placeholders = $this->db->loadAssocList('target', 'value');
 
-		// get the current components overrides
-		if (($_placeholders = GetHelper::var(
-				'component_placeholders', $config->component_guid,
-				'joomla_component', 'addplaceholders'
-			)) !== false
-			&& JsonHelper::check($_placeholders))
+		foreach ($placeholders as $target => $value)
 		{
-			$_placeholders = json_decode((string) $_placeholders, true);
-			if (ArrayHelper::check($_placeholders))
-			{
-				foreach ($_placeholders as $row)
-				{
-					$bucket[$row['target']] = str_replace(array_keys($bucket), array_values($bucket), $row['value']);
-				}
-			}
+			$target = $this->sanitize((string) $target);
+			$value = base64_decode((string) $value);
+
+			$this->setPlaceholders($target, $value);
+		}
+	}
+
+	/**
+	 * Add the core component placeholders.
+	 *
+	 * @return  void
+	 * @since   6.1.6
+	 */
+	protected function addCorePlaceholders(): void
+	{
+		$component = $this->config->component_code_name;
+		$componentSafe = StringHelper::safe($component, 'F');
+		$componentUpper = StringHelper::safe($component, 'U');
+		$componentNamespace = NamespaceHelper::safeSegment($componentSafe);
+		$langPrefix = $this->config->lang_prefix;
+		$namespacePrefix = $this->config->namespace_prefix;
+		$powerLoaderPath = $this->config->component_autoloader_path;
+
+		$this->setPlaceholders('component', $component);
+		$this->setPlaceholders('Component', $componentSafe);
+		$this->setPlaceholders('COMPONENT', $componentUpper);
+		$this->setPlaceholders('LANG_PREFIX', $langPrefix);
+		$this->setPlaceholders('ComponentNamespace', $componentNamespace);
+		$this->setPlaceholders('NamespacePrefix', $namespacePrefix);
+		$this->setPlaceholders('NAMESPACEPREFIX', $namespacePrefix);
+		$this->setPlaceholders('POWERLOADERPATH', $powerLoaderPath);
+	}
+
+	/**
+	 * Apply component-specific placeholder overrides.
+	 *
+	 * @return  void
+	 * @since   6.1.6
+	 */
+	protected function applyComponentOverrides(): void
+	{
+		$query = $this->db->getQuery(true);
+		$query->select(
+			$this->db->quoteName('addplaceholders')
+		);
+		$query->from(
+			$this->db->quoteName('#__componentbuilder_component_placeholders')
+		);
+		$query->where(
+			$this->db->quoteName('joomla_component') . ' = ' . $this->db->quote($this->config->component_guid)
+		);
+
+		$this->db->setQuery($query);
+		$this->db->execute();
+
+		if (!$this->db->getNumRows())
+		{
+			return;
 		}
 
-		$this->placeholders = $bucket;
+		$placeholders = $this->db->loadResult();
 
-		return $bucket;
+		if ($placeholders === false || !JsonHelper::check($placeholders))
+		{
+			return;
+		}
+
+		$rows = json_decode((string) $placeholders, true);
+
+		if (!ArrayHelper::check($rows))
+		{
+			return;
+		}
+
+		foreach ($rows as $row)
+		{
+			if (!isset($row['target'], $row['value']))
+			{
+				continue;
+			}
+
+			$target = $this->sanitize((string) $row['target']);
+
+			// Yes update placeholder values in the placeholders :)
+			$value = str_replace(
+				array_keys($this->placeholders), 
+				array_values($this->placeholders), 
+				(string) $row['value']
+			);
+
+			$this->setPlaceholders($target, $value);
+		}
+	}
+
+	/**
+	 * Set both normal and hashed placeholder keys.
+	 *
+	 * @param   string  $target   The placeholder target.
+	 * @param   string  $value    The placeholder value.
+	 *
+	 * @return  void
+	 * @since   6.1.6
+	 */
+	protected function setPlaceholders(string $target, string $value): void
+	{
+		$this->placeholders[Placefix::_($target)] = $value;
+		$this->placeholders[Placefix::_h($target)] = $value;
+	}
+
+	/**
+	 * Sanitize the input string by removing supported wrapper patterns.
+	 *
+	 * The wrapper is only removed if both the prefix and suffix exist.
+	 * Partial matches are ignored.
+	 *
+	 * @param   string  $value  The input string to sanitize.
+	 *
+	 * @return  string  The sanitized string.
+	 * @since   6.1.6
+	 */
+	protected function sanitize(string $value): string
+	{
+		if (strlen($value) < 6)
+		{
+			return $value;
+		}
+
+		if ($this->isTripleSquareBracketWrapped($value))
+		{
+			return substr($value, 3, -3);
+		}
+
+		if ($this->isTripleHashWrapped($value))
+		{
+			return substr($value, 3, -3);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Check whether the value is wrapped in triple square brackets.
+	 *
+	 * @param   string  $value  The input string.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function isTripleSquareBracketWrapped(string $value): bool
+	{
+		return str_starts_with($value, '['.'['.'[') && str_ends_with($value, ']'.']'.']');
+	}
+
+	/**
+	 * Check whether the value is wrapped in triple hash symbols.
+	 *
+	 * @param   string  $value  The input string.
+	 *
+	 * @return  bool
+	 * @since   6.1.6
+	 */
+	protected function isTripleHashWrapped(string $value): bool
+	{
+		return str_starts_with($value, '#'.'#'.'#') && str_ends_with($value, '#'.'#'.'#');
 	}
 }
 

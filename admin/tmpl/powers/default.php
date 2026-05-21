@@ -53,23 +53,29 @@ if ($this->saveOrder)
 // powers footer script
 
 	// get page body
-	var outerBodyDiv = document.querySelector('body');
+	var outerBodyDiv = document.body || document.querySelector('body');
 
 	// start loading spinner
 	var loadingDiv = document.createElement('div');
 	loadingDiv.id = 'loading';
 
-	// Set CSS properties individually
-	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
-	loadingDiv.style.top = (outerBodyDiv.getBoundingClientRect().top + window.pageYOffset) + "px";
-	loadingDiv.style.left = (outerBodyDiv.getBoundingClientRect().left + window.pageXOffset) + "px";
-	loadingDiv.style.width = outerBodyDiv.offsetWidth + "px";
-	loadingDiv.style.height = outerBodyDiv.offsetHeight + "px";
+	// Set CSS properties (robust, no calculations)
 	loadingDiv.style.position = 'fixed';
-	loadingDiv.style.opacity = '0.80';
+	loadingDiv.style.top = '0';
+	loadingDiv.style.left = '0';
+	loadingDiv.style.right = '0';
+	loadingDiv.style.bottom = '0';
+	loadingDiv.style.width = '100%';
+	loadingDiv.style.height = '100%';
+
+	loadingDiv.style.background = "rgba(255, 255, 255, .8) url('components/com_componentbuilder/assets/images/ajax.gif') 50% 35% no-repeat";
+	loadingDiv.style.opacity = '0.8';
+	loadingDiv.style.zIndex = '9999';
+	loadingDiv.style.display = 'none';
+
+	// legacy IE fallback (safe to keep)
 	loadingDiv.style.msFilter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
 	loadingDiv.style.filter = "alpha(opacity=80)";
-	loadingDiv.style.display = 'none';
 
 	// add to page body
 	outerBodyDiv.appendChild(loadingDiv);
