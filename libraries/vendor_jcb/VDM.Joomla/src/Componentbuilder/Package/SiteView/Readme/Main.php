@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Package\SiteView\Readme;
 
 
-use VDM\Joomla\Interfaces\Readme\MainInterface;
 use VDM\Joomla\Componentbuilder\Package\Readme\Main as ExtendingMain;
+use VDM\Joomla\Interfaces\Readme\MainInterface;
 
 
 /**

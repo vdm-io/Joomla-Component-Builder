@@ -123,7 +123,7 @@ final class AllowEdit implements AllowEditInterface
 			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get record id.";
 			$allow[] = Indent::_(2)
-				. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;";
+				. "\$recordId = isset(\$data[\$key]) ? (int) \$data[\$key] : 0;";
 			// load custom permission script
 			$allow[] = $customAllow;
 			// check if the item has permissions.
@@ -156,24 +156,19 @@ final class AllowEdit implements AllowEditInterface
 			// check if the item has permissions.
 			$allow[] = Indent::_(4) . "if (\$user->authorise('"
 				. $this->permission->getAction($otherView, 'core.edit.own') . "', 'com_" . $this->component . "."
-				. $otherView . ".' . \$recordId))";
+				. $otherView . ".' . (int) \$recordId))";
 			$allow[] = Indent::_(4) . "{";
 			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " Fallback on edit.own. Now test the owner is the user.";
+			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
+				. " The owner comes from the stored record, never from \$data.";
 			$allow[] = Indent::_(5)
-				. "\$ownerId = (int) isset(\$data['created_by']) ? \$data['created_by'] : 0;";
-			$allow[] = Indent::_(5) . "if (empty(\$ownerId))";
-			$allow[] = Indent::_(5) . "{";
-			$allow[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__)
-				. " Need to do a lookup from the model.";
-			$allow[] = Indent::_(6)
 				. "\$record = \$this->getModel()->getItem(\$recordId);";
-			$allow[] = PHP_EOL . Indent::_(6) . "if (empty(\$record))";
-			$allow[] = Indent::_(6) . "{";
-			$allow[] = Indent::_(7) . "return false;";
-			$allow[] = Indent::_(6) . "}";
-			$allow[] = Indent::_(6) . "\$ownerId = \$record->created_by;";
+			$allow[] = PHP_EOL . Indent::_(5) . "if (empty(\$record))";
+			$allow[] = Indent::_(5) . "{";
+			$allow[] = Indent::_(6) . "return false;";
 			$allow[] = Indent::_(5) . "}";
+			$allow[] = Indent::_(5) . "\$ownerId = (int) \$record->created_by;";
 			$allow[] = PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " If the owner matches 'me' then do the test.";
 			$allow[] = Indent::_(5) . "if (\$ownerId == \$user->id)";
@@ -213,7 +208,7 @@ final class AllowEdit implements AllowEditInterface
 			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get record id.";
 			$allow[] = Indent::_(2)
-				. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;";
+				. "\$recordId = isset(\$data[\$key]) ? (int) \$data[\$key] : 0;";
 			// load custom permission script
 			$allow[] = $customAllow;
 			// check if the item has permissions.
@@ -245,24 +240,19 @@ final class AllowEdit implements AllowEditInterface
 			// check if the item has permissions.
 			$allow[] = Indent::_(4) . "if (\$user->authorise('"
 				. $this->permission->getAction($nameSingleCode, 'core.edit.own') . "', 'com_" . $this->component . "."
-				. $nameSingleCode . ".' . \$recordId))";
+				. $nameSingleCode . ".' . (int) \$recordId))";
 			$allow[] = Indent::_(4) . "{";
 			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " Now test the owner is the user.";
+			$allow[] = Indent::_(5) . "//" . Line::_(__Line__, __Class__)
+				. " The owner comes from the stored record, never from \$data.";
 			$allow[] = Indent::_(5)
-				. "\$ownerId = (int) isset(\$data['created_by']) ? \$data['created_by'] : 0;";
-			$allow[] = Indent::_(5) . "if (empty(\$ownerId))";
-			$allow[] = Indent::_(5) . "{";
-			$allow[] = Indent::_(6) . "//" . Line::_(__Line__, __Class__)
-				. " Need to do a lookup from the model.";
-			$allow[] = Indent::_(6)
 				. "\$record = \$this->getModel()->getItem(\$recordId);";
-			$allow[] = PHP_EOL . Indent::_(6) . "if (empty(\$record))";
-			$allow[] = Indent::_(6) . "{";
-			$allow[] = Indent::_(7) . "return false;";
-			$allow[] = Indent::_(6) . "}";
-			$allow[] = Indent::_(6) . "\$ownerId = \$record->created_by;";
+			$allow[] = PHP_EOL . Indent::_(5) . "if (empty(\$record))";
+			$allow[] = Indent::_(5) . "{";
+			$allow[] = Indent::_(6) . "return false;";
 			$allow[] = Indent::_(5) . "}";
+			$allow[] = Indent::_(5) . "\$ownerId = (int) \$record->created_by;";
 			$allow[] = PHP_EOL . Indent::_(5) . "//" . Line::_(__Line__, __Class__)
 				. " If the owner matches 'me' then allow.";
 			$allow[] = Indent::_(5) . "if (\$ownerId == \$user->id)";

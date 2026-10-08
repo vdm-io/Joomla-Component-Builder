@@ -101,6 +101,5 @@ abstract class Placefix
 	{
 		return self::$hhh;
 	}
-
 }
 

@@ -670,7 +670,7 @@ class HtmlView extends BaseHtmlView
 		$toolbar = $this->getDocument()->getToolbar();
 
 		// add title to the page
-		ToolbarHelper::title(Text::_(''), 'cogs');
+		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'), 'cogs');
 		// add cpanel button
 		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('compiler.compiler_animations'))
@@ -765,23 +765,25 @@ class HtmlView extends BaseHtmlView
 		");
 	}
 
+
+
 	/**
-	 * Escapes a value for output in a view script.
+	 * Sanitises a value to plain text for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
 	 * @param   bool   $shorten The switch to shorten.
 	 * @param   int    $length  The shorting length.
 	 *
-	 * @return  mixed  The escaped value.
+	 * @return  mixed  The value as plain text.
 	 * @since   1.6
 	 */
-	public function escape($var, bool $shorten = false, int $length = 40)
+	public function sanitize($var, bool $shorten = false, int $length = 40)
 	{
 		if (!is_string($var))
 		{
 			return $var;
 		}
 
-		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+		return StringHelper::sanitize($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}
 }

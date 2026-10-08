@@ -12,6 +12,7 @@
 			"language": {
 				"en-GB": "en-GB"
 			},
+			"layouts": "layouts",
 			"presets": "presets",
 			"services": "services",
 			"src": {
@@ -36,6 +37,7 @@
 		"api": {
 			"src": {
 				"Controller": "Controller",
+				"Serializer": "Serializer",
 				"View": "View"
 			}
 		},
@@ -624,6 +626,36 @@
 					"rename": "new",
 					"newName": "JsonapiView.php",
 					"type": "list"
+				},
+				"API_VIEW_SERIALIZER.php": {
+					"path": "c0mp0n3nt/api/src/Serializer",
+					"rename": "new",
+					"newName": "[[[Name]]]Serializer.php",
+					"type": "serializer"
+				},
+				"API_DYNAMIC_VIEW_CONTROLLER.php": {
+					"path": "c0mp0n3nt/api/src/Controller",
+					"rename": "new",
+					"newName": "[[[Name]]]Controller.php",
+					"type": "dynamic_single"
+				},
+				"API_DYNAMIC_VIEW_JSON.php": {
+					"path": "c0mp0n3nt/api/src/View/[[[Name]]]",
+					"rename": "new",
+					"newName": "JsonapiView.php",
+					"type": "dynamic_single"
+				},
+				"API_DYNAMIC_VIEWS_CONTROLLER.php": {
+					"path": "c0mp0n3nt/api/src/Controller",
+					"rename": "new",
+					"newName": "[[[Name]]]Controller.php",
+					"type": "dynamic_list"
+				},
+				"API_DYNAMIC_VIEWS_JSON.php": {
+					"path": "c0mp0n3nt/api/src/View/[[[Name]]]",
+					"rename": "new",
+					"newName": "JsonapiView.php",
+					"type": "dynamic_list"
 				}
 			},
 			"site": {

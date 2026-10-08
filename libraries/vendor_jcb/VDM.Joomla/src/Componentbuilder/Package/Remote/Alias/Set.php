@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Package\Remote\Alias;
 
 
-use VDM\Joomla\Interfaces\Remote\SetInterface;
 use VDM\Joomla\Componentbuilder\Remote\Set as ExtendingSet;
+use VDM\Joomla\Interfaces\Remote\SetInterface;
 
 
 /**

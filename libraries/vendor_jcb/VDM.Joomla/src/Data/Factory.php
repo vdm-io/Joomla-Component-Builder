@@ -17,8 +17,8 @@ use VDM\Joomla\Service\Table;
 use VDM\Joomla\Service\Database;
 use VDM\Joomla\Service\Model;
 use VDM\Joomla\Service\Data;
-use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

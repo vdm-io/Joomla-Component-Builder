@@ -298,7 +298,8 @@ class Component implements ServiceProviderInterface
 			$container->get('Compiler.Builder.Content.One'),
 			$container->get('Utilities.Counter'),
 			$container->get('Utilities.Paths'),
-			$container->get('Utilities.Files')
+			$container->get('Utilities.Files'),
+			$container->get('Utilities.Folder')
 		);
 	}
 
@@ -319,7 +320,8 @@ class Component implements ServiceProviderInterface
 			$container->get('Component'),
 			$container->get('Model.Createdate'),
 			$container->get('Model.Modifieddate'),
-			$container->get('Utilities.Structure')
+			$container->get('Utilities.Structure'),
+			$container->get('Architecture.Api.Resources')
 		);
 	}
 

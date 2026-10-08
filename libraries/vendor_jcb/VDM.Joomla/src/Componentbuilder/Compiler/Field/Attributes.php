@@ -419,10 +419,13 @@ final class Attributes
 			}
 
 			// check if we find reason to remove this field from being escaped
+			// only an explicit false opts the field out. Accepting any value
+			// meant that escape="true" also turned escaping off.
 			$escaped = GetHelper::between(
 				$this->settings->xml, 'escape="', '"'
 			);
-			if (StringHelper::check($escaped))
+			if (StringHelper::check($escaped)
+				&& in_array(strtolower(trim($escaped)), ['false', '0', 'no', 'off'], true))
 			{
 				$this->donotescape->set($this->nameListCode . '.' .
 					$this->attributes['name'], true);

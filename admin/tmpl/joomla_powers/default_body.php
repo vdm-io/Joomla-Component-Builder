@@ -69,30 +69,30 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_powers&task=joomla_po
 		<td class="nowrap">
 			<div>
 			<?php if (!$this->isModal && $canDo->get('joomla_power.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_powers.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php if (!$this->isModal): ?>
-					<?php echo $this->escape($item->system_name); ?>
+					<?php echo $this->sanitize($item->system_name); ?>
 				<?php else: ?>
 					<?php
 						$link = "{$edit}&id={$item->id}";
 						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->system_name, false) . '</a>';
+						$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->system_name, false) . '</a>';
 						$attribs = 'data-content-select data-content-type="com_componentbuilder.joomla_power"'
-							. ' data-id="' . $dataId . '"'
-							. ' data-title="' . $this->escape($item->system_name, false) . '"'
-							. ' data-uri="' . $this->escape($link, false) . '"'
-							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+							. ' data-id="' . $this->sanitize($dataId, false) . '"'
+							. ' data-title="' . $this->sanitize($item->system_name, false) . '"'
+							. ' data-uri="' . $this->sanitize($link, false) . '"'
+							. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 					?>
 					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-						<?php echo $this->escape($item->system_name); ?>
+						<?php echo $this->sanitize($item->system_name); ?>
 					</a>
 				<?php endif; ?>
 			<?php endif; ?><br /><small>GUID: 
-			<?php echo $this->escape($item->guid); ?><?php if(isset($item->joomla_power_key)): ?><br />JPK: <?php echo $item->joomla_power_key; ?><?php endif; ?></small>
+			<?php echo $this->sanitize($item->guid); ?><?php if(isset($item->joomla_power_key)): ?><br />JPK: <?php echo $item->joomla_power_key; ?><?php endif; ?></small>
 			</div>
 		</td>
 		<td class="center">

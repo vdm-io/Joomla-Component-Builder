@@ -16,23 +16,24 @@ use Joomla\DI\Container;
 use VDM\Joomla\Interfaces\FactoryInterface;
 
 
-/** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
- ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
- **
- **    In realms of code where purists frown, the anti-pattern wears a crown,
- **    A paradox of chaos bright, where complex paths lose all its slight.
- **    For in its tangled, wild embrace, lies raw creativity's face,
- **    No rigid forms, no strict decree, just boundless, daring artistry.
- **    In flaws, we find the freedom's key, where messy code and brilliance spree,
- **    A dance of thought, unchained, unbound, in anti-pattern, beauty's found.
- **
- **      Perfect Paradox and True Nature of the Anti-Pattern by ChatGPT
- **
- ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
- ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
- **
- ** @since 0.0.0
- **/
+/**
+ * * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+ * * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+ * *
+ * *    In realms of code where purists frown, the anti-pattern wears a crown,
+ * *    A paradox of chaos bright, where complex paths lose all its slight.
+ * *    For in its tangled, wild embrace, lies raw creativity's face,
+ * *    No rigid forms, no strict decree, just boundless, daring artistry.
+ * *    In flaws, we find the freedom's key, where messy code and brilliance spree,
+ * *    A dance of thought, unchained, unbound, in anti-pattern, beauty's found.
+ * *
+ * *      Perfect Paradox and True Nature of the Anti-Pattern by ChatGPT
+ * *
+ * * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+ * * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+ * *
+ * * @since 0.0.0
+ */
 abstract class Factory implements FactoryInterface
 {
 	/**

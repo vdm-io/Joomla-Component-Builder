@@ -227,6 +227,5 @@ class Customcode
 			$this->views[$listViewName][$id] = true;
 		}
 	}
-
 }
 

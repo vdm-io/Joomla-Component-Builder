@@ -74,6 +74,5 @@ abstract class Line
 	{
 		self::$add = Compiler::_('Config')->debug_line_nr;
 	}
-
 }
 

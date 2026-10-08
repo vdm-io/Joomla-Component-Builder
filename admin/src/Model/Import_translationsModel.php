@@ -248,6 +248,11 @@ class Import_translationsModel extends ItemModel
 				if (empty($data))
 				{
 					$app = Factory::getApplication();
+					// The API answers not found instead of redirecting.
+					if ($app->isClient('api'))
+					{
+						throw new \Exception(Text::_('COM_COMPONENTBUILDER_NOT_FOUND_OR_ACCESS_DENIED'), 404);
+					}
 					// If no data is found redirect to default page and show warning.
 					$app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_NOT_FOUND_OR_ACCESS_DENIED'), 'warning');
 					$app->redirect('index.php?option=com_componentbuilder');

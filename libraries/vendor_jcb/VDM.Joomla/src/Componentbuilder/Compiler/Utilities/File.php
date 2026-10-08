@@ -104,6 +104,5 @@ class File
 	{
 		return FileHelper::write($path, $data);
 	}
-
 }
 

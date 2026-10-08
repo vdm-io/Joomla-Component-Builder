@@ -323,17 +323,17 @@ final class LinkLogic
 		$link .= PHP_EOL . $tab . Indent::_(6) . "\$link = \"{\$edit}&id={\$item->id}\";";
 		$link .= PHP_EOL . $tab . Indent::_(6) . "\$dataId = \$item->{{$classPointer}getModalTitleKey()} ?? 0;";
 		$link .= PHP_EOL . $tab . Indent::_(6)
-			. "\$itemHtml = '<a href=\"' . {$classPointer}escape(\$link, false) . '\">' . {$classPointer}escape(\$item->{$code}, false) . '</a>';";
+			. "\$itemHtml = '<a href=\"' . {$classPointer}sanitize(\$link, false) . '\">' . {$classPointer}sanitize(\$item->{$code}, false) . '</a>';";
 		$link .= PHP_EOL . $tab . Indent::_(6)
 			. "\$attribs = 'data-content-select data-content-type=\"com_"
 			. $this->config->component_code_name
 			. "."
 			. $nameSingleCode
 			. "\"'";
-		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-id=\"' . \$dataId . '\"'";
-		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-title=\"' . {$classPointer}escape(\$item->{$code}, false) . '\"'";
-		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-uri=\"' . {$classPointer}escape(\$link, false) . '\"'";
-		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-html=\"' . {$classPointer}escape(\$itemHtml, false) . '\"';";
+		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-id=\"' . {$classPointer}sanitize(\$dataId, false) . '\"'";
+		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-title=\"' . {$classPointer}sanitize(\$item->{$code}, false) . '\"'";
+		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-uri=\"' . {$classPointer}sanitize(\$link, false) . '\"'";
+		$link .= PHP_EOL . $tab . Indent::_(7) . ". ' data-html=\"' . {$classPointer}sanitize(\$itemHtml, false) . '\"';";
 		$link .= PHP_EOL . $tab . Indent::_(5) . "?>";
 		$link .= PHP_EOL . $tab . Indent::_(5) . "<a class=\"select-link\" href=\"javascript:void(0)\" <?php echo \$attribs; ?>>";
 		$link .= PHP_EOL . $tab . Indent::_(6) . "<?php echo " . $itemCode . "; ?>";

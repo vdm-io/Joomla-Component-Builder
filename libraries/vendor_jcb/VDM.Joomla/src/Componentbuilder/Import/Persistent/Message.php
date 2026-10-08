@@ -15,8 +15,8 @@ namespace VDM\Joomla\Componentbuilder\Import\Persistent;
 use VDM\Joomla\Interfaces\Data\UpdateInterface as Update;
 use VDM\Joomla\Interfaces\Data\InsertInterface as Insert;
 use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Interfaces\Import\DatabaseMessageInterface;
 use VDM\Joomla\Import\Message as ExtendingMessage;
+use VDM\Joomla\Interfaces\Import\DatabaseMessageInterface;
 
 
 /**

@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Package\AdminCustomTabs\Remote;
 
 
-use VDM\Joomla\Interfaces\Remote\ConfigInterface;
 use VDM\Joomla\Abstraction\Remote\Config as ExtendingConfig;
+use VDM\Joomla\Interfaces\Remote\ConfigInterface;
 
 
 /**

@@ -103,6 +103,5 @@ class Customadminviews
 			unset($item->addcustom_admin_views);
 		}
 	}
-
 }
 

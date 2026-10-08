@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use Joomla\CMS\Access\Exception\NotAllowed;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -212,13 +213,25 @@ class Component_routerModel extends AdminModel
 				$item->metadata = $metadata->toArray();
 			}
 
-			// check edit access permissions
-			if (!empty($item->id) && !$this->allowEdit((array) $item))
+			// API reads use read permissions; administrator editing keeps its edit guard.
+			if (!empty($item->id))
 			{
- 				$app = Factory::getApplication();
-  				$app->enqueueMessage(Text::_('Not authorised!'), 'error');
-				$app->redirect('index.php?option=com_componentbuilder');
-				return false;
+				$app = Factory::getApplication();
+
+				if ($app->isClient('api'))
+				{
+					$user = $app->getIdentity();
+					if (!($user->authorise('component_router.access', 'com_componentbuilder.component_router.' . $item->id) && $user->authorise('component_router.access', 'com_componentbuilder')) || (!$user->authorise('core.options', 'com_componentbuilder') && !in_array((int) $item->access, $user->getAuthorisedViewLevels())))
+					{
+						throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+					}
+				}
+				elseif (!$this->allowEdit((array) $item))
+				{
+					$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+					$app->redirect('index.php?option=com_componentbuilder');
+					return false;
+				}
 			}
 
 			if (!empty($item->methods_code))
@@ -325,8 +338,13 @@ class Component_routerModel extends AdminModel
 
 		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
+		// The record being saved decides the permissions, so its id wins over the request.
+		if (is_array($data) && isset($data['id']) && (int) $data['id'] > 0)
+		{
+			$id = (int) $data['id'];
+		}
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
-		if ($jinput->get('a_id'))
+		elseif ($jinput->get('a_id'))
 		{
 			$id = $jinput->get('a_id', 0, 'INT');
 		}
@@ -360,21 +378,47 @@ class Component_routerModel extends AdminModel
 		if ($id != 0 && (!$user->authorise('component_router.edit.created_by', 'com_componentbuilder.component_router.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('component_router.edit.created_by', 'com_componentbuilder')))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'readonly', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created_by', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created_by');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created_by', 'disabled', 'true');
+				$form->setFieldAttribute('created_by', 'readonly', 'true');
+				$form->setFieldAttribute('created_by', 'filter', 'unset');
+			}
 		}
 		// Modify the form based on Edit Creaded Date access controls.
 		if ($id != 0 && (!$user->authorise('component_router.edit.created', 'com_componentbuilder.component_router.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('component_router.edit.created', 'com_componentbuilder')))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created', 'disabled', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created', 'disabled', 'true');
+				$form->setFieldAttribute('created', 'filter', 'unset');
+			}
+		}
+
+		// Omitted PATCH metadata must not be filtered or rebound from storage.
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$submittedApiData = $jinput->get('data', json_decode($jinput->json->getRaw(), true), 'array');
+			foreach (['created', 'created_by'] as $metadataField)
+			{
+				if (!is_array($submittedApiData) || !array_key_exists($metadataField, $submittedApiData))
+				{
+					$form->removeField($metadataField);
+				}
+			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -426,6 +470,10 @@ class Component_routerModel extends AdminModel
 
 		// update the constructor_before_parent_manual (sub form) layout
 		$form->setFieldAttribute('constructor_before_parent_manual', 'layout', ComponentbuilderHelper::getSubformLayout('component_router', 'constructor_before_parent_manual'));
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$this->setState('jcb.api.patch.form', $form);
+		}
 		return $form;
 	}
 
@@ -534,7 +582,7 @@ class Component_routerModel extends AdminModel
 		// get user object.
 		$user = $this->getCurrentUser();
 		// get record id.
-		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+		$recordId = isset($data[$key]) ? (int) $data[$key] : 0;
 
 
 		// Access check.
@@ -550,10 +598,10 @@ class Component_routerModel extends AdminModel
 			$permission = $user->authorise('component_router.edit', 'com_componentbuilder.component_router.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('component_router.edit.own', 'com_componentbuilder.component_router.' . $recordId))
+				if ($user->authorise('component_router.edit.own', 'com_componentbuilder.component_router.' . (int) $recordId))
 				{
 					// Now test the owner is the user.
-					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+					$ownerId = isset($data['created_by']) ? (int) $data['created_by'] : 0;
 					if (empty($ownerId))
 					{
 						return false;
@@ -726,35 +774,133 @@ class Component_routerModel extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// The record keys, as every line below expects them: the primary key as an
+		// integer that is never taken from the request (null from the API on create).
+		$data['id'] = (int) ($data['id'] ?? 0);
+
+		// Preserve omitted API PATCH values in their original storage representation.
+		$jcbPatchStored = [];
+		$jcbPatchInput = [];
+		$jcbPatchId = $data['id'];
+
+		if ($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api') && $jcbPatchId > 0)
+		{
+			$jcbPatchSubmitted = $input->get('data', json_decode($input->json->getRaw(), true), 'array');
+			$jcbPatchSubmitted = is_array($jcbPatchSubmitted) ? $jcbPatchSubmitted : [];
+			// Joomla's API inserts an empty tags array after validation. It must not
+			// clear omitted relationships or bypass the form's field permissions.
+			$jcbPatchForm = $this->getState('jcb.api.patch.form');
+			if (!array_key_exists('tags', $jcbPatchSubmitted)
+				|| ($jcbPatchForm !== null && (!$jcbPatchForm->getField('tags')
+					|| strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'filter', '')) === 'unset'
+					|| in_array(strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'disabled', '')), ['true', '1'], true))))
+			{
+				unset($data['tags']);
+			}
+
+			$jcbPatchTable = $this->getTable();
+
+			if (!$jcbPatchTable->load($jcbPatchId))
+			{
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_RECORD_LOAD'));
+
+				return false;
+			}
+
+			foreach ($jcbPatchTable->getFields() as $jcbPatchField)
+			{
+				$jcbPatchName = $jcbPatchField->Field;
+
+				if ($jcbPatchName !== $jcbPatchTable->getKeyName() && $jcbPatchName !== 'guid'
+					&& !array_key_exists($jcbPatchName, $jcbPatchSubmitted)
+					&& array_key_exists($jcbPatchName, $data))
+				{
+					$jcbPatchStored[$jcbPatchName] = $jcbPatchTable->{$jcbPatchName};
+					$jcbPatchInput[$jcbPatchName] = serialize($data[$jcbPatchName]);
+				}
+			}
+		}
+
+		// A copy or a custom derivation must follow the normal storage transforms.
+		if ((int) $data['id'] !== $jcbPatchId)
+		{
+			$jcbPatchStored = [];
+		}
+		else
+		{
+			foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+			{
+				if (!array_key_exists($jcbPatchName, $data)
+					|| serialize($data[$jcbPatchName]) !== $jcbPatchInput[$jcbPatchName])
+				{
+					unset($jcbPatchStored[$jcbPatchName]);
+				}
+			}
+		}
+
+		if (array_key_exists('constructor_before_parent_manual', $jcbPatchStored)
+			&& (!array_key_exists('constructor_before_parent_manual', $data) || serialize($data['constructor_before_parent_manual']) !== $jcbPatchInput['constructor_before_parent_manual']))
+		{
+			unset($jcbPatchStored['constructor_before_parent_manual']);
+		}
+
 		// Set the constructor_before_parent_manual items to data.
-		if (isset($data['constructor_before_parent_manual']) && is_array($data['constructor_before_parent_manual']))
+		if (isset($data['constructor_before_parent_manual']) && is_array($data['constructor_before_parent_manual']) && !array_key_exists('constructor_before_parent_manual', $jcbPatchStored))
 		{
 			$constructor_before_parent_manual = new Registry;
 			$constructor_before_parent_manual->loadArray($data['constructor_before_parent_manual']);
 			$data['constructor_before_parent_manual'] = (string) $constructor_before_parent_manual;
 		}
-		elseif (!isset($data['constructor_before_parent_manual']))
+		elseif (!isset($data['constructor_before_parent_manual']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty constructor_before_parent_manual to data
 			$data['constructor_before_parent_manual'] = '';
 		}
 
+		if (array_key_exists('methods_code', $jcbPatchStored)
+			&& (!array_key_exists('methods_code', $data) || serialize($data['methods_code']) !== $jcbPatchInput['methods_code']))
+		{
+			unset($jcbPatchStored['methods_code']);
+		}
+
 		// Set the methods_code string to base64 string.
-		if (isset($data['methods_code']))
+		if (isset($data['methods_code']) && !array_key_exists('methods_code', $jcbPatchStored))
 		{
 			$data['methods_code'] = base64_encode($data['methods_code']);
 		}
 
+		if (array_key_exists('constructor_after_parent_code', $jcbPatchStored)
+			&& (!array_key_exists('constructor_after_parent_code', $data) || serialize($data['constructor_after_parent_code']) !== $jcbPatchInput['constructor_after_parent_code']))
+		{
+			unset($jcbPatchStored['constructor_after_parent_code']);
+		}
+
 		// Set the constructor_after_parent_code string to base64 string.
-		if (isset($data['constructor_after_parent_code']))
+		if (isset($data['constructor_after_parent_code']) && !array_key_exists('constructor_after_parent_code', $jcbPatchStored))
 		{
 			$data['constructor_after_parent_code'] = base64_encode($data['constructor_after_parent_code']);
 		}
 
+		if (array_key_exists('constructor_before_parent_code', $jcbPatchStored)
+			&& (!array_key_exists('constructor_before_parent_code', $data) || serialize($data['constructor_before_parent_code']) !== $jcbPatchInput['constructor_before_parent_code']))
+		{
+			unset($jcbPatchStored['constructor_before_parent_code']);
+		}
+
 		// Set the constructor_before_parent_code string to base64 string.
-		if (isset($data['constructor_before_parent_code']))
+		if (isset($data['constructor_before_parent_code']) && !array_key_exists('constructor_before_parent_code', $jcbPatchStored))
 		{
 			$data['constructor_before_parent_code'] = base64_encode($data['constructor_before_parent_code']);
+		}
+
+		// Restore unchanged omitted columns without a lossy decode/encode round trip.
+		foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+		{
+			if (array_key_exists($jcbPatchName, $data)
+				&& serialize($data[$jcbPatchName]) === $jcbPatchInput[$jcbPatchName])
+			{
+				$data[$jcbPatchName] = $jcbPatchValue;
+			}
 		}
 
 		// Set the Params Items to data

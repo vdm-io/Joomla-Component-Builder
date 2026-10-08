@@ -245,7 +245,8 @@ class Model implements ServiceProviderInterface
 	public function getJoomlaplugins(Container $container): Joomlaplugins
 	{
 		return new Joomlaplugins(
-			$container->get('Joomlaplugin.Data')
+			$container->get('Joomlaplugin.Data'),
+			$container->get('Architecture.Api.Plugin.Routes')
 		);
 	}
 

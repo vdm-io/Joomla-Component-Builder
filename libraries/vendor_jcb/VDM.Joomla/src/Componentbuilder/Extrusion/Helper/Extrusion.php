@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    4th September, 2022
+ * @created    17th August, 2026
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
@@ -12,92 +12,193 @@
 namespace VDM\Joomla\Componentbuilder\Extrusion\Helper;
 
 
-use Joomla\CMS\Language\Text;
+use Joomla\CMS\Factory as JoomlaFactory;
+use VDM\Joomla\Componentbuilder\Extrusion\Factory;
+use VDM\Joomla\Componentbuilder\Extrusion\Registry\Message;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\GetHelperExtrusion as GetHelper;
-use VDM\Joomla\Componentbuilder\Extrusion\Helper\Builder;
 
 
 /**
- * Extrusion class
+ * The dump-driven extrusion entry point.
+ * 
+ * This is the seam the component form has always called: saving a component with
+ * a pasted schema dump builds its views and fields. It no longer carries any
+ * parsing or writing of its own. It resolves the extrusion engine from the
+ * container, hands it the dump and the component it belongs to, and surfaces what
+ * the engine reported.
+ * 
+ * Keeping one engine behind both entry points is the point. The dump path and the
+ * folder path now share every reader, resolver and writer, so an improvement to
+ * one is an improvement to both, and they cannot quietly disagree about the same
+ * dump.
  * 
  * @since 3.2.0
  */
-class Extrusion extends Builder
+class Extrusion
 {
-	/***
-	 * Constructor
+	/**
+	 * How the message levels map onto Joomla's own enqueue types.
+	 *
+	 * @var    array<string, string>
+	 * @since  6.1.6
+	 */
+	private const ENQUEUE = [
+		Message::ERROR => 'error',
+		Message::WARNING => 'warning',
+		Message::NOTICE => 'notice',
+		Message::SUCCESS => 'message'
+	];
+
+	/**
+	 * Whether the run reached its writing step.
+	 *
+	 * @var    bool
+	 * @since  6.1.6
+	 */
+	protected bool $completed = false;
+
+	/**
+	 * Everything the run had to say, by level.
+	 *
+	 * @var    array<string, array<int, array{message: string, subject?: string}>>
+	 * @since  6.1.6
+	 */
+	protected array $messages = [];
+
+	/**
+	 * Constructor.
+	 *
+	 * The signature is preserved because the component model has always
+	 * constructed this directly, and the build values are still cleared out of the
+	 * data so a pasted dump is never persisted.
+	 *
+	 * @param   array  $data  The component data being saved.
+	 *
+	 * @since   3.2.0
 	 */
 	public function __construct(&$data)
 	{
-		// first we run the perent constructor
-		if (parent::__construct($data))
+		if (!ArrayHelper::check($data) || empty($data['id']) || (int) $data['id'] < 1)
 		{
-			// link the view data to the component
-			if ($this->setAdminViews($data['id']))
-			{
-				$this->app->enqueueMessage(
-					Text::_('COM_COMPONENTBUILDER_ALL_THE_FIELDS_AND_VIEWS_FROM_YOUR_SQL_DUMP_HAS_BEEN_CREATED_AND_LINKED_TO_THIS_COMPONENT'),
-					'Success'
-				);
-				return true;
-			}
+			$this->enqueue(
+				'error',
+				'A component id is needed before a schema dump can be extruded, so save '
+				. 'the component first and then extrude.'
+			);
+
+			return;
 		}
-		return false;
+
+		$dump = isset($data['buildcompsql'])
+			? base64_decode((string) $data['buildcompsql'])
+			: '';
+
+		$data['buildcomp'] = 0;
+		$data['buildcompsql'] = '';
+
+		if (trim($dump) === '')
+		{
+			$this->enqueue('error', 'No schema dump was supplied to extrude.');
+
+			return;
+		}
+
+		$this->run($dump, (int) $data['id'], (string) ($data['name_code'] ?? ''));
 	}
 
 	/**
-	 *	link the build views to the component
+	 * Whether the run reached its writing step.
+	 *
+	 * @return  bool  True when the extrusion completed.
+	 * @since   6.1.6
 	 */
-	protected function setAdminViews(&$component_id)
+	public function completed(): bool
 	{
-		// check if views were set
-		if (ArrayHelper::check($this->views))
+		return $this->completed;
+	}
+
+	/**
+	 * Everything the run had to say, by level.
+	 *
+	 * @return  array<string, array<int, array{message: string, subject?: string}>>  The messages.
+	 * @since   6.1.6
+	 */
+	public function messages(): array
+	{
+		return $this->messages;
+	}
+
+	/**
+	 * Hand the dump to the extrusion engine and surface its report.
+	 *
+	 * @param   string  $dump      The schema text.
+	 * @param   int     $component The JCB component id.
+	 * @param   string  $codeName  The component code name, when the form knows it.
+	 *
+	 * @return  void
+	 * @since   6.1.6
+	 */
+	protected function run(string $dump, int $component, string $codeName): void
+	{
+		$extruder = Factory::_('Extruder');
+		$report = $extruder->reset()
+			->dump($dump)
+			->component($component)
+			->codeName($codeName)
+			->extrude();
+
+		$this->completed = (bool) $report->get('completed', false);
+		$this->messages = $extruder->messages();
+
+		foreach ($this->messages as $level => $messages)
 		{
-			$count = 0;
-			if (ArrayHelper::check($this->addadmin_views))
+			foreach ($messages as $entry)
 			{
-				$count = (int) count((array)$this->addadmin_views) + 3;
-			}
-			// set the admin view data linking
-			foreach ($this->views as $nr => $id)
-			{
-				$pointer = $count + $nr;
-				$this->addadmin_views['addadmin_views'.$pointer]['adminview'] = $id;
-				$this->addadmin_views['addadmin_views'.$pointer]['icomoon'] = 'joomla';
-				$this->addadmin_views['addadmin_views'.$pointer]['mainmenu'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['dashboard_add'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['dashboard_list'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['submenu'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['checkin'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['history'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['metadata'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['access'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['port'] = 1;
-				$this->addadmin_views['addadmin_views'.$pointer]['edit_create_site_view'] = 0;
-				$this->addadmin_views['addadmin_views'.$pointer]['order'] = $pointer + 1;
+				$entry = (array) $entry;
+				$this->enqueue(
+					self::ENQUEUE[$level] ?? 'notice',
+					(string) ($entry['message'] ?? '')
+				);
 			}
 		}
-		if (isset($this->addadmin_views) && ArrayHelper::check($this->addadmin_views))
+	}
+
+	/**
+	 * Show one message to the user.
+	 *
+	 * Presentation is the caller's job everywhere below this class; this is the one
+	 * place that is allowed to speak to the application, because it is the entry
+	 * point the component form calls directly.
+	 *
+	 * @param   string  $type     The Joomla enqueue type.
+	 * @param   string  $message  The plain message.
+	 *
+	 * @return  void
+	 * @since   6.1.6
+	 */
+	protected function enqueue(string $type, string $message): void
+	{
+		if ($message === '')
 		{
-			// set the field object
-			$object = new \stdClass();
-			$object->joomla_component = $component_id;
-			$object->addadmin_views = json_encode($this->addadmin_views, JSON_FORCE_OBJECT);
-			$object->created = $this->today;
-			$object->created_by = $this->user->id;
-			$object->published = 1;
-			// check if it is already set
-			if ($item_id = GetHelper::var('component_admin_views', $component_id, 'joomla_component', 'id'))
-			{
-				// set ID
-				$object->id = (int) $item_id;
-				return $this->db->updateObject('#__componentbuilder_component_admin_views', $object, 'id');
-			}
-			// add to data base
-			return $this->db->insertObject('#__componentbuilder_component_admin_views', $object);
+			return;
 		}
-		return false;
+
+		try
+		{
+			$application = JoomlaFactory::getApplication();
+		}
+		catch (\Throwable $exception)
+		{
+			// Without an application there is nobody to show a message to. The
+			// messages are still gathered on the bus and readable by any caller, so
+			// losing the presentation must never lose the run.
+			return;
+		}
+
+		if (method_exists($application, 'enqueueMessage'))
+		{
+			$application->enqueueMessage($message, $type);
+		}
 	}
 }
 

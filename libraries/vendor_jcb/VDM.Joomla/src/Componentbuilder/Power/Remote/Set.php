@@ -27,8 +27,8 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GuidHelper;
-use VDM\Joomla\Interfaces\Remote\SetInterface;
 use VDM\Joomla\Abstraction\Remote\Set as ExtendingSet;
+use VDM\Joomla\Interfaces\Remote\SetInterface;
 
 
 /**

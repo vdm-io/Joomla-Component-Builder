@@ -28,8 +28,8 @@ use VDM\Joomla\Gitea\Service\Utilities as GiteaUtilities;
 use VDM\Joomla\Componentbuilder\Service\Network;
 use VDM\Joomla\Componentbuilder\Service\Api;
 use VDM\Joomla\Componentbuilder\Service\Utilities;
-use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

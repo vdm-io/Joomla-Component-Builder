@@ -13,12 +13,12 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Templatelayout;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Selection;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\LayoutData;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\TemplateData;
 use VDM\Joomla\Componentbuilder\Compiler\Alias\Data as Aliasdata;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Utilities\ArrayHelper;
-use VDM\Joomla\Utilities\GetHelper;
 
 
 /**
@@ -35,6 +35,14 @@ class Data
 	 * @since 3.2.0
 	 */
 	protected Config $config;
+
+	/**
+	 * Shared literal dependency selection.
+	 *
+	 * @var   Selection
+	 * @since 6.2.0
+	 */
+	protected Selection $selection;
 
 	/**
 	 * The LayoutData Class.
@@ -76,14 +84,16 @@ class Data
 	 * @param TemplateData   $templatedata   The TemplateData Class.
 	 * @param Aliasdata      $aliasdata      The AliasData Class.
 	 * @param Counter        $counter        The Counter Class.
+	 * @param Selection|null $selection      Shared literal dependency selection.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, LayoutData $layoutdata,
 		TemplateData $templatedata, Aliasdata $aliasdata,
-		Counter $counter)
+		Counter $counter, ?Selection $selection = null)
 	{
 		$this->config = $config;
+		$this->selection = $selection ?? new Selection();
 		$this->layoutdata = $layoutdata;
 		$this->templatedata = $templatedata;
 		$this->aliasdata = $aliasdata;
@@ -107,33 +117,12 @@ class Data
 	{
 		// to check inside the templates
 		$again = [];
+		$references = $this->selection->codeReferences($content);
 
 		// check if template keys were passed
 		if (!ArrayHelper::check($templates))
 		{
-			// set the Template data
-			$temp1 = GetHelper::allBetween(
-				$content, "\$this->loadTemplate('", "')"
-			);
-			$temp2 = GetHelper::allBetween(
-				$content, '$this->loadTemplate("', '")'
-			);
-			if (ArrayHelper::check($temp1)
-				&& ArrayHelper::check($temp2))
-			{
-				$templates = array_merge($temp1, $temp2);
-			}
-			else
-			{
-				if (ArrayHelper::check($temp1))
-				{
-					$templates = $temp1;
-				}
-				elseif (ArrayHelper::check($temp2))
-				{
-					$templates = $temp2;
-				}
-			}
+			$templates = $references['template'];
 		}
 
 		// check if we found templates
@@ -174,39 +163,7 @@ class Data
 		// check if layout keys were passed
 		if (!ArrayHelper::check($layouts))
 		{
-			$layout_bucket = [];
-			// set the Layout data
-			if (($layouts_found = GetHelper::allBetween(
-				$content, "LayoutHelper::render('", "',"
-			)) !== null)
-			{
-				$layout_bucket[] = $layouts_found;
-			}
-			if (($layouts_found = GetHelper::allBetween(
-				$content, 'LayoutHelper::render("', '",'
-			)) !== null)
-			{
-				$layout_bucket[] = $layouts_found;
-			}
-			// set the Layout data
-			if (($layouts_found = GetHelper::allBetween(
-				$content, "Joomla__" . "_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render('", "',"
-			)) !== null)
-			{
-				$layout_bucket[] = $layouts_found;
-			}
-			if (($layouts_found = GetHelper::allBetween(
-				$content, 'Joomla__' . '_7ab82272_0b3d_4bb1_af35_e63a096cfe0b___Power::render("', '",'
-			)) !== null)
-			{
-				$layout_bucket[] = $layouts_found;
-			}
-
-			// Flatten and merge all collected layouts if any
-			if ($layout_bucket !== [])
-			{
-				$layouts = array_merge($layouts, ...$layout_bucket);
-			}
+			$layouts = $references['layout'];
 		}
 
 		// check if we found layouts

@@ -12,6 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 
 
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\Factory;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Component\SettingsInterface as Settings;
@@ -21,6 +23,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Modifieddate;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Structure;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Api\Resources;
 
 
 /**
@@ -87,6 +90,22 @@ final class Structuremultiple
 	protected Structure $structure;
 
 	/**
+	 * The Api Resources Class.
+	 *
+	 * @var   Resources
+	 * @since 6.1.7
+	 */
+	protected Resources $resources;
+
+	/**
+	 * The Application Class.
+	 *
+	 * @var   CMSApplicationInterface
+	 * @since 6.1.7
+	 */
+	protected CMSApplicationInterface $app;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config         $config         The Config Class.
@@ -101,7 +120,8 @@ final class Structuremultiple
 	 */
 	public function __construct(Config $config, Registry $registry, Settings $settings,
 		Component $component, Createdate $createdate,
-		Modifieddate $modifieddate, Structure $structure)
+		Modifieddate $modifieddate, Structure $structure,
+		Resources $resources, ?CMSApplicationInterface $app = null)
 	{
 		$this->config = $config;
 		$this->registry = $registry;
@@ -110,6 +130,8 @@ final class Structuremultiple
 		$this->createdate = $createdate;
 		$this->modifieddate = $modifieddate;
 		$this->structure = $structure;
+		$this->resources = $resources;
+		$this->app = $app ?: Factory::getApplication();
 	}
 
 	/**
@@ -124,6 +146,7 @@ final class Structuremultiple
 
 		if ($this->settings->exists())
 		{
+			$this->mapApi();
 			$success = $this->admin();
 			$success = $this->site() || $success;
 			$success = $this->custom() || $success;
@@ -209,6 +232,7 @@ final class Structuremultiple
 			}
 
 			$this->buildView($view, $config, 'site');
+			$this->buildDynamicApi($view, $config, 'site');
 		}
 
 		return true;
@@ -237,6 +261,7 @@ final class Structuremultiple
 			}
 
 			$this->buildView($view, $config, 'custom_admin');
+			$this->buildDynamicApi($view, $config, 'custom_admin');
 		}
 
 		return true;
@@ -422,6 +447,13 @@ final class Structuremultiple
 			$target = ['api' => $settings->name_list];
 			$this->structure->build($target, 'list', false, $config);
 		}
+
+		// build the serializer (the item and the list resource share it)
+		if ($settings->name_single != 'null')
+		{
+			$target = ['api' => $settings->name_single];
+			$this->structure->build($target, 'serializer', false, $config);
+		}
 	}
 
 	/**
@@ -440,6 +472,49 @@ final class Structuremultiple
 		$view_type = ($view['settings']->main_get->gettype == 1) ? 'single' : 'list';
 
 		$this->structure->build($target, $view_type, false, $config);
+	}
+
+	/**
+	 * Map the API resources of the component and report the name collisions.
+	 *
+	 * @return void
+	 * @since  6.1.7
+	 */
+	private function mapApi(): void
+	{
+		$this->resources->map(
+			$this->component->isArray('admin_views') ? $this->component->get('admin_views') : [],
+			$this->component->isArray('custom_admin_views') ? $this->component->get('custom_admin_views') : [],
+			$this->component->isArray('site_views') ? $this->component->get('site_views') : []
+		);
+
+		foreach ($this->resources->warnings() as $warning)
+		{
+			$this->app->enqueueMessage($warning, 'Warning');
+		}
+	}
+
+	/**
+	 * Build the API files of a site view or custom admin view.
+	 *
+	 * @param array  $view    The view link with its settings.
+	 * @param array  $config  The build configuration.
+	 * @param string $area    The area of the view.
+	 *
+	 * @return void
+	 * @since  6.1.7
+	 */
+	private function buildDynamicApi(array $view, array $config, string $area): void
+	{
+		$name = $this->resources->name($area, (string) $view['settings']->code);
+
+		if ($name === null)
+		{
+			return;
+		}
+
+		$type = ($view['settings']->main_get->gettype == 1) ? 'dynamic_single' : 'dynamic_list';
+		$this->structure->build(['api' => $name], $type, false, $config);
 	}
 }
 

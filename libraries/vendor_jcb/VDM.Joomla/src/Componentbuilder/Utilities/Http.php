@@ -16,7 +16,6 @@ use Joomla\CMS\Http\Http as JoomlaHttp;
 use Joomla\Registry\Registry;
 
 
-
 /**
  * The Joomla Component Builder Http
  * 

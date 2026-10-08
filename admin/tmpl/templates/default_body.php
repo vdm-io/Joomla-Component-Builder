@@ -70,26 +70,26 @@ $edit = "index.php?option=com_componentbuilder&view=templates&task=template.edit
 		<td class="nowrap">
 			<div>
 			<?php if (!$this->isModal && $canDo->get('core.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'templates.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php if (!$this->isModal): ?>
-					<?php echo $this->escape($item->name); ?>
+					<?php echo $this->sanitize($item->name); ?>
 				<?php else: ?>
 					<?php
 						$link = "{$edit}&id={$item->id}";
 						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->name, false) . '</a>';
+						$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->name, false) . '</a>';
 						$attribs = 'data-content-select data-content-type="com_componentbuilder.template"'
-							. ' data-id="' . $dataId . '"'
-							. ' data-title="' . $this->escape($item->name, false) . '"'
-							. ' data-uri="' . $this->escape($link, false) . '"'
-							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+							. ' data-id="' . $this->sanitize($dataId, false) . '"'
+							. ' data-title="' . $this->sanitize($item->name, false) . '"'
+							. ' data-uri="' . $this->sanitize($link, false) . '"'
+							. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 					?>
 					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-						<?php echo $this->escape($item->name); ?>
+						<?php echo $this->sanitize($item->name); ?>
 					</a>
 				<?php endif; ?>
 			<?php endif; ?><br />
@@ -98,7 +98,7 @@ $edit = "index.php?option=com_componentbuilder&view=templates&task=template.edit
 		</td>
 		<td class="hidden-phone">
 			<div><em>
-			<?php echo $this->escape($item->description); ?></em>
+			<?php echo $this->sanitize($item->description); ?></em>
 			<ul style="list-style: none">
 				<li><?php echo Text::_("COM_COMPONENTBUILDER_CUSTOM_PHP"); ?>: <b>
 			<?php echo Text::_($item->add_php_view); ?></b></li>
@@ -108,9 +108,9 @@ $edit = "index.php?option=com_componentbuilder&view=templates&task=template.edit
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $this->user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) ($item->dynamic_get_id ?? 0))): ?>
-					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->dynamic_get_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->dynamic_get_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=dynamic_gets&task=dynamic_get.edit&id=<?php echo $item->dynamic_get_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->sanitize($item->dynamic_get_name); ?></a>
 				<?php else: ?>
-					<?php echo $this->escape($item->dynamic_get_name); ?>
+					<?php echo $this->sanitize($item->dynamic_get_name); ?>
 				<?php endif; ?>
 			</div>
 		</td>

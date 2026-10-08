@@ -345,7 +345,7 @@ abstract class Get extends Package
 
 		if ($repository === null)
 		{
-			$this->message->add('warning',
+			$this->getMessageBus()->add('warning',
 				sprintf('Repository with GUID "%s" could not be resolved and was ignored.', $guid)
 			);
 		}

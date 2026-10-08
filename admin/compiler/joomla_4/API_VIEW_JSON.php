@@ -16,6 +16,7 @@ defined('_JCB_TEMPLATE') or die;
 namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Api\View\###View###;
 
 ###API_VIEW_JSON_HEADER###
+use ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Api\Serializer\###View###Serializer;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -27,4 +28,72 @@ namespace ###NAMESPACEPREFIX###\Component\###ComponentNamespace###\Api\View\###V
  */
 class JsonapiView extends BaseApiView
 {
+	/**
+	 * The fields to render item in the documents
+	 *
+	 * @var    array
+	 * @since  4.0.0
+	 */
+	protected $fieldsToRenderItem = [###API_VIEW_JSON_FIELDS###
+	];
+
+	/**
+	 * The relationships the item has
+	 *
+	 * @var    array
+	 * @since  4.0.0
+	 */
+	protected $relationship = [###API_VIEW_JSON_RELATIONSHIP###
+	];
+
+	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  A named configuration array for object construction.
+	 *                          contentType: the name (optional) of the content type to use for the serialization
+	 *
+	 * @since   4.0.0
+	 */
+	public function __construct($config = [])
+	{
+		if (\array_key_exists('contentType', $config))
+		{
+			$this->serializer = new ###View###Serializer($config['contentType']);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   object  $item  Item
+	 *
+	 * @return  string
+	 *
+	 * @since   4.0.0
+	 */
+	public function displayItem($item = null)
+	{
+		if ($item === null)
+		{
+			$item = $this->prepareItem($this->getModel()->getItem());
+		}###API_VIEW_JSON_PERMISSIONS###
+
+		return parent::displayItem($item);
+	}
+
+	/**
+	 * Prepare item before render.
+	 *
+	 * @param   object  $item  The model item
+	 *
+	 * @return  object
+	 *
+	 * @since   4.0.0
+	 */
+	protected function prepareItem($item)
+	{###API_VIEW_JSON_PREPAREITEM###
+		return parent::prepareItem($item);
+	}
 }

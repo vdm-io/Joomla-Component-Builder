@@ -29,6 +29,5 @@ interface HistoryInterface
 	 * @since 3.2.0
 	 */
 	public function get(string $type, int $id): ?object;
-
 }
 

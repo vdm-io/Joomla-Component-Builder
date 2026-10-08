@@ -477,23 +477,25 @@ class HtmlView extends BaseHtmlView
 		Text::script('COM_COMPONENTBUILDER_NO_DESCRIPTION_FOUND');
 	}
 
+
+
 	/**
-	 * Escapes a value for output in a view script.
+	 * Sanitises a value to plain text for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
 	 * @param   bool   $shorten The switch to shorten.
 	 * @param   int    $length  The shorting length.
 	 *
-	 * @return  mixed  The escaped value.
+	 * @return  mixed  The value as plain text.
 	 * @since   1.6
 	 */
-	public function escape($var, bool $shorten = true, int $length = 30)
+	public function sanitize($var, bool $shorten = true, int $length = 30)
 	{
 		if (!is_string($var))
 		{
 			return $var;
 		}
 
-		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+		return StringHelper::sanitize($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}
 }

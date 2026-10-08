@@ -137,7 +137,8 @@ class Compiler implements ServiceProviderInterface
 			$container->get('Joomlamodule.Structure'),
 			$container->get('Joomlaplugin.Structure'),
 			$container->get('Utilities.Folder'),
-			$container->get('Utilities.Paths')
+			$container->get('Utilities.Paths'),
+			$container->get('Power.Selection')
 		);
 	}
 

@@ -138,7 +138,7 @@ final class AddModalToolBar implements AddModalToolBarInterface
 		$this->language->set(
 			$this->config->lang_target,
 			$langViews . '_EMPTYSTATE_CONTENT',
-			$view['settings']->description
+			$view['settings']->description ?? ''
 		);
 		// add empty button add
 		$this->language->set(

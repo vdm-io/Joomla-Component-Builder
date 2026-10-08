@@ -474,6 +474,13 @@ final class GetItem
 			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 				. "\$app = Joomla__" . "_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
 			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
+				. "//" . Line::_(__LINE__, __CLASS__) . " The API answers not found instead of redirecting.";
+			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2) . "if (\$app->isClient('api'))";
+			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2) . "{";
+			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(3)
+				. "throw new \\Exception(Joomla__" . "_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('{$langKey}'), 404);";
+			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2) . "}";
+			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 				. "//" . Line::_(__LINE__, __CLASS__) . " If no data is found redirect to default page and show warning.";
 			$block .= PHP_EOL . Indent::_(1) . $tab . Indent::_(2)
 				. "\$app->enqueueMessage(Joomla__" . "_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('{$langKey}'), 'warning');";

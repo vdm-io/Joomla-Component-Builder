@@ -87,7 +87,7 @@ final class AllowEdit implements AllowEditInterface
 		// prepare custom permission script
 		$customAllow = $this->dispenser->get(
 			'php_allowedit', $nameSingleCode, Indent::_(2)
-			. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;"
+			. "\$recordId = isset(\$data[\$key]) ? (int) \$data[\$key] : 0;"
 			. PHP_EOL
 		);
 
@@ -102,7 +102,7 @@ final class AllowEdit implements AllowEditInterface
 			$allow[] = $customAllow;
 			$allow[] = Indent::_(2) . "return \$user->authorise('"
 				. $this->permission->getAction($nameSingleCode, 'core.edit') . "', 'com_" . $component . "." . $nameSingleCode
-				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or \$user->authorise('"
+				. ".'. (isset(\$data[\$key]) ? (int) \$data[\$key] : 0)) or \$user->authorise('"
 				. $this->permission->getAction($nameSingleCode, 'core.edit') . "',  'com_" . $component . "');";
 		}
 		else
@@ -116,7 +116,7 @@ final class AllowEdit implements AllowEditInterface
 			$allow[] = Indent::_(2)
 				. "return \$user->authorise('core.edit', 'com_"
 				. $component . "." . $nameSingleCode
-				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0));";
+				. ".'. (isset(\$data[\$key]) ? (int) \$data[\$key] : 0));";
 		}
 
 		return implode(PHP_EOL, $allow);

@@ -57,6 +57,5 @@ interface DispenserInterface
 	 */
 	public function get(string $first, string $second, string $prefix = '', ?string $note = null,
 	                    bool $unset = false, $default = null, string $suffix = '');
-
 }
 

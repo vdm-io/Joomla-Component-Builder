@@ -229,7 +229,7 @@ final class AllowEditViews implements AllowEditViewsInterface
 			$allow[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 				. " get record id.";
 			$allow[] = Indent::_(2)
-				. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;";
+				. "\$recordId = isset(\$data[\$key]) ? (int) \$data[\$key] : 0;";
 			// load custom permission script
 			$allow[] = $customAllow;
 			$allow[] = Indent::_(1) . '}';

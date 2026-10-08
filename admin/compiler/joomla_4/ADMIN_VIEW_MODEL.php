@@ -108,15 +108,7 @@ class ###View###Model extends AdminModel
 				$metadata       = new Joomla___a87c432d_b5b4_428e_b7ff_14b51664c624___Power($item->metadata);
 				$item->metadata = $metadata->toArray();
 			}
-
-			// check edit access permissions
-			if (!empty($item->id) && !$this->allowEdit((array) $item))
-			{
- 				$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
-  				$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Not authorised!'), 'error');
-				$app->redirect('index.php?option=com_###component###');
-				return false;
-			}###METHOD_GET_ITEM###
+###ADMIN_VIEW_MODEL_ITEM_ACCESS######METHOD_GET_ITEM###
 		}###LINKEDVIEWGLOBAL###
 
 		return $item;

@@ -152,23 +152,25 @@ class HtmlView extends BaseHtmlView
 		}###CUSTOM_ADMIN_DOCUMENT_CUSTOM_JS###
 	}
 
+
+
 	/**
-	 * Escapes a value for output in a view script.
+	 * Sanitises a value to plain text for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
 	 * @param   bool   $shorten The switch to shorten.
 	 * @param   int    $length  The shorting length.
 	 *
-	 * @return  mixed  The escaped value.
+	 * @return  mixed  The value as plain text.
 	 * @since   1.6
 	 */
-	public function escape($var, bool $shorten = false, int $length = 40)
+	public function sanitize($var, bool $shorten = false, int $length = 40)
 	{
 		if (!is_string($var))
 		{
 			return $var;
 		}
 
-		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::sanitize($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}###CUSTOM_ADMIN_GET_MODULE###
 }

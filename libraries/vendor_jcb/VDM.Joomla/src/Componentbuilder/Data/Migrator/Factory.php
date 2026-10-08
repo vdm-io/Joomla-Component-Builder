@@ -18,8 +18,8 @@ use VDM\Joomla\Service\Database;
 use VDM\Joomla\Service\Model;
 use VDM\Joomla\Service\Data;
 use VDM\Joomla\Componentbuilder\Service\Data as ComponentData;
-use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

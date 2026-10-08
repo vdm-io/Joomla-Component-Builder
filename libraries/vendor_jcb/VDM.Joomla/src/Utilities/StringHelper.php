@@ -64,10 +64,16 @@ abstract class StringHelper
 	 */
 	public static function shorten($string, int $length = 40, bool $addTip = true)
 	{
-		// Validate string input and return original if invalid or short enough.
-		if (!self::check($string) || mb_strlen($string) <= $length)
+		// Validate string input and return original if invalid.
+		if (!self::check($string))
 		{
 			return $string;
+		}
+
+		// Nothing to shorten, but the value still leaves this method HTML safe.
+		if (mb_strlen($string) <= $length)
+		{
+			return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 		}
 
 		// Truncate string to nearest word boundary
@@ -86,18 +92,18 @@ abstract class StringHelper
 		// Add tooltip if requested
 		if ($addTip)
 		{
-			// Safely escape output for HTML
+			// The nested call already returns an HTML safe title.
 			$title = self::shorten($string, 400 , false);
 
 			return sprintf(
 				'<span class="hasTip" title="%s" style="cursor:help">%s</span>',
-				htmlspecialchars($title, ENT_QUOTES, 'UTF-8'),
-				htmlspecialchars($shortened, ENT_QUOTES, 'UTF-8')
+				$title,
+				htmlspecialchars($shortened, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
 			);
 		}
 
 		// Return shortened version without tooltip
-		return $shortened;
+		return htmlspecialchars($shortened, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 	}
 
 	/**
@@ -276,46 +282,65 @@ abstract class StringHelper
 	}
 
 	/**
-	 * Ensures a string is safe for HTML output by encoding entities and applying an input filter.
+	 * Sanitise a value down to plain text for output.
 	 *
-	 * This method sanitizes the input string, converting special characters to HTML entities 
-	 * and applying Joomla's `InputFilter` to remove potentially unsafe HTML.
-	 * Optionally, it can also shorten the string while preserving word integrity.
+	 * Every tag is removed, not only the ones that can execute, so what is
+	 * left is the text those tags wrapped. The result is then encoded, which
+	 * makes it equally safe in a text node and inside a quoted attribute.
 	 *
-	 * @param string  $var      The input string containing HTML content.
+	 * This is the objective the html() method has always carried, and html()
+	 * is now an alias of this one.
+	 *
+	 * @param string  $var      The value to sanitise.
 	 * @param string  $charset  The character set to use for encoding (default: 'UTF-8').
 	 * @param bool    $shorten  Whether to shorten the string to a specified length (default: false).
 	 * @param int     $length   The maximum length for shortening, if enabled (default: 40).
 	 * @param bool    $addTip   Whether to append a tooltip (ellipsis) when shortening (default: true).
 	 *
-	 * @return string The sanitized and optionally shortened HTML-safe string.
-	 * @since 3.0.9
+	 * @return string The plain text, optionally shortened, value.
+	 * @since 6.1.7
 	 */
-	public static function html($var, $charset = 'UTF-8', $shorten = false, $length = 40, $addTip = true): string
+	public static function sanitize($var, $charset = 'UTF-8', $shorten = false, $length = 40, $addTip = true): string
 	{
-		if (self::check($var))
-		{
-			$filter = new InputFilter();
-			$string = $filter->clean(
-				html_entity_decode(
-					htmlentities(
-						(string) $var,
-						ENT_COMPAT,
-						$charset
-					)
-				),
-				'HTML'
-			);
-			if ($shorten)
-			{
-				return self::shorten($string, $length, $addTip);
-			}
-			return $string;
-		}
-		else
+		if (!self::check($var))
 		{
 			return '';
 		}
+
+		// a default InputFilter is a whitelist over an empty tag list, so it
+		// drops every tag and keeps the text they wrapped
+		$filter = new InputFilter();
+		$string = html_entity_decode(
+			$filter->clean((string) $var, 'HTML'),
+			ENT_QUOTES,
+			$charset
+		);
+
+		if ($shorten)
+		{
+			// shorten() encodes every value it returns
+			return self::shorten($string, $length, $addTip);
+		}
+
+		return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
+	}
+
+	/**
+	 * Sanitise a value down to plain text for output.
+	 *
+	 * @param string  $var      The value to sanitise.
+	 * @param string  $charset  The character set to use for encoding (default: 'UTF-8').
+	 * @param bool    $shorten  Whether to shorten the string to a specified length (default: false).
+	 * @param int     $length   The maximum length for shortening, if enabled (default: 40).
+	 * @param bool    $addTip   Whether to append a tooltip (ellipsis) when shortening (default: true).
+	 *
+	 * @return string The plain text, optionally shortened, value.
+	 * @since 3.0.9
+	 * @deprecated 6.1.7  Use sanitize(), which this calls.
+	 */
+	public static function html($var, $charset = 'UTF-8', $shorten = false, $length = 40, $addTip = true): string
+	{
+		return self::sanitize($var, $charset, $shorten, $length, $addTip);
 	}
 
 	/**
@@ -454,6 +479,7 @@ abstract class StringHelper
 	 *
 	 * @returns string
 	 * @since  3.0.9
+	 * @throws \Random\RandomException If no random source is available.
 	 */
 	public static function random(int $size): string
 	{
@@ -463,7 +489,9 @@ abstract class StringHelper
 
 		for ($i = 0; $i < $size; $i++)
 		{
-			$get = rand(0, $bagsize);
+			// this value guards generated passwords and upload file names,
+			// so it must come from a cryptographic source, not rand()
+			$get = random_int(0, $bagsize);
 			$key[] = $bag[$get];
 		}
 

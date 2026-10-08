@@ -71,6 +71,5 @@ class Linkedviews
 
 		unset($item->addlinked_views);
 	}
-
 }
 

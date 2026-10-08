@@ -110,6 +110,5 @@ abstract class PluginHelper
 			$codeName
 		);
 	}
-
 }
 

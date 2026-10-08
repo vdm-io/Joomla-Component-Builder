@@ -326,7 +326,7 @@ class Help_documentsModel extends ListModel
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search) . '%');
-				$query->where('(a.title LIKE '.$search.' OR a.type LIKE '.$search.' OR a.location LIKE '.$search.' OR a.admin_view LIKE '.$search.' OR g. LIKE '.$search.' OR a.site_view LIKE '.$search.' OR h. LIKE '.$search.')');
+				$query->where('(a.title LIKE '.$search.' OR a.type LIKE '.$search.' OR a.location LIKE '.$search.' OR a.admin_view LIKE '.$search.' OR a.site_view LIKE '.$search.')');
 			}
 		}
 

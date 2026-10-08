@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder;
 
 
-use VDM\Joomla\Interfaces\PHPConfigurationCheckerInterface;
 use VDM\Joomla\Abstraction\PHPConfigurationChecker as ExtendingPHPConfigurationChecker;
+use VDM\Joomla\Interfaces\PHPConfigurationCheckerInterface;
 
 
 /**

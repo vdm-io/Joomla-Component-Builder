@@ -103,6 +103,5 @@ class Siteviews
 			unset($item->addsite_views);
 		}
 	}
-
 }
 

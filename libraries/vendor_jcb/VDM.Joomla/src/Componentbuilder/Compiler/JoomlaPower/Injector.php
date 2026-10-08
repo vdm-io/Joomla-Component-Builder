@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaPower;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\InjectorInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector as ExtendingInjector;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\InjectorInterface;
 
 
 /**

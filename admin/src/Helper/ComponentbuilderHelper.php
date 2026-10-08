@@ -5846,6 +5846,11 @@ abstract class ComponentbuilderHelper
 		{
 			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
 		}
+		// Access control (extrusion.access && extrusion.submenu).
+		if ($user->authorise('extrusion.access', 'com_componentbuilder') && $user->authorise('extrusion.submenu', 'com_componentbuilder'))
+		{
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_EXTRUSION'), 'index.php?option=com_componentbuilder&view=extrusion', $submenu === 'extrusion');
+		}
 		if ($user->authorise('joomla_component.access', 'com_componentbuilder') && $user->authorise('joomla_component.submenu', 'com_componentbuilder'))
 		{
 			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');

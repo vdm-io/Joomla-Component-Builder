@@ -15,14 +15,14 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
-use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Uri\Uri;
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
 $wa->useScript('keepalive')->useScript('form.validate');
 Html::_('bootstrap.tooltip');
 use Joomla\CMS\Session\Session;
+use VDM\Joomla\Utilities\StringHelper;
+use Joomla\CMS\Uri\Uri;
 
 // No direct access to this file
 defined('_JEXEC') or die;
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							<?php echo $this->form->renderFieldset('builder'); ?>
 						<?php endif; ?>
 					</div>
-					<button class="btn btn-primary btn-lg px-4 me-sm-3" style="width: 100%;" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
+					<button type="button" class="btn btn-primary btn-lg px-4 me-sm-3" style="width: 100%;" onclick="Joomla.submitbutton('compiler.compiler')"><span class="icon-cog icon-white"></span>
 						<?php echo Text::_('COM_COMPONENTBUILDER_COMPILE_COMPONENT'); ?>
 					</button>
 					<input type="hidden" name="install_item_id" value="0"> 

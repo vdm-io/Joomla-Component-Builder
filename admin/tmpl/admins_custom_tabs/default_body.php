@@ -69,26 +69,26 @@ $edit = "index.php?option=com_componentbuilder&view=admins_custom_tabs&task=admi
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $canDo->get('admin_custom_tabs.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->admin_view_system_name); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->admin_view_system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'admins_custom_tabs.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php if (!$this->isModal): ?>
-						<?php echo $this->escape($item->admin_view_system_name); ?>
+						<?php echo $this->sanitize($item->admin_view_system_name); ?>
 					<?php else: ?>
 						<?php
 							$link = "{$edit}&id={$item->id}";
 							$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-							$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->admin_view_system_name, false) . '</a>';
+							$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->admin_view_system_name, false) . '</a>';
 							$attribs = 'data-content-select data-content-type="com_componentbuilder.admin_custom_tabs"'
-								. ' data-id="' . $dataId . '"'
-								. ' data-title="' . $this->escape($item->admin_view_system_name, false) . '"'
-								. ' data-uri="' . $this->escape($link, false) . '"'
-								. ' data-html="' . $this->escape($itemHtml, false) . '"';
+								. ' data-id="' . $this->sanitize($dataId, false) . '"'
+								. ' data-title="' . $this->sanitize($item->admin_view_system_name, false) . '"'
+								. ' data-uri="' . $this->sanitize($link, false) . '"'
+								. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 						?>
 						<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-							<?php echo $this->escape($item->admin_view_system_name); ?>
+							<?php echo $this->sanitize($item->admin_view_system_name); ?>
 						</a>
 					<?php endif; ?>
 				<?php endif; ?>

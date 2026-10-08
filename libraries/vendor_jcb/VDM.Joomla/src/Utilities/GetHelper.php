@@ -287,6 +287,5 @@ abstract class GetHelper
 
 		return $default;
 	}
-
 }
 

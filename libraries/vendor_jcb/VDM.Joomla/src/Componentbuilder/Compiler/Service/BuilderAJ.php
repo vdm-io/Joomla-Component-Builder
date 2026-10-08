@@ -31,6 +31,9 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentMulti;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Contributors;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomAlias;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomAdminAdded;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomAdminViewListId;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomAdminViewListLink;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomField;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomFieldLinks;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\CustomForm;
@@ -45,6 +48,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\DynamicButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\EventDispatcher;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DoNotEscape;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\DynamicFields;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\EximportView;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ExtensionCustomFields;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ExtensionsParams;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\FieldGroupControl;
@@ -60,6 +64,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\HasMenuGlobal;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\HasPermissions;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\HiddenFields;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\History;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ImportCustomScripts;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\IntegerFields;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ItemsMethodEximportString;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ItemsMethodListString;
@@ -136,6 +141,15 @@ class BuilderAJ implements ServiceProviderInterface
 		$container->alias(CustomAlias::class, 'Compiler.Builder.Custom.Alias')
 			->share('Compiler.Builder.Custom.Alias', [$this, 'getCustomAlias'], true);
 
+		$container->alias(CustomAdminAdded::class, 'Compiler.Builder.Custom.Admin.Added')
+			->share('Compiler.Builder.Custom.Admin.Added', [$this, 'getCustomAdminAdded'], true);
+
+		$container->alias(CustomAdminViewListId::class, 'Compiler.Builder.Custom.Admin.View.List.Id')
+			->share('Compiler.Builder.Custom.Admin.View.List.Id', [$this, 'getCustomAdminViewListId'], true);
+
+		$container->alias(CustomAdminViewListLink::class, 'Compiler.Builder.Custom.Admin.View.List.Link')
+			->share('Compiler.Builder.Custom.Admin.View.List.Link', [$this, 'getCustomAdminViewListLink'], true);
+
 		$container->alias(CustomField::class, 'Compiler.Builder.Custom.Field')
 			->share('Compiler.Builder.Custom.Field', [$this, 'getCustomField'], true);
 
@@ -177,6 +191,9 @@ class BuilderAJ implements ServiceProviderInterface
 
 		$container->alias(DynamicFields::class, 'Compiler.Builder.Dynamic.Fields')
 			->share('Compiler.Builder.Dynamic.Fields', [$this, 'getDynamicFields'], true);
+
+		$container->alias(EximportView::class, 'Compiler.Builder.Eximport.View')
+			->share('Compiler.Builder.Eximport.View', [$this, 'getEximportView'], true);
 
 		$container->alias(ExtensionCustomFields::class, 'Compiler.Builder.Extension.Custom.Fields')
 			->share('Compiler.Builder.Extension.Custom.Fields', [$this, 'getExtensionCustomFields'], true);
@@ -222,6 +239,9 @@ class BuilderAJ implements ServiceProviderInterface
 
 		$container->alias(History::class, 'Compiler.Builder.History')
 			->share('Compiler.Builder.History', [$this, 'getHistory'], true);
+
+		$container->alias(ImportCustomScripts::class, 'Compiler.Builder.Import.Custom.Scripts')
+			->share('Compiler.Builder.Import.Custom.Scripts', [$this, 'getImportCustomScripts'], true);
 
 		$container->alias(IntegerFields::class, 'Compiler.Builder.Integer.Fields')
 			->share('Compiler.Builder.Integer.Fields', [$this, 'getIntegerFields'], true);
@@ -633,6 +653,19 @@ class BuilderAJ implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The EximportView Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  EximportView
+	 * @since   6.1.7
+	 */
+	public function getEximportView(Container $container): EximportView
+	{
+		return new EximportView();
+	}
+
+	/**
 	 * Get The DynamicFields Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -841,6 +874,19 @@ class BuilderAJ implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The ImportCustomScripts Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ImportCustomScripts
+	 * @since 6.1.7
+	 */
+	public function getImportCustomScripts(Container $container): ImportCustomScripts
+	{
+		return new ImportCustomScripts();
+	}
+
+	/**
 	 * Get The IntegerFields Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -916,6 +962,44 @@ class BuilderAJ implements ServiceProviderInterface
 	public function getJsonString(Container $container): JsonString
 	{
 		return new JsonString();
+	}
+	/**
+	 * Get The CustomAdminAdded Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomAdminAdded
+	 * @since   6.1.7
+	 */
+	public function getCustomAdminAdded(Container $container): CustomAdminAdded
+	{
+		return new CustomAdminAdded();
+	}
+
+	/**
+	 * Get The CustomAdminViewListId Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomAdminViewListId
+	 * @since   6.1.7
+	 */
+	public function getCustomAdminViewListId(Container $container): CustomAdminViewListId
+	{
+		return new CustomAdminViewListId();
+	}
+
+	/**
+	 * Get The CustomAdminViewListLink Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  CustomAdminViewListLink
+	 * @since   6.1.7
+	 */
+	public function getCustomAdminViewListLink(Container $container): CustomAdminViewListLink
+	{
+		return new CustomAdminViewListLink();
 	}
 }
 
