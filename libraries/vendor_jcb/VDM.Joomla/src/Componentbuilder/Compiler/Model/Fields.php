@@ -347,6 +347,5 @@ class Fields
 
 		unset($item->addfields);
 	}
-
 }
 

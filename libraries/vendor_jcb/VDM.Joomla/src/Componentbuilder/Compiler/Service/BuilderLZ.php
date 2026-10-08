@@ -21,6 +21,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\LayoutData;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\LibraryManager;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ListFieldClass;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ListHeadOverride;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ListColumnNumber;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ListJoin;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Lists;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\MainTextField;
@@ -53,6 +54,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\Request;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Router;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ScriptMediaSwitch;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ScriptUserSwitch;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\SecondRunAdmin;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Search;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\SelectionTranslation;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteDecrypt;
@@ -69,6 +71,11 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\TemplateData;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\Title;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\UikitComp;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\UpdateMysql;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\UninstallScriptContent;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\UninstallScriptFields;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\UninstallScriptContext;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ValidationFix;
+use VDM\Joomla\Componentbuilder\Compiler\Builder\ViewScript;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ViewsDefaultOrdering;
 
 
@@ -109,6 +116,9 @@ class BuilderLZ implements ServiceProviderInterface
 
 		$container->alias(ListHeadOverride::class, 'Compiler.Builder.List.Head.Override')
 			->share('Compiler.Builder.List.Head.Override', [$this, 'getListHeadOverride'], true);
+
+		$container->alias(ListColumnNumber::class, 'Compiler.Builder.List.Column.Number')
+			->share('Compiler.Builder.List.Column.Number', [$this, 'getListColumnNumber'], true);
 
 		$container->alias(ListJoin::class, 'Compiler.Builder.List.Join')
 			->share('Compiler.Builder.List.Join', [$this, 'getListJoin'], true);
@@ -209,6 +219,9 @@ class BuilderLZ implements ServiceProviderInterface
 		$container->alias(Search::class, 'Compiler.Builder.Search')
 			->share('Compiler.Builder.Search', [$this, 'getSearch'], true);
 
+		$container->alias(SecondRunAdmin::class, 'Compiler.Builder.Second.Run.Admin')
+			->share('Compiler.Builder.Second.Run.Admin', [$this, 'getSecondRunAdmin'], true);
+
 		$container->alias(SelectionTranslation::class, 'Compiler.Builder.Selection.Translation')
 			->share('Compiler.Builder.Selection.Translation', [$this, 'getSelectionTranslation'], true);
 
@@ -254,6 +267,20 @@ class BuilderLZ implements ServiceProviderInterface
 		$container->alias(UpdateMysql::class, 'Compiler.Builder.Update.Mysql')
 			->share('Compiler.Builder.Update.Mysql', [$this, 'getUpdateMysql'], true);
 
+
+		$container->alias(UninstallScriptFields::class, 'Compiler.Builder.Uninstall.Script.Fields')
+			->share('Compiler.Builder.Uninstall.Script.Fields', [$this, 'getUninstallScriptFields'], true);
+
+		$container->alias(UninstallScriptContext::class, 'Compiler.Builder.Uninstall.Script.Context')
+			->share('Compiler.Builder.Uninstall.Script.Context', [$this, 'getUninstallScriptContext'], true);
+
+		$container->alias(UninstallScriptContent::class, 'Compiler.Builder.Uninstall.Script.Content')
+			->share('Compiler.Builder.Uninstall.Script.Content', [$this, 'getUninstallScriptContent'], true);
+
+		$container->alias(ValidationFix::class, 'Compiler.Builder.Validation.Fix')
+			->share('Compiler.Builder.Validation.Fix', [$this, 'getValidationFix'], true);
+		$container->alias(ViewScript::class, 'Compiler.Builder.View.Script')
+			->share('Compiler.Builder.View.Script', [$this, 'getViewScript'], true);
 		$container->alias(ViewsDefaultOrdering::class, 'Compiler.Builder.Views.Default.Ordering')
 			->share('Compiler.Builder.Views.Default.Ordering', [$this, 'getViewsDefaultOrdering'], true);
 	}
@@ -779,6 +806,19 @@ class BuilderLZ implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The SecondRunAdmin Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  SecondRunAdmin
+	 * @since 6.1.7
+	 */
+	public function getSecondRunAdmin(Container $container): SecondRunAdmin
+	{
+		return new SecondRunAdmin();
+	}
+
+	/**
 	 * Get The SelectionTranslation Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -961,6 +1001,71 @@ class BuilderLZ implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The ValidationFix Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ValidationFix
+	 * @since   6.1.7
+	 */
+	public function getValidationFix(Container $container): ValidationFix
+	{
+		return new ValidationFix();
+	}
+
+
+
+	/**
+	 * Get The UninstallScriptContext Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  UninstallScriptContext
+	 * @since   6.1.7
+	 */
+	public function getUninstallScriptContext(Container $container): UninstallScriptContext
+	{
+		return new UninstallScriptContext();
+	}
+
+
+	/**
+	 * Get The UninstallScriptFields Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  UninstallScriptFields
+	 * @since   6.1.7
+	 */
+	public function getUninstallScriptFields(Container $container): UninstallScriptFields
+	{
+		return new UninstallScriptFields();
+	}
+	/**
+	 * Get The UninstallScriptContent Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  UninstallScriptContent
+	 * @since   6.1.7
+	 */
+	public function getUninstallScriptContent(Container $container): UninstallScriptContent
+	{
+		return new UninstallScriptContent();
+	}
+	/**
+	 * Get The ViewScript Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ViewScript
+	 * @since   6.1.7
+	 */
+	public function getViewScript(Container $container): ViewScript
+	{
+		return new ViewScript();
+	}
+	/**
 	 * Get The UpdateMysql Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -984,6 +1089,19 @@ class BuilderLZ implements ServiceProviderInterface
 	public function getViewsDefaultOrdering(Container $container): ViewsDefaultOrdering
 	{
 		return new ViewsDefaultOrdering();
+	}
+
+	/**
+	 * Get The ListColumnNumber Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ListColumnNumber
+	 * @since   6.1.7
+	 */
+	public function getListColumnNumber(Container $container): ListColumnNumber
+	{
+		return new ListColumnNumber();
 	}
 }
 

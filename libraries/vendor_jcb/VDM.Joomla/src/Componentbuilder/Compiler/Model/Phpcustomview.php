@@ -147,6 +147,5 @@ class Phpcustomview
 			}
 		}
 	}
-
 }
 

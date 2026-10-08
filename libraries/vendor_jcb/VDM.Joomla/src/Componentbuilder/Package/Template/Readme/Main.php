@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Package\Template\Readme;
 
 
-use VDM\Joomla\Interfaces\Readme\MainInterface;
 use VDM\Joomla\Componentbuilder\Package\Readme\Main as ExtendingMain;
+use VDM\Joomla\Interfaces\Readme\MainInterface;
 
 
 /**
@@ -111,6 +111,5 @@ MD;
 
 		return implode("\n", $readme);
 	}
-
 }
 

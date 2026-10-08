@@ -25,7 +25,7 @@ use VDM\Joomla\Abstraction\ActiveRegistry;
  * @since 3.2.0
  * @since 5.0.4 Joomla Registry Compatible
  */
-abstract class Registry extends ActiveRegistry implements Registryinterface,  \JsonSerializable, \ArrayAccess, \IteratorAggregate, \Countable
+abstract class Registry extends ActiveRegistry implements Registryinterface, \JsonSerializable, \ArrayAccess, \IteratorAggregate, \Countable
 {
 	/**
 	 * Path separator

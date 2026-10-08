@@ -21,6 +21,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExtractorInterfac
 use VDM\Joomla\Componentbuilder\Compiler\Component;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
 use VDM\Joomla\Componentbuilder\Compiler\Power;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Selection;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Structure as ComponentStructure;
 use VDM\Joomla\Componentbuilder\Compiler\Component\Structuresingle;
@@ -100,6 +101,14 @@ final class Initializer
 	 * @since 5.1.4
 	 */
 	protected Power $power;
+
+	/**
+	 * Shared compiler dependency selection.
+	 *
+	 * @var   Selection
+	 * @since 6.2.0
+	 */
+	protected Selection $selection;
 
 	/**
 	 * The ContentOne Class.
@@ -225,6 +234,7 @@ final class Initializer
 	 * @param PluginStructure      $pluginstructure      The StructureInterface Class.
 	 * @param Folder               $folder               The Folder Class.
 	 * @param Paths                $paths                The Paths Class.
+	 * @param Selection|null       $selection            Shared compiler dependency selection.
 	 *
 	 * @since 5.1.4
 	 */
@@ -238,7 +248,7 @@ final class Initializer
 		PowerStructure $powerstructure,
 		ModuleStructure $modulestructure,
 		PluginStructure $pluginstructure, Folder $folder,
-		Paths $paths)
+		Paths $paths, ?Selection $selection = null)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -246,6 +256,7 @@ final class Initializer
 		$this->component = $component;
 		$this->registry = $registry;
 		$this->power = $power;
+		$this->selection = $selection ?? new Selection();
 		$this->contentone = $contentone;
 		$this->componentstructure = $componentstructure;
 		$this->structuresingle = $structuresingle;
@@ -437,13 +448,10 @@ final class Initializer
 	 */
 	protected function loadUtilityPowers(): void
 	{
-		$this->power->get('1f28cb53-60d9-4db1-b517-3c7dc6b429ef', 1);
-		$this->power->get('0a59c65c-9daf-4bc9-baf4-e063ff9e6a8a', 1);
-		$this->power->get('640b5352-fb09-425f-a26e-cd44eda03f15', 1);
-		$this->power->get('91004529-94a9-4590-b842-e7c6b624ecf5', 1);
-		$this->power->get('db87c339-5bb6-4291-a7ef-2c48ea1b06bc', 1);
-		$this->power->get('4b225c51-d293-48e4-b3f6-5136cf5c3f18', 1);
-		$this->power->get('1198aecf-84c6-45d2-aea8-d531aa4afdfa', 1);
+		foreach ($this->selection->utilityPowers() as $guid => $force)
+		{
+			$this->power->get($guid, $force);
+		}
 	}
 
 	/**

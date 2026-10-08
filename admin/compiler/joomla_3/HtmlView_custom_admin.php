@@ -57,17 +57,19 @@ class ###Component###View###SView### extends HtmlView
 		###CUSTOM_ADMIN_ADDTOOLBAR###
 	}###CUSTOM_ADMIN_GET_MODULE###
 
+
+
 	/**
-	 * Escapes a value for output in a view script.
+	 * Sanitises a value to plain text for output in a view script.
 	 *
 	 * @param   mixed  $var  The output to escape.
 	 *
-	 * @return  mixed  The escaped value.
+	 * @return  mixed  The value as plain text.
 	 */
-	public function escape($var)
+	public function sanitize($var)
 	{
-		// use the helper htmlEscape method instead.
-		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::html($var, $this->_charset);
+		// strip every tag, leaving only the text.
+		return Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::sanitize($var, $this->_charset);
 	}
 
 	/**

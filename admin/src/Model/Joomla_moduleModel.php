@@ -36,8 +36,9 @@ use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
-use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use Joomla\CMS\Access\Exception\NotAllowed;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -297,13 +298,25 @@ class Joomla_moduleModel extends AdminModel
 				$item->metadata = $metadata->toArray();
 			}
 
-			// check edit access permissions
-			if (!empty($item->id) && !$this->allowEdit((array) $item))
+			// API reads use read permissions; administrator editing keeps its edit guard.
+			if (!empty($item->id))
 			{
- 				$app = Factory::getApplication();
-  				$app->enqueueMessage(Text::_('Not authorised!'), 'error');
-				$app->redirect('index.php?option=com_componentbuilder');
-				return false;
+				$app = Factory::getApplication();
+
+				if ($app->isClient('api'))
+				{
+					$user = $app->getIdentity();
+					if (!($user->authorise('joomla_module.access', 'com_componentbuilder.joomla_module.' . $item->id) && $user->authorise('joomla_module.access', 'com_componentbuilder')) || (!$user->authorise('core.options', 'com_componentbuilder') && !in_array((int) $item->access, $user->getAuthorisedViewLevels())))
+					{
+						throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+					}
+				}
+				elseif (!$this->allowEdit((array) $item))
+				{
+					$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+					$app->redirect('index.php?option=com_componentbuilder');
+					return false;
+				}
 			}
 
 			if (!empty($item->default))
@@ -504,8 +517,13 @@ class Joomla_moduleModel extends AdminModel
 
 		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
+		// The record being saved decides the permissions, so its id wins over the request.
+		if (is_array($data) && isset($data['id']) && (int) $data['id'] > 0)
+		{
+			$id = (int) $data['id'];
+		}
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
-		if ($jinput->get('a_id'))
+		elseif ($jinput->get('a_id'))
 		{
 			$id = $jinput->get('a_id', 0, 'INT');
 		}
@@ -539,21 +557,47 @@ class Joomla_moduleModel extends AdminModel
 		if ($id != 0 && (!$user->authorise('joomla_module.edit.created_by', 'com_componentbuilder.joomla_module.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_module.edit.created_by', 'com_componentbuilder')))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'readonly', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created_by', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created_by');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created_by', 'disabled', 'true');
+				$form->setFieldAttribute('created_by', 'readonly', 'true');
+				$form->setFieldAttribute('created_by', 'filter', 'unset');
+			}
 		}
 		// Modify the form based on Edit Creaded Date access controls.
 		if ($id != 0 && (!$user->authorise('joomla_module.edit.created', 'com_componentbuilder.joomla_module.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('joomla_module.edit.created', 'com_componentbuilder')))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created', 'disabled', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created', 'disabled', 'true');
+				$form->setFieldAttribute('created', 'filter', 'unset');
+			}
+		}
+
+		// Omitted PATCH metadata must not be filtered or rebound from storage.
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$submittedApiData = $jinput->get('data', json_decode($jinput->json->getRaw(), true), 'array');
+			foreach (['created', 'created_by'] as $metadataField)
+			{
+				if (!is_array($submittedApiData) || !array_key_exists($metadataField, $submittedApiData))
+				{
+					$form->removeField($metadataField);
+				}
+			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -609,6 +653,10 @@ class Joomla_moduleModel extends AdminModel
 			$form->setValue('guid', null, GuidHelper::get());
 		}
  
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$this->setState('jcb.api.patch.form', $form);
+		}
 		return $form;
 	}
 
@@ -717,7 +765,7 @@ class Joomla_moduleModel extends AdminModel
 		// get user object.
 		$user = $this->getCurrentUser();
 		// get record id.
-		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+		$recordId = isset($data[$key]) ? (int) $data[$key] : 0;
 
 
 		// Access check.
@@ -733,10 +781,10 @@ class Joomla_moduleModel extends AdminModel
 			$permission = $user->authorise('joomla_module.edit', 'com_componentbuilder.joomla_module.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('joomla_module.edit.own', 'com_componentbuilder.joomla_module.' . $recordId))
+				if ($user->authorise('joomla_module.edit.own', 'com_componentbuilder.joomla_module.' . (int) $recordId))
 				{
 					// Now test the owner is the user.
-					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+					$ownerId = isset($data['created_by']) ? (int) $data['created_by'] : 0;
 					if (empty($ownerId))
 					{
 						return false;
@@ -1051,6 +1099,74 @@ class Joomla_moduleModel extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// The record keys, as every line below expects them: the primary key as an
+		// integer that is never taken from the request (null from the API on create).
+		$data['id'] = (int) ($data['id'] ?? 0);
+
+		// The guid is the server's: an existing record keeps the guid it was stored
+		// with, and the API never takes one from the request.
+		if ($data['id'] > 0)
+		{
+			$data['guid'] = (string) GetHelper::var('joomla_module', $data['id'], 'id', 'guid', '=', 'componentbuilder');
+		}
+		elseif (Factory::getApplication()->isClient('api'))
+		{
+			$data['guid'] = '';
+		}
+		else
+		{
+			$data['guid'] = (string) ($data['guid'] ?? '');
+		}
+
+		// Set the guid while it is empty, not valid, or not unique in this table.
+		while (!GuidHelper::valid($data['guid'], 'joomla_module', $data['id'], 'componentbuilder'))
+		{
+			$data['guid'] = (string) GuidHelper::get();
+		}
+
+		// Preserve omitted API PATCH values in their original storage representation.
+		$jcbPatchStored = [];
+		$jcbPatchInput = [];
+		$jcbPatchId = $data['id'];
+
+		if ($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api') && $jcbPatchId > 0)
+		{
+			$jcbPatchSubmitted = $input->get('data', json_decode($input->json->getRaw(), true), 'array');
+			$jcbPatchSubmitted = is_array($jcbPatchSubmitted) ? $jcbPatchSubmitted : [];
+			// Joomla's API inserts an empty tags array after validation. It must not
+			// clear omitted relationships or bypass the form's field permissions.
+			$jcbPatchForm = $this->getState('jcb.api.patch.form');
+			if (!array_key_exists('tags', $jcbPatchSubmitted)
+				|| ($jcbPatchForm !== null && (!$jcbPatchForm->getField('tags')
+					|| strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'filter', '')) === 'unset'
+					|| in_array(strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'disabled', '')), ['true', '1'], true))))
+			{
+				unset($data['tags']);
+			}
+
+			$jcbPatchTable = $this->getTable();
+
+			if (!$jcbPatchTable->load($jcbPatchId))
+			{
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_RECORD_LOAD'));
+
+				return false;
+			}
+
+			foreach ($jcbPatchTable->getFields() as $jcbPatchField)
+			{
+				$jcbPatchName = $jcbPatchField->Field;
+
+				if ($jcbPatchName !== $jcbPatchTable->getKeyName() && $jcbPatchName !== 'guid'
+					&& !array_key_exists($jcbPatchName, $jcbPatchSubmitted)
+					&& array_key_exists($jcbPatchName, $data))
+				{
+					$jcbPatchStored[$jcbPatchName] = $jcbPatchTable->{$jcbPatchName};
+					$jcbPatchInput[$jcbPatchName] = serialize($data[$jcbPatchName]);
+				}
+			}
+		}
+
 		// check if the name has placeholder
 		if (strpos($data['name'], '[[[') === false && strpos($data['name'], '###') === false)
 		{
@@ -1079,139 +1195,280 @@ class Joomla_moduleModel extends AdminModel
 			$data['guid'] = (string) GuidHelper::get();
 		}
 
+		// A copy or a custom derivation must follow the normal storage transforms.
+		if ((int) $data['id'] !== $jcbPatchId)
+		{
+			$jcbPatchStored = [];
+		}
+		else
+		{
+			foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+			{
+				if (!array_key_exists($jcbPatchName, $data)
+					|| serialize($data[$jcbPatchName]) !== $jcbPatchInput[$jcbPatchName])
+				{
+					unset($jcbPatchStored[$jcbPatchName]);
+				}
+			}
+		}
+
+		if (array_key_exists('libraries', $jcbPatchStored)
+			&& (!array_key_exists('libraries', $data) || serialize($data['libraries']) !== $jcbPatchInput['libraries']))
+		{
+			unset($jcbPatchStored['libraries']);
+		}
+
 		// Set the libraries items to data.
-		if (isset($data['libraries']) && is_array($data['libraries']))
+		if (isset($data['libraries']) && is_array($data['libraries']) && !array_key_exists('libraries', $jcbPatchStored))
 		{
 			$libraries = new Registry;
 			$libraries->loadArray($data['libraries']);
 			$data['libraries'] = (string) $libraries;
 		}
-		elseif (!isset($data['libraries']))
+		elseif (!isset($data['libraries']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty libraries to data
 			$data['libraries'] = '';
 		}
 
+		if (array_key_exists('custom_get', $jcbPatchStored)
+			&& (!array_key_exists('custom_get', $data) || serialize($data['custom_get']) !== $jcbPatchInput['custom_get']))
+		{
+			unset($jcbPatchStored['custom_get']);
+		}
+
 		// Set the custom_get items to data.
-		if (isset($data['custom_get']) && is_array($data['custom_get']))
+		if (isset($data['custom_get']) && is_array($data['custom_get']) && !array_key_exists('custom_get', $jcbPatchStored))
 		{
 			$custom_get = new Registry;
 			$custom_get->loadArray($data['custom_get']);
 			$data['custom_get'] = (string) $custom_get;
 		}
-		elseif (!isset($data['custom_get']))
+		elseif (!isset($data['custom_get']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty custom_get to data
 			$data['custom_get'] = '';
 		}
 
+		if (array_key_exists('fields', $jcbPatchStored)
+			&& (!array_key_exists('fields', $data) || serialize($data['fields']) !== $jcbPatchInput['fields']))
+		{
+			unset($jcbPatchStored['fields']);
+		}
+
 		// Set the fields items to data.
-		if (isset($data['fields']) && is_array($data['fields']))
+		if (isset($data['fields']) && is_array($data['fields']) && !array_key_exists('fields', $jcbPatchStored))
 		{
 			$fields = new Registry;
 			$fields->loadArray($data['fields']);
 			$data['fields'] = (string) $fields;
 		}
-		elseif (!isset($data['fields']))
+		elseif (!isset($data['fields']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty fields to data
 			$data['fields'] = '';
 		}
 
+		if (array_key_exists('default', $jcbPatchStored)
+			&& (!array_key_exists('default', $data) || serialize($data['default']) !== $jcbPatchInput['default']))
+		{
+			unset($jcbPatchStored['default']);
+		}
+
 		// Set the default string to base64 string.
-		if (isset($data['default']))
+		if (isset($data['default']) && !array_key_exists('default', $jcbPatchStored))
 		{
 			$data['default'] = base64_encode($data['default']);
 		}
 
+		if (array_key_exists('default_header', $jcbPatchStored)
+			&& (!array_key_exists('default_header', $data) || serialize($data['default_header']) !== $jcbPatchInput['default_header']))
+		{
+			unset($jcbPatchStored['default_header']);
+		}
+
 		// Set the default_header string to base64 string.
-		if (isset($data['default_header']))
+		if (isset($data['default_header']) && !array_key_exists('default_header', $jcbPatchStored))
 		{
 			$data['default_header'] = base64_encode($data['default_header']);
 		}
 
+		if (array_key_exists('php_preflight_install', $jcbPatchStored)
+			&& (!array_key_exists('php_preflight_install', $data) || serialize($data['php_preflight_install']) !== $jcbPatchInput['php_preflight_install']))
+		{
+			unset($jcbPatchStored['php_preflight_install']);
+		}
+
 		// Set the php_preflight_install string to base64 string.
-		if (isset($data['php_preflight_install']))
+		if (isset($data['php_preflight_install']) && !array_key_exists('php_preflight_install', $jcbPatchStored))
 		{
 			$data['php_preflight_install'] = base64_encode($data['php_preflight_install']);
 		}
 
+		if (array_key_exists('php_preflight_update', $jcbPatchStored)
+			&& (!array_key_exists('php_preflight_update', $data) || serialize($data['php_preflight_update']) !== $jcbPatchInput['php_preflight_update']))
+		{
+			unset($jcbPatchStored['php_preflight_update']);
+		}
+
 		// Set the php_preflight_update string to base64 string.
-		if (isset($data['php_preflight_update']))
+		if (isset($data['php_preflight_update']) && !array_key_exists('php_preflight_update', $jcbPatchStored))
 		{
 			$data['php_preflight_update'] = base64_encode($data['php_preflight_update']);
 		}
 
+		if (array_key_exists('layout_data', $jcbPatchStored)
+			&& (!array_key_exists('layout_data', $data) || serialize($data['layout_data']) !== $jcbPatchInput['layout_data']))
+		{
+			unset($jcbPatchStored['layout_data']);
+		}
+
 		// Set the layout_data string to base64 string.
-		if (isset($data['layout_data']))
+		if (isset($data['layout_data']) && !array_key_exists('layout_data', $jcbPatchStored))
 		{
 			$data['layout_data'] = base64_encode($data['layout_data']);
 		}
 
+		if (array_key_exists('php_preflight_uninstall', $jcbPatchStored)
+			&& (!array_key_exists('php_preflight_uninstall', $data) || serialize($data['php_preflight_uninstall']) !== $jcbPatchInput['php_preflight_uninstall']))
+		{
+			unset($jcbPatchStored['php_preflight_uninstall']);
+		}
+
 		// Set the php_preflight_uninstall string to base64 string.
-		if (isset($data['php_preflight_uninstall']))
+		if (isset($data['php_preflight_uninstall']) && !array_key_exists('php_preflight_uninstall', $jcbPatchStored))
 		{
 			$data['php_preflight_uninstall'] = base64_encode($data['php_preflight_uninstall']);
 		}
 
+		if (array_key_exists('php_postflight_install', $jcbPatchStored)
+			&& (!array_key_exists('php_postflight_install', $data) || serialize($data['php_postflight_install']) !== $jcbPatchInput['php_postflight_install']))
+		{
+			unset($jcbPatchStored['php_postflight_install']);
+		}
+
 		// Set the php_postflight_install string to base64 string.
-		if (isset($data['php_postflight_install']))
+		if (isset($data['php_postflight_install']) && !array_key_exists('php_postflight_install', $jcbPatchStored))
 		{
 			$data['php_postflight_install'] = base64_encode($data['php_postflight_install']);
 		}
 
+		if (array_key_exists('php_postflight_update', $jcbPatchStored)
+			&& (!array_key_exists('php_postflight_update', $data) || serialize($data['php_postflight_update']) !== $jcbPatchInput['php_postflight_update']))
+		{
+			unset($jcbPatchStored['php_postflight_update']);
+		}
+
 		// Set the php_postflight_update string to base64 string.
-		if (isset($data['php_postflight_update']))
+		if (isset($data['php_postflight_update']) && !array_key_exists('php_postflight_update', $jcbPatchStored))
 		{
 			$data['php_postflight_update'] = base64_encode($data['php_postflight_update']);
 		}
 
+		if (array_key_exists('mod_code', $jcbPatchStored)
+			&& (!array_key_exists('mod_code', $data) || serialize($data['mod_code']) !== $jcbPatchInput['mod_code']))
+		{
+			unset($jcbPatchStored['mod_code']);
+		}
+
 		// Set the mod_code string to base64 string.
-		if (isset($data['mod_code']))
+		if (isset($data['mod_code']) && !array_key_exists('mod_code', $jcbPatchStored))
 		{
 			$data['mod_code'] = base64_encode($data['mod_code']);
 		}
 
+		if (array_key_exists('php_method_uninstall', $jcbPatchStored)
+			&& (!array_key_exists('php_method_uninstall', $data) || serialize($data['php_method_uninstall']) !== $jcbPatchInput['php_method_uninstall']))
+		{
+			unset($jcbPatchStored['php_method_uninstall']);
+		}
+
 		// Set the php_method_uninstall string to base64 string.
-		if (isset($data['php_method_uninstall']))
+		if (isset($data['php_method_uninstall']) && !array_key_exists('php_method_uninstall', $jcbPatchStored))
 		{
 			$data['php_method_uninstall'] = base64_encode($data['php_method_uninstall']);
 		}
 
+		if (array_key_exists('sql', $jcbPatchStored)
+			&& (!array_key_exists('sql', $data) || serialize($data['sql']) !== $jcbPatchInput['sql']))
+		{
+			unset($jcbPatchStored['sql']);
+		}
+
 		// Set the sql string to base64 string.
-		if (isset($data['sql']))
+		if (isset($data['sql']) && !array_key_exists('sql', $jcbPatchStored))
 		{
 			$data['sql'] = base64_encode($data['sql']);
 		}
 
+		if (array_key_exists('sql_uninstall', $jcbPatchStored)
+			&& (!array_key_exists('sql_uninstall', $data) || serialize($data['sql_uninstall']) !== $jcbPatchInput['sql_uninstall']))
+		{
+			unset($jcbPatchStored['sql_uninstall']);
+		}
+
 		// Set the sql_uninstall string to base64 string.
-		if (isset($data['sql_uninstall']))
+		if (isset($data['sql_uninstall']) && !array_key_exists('sql_uninstall', $jcbPatchStored))
 		{
 			$data['sql_uninstall'] = base64_encode($data['sql_uninstall']);
 		}
 
+		if (array_key_exists('class_helper_header', $jcbPatchStored)
+			&& (!array_key_exists('class_helper_header', $data) || serialize($data['class_helper_header']) !== $jcbPatchInput['class_helper_header']))
+		{
+			unset($jcbPatchStored['class_helper_header']);
+		}
+
 		// Set the class_helper_header string to base64 string.
-		if (isset($data['class_helper_header']))
+		if (isset($data['class_helper_header']) && !array_key_exists('class_helper_header', $jcbPatchStored))
 		{
 			$data['class_helper_header'] = base64_encode($data['class_helper_header']);
 		}
 
+		if (array_key_exists('readme', $jcbPatchStored)
+			&& (!array_key_exists('readme', $data) || serialize($data['readme']) !== $jcbPatchInput['readme']))
+		{
+			unset($jcbPatchStored['readme']);
+		}
+
 		// Set the readme string to base64 string.
-		if (isset($data['readme']))
+		if (isset($data['readme']) && !array_key_exists('readme', $jcbPatchStored))
 		{
 			$data['readme'] = base64_encode($data['readme']);
 		}
 
+		if (array_key_exists('class_helper_code', $jcbPatchStored)
+			&& (!array_key_exists('class_helper_code', $data) || serialize($data['class_helper_code']) !== $jcbPatchInput['class_helper_code']))
+		{
+			unset($jcbPatchStored['class_helper_code']);
+		}
+
 		// Set the class_helper_code string to base64 string.
-		if (isset($data['class_helper_code']))
+		if (isset($data['class_helper_code']) && !array_key_exists('class_helper_code', $jcbPatchStored))
 		{
 			$data['class_helper_code'] = base64_encode($data['class_helper_code']);
 		}
 
+		if (array_key_exists('php_script_construct', $jcbPatchStored)
+			&& (!array_key_exists('php_script_construct', $data) || serialize($data['php_script_construct']) !== $jcbPatchInput['php_script_construct']))
+		{
+			unset($jcbPatchStored['php_script_construct']);
+		}
+
 		// Set the php_script_construct string to base64 string.
-		if (isset($data['php_script_construct']))
+		if (isset($data['php_script_construct']) && !array_key_exists('php_script_construct', $jcbPatchStored))
 		{
 			$data['php_script_construct'] = base64_encode($data['php_script_construct']);
+		}
+
+		// Restore unchanged omitted columns without a lossy decode/encode round trip.
+		foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+		{
+			if (array_key_exists($jcbPatchName, $data)
+				&& serialize($data[$jcbPatchName]) === $jcbPatchInput[$jcbPatchName])
+			{
+				$data[$jcbPatchName] = $jcbPatchValue;
+			}
 		}
 
 		// Set the Params Items to data

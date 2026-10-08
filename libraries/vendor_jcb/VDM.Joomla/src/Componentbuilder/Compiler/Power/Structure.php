@@ -353,6 +353,7 @@ class Structure
 			$this->file->write(
 				$fileDetails['path'],
 				'<?xml version="1.0"?>' . PHP_EOL .
+				'<configuration>' . PHP_EOL .
 				'    <system.web>' . PHP_EOL .
 				'        <authorization>' . PHP_EOL .
 				'            <deny users="*" />' . PHP_EOL .

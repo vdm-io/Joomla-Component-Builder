@@ -38,6 +38,5 @@ interface Cryptinterface
 	 * @since 3.2.0
 	 **/
 	public function decrypt(string $string, string $key): ?string;
-
 }
 

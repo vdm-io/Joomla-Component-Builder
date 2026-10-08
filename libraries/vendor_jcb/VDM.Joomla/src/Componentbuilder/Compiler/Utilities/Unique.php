@@ -88,6 +88,5 @@ abstract class Unique
 		// make sure it is unique
 		return self::code($code . self::get(1));
 	}
-
 }
 

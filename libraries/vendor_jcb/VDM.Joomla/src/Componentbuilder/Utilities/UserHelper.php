@@ -18,11 +18,11 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper as JoomlaUserHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Utilities\Component\Helper as Component;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Exception\NoUserIdFoundException;
-use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 
 
 /**

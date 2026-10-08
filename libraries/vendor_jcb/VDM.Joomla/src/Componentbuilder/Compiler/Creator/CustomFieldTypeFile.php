@@ -35,6 +35,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
 use VDM\Joomla\Utilities\String\FieldHelper;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Creator\CustomFieldTypeFileInterface;
 
 
 /**
@@ -42,7 +43,7 @@ use VDM\Joomla\Utilities\String\FieldHelper;
  * 
  * @since 3.2.0
  */
-final class CustomFieldTypeFile
+final class CustomFieldTypeFile implements CustomFieldTypeFileInterface
 {
 	/**
 	 * The Config Class.

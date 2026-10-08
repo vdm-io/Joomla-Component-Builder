@@ -31,6 +31,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Extension\Files\Dynamic;
 use VDM\Joomla\Componentbuilder\Compiler\Extension\Files\Module;
 use VDM\Joomla\Componentbuilder\Compiler\Extension\Files\Plugin;
 use VDM\Joomla\Componentbuilder\Compiler\Extension\Files\Power;
+use VDM\Joomla\Componentbuilder\Compiler\Extension\VersionUpdate;
 
 
 /**
@@ -108,6 +109,9 @@ class Extension implements ServiceProviderInterface
 
 		$container->alias(Power::class, 'Extension.Files.Power')
 			->share('Extension.Files.Power', [$this, 'getPower'], true);
+
+		$container->alias(VersionUpdate::class, 'Extension.VersionUpdate')
+			->share('Extension.VersionUpdate', [$this, 'getVersionUpdate'], true);
 	}
 
 	/**
@@ -407,6 +411,29 @@ class Extension implements ServiceProviderInterface
 			$container->get('Extension.File.Content'),
 			$container->get('Utilities.Files'),
 			$container->get('Compiler.Builder.Content.Multi')
+		);
+	}
+
+	/**
+	 * Get The VersionUpdate Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  VersionUpdate
+	 * @since   6.1.7
+	 */
+	public function getVersionUpdate(Container $container): VersionUpdate
+	{
+		return new VersionUpdate(
+			$container->get('Config'),
+			$container->get('Component'),
+			$container->get('Placeholder'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Content.Multi'),
+			$container->get('Compiler.Builder.Update.Mysql'),
+			$container->get('Utilities.Structure'),
+			$container->get('Data.Item'),
+			$container->get('History')
 		);
 	}
 }

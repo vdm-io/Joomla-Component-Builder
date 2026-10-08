@@ -21,6 +21,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Joomla\Path;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Selection;
 use VDM\Joomla\Componentbuilder\Remote\Get as Superpower;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -111,6 +112,14 @@ class Power implements PowerInterface
 	protected Config $config;
 
 	/**
+	 * Shared, side-effect-free Power selection decisions.
+	 *
+	 * @var   Selection
+	 * @since 6.2.0
+	 */
+	protected Selection $selection;
+
+	/**
 	 * The Placeholder Class.
 	 *
 	 * @var   Placeholder
@@ -175,14 +184,16 @@ class Power implements PowerInterface
 	 * @param Path               $joomlapath    The Path Class.
 	 * @param DatabaseInterface  $db            The Joomla Database Class.
 	 * @param Superpower         $superpower    The Super Class.
+	 * @param Selection|null     $selection     Shared Power selection decisions.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
 		Customcode $customcode, Gui $gui, Path $joomlapath,
-		DatabaseInterface $db, Superpower $superpower)
+		DatabaseInterface $db, Superpower $superpower, ?Selection $selection = null)
 	{
 		$this->config = $config;
+		$this->selection = $selection ?? new Selection();
 		$this->placeholder = $placeholder;
 		$this->customcode = $customcode;
 		$this->gui = $gui;
@@ -222,7 +233,7 @@ class Power implements PowerInterface
 	 */
 	public function get(string $guid, int $build = 0): ?object
 	{
-		if (($this->config->get('add_power', true) || $build == 1) && $this->set($guid))
+		if ($this->selection->enabled($this->config->get('add_power', true), $build) && $this->set($guid))
 		{
 			return $this->active[$guid];
 		}
@@ -610,10 +621,9 @@ class Power implements PowerInterface
 	private function setUseSelection(string $guid, array &$use, array &$as)
 	{
 		// check if we have use selection
-		$this->active[$guid]->use_selection = (isset($this->active[$guid]->use_selection)
-			&& JsonHelper::check(
-				$this->active[$guid]->use_selection
-			)) ? json_decode((string) $this->active[$guid]->use_selection, true) : null;
+		$this->active[$guid]->use_selection = $this->selection->decode(
+			$this->active[$guid]->use_selection ?? null
+		);
 
 		if (ArrayHelper::check($this->active[$guid]->use_selection))
 		{
@@ -641,10 +651,9 @@ class Power implements PowerInterface
 	private function setLoadSelection(string $guid)
 	{
 		// check if we have load selection
-		$this->active[$guid]->load_selection = (isset($this->active[$guid]->load_selection)
-			&& JsonHelper::check(
-				$this->active[$guid]->load_selection
-			)) ? json_decode((string) $this->active[$guid]->load_selection, true) : null;
+		$this->active[$guid]->load_selection = $this->selection->decode(
+			$this->active[$guid]->load_selection ?? null
+		);
 
 		if (ArrayHelper::check($this->active[$guid]->load_selection))
 		{
@@ -751,10 +760,9 @@ class Power implements PowerInterface
 		$this->active[$guid]->implement_names = [];
 
 		// does this implement
-		$this->active[$guid]->implements = (isset($this->active[$guid]->implements)
-			&& JsonHelper::check(
-				$this->active[$guid]->implements
-			)) ? json_decode((string) $this->active[$guid]->implements, true) : null;
+		$this->active[$guid]->implements = $this->selection->decode(
+			$this->active[$guid]->implements ?? null
+		);
 
 		if ($this->active[$guid]->implements)
 		{
@@ -802,7 +810,7 @@ class Power implements PowerInterface
 	private function setExtend(string $guid, array &$use, array &$as)
 	{
 		// build the interface extends details
-		if ($this->active[$guid]->type === 'interface')
+		if ($this->selection->inheritanceField($this->active[$guid]->type) === 'extendsinterfaces')
 		{
 			$this->setExtendInterface($guid, $use, $as);
 		}
@@ -881,10 +889,9 @@ class Power implements PowerInterface
 	private function setExtendInterface(string $guid, array &$use, array &$as)
 	{
 		// does this extends interfaces
-		$this->active[$guid]->extendsinterfaces = (isset($this->active[$guid]->extendsinterfaces)
-			&& JsonHelper::check(
-				$this->active[$guid]->extendsinterfaces
-			)) ? json_decode((string)$this->active[$guid]->extendsinterfaces, true) : null;
+		$this->active[$guid]->extendsinterfaces = $this->selection->decode(
+			$this->active[$guid]->extendsinterfaces ?? null
+		);
 
 		if (ArrayHelper::check($this->active[$guid]->extendsinterfaces))
 		{
@@ -1044,8 +1051,7 @@ class Power implements PowerInterface
 	 */
 	private function setLicensingTemplate(string $guid, array $guiMapper): void
 	{
-		if ($this->active[$guid]->add_licensing_template == 2 &&
-			StringHelper::check($this->active[$guid]->licensing_template))
+		if ($this->selection->codeEnabled((array) $this->active[$guid], 'licensing_template'))
 		{
 			// set GUI mapper field
 			$guiMapper['field'] = 'licensing_template';
@@ -1084,7 +1090,7 @@ class Power implements PowerInterface
 	 */
 	private function setHeader(string $guid, array $guiMapper): void
 	{
-		if ($this->active[$guid]->add_head == 1)
+		if ($this->selection->codeEnabled((array) $this->active[$guid], 'head'))
 		{
 			// set GUI mapper field
 			$guiMapper['field'] = 'head';

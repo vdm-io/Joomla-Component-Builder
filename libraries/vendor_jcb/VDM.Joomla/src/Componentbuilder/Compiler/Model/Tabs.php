@@ -66,6 +66,5 @@ class Tabs
 
 		unset($item->addtabs);
 	}
-
 }
 

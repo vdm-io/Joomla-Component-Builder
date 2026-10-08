@@ -14,8 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaPower;
 
 use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Utilities\JsonHelper;
-use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as ExtendingExtractor;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Power\ExtractorInterface;
 
 
 /**

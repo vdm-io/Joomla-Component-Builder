@@ -114,9 +114,15 @@ final class Subform implements GuidInterface, SubformInterface
 	 */
 	public function set(mixed $items, string $indexKey, string $linkKey, string $linkValue): bool
 	{
-		$items = $this->process($items, $indexKey, $linkKey, $linkValue);
+		// The index values already linked to this parent. A submitted index
+		// value outside this set belongs to another parent, or to nothing, so
+		// it must never be allowed to select the row that gets updated.
+		$owned = $this->items->table($this->getTable())
+			->values([$linkValue], $linkKey, $indexKey);
 
-		$this->purge($items, $indexKey, $linkKey, $linkValue);
+		$items = $this->process($items, $indexKey, $linkKey, $linkValue, $owned ?? []);
+
+		$this->purge($items, $indexKey, $owned);
 
 		if (empty($items))
 		{
@@ -142,19 +148,15 @@ final class Subform implements GuidInterface, SubformInterface
 	/**
 	 * Purge all items no longer in subform
 	 *
-	 * @param array    $items      The list of items to set.
-	 * @param string   $indexKey   The index key on which the items should be observed as it relates to insert/update/delete
-	 * @param string   $linkKey    The link key on which the items where linked in the child table.
-	 * @param string   $linkValue  The value of the link key in child table.
+	 * @param array       $items               The list of items to set.
+	 * @param string      $indexKey            The index key on which the items should be observed as it relates to insert/update/delete
+	 * @param array|null  $currentIndexValues  The index values already linked to the parent.
 	 *
 	 * @return void
 	 * @since 3.2.2
 	 */
-	private function purge(array $items, string $indexKey, string $linkKey, string $linkValue): void
+	private function purge(array $items, string $indexKey, ?array $currentIndexValues): void
 	{
-		// Get the current index values from the database
-		$currentIndexValues = $this->items->table($this->getTable())->values([$linkValue], $linkKey, $indexKey);
-
 		if ($currentIndexValues !== null)
 		{
 			// Check if the items array is empty
@@ -238,11 +240,12 @@ final class Subform implements GuidInterface, SubformInterface
 	 * @param string   $indexKey   The index key on which the items should be observed as it relates to insert/update/delete
 	 * @param string   $linkKey    The link key on which the items where linked in the child table.
 	 * @param string   $linkValue  The value of the link key in child table.
+	 * @param array    $owned      The index values already linked to this parent.
 	 *
 	 * @return array  The processed array of arrays.
 	 * @since 3.2.2
 	 */
-	private function process($items, string $indexKey, string $linkKey, string $linkValue): array
+	private function process($items, string $indexKey, string $linkKey, string $linkValue, array $owned = []): array
 	{
 		$items = is_array($items) ? $items : [];
 		if ($items !== [] && !$this->isMultipleSets($items))
@@ -253,16 +256,19 @@ final class Subform implements GuidInterface, SubformInterface
 		foreach ($items as &$item)
 		{
 			$value = $item[$indexKey] ?? '';
+			// only an index value already linked to this parent may be reused,
+			// anything else becomes a new row under the parent being saved
+			$mine = $value !== '' && in_array((string) $value, array_map('strval', $owned), true);
 			switch ($indexKey) {
 				case 'guid':
-					if (empty($value))
+					if (empty($value) || !$mine)
 					{
 						// set INDEX
 						$item[$indexKey] = $this->getGuid($indexKey);
 					}
 					break;
 				case 'id':
-					if (empty($value))
+					if (empty($value) || !$mine)
 					{
 						$item[$indexKey] = 0;
 					}

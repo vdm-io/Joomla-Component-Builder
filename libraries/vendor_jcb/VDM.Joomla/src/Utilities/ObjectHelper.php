@@ -125,6 +125,5 @@ abstract class ObjectHelper
 			}
 		}
 	}
-
 }
 

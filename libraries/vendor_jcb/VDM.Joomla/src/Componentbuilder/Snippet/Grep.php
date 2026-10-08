@@ -14,8 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Snippet;
 
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Remote\SetDependenciesTrait;
-use VDM\Joomla\Interfaces\GrepInterface;
 use VDM\Joomla\Componentbuilder\Remote\Grep as ExtendingGrep;
+use VDM\Joomla\Interfaces\GrepInterface;
 
 
 /**

@@ -454,6 +454,5 @@ class Plantuml
 
 		return $namespace_colors[$namespaceDepth % count($namespace_colors)] ?? 'lightgrey';
 	}
-
 }
 

@@ -35,8 +35,9 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
-use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use VDM\Joomla\Utilities\String\ClassfunctionHelper;
+use Joomla\CMS\Access\Exception\NotAllowed;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -251,13 +252,25 @@ class PowerModel extends AdminModel
 				$item->metadata = $metadata->toArray();
 			}
 
-			// check edit access permissions
-			if (!empty($item->id) && !$this->allowEdit((array) $item))
+			// API reads use read permissions; administrator editing keeps its edit guard.
+			if (!empty($item->id))
 			{
- 				$app = Factory::getApplication();
-  				$app->enqueueMessage(Text::_('Not authorised!'), 'error');
-				$app->redirect('index.php?option=com_componentbuilder');
-				return false;
+				$app = Factory::getApplication();
+
+				if ($app->isClient('api'))
+				{
+					$user = $app->getIdentity();
+					if (!($user->authorise('power.access', 'com_componentbuilder.power.' . $item->id) && $user->authorise('power.access', 'com_componentbuilder')) || (!$user->authorise('core.options', 'com_componentbuilder') && !in_array((int) $item->access, $user->getAuthorisedViewLevels())))
+					{
+						throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+					}
+				}
+				elseif (!$this->allowEdit((array) $item))
+				{
+					$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+					$app->redirect('index.php?option=com_componentbuilder');
+					return false;
+				}
 			}
 
 			if (!empty($item->licensing_template))
@@ -418,8 +431,13 @@ class PowerModel extends AdminModel
 
 		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
+		// The record being saved decides the permissions, so its id wins over the request.
+		if (is_array($data) && isset($data['id']) && (int) $data['id'] > 0)
+		{
+			$id = (int) $data['id'];
+		}
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
-		if ($jinput->get('a_id'))
+		elseif ($jinput->get('a_id'))
 		{
 			$id = $jinput->get('a_id', 0, 'INT');
 		}
@@ -453,21 +471,47 @@ class PowerModel extends AdminModel
 		if ($id != 0 && (!$user->authorise('power.edit.created_by', 'com_componentbuilder.power.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('power.edit.created_by', 'com_componentbuilder')))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'readonly', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created_by', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created_by');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created_by', 'disabled', 'true');
+				$form->setFieldAttribute('created_by', 'readonly', 'true');
+				$form->setFieldAttribute('created_by', 'filter', 'unset');
+			}
 		}
 		// Modify the form based on Edit Creaded Date access controls.
 		if ($id != 0 && (!$user->authorise('power.edit.created', 'com_componentbuilder.power.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('power.edit.created', 'com_componentbuilder')))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created', 'disabled', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created', 'disabled', 'true');
+				$form->setFieldAttribute('created', 'filter', 'unset');
+			}
+		}
+
+		// Omitted PATCH metadata must not be filtered or rebound from storage.
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$submittedApiData = $jinput->get('data', json_decode($jinput->json->getRaw(), true), 'array');
+			foreach (['created', 'created_by'] as $metadataField)
+			{
+				if (!is_array($submittedApiData) || !array_key_exists($metadataField, $submittedApiData))
+				{
+					$form->removeField($metadataField);
+				}
+			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -523,6 +567,10 @@ class PowerModel extends AdminModel
 			$form->setValue('guid', null, GuidHelper::get());
 		}
 
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$this->setState('jcb.api.patch.form', $form);
+		}
 		return $form;
 	}
 
@@ -631,7 +679,7 @@ class PowerModel extends AdminModel
 		// get user object.
 		$user = $this->getCurrentUser();
 		// get record id.
-		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+		$recordId = isset($data[$key]) ? (int) $data[$key] : 0;
 
 
 		// Access check.
@@ -647,10 +695,10 @@ class PowerModel extends AdminModel
 			$permission = $user->authorise('power.edit', 'com_componentbuilder.power.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('power.edit.own', 'com_componentbuilder.power.' . $recordId))
+				if ($user->authorise('power.edit.own', 'com_componentbuilder.power.' . (int) $recordId))
 				{
 					// Now test the owner is the user.
-					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+					$ownerId = isset($data['created_by']) ? (int) $data['created_by'] : 0;
 					if (empty($ownerId))
 					{
 						return false;
@@ -824,9 +872,77 @@ class PowerModel extends AdminModel
 		}
 
 		// Set the empty approved_paths item to data
-		if (!isset($data['approved_paths']))
+		if (!isset($data['approved_paths']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			$data['approved_paths'] = '';
+		}
+
+		// The record keys, as every line below expects them: the primary key as an
+		// integer that is never taken from the request (null from the API on create).
+		$data['id'] = (int) ($data['id'] ?? 0);
+
+		// The guid is the server's: an existing record keeps the guid it was stored
+		// with, and the API never takes one from the request.
+		if ($data['id'] > 0)
+		{
+			$data['guid'] = (string) GetHelper::var('power', $data['id'], 'id', 'guid', '=', 'componentbuilder');
+		}
+		elseif (Factory::getApplication()->isClient('api'))
+		{
+			$data['guid'] = '';
+		}
+		else
+		{
+			$data['guid'] = (string) ($data['guid'] ?? '');
+		}
+
+		// Set the guid while it is empty, not valid, or not unique in this table.
+		while (!GuidHelper::valid($data['guid'], 'power', $data['id'], 'componentbuilder'))
+		{
+			$data['guid'] = (string) GuidHelper::get();
+		}
+
+		// Preserve omitted API PATCH values in their original storage representation.
+		$jcbPatchStored = [];
+		$jcbPatchInput = [];
+		$jcbPatchId = $data['id'];
+
+		if ($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api') && $jcbPatchId > 0)
+		{
+			$jcbPatchSubmitted = $input->get('data', json_decode($input->json->getRaw(), true), 'array');
+			$jcbPatchSubmitted = is_array($jcbPatchSubmitted) ? $jcbPatchSubmitted : [];
+			// Joomla's API inserts an empty tags array after validation. It must not
+			// clear omitted relationships or bypass the form's field permissions.
+			$jcbPatchForm = $this->getState('jcb.api.patch.form');
+			if (!array_key_exists('tags', $jcbPatchSubmitted)
+				|| ($jcbPatchForm !== null && (!$jcbPatchForm->getField('tags')
+					|| strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'filter', '')) === 'unset'
+					|| in_array(strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'disabled', '')), ['true', '1'], true))))
+			{
+				unset($data['tags']);
+			}
+
+			$jcbPatchTable = $this->getTable();
+
+			if (!$jcbPatchTable->load($jcbPatchId))
+			{
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_RECORD_LOAD'));
+
+				return false;
+			}
+
+			foreach ($jcbPatchTable->getFields() as $jcbPatchField)
+			{
+				$jcbPatchName = $jcbPatchField->Field;
+
+				if ($jcbPatchName !== $jcbPatchTable->getKeyName() && $jcbPatchName !== 'guid'
+					&& !array_key_exists($jcbPatchName, $jcbPatchSubmitted)
+					&& array_key_exists($jcbPatchName, $data))
+				{
+					$jcbPatchStored[$jcbPatchName] = $jcbPatchTable->{$jcbPatchName};
+					$jcbPatchInput[$jcbPatchName] = serialize($data[$jcbPatchName]);
+				}
+			}
 		}
 
 		// check if the name has placeholder
@@ -885,119 +1001,212 @@ class PowerModel extends AdminModel
 			$data['guid'] = (string) GuidHelper::get();
 		}
 
+		// A copy or a custom derivation must follow the normal storage transforms.
+		if ((int) $data['id'] !== $jcbPatchId)
+		{
+			$jcbPatchStored = [];
+		}
+		else
+		{
+			foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+			{
+				if (!array_key_exists($jcbPatchName, $data)
+					|| serialize($data[$jcbPatchName]) !== $jcbPatchInput[$jcbPatchName])
+				{
+					unset($jcbPatchStored[$jcbPatchName]);
+				}
+			}
+		}
+
+		if (array_key_exists('load_selection', $jcbPatchStored)
+			&& (!array_key_exists('load_selection', $data) || serialize($data['load_selection']) !== $jcbPatchInput['load_selection']))
+		{
+			unset($jcbPatchStored['load_selection']);
+		}
+
 		// Set the load_selection items to data.
-		if (isset($data['load_selection']) && is_array($data['load_selection']))
+		if (isset($data['load_selection']) && is_array($data['load_selection']) && !array_key_exists('load_selection', $jcbPatchStored))
 		{
 			$load_selection = new Registry;
 			$load_selection->loadArray($data['load_selection']);
 			$data['load_selection'] = (string) $load_selection;
 		}
-		elseif (!isset($data['load_selection']))
+		elseif (!isset($data['load_selection']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty load_selection to data
 			$data['load_selection'] = '';
 		}
 
+		if (array_key_exists('composer', $jcbPatchStored)
+			&& (!array_key_exists('composer', $data) || serialize($data['composer']) !== $jcbPatchInput['composer']))
+		{
+			unset($jcbPatchStored['composer']);
+		}
+
 		// Set the composer items to data.
-		if (isset($data['composer']) && is_array($data['composer']))
+		if (isset($data['composer']) && is_array($data['composer']) && !array_key_exists('composer', $jcbPatchStored))
 		{
 			$composer = new Registry;
 			$composer->loadArray($data['composer']);
 			$data['composer'] = (string) $composer;
 		}
-		elseif (!isset($data['composer']))
+		elseif (!isset($data['composer']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty composer to data
 			$data['composer'] = '';
 		}
 
+		if (array_key_exists('implements', $jcbPatchStored)
+			&& (!array_key_exists('implements', $data) || serialize($data['implements']) !== $jcbPatchInput['implements']))
+		{
+			unset($jcbPatchStored['implements']);
+		}
+
 		// Set the implements items to data.
-		if (isset($data['implements']) && is_array($data['implements']))
+		if (isset($data['implements']) && is_array($data['implements']) && !array_key_exists('implements', $jcbPatchStored))
 		{
 			$implements = new Registry;
 			$implements->loadArray($data['implements']);
 			$data['implements'] = (string) $implements;
 		}
-		elseif (!isset($data['implements']))
+		elseif (!isset($data['implements']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty implements to data
 			$data['implements'] = '';
 		}
 
+		if (array_key_exists('property_selection', $jcbPatchStored)
+			&& (!array_key_exists('property_selection', $data) || serialize($data['property_selection']) !== $jcbPatchInput['property_selection']))
+		{
+			unset($jcbPatchStored['property_selection']);
+		}
+
 		// Set the property_selection items to data.
-		if (isset($data['property_selection']) && is_array($data['property_selection']))
+		if (isset($data['property_selection']) && is_array($data['property_selection']) && !array_key_exists('property_selection', $jcbPatchStored))
 		{
 			$property_selection = new Registry;
 			$property_selection->loadArray($data['property_selection']);
 			$data['property_selection'] = (string) $property_selection;
 		}
-		elseif (!isset($data['property_selection']))
+		elseif (!isset($data['property_selection']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty property_selection to data
 			$data['property_selection'] = '';
 		}
 
+		if (array_key_exists('extendsinterfaces', $jcbPatchStored)
+			&& (!array_key_exists('extendsinterfaces', $data) || serialize($data['extendsinterfaces']) !== $jcbPatchInput['extendsinterfaces']))
+		{
+			unset($jcbPatchStored['extendsinterfaces']);
+		}
+
 		// Set the extendsinterfaces items to data.
-		if (isset($data['extendsinterfaces']) && is_array($data['extendsinterfaces']))
+		if (isset($data['extendsinterfaces']) && is_array($data['extendsinterfaces']) && !array_key_exists('extendsinterfaces', $jcbPatchStored))
 		{
 			$extendsinterfaces = new Registry;
 			$extendsinterfaces->loadArray($data['extendsinterfaces']);
 			$data['extendsinterfaces'] = (string) $extendsinterfaces;
 		}
-		elseif (!isset($data['extendsinterfaces']))
+		elseif (!isset($data['extendsinterfaces']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty extendsinterfaces to data
 			$data['extendsinterfaces'] = '';
 		}
 
+		if (array_key_exists('method_selection', $jcbPatchStored)
+			&& (!array_key_exists('method_selection', $data) || serialize($data['method_selection']) !== $jcbPatchInput['method_selection']))
+		{
+			unset($jcbPatchStored['method_selection']);
+		}
+
 		// Set the method_selection items to data.
-		if (isset($data['method_selection']) && is_array($data['method_selection']))
+		if (isset($data['method_selection']) && is_array($data['method_selection']) && !array_key_exists('method_selection', $jcbPatchStored))
 		{
 			$method_selection = new Registry;
 			$method_selection->loadArray($data['method_selection']);
 			$data['method_selection'] = (string) $method_selection;
 		}
-		elseif (!isset($data['method_selection']))
+		elseif (!isset($data['method_selection']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty method_selection to data
 			$data['method_selection'] = '';
 		}
 
+		if (array_key_exists('use_selection', $jcbPatchStored)
+			&& (!array_key_exists('use_selection', $data) || serialize($data['use_selection']) !== $jcbPatchInput['use_selection']))
+		{
+			unset($jcbPatchStored['use_selection']);
+		}
+
 		// Set the use_selection items to data.
-		if (isset($data['use_selection']) && is_array($data['use_selection']))
+		if (isset($data['use_selection']) && is_array($data['use_selection']) && !array_key_exists('use_selection', $jcbPatchStored))
 		{
 			$use_selection = new Registry;
 			$use_selection->loadArray($data['use_selection']);
 			$data['use_selection'] = (string) $use_selection;
 		}
-		elseif (!isset($data['use_selection']))
+		elseif (!isset($data['use_selection']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty use_selection to data
 			$data['use_selection'] = '';
 		}
 
+		if (array_key_exists('approved_paths', $jcbPatchStored)
+			&& (!array_key_exists('approved_paths', $data) || serialize($data['approved_paths']) !== $jcbPatchInput['approved_paths']))
+		{
+			unset($jcbPatchStored['approved_paths']);
+		}
+
 		// Set the approved_paths string to JSON string.
-		if (isset($data['approved_paths']))
+		if (isset($data['approved_paths']) && !array_key_exists('approved_paths', $jcbPatchStored))
 		{
 			$data['approved_paths'] = (string) json_encode($data['approved_paths']);
 		}
 
+		if (array_key_exists('licensing_template', $jcbPatchStored)
+			&& (!array_key_exists('licensing_template', $data) || serialize($data['licensing_template']) !== $jcbPatchInput['licensing_template']))
+		{
+			unset($jcbPatchStored['licensing_template']);
+		}
+
 		// Set the licensing_template string to base64 string.
-		if (isset($data['licensing_template']))
+		if (isset($data['licensing_template']) && !array_key_exists('licensing_template', $jcbPatchStored))
 		{
 			$data['licensing_template'] = base64_encode($data['licensing_template']);
 		}
 
+		if (array_key_exists('head', $jcbPatchStored)
+			&& (!array_key_exists('head', $data) || serialize($data['head']) !== $jcbPatchInput['head']))
+		{
+			unset($jcbPatchStored['head']);
+		}
+
 		// Set the head string to base64 string.
-		if (isset($data['head']))
+		if (isset($data['head']) && !array_key_exists('head', $jcbPatchStored))
 		{
 			$data['head'] = base64_encode($data['head']);
 		}
 
+		if (array_key_exists('main_class_code', $jcbPatchStored)
+			&& (!array_key_exists('main_class_code', $data) || serialize($data['main_class_code']) !== $jcbPatchInput['main_class_code']))
+		{
+			unset($jcbPatchStored['main_class_code']);
+		}
+
 		// Set the main_class_code string to base64 string.
-		if (isset($data['main_class_code']))
+		if (isset($data['main_class_code']) && !array_key_exists('main_class_code', $jcbPatchStored))
 		{
 			$data['main_class_code'] = base64_encode($data['main_class_code']);
+		}
+
+		// Restore unchanged omitted columns without a lossy decode/encode round trip.
+		foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+		{
+			if (array_key_exists($jcbPatchName, $data)
+				&& serialize($data[$jcbPatchName]) === $jcbPatchInput[$jcbPatchName])
+			{
+				$data[$jcbPatchName] = $jcbPatchValue;
+			}
 		}
 
 		// Set the Params Items to data

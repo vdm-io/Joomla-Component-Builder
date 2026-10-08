@@ -53,6 +53,5 @@ class Createdate
 
 		return Factory::getDate($date)->format('jS F, Y');
 	}
-
 }
 

@@ -928,6 +928,12 @@ final class Builders
 			$this->databaseuniqueguid->set($table, true);
 		}
 
+		if ($column === 'guid')
+		{
+			// the generated save method keeps this guid valid and unique with the GuidHelper power
+			$this->power->get('9c513baf-b279-43fd-ae29-a585c8cbc4f0', 1);
+		}
+
 		return [$databaseUniqueKey, $databaseKey];
 	}
 

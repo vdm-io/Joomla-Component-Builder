@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Remote;
 
 
-use VDM\Joomla\Interfaces\Remote\GetInterface;
 use VDM\Joomla\Abstraction\Remote\Get as ExtendingGet;
+use VDM\Joomla\Interfaces\Remote\GetInterface;
 
 
 /**

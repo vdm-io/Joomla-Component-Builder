@@ -1,0 +1,379 @@
+/**
+ * @package    Joomla.Component.Builder
+ *
+ * @created    30th April, 2015
+ * @author     Llewellyn van der Merwe <https://dev.vdm.io>
+ * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
+ * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+/* CSS Document */
+
+/* the tab strip */
+#extrusion-tabs .nav-link {
+	background: none;
+	cursor: pointer;
+}
+#extrusion-tabs .nav-link:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+/* the pairing board */
+#extrusion-board {
+	max-height: 70vh;
+	overflow-y: auto;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.25rem;
+}
+.extrusion-kind > summary,
+.extrusion-library > summary,
+.extrusion-bundle > summary,
+.extrusion-fields > summary {
+	cursor: pointer;
+	padding: 0.4rem 0.6rem;
+	font-weight: 600;
+	background: rgba(0, 0, 0, 0.03);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.extrusion-library,
+.extrusion-bundle {
+	margin-left: 0.75rem;
+}
+.extrusion-fields {
+	margin-left: 2rem;
+}
+.extrusion-fields > summary {
+	font-weight: 400;
+	font-size: 0.85rem;
+	background: none;
+}
+.extrusion-row {
+	display: grid;
+	grid-template-columns: 1.25rem minmax(0, 1fr);
+	align-items: start;
+	gap: 0.35rem 0.5rem;
+	padding: 0.55rem 0.6rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.extrusion-row.explicit {
+	background: rgba(255, 193, 7, 0.08);
+}
+.extrusion-row:hover {
+	background: rgba(13, 110, 253, 0.05);
+}
+.extrusion-tick {
+	margin: 0;
+	grid-column: 1;
+	grid-row: 1;
+	padding-top: 0.15rem;
+}
+.extrusion-identity {
+	grid-column: 2;
+	grid-row: 1;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.extrusion-identity small {
+	opacity: 0.6;
+}
+.extrusion-row-heading {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.2rem 0.35rem;
+}
+.extrusion-row-heading small {
+	min-width: 0;
+}
+.extrusion-row-heading .extrusion-match-status {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: auto;
+	max-width: 100%;
+	align-self: center;
+}
+.extrusion-power-evidence {
+	display: block;
+	overflow-wrap: anywhere;
+	margin-top: 0.25rem;
+}
+.extrusion-power-evidence > span,
+.extrusion-power-evidence > code,
+.extrusion-power-evidence details > span,
+.extrusion-power-evidence details > code {
+	display: block;
+}
+.extrusion-actions {
+	grid-column: 2;
+	grid-row: 2;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.35rem;
+}
+.extrusion-act {
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	background: none;
+	max-width: 16rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.extrusion-act.active {
+	background: #0d6efd;
+	border-color: #0d6efd;
+	color: #fff;
+}
+.extrusion-act.active[data-extrusion-act="ignore"] {
+	background: #6c757d;
+	border-color: #6c757d;
+}
+.extrusion-act.active[data-extrusion-act="create"] {
+	background: #198754;
+	border-color: #198754;
+}
+
+/* the bulk bar */
+#extrusion-bulk-bar {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	background: var(--body-bg, #fff);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.extrusion-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-bottom: 0.6rem;
+}
+.extrusion-filter-field {
+	flex: 1 1 11rem;
+	min-width: 0;
+}
+.extrusion-filter-field label {
+	display: block;
+	font-size: 0.85rem;
+	margin: 0;
+}
+.extrusion-filters select,
+.extrusion-filters input {
+	width: 100%;
+	margin-top: 0.2rem;
+}
+.extrusion-bulk-actions,
+.extrusion-confirm-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.35rem 0.5rem;
+}
+.extrusion-filter-count {
+	margin-right: 0.5rem;
+}
+.extrusion-bulk-actions small {
+	flex-basis: 100%;
+	color: var(--body-color, #495057);
+}
+.extrusion-group-check {
+	margin-right: 0.25rem;
+	vertical-align: middle;
+}
+.extrusion-review-details {
+	margin-top: 0.3rem;
+}
+.extrusion-review-details ul {
+	margin-bottom: 0;
+}
+#extrusion-ambiguity-notice {
+	margin: 0.5rem 0;
+}
+
+/* A stacked toolbar must not cover the rows in a narrow viewport. */
+@media (max-width: 767.98px) {
+	#extrusion-bulk-bar {
+		position: static;
+	}
+	#extrusion-board {
+		max-height: none;
+		overflow: visible;
+	}
+}
+
+/* the shared target picker */
+.extrusion-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1060;
+}
+.extrusion-modal-card {
+	background: var(--body-bg, #fff);
+	border-radius: 0.5rem;
+	padding: 1rem;
+	width: min(40rem, 90vw);
+	max-height: 80vh;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+.extrusion-modal-list {
+	overflow-y: auto;
+	flex: 1 1 auto;
+	min-height: 8rem;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.25rem;
+}
+.extrusion-modal-row {
+	display: block;
+	width: 100%;
+	text-align: left;
+	border: none;
+	background: none;
+	padding: 0.35rem 0.6rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	cursor: pointer;
+}
+.extrusion-modal-row:hover {
+	background: rgba(13, 110, 253, 0.08);
+}
+.extrusion-modal-empty {
+	padding: 1rem;
+	text-align: center;
+	opacity: 0.6;
+}
+
+/* the detected component note */
+.extrusion-detected {
+	margin-top: 0.5rem;
+	margin-bottom: 0;
+	padding: 0.35rem 0.6rem;
+	font-size: 0.85rem;
+}
+
+/* the folder picker */
+.extrusion-folder-path {
+	font-family: monospace;
+	font-size: 0.85rem;
+	padding: 0.25rem 0.5rem;
+	background: rgba(0, 0, 0, 0.04);
+	border-radius: 0.25rem;
+	word-break: break-all;
+}
+.extrusion-folder-select {
+	margin-top: 0.25rem;
+}
+
+/* what a row would change, and the diff it opens */
+.extrusion-change {
+	display: inline-flex;
+	gap: 0.3rem;
+	align-items: center;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 0.2rem;
+	background: none;
+	padding: 0 0.35rem;
+	font-family: monospace;
+	font-size: 0.8rem;
+	line-height: 1.6;
+	white-space: nowrap;
+}
+button.extrusion-change:hover,
+button.extrusion-change.open {
+	background: rgba(13, 110, 253, 0.1);
+	border-color: rgba(13, 110, 253, 0.4);
+}
+.extrusion-change-none {
+	color: #6c757d;
+	border-style: dashed;
+}
+.extrusion-change-weighing {
+	color: #6c757d;
+	border-style: dotted;
+	font-style: italic;
+}
+.extrusion-add {
+	color: #1a7f37;
+}
+.extrusion-del {
+	color: #b42318;
+}
+.extrusion-diff {
+	grid-column: 1 / -1;
+	margin: 0.35rem 0 0.5rem;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 0.25rem;
+	background: #fff;
+	max-height: 32rem;
+	overflow: auto;
+}
+.extrusion-diff-note {
+	margin: 0;
+	padding: 0.6rem 0.8rem;
+	color: #6c757d;
+}
+.extrusion-diff-record {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.extrusion-diff-record:last-child {
+	border-bottom: 0;
+}
+.extrusion-diff-record h4 {
+	margin: 0;
+	padding: 0.4rem 0.8rem;
+	font-size: 0.85rem;
+	background: rgba(0, 0, 0, 0.03);
+}
+.extrusion-diff-record h4 small {
+	color: #6c757d;
+	font-weight: normal;
+}
+.extrusion-diff-column h5 {
+	margin: 0;
+	padding: 0.35rem 0.8rem;
+	font-size: 0.8rem;
+	font-family: monospace;
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+.extrusion-diff-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-family: monospace;
+	font-size: 0.78rem;
+	table-layout: fixed;
+}
+.extrusion-diff-table td {
+	vertical-align: top;
+	padding: 0 0.4rem;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+.extrusion-diff-num {
+	width: 3rem;
+	text-align: right;
+	color: #adb5bd;
+	background: rgba(0, 0, 0, 0.02);
+	user-select: none;
+}
+.extrusion-diff-line {
+	width: calc(50% - 3rem);
+}
+.extrusion-diff-line.add {
+	background: rgba(26, 127, 55, 0.12);
+}
+.extrusion-diff-line.remove {
+	background: rgba(180, 35, 24, 0.1);
+}
+.extrusion-diff-line.empty {
+	background: rgba(0, 0, 0, 0.03);
+}
+.extrusion-diff-gap td {
+	text-align: center;
+	color: #adb5bd;
+	background: rgba(0, 0, 0, 0.02);
+}

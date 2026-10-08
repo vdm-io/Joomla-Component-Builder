@@ -72,6 +72,5 @@ class Whmcs
 			$item->whmcs_url      = '';
 		}
 	}
-
 }
 

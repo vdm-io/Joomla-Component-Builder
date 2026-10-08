@@ -71,26 +71,26 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 		<td class="nowrap">
 			<div>
 			<?php if (!$this->isModal && $canDo->get('admin_view.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'admin_views.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php if (!$this->isModal): ?>
-					<?php echo $this->escape($item->system_name); ?>
+					<?php echo $this->sanitize($item->system_name); ?>
 				<?php else: ?>
 					<?php
 						$link = "{$edit}&id={$item->id}";
 						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->system_name, false) . '</a>';
+						$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->system_name, false) . '</a>';
 						$attribs = 'data-content-select data-content-type="com_componentbuilder.admin_view"'
-							. ' data-id="' . $dataId . '"'
-							. ' data-title="' . $this->escape($item->system_name, false) . '"'
-							. ' data-uri="' . $this->escape($link, false) . '"'
-							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+							. ' data-id="' . $this->sanitize($dataId, false) . '"'
+							. ' data-title="' . $this->sanitize($item->system_name, false) . '"'
+							. ' data-uri="' . $this->sanitize($link, false) . '"'
+							. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 					?>
 					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-						<?php echo $this->escape($item->system_name); ?>
+						<?php echo $this->sanitize($item->system_name); ?>
 					</a>
 				<?php endif; ?>
 			<?php endif; ?>
@@ -137,14 +137,14 @@ $edit = "index.php?option=com_componentbuilder&view=admin_views&task=admin_view.
 		</td>
 		<td class="hidden-phone">
 			<div><?php echo Text::_('COM_COMPONENTBUILDER_EDIT_VIEW'); ?>: <b>
-			<?php echo $this->escape($item->name_single); ?></b><br />
+			<?php echo $this->sanitize($item->name_single); ?></b><br />
 			<?php echo Text::_('COM_COMPONENTBUILDER_LIST_VIEW'); ?>: <b>
-			<?php echo $this->escape($item->name_list); ?></b>
+			<?php echo $this->sanitize($item->name_list); ?></b>
 			</div>
 		</td>
 		<td class="hidden-phone">
 			<div><em>
-			<?php echo $this->escape($item->short_description); ?></em>
+			<?php echo $this->sanitize($item->short_description); ?></em>
 			<ul style="list-style: none">
 				<li><?php echo Text::_("COM_COMPONENTBUILDER_CUSTOM_BUTTON"); ?>: <b>
 			<?php echo Text::_($item->add_custom_button); ?></b></li>

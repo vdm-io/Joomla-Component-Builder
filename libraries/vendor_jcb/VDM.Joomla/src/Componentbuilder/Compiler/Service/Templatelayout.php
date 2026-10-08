@@ -57,7 +57,8 @@ class Templatelayout implements ServiceProviderInterface
 			$container->get('Compiler.Builder.Layout.Data'),
 			$container->get('Compiler.Builder.Template.Data'),
 			$container->get('Alias.Data'),
-			$container->get('Utilities.Counter')
+			$container->get('Utilities.Counter'),
+			$container->get('Power.Selection')
 		);
 	}
 

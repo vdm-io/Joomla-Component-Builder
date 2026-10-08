@@ -47,6 +47,7 @@ use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Componentbuilder\Factory as ComponentbuilderFactory;
 use VDM\Joomla\Componentbuilder\File\Factory as FileFactory;
 use VDM\Joomla\File\TypeDefinition;
+use VDM\Joomla\Componentbuilder\Extrusion\Factory as ExtrusionFactory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Form\FormHelper as FormFormHelper;
 
@@ -6468,5 +6469,880 @@ class AjaxModel extends ListModel
 		}
 
 		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_TRANSLATIONS_FILE_COULD_NOT_BE_DELETED')];
+	}
+
+	// Used in extrusion
+	/**
+	 * Safe diagnostics already generated for this request's backend reports.
+	 *
+	 * @var   array<string, array>
+	 * @since 6.2.1
+	 */
+	protected array $extrusionFailureReferences = [];
+
+	/**
+	 * Harvest an extrusion source and return the approval payload.
+	 *
+	 * Nothing is written here. The source is read, resolved and lined up
+	 * against the target component, and the whole tree goes back to the
+	 * page for the pairing step.
+	 *
+	 * Language note: user-facing strings here are natural strings inside
+	 * Text::_() by design, never language constants -- JCB manages these
+	 * strings itself when this code is imported.
+	 *
+	 * @param string $config  The run configuration as a JSON object.
+	 *
+	 * @return array
+	 * @since  6.1.7
+	 */
+	public function extrusionHarvest(string $config): array
+	{
+		$user = method_exists($this, 'getCurrentUser')
+			? $this->getCurrentUser()
+			: Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('extrusion.access', 'com_componentbuilder'))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_USE_THE_EXTRUSION_TOOL')];
+		}
+
+		$options = json_decode($config, true);
+
+		if (!is_array($options))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_THE_EXTRUSION_CONFIGURATION_COULD_NOT_BE_READ')];
+		}
+
+		$phase = 'harvest';
+		$completed = 'validated';
+
+		try
+		{
+			$phase = 'configure';
+			[$extruder, $powers] = $this->extrusionEngines($options);
+			$completed = $phase;
+			$phase = 'harvest';
+
+			if ($extruder === null && $powers === null)
+			{
+				return ['error' => Text::_('COM_COMPONENTBUILDER_GIVE_THE_TOOL_AT_LEAST_A_COMPONENT_SOURCE_FOLDER_AN_SQL_DUMP_OR_A_LIBRARY_FOLDER_TO_HARVEST')];
+			}
+
+			$extruder?->harvest();
+			$completed = $phase;
+			$phase = 'candidates';
+
+			$candidates = ExtrusionFactory::_('Extrusion.Resolver.Candidates');
+			$component = (int) ($options['component'] ?? 0);
+			$detected = $extruder !== null ? $candidates->detect() : null;
+
+			if (!empty($options['detect']) && $detected !== null)
+			{
+				$component = (int) $detected->id;
+			}
+
+			$sourceComponent = max(0, (int) ($options['source_component'] ?? $component));
+
+			$harvested = [
+				'success' => Text::_('COM_COMPONENTBUILDER_THE_SOURCE_WAS_HARVESTED_REVIEW_THE_PAIRINGS_BELOW_THEN_IMPORT'),
+				'component' => $component,
+				'source_component' => $sourceComponent,
+				'detected' => $detected,
+				'components' => $candidates->components(),
+				'candidates' => $extruder !== null ? $candidates->candidates($component) : null,
+				'powers' => null,
+				'messages' => ExtrusionFactory::_('Extruder')->messages(),
+				'report' => $this->extrusionPublicReport()
+			];
+
+			// what every row of the board would change. The account of the
+			// harvest is taken first, above, because weighing starts the run
+			// over: it has to be the very run an import makes, or the board
+			// would answer for a run nobody is going to make -- so it is aimed
+			// at the component the board pairs against, detected or chosen
+			$completed = $phase;
+			$phase = 'preview';
+
+			try
+			{
+				$harvested['changes'] = $this->extrusionProposals(
+					['component' => $component, 'source_component' => $sourceComponent, 'detect' => false] + $options
+				) ?? [];
+				$harvested = array_replace($harvested, $this->extrusionReview());
+				$harvested['messages'] = ExtrusionFactory::_('Extruder')->messages();
+				$harvested['report'] = $this->extrusionPublicReport();
+			}
+			catch (\Throwable $error)
+			{
+				// the harvest stood; only the weighing fell, and the board says so
+				$harvested['changes'] = [];
+				$failure = $this->extrusionFailure($error, $phase, $completed);
+				$harvested['weighing'] = $failure['error'] . ' '
+					. Text::_('COM_COMPONENTBUILDER_FAILURE_REFERENCE') . ' ' . $failure['failure']['reference'];
+				$harvested['failure'] = $failure['failure'];
+			}
+
+			return $harvested;
+		}
+		catch (\Throwable $error)
+		{
+			return $this->extrusionFailure($error, $phase, $completed);
+		}
+	}
+
+	/**
+	 * Run an extrusion import under the pairing verdicts of the page.
+	 *
+	 * The source is harvested again server-side -- the page's tree is a
+	 * preview, never the payload -- and every identity the writers settle
+	 * is governed by the loaded verdicts.
+	 *
+	 * @param string $config     The run configuration as a JSON object.
+	 * @param string $decisions  The pairing verdicts as a JSON object.
+	 *
+	 * @return array
+	 * @since  6.1.7
+	 */
+	public function extrusionImport(string $config, string $decisions): array
+	{
+		$user = method_exists($this, 'getCurrentUser')
+			? $this->getCurrentUser()
+			: Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('extrusion.access', 'com_componentbuilder'))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_IMPORT_WITH_THE_EXTRUSION_TOOL')];
+		}
+
+		$options = json_decode($config, true);
+		$verdicts = json_decode($decisions, true);
+
+		if (!is_array($options) || !is_array($verdicts))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_THE_EXTRUSION_CONFIGURATION_COULD_NOT_BE_READ')];
+		}
+
+		if (empty($options['dry_run']) && !preg_match('/^[a-f0-9]{64}$/D', (string) ($options['approved_plan'] ?? '')))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_REVIEW_THE_CURRENT_WRITE_PLAN_BEFORE_IMPORTING')];
+		}
+
+		$phase = 'import';
+		$completed = 'validated';
+
+		try
+		{
+			$phase = 'configure';
+			[$extruder, $powers] = $this->extrusionEngines($options);
+			$completed = $phase;
+			$phase = 'import';
+
+			if ($extruder === null && $powers === null)
+			{
+				return ['error' => Text::_('COM_COMPONENTBUILDER_GIVE_THE_TOOL_AT_LEAST_A_COMPONENT_SOURCE_FOLDER_AN_SQL_DUMP_OR_A_LIBRARY_FOLDER_TO_HARVEST')];
+			}
+
+			// the verdicts load after the engines reset, because reset is the run boundary
+			if (is_array($verdicts) && $verdicts !== [])
+			{
+				ExtrusionFactory::_('Extrusion.Resolver.Pairing')->load($verdicts);
+			}
+
+			// The component engine owns the shared plan, including its libraries.
+			($extruder ?? $powers)->extrude();
+			$completed = $phase;
+			$phase = 'review';
+			$review = $this->extrusionReview();
+			$status = $review['plan']['status'] ?? 'blocked';
+
+			return $review + [
+				(in_array($status, ['committed', 'unchanged', 'preview'], true) ? 'success' : 'error')
+					=> in_array($status, ['committed', 'unchanged', 'preview'], true)
+						? Text::_('COM_COMPONENTBUILDER_THE_IMPORT_HAS_RUN_THE_FULL_REPORT_FOLLOWS')
+						: Text::_('COM_COMPONENTBUILDER_THE_IMPORT_WAS_BLOCKED_OR_ROLLED_BACK_REVIEW_THE_REPORTED_PLAN_BEFORE_TRYING_AGAIN'),
+				'messages' => ExtrusionFactory::_('Extruder')->messages(),
+				'report' => $this->extrusionPublicReport()
+			];
+		}
+		catch (\Throwable $error)
+		{
+			return $this->extrusionFailure($error, $phase, $completed);
+		}
+	}
+
+	/**
+	 * The catalogue of one component's linked definitions.
+	 *
+	 * The pairing board calls this when the person points the harvest at
+	 * another component, so every proposed pairing can be re-drawn from
+	 * what that component actually links.
+	 *
+	 * @param int $componentId  The component id, zero for none.
+	 *
+	 * @return array
+	 * @since  6.1.7
+	 */
+	public function extrusionCatalogue(int $componentId): array
+	{
+		$user = method_exists($this, 'getCurrentUser')
+			? $this->getCurrentUser()
+			: Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('extrusion.access', 'com_componentbuilder'))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_USE_THE_EXTRUSION_TOOL')];
+		}
+
+		$phase = 'catalogue';
+		$completed = 'validated';
+
+		try
+		{
+			return ExtrusionFactory::_('Extrusion.Resolver.Candidates')->catalogue(
+				$componentId,
+				trim($this->app->input->getString('power_search', ''))
+			);
+		}
+		catch (\Throwable $error)
+		{
+			return $this->extrusionFailure($error, $phase, $completed);
+		}
+	}
+
+	/**
+	 * List the folders below one folder of this site.
+	 *
+	 * The extrusion setup selects its folders by walking the site from its
+	 * root, never by typing paths. Only folders below the site root answer;
+	 * anything else -- traversal, symlinks out, files -- is refused.
+	 *
+	 * @param string $path  The folder relative to the site root, '' for the root.
+	 *
+	 * @return array
+	 * @since  6.1.7
+	 */
+	public function extrusionFolders(string $path): array
+	{
+		$user = method_exists($this, 'getCurrentUser')
+			? $this->getCurrentUser()
+			: Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('extrusion.access', 'com_componentbuilder'))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_USE_THE_EXTRUSION_TOOL')];
+		}
+
+		$base = realpath(JPATH_ROOT);
+
+		if ($base === false)
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_THE_SITE_ROOT_COULD_NOT_BE_RESOLVED')];
+		}
+
+		$relative = trim(str_replace('\\', '/', $path), '/');
+		$target = $relative === '' ? $base : realpath($base . '/' . $relative);
+
+		if ($target === false || !is_dir($target)
+			|| ($target !== $base && !str_starts_with($target, $base . DIRECTORY_SEPARATOR)))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_THAT_FOLDER_DOES_NOT_EXIST_BELOW_THE_SITE_ROOT')];
+		}
+
+		$relative = trim(str_replace('\\', '/', substr($target, strlen($base))), '/');
+		$folders = [];
+
+		foreach (scandir($target) ?: [] as $entry)
+		{
+			if ($entry !== '.' && $entry !== '..' && is_dir($target . '/' . $entry))
+			{
+				$folders[] = $entry;
+			}
+		}
+
+		sort($folders, SORT_NATURAL | SORT_FLAG_CASE);
+
+		return [
+			'base' => $base,
+			'path' => $relative,
+			'parent' => $relative === ''
+				? null
+				: (str_contains($relative, '/')
+					? substr($relative, 0, strrpos($relative, '/')) : ''),
+			'folders' => $folders
+		];
+	}
+
+	/**
+	 * Aim and configure the extrusion engines for one run.
+	 *
+	 * The reset comes first and clears all run state, then every option the
+	 * page sent is applied. An engine that was given nothing to read comes
+	 * back null, so the caller knows which pipelines are in play.
+	 *
+	 * @param array $options  The run configuration.
+	 *
+	 * @return array  The component extruder (or null) and the powers extruder (or null).
+	 * @since  6.1.7
+	 */
+	protected function extrusionEngines(array $options): array
+	{
+		$extruder = ExtrusionFactory::_('Extruder');
+		$powers = ExtrusionFactory::_('Extrusion.Powers.Extruder');
+
+		// one reset clears the shared run state of both engines
+		$extruder->reset();
+
+		$path = trim((string) ($options['path'] ?? ''));
+		$admin = trim((string) ($options['admin_path'] ?? ''));
+		$site = trim((string) ($options['site_path'] ?? ''));
+		$dump = trim((string) ($options['dump'] ?? ''));
+		$libraries = array_values(array_filter(array_map('trim',
+			(array) ($options['libraries'] ?? []))));
+
+		$component = max(0, (int) ($options['component'] ?? 0));
+		$componentCode = trim((string) ($options['component_code'] ?? ''));
+		$repairNamespaces = in_array($options['repair_namespaces'] ?? false, [true, 1, '1'], true);
+
+		if ($repairNamespaces && ($component === 0 || ($options['mode'] ?? 'create') !== 'update'))
+		{
+			throw new \InvalidArgumentException(Text::_('COM_COMPONENTBUILDER_NAMESPACE_REPAIR_REQUIRES_UPDATE_MODE_AND_AN_EXPLICITLY_SELECTED_EXISTING_TARGET_COMPONENT'));
+		}
+
+		if ($repairNamespaces && $libraries === [])
+		{
+			throw new \InvalidArgumentException(Text::_('COM_COMPONENTBUILDER_SELECT_AT_LEAST_ONE_LIBRARY_SOURCE_FOLDER_CONTAINING_THE_CLASSES_WHOSE_POWER_NAMESPACES_SHOULD_BE_REPAIRED'));
+		}
+
+		if ($repairNamespaces && isset($options['source_component']) && (int) $options['source_component'] <= 0)
+		{
+			throw new \InvalidArgumentException(Text::_('COM_COMPONENTBUILDER_NAMESPACE_REPAIR_REQUIRES_AN_EXISTING_SOURCE_COMPONENT_CONTEXT'));
+		}
+
+		$onExisting = (string) ($options['on_existing'] ?? 'update');
+
+		if ($repairNamespaces)
+		{
+			$onExisting = 'update';
+		}
+
+		$dryRun = !empty($options['dry_run']);
+		$depth = max(1, (int) ($options['depth'] ?? 12));
+		$maxFiles = max(1, (int) ($options['max_files'] ?? 20000));
+
+		$aimed = ($path !== '' || $admin !== '' || $site !== '' || $dump !== '');
+
+		if ($aimed)
+		{
+			if ($path !== '')
+			{
+				$extruder->path($path);
+			}
+
+			if ($admin !== '')
+			{
+				$extruder->adminPath($admin);
+			}
+
+			if ($site !== '')
+			{
+				$extruder->sitePath($site);
+			}
+
+			if ($dump !== '')
+			{
+				$extruder->dump($dump);
+			}
+
+			if ($componentCode !== '')
+			{
+				// the person named the component the run creates for, so the
+				// component namespace placeholder has a value to stand on
+				$extruder->codeName($componentCode);
+			}
+
+			$extruder
+				->component($component)
+				->mode((string) ($options['mode'] ?? 'create'))
+				->onExisting($onExisting)
+				->layout((string) ($options['layout'] ?? 'auto'))
+				->languageTag((string) ($options['language_tag'] ?? 'en-GB'))
+				->tableClass((string) ($options['table_class'] ?? 'auto'))
+				->dryRun($dryRun)
+				->strict(!empty($options['strict']))
+				->limits($depth, $maxFiles);
+
+			foreach (['admin', 'site', 'tabs', 'conditions', 'language',
+				'translations', 'relations', 'component_details'] as $scope)
+			{
+				if (isset($options['scope_' . $scope]))
+				{
+					$extruder->scope($scope, !empty($options['scope_' . $scope]));
+				}
+			}
+
+			if (isset($options['scope_site_views']))
+			{
+				$extruder->scope('siteViews', !empty($options['scope_site_views']));
+			}
+		}
+
+		if ($libraries !== [])
+		{
+			if ($componentCode !== '')
+			{
+				$powers->componentCode($componentCode);
+			}
+
+			$powers
+				->libraries($libraries)
+				->component($component)
+				->onExisting($onExisting)
+				->dryRun($dryRun)
+				->limits($depth, $maxFiles);
+		}
+
+		$settings = ExtrusionFactory::_('Extrusion.Config');
+		$settings->set('repairNamespaces', $repairNamespaces);
+		$settings->set('sourceComponent', max(0, (int) ($options['source_component'] ?? $component)));
+		$settings->set('approvedPlan', (string) ($options['approved_plan'] ?? ''));
+
+		foreach (['shared', 'foreign', 'unknown', 'remapping'] as $scope)
+		{
+			$settings->set('acknowledge' . ucfirst($scope),
+				($options['acknowledged_scopes'][$scope] ?? false) === true);
+		}
+
+		if (isset($options['source_bindings']))
+		{
+			if (!is_array($options['source_bindings']))
+			{
+				throw new \InvalidArgumentException(Text::_('COM_COMPONENTBUILDER_SOURCEROOT_BINDINGS_MUST_BE_A_MAPPING'));
+			}
+
+			$settings->set('sourceBindings', $options['source_bindings']);
+		}
+
+		return [$aimed ? $extruder : null, $libraries !== [] ? $powers : null];
+	}
+
+	/**
+	 * What every row of the pairing board would change, under its decisions.
+	 *
+	 * The board asks this after every decision, because a decision on one row
+	 * moves what other rows would write: pairing a view elsewhere re-pairs
+	 * the fields under it, and ignoring a field changes the links its view
+	 * carries. Only the weight of each row travels, so the answer stays the
+	 * size of the board rather than the size of the change.
+	 *
+	 * Language note: user-facing strings here are natural strings inside
+	 * Text::_() by design, never language constants -- JCB manages these
+	 * strings itself when this code is imported.
+	 *
+	 * @param string $config     The run configuration as a JSON object.
+	 * @param string $decisions  The pairing verdicts as a JSON object.
+	 *
+	 * @return array
+	 * @since  6.2.0
+	 */
+	public function extrusionWeigh(string $config, string $decisions): array
+	{
+		$user = method_exists($this, 'getCurrentUser')
+			? $this->getCurrentUser()
+			: Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('extrusion.access', 'com_componentbuilder'))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_USE_THE_EXTRUSION_TOOL')];
+		}
+
+		$options = json_decode($config, true);
+		$verdicts = json_decode($decisions, true);
+
+		if (!is_array($options))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_THE_EXTRUSION_CONFIGURATION_COULD_NOT_BE_READ')];
+		}
+
+		$phase = 'weigh';
+		$completed = 'validated';
+
+		try
+		{
+			if (!is_array($verdicts))
+			{
+				return ['error' => Text::_('COM_COMPONENTBUILDER_THE_PAIRING_DECISIONS_COULD_NOT_BE_READ')];
+			}
+
+			$changes = $this->extrusionProposals($options, $verdicts);
+
+			if ($changes === null)
+			{
+				return ['error' => Text::_('COM_COMPONENTBUILDER_GIVE_THE_TOOL_AT_LEAST_A_COMPONENT_SOURCE_FOLDER_AN_SQL_DUMP_OR_A_LIBRARY_FOLDER_TO_HARVEST')];
+			}
+
+			$completed = $phase;
+			$phase = 'review';
+
+			return ['changes' => $changes] + $this->extrusionReview();
+		}
+		catch (\Throwable $error)
+		{
+			return $this->extrusionFailure($error, $phase, $completed);
+		}
+	}
+
+	/**
+	 * The whole change one row of the pairing board would make.
+	 *
+	 * Nothing is stored between the harvest and this call: the source is read
+	 * and composed again, under the same verdicts, and only the row asked for
+	 * is answered. A whole run costs a fraction of a second, so a person opens
+	 * a diff and reads what stands at that very moment, never a cached picture
+	 * of what stood earlier.
+	 *
+	 * Only the changed lines and the few around them travel, so the answer is
+	 * the size of the change rather than the size of the record.
+	 *
+	 * Language note: user-facing strings here are natural strings inside
+	 * Text::_() by design, never language constants -- JCB manages these
+	 * strings itself when this code is imported.
+	 *
+	 * @param string $config     The run configuration as a JSON object.
+	 * @param string $decisions  The pairing verdicts as a JSON object.
+	 * @param string $row        The board row, as kind and key.
+	 *
+	 * @return array
+	 * @since  6.2.0
+	 */
+	public function extrusionDiff(string $config, string $decisions, string $row): array
+	{
+		$user = method_exists($this, 'getCurrentUser')
+			? $this->getCurrentUser()
+			: Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('extrusion.access', 'com_componentbuilder'))
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_USE_THE_EXTRUSION_TOOL')];
+		}
+
+		$options = json_decode($config, true);
+		$verdicts = json_decode($decisions, true);
+		$row = trim($row);
+
+		if (!is_array($options) || !is_array($verdicts) || $row === '')
+		{
+			return ['error' => Text::_('COM_COMPONENTBUILDER_THE_EXTRUSION_CONFIGURATION_COULD_NOT_BE_READ')];
+		}
+
+		$phase = 'diff';
+		$completed = 'validated';
+
+		try
+		{
+			if ($this->extrusionProposals($options, is_array($verdicts) ? $verdicts : []) === null)
+			{
+				return ['error' => Text::_('COM_COMPONENTBUILDER_GIVE_THE_TOOL_AT_LEAST_A_COMPONENT_SOURCE_FOLDER_AN_SQL_DUMP_OR_A_LIBRARY_FOLDER_TO_HARVEST')];
+			}
+
+			$completed = $phase;
+			$phase = 'review';
+
+			return [
+				'row' => $row,
+				'records' => $this->extrusionRecords($row)
+			] + $this->extrusionReview();
+		}
+		catch (\Throwable $error)
+		{
+			return $this->extrusionFailure($error, $phase, $completed);
+		}
+	}
+
+	/**
+	 * Report a bounded operation failure without exposing exception content.
+	 *
+	 * @param   \Throwable|null  $error      The failure, or null when already captured by an engine.
+	 * @param   string           $phase      The phase which did not finish.
+	 * @param   string           $completed  The last completed phase.
+	 *
+	 * @return  array  Safe error text and a correlation reference.
+	 * @since   6.2.1
+	 */
+	protected function extrusionFailure(?\Throwable $error, string $phase, string $completed): array
+	{
+		$reference = substr(hash('sha256', uniqid('', true)), 0, 16);
+		$failure = [
+			'kind' => 'operation',
+			'reference' => $reference,
+			'phase' => $phase,
+			'last_completed_phase' => $completed
+		];
+		$counters = [];
+
+		try
+		{
+			$report = ExtrusionFactory::_('Extrusion.Registry.Report');
+
+			foreach (['new', 'existing', 'parsed', 'parse_reused', 'dependency_lookups',
+				'dependency_reused', 'binding_checks', 'binding_applications',
+				'blocked_dependency_edges'] as $key)
+			{
+				$counters['powers.' . $key] = (int) $report->get('counts.powers.' . $key, 0);
+			}
+		}
+		catch (\Throwable $reportError)
+		{
+			// The operation may have failed while constructing the container.
+		}
+
+		try
+		{
+			\Joomla\CMS\Log\Log::addLogger(
+				['text_file' => 'jcb-extrusion.php'],
+				\Joomla\CMS\Log\Log::ALL,
+				['com_componentbuilder.extrusion']
+			);
+			\Joomla\CMS\Log\Log::add(
+				json_encode($failure + [
+					'exception' => $error === null ? 'reported-by-engine' : get_class($error),
+					'counters' => $counters,
+					'peak_memory_bytes' => memory_get_peak_usage(true)
+				], JSON_UNESCAPED_SLASHES),
+				\Joomla\CMS\Log\Log::ERROR,
+				'com_componentbuilder.extrusion'
+			);
+		}
+		catch (\Throwable $loggingError)
+		{
+			// A broken logger or container must not replace the original failure.
+		}
+
+		return [
+			'error' => Text::_('COM_COMPONENTBUILDER_THE_SERVER_COULD_NOT_COMPLETE_THIS_OPERATION_REVIEW_THE_CURRENT_STATE_AND_USE_THE_FAILURE_REFERENCE_WHEN_REPORTING_THE_PROBLEM'),
+			'failure' => $failure
+		];
+	}
+
+	/**
+	 * Remove unexpected exception content from the browser's report copy.
+	 *
+	 * Engines preserve private failure details for their callers. The browser
+	 * receives a correlation reference instead, while deliberate validation
+	 * blockers retain their useful explanations. The private registry is unchanged.
+	 *
+	 * @return  array  The safe public report.
+	 * @since   6.2.1
+	 */
+	protected function extrusionPublicReport(): array
+	{
+		$report = ExtrusionFactory::_('Extrusion.Registry.Report')->toArray();
+		$plan = (array) ($report['plan'] ?? []);
+		$preparation = [];
+
+		foreach ((array) ($plan['blockers'] ?? []) as $index => $blocker)
+		{
+			if (is_array($blocker) && in_array($blocker['key'] ?? '', ['component.prepare', 'powers.prepare'], true))
+			{
+				$preparation[] = $index;
+			}
+		}
+
+		if ($preparation === [] && !isset($plan['error']) && !isset($plan['rollback_error']))
+		{
+			return $report;
+		}
+
+		$key = hash('sha256', serialize($plan));
+
+		if (!isset($this->extrusionFailureReferences[$key]))
+		{
+			$phase = $preparation === [] ? 'commit' : 'prepare';
+			$this->extrusionFailureReferences[$key] = $this->extrusionFailure(
+				null, $phase, $phase === 'commit' ? 'prepared' : 'configured'
+			);
+		}
+
+		$failure = $this->extrusionFailureReferences[$key];
+		$message = $failure['error'] . ' ' . Text::_('COM_COMPONENTBUILDER_FAILURE_REFERENCE') . ' ' . $failure['failure']['reference'];
+
+		foreach ($preparation as $index)
+		{
+			$plan['blockers'][$index]['reason'] = $message;
+		}
+
+		foreach (['error', 'rollback_error'] as $field)
+		{
+			if (isset($plan[$field]))
+			{
+				$plan[$field] = $message;
+			}
+		}
+
+		$report['plan'] = $plan;
+		$report['failure'] = $failure['failure'];
+
+		return $report;
+	}
+
+	/**
+	 * Weigh what a run would write, without writing any of it.
+	 *
+	 * The weighing is a run of its own, from the source up, because that is
+	 * the only run whose answer is worth anything: resolving a second time
+	 * over a harvest that has already resolved settles the shared fields
+	 * differently, and the board would then show weights for a run the import
+	 * is never going to make. Writing is suppressed whatever the run itself
+	 * is set to.
+	 *
+	 * @param array $options   The run configuration.
+	 * @param array $verdicts  The pairing verdicts, when the caller has any.
+	 *
+	 * @return array|null  The weight of every board row, or null when nothing was aimed at.
+	 * @since  6.2.0
+	 */
+	protected function extrusionProposals(array $options, array $verdicts = []): ?array
+	{
+		[$extruder, $powers] = $this->extrusionEngines(['dry_run' => true] + $options);
+
+		if ($extruder === null && $powers === null)
+		{
+			return null;
+		}
+
+		// the verdicts load after the engines reset, because reset is the run boundary
+		if ($verdicts !== [])
+		{
+			ExtrusionFactory::_('Extrusion.Resolver.Pairing')->load($verdicts);
+		}
+
+		($extruder ?? $powers)->extrude();
+
+		return ExtrusionFactory::_('Extrusion.Registry.Proposal')->summary();
+	}
+
+	/**
+	 * Every changed record of one board row, line by line.
+	 *
+	 * @param string $row  The board row, as kind and key.
+	 *
+	 * @return array
+	 * @since  6.2.0
+	 */
+	protected function extrusionRecords(string $row): array
+	{
+		$diff = ExtrusionFactory::_('Extrusion.Resolver.Diff');
+		$records = [];
+
+		foreach (ExtrusionFactory::_('Extrusion.Registry.Proposal')->records() as $record)
+		{
+			if ((string) ($record['origin'] ?? '') !== $row || empty($record['changed']))
+			{
+				continue;
+			}
+
+			$columns = [];
+
+			foreach ((array) ($record['columns'] ?? []) as $column => $change)
+			{
+				$columns[] = [
+					'name' => $column,
+					'shape' => (string) ($change['shape'] ?? 'value'),
+					'additions' => (int) ($change['additions'] ?? 0),
+					'deletions' => (int) ($change['deletions'] ?? 0),
+					'hunks' => $diff->compare(
+						(string) ($change['before'] ?? ''),
+						(string) ($change['after'] ?? '')
+					)['hunks']
+				];
+			}
+
+			$records[] = [
+				'table' => (string) ($record['table'] ?? ''),
+				'identity' => (string) ($record['identity'] ?? ''),
+				'action' => (string) ($record['action'] ?? 'update'),
+				'additions' => (int) ($record['additions'] ?? 0),
+				'deletions' => (int) ($record['deletions'] ?? 0),
+				'columns' => $columns
+			];
+		}
+
+		return $records;
+	}
+
+	/**
+	 * The authoritative public review contract, without raw source or placeholder maps.
+	 *
+	 * @return array  The plan and freshly resolved Power rows for this context.
+	 * @since  6.2.0
+	 */
+	protected function extrusionReview(): array
+	{
+		$plan = (array) ($this->extrusionPublicReport()['plan'] ?? []);
+
+		return [
+			'plan' => array_intersect_key($plan, array_flip([
+				'fingerprint', 'status', 'required_approvals', 'changes', 'blockers', 'writes'
+			])),
+			'powers' => $this->extrusionPowersTree()
+		];
+	}
+
+	/**
+	 * The powers harvest tree, trimmed for the pairing board.
+	 *
+	 * A harvest can carry hundreds of classes, each with its full body --
+	 * the page needs the identities and the grouping, never the code.
+	 *
+	 * @return array  The libraries and the trimmed class candidates.
+	 * @since  6.1.7
+	 */
+	protected function extrusionPowersTree(): array
+	{
+		$tree = ExtrusionFactory::_('Extrusion.Powers.Extruder')->harvested();
+		$classes = [];
+
+		foreach ((array) ($tree['classes'] ?? []) as $candidate)
+		{
+			$candidate = (array) $candidate;
+			$result = (array) ($candidate['resolution'] ?? []);
+			$classes[] = [
+				'source_key' => $candidate['source_key'] ?? '',
+				'source_unit' => $candidate['source_unit'] ?? '',
+				'guid' => $candidate['guid'] ?? '',
+				'library' => $candidate['library'] ?? '',
+				'bundle' => $candidate['bundle'] ?? '',
+				'relative' => $candidate['relative'] ?? '',
+				'class' => $candidate['class'] ?? '',
+				'type' => $candidate['type'] ?? '',
+				'fqn' => $candidate['fqn'] ?? '',
+				'stored' => $candidate['stored'] ?? '',
+				'exists' => !empty($candidate['exists']),
+				'id' => (int) ($candidate['id'] ?? 0),
+				'action' => $candidate['action'] ?? 'unresolved',
+				'status' => $result['status'] ?? 'unresolved',
+				'matched_guid' => $result['matched_guid'] ?? null,
+				'write_guid' => $result['write_guid'] ?? null,
+				'target' => $result['target'] ?? null,
+				'consumers' => array_values((array) ($result['consumers'] ?? [])),
+				'source_component' => $result['source_component'] ?? null,
+				'target_component' => $result['target_component'] ?? null,
+				'write_eligibility' => $result['write_eligibility'] ?? 'blocked',
+				'write_scope' => $result['write_scope'] ?? 'unestablished',
+				'reason' => $result['reason'] ?? '',
+				'remapping' => !empty($result['remapping']),
+				'blockers' => array_values((array) ($result['blockers'] ?? [])),
+				'alternatives' => array_values((array) ($result['candidates'] ?? [])),
+				'dependencies' => array_values((array) ($result['dependencies'] ?? [])),
+				'namespace_proposal' => array_intersect_key((array) ($result['namespace'] ?? []), array_flip([
+					'value', 'preserved', 'relocation', 'round_trip', 'provenance', 'target_fqn'
+				]))
+			];
+		}
+
+		return [
+			'libraries' => (array) ($tree['libraries'] ?? []),
+			'classes' => $classes
+		];
 	}
 }

@@ -21,8 +21,8 @@ use VDM\Joomla\Service\Import;
 use VDM\Joomla\Componentbuilder\File\Service\File;
 use VDM\Joomla\Componentbuilder\Service\Spreadsheet;
 use VDM\Joomla\Componentbuilder\Service\Import as EntityImport;
-use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**

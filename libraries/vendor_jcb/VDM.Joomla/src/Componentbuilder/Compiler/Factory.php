@@ -52,6 +52,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureDashboard;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModule;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitecturePlugin;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureApi;
 use VDM\Joomla\Componentbuilder\Power\Service\Git;
 use VDM\Joomla\Componentbuilder\Power\Service\Github;
 use VDM\Joomla\Github\Service\Utilities as GithubUtilities;
@@ -79,8 +80,8 @@ use VDM\Joomla\Componentbuilder\Package\Service\CustomCodeGet;
 use VDM\Joomla\Componentbuilder\Package\Service\LibraryGet;
 use VDM\Joomla\Componentbuilder\Package\Service\FieldGet;
 use VDM\Joomla\Componentbuilder\Package\Service\DependenciesGet;
-use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**
@@ -184,6 +185,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new ArchitectureDashboard())
 			->registerServiceProvider(new ArchitectureModule())
 			->registerServiceProvider(new ArchitecturePlugin())
+			->registerServiceProvider(new ArchitectureApi())
 			->registerServiceProvider(new Git())
 			->registerServiceProvider(new Github())
 			->registerServiceProvider(new GithubUtilities())

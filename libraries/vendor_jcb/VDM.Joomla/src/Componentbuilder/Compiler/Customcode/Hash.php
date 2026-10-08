@@ -106,6 +106,5 @@ class Hash
 
 		return $script;
 	}
-
 }
 

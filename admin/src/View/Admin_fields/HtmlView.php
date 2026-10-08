@@ -459,23 +459,25 @@ class HtmlView extends BaseHtmlView
 		Text::script('COM_COMPONENTBUILDER_THE_BSINGLE_FILTERB_SELECTION_OPTION_ALLOWS_THE_USER_TO_SELECT_JUST_ONE_VALUE_IN_THIS_FILTERFIELD');
 	}
 
+
+
 	/**
-	 * Escapes a value for output in a view script.
+	 * Sanitises a value to plain text for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
 	 * @param   bool   $shorten The switch to shorten.
 	 * @param   int    $length  The shorting length.
 	 *
-	 * @return  mixed  The escaped value.
+	 * @return  mixed  The value as plain text.
 	 * @since   1.6
 	 */
-	public function escape($var, bool $shorten = true, int $length = 30)
+	public function sanitize($var, bool $shorten = true, int $length = 30)
 	{
 		if (!is_string($var))
 		{
 			return $var;
 		}
 
-		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+		return StringHelper::sanitize($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}
 }

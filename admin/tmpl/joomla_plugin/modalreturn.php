@@ -38,10 +38,10 @@ $this->getDocument()->addScriptOptions('content-select-on-load', $data, false);
 
 <div class="px-4 py-5 my-5 text-center">
     <span class="fa-8x mb-4 <?php echo $icon; ?>" aria-hidden="true"></span>
-    <h1 class="display-5 fw-bold"><?php echo $title_column; ?></h1>
+    <h1 class="display-5 fw-bold"><?php echo $this->sanitize($title_column, false); ?></h1>
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">
-            <?php echo $title_column; ?>
+            <?php echo $this->sanitize($title_column, false); ?>
         </p>
     </div>
 </div>

@@ -84,6 +84,5 @@ interface LanguageInterface
 	 * @since 3.2.0
 	 */
 	public function set(string $target, string $language, string $string, bool $addPrefix = false);
-
 }
 

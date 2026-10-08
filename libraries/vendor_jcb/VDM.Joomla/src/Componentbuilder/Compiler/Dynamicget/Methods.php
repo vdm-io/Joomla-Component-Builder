@@ -12,6 +12,7 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Dynamicget;
 
 
+use Joomla\CMS\Factory;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Dynamicget\GetItem;
@@ -24,7 +25,6 @@ use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
-use Joomla\CMS\Factory;
 
 
 /**

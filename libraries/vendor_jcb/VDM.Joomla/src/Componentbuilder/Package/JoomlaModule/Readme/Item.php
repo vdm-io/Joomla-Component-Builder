@@ -175,6 +175,5 @@ MD;
 
 		return rtrim($markdown);
 	}
-
 }
 

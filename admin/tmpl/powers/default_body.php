@@ -69,51 +69,51 @@ $edit = "index.php?option=com_componentbuilder&view=powers&task=power.edit";
 		<td class="nowrap">
 			<div>
 			<?php if (!$this->isModal && $canDo->get('power.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'powers.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php if (!$this->isModal): ?>
-					<?php echo $this->escape($item->system_name); ?>
+					<?php echo $this->sanitize($item->system_name); ?>
 				<?php else: ?>
 					<?php
 						$link = "{$edit}&id={$item->id}";
 						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->system_name, false) . '</a>';
+						$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->system_name, false) . '</a>';
 						$attribs = 'data-content-select data-content-type="com_componentbuilder.power"'
-							. ' data-id="' . $dataId . '"'
-							. ' data-title="' . $this->escape($item->system_name, false) . '"'
-							. ' data-uri="' . $this->escape($link, false) . '"'
-							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+							. ' data-id="' . $this->sanitize($dataId, false) . '"'
+							. ' data-title="' . $this->sanitize($item->system_name, false) . '"'
+							. ' data-uri="' . $this->sanitize($link, false) . '"'
+							. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 					?>
 					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-						<?php echo $this->escape($item->system_name); ?>
+						<?php echo $this->sanitize($item->system_name); ?>
 					</a>
 				<?php endif; ?>
 			<?php endif; ?><br /><small>GUID: 
-			<?php echo $this->escape($item->guid); ?><?php if(isset($item->super_power_key)): ?><br />SPK: <?php echo $item->super_power_key; ?><?php endif; ?></small>
+			<?php echo $this->sanitize($item->guid); ?><?php if(isset($item->super_power_key)): ?><br />SPK: <?php echo $item->super_power_key; ?><?php endif; ?></small>
 			</div>
 		</td>
 		<td class="hidden-phone">
 			<div><code class="namespace-code-container">
-			<?php echo $item->namespace; ?></code>
+			<?php echo $this->escape($item->namespace); ?></code>
 			</div>
 		</td>
 		<td class="hidden-phone">
 			<div><?php echo Text::_('COM_COMPONENTBUILDER_TYPE'); ?>: 
 			<?php echo Text::_($item->type); ?><?php if (ComponentbuilderHelper::validGUID($item->extends)) : ?><br /><?php echo Text::_('COM_COMPONENTBUILDER_EXTENDS'); ?>: 
 			<?php if (!$this->isModal && $this->user->authorise('power.edit', 'com_componentbuilder.power.' . (int) ($item->extends_id ?? 0))): ?>
-				<a href="index.php?option=com_componentbuilder&view=powers&task=power.edit&id=<?php echo $item->extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->extends_name); ?></a>
+				<a href="index.php?option=com_componentbuilder&view=powers&task=power.edit&id=<?php echo $item->extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->sanitize($item->extends_name); ?></a>
 			<?php else: ?>
-				<?php echo $this->escape($item->extends_name); ?>
+				<?php echo $this->sanitize($item->extends_name); ?>
 			<?php endif; ?><?php elseif ($item->extends === '-1') : ?><br /><?php echo Text::_('COM_COMPONENTBUILDER_EXTENDS'); ?>: 
-			<?php echo $this->escape($item->extends_custom); ?><?php endif; ?><br /><?php echo Text::_('COM_COMPONENTBUILDER_SUPER_POWER'); ?>: 
+			<?php echo $this->sanitize($item->extends_custom); ?><?php endif; ?><br /><?php echo Text::_('COM_COMPONENTBUILDER_SUPER_POWER'); ?>: 
 			<?php echo Text::_($item->approved); ?>
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->power_version); ?>
+			<?php echo $this->sanitize($item->power_version); ?>
 		</td>
 		<td class="center">
 		<?php if (!$this->isModal && $canDo->get('power.edit.state')) : ?>

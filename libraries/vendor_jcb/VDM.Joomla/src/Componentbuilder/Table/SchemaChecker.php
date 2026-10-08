@@ -14,8 +14,8 @@ namespace VDM\Joomla\Componentbuilder\Table;
 
 use VDM\Joomla\Componentbuilder\Table;
 use VDM\Joomla\Componentbuilder\Table\Schema;
-use VDM\Joomla\Interfaces\SchemaCheckerInterface;
 use VDM\Joomla\Abstraction\SchemaChecker as ExtendingSchemaChecker;
+use VDM\Joomla\Interfaces\SchemaCheckerInterface;
 
 
 /**

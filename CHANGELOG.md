@@ -1,19 +1,92 @@
-# v6.1.6
+# v6.2.0
 
-- Add Health Check buttons to the JCB Compiler and Component list view to verify system PHP configuration.
-- Add the Toolbar Custom Buttons subform to the Global Subform settings for improved usability and presentation.
-- Fix the Field edit view to ensure full compliance with Joomla 6 standards and updated UI/UX conventions.
-- Begin migration from UIkit to Bootstrap 5 to align JCB with Joomla 6+ standards.
-- Complete Bootstrap 5 refactor of all primary views and core UI.
-- Continue phased removal of UIkit with full transition planned for upcoming releases.
-- Fix deprecated JText usage in Admin Custom Tabs area for Joomla 5+ compatibility. #1302
-- Fix snippet loading for Joomla 6, improving reliability and removing legacy UIkit dependencies during migration.
-- Introduced strict version-aware compilation to ensure libraries are only included when explicitly defined for Joomla 6.
-- Disabled automatic UIkit injection for Joomla 6, preventing auto-loading across custom admin views, site views, templates, and layouts.
-- Migrate Search view for J6 to use Bootstrap and Joomla-native HTML and JavaScript.
-- Remove all manually linked Bootstrap v4 assets from the component.
-- Improve subform ordering fields for clearer display and better readability.
-- Refactor the JavaScript waiting spinner to use solid, native JavaScript with improved page-loading handling.
+- Add a dedicated Extrusion view for importing existing Joomla components and PHP libraries into JCB.
+- Unify component-folder and SQL-dump extrusion through a single engine.
+- Add PHP class harvesting into JCB Powers, including automatic class matching and dependency linking.
+- Add import pairing with Create, Update, and Skip controls, dry runs, and per-record change previews.
+- Improve SQL schema reconstruction to preserve column types, defaults, keys, indexes, and table configuration.
+- Improve field imports to preserve XML settings, options, GUID relationships, and storage formats without double-encoding subform data.
+- Reuse shared field definitions across views and preserve existing customizations during repeated imports.
+- Detect unchanged records and avoid unnecessary writes during repeated Extrusion runs.
+- Restore language strings and compiler placeholders in imported code, field XML, view markup, and SQL.
+- Improve Site View and Custom Admin View discovery, template recovery, and Dynamic Get relationships.
+- Fix Power namespace reconstruction to correctly preserve custom aliases and apply NamespacePrefix and ComponentNamespace placeholders.
+- Fix duplicate Compile button submissions that could start concurrent builds and cause intermittent folder creation or deletion errors. #1318
+- Add Repair Existing Power Namespaces with automatic matching and namespace-only updates that preserve class code, GUIDs, and settings.
+- Improve Power discovery performance with component-scoped matching, dependency indexes, and reusable parsing.
+- Protect Extrusion imports against ambiguous matches, conflicting compiler paths, and stale change previews.
+- Improve Extrusion error reporting and recovery after interrupted import requests.
+- Improve the Extrusion interface with folder pickers, grouped filtering, bulk selection, responsive layouts, and a dedicated dashboard icon.
+- Fix Extrusion self-compilation by preserving runtime marker literals and align import authorization with native view-access permissions.
+- Replace execution of imported SQL with static parsing and validate source paths without executing imported PHP.
+- Complete JSON:API generation for API-enabled Admin Views, including CRUD operations, relationships, filtering, pagination, and field-level permissions.
+- Include generated API files in component manifests so they are installed with compiled components.
+- Add API_ROUTES and API_ROUTES_METHOD placeholders for linked webservices plugins, supporting routes by record ID, GUID, and unique fields.
+- Add read-only API resources for supported Site Views and Custom Admin Views using their existing Dynamic Gets.
+- Fix API record creation when IDs and GUIDs are omitted, generate record keys on the server, and preserve existing GUIDs during updates.
+- Fix API item and list model selection, including resource names with irregular plural forms.
+- Fix API read permissions to support read-only users and return native JSON:API access-denied responses instead of administrator redirects.
+- Fix cross-site scripting risks in generated views through corrected text sanitization, Joomla-native HTML escaping, and field escape settings.
+- Fix edit-own permission bypasses by checking stored record ownership and applying field permissions to the record being saved.
+- Strengthen file upload and deletion permissions with ownership and component permission checks.
+- Fix subform updates that could overwrite or reassign records belonging to another parent.
+- Block unsafe URL schemes in Markdown links and images.
+- Use cryptographically secure randomness for generated passwords and upload names, and sanitize uploaded filenames.
+- Fix generated IIS library access configuration and add missing index.html files to compiled folders.
+- Complete extraction of generated-code logic from the legacy Fields, Interpretation, and Infusion helpers into dedicated compiler services.
+- Consolidate shared compiler logic across Joomla versions while retaining version-specific generation where required.
+- Refactor the Power parser to use PHP's native lexer for reliable handling of modern syntax, multiline declarations, and complex types.
+- Fix JCB Search to prevent matching records from being skipped when processing successive batches.
+- Fix compilation of database-aware Joomla 4 modules caused by a missing utility class import.
+- Fix CLI repository resolution to report unresolved repository GUIDs without triggering a fatal error.
+- Fix PHP warnings when the compiler's placeholder report contains no results.
+- Fix toolbar generation when descriptions are missing or null.
+- Preserve original source line endings when compiler processing leaves the content unchanged.
+
+# v5.2.0
+
+- Add a dedicated Extrusion view for importing existing Joomla components and PHP libraries into JCB.
+- Unify component-folder and SQL-dump extrusion through a single engine.
+- Add PHP class harvesting into JCB Powers, including automatic class matching and dependency linking.
+- Add import pairing with Create, Update, and Skip controls, dry runs, and per-record change previews.
+- Improve SQL schema reconstruction to preserve column types, defaults, keys, indexes, and table configuration.
+- Improve field imports to preserve XML settings, options, GUID relationships, and storage formats without double-encoding subform data.
+- Reuse shared field definitions across views and preserve existing customizations during repeated imports.
+- Detect unchanged records and avoid unnecessary writes during repeated Extrusion runs.
+- Restore language strings and compiler placeholders in imported code, field XML, view markup, and SQL.
+- Improve Site View and Custom Admin View discovery, template recovery, and Dynamic Get relationships.
+- Fix Power namespace reconstruction to correctly preserve custom aliases and apply NamespacePrefix and ComponentNamespace placeholders.
+- Fix duplicate Compile button submissions that could start concurrent builds and cause intermittent folder creation or deletion errors. #1318
+- Add Repair Existing Power Namespaces with automatic matching and namespace-only updates that preserve class code, GUIDs, and settings.
+- Improve Power discovery performance with component-scoped matching, dependency indexes, and reusable parsing.
+- Protect Extrusion imports against ambiguous matches, conflicting compiler paths, and stale change previews.
+- Improve Extrusion error reporting and recovery after interrupted import requests.
+- Improve the Extrusion interface with folder pickers, grouped filtering, bulk selection, responsive layouts, and a dedicated dashboard icon.
+- Fix Extrusion self-compilation by preserving runtime marker literals and align import authorization with native view-access permissions.
+- Replace execution of imported SQL with static parsing and validate source paths without executing imported PHP.
+- Complete JSON:API generation for API-enabled Admin Views, including CRUD operations, relationships, filtering, pagination, and field-level permissions.
+- Include generated API files in component manifests so they are installed with compiled components.
+- Add API_ROUTES and API_ROUTES_METHOD placeholders for linked webservices plugins, supporting routes by record ID, GUID, and unique fields.
+- Add read-only API resources for supported Site Views and Custom Admin Views using their existing Dynamic Gets.
+- Fix API record creation when IDs and GUIDs are omitted, generate record keys on the server, and preserve existing GUIDs during updates.
+- Fix API item and list model selection, including resource names with irregular plural forms.
+- Fix API read permissions to support read-only users and return native JSON:API access-denied responses instead of administrator redirects.
+- Fix cross-site scripting risks in generated views through corrected text sanitization, Joomla-native HTML escaping, and field escape settings.
+- Fix edit-own permission bypasses by checking stored record ownership and applying field permissions to the record being saved.
+- Strengthen file upload and deletion permissions with ownership and component permission checks.
+- Fix subform updates that could overwrite or reassign records belonging to another parent.
+- Block unsafe URL schemes in Markdown links and images.
+- Use cryptographically secure randomness for generated passwords and upload names, and sanitize uploaded filenames.
+- Fix generated IIS library access configuration and add missing index.html files to compiled folders.
+- Complete extraction of generated-code logic from the legacy Fields, Interpretation, and Infusion helpers into dedicated compiler services.
+- Consolidate shared compiler logic across Joomla versions while retaining version-specific generation where required.
+- Refactor the Power parser to use PHP's native lexer for reliable handling of modern syntax, multiline declarations, and complex types.
+- Fix JCB Search to prevent matching records from being skipped when processing successive batches.
+- Fix compilation of database-aware Joomla 4 modules caused by a missing utility class import.
+- Fix CLI repository resolution to report unresolved repository GUIDs without triggering a fatal error.
+- Fix PHP warnings when the compiler's placeholder report contains no results.
+- Fix toolbar generation when descriptions are missing or null.
+- Preserve original source line endings when compiler processing leaves the content unchanged.
 
 # v5.1.6
 
@@ -329,22 +402,50 @@
 - Add the BaseDatabaseModel use statement to custom site view controller. #1119
 - Fix the customfolderlist field. #1120
 
-# v4.1.5
+# v4.2.0
 
-- Add Health Check buttons to the JCB Compiler and Component list view to verify system PHP configuration.
-- Add the Toolbar Custom Buttons subform to the Global Subform settings for improved usability and presentation.
-- Fix the Field edit view to ensure full compliance with Joomla 6 standards and updated UI/UX conventions.
-- Begin migration from UIkit to Bootstrap 5 to align JCB with Joomla 6+ standards.
-- Complete Bootstrap 5 refactor of all primary views and core UI.
-- Continue phased removal of UIkit with full transition planned for upcoming releases.
-- Fix deprecated JText usage in Admin Custom Tabs area for Joomla 5+ compatibility. #1302
-- Fix snippet loading for Joomla 6, improving reliability and removing legacy UIkit dependencies during migration.
-- Introduced strict version-aware compilation to ensure libraries are only included when explicitly defined for Joomla 6.
-- Disabled automatic UIkit injection for Joomla 6, preventing auto-loading across custom admin views, site views, templates, and layouts.
-- Migrate Search view for J6 to use Bootstrap and Joomla-native HTML and JavaScript.
-- Remove all manually linked Bootstrap v4 assets from the component.
-- Improve subform ordering fields for clearer display and better readability.
-- Refactor the JavaScript waiting spinner to use solid, native JavaScript with improved page-loading handling.
+- Add a dedicated Extrusion view for importing existing Joomla components and PHP libraries into JCB.
+- Unify component-folder and SQL-dump extrusion through a single engine.
+- Add PHP class harvesting into JCB Powers, including automatic class matching and dependency linking.
+- Add import pairing with Create, Update, and Skip controls, dry runs, and per-record change previews.
+- Improve SQL schema reconstruction to preserve column types, defaults, keys, indexes, and table configuration.
+- Improve field imports to preserve XML settings, options, GUID relationships, and storage formats without double-encoding subform data.
+- Reuse shared field definitions across views and preserve existing customizations during repeated imports.
+- Detect unchanged records and avoid unnecessary writes during repeated Extrusion runs.
+- Restore language strings and compiler placeholders in imported code, field XML, view markup, and SQL.
+- Improve Site View and Custom Admin View discovery, template recovery, and Dynamic Get relationships.
+- Fix Power namespace reconstruction to correctly preserve custom aliases and apply NamespacePrefix and ComponentNamespace placeholders.
+- Fix duplicate Compile button submissions that could start concurrent builds and cause intermittent folder creation or deletion errors. #1318
+- Add Repair Existing Power Namespaces with automatic matching and namespace-only updates that preserve class code, GUIDs, and settings.
+- Improve Power discovery performance with component-scoped matching, dependency indexes, and reusable parsing.
+- Protect Extrusion imports against ambiguous matches, conflicting compiler paths, and stale change previews.
+- Improve Extrusion error reporting and recovery after interrupted import requests.
+- Improve the Extrusion interface with folder pickers, grouped filtering, bulk selection, responsive layouts, and a dedicated dashboard icon.
+- Fix Extrusion self-compilation by preserving runtime marker literals and align import authorization with native view-access permissions.
+- Replace execution of imported SQL with static parsing and validate source paths without executing imported PHP.
+- Complete JSON:API generation for API-enabled Admin Views, including CRUD operations, relationships, filtering, pagination, and field-level permissions.
+- Include generated API files in component manifests so they are installed with compiled components.
+- Add API_ROUTES and API_ROUTES_METHOD placeholders for linked webservices plugins, supporting routes by record ID, GUID, and unique fields.
+- Add read-only API resources for supported Site Views and Custom Admin Views using their existing Dynamic Gets.
+- Fix API record creation when IDs and GUIDs are omitted, generate record keys on the server, and preserve existing GUIDs during updates.
+- Fix API item and list model selection, including resource names with irregular plural forms.
+- Fix API read permissions to support read-only users and return native JSON:API access-denied responses instead of administrator redirects.
+- Fix cross-site scripting risks in generated views through corrected text sanitization, Joomla-native HTML escaping, and field escape settings.
+- Fix edit-own permission bypasses by checking stored record ownership and applying field permissions to the record being saved.
+- Strengthen file upload and deletion permissions with ownership and component permission checks.
+- Fix subform updates that could overwrite or reassign records belonging to another parent.
+- Block unsafe URL schemes in Markdown links and images.
+- Use cryptographically secure randomness for generated passwords and upload names, and sanitize uploaded filenames.
+- Fix generated IIS library access configuration and add missing index.html files to compiled folders.
+- Complete extraction of generated-code logic from the legacy Fields, Interpretation, and Infusion helpers into dedicated compiler services.
+- Consolidate shared compiler logic across Joomla versions while retaining version-specific generation where required.
+- Refactor the Power parser to use PHP's native lexer for reliable handling of modern syntax, multiline declarations, and complex types.
+- Fix JCB Search to prevent matching records from being skipped when processing successive batches.
+- Fix compilation of database-aware Joomla 4 modules caused by a missing utility class import.
+- Fix CLI repository resolution to report unresolved repository GUIDs without triggering a fatal error.
+- Fix PHP warnings when the compiler's placeholder report contains no results.
+- Fix toolbar generation when descriptions are missing or null.
+- Preserve original source line endings when compiler processing leaves the content unchanged.
 
 # v3.2.5
 

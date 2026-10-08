@@ -15,7 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Component;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
-use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\Folder as JoomlaFolder;
 use Joomla\Filesystem\File;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Registry;
@@ -26,6 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne as Content;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 
@@ -142,6 +143,14 @@ final class Structuresingle
 	protected Files $files;
 
 	/**
+	 * The Folder Class.
+	 *
+	 * @var   Folder
+	 * @since 6.1.7
+	 */
+	protected Folder $folder;
+
+	/**
 	 * Application object.
 	 *
 	 * @var    CMSApplication
@@ -168,7 +177,8 @@ final class Structuresingle
 	public function __construct(Config $config, Registry $registry,
 		Placeholder $placeholder, Settings $settings,
 		Component $component, Content $content, Counter $counter,
-		Paths $paths, Files $files, ?CMSApplication $app = null)
+		Paths $paths, Files $files, Folder $folder,
+		?CMSApplication $app = null)
 	{
 		$this->config = $config;
 		$this->registry = $registry;
@@ -179,6 +189,7 @@ final class Structuresingle
 		$this->counter = $counter;
 		$this->paths = $paths;
 		$this->files = $files;
+		$this->folder = $folder;
 		$this->app = $app ?: Factory::getApplication();
 	}
 
@@ -451,7 +462,7 @@ final class Structuresingle
 		elseif ($details->type === 'folder' && is_dir($this->currentFullPath))
 		{
 			// move the folder to its place
-			Folder::copy(
+			JoomlaFolder::copy(
 				$this->currentFullPath, $this->packageFullPath, '', true
 			);
 
@@ -476,7 +487,9 @@ final class Structuresingle
 		// check if path exist, if not creat it
 		if (!is_dir($packageFullPath0nly))
 		{
-			Folder::create($packageFullPath0nly);
+			// the compiler's own folder utility drops an index.html into every
+			// directory it makes, which a raw create leaves listable
+			$this->folder->create($packageFullPath0nly);
 		}
 
 		// move the file to its place

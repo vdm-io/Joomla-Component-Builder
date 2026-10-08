@@ -118,6 +118,5 @@ class TypeName
 		// fall back to text
 		return 'text';
 	}
-
 }
 

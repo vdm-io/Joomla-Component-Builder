@@ -185,8 +185,8 @@ class HtmlView extends BaseHtmlView
 		// Load the active filters for searchtools.
 		$this->activeFilters = $model->getActiveFilters();
 		// Add the list ordering clause.
-		$this->listOrder = $this->escape($this->state->get('list.ordering', 'a.id'));
-		$this->listDirn = $this->escape($this->state->get('list.direction', 'desc'));
+		$this->listOrder = $this->sanitize($this->state->get('list.ordering', 'a.id'));
+		$this->listDirn = $this->sanitize($this->state->get('list.direction', 'desc'));
 		$this->saveOrder = $this->listOrder == 'a.ordering';
 		// set the return here value
 		$this->return_here = urlencode(base64_encode((string) Uri::getInstance()));
@@ -340,24 +340,26 @@ class HtmlView extends BaseHtmlView
 		}
 	}
 
+
+
 	/**
-	 * Escapes a value for output in a view script.
+	 * Sanitises a value to plain text for output in a view script.
 	 *
 	 * @param   mixed  $var     The output to escape.
 	 * @param   bool   $shorten The switch to shorten.
 	 * @param   int    $length  The shorting length.
 	 *
-	 * @return  mixed  The escaped value.
+	 * @return  mixed  The value as plain text.
 	 * @since   1.6
 	 */
-	public function escape($var, bool $shorten = true, int $length = 50)
+	public function sanitize($var, bool $shorten = true, int $length = 50)
 	{
 		if (!is_string($var))
 		{
 			return $var;
 		}
 
-		return StringHelper::html($var, $this->_charset ?? 'UTF-8', $shorten, $length);
+		return StringHelper::sanitize($var, $this->_charset ?? 'UTF-8', $shorten, $length);
 	}
 
 	/**
