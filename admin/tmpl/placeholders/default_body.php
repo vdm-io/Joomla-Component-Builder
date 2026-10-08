@@ -69,33 +69,33 @@ $edit = "index.php?option=com_componentbuilder&view=placeholders&task=placeholde
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $canDo->get('placeholder.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->target); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->target); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'placeholders.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php if (!$this->isModal): ?>
-						<?php echo $this->escape($item->target); ?>
+						<?php echo $this->sanitize($item->target); ?>
 					<?php else: ?>
 						<?php
 							$link = "{$edit}&id={$item->id}";
 							$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-							$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->target, false) . '</a>';
+							$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->target, false) . '</a>';
 							$attribs = 'data-content-select data-content-type="com_componentbuilder.placeholder"'
-								. ' data-id="' . $dataId . '"'
-								. ' data-title="' . $this->escape($item->target, false) . '"'
-								. ' data-uri="' . $this->escape($link, false) . '"'
-								. ' data-html="' . $this->escape($itemHtml, false) . '"';
+								. ' data-id="' . $this->sanitize($dataId, false) . '"'
+								. ' data-title="' . $this->sanitize($item->target, false) . '"'
+								. ' data-uri="' . $this->sanitize($link, false) . '"'
+								. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 						?>
 						<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-							<?php echo $this->escape($item->target); ?>
+							<?php echo $this->sanitize($item->target); ?>
 						</a>
 					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->value); ?>
+			<?php echo $this->sanitize($item->value); ?>
 		</td>
 		<td class="center">
 		<?php if (!$this->isModal && $canDo->get('placeholder.edit.state')) : ?>

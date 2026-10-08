@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 use Joomla\Database\DatabaseInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Selection;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Language\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor as Power;
@@ -88,6 +89,14 @@ class Customcode implements CustomcodeInterface
 	 * @since 3.2.0
 	 **/
 	protected Config $config;
+
+	/**
+	 * Shared literal dependency selection.
+	 *
+	 * @var   Selection
+	 * @since 6.2.0
+	 */
+	protected Selection $selection;
 
 	/**
 	 * Compiler Placeholder
@@ -164,14 +173,16 @@ class Customcode implements CustomcodeInterface
 	 * @param External           $external        The compiler external custom code object.
 	 * @param Counter            $counter         The Counter Class.
 	 * @param DatabaseInterface  $db              The Joomla Database Class.
+	 * @param Selection|null     $selection       Shared literal dependency selection.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
 		Extractor $extractor, Power $power, JoomlaPower $joomla,
-		External $external, Counter $counter, DatabaseInterface $db)
+		External $external, Counter $counter, DatabaseInterface $db, ?Selection $selection = null)
 	{
 		$this->config = $config;
+		$this->selection = $selection ?? new Selection();
 		$this->placeholder = $placeholder;
 		$this->extractor = $extractor;
 		$this->power = $power;
@@ -240,9 +251,7 @@ class Customcode implements CustomcodeInterface
 			}
 			// the ids found in this content
 			$bucket = [];
-			$found  = GetHelper::allBetween(
-				$string, '[CUSTO' . 'MCODE=', ']'
-			);
+			$found = $this->selection->codeReferences($string)['custom_code'];
 			if (ArrayHelper::check($found))
 			{
 				foreach ($found as $key)

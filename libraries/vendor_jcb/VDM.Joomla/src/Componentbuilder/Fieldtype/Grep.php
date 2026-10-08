@@ -13,8 +13,8 @@ namespace VDM\Joomla\Componentbuilder\Fieldtype;
 
 
 use Joomla\CMS\Language\Text;
-use VDM\Joomla\Interfaces\GrepInterface;
 use VDM\Joomla\Componentbuilder\Remote\Grep as ExtendingGrep;
+use VDM\Joomla\Interfaces\GrepInterface;
 
 
 /**

@@ -50,6 +50,5 @@ abstract class ClassHelper
 		}
 		return true;
 	}
-
 }
 

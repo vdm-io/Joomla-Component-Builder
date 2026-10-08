@@ -42,6 +42,5 @@ abstract class ClassfunctionHelper
 		// remove all spaces and strange characters
 		return trim(preg_replace("/[^A-Za-z0-9_-]/", '', (string) $name));
 	}
-
 }
 

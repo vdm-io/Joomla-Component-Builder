@@ -29,6 +29,16 @@ use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\Controller\Allow
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\Controller\AllowEditViews as J5ControllerAllowEditViews;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Controller\AllowEditViews as J4ControllerAllowEditViews;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AllowEditViews as J3ControllerAllowEditViews;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\EximportMethodInterface as ControllerEximportMethod;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Controller\EximportMethod as SharedControllerEximportMethod;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\EximportMethod as J3ControllerEximportMethod;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\AjaxCasesInterface as ControllerAjaxCases;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Controller\AjaxCases as SharedControllerAjaxCases;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\AjaxCases as J3ControllerAjaxCases;
+use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Controller\CustomAdminDynamicButtonInterface as ControllerCustomAdminDynamicButton;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Controller\CustomAdminDynamicButton as SharedControllerCustomAdminDynamicButton;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\Controller\CustomAdminDynamicButton as J3ControllerCustomAdminDynamicButton;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Controller\AjaxTasks as ControllerAjaxTasks;
 
 
 /**
@@ -100,6 +110,36 @@ class ArchitectureController implements ServiceProviderInterface
 
 		$container->alias(J3ControllerAllowEditViews::class, 'Architecture.Controller.J3.AllowEditViews')
 			->share('Architecture.Controller.J3.AllowEditViews', [$this, 'getJ3ControllerAllowEditViews'], true);
+
+		$container->alias(ControllerEximportMethod::class, 'Architecture.Controller.EximportMethod')
+			->share('Architecture.Controller.EximportMethod', [$this, 'getControllerEximportMethod'], true);
+
+		$container->alias(SharedControllerEximportMethod::class, 'Architecture.Controller.Shared.EximportMethod')
+			->share('Architecture.Controller.Shared.EximportMethod', [$this, 'getSharedControllerEximportMethod'], true);
+
+		$container->alias(J3ControllerEximportMethod::class, 'Architecture.Controller.J3.EximportMethod')
+			->share('Architecture.Controller.J3.EximportMethod', [$this, 'getJ3ControllerEximportMethod'], true);
+
+		$container->alias(ControllerAjaxCases::class, 'Architecture.Controller.AjaxCases')
+			->share('Architecture.Controller.AjaxCases', [$this, 'getControllerAjaxCases'], true);
+
+		$container->alias(SharedControllerAjaxCases::class, 'Architecture.Controller.Shared.AjaxCases')
+			->share('Architecture.Controller.Shared.AjaxCases', [$this, 'getSharedControllerAjaxCases'], true);
+
+		$container->alias(J3ControllerAjaxCases::class, 'Architecture.Controller.J3.AjaxCases')
+			->share('Architecture.Controller.J3.AjaxCases', [$this, 'getJ3ControllerAjaxCases'], true);
+
+		$container->alias(ControllerAjaxTasks::class, 'Architecture.Controller.AjaxTasks')
+			->share('Architecture.Controller.AjaxTasks', [$this, 'getControllerAjaxTasks'], true);
+
+		$container->alias(ControllerCustomAdminDynamicButton::class, 'Architecture.Controller.CustomAdminDynamicButton')
+			->share('Architecture.Controller.CustomAdminDynamicButton', [$this, 'getControllerCustomAdminDynamicButton'], true);
+
+		$container->alias(SharedControllerCustomAdminDynamicButton::class, 'Architecture.Controller.Shared.CustomAdminDynamicButton')
+			->share('Architecture.Controller.Shared.CustomAdminDynamicButton', [$this, 'getSharedControllerCustomAdminDynamicButton'], true);
+
+		$container->alias(J3ControllerCustomAdminDynamicButton::class, 'Architecture.Controller.J3.CustomAdminDynamicButton')
+			->share('Architecture.Controller.J3.CustomAdminDynamicButton', [$this, 'getJ3ControllerCustomAdminDynamicButton'], true);
 	}
 
 	/**
@@ -187,7 +227,7 @@ class ArchitectureController implements ServiceProviderInterface
 			$container->get('Customcode.Dispenser')
 		);
 	}
-	
+
 		/**
 	 * Get The AllowEditInterface Class.
 	 *
@@ -369,6 +409,194 @@ class ArchitectureController implements ServiceProviderInterface
 			$container->get('Customcode.Dispenser'),
 			$container->get('Compiler.Builder.Category'),
 			$container->get('Compiler.Builder.Category.Other.Name')
+		);
+	}
+
+	/**
+	 * Get The EximportMethod Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ControllerEximportMethod
+	 * @since   6.1.7
+	 */
+	public function getControllerEximportMethod(Container $container): ControllerEximportMethod
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		// only Joomla 3 takes the current user from the global factory
+		if ((int) $this->targetVersion === 3)
+		{
+			return $container->get('Architecture.Controller.J3.EximportMethod');
+		}
+
+		return $container->get('Architecture.Controller.Shared.EximportMethod');
+	}
+
+	/**
+	 * Get The EximportMethod Class shared by every remaining target.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  SharedControllerEximportMethod
+	 * @since   6.1.7
+	 */
+	public function getSharedControllerEximportMethod(Container $container): SharedControllerEximportMethod
+	{
+		return new SharedControllerEximportMethod(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Eximport.View'),
+			$container->get('Compiler.Builder.Import.Custom.Scripts')
+		);
+	}
+
+	/**
+	 * Get The EximportMethod Class for Joomla 3.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3ControllerEximportMethod
+	 * @since   6.1.7
+	 */
+	public function getJ3ControllerEximportMethod(Container $container): J3ControllerEximportMethod
+	{
+		return new J3ControllerEximportMethod(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Compiler.Builder.Eximport.View'),
+			$container->get('Compiler.Builder.Import.Custom.Scripts')
+		);
+	}
+	/**
+	 * Get The Controller AjaxCases Class of the target being built.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ControllerAjaxCases
+	 * @since   6.1.7
+	 */
+	public function getControllerAjaxCases(Container $container): ControllerAjaxCases
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		// only Joomla 3 reaches its models without naming the side they belong to
+		if ((int) $this->targetVersion === 3)
+		{
+			return $container->get('Architecture.Controller.J3.AjaxCases');
+		}
+
+		return $container->get('Architecture.Controller.Shared.AjaxCases');
+	}
+
+	/**
+	 * Get The Controller AjaxCases Class shared by every remaining target.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  SharedControllerAjaxCases
+	 * @since   6.1.7
+	 */
+	public function getSharedControllerAjaxCases(Container $container): SharedControllerAjaxCases
+	{
+		return new SharedControllerAjaxCases(
+			$container->get('Customcode.Dispenser')
+		);
+	}
+
+	/**
+	 * Get The Joomla 3 Controller AjaxCases Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3ControllerAjaxCases
+	 * @since   6.1.7
+	 */
+	public function getJ3ControllerAjaxCases(Container $container): J3ControllerAjaxCases
+	{
+		return new J3ControllerAjaxCases(
+			$container->get('Customcode.Dispenser')
+		);
+	}
+
+	/**
+	 * Get The Controller AjaxTasks Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ControllerAjaxTasks
+	 * @since   6.1.7
+	 */
+	public function getControllerAjaxTasks(Container $container): ControllerAjaxTasks
+	{
+		return new ControllerAjaxTasks(
+			$container->get('Customcode.Dispenser')
+		);
+	}
+
+	/**
+	 * Get The Controller CustomAdminDynamicButton Class of the target being built.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ControllerCustomAdminDynamicButton
+	 * @since   6.1.7
+	 */
+	public function getControllerCustomAdminDynamicButton(Container $container): ControllerCustomAdminDynamicButton
+	{
+		if (empty($this->targetVersion))
+		{
+			$this->targetVersion = $container->get('Config')->joomla_version;
+		}
+
+		// only Joomla 3 asks the factory for the user rather than the application
+		if ((int) $this->targetVersion === 3)
+		{
+			return $container->get('Architecture.Controller.J3.CustomAdminDynamicButton');
+		}
+
+		return $container->get('Architecture.Controller.Shared.CustomAdminDynamicButton');
+	}
+
+	/**
+	 * Get The Controller CustomAdminDynamicButton Class shared by every remaining target.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  SharedControllerCustomAdminDynamicButton
+	 * @since   6.1.7
+	 */
+	public function getSharedControllerCustomAdminDynamicButton(Container $container): SharedControllerCustomAdminDynamicButton
+	{
+		return new SharedControllerCustomAdminDynamicButton(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Dynamic.Buttons')
+		);
+	}
+
+	/**
+	 * Get The Joomla 3 Controller CustomAdminDynamicButton Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  J3ControllerCustomAdminDynamicButton
+	 * @since   6.1.7
+	 */
+	public function getJ3ControllerCustomAdminDynamicButton(Container $container): J3ControllerCustomAdminDynamicButton
+	{
+		return new J3ControllerCustomAdminDynamicButton(
+			$container->get('Config'),
+			$container->get('Language'),
+			$container->get('Compiler.Builder.Dynamic.Buttons')
 		);
 	}
 }

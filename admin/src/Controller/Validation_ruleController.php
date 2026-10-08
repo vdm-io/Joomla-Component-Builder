@@ -341,7 +341,7 @@ class Validation_ruleController extends FormController
 		// get user object.
 		$user = $this->app->getIdentity();
 		// get record id.
-		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+		$recordId = isset($data[$key]) ? (int) $data[$key] : 0;
 
 
 		// Access check.
@@ -357,21 +357,17 @@ class Validation_ruleController extends FormController
 			$permission = $user->authorise('validation_rule.edit', 'com_componentbuilder.validation_rule.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('validation_rule.edit.own', 'com_componentbuilder.validation_rule.' . $recordId))
+				if ($user->authorise('validation_rule.edit.own', 'com_componentbuilder.validation_rule.' . (int) $recordId))
 				{
 					// Now test the owner is the user.
-					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
-					if (empty($ownerId))
-					{
-						// Need to do a lookup from the model.
-						$record = $this->getModel()->getItem($recordId);
+					// The owner comes from the stored record, never from $data.
+					$record = $this->getModel()->getItem($recordId);
 
-						if (empty($record))
-						{
-							return false;
-						}
-						$ownerId = $record->created_by;
+					if (empty($record))
+					{
+						return false;
 					}
+					$ownerId = (int) $record->created_by;
 
 					// If the owner matches 'me' then allow.
 					if ($ownerId == $user->id)

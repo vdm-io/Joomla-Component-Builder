@@ -178,7 +178,7 @@ final class AddToolBar implements AddToolBarInterface
 		$this->language->set(
 			$this->config->lang_target,
 			$langViews . '_EMPTYSTATE_CONTENT',
-			$settings->description
+			$settings->description ?? ''
 		);
 		// add empty button add
 		$this->language->set(

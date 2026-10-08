@@ -97,6 +97,5 @@ abstract class MathHelper
 		// fall back on array sum
 		return array_sum($array);
 	}
-
 }
 

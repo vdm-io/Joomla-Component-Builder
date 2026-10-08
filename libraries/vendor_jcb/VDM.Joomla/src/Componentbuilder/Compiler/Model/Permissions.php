@@ -55,6 +55,5 @@ class Permissions
 
 		unset($item->addpermissions);
 	}
-
 }
 

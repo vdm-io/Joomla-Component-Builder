@@ -27,6 +27,7 @@ use VDM\Joomla\Componentbuilder\Power\Plantuml;
 use VDM\Joomla\Componentbuilder\Power\Readme\Item as ItemReadme;
 use VDM\Joomla\Componentbuilder\Power\Readme\Main as MainReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor;
+use VDM\Joomla\Componentbuilder\Compiler\Power\Selection;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector;
 use VDM\Joomla\Componentbuilder\Compiler\Joomla\Path;
 
@@ -50,6 +51,9 @@ class Power implements ServiceProviderInterface
 	{
 		$container->alias(Powers::class, 'Power')
 			->share('Power', [$this, 'getPowers'], true);
+
+		$container->alias(Selection::class, 'Power.Selection')
+			->share('Power.Selection', [$this, 'getSelection'], true);
 
 		$container->alias(Table::class, 'Power.Table')
 			->share('Power.Table', [$this, 'getPowerTable'], true);
@@ -111,8 +115,22 @@ class Power implements ServiceProviderInterface
 			$container->get('Customcode.Gui'),
 			$container->get('Joomla.Path'),
 			$container->get('Joomla.Database'),
-			$container->get('Power.Remote.Get')
+			$container->get('Power.Remote.Get'),
+			$container->get('Power.Selection')
 		);
+	}
+
+	/**
+	 * Get the shared pure Power selection decisions.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Selection
+	 * @since   6.2.0
+	 */
+	public function getSelection(Container $container): Selection
+	{
+		return new Selection();
 	}
 
 	/**

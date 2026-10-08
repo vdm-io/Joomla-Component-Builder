@@ -56,6 +56,5 @@ class Pathfix
 			$values = str_replace('\\', '/', (string) $values);
 		}
 	}
-
 }
 

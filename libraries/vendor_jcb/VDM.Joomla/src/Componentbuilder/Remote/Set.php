@@ -22,8 +22,8 @@ use VDM\Joomla\Interfaces\Readme\ItemInterface as ItemReadme;
 use VDM\Joomla\Interfaces\Readme\MainInterface as MainReadme;
 use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface as Git;
 use VDM\Joomla\Interfaces\Data\ItemsInterface as Items;
-use VDM\Joomla\Interfaces\Remote\SetInterface;
 use VDM\Joomla\Abstraction\Remote\Set as ExtendingSet;
+use VDM\Joomla\Interfaces\Remote\SetInterface;
 
 
 /**

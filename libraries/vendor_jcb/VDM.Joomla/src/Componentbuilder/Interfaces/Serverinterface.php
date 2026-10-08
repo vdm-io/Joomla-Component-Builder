@@ -37,6 +37,5 @@ interface Serverinterface
 	 * @since 3.2.0
 	 **/
 	public function move(string $localPath, string $fileName): bool;
-
 }
 

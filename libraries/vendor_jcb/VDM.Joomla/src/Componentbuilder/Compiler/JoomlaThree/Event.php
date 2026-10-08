@@ -95,6 +95,5 @@ final class Event implements EventInterface
 			}
 		}
 	}
-
 }
 

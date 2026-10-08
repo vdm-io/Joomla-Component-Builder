@@ -20,8 +20,6 @@ use PhpOffice\PhpSpreadsheet\Exception as SpreadsheetException;
  * File Reader Interface
  * 
  * @since 3.2.2
- * 
- * 
  */
 interface FileReaderInterface
 {

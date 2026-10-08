@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Import\Persistent;
 
 
-use VDM\Joomla\Interfaces\Import\PersistentEntityInterface;
 use VDM\Joomla\Import\Entity as ExtendingEntity;
+use VDM\Joomla\Interfaces\Import\PersistentEntityInterface;
 
 
 /**

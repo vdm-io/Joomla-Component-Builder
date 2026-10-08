@@ -391,6 +391,5 @@ final class InstallScript implements GetScriptInterface
 
 		return $script;
 	}
-
 }
 

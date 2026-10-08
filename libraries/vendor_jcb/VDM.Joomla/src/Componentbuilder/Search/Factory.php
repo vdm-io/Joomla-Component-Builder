@@ -17,8 +17,8 @@ use VDM\Joomla\Componentbuilder\Search\Service\Search;
 use VDM\Joomla\Componentbuilder\Search\Service\Model;
 use VDM\Joomla\Componentbuilder\Search\Service\Database;
 use VDM\Joomla\Componentbuilder\Search\Service\Agent;
-use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
+use VDM\Joomla\Interfaces\FactoryInterface;
 
 
 /**
@@ -50,6 +50,5 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Database())
 			->registerServiceProvider(new Agent());
 	}
-
 }
 

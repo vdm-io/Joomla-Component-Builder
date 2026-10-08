@@ -209,7 +209,7 @@ final class AddToolBar implements AddToolBarInterface
 	 * @return string
 	 * @since  5.1.4
 	 */
-	protected function buildTitle(bool $addTitle, string $langView, string $icomoon): string
+	protected function buildTitle(bool $addTitle, string $langViews, string $icomoon): string
 	{
 		if (!$addTitle)
 		{

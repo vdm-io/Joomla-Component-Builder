@@ -69,26 +69,26 @@ $edit = "index.php?option=com_componentbuilder&view=help_documents&task=help_doc
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $canDo->get('help_document.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->title); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->title); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'help_documents.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php if (!$this->isModal): ?>
-						<?php echo $this->escape($item->title); ?>
+						<?php echo $this->sanitize($item->title); ?>
 					<?php else: ?>
 						<?php
 							$link = "{$edit}&id={$item->id}";
 							$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-							$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->title, false) . '</a>';
+							$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->title, false) . '</a>';
 							$attribs = 'data-content-select data-content-type="com_componentbuilder.help_document"'
-								. ' data-id="' . $dataId . '"'
-								. ' data-title="' . $this->escape($item->title, false) . '"'
-								. ' data-uri="' . $this->escape($link, false) . '"'
-								. ' data-html="' . $this->escape($itemHtml, false) . '"';
+								. ' data-id="' . $this->sanitize($dataId, false) . '"'
+								. ' data-title="' . $this->sanitize($item->title, false) . '"'
+								. ' data-uri="' . $this->sanitize($link, false) . '"'
+								. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 						?>
 						<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-							<?php echo $this->escape($item->title); ?>
+							<?php echo $this->sanitize($item->title); ?>
 						</a>
 					<?php endif; ?>
 				<?php endif; ?>
@@ -98,16 +98,16 @@ $edit = "index.php?option=com_componentbuilder&view=help_documents&task=help_doc
 			<?php echo Text::_($item->type); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->groups); ?>
+			<?php echo $this->sanitize($item->groups); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo Text::_($item->location); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->admin_view); ?>
+			<?php echo $this->sanitize($item->admin_view); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->site_view); ?>
+			<?php echo $this->sanitize($item->site_view); ?>
 		</td>
 		<td class="center">
 		<?php if (!$this->isModal && $canDo->get('help_document.edit.state')) : ?>

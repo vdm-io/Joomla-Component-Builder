@@ -182,8 +182,10 @@ abstract class UploadHelper
 		// set the file name
 		if (empty($name))
 		{
-			// set the file name
-			$userfile['file_name'] = $userfile['random'] . $userfile['name'];
+			// the client names the upload, so strip anything that could give
+			// the stored file a second meaning to the web server
+			$userfile['file_name'] = $userfile['random']
+				. File::makeSafe(basename((string) $userfile['name']));
 		}
 		else
 		{
@@ -192,7 +194,7 @@ abstract class UploadHelper
 			{
 				$name = $name . '.' . MimeHelper::extension($userfile['name']);
 			}
-			$userfile['file_name'] = $name;
+			$userfile['file_name'] = File::makeSafe(basename((string) $name));
 		}
 
 		// set full path

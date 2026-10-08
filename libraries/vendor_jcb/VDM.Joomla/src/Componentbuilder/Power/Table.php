@@ -12,8 +12,8 @@
 namespace VDM\Joomla\Componentbuilder\Power;
 
 
-use VDM\Joomla\Componentbuilder\Power\Interfaces\TableInterface;
 use VDM\Joomla\Componentbuilder\Table as ExtendingTable;
+use VDM\Joomla\Componentbuilder\Power\Interfaces\TableInterface;
 
 
 /**

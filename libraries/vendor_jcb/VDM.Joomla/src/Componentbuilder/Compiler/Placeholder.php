@@ -503,6 +503,5 @@ class Placeholder implements PlaceholderInterface
 
 		return [ 'start' => "", 'end' => ""];
 	}
-
 }
 

@@ -85,6 +85,5 @@ abstract class Indent
 		// the default is TAB
 		self::$indent = Compiler::_('Config')->indentation_value;
 	}
-
 }
 

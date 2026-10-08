@@ -69,30 +69,30 @@ $edit = "index.php?option=com_componentbuilder&view=class_methods&task=class_met
 		<td class="nowrap">
 			<div>
 			<?php if (!$this->isModal && $canDo->get('class_method.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'class_methods.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php if (!$this->isModal): ?>
-					<?php echo $this->escape($item->name); ?>
+					<?php echo $this->sanitize($item->name); ?>
 				<?php else: ?>
 					<?php
 						$link = "{$edit}&id={$item->id}";
 						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->name, false) . '</a>';
+						$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->name, false) . '</a>';
 						$attribs = 'data-content-select data-content-type="com_componentbuilder.class_method"'
-							. ' data-id="' . $dataId . '"'
-							. ' data-title="' . $this->escape($item->name, false) . '"'
-							. ' data-uri="' . $this->escape($link, false) . '"'
-							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+							. ' data-id="' . $this->sanitize($dataId, false) . '"'
+							. ' data-title="' . $this->sanitize($item->name, false) . '"'
+							. ' data-uri="' . $this->sanitize($link, false) . '"'
+							. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 					?>
 					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-						<?php echo $this->escape($item->name); ?>
+						<?php echo $this->sanitize($item->name); ?>
 					</a>
 				<?php endif; ?>
 			<?php endif; ?>(
-			<?php echo $this->escape($item->arguments); ?>)
+			<?php echo $this->sanitize($item->arguments); ?>)
 			</div>
 		</td>
 		<td class="hidden-phone">
@@ -102,7 +102,7 @@ $edit = "index.php?option=com_componentbuilder&view=class_methods&task=class_met
 			<div><?php if (isset($item->joomla_plugin_group) && $item->joomla_plugin_group > 0): ?>
 	
 			<?php echo Text::_($item->extension_type); ?> <?php echo Text::_('COM_COMPONENTBUILDER_GROUP'); ?>: <b>
-			<?php echo $this->escape($item->joomla_plugin_group_name); ?></b>
+			<?php echo $this->sanitize($item->joomla_plugin_group_name); ?></b>
 <?php else: ?>
 	
 			<?php echo Text::_($item->extension_type); ?>

@@ -127,7 +127,11 @@ final class Html
 	 */
 	protected function convertLinks(string $text): string
 	{
-		return preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $text);
+		return preg_replace_callback(
+			'/\[(.*?)\]\((.*?)\)/',
+			fn($m) => '<a href="' . $this->safeUrl($m[2]) . '">' . $m[1] . '</a>',
+			$text
+		);
 	}
 
 	/**
@@ -140,7 +144,44 @@ final class Html
 	 */
 	protected function convertImages(string $text): string
 	{
-		return preg_replace('/!\[(.*?)\]\((.*?)\)/', '<img src="$2" alt="$1">', $text);
+		return preg_replace_callback(
+			'/!\[(.*?)\]\((.*?)\)/',
+			fn($m) => '<img src="' . $this->safeUrl($m[2]) . '" alt="' . $m[1] . '">',
+			$text
+		);
+	}
+
+	/**
+	 * Keep a markdown URL to a scheme that cannot execute script.
+	 *
+	 * convert() escapes the whole document before these rules run, so a URL
+	 * cannot break out of the attribute, but it can still carry a scripting
+	 * scheme such as javascript:. Browsers entity decode an attribute and
+	 * drop control characters before they read the scheme, so normalise the
+	 * same way before deciding, and drop anything that is not allowed.
+	 *
+	 * @param  string  $url  The URL captured from the markdown source.
+	 *
+	 * @return string  The URL, or an empty string when its scheme is refused.
+	 * @since  6.1.7
+	 */
+	protected function safeUrl(string $url): string
+	{
+		$probe = (string) preg_replace(
+			'/[\x00-\x20\x7F]+/',
+			'',
+			html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8')
+		);
+
+		// relative, root relative, query and anchor links carry no scheme
+		if (!preg_match('#^([a-z][a-z0-9+.\-]*):#i', $probe, $match))
+		{
+			return $url;
+		}
+
+		$allowed = ['http', 'https', 'mailto', 'ftp', 'ftps', 'tel'];
+
+		return in_array(strtolower($match[1]), $allowed, true) ? $url : '';
 	}
 
 	/**

@@ -107,6 +107,5 @@ class UniqueName
 
 		return $name;
 	}
-
 }
 

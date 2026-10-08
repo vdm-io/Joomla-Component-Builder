@@ -76,6 +76,5 @@ class Filesfolders
 			unset($item->{'add' . $target});
 		}
 	}
-
 }
 

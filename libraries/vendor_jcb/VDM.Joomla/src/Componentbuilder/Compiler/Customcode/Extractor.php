@@ -55,8 +55,8 @@ use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Customcode\ExtractorInterfac
  * New Replace Code    = !==[REPLACE>$$$$]==>                !==[/REPLACE>$$$$]==>
  * 
  * ///////////////////////////////// when JCB adds it back ///////////////////////////////
- * JCB Add Inserted Code    =         
- * JCB Add Replaced Code    =         
+ * JCB Add Inserted Code    =
+ * JCB Add Replaced Code    =
  * 
  * //////////////////////////// changeing existing custom code ///////////////////////////
  * Update Inserted Code    = !==[INSERTED>$$$$]==>      !==[/INSERTED>$$$$]==>

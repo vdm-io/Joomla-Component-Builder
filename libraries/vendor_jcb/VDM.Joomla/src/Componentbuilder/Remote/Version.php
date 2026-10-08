@@ -14,10 +14,10 @@ namespace VDM\Joomla\Componentbuilder\Remote;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Version as JoomlaVersion;
+use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Github\Factory as Github;
 use VDM\Joomla\Gitea\Factory as Gitea;
 use VDM\Joomla\Utilities\SessionHelper;
-use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 
 
 /**

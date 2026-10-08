@@ -94,6 +94,12 @@ class AjaxController extends BaseController
 		$this->registerTask('uploadTranslation', 'ajax');
 		$this->registerTask('deleteTranslation', 'ajax');
 		$this->registerTask('displayTranslationColumns', 'ajax');
+		$this->registerTask('extrusionHarvest', 'ajax');
+		$this->registerTask('extrusionImport', 'ajax');
+		$this->registerTask('extrusionCatalogue', 'ajax');
+		$this->registerTask('extrusionFolders', 'ajax');
+		$this->registerTask('extrusionWeigh', 'ajax');
+		$this->registerTask('extrusionDiff', 'ajax');
 	}
 
     /**
@@ -2347,6 +2353,304 @@ class AjaxController extends BaseController
 							if ($ajaxModule)
 							{
 								$result = $ajaxModule->displayTranslationColumns($entityValue, $targetValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'extrusionHarvest':
+					try
+					{
+						$configValue = $jinput->get('config', NULL, 'RAW');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->extrusionHarvest($configValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'extrusionImport':
+					try
+					{
+						$configValue = $jinput->get('config', NULL, 'RAW');
+						$decisionsValue = $jinput->get('decisions', NULL, 'RAW');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->extrusionImport($configValue, $decisionsValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'extrusionCatalogue':
+					try
+					{
+						$component_idValue = $jinput->get('component_id', 0, 'INT');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->extrusionCatalogue($component_idValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'extrusionFolders':
+					try
+					{
+						$pathValue = $jinput->get('path', '', 'RAW');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->extrusionFolders($pathValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'extrusionWeigh':
+					try
+					{
+						$configValue = $jinput->get('config', NULL, 'RAW');
+						$decisionsValue = $jinput->get('decisions', NULL, 'RAW');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->extrusionWeigh($configValue, $decisionsValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'extrusionDiff':
+					try
+					{
+						$configValue = $jinput->get('config', NULL, 'RAW');
+						$decisionsValue = $jinput->get('decisions', NULL, 'RAW');
+						$rowValue = $jinput->get('row', NULL, 'RAW');
+						if($user->id != 0)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->extrusionDiff($configValue, $decisionsValue, $rowValue);
 							}
 							else
 							{

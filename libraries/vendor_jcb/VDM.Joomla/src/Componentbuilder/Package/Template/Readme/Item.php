@@ -84,6 +84,5 @@ MD;
 
 		return implode("\n", $readme);
 	}
-
 }
 

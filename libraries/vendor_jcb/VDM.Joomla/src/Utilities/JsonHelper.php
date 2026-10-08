@@ -96,6 +96,5 @@ abstract class JsonHelper
 		}
 		return $value;
 	}
-
 }
 

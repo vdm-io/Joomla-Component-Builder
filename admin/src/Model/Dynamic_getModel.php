@@ -35,6 +35,8 @@ use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
+use Joomla\CMS\Access\Exception\NotAllowed;
+use Joomla\CMS\Form\FormHelper;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -263,13 +265,25 @@ class Dynamic_getModel extends AdminModel
 				$item->metadata = $metadata->toArray();
 			}
 
-			// check edit access permissions
-			if (!empty($item->id) && !$this->allowEdit((array) $item))
+			// API reads use read permissions; administrator editing keeps its edit guard.
+			if (!empty($item->id))
 			{
- 				$app = Factory::getApplication();
-  				$app->enqueueMessage(Text::_('Not authorised!'), 'error');
-				$app->redirect('index.php?option=com_componentbuilder');
-				return false;
+				$app = Factory::getApplication();
+
+				if ($app->isClient('api'))
+				{
+					$user = $app->getIdentity();
+					if (!($user->authorise('dynamic_get.access', 'com_componentbuilder.dynamic_get.' . $item->id) && $user->authorise('dynamic_get.access', 'com_componentbuilder')) || (!$user->authorise('core.options', 'com_componentbuilder') && !in_array((int) $item->access, $user->getAuthorisedViewLevels())))
+					{
+						throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+					}
+				}
+				elseif (!$this->allowEdit((array) $item))
+				{
+					$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+					$app->redirect('index.php?option=com_componentbuilder');
+					return false;
+				}
 			}
 
 			if (!empty($item->php_calculation))
@@ -460,8 +474,13 @@ class Dynamic_getModel extends AdminModel
 
 		$jinput = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
+		// The record being saved decides the permissions, so its id wins over the request.
+		if (is_array($data) && isset($data['id']) && (int) $data['id'] > 0)
+		{
+			$id = (int) $data['id'];
+		}
 		// The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
-		if ($jinput->get('a_id'))
+		elseif ($jinput->get('a_id'))
 		{
 			$id = $jinput->get('a_id', 0, 'INT');
 		}
@@ -494,20 +513,46 @@ class Dynamic_getModel extends AdminModel
 		// Modify the form based on Edit Creaded By access controls.
 		if (!$user->authorise('core.edit.created_by', 'com_componentbuilder'))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'disabled', 'true');
-			// Disable fields for display.
-			$form->setFieldAttribute('created_by', 'readonly', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created_by', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created_by');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created_by', 'disabled', 'true');
+				$form->setFieldAttribute('created_by', 'readonly', 'true');
+				$form->setFieldAttribute('created_by', 'filter', 'unset');
+			}
 		}
 		// Modify the form based on Edit Creaded Date access controls.
 		if (!$user->authorise('core.edit.created', 'com_componentbuilder'))
 		{
-			// Disable fields for display.
-			$form->setFieldAttribute('created', 'disabled', 'true');
-			// Disable fields while saving.
-			$form->setFieldAttribute('created', 'filter', 'unset');
+			if ($app->isClient('api'))
+			{
+				// Exclude protected metadata from API validation and binding.
+				$form->removeField('created');
+			}
+			else
+			{
+				// Retain disabled metadata controls in administrator forms.
+				$form->setFieldAttribute('created', 'disabled', 'true');
+				$form->setFieldAttribute('created', 'filter', 'unset');
+			}
+		}
+
+		// Omitted PATCH metadata must not be filtered or rebound from storage.
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$submittedApiData = $jinput->get('data', json_decode($jinput->json->getRaw(), true), 'array');
+			foreach (['created', 'created_by'] as $metadataField)
+			{
+				if (!is_array($submittedApiData) || !array_key_exists($metadataField, $submittedApiData))
+				{
+					$form->removeField($metadataField);
+				}
+			}
 		}
 		// Only load these values if no id is found
 		if (0 == $id)
@@ -569,6 +614,10 @@ class Dynamic_getModel extends AdminModel
 
 		// update the join_db_table (sub form) layout
 		$form->setFieldAttribute('join_db_table', 'layout', ComponentbuilderHelper::getSubformLayout('dynamic_get', 'join_db_table'));
+		if ($app->isClient('api') && $jinput->getMethod() === 'PATCH')
+		{
+			$this->setState('jcb.api.patch.form', $form);
+		}
 		return $form;
 	}
 
@@ -677,7 +726,7 @@ class Dynamic_getModel extends AdminModel
 		// get user object.
 		$user = $this->getCurrentUser();
 		// get record id.
-		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+		$recordId = isset($data[$key]) ? (int) $data[$key] : 0;
 
 
 		// Access check.
@@ -693,10 +742,10 @@ class Dynamic_getModel extends AdminModel
 			$permission = $user->authorise('dynamic_get.edit', 'com_componentbuilder.dynamic_get.' . (int) $recordId);
 			if (!$permission)
 			{
-				if ($user->authorise('dynamic_get.edit.own', 'com_componentbuilder.dynamic_get.' . $recordId))
+				if ($user->authorise('dynamic_get.edit.own', 'com_componentbuilder.dynamic_get.' . (int) $recordId))
 				{
 					// Now test the owner is the user.
-					$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+					$ownerId = isset($data['created_by']) ? (int) $data['created_by'] : 0;
 					if (empty($ownerId))
 					{
 						return false;
@@ -812,25 +861,275 @@ class Dynamic_getModel extends AdminModel
 	 */
 	public function validate($form, $data, $group = null)
 	{
-		// check if the not_required field is set
-		if (isset($data['not_required']) && UtilitiesStringHelper::check($data['not_required']))
+		$conditionRule = FormHelper::loadRuleType('jcbconditionalrequired');
+		$conditionField = '__jcb_conditional_required';
+		if (!$conditionRule || $form->getFieldXml($conditionField, $group) !== false)
 		{
-			$requiredFields = (array) explode(',',(string) $data['not_required']);
-			$requiredFields = array_unique($requiredFields);
-			// now change the required field attributes value
-			foreach ($requiredFields as $requiredField)
+			return false;
+		}
+		$conditionRan = false;
+		$conditionAttributes = [];
+		$conditionCallback = function (array $data) use ($form, $group, &$conditionRan, &$conditionAttributes): bool
+		{
+			if ($conditionRan)
 			{
-				// make sure there is a string value
-				if (UtilitiesStringHelper::check($requiredField))
+				return false;
+			}
+			$conditionRan = true;
+			$conditionGroups = [0 => ['matches' => [0 => ['name' => 'gettype', 'behavior' => 1, 'options' => [0 => '3', 1 => '4'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'getcustom'], 'show' => true, 'toggle' => true], 1 => ['matches' => [0 => ['name' => 'main_source', 'behavior' => 1, 'options' => [0 => '1'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'view_table_main'], 'show' => true, 'toggle' => true], 2 => ['matches' => [0 => ['name' => 'main_source', 'behavior' => 1, 'options' => [0 => '1'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'view_selection'], 'show' => true, 'toggle' => true], 3 => ['matches' => [0 => ['name' => 'main_source', 'behavior' => 1, 'options' => [0 => '2'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'db_table_main'], 'show' => true, 'toggle' => true], 4 => ['matches' => [0 => ['name' => 'main_source', 'behavior' => 1, 'options' => [0 => '2'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'db_selection'], 'show' => true, 'toggle' => true], 5 => ['matches' => [0 => ['name' => 'gettype', 'behavior' => 1, 'options' => [0 => '1', 1 => '3'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'add_php_after_getitem', 1 => 'add_php_before_getitem'], 'show' => true, 'toggle' => true], 6 => ['matches' => [0 => ['name' => 'gettype', 'behavior' => 1, 'options' => [0 => '2', 1 => '4'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'add_php_after_getitems', 1 => 'add_php_before_getitems', 2 => 'add_php_getlistquery'], 'show' => true, 'toggle' => true], 7 => ['matches' => [0 => ['name' => 'gettype', 'behavior' => 1, 'options' => [0 => '2'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'pagination'], 'show' => true, 'toggle' => true], 8 => ['matches' => [0 => ['name' => 'gettype', 'behavior' => 1, 'options' => [0 => '1', 1 => '2'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'add_php_router_parse'], 'show' => true, 'toggle' => true], 9 => ['matches' => [0 => ['name' => 'gettype', 'behavior' => 1, 'options' => [0 => '1', 1 => '2'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true], 1 => ['name' => 'add_php_router_parse', 'behavior' => 1, 'options' => [0 => '1'], 'user' => false, 'checkbox' => false, 'array' => true, 'supported' => true]], 'targets' => [0 => 'php_router_parse'], 'show' => true, 'toggle' => true]];
+			// The browser's not_required list is informational, never an authority.
+			$conditionInput = new Registry($data);
+			$conditionData = $group ? (array) $conditionInput->get($group, []) : $data;
+			$conditionStored = [];
+			$conditionApp = Factory::getApplication();
+			$conditionPatch = $conditionApp->isClient('api') && $conditionApp->getInput()->getMethod() === 'PATCH';
+			$recordId = (int) ($data['id'] ?? $this->getState($this->getName() . '.id', 0));
+			if ($recordId > 0)
+			{
+				$stored = $this->getItem($recordId);
+				if ($stored === false || $stored === null)
 				{
-					// change to false
-					$form->setFieldAttribute($requiredField, 'required', 'false');
-					// also clear the data set
-					unset($data[$requiredField]);
+					return false;
+				}
+				$conditionStored = new Registry($stored);
+				$conditionStored = $group ? (array) $conditionStored->get($group, []) : $conditionStored->toArray();
+			}
+			$conditionPresent = static function ($value): bool
+			{
+				return $value !== null && $value !== '' && $value !== [];
+			};
+			$conditionEquals = static function ($value, $option): bool
+			{
+				// Selection values arrive as DOM strings; numeric/boolean options use JS equality.
+				if (is_numeric($option) || $option === 'true' || $option === 'false')
+				{
+					if ($value === null)
+					{
+						return false;
+					}
+					$number = $option === 'true' ? 1 : ($option === 'false' ? 0 : (float) $option);
+					if (is_bool($value) || (is_string($value) && trim($value) === ''))
+					{
+						return (float) $value === (float) $number;
+					}
+					return is_numeric($value) && (float) $value === (float) $number;
+				}
+				return is_scalar($value) && (string) $value === (string) $option;
+			};
+			$conditionMatch = static function ($value, array $rule) use ($conditionPresent, $conditionEquals): bool
+			{
+				$behavior = $rule['behavior'];
+				$options = $rule['options'];
+				if ($behavior >= 1 && $behavior <= 3)
+				{
+					if ($options !== [])
+					{
+						foreach ($options as $option)
+						{
+							$equal = $conditionEquals($value, $option);
+							// Preserve the browser's OR across options, including Is Not.
+							if ($behavior === 2 ? !$equal : $equal)
+							{
+								return true;
+							}
+						}
+						return false;
+					}
+					$present = $conditionPresent($value);
+					if ($behavior === 2)
+					{
+						return !$present;
+					}
+					return $present && !($behavior === 3 && $rule['user'] && $conditionEquals($value, '0'));
+				}
+				if ($behavior === 4 || $behavior === 5)
+				{
+					return $behavior === 4 ? $conditionPresent($value) : !$conditionPresent($value);
+				}
+				if (!is_scalar($value) && $value !== null)
+				{
+					return false;
+				}
+				$value = (string) $value;
+				if ($behavior >= 6 && $behavior <= 9)
+				{
+					$keywords = $options['keywords'] ?? [];
+					if ($keywords === [])
+					{
+						return $value === 'error';
+					}
+					$all = $behavior === 6 || $behavior === 8;
+					if ($behavior === 8 || $behavior === 9)
+					{
+						$value = StringHelper::strtolower($value);
+					}
+					foreach ($keywords as $keyword)
+					{
+						$found = strpos($value, $keyword) !== false;
+						if ($all ? !$found : $found)
+						{
+							return !$all;
+						}
+					}
+					return $all;
+				}
+				// JavaScript length counts UTF-16 code units, including surrogate pairs.
+				$length = StringHelper::strlen($value) + preg_match_all('/[\x{10000}-\x{10FFFF}]/u', $value);
+				$expected = (int) (($options['length'] ?? 0) ?: 5);
+				switch ($behavior)
+				{
+					case 10:
+						return $length >= $expected;
+					case 11:
+						return $length <= $expected;
+					case 12:
+						return $length == $expected;
+				}
+				return false;
+			};
+			$conditionalRequired = [];
+			foreach ($conditionGroups as $conditionGroup)
+			{
+				foreach ($conditionGroup['targets'] as $target)
+				{
+					$conditionalRequired[$target] = true;
 				}
 			}
+			foreach ($conditionGroups as $conditionGroup)
+			{
+				$matched = true;
+				foreach ($conditionGroup['matches'] as $rule)
+				{
+					// Unsupported definitions cannot relax a required field.
+					if (!$rule['supported'])
+					{
+						continue 2;
+					}
+					// ACL-denied selectors cannot change applicability through discarded input.
+					$disabled = strtolower((string) $form->getFieldAttribute($rule['name'], 'disabled', '', $group));
+					$filter = strtolower((string) $form->getFieldAttribute($rule['name'], 'filter', '', $group));
+					$available = $form->getFieldAttribute($rule['name'], 'name', null, $group) !== null;
+					$protected = !$available || in_array($disabled, ['true', '1', 'disabled'], true) || $filter === 'unset';
+					$values = $protected ? $conditionStored : $conditionData;
+					if (array_key_exists($rule['name'], $values))
+					{
+						$value = $values[$rule['name']];
+					}
+					elseif (!$protected && $conditionPatch && array_key_exists($rule['name'], $conditionStored))
+					{
+						$value = $conditionStored[$rule['name']];
+					}
+					elseif (!$protected && $rule['checkbox'])
+					{
+						// Native unchecked checkboxes omit their key on ordinary form submissions.
+						$value = false;
+					}
+					else
+					{
+						$value = $form->getFieldAttribute($rule['name'], 'default', null, $group);
+					}
+					if ($rule['checkbox'])
+					{
+						$value = (bool) $value;
+					}
+					if ($rule['array'])
+					{
+						$values = $conditionPresent($value) ? (array) $value : [];
+						$oneMatches = false;
+						foreach ($values as $entry)
+						{
+							if ($conditionMatch($entry, $rule))
+							{
+								$oneMatches = true;
+								break;
+							}
+						}
+					}
+					else
+					{
+						$oneMatches = $conditionMatch($value, $rule);
+					}
+					$matched = $matched && $oneMatches;
+				}
+				if ($matched || $conditionGroup['toggle'])
+				{
+					$required = $matched ? $conditionGroup['show'] : !$conditionGroup['show'];
+					foreach ($conditionGroup['targets'] as $target)
+					{
+						$conditionalRequired[$target] = $required;
+					}
+				}
+			}
+			foreach ($conditionalRequired as $field => $required)
+			{
+				$conditionElement = $form->getFieldXml($field, $group);
+				if ($conditionElement !== false)
+				{
+					// Snapshot after native validation plugins have finished changing the form.
+					$conditionAttributes[] = [$conditionElement, isset($conditionElement['required']) ? (string) $conditionElement['required'] : null];
+					$form->setFieldAttribute($field, 'required', $required ? 'true' : 'false', $group);
+				}
+			}
+			// Inactive fields keep their values; ordinary filtering and validation still apply.
+			return true;
+		};
+		if (!$conditionRule::attach($form, $conditionCallback, $group, $conditionField))
+		{
+			return false;
 		}
-		return parent::validate($form, $data, $group);
+		$conditionNode = null;
+		try
+		{
+			$element = new \SimpleXMLElement('<field name="__jcb_conditional_required" type="hidden" filter="unset" validate="jcbconditionalrequired" />');
+			if (!$form->setField($element, $group))
+			{
+				return false;
+			}
+			$element = $form->getFieldXml($conditionField, $group);
+			if ($element === false)
+			{
+				return false;
+			}
+			$conditionNode = dom_import_simplexml($element);
+			$container = $conditionNode->parentNode;
+			while ($container->nodeName !== 'form' && $container->nodeName !== 'fields')
+			{
+				$container = $container->parentNode;
+			}
+			$container->insertBefore($conditionNode, $container->firstChild);
+			// The internal rule needs no submitted value and must never reach persistence.
+			$conditionPath = $group ? $group . '.' . $conditionField : $conditionField;
+			$conditionInput = new Registry($data);
+			$conditionInput->remove($conditionPath);
+			$result = parent::validate($form, $conditionInput->toArray(), $group);
+			if (!$conditionRan || $result === false)
+			{
+				return false;
+			}
+			$conditionOutput = new Registry($result);
+			$conditionOutput->remove($conditionPath);
+			return $conditionOutput->toArray();
+		}
+		finally
+		{
+			if ($conditionNode !== null && $conditionNode->parentNode !== null)
+			{
+				$conditionNode->parentNode->removeChild($conditionNode);
+			}
+			foreach ($conditionAttributes as [$conditionElement, $conditionRequired])
+			{
+				if ($conditionRequired === null)
+				{
+					unset($conditionElement['required']);
+				}
+				else
+				{
+					$conditionElement['required'] = $conditionRequired;
+				}
+			}
+			$form->removeField($conditionField, $group);
+			$conditionRule::detach($form);
+		}
 	}
 
 	/**
@@ -905,6 +1204,74 @@ class Dynamic_getModel extends AdminModel
 			$data['metadata'] = (string) $metadata;
 		}
 
+		// The record keys, as every line below expects them: the primary key as an
+		// integer that is never taken from the request (null from the API on create).
+		$data['id'] = (int) ($data['id'] ?? 0);
+
+		// The guid is the server's: an existing record keeps the guid it was stored
+		// with, and the API never takes one from the request.
+		if ($data['id'] > 0)
+		{
+			$data['guid'] = (string) GetHelper::var('dynamic_get', $data['id'], 'id', 'guid', '=', 'componentbuilder');
+		}
+		elseif (Factory::getApplication()->isClient('api'))
+		{
+			$data['guid'] = '';
+		}
+		else
+		{
+			$data['guid'] = (string) ($data['guid'] ?? '');
+		}
+
+		// Set the guid while it is empty, not valid, or not unique in this table.
+		while (!GuidHelper::valid($data['guid'], 'dynamic_get', $data['id'], 'componentbuilder'))
+		{
+			$data['guid'] = (string) GuidHelper::get();
+		}
+
+		// Preserve omitted API PATCH values in their original storage representation.
+		$jcbPatchStored = [];
+		$jcbPatchInput = [];
+		$jcbPatchId = $data['id'];
+
+		if ($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api') && $jcbPatchId > 0)
+		{
+			$jcbPatchSubmitted = $input->get('data', json_decode($input->json->getRaw(), true), 'array');
+			$jcbPatchSubmitted = is_array($jcbPatchSubmitted) ? $jcbPatchSubmitted : [];
+			// Joomla's API inserts an empty tags array after validation. It must not
+			// clear omitted relationships or bypass the form's field permissions.
+			$jcbPatchForm = $this->getState('jcb.api.patch.form');
+			if (!array_key_exists('tags', $jcbPatchSubmitted)
+				|| ($jcbPatchForm !== null && (!$jcbPatchForm->getField('tags')
+					|| strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'filter', '')) === 'unset'
+					|| in_array(strtolower((string) $jcbPatchForm->getFieldAttribute('tags', 'disabled', '')), ['true', '1'], true))))
+			{
+				unset($data['tags']);
+			}
+
+			$jcbPatchTable = $this->getTable();
+
+			if (!$jcbPatchTable->load($jcbPatchId))
+			{
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_RECORD_LOAD'));
+
+				return false;
+			}
+
+			foreach ($jcbPatchTable->getFields() as $jcbPatchField)
+			{
+				$jcbPatchName = $jcbPatchField->Field;
+
+				if ($jcbPatchName !== $jcbPatchTable->getKeyName() && $jcbPatchName !== 'guid'
+					&& !array_key_exists($jcbPatchName, $jcbPatchSubmitted)
+					&& array_key_exists($jcbPatchName, $data))
+				{
+					$jcbPatchStored[$jcbPatchName] = $jcbPatchTable->{$jcbPatchName};
+					$jcbPatchInput[$jcbPatchName] = serialize($data[$jcbPatchName]);
+				}
+			}
+		}
+
 
 		// Set the GUID if empty or not valid
 		if (empty($data['guid']) && $data['id'] > 0)
@@ -920,149 +1287,272 @@ class Dynamic_getModel extends AdminModel
 			$data['guid'] = (string) GuidHelper::get();
 		}
 
+		// A copy or a custom derivation must follow the normal storage transforms.
+		if ((int) $data['id'] !== $jcbPatchId)
+		{
+			$jcbPatchStored = [];
+		}
+		else
+		{
+			foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+			{
+				if (!array_key_exists($jcbPatchName, $data)
+					|| serialize($data[$jcbPatchName]) !== $jcbPatchInput[$jcbPatchName])
+				{
+					unset($jcbPatchStored[$jcbPatchName]);
+				}
+			}
+		}
+
+		if (array_key_exists('join_db_table', $jcbPatchStored)
+			&& (!array_key_exists('join_db_table', $data) || serialize($data['join_db_table']) !== $jcbPatchInput['join_db_table']))
+		{
+			unset($jcbPatchStored['join_db_table']);
+		}
+
 		// Set the join_db_table items to data.
-		if (isset($data['join_db_table']) && is_array($data['join_db_table']))
+		if (isset($data['join_db_table']) && is_array($data['join_db_table']) && !array_key_exists('join_db_table', $jcbPatchStored))
 		{
 			$join_db_table = new Registry;
 			$join_db_table->loadArray($data['join_db_table']);
 			$data['join_db_table'] = (string) $join_db_table;
 		}
-		elseif (!isset($data['join_db_table']))
+		elseif (!isset($data['join_db_table']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty join_db_table to data
 			$data['join_db_table'] = '';
 		}
 
+		if (array_key_exists('filter', $jcbPatchStored)
+			&& (!array_key_exists('filter', $data) || serialize($data['filter']) !== $jcbPatchInput['filter']))
+		{
+			unset($jcbPatchStored['filter']);
+		}
+
 		// Set the filter items to data.
-		if (isset($data['filter']) && is_array($data['filter']))
+		if (isset($data['filter']) && is_array($data['filter']) && !array_key_exists('filter', $jcbPatchStored))
 		{
 			$filter = new Registry;
 			$filter->loadArray($data['filter']);
 			$data['filter'] = (string) $filter;
 		}
-		elseif (!isset($data['filter']))
+		elseif (!isset($data['filter']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty filter to data
 			$data['filter'] = '';
 		}
 
+		if (array_key_exists('where', $jcbPatchStored)
+			&& (!array_key_exists('where', $data) || serialize($data['where']) !== $jcbPatchInput['where']))
+		{
+			unset($jcbPatchStored['where']);
+		}
+
 		// Set the where items to data.
-		if (isset($data['where']) && is_array($data['where']))
+		if (isset($data['where']) && is_array($data['where']) && !array_key_exists('where', $jcbPatchStored))
 		{
 			$where = new Registry;
 			$where->loadArray($data['where']);
 			$data['where'] = (string) $where;
 		}
-		elseif (!isset($data['where']))
+		elseif (!isset($data['where']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty where to data
 			$data['where'] = '';
 		}
 
+		if (array_key_exists('order', $jcbPatchStored)
+			&& (!array_key_exists('order', $data) || serialize($data['order']) !== $jcbPatchInput['order']))
+		{
+			unset($jcbPatchStored['order']);
+		}
+
 		// Set the order items to data.
-		if (isset($data['order']) && is_array($data['order']))
+		if (isset($data['order']) && is_array($data['order']) && !array_key_exists('order', $jcbPatchStored))
 		{
 			$order = new Registry;
 			$order->loadArray($data['order']);
 			$data['order'] = (string) $order;
 		}
-		elseif (!isset($data['order']))
+		elseif (!isset($data['order']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty order to data
 			$data['order'] = '';
 		}
 
+		if (array_key_exists('group', $jcbPatchStored)
+			&& (!array_key_exists('group', $data) || serialize($data['group']) !== $jcbPatchInput['group']))
+		{
+			unset($jcbPatchStored['group']);
+		}
+
 		// Set the group items to data.
-		if (isset($data['group']) && is_array($data['group']))
+		if (isset($data['group']) && is_array($data['group']) && !array_key_exists('group', $jcbPatchStored))
 		{
 			$group = new Registry;
 			$group->loadArray($data['group']);
 			$data['group'] = (string) $group;
 		}
-		elseif (!isset($data['group']))
+		elseif (!isset($data['group']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty group to data
 			$data['group'] = '';
 		}
 
+		if (array_key_exists('global', $jcbPatchStored)
+			&& (!array_key_exists('global', $data) || serialize($data['global']) !== $jcbPatchInput['global']))
+		{
+			unset($jcbPatchStored['global']);
+		}
+
 		// Set the global items to data.
-		if (isset($data['global']) && is_array($data['global']))
+		if (isset($data['global']) && is_array($data['global']) && !array_key_exists('global', $jcbPatchStored))
 		{
 			$global = new Registry;
 			$global->loadArray($data['global']);
 			$data['global'] = (string) $global;
 		}
-		elseif (!isset($data['global']))
+		elseif (!isset($data['global']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty global to data
 			$data['global'] = '';
 		}
 
+		if (array_key_exists('join_view_table', $jcbPatchStored)
+			&& (!array_key_exists('join_view_table', $data) || serialize($data['join_view_table']) !== $jcbPatchInput['join_view_table']))
+		{
+			unset($jcbPatchStored['join_view_table']);
+		}
+
 		// Set the join_view_table items to data.
-		if (isset($data['join_view_table']) && is_array($data['join_view_table']))
+		if (isset($data['join_view_table']) && is_array($data['join_view_table']) && !array_key_exists('join_view_table', $jcbPatchStored))
 		{
 			$join_view_table = new Registry;
 			$join_view_table->loadArray($data['join_view_table']);
 			$data['join_view_table'] = (string) $join_view_table;
 		}
-		elseif (!isset($data['join_view_table']))
+		elseif (!isset($data['join_view_table']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
 		{
 			// Set the empty join_view_table to data
 			$data['join_view_table'] = '';
 		}
 
+		if (array_key_exists('plugin_events', $jcbPatchStored)
+			&& (!array_key_exists('plugin_events', $data) || serialize($data['plugin_events']) !== $jcbPatchInput['plugin_events']))
+		{
+			unset($jcbPatchStored['plugin_events']);
+		}
+
 		// Set the plugin_events string to JSON string.
-		if (isset($data['plugin_events']))
+		if (isset($data['plugin_events']) && !array_key_exists('plugin_events', $jcbPatchStored))
 		{
 			$data['plugin_events'] = (string) json_encode($data['plugin_events']);
 		}
 
+		if (array_key_exists('php_calculation', $jcbPatchStored)
+			&& (!array_key_exists('php_calculation', $data) || serialize($data['php_calculation']) !== $jcbPatchInput['php_calculation']))
+		{
+			unset($jcbPatchStored['php_calculation']);
+		}
+
 		// Set the php_calculation string to base64 string.
-		if (isset($data['php_calculation']))
+		if (isset($data['php_calculation']) && !array_key_exists('php_calculation', $jcbPatchStored))
 		{
 			$data['php_calculation'] = base64_encode($data['php_calculation']);
 		}
 
+		if (array_key_exists('php_router_parse', $jcbPatchStored)
+			&& (!array_key_exists('php_router_parse', $data) || serialize($data['php_router_parse']) !== $jcbPatchInput['php_router_parse']))
+		{
+			unset($jcbPatchStored['php_router_parse']);
+		}
+
 		// Set the php_router_parse string to base64 string.
-		if (isset($data['php_router_parse']))
+		if (isset($data['php_router_parse']) && !array_key_exists('php_router_parse', $jcbPatchStored))
 		{
 			$data['php_router_parse'] = base64_encode($data['php_router_parse']);
 		}
 
+		if (array_key_exists('php_custom_get', $jcbPatchStored)
+			&& (!array_key_exists('php_custom_get', $data) || serialize($data['php_custom_get']) !== $jcbPatchInput['php_custom_get']))
+		{
+			unset($jcbPatchStored['php_custom_get']);
+		}
+
 		// Set the php_custom_get string to base64 string.
-		if (isset($data['php_custom_get']))
+		if (isset($data['php_custom_get']) && !array_key_exists('php_custom_get', $jcbPatchStored))
 		{
 			$data['php_custom_get'] = base64_encode($data['php_custom_get']);
 		}
 
+		if (array_key_exists('php_before_getitem', $jcbPatchStored)
+			&& (!array_key_exists('php_before_getitem', $data) || serialize($data['php_before_getitem']) !== $jcbPatchInput['php_before_getitem']))
+		{
+			unset($jcbPatchStored['php_before_getitem']);
+		}
+
 		// Set the php_before_getitem string to base64 string.
-		if (isset($data['php_before_getitem']))
+		if (isset($data['php_before_getitem']) && !array_key_exists('php_before_getitem', $jcbPatchStored))
 		{
 			$data['php_before_getitem'] = base64_encode($data['php_before_getitem']);
 		}
 
+		if (array_key_exists('php_after_getitem', $jcbPatchStored)
+			&& (!array_key_exists('php_after_getitem', $data) || serialize($data['php_after_getitem']) !== $jcbPatchInput['php_after_getitem']))
+		{
+			unset($jcbPatchStored['php_after_getitem']);
+		}
+
 		// Set the php_after_getitem string to base64 string.
-		if (isset($data['php_after_getitem']))
+		if (isset($data['php_after_getitem']) && !array_key_exists('php_after_getitem', $jcbPatchStored))
 		{
 			$data['php_after_getitem'] = base64_encode($data['php_after_getitem']);
 		}
 
+		if (array_key_exists('php_getlistquery', $jcbPatchStored)
+			&& (!array_key_exists('php_getlistquery', $data) || serialize($data['php_getlistquery']) !== $jcbPatchInput['php_getlistquery']))
+		{
+			unset($jcbPatchStored['php_getlistquery']);
+		}
+
 		// Set the php_getlistquery string to base64 string.
-		if (isset($data['php_getlistquery']))
+		if (isset($data['php_getlistquery']) && !array_key_exists('php_getlistquery', $jcbPatchStored))
 		{
 			$data['php_getlistquery'] = base64_encode($data['php_getlistquery']);
 		}
 
+		if (array_key_exists('php_before_getitems', $jcbPatchStored)
+			&& (!array_key_exists('php_before_getitems', $data) || serialize($data['php_before_getitems']) !== $jcbPatchInput['php_before_getitems']))
+		{
+			unset($jcbPatchStored['php_before_getitems']);
+		}
+
 		// Set the php_before_getitems string to base64 string.
-		if (isset($data['php_before_getitems']))
+		if (isset($data['php_before_getitems']) && !array_key_exists('php_before_getitems', $jcbPatchStored))
 		{
 			$data['php_before_getitems'] = base64_encode($data['php_before_getitems']);
 		}
 
+		if (array_key_exists('php_after_getitems', $jcbPatchStored)
+			&& (!array_key_exists('php_after_getitems', $data) || serialize($data['php_after_getitems']) !== $jcbPatchInput['php_after_getitems']))
+		{
+			unset($jcbPatchStored['php_after_getitems']);
+		}
+
 		// Set the php_after_getitems string to base64 string.
-		if (isset($data['php_after_getitems']))
+		if (isset($data['php_after_getitems']) && !array_key_exists('php_after_getitems', $jcbPatchStored))
 		{
 			$data['php_after_getitems'] = base64_encode($data['php_after_getitems']);
+		}
+
+		// Restore unchanged omitted columns without a lossy decode/encode round trip.
+		foreach ($jcbPatchStored as $jcbPatchName => $jcbPatchValue)
+		{
+			if (array_key_exists($jcbPatchName, $data)
+				&& serialize($data[$jcbPatchName]) === $jcbPatchInput[$jcbPatchName])
+			{
+				$data[$jcbPatchName] = $jcbPatchValue;
+			}
 		}
 
 		// Set the Params Items to data

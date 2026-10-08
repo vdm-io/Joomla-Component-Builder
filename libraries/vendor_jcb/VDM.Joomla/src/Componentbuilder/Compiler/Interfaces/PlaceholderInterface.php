@@ -235,6 +235,5 @@ interface PlaceholderInterface
 	 * @since 3.2.0
 	 */
 	public function keys(int $type, ?int $id = null): array;
-
 }
 

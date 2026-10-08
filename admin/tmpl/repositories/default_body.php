@@ -69,37 +69,37 @@ $edit = "index.php?option=com_componentbuilder&view=repositories&task=repository
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $canDo->get('repository.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->system_name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'repositories.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php if (!$this->isModal): ?>
-						<?php echo $this->escape($item->system_name); ?>
+						<?php echo $this->sanitize($item->system_name); ?>
 					<?php else: ?>
 						<?php
 							$link = "{$edit}&id={$item->id}";
 							$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-							$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->system_name, false) . '</a>';
+							$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->system_name, false) . '</a>';
 							$attribs = 'data-content-select data-content-type="com_componentbuilder.repository"'
-								. ' data-id="' . $dataId . '"'
-								. ' data-title="' . $this->escape($item->system_name, false) . '"'
-								. ' data-uri="' . $this->escape($link, false) . '"'
-								. ' data-html="' . $this->escape($itemHtml, false) . '"';
+								. ' data-id="' . $this->sanitize($dataId, false) . '"'
+								. ' data-title="' . $this->sanitize($item->system_name, false) . '"'
+								. ' data-uri="' . $this->sanitize($link, false) . '"'
+								. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 						?>
 						<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-							<?php echo $this->escape($item->system_name); ?>
+							<?php echo $this->sanitize($item->system_name); ?>
 						</a>
 					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->organisation); ?>
+			<?php echo $this->sanitize($item->organisation); ?>
 		</td>
 		<td class="hidden-phone">
 			<div>
-			<?php echo $this->escape($item->repository); ?>
+			<?php echo $this->sanitize($item->repository); ?>
 <?php if (!empty($item->read_branch)): ?>
 <br><small><?php echo Text::_('COM_COMPONENTBUILDER_READ_BRANCH'); ?>: <?php echo $item->read_branch; ?></small>
 <?php endif; ?>
@@ -115,7 +115,7 @@ $edit = "index.php?option=com_componentbuilder&view=repositories&task=repository
 			<?php echo Text::_($item->type); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $this->escape($item->base); ?>
+			<?php echo $this->sanitize($item->base); ?>
 		</td>
 		<td class="center">
 		<?php if (!$this->isModal && $canDo->get('repository.edit.state')) : ?>

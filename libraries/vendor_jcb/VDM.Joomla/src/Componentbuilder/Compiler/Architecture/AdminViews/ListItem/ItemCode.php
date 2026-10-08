@@ -120,10 +120,10 @@ final class ItemCode
 			$doNotEscape
 			&& $this->shouldNotEscapeField($nameListCode, $item['code'])
 		) {
-			return $this->getRawItemCode($item['code']);
+			return $this->getEscapedItemCode($item['code'], $classPointer);
 		}
 
-		return $this->getEscapedItemCode($item['code'], $classPointer);
+		return $this->getSanitizedItemCode($item['code'], $classPointer);
 	}
 
 	/**
@@ -252,7 +252,7 @@ final class ItemCode
 	 */
 	protected function getCategoryTitleCode(string $classPointer): string
 	{
-		return $classPointer . 'escape($item->category_title)';
+		return $classPointer . 'sanitize($item->category_title)';
 	}
 
 	/**
@@ -271,26 +271,36 @@ final class ItemCode
 	}
 
 	/**
-	 * Get the raw item code string.
+	 * Get the sanitised item code string.
 	 *
-	 * @param   string  $code  The field code.
-	 *
-	 * @return  string
-	 * @since   5.1.5
-	 */
-	protected function getRawItemCode(string $code): string
-	{
-		return '$item->' . $code;
-	}
-
-	/**
-	 * Get the escaped item code string.
+	 * This is what a field gets by default: every tag is removed and only the
+	 * text it wrapped survives.
 	 *
 	 * @param   string  $code          The field code.
 	 * @param   string  $classPointer  The class pointer.
 	 *
 	 * @return  string
 	 * @since   5.1.5
+	 * @since   6.1.7  Sanitises, where the view method used to escape.
+	 */
+	protected function getSanitizedItemCode(string $code, string $classPointer): string
+	{
+		return $classPointer . 'sanitize($item->' . $code . ')';
+	}
+
+	/**
+	 * Get the escaped item code string.
+	 *
+	 * A field flagged not to be escaped is asking for its HTML to be kept
+	 * rather than stripped. Keeping it is not the same as trusting it, so the
+	 * value is encoded: the markup stays visible and cannot be parsed.
+	 *
+	 * @param   string  $code          The field code.
+	 * @param   string  $classPointer  The class pointer.
+	 *
+	 * @return  string
+	 * @since   5.1.5
+	 * @since   6.1.7  Encodes, where the value used to be emitted raw.
 	 */
 	protected function getEscapedItemCode(string $code, string $classPointer): string
 	{

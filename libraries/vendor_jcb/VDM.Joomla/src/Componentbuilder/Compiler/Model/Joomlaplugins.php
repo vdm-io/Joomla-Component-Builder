@@ -13,6 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Model;
 
 
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Api\Plugin\Routes;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\PluginDataInterface as Plugin;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -34,15 +35,25 @@ class Joomlaplugins
 	protected Plugin $plugin;
 
 	/**
+	 * The Api Plugin Routes Class.
+	 *
+	 * @var    Routes
+	 * @since  6.1.7
+	 */
+	protected Routes $routes;
+
+	/**
 	 * Constructor
 	 *
 	 * @param Plugin|null      $plugin    The compiler Joomla plugin data object.
+	 * @param Routes|null      $routes    The Api Plugin Routes Class.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(?Plugin $plugin = null)
+	public function __construct(?Plugin $plugin = null, ?Routes $routes = null)
 	{
 		$this->plugin = $plugin ?: Compiler::_('Joomlaplugin.Data');
+		$this->routes = $routes ?: Compiler::_('Architecture.Api.Plugin.Routes');
 	}
 
 	/**
@@ -62,6 +73,13 @@ class Joomlaplugins
 
 		if (ArrayHelper::check($item->addjoomla_plugins))
 		{
+			// make the API routes of the admin views available to the plugins
+			$this->routes->set(
+				ArrayHelper::check($item->admin_views ?? null) ? $item->admin_views : [],
+				ArrayHelper::check($item->custom_admin_views ?? null) ? $item->custom_admin_views : [],
+				ArrayHelper::check($item->site_views ?? null) ? $item->site_views : []
+			);
+
 			$joomla_plugins = array_map(
 				function ($array) use (&$item) {
 					// only load the plugins whose target association calls for it
@@ -79,6 +97,5 @@ class Joomlaplugins
 
 		unset($item->addjoomla_plugins);
 	}
-
 }
 

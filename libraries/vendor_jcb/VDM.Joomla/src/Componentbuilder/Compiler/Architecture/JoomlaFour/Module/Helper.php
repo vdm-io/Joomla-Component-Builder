@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\Module;
 
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\Module\HelperInterface;
 
 

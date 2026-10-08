@@ -69,26 +69,26 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $canDo->get('field.edit')): ?>
-					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->name); ?></a>
+					<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->name); ?></a>
 					<?php if ($item->checked_out): ?>
 						<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'fields.', $canCheckin); ?>
 					<?php endif; ?>
 				<?php else: ?>
 					<?php if (!$this->isModal): ?>
-						<?php echo $this->escape($item->name); ?>
+						<?php echo $this->sanitize($item->name); ?>
 					<?php else: ?>
 						<?php
 							$link = "{$edit}&id={$item->id}";
 							$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-							$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->name, false) . '</a>';
+							$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->name, false) . '</a>';
 							$attribs = 'data-content-select data-content-type="com_componentbuilder.field"'
-								. ' data-id="' . $dataId . '"'
-								. ' data-title="' . $this->escape($item->name, false) . '"'
-								. ' data-uri="' . $this->escape($link, false) . '"'
-								. ' data-html="' . $this->escape($itemHtml, false) . '"';
+								. ' data-id="' . $this->sanitize($dataId, false) . '"'
+								. ' data-title="' . $this->sanitize($item->name, false) . '"'
+								. ' data-uri="' . $this->sanitize($link, false) . '"'
+								. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 						?>
 						<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-							<?php echo $this->escape($item->name); ?>
+							<?php echo $this->sanitize($item->name); ?>
 						</a>
 					<?php endif; ?>
 				<?php endif; ?>
@@ -97,9 +97,9 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $this->user->authorise('fieldtype.edit', 'com_componentbuilder.fieldtype.' . (int) ($item->fieldtype_id ?? 0))): ?>
-					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->fieldtype_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=fieldtypes&task=fieldtype.edit&id=<?php echo $item->fieldtype_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->sanitize($item->fieldtype_name); ?></a>
 				<?php else: ?>
-					<?php echo $this->escape($item->fieldtype_name); ?>
+					<?php echo $this->sanitize($item->fieldtype_name); ?>
 				<?php endif; ?>
 			</div>
 		</td>
@@ -118,9 +118,9 @@ $edit = "index.php?option=com_componentbuilder&view=fields&task=field.edit";
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $this->user->authorise('core.edit', 'com_componentbuilder.field.category.' . (int) ($item->catid ?? 0))): ?>
-					<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.field"><?php echo $this->escape($item->category_title); ?></a>
+					<a href="index.php?option=com_categories&task=category.edit&id=<?php echo (int)$item->catid; ?>&extension=com_componentbuilder.field"><?php echo $this->sanitize($item->category_title); ?></a>
 				<?php else: ?>
-					<?php echo $this->escape($item->category_title); ?>
+					<?php echo $this->sanitize($item->category_title); ?>
 				<?php endif; ?>
 			</div>
 		</td>

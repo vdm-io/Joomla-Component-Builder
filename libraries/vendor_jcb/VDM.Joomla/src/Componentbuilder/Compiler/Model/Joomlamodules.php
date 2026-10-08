@@ -78,6 +78,5 @@ class Joomlamodules
 
 		unset($item->addjoomla_modules);
 	}
-
 }
 

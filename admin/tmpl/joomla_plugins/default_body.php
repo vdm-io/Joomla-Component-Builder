@@ -71,30 +71,30 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		<td class="nowrap">
 			<div>
 			<?php if (!$this->isModal && $canDo->get('joomla_plugin.edit')): ?>
-				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->escape($item->system_name); ?></a>
+				<a href="<?php echo $edit; ?>&id=<?php echo $item->id; ?>"><?php echo $this->sanitize($item->system_name); ?></a>
 				<?php if ($item->checked_out): ?>
 					<?php echo Html::_('jgrid.checkedout', $i, $userChkOut->name, $item->checked_out_time, 'joomla_plugins.', $canCheckin); ?>
 				<?php endif; ?>
 			<?php else: ?>
 				<?php if (!$this->isModal): ?>
-					<?php echo $this->escape($item->system_name); ?>
+					<?php echo $this->sanitize($item->system_name); ?>
 				<?php else: ?>
 					<?php
 						$link = "{$edit}&id={$item->id}";
 						$dataId = $item->{$this->getModalTitleKey()} ?? 0;
-						$itemHtml = '<a href="' . $this->escape($link, false) . '">' . $this->escape($item->system_name, false) . '</a>';
+						$itemHtml = '<a href="' . $this->sanitize($link, false) . '">' . $this->sanitize($item->system_name, false) . '</a>';
 						$attribs = 'data-content-select data-content-type="com_componentbuilder.joomla_plugin"'
-							. ' data-id="' . $dataId . '"'
-							. ' data-title="' . $this->escape($item->system_name, false) . '"'
-							. ' data-uri="' . $this->escape($link, false) . '"'
-							. ' data-html="' . $this->escape($itemHtml, false) . '"';
+							. ' data-id="' . $this->sanitize($dataId, false) . '"'
+							. ' data-title="' . $this->sanitize($item->system_name, false) . '"'
+							. ' data-uri="' . $this->sanitize($link, false) . '"'
+							. ' data-html="' . $this->sanitize($itemHtml, false) . '"';
 					?>
 					<a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
-						<?php echo $this->escape($item->system_name); ?>
+						<?php echo $this->sanitize($item->system_name); ?>
 					</a>
 				<?php endif; ?>
 			<?php endif; ?> - <b>
-			<?php echo $this->escape($item->plugin_version); ?></b>
+			<?php echo $this->sanitize($item->plugin_version); ?></b>
 			</div>
 			<?php
 				// setup the buttons
@@ -128,18 +128,18 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_plugins&task=joomla_p
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $this->user->authorise('class_extends.edit', 'com_componentbuilder.class_extends.' . (int) ($item->class_extends_id ?? 0))): ?>
-					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->class_extends_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=class_extendings&task=class_extends.edit&id=<?php echo $item->class_extends_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->sanitize($item->class_extends_name); ?></a>
 				<?php else: ?>
-					<?php echo $this->escape($item->class_extends_name); ?>
+					<?php echo $this->sanitize($item->class_extends_name); ?>
 				<?php endif; ?>
 			</div>
 		</td>
 		<td class="nowrap">
 			<div class="name">
 				<?php if (!$this->isModal && $this->user->authorise('core.edit', 'com_componentbuilder.joomla_plugin_group.' . (int) ($item->joomla_plugin_group_id ?? 0))): ?>
-					<a href="index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=joomla_plugin_group.edit&id=<?php echo $item->joomla_plugin_group_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->escape($item->joomla_plugin_group_name); ?></a>
+					<a href="index.php?option=com_componentbuilder&view=joomla_plugin_groups&task=joomla_plugin_group.edit&id=<?php echo $item->joomla_plugin_group_id; ?>&return=<?php echo $this->return_here; ?>"><?php echo $this->sanitize($item->joomla_plugin_group_name); ?></a>
 				<?php else: ?>
-					<?php echo $this->escape($item->joomla_plugin_group_name); ?>
+					<?php echo $this->sanitize($item->joomla_plugin_group_name); ?>
 				<?php endif; ?>
 			</div>
 		</td>
