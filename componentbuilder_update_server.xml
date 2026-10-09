@@ -131,7 +131,7 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="6\.0"/>
-		<sha512>ce658189d350262580e91c76162d4d2f3c375dc20c0496147be93fb82dd3792698da95a5c07a15da7d682e00da6c2ef19c597acb1f6645a1cba6700fd8060d71</sha512>
+		<sha512>4689ae1d7861a8126dbaba7fc0f3606b378f833e56007520cf4c5a2064f6d16321960b7c8fb3adf294efd6ed250e7b775de8f2f7d008004825cc638f2bd2784d</sha512>
 	</update>
 	<update>
 		<name>Component Builder</name>
