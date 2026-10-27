@@ -93,6 +93,5 @@ class Database implements ServiceProviderInterface
 			$container->get('Insert.Model')
 		);
 	}
-
 }
 

@@ -181,6 +181,5 @@ class Insert implements InsertInterface
 		}
 		return false;
 	}
-
 }
 

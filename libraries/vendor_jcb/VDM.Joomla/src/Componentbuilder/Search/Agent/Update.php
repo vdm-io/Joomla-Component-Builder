@@ -231,6 +231,5 @@ class Update
 
 		return $this->search->replace($value);
 	}
-
 }
 

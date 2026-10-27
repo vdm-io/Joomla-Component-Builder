@@ -94,9 +94,9 @@ class Custom_codeModel extends AdminModel
 	 * @since  4.3
 	 */
 	protected array $styles = [
-		'administrator/components/com_componentbuilder/assets/css/admin.css',
-		'administrator/components/com_componentbuilder/assets/css/custom_code.css'
- 	];
+		'media/com_componentbuilder/css/admin/admin.css',
+		'media/com_componentbuilder/css/admin/custom_code.css'
+	];
 
 	/**
 	 * The scripts array.
@@ -105,9 +105,9 @@ class Custom_codeModel extends AdminModel
 	 * @since  4.3
 	 */
 	protected array $scripts = [
-		'administrator/components/com_componentbuilder/assets/js/admin.js',
-		'media/com_componentbuilder/js/custom_code.js'
- 	];
+		'media/com_componentbuilder/js/admin/admin.js',
+		'media/com_componentbuilder/js/admin/custom_code.js'
+	];
 
 	/**
 	 * @var     string    The prefix to use with controller messages.
@@ -637,7 +637,7 @@ class Custom_codeModel extends AdminModel
 
 		if (empty($table->id))
 		{
-			$table->created = $date->toSql();
+			$table->created = $date->toSql(false, $this->getDatabase());
 			// set the user
 			if ($table->created_by == 0 || empty($table->created_by))
 			{
@@ -647,7 +647,7 @@ class Custom_codeModel extends AdminModel
 			if (empty($table->ordering))
 			{
 				$db = $this->getDatabase();
-				$query = $db->getQuery(true)
+				$query = $db->createQuery()
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_custom_code'));
 				$db->setQuery($query);
@@ -658,7 +658,7 @@ class Custom_codeModel extends AdminModel
 		}
 		else
 		{
-			$table->modified = $date->toSql();
+			$table->modified = $date->toSql(false, $this->getDatabase());
 			$table->modified_by = $user->id;
 		}
 

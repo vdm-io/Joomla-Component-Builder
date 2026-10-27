@@ -34,6 +34,7 @@ use Joomla\Input\Input;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Version;
 use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Uri\Uri;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -129,6 +130,7 @@ class HtmlView extends BaseHtmlView
 
 		// Load module values
 		$model = $this->getModel();
+		$model->setUseExceptions(true);
 		$this->styles = $model->getStyles() ?? [];
 		$this->scripts = $model->getScripts() ?? [];
 		// Initialise variables.
@@ -189,12 +191,6 @@ class HtmlView extends BaseHtmlView
 		{
 			// add the tool bar
 			$this->addToolBar();
-		}
-
-		// Check for errors.
-		if (count($errors = $model->getErrors()))
-		{
-			throw new \Exception(implode(PHP_EOL, $errors), 500);
 		}
 
 		// Set the html view document stuff
@@ -672,21 +668,21 @@ class HtmlView extends BaseHtmlView
 		// add title to the page
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'), 'cogs');
 		// add cpanel button
-		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
+		$this->getDocument()->getToolbar()->standardButton('grid-2', 'COM_COMPONENTBUILDER_DASH', 'compiler.dashboard')->listCheck(false);
 		if ($this->canDo->get('compiler.compiler_animations'))
 		{
 			// add Compiler Animations button.
-			ToolbarHelper::custom('compiler.getDynamicContent', 'download custom-button-getdynamiccontent', '', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', false);
+			$this->getDocument()->getToolbar()->standardButton('download custom-button-getdynamiccontent', 'COM_COMPONENTBUILDER_COMPILER_ANIMATIONS', 'compiler.getDynamicContent')->listCheck(false);
 		}
 		if ($this->canDo->get('compiler.clear_tmp'))
 		{
 			// add Clear tmp button.
-			ToolbarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
+			$this->getDocument()->getToolbar()->standardButton('purge custom-button-cleartmp', 'COM_COMPONENTBUILDER_CLEAR_TMP', 'compiler.clearTmp')->listCheck(false);
 		}
 		if ($this->canDo->get('compiler.health_check'))
 		{
 			// add Health Check button.
-			ToolbarHelper::custom('compiler.healthCheck', 'health custom-button-healthcheck', '', 'COM_COMPONENTBUILDER_HEALTH_CHECK', false);
+			$this->getDocument()->getToolbar()->standardButton('health custom-button-healthcheck', 'COM_COMPONENTBUILDER_HEALTH_CHECK', 'compiler.healthCheck')->listCheck(false);
 		}
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('compiler');
@@ -714,25 +710,52 @@ class HtmlView extends BaseHtmlView
 		// Only load jQuery if needed. (default is true)
 		if ($this->params->get('add_jquery_framework', 1) == 1)
 		{
-			Html::_('jquery.framework');
+			$this->getDocument()->getWebAssetManager()->useScript('jquery')->useScript('jquery-noconflict');
 		}
 		// Load the header checker class.
 		// Initialize the header checker.
 		$HeaderCheck = new HeaderCheck();
 
 		// Add View JavaScript File
-		Html::_('script', 'administrator/components/com_componentbuilder/assets/js/compiler.js', ['version' => 'auto']);
+		$jcbAssetManager = Factory::getApplication()->getDocument()->getWebAssetManager();
+if (!$jcbAssetManager->assetExists('script', 'jcb.script.29bd167572d7e7dec97b195cf9778ec23f524e241839579e68e7a48ab9fbd505'))
+{
+	$jcbAssetManager->registerScript('jcb.script.29bd167572d7e7dec97b195cf9778ec23f524e241839579e68e7a48ab9fbd505', Uri::root() . 'media/com_componentbuilder/js/admin/compiler.js', ['version' => 'auto'], [], $jcbScriptDependencies ?? []);
+}
+$jcbAssetManager->useScript('jcb.script.29bd167572d7e7dec97b195cf9778ec23f524e241839579e68e7a48ab9fbd505');
+$jcbScriptDependencies = array_values(array_unique(array_merge($jcbScriptDependencies ?? [], ['jcb.script.29bd167572d7e7dec97b195cf9778ec23f524e241839579e68e7a48ab9fbd505'])));
 		// add marked library
 		Html::_('script', 'administrator/components/com_componentbuilder/custom/marked.js', ['version' => 'auto']);
+		$wa = $this->getDocument()->getWebAssetManager();
 		// add styles
+		$jcbStyleDependencies = $jcbStyleDependencies ?? [];
 		foreach ($this->styles as $style)
 		{
-			Html::_('stylesheet', $style, ['version' => 'auto']);
+			$style = str_starts_with($style, '//') ? $style : ltrim($style, '/');
+			$assetName = 'jcb.style.' . hash('sha256', $style);
+			if (!$wa->assetExists('style', $assetName))
+			{
+				$assetUri = preg_match('#^(?:[a-z][a-z0-9+.-]*:|//)#i', $style)
+					? $style : Uri::root() . $style;
+				$wa->registerStyle($assetName, $assetUri, ['version' => 'auto'], [], $jcbStyleDependencies);
+			}
+			$wa->useStyle($assetName);
+			$jcbStyleDependencies = array_values(array_unique([...$jcbStyleDependencies, $assetName]));
 		}
 		// add scripts
+		$jcbScriptDependencies = $jcbScriptDependencies ?? ['core'];
 		foreach ($this->scripts as $script)
 		{
-			Html::_('script', $script, ['version' => 'auto']);
+			$script = str_starts_with($script, '//') ? $script : ltrim($script, '/');
+			$assetName = 'jcb.script.' . hash('sha256', $script);
+			if (!$wa->assetExists('script', $assetName))
+			{
+				$assetUri = preg_match('#^(?:[a-z][a-z0-9+.-]*:|//)#i', $script)
+					? $script : Uri::root() . $script;
+				$wa->registerScript($assetName, $assetUri, ['version' => 'auto'], [], $jcbScriptDependencies);
+			}
+			$wa->useScript($assetName);
+			$jcbScriptDependencies = array_values(array_unique([...$jcbScriptDependencies, $assetName]));
 		}
 		// Set the Custom JS script to view
 		$this->getDocument()->getWebAssetManager()->addInlineScript("

@@ -1,3 +1,34 @@
+# v6.2.1-alpha1
+
+- Add dedicated Joomla 6 compiler templates and generation settings.
+- Update generated Joomla 6 database queries to use native query creation and query-level limits.
+- Replace deprecated configuration and session calls with native Joomla 6 application access.
+- Update generated Joomla 6 views to retrieve data directly from their models.
+- Correct current-user injection and permission-state updates in generated Joomla 6 models.
+- Update generated Joomla 6 tables to use injected database connections.
+- Update generated Joomla 6 controllers and import handlers to use native input and cache services.
+- Improve generated Joomla 6 exception handling while preserving form data, edit redirects and API responses.
+- Move generated Joomla 6 component and module scripts and styles into their extension media directories.
+- Migrate generated Joomla 6 asset loading to the Web Asset Manager with ordered dependencies and duplicate prevention.
+- Update generated field scripts, charts, Footable, DKIM controls and loading overlays for native Joomla 6 asset handling.
+- Restore footer JavaScript execution after page markup across views, fields and modules.
+- Update generated Joomla 6 plugin providers to use configuration-only constructors and removed unused dispatcher imports.
+- Add native Joomla 6 plugin event subscriptions and migration diagnostics for incompatible custom handlers.
+- Updates bundled privacy handler generation to use native Joomla 6 events.
+- Update generated Joomla 6 installers to use native installer interfaces while preserving custom lifecycle hooks.
+- Correct the Joomla 6 installation checks and enforced PHP 8.3 requirements in generated component installers.
+- Update generated Joomla 6 toolbars to use native button APIs and supported save-as-copy and save-and-new methods.
+- Standardize the compiler-generated indentation, line endings and debug comments while preserving authored code.
+- Fix Joomla 6 plugin event registration to restore JCB compiler hooks.
+- Prevent unwanted constructor generation in compiler Power classes that inherit their parent's implementation.
+- Restore stable ID ordering in JCB Search batches to prevent matching records from being skipped.
+- Fix generated frontend form navigation when custom view names are used. #1118
+- Fix missing or misplaced Joomla Power imports, including Uri, in generated PHP classes. #1123
+- Fix sales-server uploads over FTP and SFTP, including credential handling, authentication checks and remote paths. #1283
+- Fix language-translation filtering for exact language matches, legacy NULL records, extension selections and cached results. #1309
+- Normalize compiler-created translation records to the same empty value used by manual saves. #1309
+- Correct the NotAllowed import so denied Site View and Custom Admin View API requests return HTTP 403 instead of HTTP 500. #1326
+
 # v6.2.0
 
 - Add a dedicated Extrusion view for importing existing Joomla components and PHP libraries into JCB.

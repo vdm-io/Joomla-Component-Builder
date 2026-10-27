@@ -86,6 +86,5 @@ abstract class Minify
 		// return minified
 		return self::$css->minify();
 	}
-
 }
 

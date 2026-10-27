@@ -85,9 +85,9 @@ class Help_documentModel extends AdminModel
 	 * @since  4.3
 	 */
 	protected array $styles = [
-		'administrator/components/com_componentbuilder/assets/css/admin.css',
-		'administrator/components/com_componentbuilder/assets/css/help_document.css'
- 	];
+		'media/com_componentbuilder/css/admin/admin.css',
+		'media/com_componentbuilder/css/admin/help_document.css'
+	];
 
 	/**
 	 * The scripts array.
@@ -96,9 +96,9 @@ class Help_documentModel extends AdminModel
 	 * @since  4.3
 	 */
 	protected array $scripts = [
-		'administrator/components/com_componentbuilder/assets/js/admin.js',
-		'media/com_componentbuilder/js/help_document.js'
- 	];
+		'media/com_componentbuilder/js/admin/admin.js',
+		'media/com_componentbuilder/js/admin/help_document.js'
+	];
 
 	/**
 	 * @var     string    The prefix to use with controller messages.
@@ -510,7 +510,7 @@ class Help_documentModel extends AdminModel
 
 		if (empty($table->id))
 		{
-			$table->created = $date->toSql();
+			$table->created = $date->toSql(false, $this->getDatabase());
 			// set the user
 			if ($table->created_by == 0 || empty($table->created_by))
 			{
@@ -520,7 +520,7 @@ class Help_documentModel extends AdminModel
 			if (empty($table->ordering))
 			{
 				$db = $this->getDatabase();
-				$query = $db->getQuery(true)
+				$query = $db->createQuery()
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_help_document'));
 				$db->setQuery($query);
@@ -531,7 +531,7 @@ class Help_documentModel extends AdminModel
 		}
 		else
 		{
-			$table->modified = $date->toSql();
+			$table->modified = $date->toSql(false, $this->getDatabase());
 			$table->modified_by = $user->id;
 		}
 
@@ -1050,7 +1050,7 @@ class Help_documentModel extends AdminModel
 		{
 			if ($data['alias'] == null || empty($data['alias']))
 			{
-				if (Factory::getConfig()->get('unicodeslugs') == 1)
+				if (Factory::getApplication()->get('unicodeslugs') == 1)
 				{
 					$data['alias'] = OutputFilter::stringURLUnicodeSlug($data['title']);
 				}

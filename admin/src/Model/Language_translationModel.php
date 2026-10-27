@@ -69,9 +69,9 @@ class Language_translationModel extends AdminModel
 	 * @since  4.3
 	 */
 	protected array $styles = [
-		'administrator/components/com_componentbuilder/assets/css/admin.css',
-		'administrator/components/com_componentbuilder/assets/css/language_translation.css'
- 	];
+		'media/com_componentbuilder/css/admin/admin.css',
+		'media/com_componentbuilder/css/admin/language_translation.css'
+	];
 
 	/**
 	 * The scripts array.
@@ -80,9 +80,9 @@ class Language_translationModel extends AdminModel
 	 * @since  4.3
 	 */
 	protected array $scripts = [
-		'administrator/components/com_componentbuilder/assets/js/admin.js',
-		'media/com_componentbuilder/js/language_translation.js'
- 	];
+		'media/com_componentbuilder/js/admin/admin.js',
+		'media/com_componentbuilder/js/admin/language_translation.js'
+	];
 
 	/**
 	 * @var     string    The prefix to use with controller messages.
@@ -154,6 +154,7 @@ class Language_translationModel extends AdminModel
 					return false;
 				}
 			}
+			//all good here
 
 			if (!empty($item->plugins))
 			{
@@ -177,14 +178,6 @@ class Language_translationModel extends AdminModel
 				$components = new Registry;
 				$components->loadString($item->components);
 				$item->components = $components->toArray();
-			}
-
-			if (!empty($item->translation))
-			{
-				// Convert the translation field to an array.
-				$translation = new Registry;
-				$translation->loadString($item->translation);
-				$item->translation = $translation->toArray();
 			}
 		}
 
@@ -520,7 +513,7 @@ class Language_translationModel extends AdminModel
 
 		if (empty($table->id))
 		{
-			$table->created = $date->toSql();
+			$table->created = $date->toSql(false, $this->getDatabase());
 			// set the user
 			if ($table->created_by == 0 || empty($table->created_by))
 			{
@@ -530,7 +523,7 @@ class Language_translationModel extends AdminModel
 			if (empty($table->ordering))
 			{
 				$db = $this->getDatabase();
-				$query = $db->getQuery(true)
+				$query = $db->createQuery()
 					->select('MAX(ordering)')
 					->from($db->quoteName('#__componentbuilder_language_translation'));
 				$db->setQuery($query);
@@ -541,7 +534,7 @@ class Language_translationModel extends AdminModel
 		}
 		else
 		{
-			$table->modified = $date->toSql();
+			$table->modified = $date->toSql(false, $this->getDatabase());
 			$table->modified_by = $user->id;
 		}
 
@@ -773,17 +766,21 @@ class Language_translationModel extends AdminModel
 			unset($jcbPatchStored['translation']);
 		}
 
-		// Set the translation items to data.
-		if (isset($data['translation']) && is_array($data['translation']) && !array_key_exists('translation', $jcbPatchStored))
+		if (!array_key_exists('translation', $jcbPatchStored))
 		{
-			$translation = new Registry;
-			$translation->loadArray($data['translation']);
-			$data['translation'] = (string) $translation;
-		}
-		elseif (!isset($data['translation']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
-		{
-			// Set the empty translation to data
-			$data['translation'] = '';
+
+			if (array_key_exists('translation', $jcbPatchStored)
+				&& (!array_key_exists('translation', $data) || serialize($data['translation']) !== $jcbPatchInput['translation']))
+			{
+				unset($jcbPatchStored['translation']);
+			}
+			if (!array_key_exists('translation', $jcbPatchStored))
+			{
+				if (empty($data['translation']))
+				{
+					$data['translation'] = '{}';
+				}
+			}
 		}
 
 		// Restore unchanged omitted columns without a lossy decode/encode round trip.

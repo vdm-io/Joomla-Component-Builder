@@ -148,7 +148,7 @@ class Form implements FormInterface
 	protected function siteAction(&$view): string
 	{
 		return '<form action="<?php echo Joomla__'.'_d4c76099_4c32_408a_8701_d0a724484dfd___Power::_(\'index.php?option=com_'
-			. $this->config->component_code_name
+			. $this->config->component_code_name . '&view=' . $view
 			. '\'); ?>" method="post" name="adminForm" id="adminForm">'
 			. PHP_EOL;
 	}

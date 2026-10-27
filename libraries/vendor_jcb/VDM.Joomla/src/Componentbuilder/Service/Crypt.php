@@ -182,6 +182,5 @@ class Crypt implements ServiceProviderInterface
 			$container->get('Crypt.Random')
 		);
 	}
-
 }
 

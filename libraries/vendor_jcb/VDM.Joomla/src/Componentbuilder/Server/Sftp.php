@@ -31,6 +31,14 @@ use VDM\Joomla\Componentbuilder\Interfaces\Serverinterface;
 class Sftp implements Serverinterface
 {
 	/**
+	 * Creates isolated protocol clients.
+	 *
+	 * @var    ClientFactory
+	 * @since  6.2.1
+	 */
+	protected ClientFactory $clients;
+
+	/**
 	 * The KeyLoader
 	 *
 	 * @var    KeyLoader
@@ -67,12 +75,14 @@ class Sftp implements Serverinterface
 	 *
 	 * @param KeyLoader    $key   The key loader object.
 	 * @param CMSApplication|null     $app          The app object.
+	 * @param ClientFactory|null      $clients      Protocol client factory.
 	 *
 	 * @since 3.2.0
 	 */
-	public function __construct(KeyLoader $key, ?CMSApplication $app = null)
+	public function __construct(KeyLoader $key, ?CMSApplication $app = null, ?ClientFactory $clients = null)
 	{
 		$this->key = $key;
+		$this->clients = $clients ?? new ClientFactory();
 		$this->app = $app ?: Factory::getApplication();
 	}
 
@@ -110,30 +120,28 @@ class Sftp implements Serverinterface
 	 **/
 	public function move(string $localPath, string $fileName): bool
 	{
-		if ($this->connected() &&
-			($data = FileHelper::getContent($localPath, null)) !== null)
+		if (!is_file($localPath) || !is_readable($localPath))
 		{
-			// get the remote path
-			$path = '';
-			if (isset($this->details->path) &&
-				StringHelper::check($this->details->path) &&
-				$this->details->path !== '/')
-			{
-				$path = trim((string) $this->details->path);
-				$path = '/' . trim($path, '/') . '/';
-			}
+			return false;
+		}
 
-			try
+		try
+		{
+			if ($this->connected() && ($data = FileHelper::getContent($localPath, null)) !== null)
 			{
+				$path = (string) ($this->details->path ?? '');
+				$path = $path === '' ? '' : rtrim($path, '/') . '/';
+
 				return $this->client->put($path . trim($fileName), $data);
 			}
-			catch(\Exception $e)
-			{
-				$this->app->enqueueMessage(
-					Text::sprintf('COM_COMPONENTBUILDER_MOVING_OF_THE_S_FAILED', $fileName) . ': ' . $e->getMessage(),
-					'Error'
-				);
-			}
+		}
+		catch (\Exception $error)
+		{
+			$this->client = null;
+			$this->app->enqueueMessage(
+				Text::sprintf('COM_COMPONENTBUILDER_MOVING_OF_THE_S_FAILED', $fileName),
+				'Error'
+			);
 		}
 
 		return false;
@@ -148,7 +156,8 @@ class Sftp implements Serverinterface
 	private function connected(): bool
 	{
 		// check if we have a connection
-		if ($this->client instanceof SftpClient && ($this->client->isConnected() || $this->client->ping()))
+		if ($this->client instanceof SftpClient && $this->client->isAuthenticated()
+			&& ($this->client->isConnected() || $this->client->ping()))
 		{
 			return true;
 		}
@@ -166,104 +175,91 @@ class Sftp implements Serverinterface
 	 **/
 	private function getClient(): ?SftpClient
 	{
-		// make sure we have a host value set
-		if (isset($this->details->host) && StringHelper::check($this->details->host) &&
-			isset($this->details->username) && StringHelper::check($this->details->username))
+		if (!StringHelper::check($this->details->host ?? null)
+			|| !StringHelper::check($this->details->username ?? null))
 		{
-			// insure the port is set
-			$port = (int)($this->details->port ?? 22);
+			return null;
+		}
 
-			// open the connection
-			$sftp = new SftpClient($this->details->host, $port);
+		$host = trim($this->details->host);
+		$username = trim($this->details->username);
+		$port = filter_var($this->details->port ?? 22, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]);
 
-			// set the passphrase if it exist
-			$passphrase = (isset($this->details->secret) && StringHelper::check(trim($this->details->secret))) ? trim($this->details->secret) : false;
+		if ($host === '' || $username === '' || $port === false
+			|| str_contains($host, "\0") || str_contains($username, "\0"))
+		{
+			return null;
+		}
 
-			// set the password if it exist
-			$password = (isset($this->details->password) && StringHelper::check(trim($this->details->password))) ? trim($this->details->password) : false;
+		// Passwords and passphrases are exact values, including whitespace and "0".
+		$password = $this->details->password ?? null;
+		$passphrase = $this->details->secret ?? false;
+		$authentication = (int) ($this->details->authentication ?? 0);
+		$credentials = [];
 
-			// now login based on authentication type
-			$key = null;
-			switch($this->details->authentication)
+		if (in_array($authentication, [2, 3, 4, 5], true))
+		{
+			$privateKey = $this->details->private_key ?? null;
+			$message = 'Loading the Private key file failed';
+
+			if ($authentication === 2 || $authentication === 3)
 			{
-				case 1: // password
-					$key = $password ?? null;
-					$password = null;
-				break;
-				case 2: // private key file
-				case 3: // both password and private key file
-					if (isset($this->details->private) && StringHelper::check($this->details->private) &&
-						($private_key = FileHelper::getContent($this->details->private, null)) !== null)
-					{
-						try
-						{
-							$key = $this->key::load(trim($private_key), $passphrase);
-						}
-						catch(\Exception $e)
-						{
-							$this->app->enqueueMessage(
-								Text::_('COM_COMPONENTBUILDER_LOADING_THE_PRIVATE_KEY_FILE_FAILED') . ': ' . $e->getMessage(),
-								'Error'
-							);
-							$key = null;
-						}
-					}
-				break;
-				case 4: // private key field
-				case 5: // both password and private key field
-					if (isset($this->details->private_key) && StringHelper::check($this->details->private_key))
-					{
-						try
-						{
-							$key = $this->key::load(trim($this->details->private_key), $passphrase);
-						}
-						catch(\Exception $e)
-						{
-							$this->app->enqueueMessage(
-								Text::_('COM_COMPONENTBUILDER_LOADING_THE_PRIVATE_KEY_TEXT_FAILED') . ': ' . $e->getMessage(),
-								'Error'
-							);
-							$key = null;
-						}
-					}
-				break;
+				$path = $this->details->private ?? '';
+				$privateKey = is_string($path) && is_file($path) && is_readable($path)
+					? FileHelper::getContent($path, null) : null;
+				$message = 'Loading the Private key file failed';
 			}
 
-			// remove any null bites from the username
-			$this->details->username = trim($this->details->username);
+			try
+			{
+				if (!StringHelper::check($privateKey))
+				{
+					$this->app->enqueueMessage(Text::_($message), 'Error');
 
-			// login
-			if (!empty($key) && !empty($password))
-			{
-				try
-				{
-					$sftp->login($this->details->username, $key, $password);
-					return $sftp;
+					return null;
 				}
-				catch(\Exception $e)
-				{
-					$this->app->enqueueMessage(
-						Text::_('COM_COMPONENTBUILDER_LOGIN_FAILED') . ': ' . $e->getMessage(),
-						'Error'
-					);
-				}
+
+				$credentials[] = $this->key::load(trim($privateKey), $passphrase);
 			}
-			elseif (!empty($key))
+			catch (\Exception $error)
 			{
-				try
-				{
-					$sftp->login($this->details->username, $key);
-					return $sftp;
-				}
-				catch(\Exception $e)
-				{
-					$this->app->enqueueMessage(
-						Text::_('COM_COMPONENTBUILDER_LOGIN_FAILED') . ': ' . $e->getMessage(),
-						'Error'
-					);
-				}
+				$this->app->enqueueMessage(Text::_($message), 'Error');
+
+				return null;
 			}
 		}
+		elseif ($authentication !== 1)
+		{
+			return null;
+		}
+
+		if (in_array($authentication, [1, 3, 5], true))
+		{
+			if (!is_string($password) || $password === '')
+			{
+				$this->app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_LOGIN_FAILED'), 'Error');
+
+				return null;
+			}
+
+			$credentials[] = $password;
+		}
+
+		try
+		{
+			$sftp = $this->clients->sftp($host, $port);
+
+			if ($sftp->login($username, ...$credentials))
+			{
+				return $sftp;
+			}
+		}
+		catch (\Exception $error)
+		{
+			// Authentication failures share one diagnostic and never expose secrets.
+		}
+
+		$this->app->enqueueMessage(Text::_('COM_COMPONENTBUILDER_LOGIN_FAILED'), 'Error');
 
 		return null;
 	}

@@ -176,6 +176,5 @@ class Replace implements ReplaceInterface
 		// empty or unset the table active values
 		unset($this->updated[$table]);
 	}
-
 }
 

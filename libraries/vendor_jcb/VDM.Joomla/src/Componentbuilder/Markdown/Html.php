@@ -48,8 +48,9 @@ final class Html
 		$html = $this->convertInlineCode($html);
 		$html = $this->convertHeadings($html);
 		$html = $this->convertBoldItalic($html);
-		$html = $this->convertLinks($html);
+		// An image contains link syntax, so consume the whole image first.
 		$html = $this->convertImages($html);
+		$html = $this->convertLinks($html);
 		$html = $this->convertTaskLists($html);
 		$html = $this->convertOrderedLists($html);
 		$html = $this->convertUnorderedLists($html);
@@ -127,8 +128,9 @@ final class Html
 	 */
 	protected function convertLinks(string $text): string
 	{
+		// Keep brackets in generated image attributes out of ordinary link parsing.
 		return preg_replace_callback(
-			'/\[(.*?)\]\((.*?)\)/',
+			'/<img\b(?:[^">]|"[^"]*")*>(*SKIP)(*F)|\[(.*?)\]\((.*?)\)/',
 			fn($m) => '<a href="' . $this->safeUrl($m[2]) . '">' . $m[1] . '</a>',
 			$text
 		);
