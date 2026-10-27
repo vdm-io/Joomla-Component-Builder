@@ -11550,7 +11550,7 @@ class Table extends BaseTable implements TableInterface
 				'type' => 'subform',
 				'title' => false,
 				'list' => 'language_translations',
-				'store' => 'json',
+				'store' => NULL,
 				'tab_name' => 'Details',
 				'db' => [
 					'type' => 'MEDIUMTEXT',

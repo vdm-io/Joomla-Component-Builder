@@ -72,6 +72,5 @@ class Model implements ServiceProviderInterface
 			$container->get('Table')
 		);
 	}
-
 }
 

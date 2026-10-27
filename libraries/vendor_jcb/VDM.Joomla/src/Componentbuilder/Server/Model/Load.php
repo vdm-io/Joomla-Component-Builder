@@ -79,9 +79,17 @@ class Load extends Model implements ModelInterface
 			{
 				case 'basic_encryption':
 					$value = $this->crypt->decrypt($value, 'basic');
+					if ($value !== null)
+					{
+						$value = rtrim($value, "\0");
+					}
 				break;
 				case 'medium_encryption':
 					$value = $this->crypt->decrypt($value, 'medium');
+					if ($value !== null)
+					{
+						$value = rtrim($value, "\0");
+					}
 				break;
 				case 'base64':
 					$value = base64_decode((string) $value);
@@ -148,6 +156,5 @@ class Load extends Model implements ModelInterface
 	{
 		return 'server';
 	}
-
 }
 

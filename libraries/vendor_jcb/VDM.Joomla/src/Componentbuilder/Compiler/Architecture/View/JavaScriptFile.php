@@ -33,7 +33,7 @@ use VDM\Joomla\Utilities\StringHelper;
  * 
  * @since  6.1.7
  */
-final class JavaScriptFile
+class JavaScriptFile
 {
 	/**
 	 * The Config Class.
@@ -148,17 +148,7 @@ final class JavaScriptFile
 				Placefix::_h('VERSION')                          => $view['settings']->version);
 			$this->structure->build($target, 'javascript_file', false, $config);
 			// set path
-			if ('site' === $this->config->build_target)
-			{
-				$path = '/components/com_' . $this->config->component_code_name
-					. '/assets/js/' . $view['settings']->code . '.js';
-			}
-			else
-			{
-				$path = '/administrator/components/com_'
-					. $this->config->component_code_name . '/assets/js/'
-					. $view['settings']->code . '.js';
-			}
+			$path = $this->getPath($view['settings']->code);
 			// add script to file
 			$this->contentmulti->set($view['settings']->code . '|' . $TARGET
 				. '_JAVASCRIPT_FILE', $this->placeholder->update_(
@@ -173,6 +163,29 @@ final class JavaScriptFile
 		}
 
 		return '';
+	}
+
+	/**
+	 * Resolve the public script path for this view.
+	 *
+	 * @param   string  $name  The view code name.
+	 *
+	 * @return  string  The installed asset path.
+	 * @since   6.2.0
+	 */
+	protected function getPath(string $name): string
+	{
+		if ('site' === $this->config->build_target)
+		{
+			return '/components/com_' . $this->config->component_code_name
+				. '/assets/js/' . $name . '.js';
+		}
+		else
+		{
+			return '/administrator/components/com_'
+				. $this->config->component_code_name . '/assets/js/'
+				. $name . '.js';
+		}
 	}
 }
 

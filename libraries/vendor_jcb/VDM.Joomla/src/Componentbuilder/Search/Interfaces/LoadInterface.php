@@ -55,6 +55,5 @@ interface LoadInterface
 	 * @since 3.2.0
 	 */
 	public function items(?string $table = null, int $bundle = 0): ?array;
-
 }
 

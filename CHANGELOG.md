@@ -43,6 +43,20 @@
 - Fix toolbar generation when descriptions are missing or null.
 - Preserve original source line endings when compiler processing leaves the content unchanged.
 
+# v4.2.1-alpha1
+
+- Fix custom frontend view navigation when compiling for Joomla 4 and 5. #1118
+- Fix missing or misplaced Joomla Power imports, including Uri, in generated PHP classes. #1123
+- Fix sales-server uploads over FTP and SFTP, including credential handling, authentication checks and remote paths. #1283
+- Fix language-translation filtering for exact language matches, legacy NULL records, extension selections and cached results. #1309
+- Initialize compiler-created translation records with the same empty value used by manual saves. #1309
+- Correct the NotAllowed import so denied Site View and Custom Admin View API requests return HTTP 403 instead of HTTP 500. #1326
+- Restore correct Markdown image conversion before ordinary link processing.
+- Restore stable ID ordering in JCB Search batches to prevent matching records from being skipped.
+- Prevent unwanted constructor generation in compiler Power classes that inherit their parent's implementation.
+- Correct plugin namespace placeholder handling during JCB self-compilation.
+- Standardize compiler-generated indentation, line endings and debug comments while preserving authored code.
+
 # v4.2.0
 
 - Add a dedicated Extrusion view for importing existing Joomla components and PHP libraries into JCB.

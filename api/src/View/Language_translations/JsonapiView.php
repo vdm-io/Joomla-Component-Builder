@@ -132,14 +132,6 @@ class JsonapiView extends BaseApiView
 			$item->components = $registry->toArray();
 		}
 
-		if (isset($item->translation) && is_string($item->translation) && $item->translation !== '')
-		{
-			// Convert the translation field to an array.
-			$registry = new Registry;
-			$registry->loadString($item->translation);
-			$item->translation = $registry->toArray();
-		}
-
 		return parent::prepareItem($item);
 	}
 }

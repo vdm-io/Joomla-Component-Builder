@@ -14,7 +14,6 @@ namespace VDM\Joomla\Componentbuilder\Server;
 
 use Joomla\CMS\Client\FtpClient;
 use VDM\Joomla\Utilities\StringHelper;
-use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Componentbuilder\Interfaces\Serverinterface;
 
@@ -26,6 +25,14 @@ use VDM\Joomla\Componentbuilder\Interfaces\Serverinterface;
  */
 class Ftp implements Serverinterface
 {
+	/**
+	 * Creates isolated protocol clients.
+	 *
+	 * @var    ClientFactory
+	 * @since  6.2.1
+	 */
+	protected ClientFactory $clients;
+
 	/**
 	* The client object
 	 *
@@ -41,6 +48,18 @@ class Ftp implements Serverinterface
 	 * @since 3.2.0
 	 **/
 	protected ?object $details = null;
+
+	/**
+	 * Construct the FTP transport.
+	 *
+	 * @param   ClientFactory|null  $clients  Protocol client factory.
+	 *
+	 * @since   6.2.1
+	 */
+	public function __construct(?ClientFactory $clients = null)
+	{
+		$this->clients = $clients ?? new ClientFactory();
+	}
 
 	/**
 	 * set the server details
@@ -76,11 +95,18 @@ class Ftp implements Serverinterface
 	 **/
 	public function move(string $localPath, string $fileName): bool
 	{
-		if ($this->connected())
+		try
 		{
-			return $this->client->store($localPath, $fileName);
+			if ($this->connected())
+			{
+				return $this->client->store($localPath, $fileName);
+			}
 		}
-
+		catch (\Exception $error)
+		{
+			// The caller reports a failed transfer without exposing credentials.
+			$this->client = null;
+		}
 		return false;
 	}
 
@@ -112,43 +138,97 @@ class Ftp implements Serverinterface
 	private function getClient(): ?FtpClient
 	{
 		// make sure we have a string and it is not default or empty
-		if (StringHelper::check($this->details->signature))
+		if (!StringHelper::check($this->details->signature ?? null))
 		{
-			// turn into array of variables
-			$signature = [];
-			parse_str((string) $this->details->signature, $signature);
-			// set options
-			if (isset($signature['options']) && ArrayHelper::check($signature['options']))
+			return null;
+		}
+
+		$signature = [];
+		parse_str($this->details->signature, $signature);
+
+		foreach (['host' => 'HOSTNAME', 'port' => 'PORT_INT', 'username' => 'user@name.com', 'password' => 'password'] as $field => $example)
+		{
+			if (!isset($signature[$field]) || !is_string($signature[$field])
+				|| $signature[$field] === '' || $signature[$field] === $example)
 			{
-				foreach ($signature['options'] as $o__p0t1on => $vAln3)
-				{
-					if ('timeout' === $o__p0t1on)
-					{
-						$options[$o__p0t1on] = (int) $vAln3;
-					}
-					if ('type' === $o__p0t1on)
-					{
-						$options[$o__p0t1on] = (string) $vAln3;
-					}
-				}
-			}
-			else
-			{
-				$options = [];
-			}
-			// get ftp object
-			if (isset($signature['host']) && $signature['host'] != 'HOSTNAME' &&
-				isset($signature['port']) && $signature['port'] != 'PORT_INT' &&
-				isset($signature['username']) && $signature['username'] != 'user@name.com' &&
-				isset($signature['password']) && $signature['password'] != 'password')
-			{
-				// this is a singleton
-				return FtpClient::getInstance($host, $port, $options, $username, $password);
+				return null;
 			}
 		}
 
-		return null;
-	}
+		$port = filter_var($signature['port'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]);
 
+		if ($port === false || str_contains($signature['host'], "\0") || str_contains($signature['username'], "\0"))
+		{
+			return null;
+		}
+
+		$options = [];
+
+		if (isset($signature['options']))
+		{
+			if (!is_array($signature['options']))
+			{
+				return null;
+			}
+
+			if (isset($signature['options']['timeout']))
+			{
+				$timeout = filter_var($signature['options']['timeout'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+				if ($timeout === false)
+				{
+					return null;
+				}
+
+				$options['timeout'] = $timeout;
+			}
+
+			if (isset($signature['options']['type']))
+			{
+				$type = $signature['options']['type'];
+				// Autoload Joomla's transfer constants, also available without ext-ftp.
+				class_exists(FtpClient::class);
+				$modes = ['FTP_ASCII' => FTP_ASCII, 'FTP_BINARY' => FTP_BINARY, 'FTP_AUTOASCII' => FTP_AUTOASCII];
+
+				if (!is_string($type))
+				{
+					return null;
+				}
+
+				if (isset($modes[$type]))
+				{
+					$type = $modes[$type];
+				}
+				elseif (filter_var($type, FILTER_VALIDATE_INT) !== false
+					&& in_array((int) $type, array_values($modes), true))
+				{
+					$type = (int) $type;
+				}
+				else
+				{
+					return null;
+				}
+
+				$options['type'] = $type;
+			}
+		}
+
+		// Explicit login checks are required: getInstance() discards login's result.
+		$client = $this->clients->ftp($options);
+
+		if (!$client->connect($signature['host'], $port))
+		{
+			return null;
+		}
+
+		if (!$client->login($signature['username'], $signature['password']))
+		{
+			$client->quit();
+
+			return null;
+		}
+
+		return $client;
+	}
 }
 

@@ -420,6 +420,5 @@ class Agent
 		$this->marker = [$this->config->marker_start,  $this->config->marker_end];
 		$this->markerHtml = ['<span class="found_code">','</span>'];
 	}
-
 }
 

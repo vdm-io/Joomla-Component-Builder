@@ -154,6 +154,7 @@ class Language_translationModel extends AdminModel
 					return false;
 				}
 			}
+			//all good here
 
 			if (!empty($item->plugins))
 			{
@@ -177,14 +178,6 @@ class Language_translationModel extends AdminModel
 				$components = new Registry;
 				$components->loadString($item->components);
 				$item->components = $components->toArray();
-			}
-
-			if (!empty($item->translation))
-			{
-				// Convert the translation field to an array.
-				$translation = new Registry;
-				$translation->loadString($item->translation);
-				$item->translation = $translation->toArray();
 			}
 		}
 
@@ -773,17 +766,21 @@ class Language_translationModel extends AdminModel
 			unset($jcbPatchStored['translation']);
 		}
 
-		// Set the translation items to data.
-		if (isset($data['translation']) && is_array($data['translation']) && !array_key_exists('translation', $jcbPatchStored))
+		if (!array_key_exists('translation', $jcbPatchStored))
 		{
-			$translation = new Registry;
-			$translation->loadArray($data['translation']);
-			$data['translation'] = (string) $translation;
-		}
-		elseif (!isset($data['translation']) && !($input->getMethod() === 'PATCH' && Factory::getApplication()->isClient('api')))
-		{
-			// Set the empty translation to data
-			$data['translation'] = '';
+
+			if (array_key_exists('translation', $jcbPatchStored)
+				&& (!array_key_exists('translation', $data) || serialize($data['translation']) !== $jcbPatchInput['translation']))
+			{
+				unset($jcbPatchStored['translation']);
+			}
+			if (!array_key_exists('translation', $jcbPatchStored))
+			{
+				if (empty($data['translation']))
+				{
+					$data['translation'] = '{}';
+				}
+			}
 		}
 
 		// Restore unchanged omitted columns without a lossy decode/encode round trip.

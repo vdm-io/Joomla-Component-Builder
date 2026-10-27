@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaFive;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\UikitComp;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\AdminFilterType;
