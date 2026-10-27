@@ -48,12 +48,12 @@ use VDM\Joomla\Utilities\StringHelper;
  * minified when the build asks for it and stored for the view's edit file, its
  * footer and its list file.
  * 
- * Nothing here is decided by the Joomla version being compiled for, so there
- * is one class for every target.
+ * Shared condition generation retains its builder and placeholder lifecycle.
+ * Target renderers select media events, asset paths and footer output.
  * 
  * @since  6.1.7
  */
-final class ViewScript
+class ViewScript
 {
 	/**
 	 * The Config Class.
@@ -468,7 +468,7 @@ final class ViewScript
 							$l_function, $l_matchKeys, $getValue
 						);
 
-						if ($this->scriptmediaswitch->inArray($matchTypeKey))
+						if ($this->usesModalMediaListener() && $this->scriptmediaswitch->inArray($matchTypeKey))
 						{
 							$modal .= $funcCall['code'];
 						}
@@ -711,7 +711,7 @@ final class ViewScript
 			}
 			// load to this buket
 			$fileScript   = $initial . $func . $validation . $isSet;
-			$footerScript = $listener;
+			$footerScript = $this->prepareListeners($listener);
 		}
 		// add custom script to edit form JS file
 		if (!isset($fileScript))
@@ -760,8 +760,7 @@ final class ViewScript
 				Placefix::_h('VERSION') => $viewArray['settings']->version);
 			$this->structure->build($_target, 'javascript_file', false, $_config);
 			// set path
-			$_path = '/administrator/components/com_' . $this->config->component_code_name
-				. '/assets/js/' . $nameListCode . '.js';
+			$_path = $this->listScriptPath($nameListCode);
 			// load the file to the list view
 			$this->contentmulti->set($nameListCode . '|ADMIN_ADD_JAVASCRIPT_FILE', PHP_EOL . PHP_EOL . Indent::_(2) . "//" . Line::_(
 					__LINE__,__CLASS__
@@ -842,9 +841,7 @@ final class ViewScript
 			))
 		{
 			// add the needed script tags
-			$footerScript = PHP_EOL
-				. PHP_EOL . '<script type="text/javascript">' . PHP_EOL
-				. $footerScript . PHP_EOL . "</script>";
+			$footerScript = $this->footerScript($footerScript, $nameSingleCode);
 			$this->viewscript->set(
 				$nameSingleCode . '.footerScript', $footerScript
 			);
@@ -877,6 +874,59 @@ final class ViewScript
 			'user' => $this->scriptuserswitch->inArray($condition['match_type']),
 			'checkbox' => $condition['match_type'] === 'checkbox',
 		];
+	}
+
+	/**
+	 * Preserve the target's listener execution timing.
+	 *
+	 * @param   string  $listeners  The generated listener setup.
+	 *
+	 * @return  string
+	 * @since   6.2.0
+	 */
+	protected function prepareListeners(string $listeners): string
+	{
+		return $listeners;
+	}
+
+	/**
+	 * Whether media conditions use the legacy modal callback.
+	 *
+	 * @return  bool
+	 * @since   6.2.0
+	 */
+	protected function usesModalMediaListener(): bool
+	{
+		return true;
+	}
+
+	/**
+	 * Get the published list script URI.
+	 *
+	 * @param   string  $name  The list view name.
+	 *
+	 * @return  string
+	 * @since   6.2.0
+	 */
+	protected function listScriptPath(string $name): string
+	{
+		return '/administrator/components/com_' . $this->config->component_code_name
+			. '/assets/js/' . $name . '.js';
+	}
+
+	/**
+	 * Wrap a footer script, preserving embedded PHP.
+	 *
+	 * @param   string  $script  The script source.
+	 * @param   string  $view    The view name.
+	 *
+	 * @return  string
+	 * @since   6.2.0
+	 */
+	protected function footerScript(string $script, string $view): string
+	{
+		return PHP_EOL . PHP_EOL . '<script type="text/javascript">' . PHP_EOL
+			. $script . PHP_EOL . '</script>';
 	}
 
 	/**

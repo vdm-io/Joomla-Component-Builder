@@ -138,6 +138,5 @@ class Agent implements ServiceProviderInterface
 			$container->get('Search')
 		);
 	}
-
 }
 

@@ -299,8 +299,8 @@ abstract class FilterHelper
 				$matches = [];
 				foreach ($results as $k => $v)
 				{
-					$values = json_decode($v[$column], true);
-					if (in_array($extension, $values))
+					$values = json_decode((string) $v[$column], true);
+					if (is_array($values) && in_array($extension, $values, true))
 					{
 						$matches[(int) $v['id']] = (int) $v['id'];
 					}
@@ -318,70 +318,70 @@ abstract class FilterHelper
 	}
 
 	/**
-	 * get translation ids
+	 * Get identifiers whose stored translations match the requested language.
 	 *
-	 * @param string   $language    The target language(s)
-	 * @param bool     $translated    The target language(s)
+	 * @param   string  $language    Exact language tag, all published languages, or none.
+	 * @param   bool    $translated  Select translated or untranslated strings.
 	 *
-	 * @return array|null   The result ids
-	 * @since 3.2.0
-	 **/
+	 * @return  array|null  Matching identifiers, or null when there are no matches.
+	 *
+	 * @since   3.2.0
+	 * @since   6.2.1 Match nonblank translation entries instead of serialized substrings.
+	 */
 	public static function translations(string $language, bool $translated = true): ?array
 	{
+		if ($language === '' || ($translated && $language === 'none')
+			|| (!$translated && $language === 'all'))
+		{
+			return null;
+		}
+
+		$required = [];
+
+		if ($language === 'all')
+		{
+			$required = self::languages() ?? [];
+
+			// A stale "all" selection must not match every row when no languages exist.
+			if ($required === [])
+			{
+				return null;
+			}
+		}
+
 		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
-
 		$query
-			->select($db->quoteName('id'))
+			->select($db->quoteName(['id', 'translation']))
 			->from($db->quoteName('#__componentbuilder_language_translation'));
+		$db->setQuery($query);
+		$matches = [];
 
-		// Build the where condition
-		if ($translated === true) // Translated
+		// Decode one row at a time; do not retain the table's full JSON payloads.
+		foreach ($db->getIterator() as $row)
 		{
+			$languages = self::translationLanguages($row->translation);
+
 			if ($language === 'all')
 			{
-				if (($languages = self::languages()) !== null)
-				{
-					$wheres = [];
-					foreach ($languages as $k => $v)
-					{
-						$wheres[] = $db->quoteName('translation') . ' LIKE ' . $db->quote('%' . $k . '%');
-					}
-					$query->where($wheres);
-				}
+				$matchesLanguage = array_diff_key($required, $languages) === [];
+			}
+			elseif ($language === 'none')
+			{
+				$matchesLanguage = $languages === [];
 			}
 			else
 			{
-				$query->where($db->quoteName('translation') . ' LIKE ' . $db->quote('%' . $language . '%'));
+				$matchesLanguage = isset($languages[$language]) === $translated;
 			}
-		}
-		else // Not translated
-		{
-			if ($language === 'none')
+
+			if ($matchesLanguage)
 			{
-				$query->where(
-					array(
-						$db->quoteName('translation') . ' = ' . $db->quote(''),
-						$db->quoteName('translation') . ' = ' . $db->quote('[]'),
-						$db->quoteName('translation') . ' = ' . $db->quote('{}')
-					), 'OR'
-				);
-			}
-			else
-			{
-				$query->where($db->quoteName('translation') . ' NOT LIKE ' . $db->quote('%' . $language . '%'));
+				$matches[(int) $row->id] = (int) $row->id;
 			}
 		}
 
-		$db->setQuery($query);
-		$db->execute();
-
-		if ($db->getNumRows())
-		{
-			return array_unique($db->loadColumn());
-		}
-
-		return null;
+		return $matches === [] ? null : array_values($matches);
 	}
 
 	/**
@@ -501,6 +501,38 @@ abstract class FilterHelper
 		}
 
 		return null;
+	}
+
+	/**
+	 * Identify languages with a usable value in a stored translation subform.
+	 *
+	 * @param   ?string  $value  JSON subform data, including legacy empty values.
+	 *
+	 * @return  array<string, true>  Exact language tags with nonblank translations.
+	 *
+	 * @since   6.2.1
+	 */
+	private static function translationLanguages(?string $value): array
+	{
+		$entries = json_decode($value ?? '', true);
+		$languages = [];
+
+		if (!is_array($entries))
+		{
+			return $languages;
+		}
+
+		foreach ($entries as $entry)
+		{
+			if (is_array($entry) && isset($entry['language'], $entry['translation'])
+				&& is_string($entry['language']) && trim($entry['language']) !== ''
+				&& is_string($entry['translation']) && trim($entry['translation']) !== '')
+			{
+				$languages[$entry['language']] = true;
+			}
+		}
+
+		return $languages;
 	}
 
 	/**

@@ -117,6 +117,5 @@ class Load
 
 		return $bucket;
 	}
-
 }
 

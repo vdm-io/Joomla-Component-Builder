@@ -133,6 +133,5 @@ class Insert extends Model implements ModelInterface
 	{
 		return $this->config->table_name;
 	}
-
 }
 

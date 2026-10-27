@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\JoomlaSix;
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\EventInterface as Event;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\UikitComp;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\AdminFilterType;
@@ -604,7 +605,6 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Factory;';
 				$headers[] = 'use Joomla\CMS\Plugin\PluginHelper;';
 				$headers[] = 'use Joomla\CMS\Extension\PluginInterface;';
-				$headers[] = 'use Joomla\Event\DispatcherInterface;';
 				$headers[] = 'use Joomla\DI\ServiceProviderInterface;';
 				$headers[] = 'use Joomla\DI\Container;';
 				break;
@@ -646,7 +646,7 @@ final class Header implements HeaderInterface
 				$headers[] = 'use Joomla\CMS\Factory;';
 				$headers[] = 'use Joomla\CMS\Language\Text;';
 				$headers[] = 'use Joomla\CMS\MVC\Controller\ApiController;';
-				$headers[] = 'use Joomla\CMS\MVC\Controller\Exception\NotAllowed;';
+				$headers[] = 'use Joomla\CMS\Access\Exception\NotAllowed;';
 				break;
 
 			case 'api.dynamic.view.json':

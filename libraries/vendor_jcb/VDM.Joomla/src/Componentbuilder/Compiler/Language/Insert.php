@@ -102,7 +102,7 @@ final class Insert
 			$continue = false;
 
 			// Insert columns.
-			$columns = array($target, 'source', 'published', 'created', 'created_by', 'version', 'access');
+			$columns = array($target, 'source', 'published', 'created', 'created_by', 'version', 'access', 'translation');
 
 			// Prepare the insert query.
 			$query->insert($this->db->quoteName('#__componentbuilder_language_translation'));
@@ -112,6 +112,7 @@ final class Insert
 			{
 				if (count((array) $values) == 7)
 				{
+					$values[] = $this->db->quote('');
 					$query->values(implode(',', $values));
 					$continue = true;
 				}

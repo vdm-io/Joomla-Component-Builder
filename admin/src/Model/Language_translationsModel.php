@@ -313,7 +313,8 @@ class Language_translationsModel extends ListModel
 		$filter_translated = $this->state->get("filter.translated");
 		if ($filter_translated !== null && !empty($filter_translated))
 		{
-			if (($ids = JCBFilterHelper::translations($filter_translated)) !== null)
+			if (is_string($filter_translated)
+				&& ($ids = JCBFilterHelper::translations($filter_translated)) !== null)
 			{
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 			}
@@ -328,7 +329,8 @@ class Language_translationsModel extends ListModel
 		$filter_not_translated = $this->state->get("filter.not_translated");
 		if ($filter_not_translated !== null && !empty($filter_not_translated))
 		{
-			if (($ids = JCBFilterHelper::translations($filter_not_translated, false)) !== null)
+			if (is_string($filter_not_translated)
+				&& ($ids = JCBFilterHelper::translations($filter_not_translated, false)) !== null)
 			{
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',',$ids) . ')');
 			}
@@ -344,8 +346,9 @@ class Language_translationsModel extends ListModel
 		if ($filter_extension !== null && !empty($filter_extension))
 		{
 			// column name, and id
-			$type_extension = explode('__', $filter_extension);
-			if (($ids = JCBFilterHelper::translation((string) $type_extension[1], (string) $type_extension[0])) !== null)
+			$type_extension = is_string($filter_extension) ? explode('__', $filter_extension, 2) : [];
+			if (count($type_extension) === 2 && $type_extension[1] !== ''
+				&& ($ids = JCBFilterHelper::translation($type_extension[1], $type_extension[0])) !== null)
 			{
 				$query->where($db->quoteName('a.id') . ' IN (' . implode(',', $ids) . ')');
 			}

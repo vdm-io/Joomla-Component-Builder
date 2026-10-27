@@ -38,6 +38,5 @@ interface SearchTypeInterface
 	 * @since 3.2.0
 	 */
 	public function replace(string $value): string;
-
 }
 

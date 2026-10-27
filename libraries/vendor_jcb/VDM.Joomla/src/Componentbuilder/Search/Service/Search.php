@@ -143,7 +143,5 @@ class Search implements ServiceProviderInterface
 		// the default is the basic
 		return $container->get('Search.Basic');
 	}
-
-
 }
 

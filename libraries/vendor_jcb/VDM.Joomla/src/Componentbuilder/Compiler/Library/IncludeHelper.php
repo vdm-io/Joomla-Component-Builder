@@ -17,7 +17,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Library;
  * 
  * @since 5.1.2
  */
-final class IncludeHelper
+class IncludeHelper
 {
 	/**
 	 * Get the Library Include string for a given path.

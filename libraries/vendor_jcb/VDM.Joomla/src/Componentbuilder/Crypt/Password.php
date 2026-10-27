@@ -58,11 +58,10 @@ class Password
 	{
 		return base64_decode(
 			Text::sprintf(
-				'COM_COMPONENTBUILDER_VJRZDESSMHBTRWFIFTYTWVZEROAESFLVVXJTMTHREEJTWOIXM',
+				'VjRzdE%ssMHBtRW50TWV0aE%sFlvVXJTM3J2IXM=',
 				'QzdmV', '9kQ'
 			)
 		);
 	}
-
 }
 

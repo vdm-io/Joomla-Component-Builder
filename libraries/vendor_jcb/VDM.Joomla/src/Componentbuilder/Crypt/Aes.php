@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Crypt;
 
 
-
 use phpseclib3\Crypt\AES as BASEAES;
 use phpseclib3\Exception\BadDecryptionException;
 use VDM\Joomla\Componentbuilder\Crypt\Random;

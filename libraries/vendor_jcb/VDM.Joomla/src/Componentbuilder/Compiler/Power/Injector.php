@@ -551,43 +551,65 @@ class Injector implements InjectorInterface
 	 */
 	protected function addLines(string $code, string $lines): string
 	{
-		// Pattern to match class, final class, abstract class, interface, and trait
-		$pattern = '/(?:class|final class|abstract class|interface|trait)\s+[a-zA-Z0-9_]+\s*(?:extends\s+[a-zA-Z0-9_]+\s*)?(?:implements\s+[a-zA-Z0-9_]+(?:\s*,\s*[a-zA-Z0-9_]+)*)?\s*\{/s';
+		// Token offsets preserve comments, attributes, and the source line endings.
+		$prefix = strpos($code, '<?') === false ? '<?php ' : '';
+		$tokens = token_get_all($prefix . $code);
+		$offset = -strlen($prefix);
+		$declaration = null;
+		$attribute_depth = 0;
 
-		// Find the position of the class declaration
-		preg_match($pattern, $code, $matches, PREG_OFFSET_CAPTURE);
-		$class_declaration_pos = $matches[0][1] ?? null;
-
-		if (null !== $class_declaration_pos)
+		foreach ($tokens as $index => $token)
 		{
-			// Find the position of the last newline character before the class declaration
-			$last_newline_pos = strrpos($code, PHP_EOL, -(strlen($code) - $class_declaration_pos));
+			$id = is_array($token) ? $token[0] : null;
+			$text = is_array($token) ? $token[1] : $token;
 
-			// Find the position of the comment block right before the class declaration
-			$comment_pattern = '/\s*\*\/\s*$/m';
-			$insert_pos = null;
-			if (preg_match($comment_pattern, $code, $comment_matches, PREG_OFFSET_CAPTURE, $last_newline_pos))
+			if ($id === T_ATTRIBUTE)
 			{
-				$insert_pos = (int) $comment_matches[0][1] + strlen($comment_matches[0][0]);
+				$declaration ??= $offset;
+				$attribute_depth++;
 			}
-			else
+			elseif ($attribute_depth > 0)
 			{
-				// Find the last empty line before the class declaration
-				$empty_line_pattern = '/(^|\r\n|\r|\n)[\s]*($|\r\n|\r|\n)/';
-				if (preg_match($empty_line_pattern, $code, $empty_line_matches, PREG_OFFSET_CAPTURE, $last_newline_pos))
+				if ($token === '[')
 				{
-					$insert_pos = (int) $empty_line_matches[0][1] + strlen($empty_line_matches[0][0]);
+					$attribute_depth++;
+				}
+				elseif ($token === ']')
+				{
+					$attribute_depth--;
 				}
 			}
-
-			// Insert the new line at the found position
-			if (null !== $insert_pos)
+			elseif (in_array($id, [T_CLASS, T_INTERFACE, T_TRAIT], true))
 			{
-				return substr_replace($code, $lines . PHP_EOL, $insert_pos, 0);
+				// A named declaration follows with T_STRING; anonymous classes and
+				// Foo::class references must not become import insertion points.
+				$next = $index + 1;
+				while (isset($tokens[$next]) && is_array($tokens[$next])
+					&& in_array($tokens[$next][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true))
+				{
+					$next++;
+				}
+
+				if (isset($tokens[$next]) && is_array($tokens[$next]) && $tokens[$next][0] === T_STRING)
+				{
+					return substr_replace($code, $lines . PHP_EOL, $declaration ?? $offset, 0);
+				}
+
+				$declaration = null;
 			}
+			elseif (in_array($id, [T_COMMENT, T_DOC_COMMENT, T_FINAL, T_ABSTRACT, T_READONLY], true))
+			{
+				$declaration ??= $offset;
+			}
+			elseif ($id !== T_WHITESPACE)
+			{
+				$declaration = null;
+			}
+
+			$offset += strlen($text);
 		}
 
-		// last try targeting the defined line
+		// Non-class files retain the Joomla direct-access guard fallback.
 		return $this->addLinesAfterDefinedLine($code, $lines);
 	}
 

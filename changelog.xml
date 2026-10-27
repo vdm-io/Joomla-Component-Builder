@@ -582,6 +582,26 @@
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
+    <version>5.2.1-alpha1</version>
+    <fix>
+      <item>Fix custom frontend view navigation when compiling for Joomla 4 and 5. #1118</item>
+      <item>Fix missing or misplaced Joomla Power imports, including Uri, in generated PHP classes. #1123</item>
+      <item>Fix sales-server uploads over FTP and SFTP, including credential handling, authentication checks and remote paths. #1283</item>
+      <item>Fix language-translation filtering for exact language matches, legacy NULL records, extension selections and cached results. #1309</item>
+    </fix>
+    <note>
+      <item>Initialize compiler-created translation records with the same empty value used by manual saves. #1309</item>
+      <item>Correct the NotAllowed import so denied Site View and Custom Admin View API requests return HTTP 403 instead of HTTP 500. #1326</item>
+      <item>Restore correct Markdown image conversion before ordinary link processing.</item>
+      <item>Restore stable ID ordering in JCB Search batches to prevent matching records from being skipped.</item>
+      <item>Prevent unwanted constructor generation in compiler Power classes that inherit their parent's implementation.</item>
+      <item>Correct plugin namespace placeholder handling during JCB self-compilation.</item>
+      <item>Standardize compiler-generated indentation, line endings and debug comments while preserving authored code.</item>
+    </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
     <version>6.2.0</version>
     <fix>
       <item>Fix Power namespace reconstruction to correctly preserve custom aliases and apply NamespacePrefix and ComponentNamespace placeholders.</item>
